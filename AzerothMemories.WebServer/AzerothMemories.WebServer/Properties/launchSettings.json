@@ -8,7 +8,7 @@
         }
     },
     "profiles": {
-        "AzerothMemories.Web.Server": {
+        "AzerothMemories.WebServer": {
             "commandName": "Project",
             "dotnetRunMessages": true,
             "launchBrowser": true,

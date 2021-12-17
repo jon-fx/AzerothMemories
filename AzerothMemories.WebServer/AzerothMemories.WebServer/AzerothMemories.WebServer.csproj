@@ -1,25 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <OutputPath>..\..\AzerothMemories.Build\$(Configuration)\$(AssemblyName)</OutputPath>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <OutputPath>..\..\AzerothMemories.Build\$(Configuration)\$(AssemblyName)</OutputPath>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.1" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.1" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\AzerothMemories.Common\AzerothMemories.Common\AzerothMemories.Common.csproj" />
-    <ProjectReference Include="..\..\AzerothMemories.WebBlazor\AzerothMemories.WebBlazor\AzerothMemories.WebBlazor.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\AzerothMemories.Common\AzerothMemories.Common\AzerothMemories.Common.csproj" />
+        <ProjectReference Include="..\..\AzerothMemories.WebBlazor\AzerothMemories.WebBlazor\AzerothMemories.WebBlazor.csproj" />
+    </ItemGroup>
 
 </Project>
