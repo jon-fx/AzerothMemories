@@ -1,0 +1,20 @@
+﻿CREATE TABLE [dbo].[Guilds]
+(
+    [Id] BIGINT NOT NULL PRIMARY KEY IDENTITY,
+    [MoaRef] NVARCHAR(75) NOT NULL UNIQUE,
+    [BlizzardId] BIGINT NOT NULL DEFAULT 0,
+    [Name] NVARCHAR(50) NOT NULL,
+    [SearchableName] NVARCHAR(50) NOT NULL,
+    [RegionId] TINYINT NOT NULL DEFAULT 0,
+    [RealmId] INT NOT NULL DEFAULT 0 ,
+    [Faction] TINYINT NOT NULL DEFAULT 0,
+    [BlizzardCreatedTimestamp] BIGINT NOT NULL DEFAULT 0,
+    [MemberCount] INT NOT NULL DEFAULT 0,
+    [AchievementPoints] INT NOT NULL DEFAULT 0,
+    [LastUpdateEndTime] DATETIMEOFFSET NOT NULL DEFAULT '1900-01-01 00:00:00 +00:00',
+    [LastUpdateResult] TINYINT NOT NULL DEFAULT 0,
+    [LastUpdateHttpResult] SMALLINT NOT NULL DEFAULT 0,
+    [BlizzardProfileLastModified] BIGINT NOT NULL DEFAULT 0,
+    [BlizzardAchievementsLastModified] BIGINT NOT NULL DEFAULT 0,
+    [BlizzardRosterLastModified] BIGINT NOT NULL DEFAULT 0,
+)

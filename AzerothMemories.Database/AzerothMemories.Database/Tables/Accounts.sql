@@ -1,0 +1,32 @@
+﻿CREATE TABLE [dbo].[Accounts]
+(
+	[Id] BIGINT NOT NULL PRIMARY KEY IDENTITY,
+    [MoaRef] NVARCHAR(50) NOT NULL UNIQUE,
+    [AccountType] TINYINT NOT NULL DEFAULT 0 ,
+    [RegionId] TINYINT NOT NULL DEFAULT 0 ,
+    [BlizzardId] BIGINT NOT NULL DEFAULT 0,
+    [Username] NVARCHAR(50) NULL ,
+    [UsernameChangeTime] DATETIMEOFFSET NOT NULL DEFAULT '1900-01-01 00:00:00 +00:00',
+    [Avatar] NVARCHAR(200) NULL,
+    [BattleTag] NVARCHAR(50) NULL,
+    [IsPrivate] TINYINT NOT NULL DEFAULT 0,
+    [AccessToken] NVARCHAR(50) NULL,
+    [AccessTokenExpiresAt] BIGINT NOT NULL DEFAULT 0,
+    [CreatedDateTime] DATETIMEOFFSET NOT NULL,
+    [LastLoginDateTime] DATETIMEOFFSET NOT NULL,
+
+    [LastUpdateEndTime] DATETIMEOFFSET NOT NULL DEFAULT '1900-01-01 00:00:00 +00:00',
+    [LastUpdateResult] TINYINT NOT NULL DEFAULT 0,
+    [LastUpdateHttpResult] SMALLINT NOT NULL DEFAULT 0,
+
+    [BanReason] NVARCHAR(200) NULL,
+    [BanExpireTime] DATETIMEOFFSET NOT NULL DEFAULT '1900-01-01 00:00:00 +00:00',
+
+    [BlizzardAccountLastModified] BIGINT NOT NULL DEFAULT 0,
+
+    [PublicBattleTag] TINYINT NOT NULL DEFAULT 0,
+    [SocialDiscord] NVARCHAR(50) NULL,
+    [SocialTwitter] NVARCHAR(50) NULL,
+    [SocialTwitch] NVARCHAR(50) NULL,
+    [SocialYouTube] NVARCHAR(50) NULL,
+)

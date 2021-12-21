@@ -1,7 +1,37 @@
 ﻿@page "/"
+@inject ClientAuthHelper _clientAuthHelper
 
 <PageTitle>Index</PageTitle>
 
 <h1>Hello, world!</h1>
+        
+<MudButton OnClick="@(() => SignIn("BattleNet-Europe"))">Sign In</MudButton>
+<MudButton OnClick="@(() => SignIn("BattleNet-UnitedStates"))">Sign In</MudButton>
+<MudButton OnClick="SignOut">Sign Out</MudButton>
 
 Welcome to your new app.
+
+<AuthorizeView>
+	<Authorized>
+		<MudText Color="Color.Tertiary">Authorized</MudText>
+		<MudText Color="Color.Tertiary">@_clientAuthHelper.Session.Id</MudText>
+		<MudText Color="Color.Tertiary">@_clientAuthHelper.Auth.GetSessionUser(_clientAuthHelper.Session).Result.Name</MudText>
+	</Authorized>
+	<NotAuthorized>
+		<MudText Color="Color.Error">NotAuthorized</MudText>
+		<MudText Color="Color.Error">@_clientAuthHelper.Session.Id</MudText>
+	</NotAuthorized>
+</AuthorizeView>
+
+@code 
+{
+	private async Task SignIn(string str)
+	{
+		await _clientAuthHelper.SignIn(str);
+	}
+
+	private async Task SignOut()
+	{
+		await _clientAuthHelper.SignOut();
+	}
+}

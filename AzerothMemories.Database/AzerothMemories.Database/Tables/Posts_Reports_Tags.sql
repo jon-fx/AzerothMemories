@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dbo].[Posts_Reports_Tags]
+(
+    [Id] BIGINT NOT NULL PRIMARY KEY IDENTITY,
+    [AccountId] BIGINT NOT NULL DEFAULT 0 ,
+    [PostId] BIGINT NOT NULL DEFAULT 0 ,
+    [TagId] BIGINT NOT NULL DEFAULT 0 ,
+)

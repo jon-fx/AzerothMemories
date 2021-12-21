@@ -1,0 +1,11 @@
+﻿global using AzerothMemories.Blizzard;
+global using AzerothMemories.Common;
+global using Microsoft.AspNetCore.Authentication;
+global using Microsoft.AspNetCore.Authentication.Cookies;
+global using Microsoft.AspNetCore.Authentication.OAuth;
+global using MudBlazor.Services;
+global using NodaTime.Extensions;
+global using Stl.Fusion;
+global using Stl.Fusion.Server;
+global using System.Security.Claims;
+global using SystemClock = NodaTime.SystemClock;
