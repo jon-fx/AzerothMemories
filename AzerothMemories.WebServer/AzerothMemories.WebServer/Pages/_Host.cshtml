@@ -38,14 +38,14 @@
 <body>
 @if (isCloseWindowRequest) {
 	<script>
-		setTimeout(function () { window.close(); }, 100)
+		setTimeout(function () { window.close(); }, 1000)
 	</script>
 	<div class="alert alert-primary">
 		@(closeWindowFlowName) completed, you can close this window.
 		
 		@if (closeWindowFlowName == "Sign-out")
 		{
-			<img src="https://battle.net/login/logout"/>
+			<img src="https://battle.net/login/logout" width="1" height="1"/>
 		}
 	</div>
 } 
