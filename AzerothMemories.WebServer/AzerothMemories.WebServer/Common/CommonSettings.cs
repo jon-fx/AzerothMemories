@@ -95,9 +95,9 @@
             var tokenExpiresAt = (SystemClock.Instance.GetCurrentInstant() + context.ExpiresIn.GetValueOrDefault().ToDuration()).ToUnixTimeMilliseconds();
             var accountId = MoaRef.GetAccountRef(blizzardRegion, blizzardId);
 
-            //await context.HttpContext.RequestServices.GetRequiredService<AccountServices>().OnLogin(accountId.Full, battleTagClaim.Value, token, tokenExpiresAt);
-
             context.Identity.AddClaim(new Claim("Id", accountId.Full));
+
+            await context.HttpContext.RequestServices.GetRequiredService<AccountServices>().OnLogin(accountId.Full, battleTagClaim.Value, token, tokenExpiresAt);
         }
     }
 }

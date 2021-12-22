@@ -1,4 +1,3 @@
-using AzerothMemories.WebServer.Common;
 using Stl.CommandR;
 using Stl.Fusion.Blazor;
 using Stl.Fusion.Client;
@@ -48,15 +47,21 @@ authenticationBuilder.AddCookie(options =>
 builder.Services.AddServerSideBlazor(o => o.DetailedErrors = true);
 fusionAuth.AddBlazor(o => { }); // Must follow services.AddServerSideBlazor()!
 
+builder.Services.AddSingleton(new CommonConfig());
+builder.Services.AddSingleton<CommonServices>();
+builder.Services.AddSingleton<DatabaseProvider>();
+//builder.Services.AddSingleton<QueuedUpdateHandler>();
+//builder.Services.AddSingleton<WarcraftClientProvider>();
+
 //CommonSetup.SetUpCommon(builder.Services, new CommonConfig());
 
 //builder.Services.AddSingleton<PrintCommandHandler>();
 var commanderBuilder = builder.Services.AddCommander();
 //commanderBuilder.AddHandlers<PrintCommandHandler>();
 
-//fusion.AddComputeService<AccountServices>();
-//fusion.AddComputeService<CharacterServices>();
-//fusion.AddComputeService<IAccountServices, AccountServices>();
+fusion.AddComputeService<AccountServices>();
+fusion.AddComputeService<CharacterServices>();
+fusion.AddComputeService<IAccountServices, AccountServices>();
 
 var app = builder.Build();
 
