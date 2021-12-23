@@ -10,11 +10,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Stl.Fusion" Version="2.1.7" />
 		<PackageReference Include="Humanizer.Core" Version="2.13.14" />
 		<PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
 		<PackageReference Include="NodaTime" Version="3.0.9" />
+		<PackageReference Include="Stl.Fusion" Version="2.1.7" />
 		<PackageReference Include="Stl.CommandR" Version="2.1.7" />
+		<PackageReference Include="Stl.Fusion.Client" Version="2.1.7" />
 	</ItemGroup>
 </Project>

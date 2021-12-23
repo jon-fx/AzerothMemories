@@ -1,5 +1,10 @@
-﻿namespace AzerothMemories.WebServer.Services;
+﻿using NodaTime;
+using Stl.RegisterAttributes;
 
+namespace AzerothMemories.WebServer.Services;
+
+[RegisterComputeService]
+[RegisterAlias(typeof(IAccountServices))]
 public class AccountServices : IAccountServices
 {
     private readonly CommonServices _commonServices;
@@ -9,8 +14,14 @@ public class AccountServices : IAccountServices
         _commonServices = commonServices;
     }
 
+    //[ComputeMethod]
+    //public virtual async Task<AccountViewModel> TryGetAccount(Session session, long accountId)
+    //{
+    //    return await TryGetAccount(accountId);
+    //}
+
     [ComputeMethod]
-    public virtual async Task<AccountViewModel> GetAccount(Session session, long accountId)
+    public virtual async Task<AccountViewModel> TryGetAccount(long accountId)
     {
         var record = await TryGetAccountRecord(accountId);
         if (record == null)
@@ -26,13 +37,44 @@ public class AccountServices : IAccountServices
         };
     }
 
+    public async Task TryChangeUsername(string newUsername)
+    {
+        await using var db = _commonServices.DatabaseProvider.GetDatabase();
+        var accountQuery = db.Accounts.Where(x => x.Id == 1);
+        var accountRecord = await accountQuery.FirstOrDefaultAsync();
+        if (accountRecord == null)
+        {
+            throw new NotImplementedException();
+        }
+
+        var usernameExists = db.Accounts.Any(x => x.Username == newUsername);
+        if (usernameExists)
+        {
+            throw new NotImplementedException();
+        }
+
+        accountRecord.Username = newUsername;
+        accountRecord.UsernameChangeTime = (SystemClock.Instance.GetCurrentInstant() + Duration.FromMinutes(1)).ToDateTimeOffset();
+
+        var updateQuery = accountQuery.AsUpdatable();
+        updateQuery = updateQuery.Set(x => x.Username, accountRecord.Username);
+        updateQuery = updateQuery.Set(x => x.UsernameChangeTime, accountRecord.UsernameChangeTime);
+
+        await updateQuery.UpdateAsync();
+
+        using var computed = Computed.Invalidate();
+        _ = TryGetAccount(accountRecord.Id);
+        _ = TryGetAccountRecord(accountRecord.Id);
+        _ = TryGetAccountRecord(accountRecord.MoaRef);
+    }
+
     [ComputeMethod]
     public virtual async Task<string?> OnLogin(string accountId, string newBattleTag, string token, long tokenExpiresAt)
     {
-        if (Computed.IsInvalidating())
-        {
-            return null;
-        }
+        //if (Computed.IsInvalidating())
+        //{
+        //    return null;
+        //}
 
         var record = await TryGetAccountRecord(accountId);
         if (record == null)
@@ -91,6 +133,7 @@ public class AccountServices : IAccountServices
             await updateQuery.UpdateAsync();
 
             using var computed = Computed.Invalidate();
+            _ = TryGetAccount(record.Id);
             _ = TryGetAccountRecord(record.Id);
             _ = TryGetAccountRecord(record.MoaRef);
         }
@@ -112,8 +155,9 @@ public class AccountServices : IAccountServices
         accountRecord.Id = await db.InsertWithInt64IdentityAsync(accountRecord);
 
         using var computed = Computed.Invalidate();
-        _ = TryGetAccountRecord(moaRef);
+        _ = TryGetAccount(accountRecord.Id);
         _ = TryGetAccountRecord(accountRecord.Id);
+        _ = TryGetAccountRecord(accountRecord.MoaRef);
 
         return accountRecord;
     }

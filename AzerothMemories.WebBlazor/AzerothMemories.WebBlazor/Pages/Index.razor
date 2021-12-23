@@ -1,10 +1,13 @@
 ﻿@page "/"
+@inject IAccountServices _accountServices;
 @inject ClientAuthHelper _clientAuthHelper
+@using AzerothMemories.Services
+@inherits ComputedStateComponent<AzerothMemories.Services.AccountViewModel?>
 
 <PageTitle>Index</PageTitle>
 
 <h1>Hello, world!</h1>
-        
+
 <MudButton OnClick="@(() => SignIn("BattleNet-Europe"))">Sign In</MudButton>
 <MudButton OnClick="@(() => SignIn("BattleNet-UnitedStates"))">Sign In</MudButton>
 <MudButton OnClick="SignOut">Sign Out</MudButton>
@@ -23,7 +26,22 @@ Welcome to your new app.
 	</NotAuthorized>
 </AuthorizeView>
 
-@code 
+@{
+	var state = State.Value;
+	if (state != null)
+	{
+		<MudText Color="Color.Warning">State: </MudText>
+		<MudText Color="Color.Warning">@state.Username</MudText>
+	}
+	else
+	{
+		<MudText Color="Color.Warning">State: NULL </MudText>
+	}
+
+	<MudButton OnClick="@(() => Tests("Lightfx" + Random.Shared.NextInt64(0, 100000)))">Sign In</MudButton>
+}
+
+@code
 {
 	private async Task SignIn(string str)
 	{
@@ -33,5 +51,16 @@ Welcome to your new app.
 	private async Task SignOut()
 	{
 		await _clientAuthHelper.SignOut();
+	}
+
+	protected override async Task<AccountViewModel?> ComputeState(CancellationToken cancellationToken)
+	{
+		var account = await _accountServices.TryGetAccount(1);
+		return account;
+	}
+
+	private async Task Tests(string newUsername)
+	{
+		await _accountServices.TryChangeUsername(newUsername);
 	}
 }

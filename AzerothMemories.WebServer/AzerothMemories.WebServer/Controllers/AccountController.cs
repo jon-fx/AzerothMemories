@@ -1,7 +1,7 @@
 namespace AzerothMemories.WebServer.Controllers
 {
-    [ApiController]
-    [Route("[controller]/[action]")]
+    [ApiController, JsonifyErrors]
+    [Route("api/[controller]/[action]")]
     public class AccountController : ControllerBase, IAccountServices
     {
         private readonly IAccountServices _accountServices;
@@ -13,10 +13,16 @@ namespace AzerothMemories.WebServer.Controllers
             _commonServices = commonServices;
         }
 
-        [HttpGet, Publish]
-        public Task<AccountViewModel> GetAccount(Session session, long accountId)
+        [HttpGet("{accountId}"), Publish]
+        public Task<AccountViewModel> TryGetAccount([FromRoute] long accountId)
         {
-            return _accountServices.GetAccount(session, accountId);
+            return _accountServices.TryGetAccount(accountId);
+        }
+
+        [HttpPost("{newUsername}")]
+        public Task TryChangeUsername([FromRoute] string newUsername)
+        {
+            return _accountServices.TryChangeUsername(newUsername);
         }
     }
 }

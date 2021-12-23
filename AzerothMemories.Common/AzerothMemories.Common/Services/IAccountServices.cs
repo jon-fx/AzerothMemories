@@ -1,9 +1,13 @@
-﻿using Stl.Fusion.Authentication;
+﻿using RestEase;
+using Stl.Fusion;
 
 namespace AzerothMemories.Services
 {
+    [BasePath("account")]
     public interface IAccountServices
     {
-        Task<AccountViewModel> GetAccount(Session session, long accountId);
+        [ComputeMethod] [Get(nameof(TryGetAccount) + "/{accountId}")] Task<AccountViewModel> TryGetAccount([Path] long accountId);
+
+        [Post(nameof(TryChangeUsername) + "/{newUsername}")] Task TryChangeUsername([Path] string newUsername);
     }
 }

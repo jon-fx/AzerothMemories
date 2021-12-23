@@ -1,6 +1,7 @@
 using Stl.CommandR;
 using Stl.Fusion.Blazor;
-using Stl.Fusion.Client;
+using Stl.Fusion.Bridge;
+using Stl.RegisterAttributes;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,9 +13,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddSingleton(new Publisher.Options { Id = "p-67567567" });
+
 var fusion = builder.Services.AddFusion();
 var fusionServer = fusion.AddWebServer();
-var fusionClient = fusion.AddRestEaseClient();
+//var fusionClient = fusion.AddRestEaseClient();
 var fusionAuth = fusion.AddAuthentication().AddServer(
     signInControllerOptionsBuilder: (_, options) =>
     {
@@ -59,9 +62,7 @@ builder.Services.AddSingleton<DatabaseProvider>();
 var commanderBuilder = builder.Services.AddCommander();
 //commanderBuilder.AddHandlers<PrintCommandHandler>();
 
-fusion.AddComputeService<AccountServices>();
-fusion.AddComputeService<CharacterServices>();
-fusion.AddComputeService<IAccountServices, AccountServices>();
+builder.Services.UseRegisterAttributeScanner().RegisterFrom(typeof(CommonServices).Assembly);
 
 var app = builder.Build();
 
