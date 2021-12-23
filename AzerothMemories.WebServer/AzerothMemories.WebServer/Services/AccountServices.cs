@@ -1,9 +1,4 @@
-﻿using Stl.CommandR;
-using Stl.CommandR.Configuration;
-using Stl.Fusion.Authentication.Commands;
-using Stl.RegisterAttributes;
-
-namespace AzerothMemories.WebServer.Services;
+﻿namespace AzerothMemories.WebServer.Services;
 
 [RegisterComputeService]
 [RegisterAlias(typeof(IAccountServices))]

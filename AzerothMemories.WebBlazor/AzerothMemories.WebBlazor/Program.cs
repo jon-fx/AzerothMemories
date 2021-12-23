@@ -1,5 +1,3 @@
-using AzerothMemories.Services;
-
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<HeadOutlet>("head::after");
 

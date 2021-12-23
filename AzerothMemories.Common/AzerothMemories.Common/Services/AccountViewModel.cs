@@ -1,13 +1,10 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace AzerothMemories.Services;
 
-namespace AzerothMemories.Services
+public sealed class AccountViewModel
 {
-    public sealed class AccountViewModel
-    {
-        [JsonInclude] public long Id;
+    [JsonInclude] public long Id;
 
-        [JsonInclude] public string Ref;
+    [JsonInclude] public string Ref;
 
-        [JsonInclude] public string Username;
-    }
+    [JsonInclude] public string Username;
 }

@@ -1,7 +1,3 @@
-using Stl.Fusion.EntityFramework;
-using Stl.IO;
-using System.Data;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddMudServices();

@@ -1,10 +1,9 @@
-﻿namespace AzerothMemories.Common
-{
-    public static class RandomGenerator
-    {
-        private static int _seed = Environment.TickCount;
-        private static readonly ThreadLocal<Random> _threadLocalRandom = new(() => new Random(Interlocked.Increment(ref _seed)));
+﻿namespace AzerothMemories.Common;
 
-        public static Random Instance => _threadLocalRandom.Value ?? throw new NotImplementedException();
-    }
+public static class RandomGenerator
+{
+    private static int _seed = Environment.TickCount;
+    private static readonly ThreadLocal<Random> _threadLocalRandom = new(() => new Random(Interlocked.Increment(ref _seed)));
+
+    public static Random Instance => _threadLocalRandom.Value ?? throw new NotImplementedException();
 }

@@ -1,9 +1,8 @@
-﻿namespace AzerothMemories.Blizzard
+﻿namespace AzerothMemories.Blizzard;
+
+public enum RequestResultCode
 {
-    public enum RequestResultCode
-    {
-        Success,
-        Failed,
-        Pending
-    }
+    Success,
+    Failed,
+    Pending
 }

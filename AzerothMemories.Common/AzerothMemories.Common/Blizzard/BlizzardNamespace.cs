@@ -1,10 +1,9 @@
-﻿namespace AzerothMemories.Blizzard
+﻿namespace AzerothMemories.Blizzard;
+
+public enum BlizzardNamespace
 {
-    public enum BlizzardNamespace
-    {
-        None,
-        Static,
-        Dynamic,
-        Profile
-    }
+    None,
+    Static,
+    Dynamic,
+    Profile
 }

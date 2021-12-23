@@ -1,9 +1,8 @@
-﻿namespace AzerothMemories.WebServer.Database.Records
-{
-    public interface IGrainRecord
-    {
-        long Id { get; set; }
+﻿namespace AzerothMemories.WebServer.Database.Records;
 
-        string MoaRef { get; set; }
-    }
+public interface IGrainRecord
+{
+    long Id { get; set; }
+
+    string MoaRef { get; set; }
 }

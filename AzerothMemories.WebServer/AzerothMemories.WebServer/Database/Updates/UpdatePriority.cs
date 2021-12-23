@@ -1,12 +1,11 @@
-﻿namespace AzerothMemories.WebServer.Database.Updates
+﻿namespace AzerothMemories.WebServer.Database.Updates;
+
+public enum UpdatePriority
 {
-    public enum UpdatePriority
-    {
-        Default,
-        Account,
-        CharacterHigh,
-        CharacterLow,
-        Guild,
-        Count
-    }
+    Default,
+    Account,
+    CharacterHigh,
+    CharacterLow,
+    Guild,
+    Count
 }

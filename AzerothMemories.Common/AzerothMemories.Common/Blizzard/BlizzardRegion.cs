@@ -1,13 +1,12 @@
-﻿namespace AzerothMemories.Blizzard
+﻿namespace AzerothMemories.Blizzard;
+
+public enum BlizzardRegion
 {
-    public enum BlizzardRegion
-    {
-        None,
-        China = 1,
-        Europe = 2,
-        Korea = 3,
-        Taiwan = 4,
-        UnitedStates = 5,
-        Count
-    }
+    None,
+    China = 1,
+    Europe = 2,
+    Korea = 3,
+    Taiwan = 4,
+    UnitedStates = 5,
+    Count
 }

@@ -1,9 +1,8 @@
-﻿namespace AzerothMemories.Blizzard
+﻿namespace AzerothMemories.Blizzard;
+
+public enum CharacterFaction
 {
-    public enum CharacterFaction
-    {
-        None,
-        Horde,
-        Alliance
-    }
+    None,
+    Horde,
+    Alliance
 }
