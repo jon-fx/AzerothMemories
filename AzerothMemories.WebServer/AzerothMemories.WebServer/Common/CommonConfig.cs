@@ -2,7 +2,7 @@
 {
     public sealed class CommonConfig
     {
-        public string DatabaseConnectionString { get; } = "***REMOVED***";
+        //public string DatabaseConnectionString { get; } = "***REMOVED***";
 
         //public string BlobStorageConnectionString { get; } = "***REMOVED***";
 
@@ -18,14 +18,14 @@
 
         //public Duration CharacterSyncToggleDelay { get; } = Duration.FromSeconds(10);
 
-        public readonly (string Id, string Secret)?[] BlizzardClientInfo =
-        {
-            new("***REMOVED***", "***REMOVED***"),
-            new("***REMOVED***", "***REMOVED***"),
-            new("***REMOVED***", "***REMOVED***"),
-            new("***REMOVED***", "***REMOVED***"),
-            new("***REMOVED***", "***REMOVED***"),
-            new("***REMOVED***", "***REMOVED***")
-        };
+        //public readonly (string Id, string Secret)?[] BlizzardClientInfo =
+        //{
+        //    new("***REMOVED***", "***REMOVED***"),
+        //    new("***REMOVED***", "***REMOVED***"),
+        //    new("***REMOVED***", "***REMOVED***"),
+        //    new("***REMOVED***", "***REMOVED***"),
+        //    new("***REMOVED***", "***REMOVED***"),
+        //    new("***REMOVED***", "***REMOVED***")
+        //};
     }
 }

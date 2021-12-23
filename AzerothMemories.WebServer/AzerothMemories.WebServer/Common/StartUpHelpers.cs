@@ -1,8 +1,6 @@
-﻿using System.Globalization;
-
-namespace AzerothMemories.WebServer.Common
+﻿namespace AzerothMemories.WebServer.Common
 {
-    internal static class CommonSettings
+    internal static class StartUpHelpers
     {
         public static AuthenticationBuilder AddOAuth(this AuthenticationBuilder builder, BlizzardRegion region)
         {
@@ -96,10 +94,10 @@ namespace AzerothMemories.WebServer.Common
 
             var tokenExpiresAt = (SystemClock.Instance.GetCurrentInstant() + context.ExpiresIn.GetValueOrDefault().ToDuration()).ToUnixTimeMilliseconds();
             var accountRef = MoaRef.GetAccountRef(blizzardRegion, blizzardId);
-            var accountId = await context.HttpContext.RequestServices.GetRequiredService<AccountServices>().GetAccountId(accountRef.Full);
+            //var accountId = await context.HttpContext.RequestServices.GetRequiredService<AccountServices>().GetAccountId(accountRef.Full);
 
-            context.Identity.AddClaim(new Claim("MoaId", accountId.ToString(CultureInfo.InvariantCulture)));
-            context.Identity.AddClaim(new Claim("MoaRef", accountRef.Full));
+            //context.Identity.AddClaim(new Claim("MoaId", accountId.ToString(CultureInfo.InvariantCulture)));
+            //context.Identity.AddClaim(new Claim("MoaRef", accountRef.Full));
 
             //await context.HttpContext.RequestServices.GetRequiredService<AccountServices>().OnLogin(accountId, battleTagClaim.Value, token, tokenExpiresAt);
         }

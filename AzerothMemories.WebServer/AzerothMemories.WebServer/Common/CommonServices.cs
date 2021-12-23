@@ -17,7 +17,7 @@ namespace AzerothMemories.WebServer.Common
             Auth = _serviceProvider.GetRequiredService<IAuth>();
             Config = _serviceProvider.GetRequiredService<CommonConfig>();
             Commander = _serviceProvider.GetRequiredService<ICommander>();
-            DatabaseProvider = _serviceProvider.GetRequiredService<DatabaseProvider>();
+            //DatabaseProvider = _serviceProvider.GetRequiredService<DatabaseProvider>();
             //WarcraftClientProvider = _serviceProvider.GetRequiredService<WarcraftClientProvider>();
         }
 
@@ -29,7 +29,7 @@ namespace AzerothMemories.WebServer.Common
 
         //public IClusterClient ClusterClient => _clusterClient ??= _serviceProvider.GetRequiredService<IClusterClient>();
 
-        public DatabaseProvider DatabaseProvider { get; }
+        //public DatabaseProvider DatabaseProvider { get; }
 
         //internal QueuedUpdateHandler QueuedUpdateHandler => _queuedUpdateHandler ??= _serviceProvider.GetRequiredService<QueuedUpdateHandler>();
 

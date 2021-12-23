@@ -1,7 +1,6 @@
-using Stl.CommandR;
-using Stl.Fusion.Blazor;
-using Stl.Fusion.Bridge;
-using Stl.RegisterAttributes;
+using Stl.Fusion.EntityFramework;
+using Stl.IO;
+using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +11,40 @@ builder.Services.AddRazorPages();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+var appTempDir = FilePath.GetApplicationTempDirectory("", true);
+var dbPath = appTempDir & "App.db";
+builder.Services.AddDbContextFactory<AppDbContext>(optionsBuilder =>
+{
+    optionsBuilder.UseNpgsql(@"***REMOVED***");
+
+    if (builder.Environment.IsDevelopment())
+    {
+        optionsBuilder.EnableSensitiveDataLogging();
+    }
+});
+builder.Services.AddTransient(c => new DbOperationScope<AppDbContext>(c)
+{
+    IsolationLevel = IsolationLevel.Serializable,
+});
+builder.Services.AddDbContextServices<AppDbContext>(dbContext =>
+{
+    dbContext.AddOperations((_, o) =>
+    {
+        o.UnconditionalWakeUpPeriod = TimeSpan.FromSeconds(builder.Environment.IsDevelopment() ? 60 : 5);
+    });
+
+    var operationLogChangeAlertPath = dbPath + "_changed";
+    dbContext.AddFileBasedOperationLogChangeTracking(operationLogChangeAlertPath);
+
+    dbContext.AddAuthentication<string>();
+    //dbContext.AddAuthentication((_, options) =>
+    //{
+    //    options.MinUpdatePresencePeriod = TimeSpan.FromSeconds(55);
+    //});
+
+    //dbContext.AddKeyValueStore();
+});
 
 builder.Services.AddSingleton(new Publisher.Options { Id = "p-67567567" });
 
@@ -52,7 +85,7 @@ fusionAuth.AddBlazor(o => { }); // Must follow services.AddServerSideBlazor()!
 
 builder.Services.AddSingleton(new CommonConfig());
 builder.Services.AddSingleton<CommonServices>();
-builder.Services.AddSingleton<DatabaseProvider>();
+//builder.Services.AddSingleton<DatabaseProvider>();
 //builder.Services.AddSingleton<QueuedUpdateHandler>();
 //builder.Services.AddSingleton<WarcraftClientProvider>();
 
@@ -102,5 +135,10 @@ app.UseEndpoints(endpoints =>
     //endpoints.MapRazorPages();
     endpoints.MapFallbackToPage("/_Host");
 });
+
+var dbContextFactory = app.Services.GetRequiredService<IDbContextFactory<AppDbContext>>();
+await using var dbContext = dbContextFactory.CreateDbContext();
+// await dbContext.Database.EnsureDeletedAsync();
+await dbContext.Database.EnsureCreatedAsync();
 
 app.Run();

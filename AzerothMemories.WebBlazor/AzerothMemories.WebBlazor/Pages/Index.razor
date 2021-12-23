@@ -38,7 +38,7 @@ Welcome to your new app.
 		<MudText Color="Color.Warning">State: NULL </MudText>
 	}
 
-	<MudButton OnClick="@(() => Tests("Lightfx" + Random.Shared.NextInt64(0, 100000)))">Sign In</MudButton>
+	<MudButton OnClick="@(() => Tests("Lightfx" + Random.Shared.NextInt64(0, 100000)))">Change Username</MudButton>
 }
 
 @code
@@ -55,8 +55,10 @@ Welcome to your new app.
 
 	protected override async Task<AccountViewModel?> ComputeState(CancellationToken cancellationToken)
 	{
-		var account = await _accountServices.TryGetAccount(null, 1, cancellationToken);
-		return account;
+		//var account = await _accountServices.TryGetAccount(null, 1, cancellationToken);
+		//return account;
+
+		return null;
 	}
 
 	private async Task Tests(string newUsername)
