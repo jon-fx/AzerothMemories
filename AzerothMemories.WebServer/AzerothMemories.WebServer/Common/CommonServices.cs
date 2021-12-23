@@ -14,11 +14,14 @@ namespace AzerothMemories.WebServer.Common
         {
             _serviceProvider = serviceProvider;
 
+            Auth = _serviceProvider.GetRequiredService<IAuth>();
             Config = _serviceProvider.GetRequiredService<CommonConfig>();
             Commander = _serviceProvider.GetRequiredService<ICommander>();
             DatabaseProvider = _serviceProvider.GetRequiredService<DatabaseProvider>();
             //WarcraftClientProvider = _serviceProvider.GetRequiredService<WarcraftClientProvider>();
         }
+
+        public IAuth Auth { get; }
 
         public ICommander Commander { get; }
 

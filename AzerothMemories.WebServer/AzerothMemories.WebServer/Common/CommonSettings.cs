@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Common
+﻿using System.Globalization;
+
+namespace AzerothMemories.WebServer.Common
 {
     internal static class CommonSettings
     {
@@ -93,11 +95,13 @@
             }
 
             var tokenExpiresAt = (SystemClock.Instance.GetCurrentInstant() + context.ExpiresIn.GetValueOrDefault().ToDuration()).ToUnixTimeMilliseconds();
-            var accountId = MoaRef.GetAccountRef(blizzardRegion, blizzardId);
+            var accountRef = MoaRef.GetAccountRef(blizzardRegion, blizzardId);
+            var accountId = await context.HttpContext.RequestServices.GetRequiredService<AccountServices>().GetAccountId(accountRef.Full);
 
-            context.Identity.AddClaim(new Claim("Id", accountId.Full));
+            context.Identity.AddClaim(new Claim("MoaId", accountId.ToString(CultureInfo.InvariantCulture)));
+            context.Identity.AddClaim(new Claim("MoaRef", accountRef.Full));
 
-            await context.HttpContext.RequestServices.GetRequiredService<AccountServices>().OnLogin(accountId.Full, battleTagClaim.Value, token, tokenExpiresAt);
+            //await context.HttpContext.RequestServices.GetRequiredService<AccountServices>().OnLogin(accountId, battleTagClaim.Value, token, tokenExpiresAt);
         }
     }
 }

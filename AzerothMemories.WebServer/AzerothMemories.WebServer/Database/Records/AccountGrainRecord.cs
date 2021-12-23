@@ -1,5 +1,4 @@
-﻿using AzerothMemories.Services;
-using LinqToDB.Mapping;
+﻿using LinqToDB.Mapping;
 using System.Net;
 
 namespace AzerothMemories.WebServer.Database.Records
@@ -27,9 +26,9 @@ namespace AzerothMemories.WebServer.Database.Records
 
         [Column, Nullable] public long AccessTokenExpiresAt;
 
-        [Column, Nullable] public string Avatar;
+        //[Column, Nullable] public string Avatar;
 
-        [Column, Nullable] public bool IsPrivate;
+        //[Column, Nullable] public bool IsPrivate;
 
         [Column, Nullable] public DateTimeOffset CreatedDateTime;
 
@@ -41,20 +40,20 @@ namespace AzerothMemories.WebServer.Database.Records
 
         [Column, NotNull] public HttpStatusCode LastUpdateHttpResult { get; set; }
 
-        [Column, Nullable] public string BanReason;
+        //[Column, Nullable] public string BanReason;
 
-        [Column, NotNull] public DateTimeOffset BanExpireTime;
+        //[Column, NotNull] public DateTimeOffset BanExpireTime;
 
-        [Column, NotNull] public long BlizzardAccountLastModified;
+        //[Column, NotNull] public long BlizzardAccountLastModified;
 
-        [Column, NotNull] public bool PublicBattleTag;
+        //[Column, NotNull] public bool PublicBattleTag;
 
-        [Column, Nullable] public string SocialDiscord;
+        //[Column, Nullable] public string SocialDiscord;
 
-        [Column, Nullable] public string SocialTwitter;
+        //[Column, Nullable] public string SocialTwitter;
 
-        [Column, Nullable] public string SocialTwitch;
+        //[Column, Nullable] public string SocialTwitch;
 
-        [Column, Nullable] public string SocialYouTube;
+        //[Column, Nullable] public string SocialYouTube;
     }
 }

@@ -1,4 +1,7 @@
 ﻿using NodaTime;
+using Stl.CommandR;
+using Stl.CommandR.Configuration;
+using Stl.Fusion.Authentication.Commands;
 using Stl.RegisterAttributes;
 
 namespace AzerothMemories.WebServer.Services;
@@ -12,6 +15,51 @@ public class AccountServices : IAccountServices
     public AccountServices(CommonServices commonServices)
     {
         _commonServices = commonServices;
+    }
+
+    [CommandHandler(IsFilter = true, Priority = 1)]
+    protected virtual async Task OnSignIn(SignInCommand command, CancellationToken cancellationToken)
+    {
+        var context = CommandContext.GetCurrent();
+        await context.InvokeRemainingHandlers(cancellationToken);
+    }
+
+    [ComputeMethod]
+    public virtual async Task<long> GetAccountId(string accountRef)
+    {
+        var accountRecord = await TryGetAccountRecord(accountRef);
+        if (accountRecord == null)
+        {
+            await using var db = _commonServices.DatabaseProvider.GetDatabase();
+
+            var moaRef = new MoaRef(accountRef);
+            if (moaRef.IsValidAccount)
+            {
+                throw new NotImplementedException();
+            }
+
+            accountRecord = new AccountGrainRecord
+            {
+                MoaRef = moaRef.Full,
+                BlizzardId = moaRef.Id,
+                CreatedDateTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset(),
+                LastLoginDateTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset(),
+            };
+
+            accountRecord.Id = await db.InsertWithInt64IdentityAsync(accountRecord);
+
+            using var computed = Computed.Invalidate();
+            _ = TryGetAccount(accountRecord.Id);
+            _ = TryGetAccountRecord(accountRecord.Id);
+            _ = TryGetAccountRecord(accountRecord.MoaRef);
+        }
+
+        if (accountRecord.Id == 0)
+        {
+            throw new NotImplementedException();
+        }
+
+        return accountRecord.Id;
     }
 
     [ComputeMethod]
@@ -46,8 +94,17 @@ public class AccountServices : IAccountServices
     public async Task<string> TryChangeUsername(Session session, string newUsername, CancellationToken cancellationToken = default)
     {
         await using var db = _commonServices.DatabaseProvider.GetDatabase();
-        var accountQuery = db.Accounts.Where(x => x.Id == 1);
-        var accountRecord = await accountQuery.FirstOrDefaultAsync();
+
+        var user = await _commonServices.Auth.GetSessionUser(session, cancellationToken);
+        user.MustBeAuthenticated();
+
+        if (!user.Claims.TryGetValue("MoaRef", out var moaRef))
+        {
+            throw new NotImplementedException();
+        }
+
+        var accountQuery = db.Accounts.Where(x => x.MoaRef == moaRef);
+        var accountRecord = await accountQuery.FirstOrDefaultAsync(cancellationToken);
         if (accountRecord == null)
         {
             throw new NotImplementedException();
@@ -66,18 +123,20 @@ public class AccountServices : IAccountServices
         updateQuery = updateQuery.Set(x => x.Username, accountRecord.Username);
         updateQuery = updateQuery.Set(x => x.UsernameChangeTime, accountRecord.UsernameChangeTime);
 
-        await updateQuery.UpdateAsync();
+        var updateCount = await updateQuery.UpdateAsync(cancellationToken);
+        if (updateCount > 0)
+        {
+            using var computed = Computed.Invalidate();
+            _ = TryGetAccount(accountRecord.Id);
+            _ = TryGetAccountRecord(accountRecord.Id);
+            _ = TryGetAccountRecord(accountRecord.MoaRef);
+        }
 
-        using var computed = Computed.Invalidate();
-        _ = TryGetAccount(accountRecord.Id);
-        _ = TryGetAccountRecord(accountRecord.Id);
-        _ = TryGetAccountRecord(accountRecord.MoaRef);
-
-        return "Tests";
+        return accountRecord.Username;
     }
 
     [ComputeMethod]
-    public virtual async Task<string?> OnLogin(string accountId, string newBattleTag, string token, long tokenExpiresAt)
+    public virtual async Task<string?> OnLogin(long accountId, string newBattleTag, string token, long tokenExpiresAt)
     {
         //if (Computed.IsInvalidating())
         //{
@@ -87,13 +146,13 @@ public class AccountServices : IAccountServices
         var record = await TryGetAccountRecord(accountId);
         if (record == null)
         {
-            record = await CreateAccount(accountId);
+            throw new NotImplementedException();
         }
 
         await using var db = _commonServices.DatabaseProvider.GetDatabase();
         var updateQuery = db.Accounts.Where(x => x.Id == record.Id).AsUpdatable();
 
-        string newUsername = null;
+        string? newUsername = null;
         var previousBattleTag = record.BattleTag ?? string.Empty;
         var changed = false;
         if (string.IsNullOrWhiteSpace(record.Username) || record.Username == previousBattleTag.Replace("#", string.Empty))
@@ -155,22 +214,6 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<AccountGrainRecord> CreateAccount(string moaRef)
-    {
-        await using var db = _commonServices.DatabaseProvider.GetDatabase();
-
-        var accountRecord = new AccountGrainRecord { MoaRef = moaRef };
-        accountRecord.Id = await db.InsertWithInt64IdentityAsync(accountRecord);
-
-        using var computed = Computed.Invalidate();
-        _ = TryGetAccount(accountRecord.Id);
-        _ = TryGetAccountRecord(accountRecord.Id);
-        _ = TryGetAccountRecord(accountRecord.MoaRef);
-
-        return accountRecord;
-    }
-
-    [ComputeMethod]
     protected virtual async Task<AccountGrainRecord?> TryGetAccountRecord(long accountId)
     {
         //if (Computed.IsInvalidating())
@@ -183,7 +226,7 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<AccountGrainRecord?> TryGetAccountRecord(string accountId)
+    protected virtual async Task<AccountGrainRecord?> TryGetAccountRecord(string moaRef)
     {
         //if (Computed.IsInvalidating())
         //{
@@ -191,6 +234,6 @@ public class AccountServices : IAccountServices
         //}
 
         await using var db = _commonServices.DatabaseProvider.GetDatabase();
-        return await db.Accounts.Where(x => x.MoaRef == accountId).FirstOrDefaultAsync();
+        return await db.Accounts.Where(x => x.MoaRef == moaRef).FirstOrDefaultAsync();
     }
 }
