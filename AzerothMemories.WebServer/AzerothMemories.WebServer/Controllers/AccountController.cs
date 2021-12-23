@@ -14,15 +14,15 @@ namespace AzerothMemories.WebServer.Controllers
         }
 
         [HttpGet("{accountId}"), Publish]
-        public Task<AccountViewModel> TryGetAccount([FromRoute] long accountId)
+        public Task<AccountViewModel> TryGetAccount(Session session, [FromRoute] long accountId, CancellationToken cancellationToken = default)
         {
-            return _accountServices.TryGetAccount(accountId);
+            return _accountServices.TryGetAccount(session, accountId, cancellationToken);
         }
 
         [HttpPost("{newUsername}")]
-        public Task TryChangeUsername([FromRoute] string newUsername)
+        public Task<string> TryChangeUsername(Session session, [FromRoute] string newUsername, CancellationToken cancellationToken = default)
         {
-            return _accountServices.TryChangeUsername(newUsername);
+            return _accountServices.TryChangeUsername(session, newUsername, cancellationToken);
         }
     }
 }

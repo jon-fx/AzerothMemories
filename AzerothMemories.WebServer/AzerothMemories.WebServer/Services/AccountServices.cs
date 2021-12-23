@@ -14,11 +14,17 @@ public class AccountServices : IAccountServices
         _commonServices = commonServices;
     }
 
-    //[ComputeMethod]
-    //public virtual async Task<AccountViewModel> TryGetAccount(Session session, long accountId)
-    //{
-    //    return await TryGetAccount(accountId);
-    //}
+    [ComputeMethod]
+    public virtual async Task<AccountViewModel> TryGetAccount(Session session, long accountId, CancellationToken cancellationToken = default)
+    {
+        var accountViewModel = await TryGetAccount(accountId);
+        if (accountViewModel == null)
+        {
+            return null;
+        }
+
+        return accountViewModel;
+    }
 
     [ComputeMethod]
     public virtual async Task<AccountViewModel> TryGetAccount(long accountId)
@@ -37,7 +43,7 @@ public class AccountServices : IAccountServices
         };
     }
 
-    public async Task TryChangeUsername(string newUsername)
+    public async Task<string> TryChangeUsername(Session session, string newUsername, CancellationToken cancellationToken = default)
     {
         await using var db = _commonServices.DatabaseProvider.GetDatabase();
         var accountQuery = db.Accounts.Where(x => x.Id == 1);
@@ -66,6 +72,8 @@ public class AccountServices : IAccountServices
         _ = TryGetAccount(accountRecord.Id);
         _ = TryGetAccountRecord(accountRecord.Id);
         _ = TryGetAccountRecord(accountRecord.MoaRef);
+
+        return "Tests";
     }
 
     [ComputeMethod]

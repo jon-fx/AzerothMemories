@@ -55,12 +55,16 @@ Welcome to your new app.
 
 	protected override async Task<AccountViewModel?> ComputeState(CancellationToken cancellationToken)
 	{
-		var account = await _accountServices.TryGetAccount(1);
+		var account = await _accountServices.TryGetAccount(null, 1, cancellationToken);
 		return account;
 	}
 
 	private async Task Tests(string newUsername)
 	{
-		await _accountServices.TryChangeUsername(newUsername);
+		var res = await _accountServices.TryChangeUsername(null, newUsername);
+		if (res == string.Empty)
+		{
+			
+		}
 	}
 }
