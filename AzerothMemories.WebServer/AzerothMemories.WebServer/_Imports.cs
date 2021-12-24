@@ -3,6 +3,7 @@ global using AzerothMemories.Common;
 global using AzerothMemories.Services;
 global using AzerothMemories.WebServer.Common;
 global using AzerothMemories.WebServer.Database;
+global using AzerothMemories.WebServer.Database.Records;
 global using Microsoft.AspNetCore.Authentication;
 global using Microsoft.AspNetCore.Authentication.Cookies;
 global using Microsoft.AspNetCore.Authentication.OAuth;

@@ -15,7 +15,7 @@ public class AppDbContext : DbContextBase
 
     // Tables
 
-    //public DbSet<CharacterGrainRecord> Characters { get; protected set; } = null!;
+    public DbSet<AccountRecord> Accounts { get; protected set; } = null!;
 
     public AppDbContext(DbContextOptions options) : base(options)
     {
