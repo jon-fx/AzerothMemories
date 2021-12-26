@@ -1,3 +1,8 @@
+using AzerothMemories.WebServer.Services.Updates;
+using Hangfire;
+using Hangfire.PostgreSql;
+using System.Net.Http.Headers;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddMudServices();
@@ -42,6 +47,15 @@ builder.Services.AddDbContextServices<AppDbContext>(dbContext =>
     //dbContext.AddKeyValueStore();
 });
 
+builder.Services.AddHangfire(options =>
+{
+    options.UsePostgreSqlStorage(@"***REMOVED***");
+});
+builder.Services.AddHangfireServer(options =>
+{
+    options.Queues = new[] { BlizzardUpdateHandler.AccountQueue1, BlizzardUpdateHandler.CharacterQueue1, BlizzardUpdateHandler.CharacterQueue2, BlizzardUpdateHandler.GuildQueue1 };
+});
+
 builder.Services.AddSingleton(new Publisher.Options { Id = "p-67567567" });
 
 var fusion = builder.Services.AddFusion();
@@ -82,9 +96,14 @@ fusionAuth.AddBlazor(o => { }); // Must follow services.AddServerSideBlazor()!
 builder.Services.AddSingleton(new CommonConfig());
 builder.Services.AddSingleton<CommonServices>();
 //builder.Services.AddSingleton<DatabaseProvider>();
-//builder.Services.AddSingleton<QueuedUpdateHandler>();
-//builder.Services.AddSingleton<WarcraftClientProvider>();
+builder.Services.AddSingleton<BlizzardUpdateHandler>();
+builder.Services.AddSingleton<WarcraftClientProvider>();
 
+builder.Services.AddHttpClient("Blizzard", x =>
+{
+    x.DefaultRequestHeaders.Accept.Clear();
+    x.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+});
 //CommonSetup.SetUpCommon(builder.Services, new CommonConfig());
 
 //builder.Services.AddSingleton<PrintCommandHandler>();
@@ -112,6 +131,9 @@ else
 app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
+
+//app.UseHangfireServer();
+app.UseHangfireDashboard();
 
 app.UseWebSockets(new WebSocketOptions
 {

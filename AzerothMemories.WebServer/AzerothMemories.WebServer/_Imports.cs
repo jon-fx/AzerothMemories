@@ -1,5 +1,7 @@
 ﻿global using AzerothMemories.Blizzard;
-global using AzerothMemories.Common;
+global using AzerothMemories.Blizzard.Models.Enumerations;
+global using AzerothMemories.Blizzard.Models.GameDataApi;
+global using AzerothMemories.Blizzard.Models.ProfileApi;
 global using AzerothMemories.Services;
 global using AzerothMemories.WebServer.Common;
 global using AzerothMemories.WebServer.Database;
@@ -26,4 +28,6 @@ global using Stl.Fusion.Server;
 global using Stl.IO;
 global using Stl.RegisterAttributes;
 global using System.Data;
+global using System.Text.Json;
+global using System.Text.Json.Serialization;
 global using SystemClock = NodaTime.SystemClock;

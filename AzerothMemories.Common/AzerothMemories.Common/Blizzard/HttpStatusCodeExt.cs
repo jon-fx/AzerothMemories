@@ -1,25 +1,26 @@
-﻿namespace AzerothMemories.Blizzard;
-
-public static class HttpStatusCodeExt
+﻿namespace AzerothMemories.Blizzard
 {
-    public static RequestResultCode ToResult(this HttpStatusCode statusCode)
+    public static class HttpStatusCodeExt
     {
-        if (IsSuccess(statusCode))
+        public static RequestResultCode ToResult(this HttpStatusCode statusCode)
         {
-            return RequestResultCode.Success;
+            if (IsSuccess(statusCode))
+            {
+                return RequestResultCode.Success;
+            }
+
+            return RequestResultCode.Failed;
         }
 
-        return RequestResultCode.Failed;
-    }
+        public static bool IsSuccess(this HttpStatusCode statusCode)
+        {
+            var asInt = (int)statusCode;
+            return asInt >= 200 && asInt <= 299;
+        }
 
-    public static bool IsSuccess(this HttpStatusCode statusCode)
-    {
-        var asInt = (int)statusCode;
-        return asInt >= 200 && asInt <= 299;
-    }
-
-    public static bool IsFailure(this HttpStatusCode statusCode)
-    {
-        return !IsSuccess(statusCode);
+        public static bool IsFailure(this HttpStatusCode statusCode)
+        {
+            return !IsSuccess(statusCode);
+        }
     }
 }

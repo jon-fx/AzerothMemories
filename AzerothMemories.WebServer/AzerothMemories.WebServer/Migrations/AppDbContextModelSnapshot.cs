@@ -30,11 +30,35 @@ namespace AzerothMemories.WebServer.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("BattleNetToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("BattleNetTokenExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("BattleTag")
+                        .HasColumnType("text");
+
+                    b.Property<long>("BlizzardId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("BlizzardRegion")
+                        .HasColumnType("integer");
+
                     b.Property<DateTimeOffset>("CreatedDateTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("FusionId")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UpdateJob")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("UpdateJobStartTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Username")
                         .HasColumnType("text");
 
                     b.HasKey("Id");

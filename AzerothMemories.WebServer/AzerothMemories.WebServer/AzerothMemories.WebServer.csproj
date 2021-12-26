@@ -9,14 +9,17 @@
     </PropertyGroup>
 
     <ItemGroup>
+	    <PackageReference Include="Hangfire" Version="1.8.0-beta4" />
+	    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.0-beta4" />
+	    <PackageReference Include="Hangfire.PostgreSql" Version="1.9.5" />
 	    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.1">
 	      <PrivateAssets>all</PrivateAssets>
 	      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	    </PackageReference>
-	    <PackageReference Include="Stl.Fusion.Blazor" Version="2.1.14" />
-	    <PackageReference Include="Stl.Fusion.RegisterAttributes" Version="2.1.14" />
-	    <PackageReference Include="Stl.Fusion.Server" Version="2.1.14" />
-	    <PackageReference Include="Stl.Fusion.EntityFramework" Version="2.1.14" />
+	    <PackageReference Include="Stl.Fusion.Blazor" Version="2.1.18" />
+	    <PackageReference Include="Stl.Fusion.RegisterAttributes" Version="2.1.18" />
+	    <PackageReference Include="Stl.Fusion.Server" Version="2.1.18" />
+	    <PackageReference Include="Stl.Fusion.EntityFramework" Version="2.1.18" />
 	    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
 	    <PackageReference Include="AspNet.Security.OAuth.BattleNet" Version="6.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.1" />

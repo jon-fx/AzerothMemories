@@ -18,13 +18,13 @@ public sealed class CommonConfig
 
     //public Duration CharacterSyncToggleDelay { get; } = Duration.FromSeconds(10);
 
-    //public readonly (string Id, string Secret)?[] BlizzardClientInfo =
-    //{
-    //    new("***REMOVED***", "***REMOVED***"),
-    //    new("***REMOVED***", "***REMOVED***"),
-    //    new("***REMOVED***", "***REMOVED***"),
-    //    new("***REMOVED***", "***REMOVED***"),
-    //    new("***REMOVED***", "***REMOVED***"),
-    //    new("***REMOVED***", "***REMOVED***")
-    //};
+    public readonly (string Id, string Secret)?[] BlizzardClientInfo =
+    {
+        new("***REMOVED***", "***REMOVED***"),
+        new("***REMOVED***", "***REMOVED***"),
+        new("***REMOVED***", "***REMOVED***"),
+        new("***REMOVED***", "***REMOVED***"),
+        new("***REMOVED***", "***REMOVED***"),
+        new("***REMOVED***", "***REMOVED***")
+    };
 }

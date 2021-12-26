@@ -1,0 +1,31 @@
+﻿namespace AzerothMemories.Blizzard.Models.GameDataApi;
+
+/// <summary>
+/// A reference to a character title.
+/// </summary>
+public record TitleReferenceWithDisplayString
+{
+    /// <summary>
+    /// Gets the key for the title.
+    /// </summary>
+    [JsonPropertyName("key")]
+    public Self Key { get; init; }
+
+    /// <summary>
+    /// Gets the name of the title.
+    /// </summary>
+    [JsonPropertyName("name")]
+    public Name Name { get; init; }
+
+    /// <summary>
+    /// Gets the ID of the title.
+    /// </summary>
+    [JsonPropertyName("id")]
+    public int Id { get; init; }
+
+    /// <summary>
+    /// Gets the display string for the title.
+    /// </summary>
+    [JsonPropertyName("display_string")]
+    public Name DisplayString { get; init; }
+}

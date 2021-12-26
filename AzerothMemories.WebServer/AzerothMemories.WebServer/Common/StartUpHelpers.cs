@@ -1,4 +1,7 @@
-﻿namespace AzerothMemories.WebServer.Common;
+﻿using System.Globalization;
+using System.Security.Claims;
+
+namespace AzerothMemories.WebServer.Common;
 
 internal static class StartUpHelpers
 {
@@ -20,8 +23,8 @@ internal static class StartUpHelpers
             options.Scope.Add("openid");
             options.Scope.Add("wow.profile");
 
-            options.ClaimActions.MapJsonKey("BlizzardId", "id");
-            options.ClaimActions.MapJsonKey("BattleTag", "battletag");
+            options.ClaimActions.MapJsonKey("BattleNet-Id", "id");
+            options.ClaimActions.MapJsonKey("BattleNet-Tag", "battletag");
 
             options.Events.OnCreatingTicket += OnCreatingTicket;
             options.Events.OnTicketReceived += OnTicketReceived;
@@ -45,41 +48,9 @@ internal static class StartUpHelpers
         return Task.CompletedTask;
     }
 
-    private static async Task OnCreatingTicket(OAuthCreatingTicketContext context)
+    private static Task OnCreatingTicket(OAuthCreatingTicketContext context)
     {
         if (context.Identity == null)
-        {
-            throw new NotImplementedException();
-        }
-
-        long moaId = -1;
-        var moaIdClaim = context.Identity.FindFirst("Id");
-        if (moaIdClaim != null)
-        {
-            if (!long.TryParse(moaIdClaim.Value, out moaId))
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        if (moaId >= 0)
-        {
-            throw new NotImplementedException();
-        }
-
-        var blizzardIdClaim = context.Identity.FindFirst("BlizzardId");
-        if (blizzardIdClaim == null)
-        {
-            throw new NotImplementedException();
-        }
-
-        if (!long.TryParse(blizzardIdClaim.Value, out var blizzardId))
-        {
-            throw new NotImplementedException();
-        }
-
-        var battleTagClaim = context.Identity.FindFirst("BattleTag");
-        if (battleTagClaim == null)
         {
             throw new NotImplementedException();
         }
@@ -93,12 +64,11 @@ internal static class StartUpHelpers
         }
 
         var tokenExpiresAt = (SystemClock.Instance.GetCurrentInstant() + context.ExpiresIn.GetValueOrDefault().ToDuration()).ToUnixTimeMilliseconds();
-        var accountRef = MoaRef.GetAccountRef(blizzardRegion, blizzardId);
-        //var accountId = await context.HttpContext.RequestServices.GetRequiredService<AccountServices>().GetAccountId(accountRef.Full);
 
-        //context.Identity.AddClaim(new Claim("MoaId", accountId.ToString(CultureInfo.InvariantCulture)));
-        //context.Identity.AddClaim(new Claim("MoaRef", accountRef.Full));
+        context.Identity.AddClaim(new Claim("BattleNet-Token", token));
+        context.Identity.AddClaim(new Claim("BattleNet-TokenExpires", tokenExpiresAt.ToString(CultureInfo.InvariantCulture)));
+        context.Identity.AddClaim(new Claim("BattleNet-Region", blizzardRegion.ToString()));
 
-        //await context.HttpContext.RequestServices.GetRequiredService<AccountServices>().OnLogin(accountId, battleTagClaim.Value, token, tokenExpiresAt);
+        return Task.CompletedTask;
     }
 }
