@@ -95,7 +95,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         accountRecord.BattleNetToken = battleNetToken;
         accountRecord.BattleNetTokenExpiresAt = DateTimeOffset.FromUnixTimeMilliseconds(battleNetTokenExpires);
 
-        string? newUsername = null;
+        string newUsername = null;
         var previousBattleTag = accountRecord.BattleTag ?? string.Empty;
         if (string.IsNullOrWhiteSpace(accountRecord.Username) || accountRecord.Username == previousBattleTag.Replace("#", string.Empty))
         {
@@ -116,7 +116,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountRecord?> TryGetAccountRecord(long id)
+    public virtual async Task<AccountRecord> TryGetAccountRecord(long id)
     {
         //if (Computed.IsInvalidating())
         //{
@@ -130,7 +130,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountRecord?> TryGetAccountRecord(string fusionId)
+    public virtual async Task<AccountRecord> TryGetAccountRecord(string fusionId)
     {
         //if (Computed.IsInvalidating())
         //{

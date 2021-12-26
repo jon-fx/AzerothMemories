@@ -33,7 +33,7 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
     }
 
     [Queue(AccountQueue1)]
-    public async Task OnAccountUpdate(long id, PerformContext? context)
+    public async Task OnAccountUpdate(long id, PerformContext context)
     {
         var record = await _services.GetRequiredService<AccountServices>().TryGetAccountRecord(id);
         if (record == null)

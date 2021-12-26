@@ -15,15 +15,15 @@ public class AccountRecord
 
     [Column] public BlizzardRegion BlizzardRegion { get; set; }
 
-    [Column] public string? BattleTag { get; set; }
+    [Column] public string BattleTag { get; set; }
 
-    [Column] public string? BattleNetToken { get; set; }
+    [Column] public string BattleNetToken { get; set; }
 
     [Column] public DateTimeOffset BattleNetTokenExpiresAt { get; set; }
 
-    [Column] public string? Username { get; set; }
+    [Column] public string Username { get; set; }
 
-    [Column] public string? UpdateJob { get; set; }
+    [Column] public string UpdateJob { get; set; }
 
     [Column] public DateTimeOffset UpdateJobStartTime { get; set; }
 }
