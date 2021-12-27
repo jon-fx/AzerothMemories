@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.Blizzard.Models.ProfileApi;
+﻿using AzerothMemories.WebServer.Blizzard.Models.GameDataApi;
+
+namespace AzerothMemories.WebServer.Blizzard.Models.ProfileApi;
 
 /// <summary>
 /// A summary of the achievements a character has completed.

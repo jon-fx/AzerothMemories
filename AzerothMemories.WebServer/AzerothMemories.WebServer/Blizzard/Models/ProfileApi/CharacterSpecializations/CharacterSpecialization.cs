@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.Blizzard.Models.ProfileApi;
+﻿using AzerothMemories.WebServer.Blizzard.Models.GameDataApi;
+
+namespace AzerothMemories.WebServer.Blizzard.Models.ProfileApi;
 
 /// <summary>
 /// A specialization for a character.

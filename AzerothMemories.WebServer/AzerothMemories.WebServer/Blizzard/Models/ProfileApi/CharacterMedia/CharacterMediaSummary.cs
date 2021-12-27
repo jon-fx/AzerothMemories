@@ -1,4 +1,4 @@
-﻿namespace AzerothMemories.Blizzard.Models.ProfileApi;
+﻿namespace AzerothMemories.WebServer.Blizzard.Models.ProfileApi;
 
 /// <summary>
 /// A summary of the media assets available for a character (such as an avatar render).

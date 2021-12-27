@@ -1,4 +1,4 @@
-﻿namespace AzerothMemories.Blizzard.Models.ProfileApi;
+﻿namespace AzerothMemories.WebServer.Blizzard.Models.ProfileApi;
 
 /// <summary>
 /// An index of collection types for an account.

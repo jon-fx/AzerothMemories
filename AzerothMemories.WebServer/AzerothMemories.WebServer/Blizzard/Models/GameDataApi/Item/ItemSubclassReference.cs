@@ -1,4 +1,4 @@
-﻿namespace AzerothMemories.Blizzard.Models.GameDataApi;
+﻿namespace AzerothMemories.WebServer.Blizzard.Models.GameDataApi;
 
 /// <summary>
 /// A reference to an item subclass.

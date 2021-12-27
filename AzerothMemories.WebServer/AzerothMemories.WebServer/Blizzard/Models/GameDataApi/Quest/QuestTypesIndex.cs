@@ -1,4 +1,4 @@
-﻿namespace AzerothMemories.Blizzard.Models.GameDataApi;
+﻿namespace AzerothMemories.WebServer.Blizzard.Models.GameDataApi;
 
 /// <summary>
 /// An index of quest types (such as PvP quests, raid quests, or account quests).

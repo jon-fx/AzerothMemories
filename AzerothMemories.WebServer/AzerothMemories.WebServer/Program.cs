@@ -1,9 +1,15 @@
+using AzerothMemories.WebServer.Blizzard;
 using AzerothMemories.WebServer.Services.Updates;
 using Hangfire;
 using Hangfire.PostgreSql;
+using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Headers;
+using System.Text;
 
+var config = new CommonConfig();
 var builder = WebApplication.CreateBuilder(args);
+
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 builder.Services.AddMudServices();
 
@@ -17,7 +23,7 @@ var appTempDir = FilePath.GetApplicationTempDirectory("", true);
 var dbPath = appTempDir & "App.db";
 builder.Services.AddDbContextFactory<AppDbContext>(optionsBuilder =>
 {
-    optionsBuilder.UseNpgsql(@"***REMOVED***");
+    optionsBuilder.UseNpgsql(config.DatabaseConnectionString);
 
     if (builder.Environment.IsDevelopment())
     {
@@ -49,7 +55,7 @@ builder.Services.AddDbContextServices<AppDbContext>(dbContext =>
 
 builder.Services.AddHangfire(options =>
 {
-    options.UsePostgreSqlStorage(@"***REMOVED***");
+    options.UsePostgreSqlStorage(config.HangfireConnectionString);
 });
 builder.Services.AddHangfireServer(options =>
 {
@@ -93,9 +99,9 @@ authenticationBuilder.AddCookie(options =>
 builder.Services.AddServerSideBlazor(o => o.DetailedErrors = true);
 fusionAuth.AddBlazor(o => { }); // Must follow services.AddServerSideBlazor()!
 
-builder.Services.AddSingleton(new CommonConfig());
+builder.Services.AddSingleton(config);
 builder.Services.AddSingleton<CommonServices>();
-//builder.Services.AddSingleton<DatabaseProvider>();
+builder.Services.AddSingleton<DatabaseProvider>();
 builder.Services.AddSingleton<BlizzardUpdateHandler>();
 builder.Services.AddSingleton<WarcraftClientProvider>();
 

@@ -1,4 +1,4 @@
-﻿namespace AzerothMemories.Blizzard.Models.GameDataApi;
+﻿namespace AzerothMemories.WebServer.Blizzard.Models.GameDataApi;
 
 /// <summary>
 /// An index of links to other documents related to Mythic Keystone dungeons.

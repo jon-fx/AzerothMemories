@@ -1,4 +1,4 @@
-﻿namespace AzerothMemories.Blizzard.Models.GameDataApi;
+﻿namespace AzerothMemories.WebServer.Blizzard.Models.GameDataApi;
 
 /// <summary>
 /// A reference to a boss encounter in a dungeon or raid.

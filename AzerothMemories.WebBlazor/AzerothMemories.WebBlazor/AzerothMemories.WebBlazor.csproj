@@ -29,8 +29,8 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.1" PrivateAssets="all" />
         <PackageReference Include="MudBlazor" Version="6.0.2" />
-        <PackageReference Include="Stl.Fusion.Blazor" Version="2.1.14" />
-        <PackageReference Include="Stl.Fusion.Client" Version="2.1.14" />
+        <PackageReference Include="Stl.Fusion.Blazor" Version="2.1.21" />
+        <PackageReference Include="Stl.Fusion.Client" Version="2.1.21" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.2" />
     </ItemGroup>
 

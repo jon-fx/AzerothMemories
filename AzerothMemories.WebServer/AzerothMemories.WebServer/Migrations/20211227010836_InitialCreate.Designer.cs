@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AzerothMemories.WebServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20211226010811_AddAccounts5")]
-    partial class AddAccounts5
+    [Migration("20211227010836_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,50 +23,6 @@ namespace AzerothMemories.WebServer.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("AzerothMemories.WebServer.Database.Records.AccountRecord", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("BattleNetToken")
-                        .HasColumnType("text");
-
-                    b.Property<DateTimeOffset>("BattleNetTokenExpiresAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("BattleTag")
-                        .HasColumnType("text");
-
-                    b.Property<long>("BlizzardId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("BlizzardRegion")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTimeOffset>("CreatedDateTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("FusionId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("UpdateJob")
-                        .HasColumnType("text");
-
-                    b.Property<DateTimeOffset>("UpdateJobStartTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Username")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Accounts");
-                });
 
             modelBuilder.Entity("Stl.Fusion.EntityFramework.Authentication.DbSessionInfo<string>", b =>
                 {

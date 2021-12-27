@@ -5,13 +5,15 @@ namespace AzerothMemories.WebServer.Services;
 
 [RegisterComputeService]
 [RegisterAlias(typeof(IAccountServices))]
-public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
+public class AccountServices : IAccountServices
 {
     private readonly BlizzardUpdateHandler _updateHandler;
+    private readonly DatabaseProvider _databaseProvider;
 
-    public AccountServices(IServiceProvider serviceProvider) : base(serviceProvider)
+    public AccountServices(IServiceProvider serviceProvider)
     {
         _updateHandler = serviceProvider.GetRequiredService<BlizzardUpdateHandler>();
+        _databaseProvider = serviceProvider.GetRequiredService<DatabaseProvider>();
     }
 
     [CommandHandler(IsFilter = true, Priority = 1)]
@@ -20,16 +22,16 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         var context = CommandContext.GetCurrent();
         await context.InvokeRemainingHandlers(cancellationToken);
 
-        if (Computed.IsInvalidating())
-        {
-            return;
-        }
+        //if (Computed.IsInvalidating())
+        //{
+        //    return;
+        //}
 
         var sessionInfo = context.Operation().Items.Get<SessionInfo>();
         var userId = sessionInfo.UserId;
 
         var accountRecord = await TryGetAccountRecord(userId);
-        var dbContext = await CreateCommandDbContext(cancellationToken);
+        await using var dbContext = _databaseProvider.GetDatabase();
 
         if (accountRecord == null)
         {
@@ -42,9 +44,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
                 //LastLoginDateTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset(),
             };
 
-            dbContext.Accounts.Add(accountRecord);
-
-            await dbContext.SaveChangesAsync(cancellationToken);
+            accountRecord.Id = await dbContext.InsertWithInt64IdentityAsync(accountRecord, token: cancellationToken);
 
             if (accountRecord.Id == 0)
             {
@@ -86,33 +86,33 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             throw new NotImplementedException();
         }
 
-        dbContext.Attach(accountRecord);
+        //dbContext.Attach(accountRecord);
 
         var blizzardRegion = BlizzardRegionExt.FromName(battleNetRegion);
 
-        accountRecord.BlizzardId = blizzardId;
-        accountRecord.BlizzardRegion = blizzardRegion;
-        accountRecord.BattleNetToken = battleNetToken;
-        accountRecord.BattleNetTokenExpiresAt = DateTimeOffset.FromUnixTimeMilliseconds(battleNetTokenExpires);
+        //accountRecord.BlizzardId = blizzardId;
+        //accountRecord.BlizzardRegionId = blizzardRegion;
+        //accountRecord.BattleNetToken = battleNetToken;
+        //accountRecord.BattleNetTokenExpiresAt = DateTimeOffset.FromUnixTimeMilliseconds(battleNetTokenExpires);
 
-        string newUsername = null;
-        var previousBattleTag = accountRecord.BattleTag ?? string.Empty;
-        if (string.IsNullOrWhiteSpace(accountRecord.Username) || accountRecord.Username == previousBattleTag.Replace("#", string.Empty))
-        {
-            newUsername = battleTag.Replace("#", string.Empty);
-        }
+        //string newUsername = null;
+        //var previousBattleTag = accountRecord.BattleTag ?? string.Empty;
+        //if (string.IsNullOrWhiteSpace(accountRecord.Username) || accountRecord.Username == previousBattleTag.Replace("#", string.Empty))
+        //{
+        //    newUsername = battleTag.Replace("#", string.Empty);
+        //}
 
-        accountRecord.BattleTag = battleTag;
+        //accountRecord.BattleTag = battleTag;
 
-        if (!string.IsNullOrWhiteSpace(newUsername))
-        {
-            var result = await dbContext.Accounts.CountAsync(x => x.Username == newUsername, cancellationToken);
-            accountRecord.Username = result > 0 ? $"User{accountRecord.Id}" : newUsername;
-        }
+        //if (!string.IsNullOrWhiteSpace(newUsername))
+        //{
+        //    var result = await dbContext.Accounts.CountAsync(x => x.Username == newUsername, cancellationToken);
+        //    accountRecord.Username = result > 0 ? $"User{accountRecord.Id}" : newUsername;
+        //}
 
-        _updateHandler.TryUpdateAccount(accountRecord);
-
-        await dbContext.SaveChangesAsync(cancellationToken);
+        //await dbContext.SaveChangesAsync(cancellationToken);
+        //await _updateHandler.TryUpdateAccount(dbContext, accountRecord);
+        throw new NotImplementedException();
     }
 
     [ComputeMethod]
@@ -123,8 +123,10 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         //    return null;
         //}
 
-        await using var dbContext = CreateDbContext();
-        var user = await dbContext.Accounts.FindAsync(id);
+        await using var dbContext = _databaseProvider.GetDatabase();
+        var user = await dbContext.Accounts.AsQueryable()
+                .Where(a => a.Id == id)
+            .FirstOrDefaultAsync();
 
         return user;
     }
@@ -137,7 +139,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         //    return null;
         //}
 
-        await using var dbContext = CreateDbContext();
+        await using var dbContext = _databaseProvider.GetDatabase();
         var user = await dbContext.Accounts.AsQueryable()
                 .Where(a => a.FusionId == fusionId)
                 .FirstOrDefaultAsync();

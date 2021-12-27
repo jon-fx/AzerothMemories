@@ -1,4 +1,4 @@
-﻿namespace AzerothMemories.Blizzard.Models.Enumerations;
+﻿namespace AzerothMemories.WebServer.Blizzard.Models.Enumerations;
 
 /// <summary>
 /// A region.

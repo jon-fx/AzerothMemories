@@ -1,4 +1,4 @@
-﻿namespace AzerothMemories.Blizzard.Models.ProfileApi;
+﻿namespace AzerothMemories.WebServer.Blizzard.Models.ProfileApi;
 
 /// <summary>
 /// Corruption statistics.

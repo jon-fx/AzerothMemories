@@ -1,67 +1,69 @@
-﻿using System.Net;
+﻿using AzerothMemories.Common;
+using AzerothMemories.WebServer.Blizzard;
 
-namespace AzerothMemories.WebServer.Services.Updates
+namespace AzerothMemories.WebServer.Services.Updates;
+
+internal sealed class BlizzardAccountUpdateHandler
 {
-    internal sealed class BlizzardAccountUpdateHandler
+    private readonly IServiceProvider _services;
+    private readonly WarcraftClientProvider _warcraftClientProvider;
+
+    public BlizzardAccountUpdateHandler(IServiceProvider services)
     {
-        private readonly WarcraftClientProvider _warcraftClientProvider;
+        _services = services;
+        _warcraftClientProvider = _services.GetRequiredService<WarcraftClientProvider>();
+    }
 
-        public BlizzardAccountUpdateHandler(IServiceProvider services)
+    public async Task<HttpStatusCode> TryUpdate(long id, DatabaseConnection dbContext, AccountRecord record)
+    {
+        var tasks = new List<Task>();
+        var characterServices = _services.GetRequiredService<CharacterServices>();
+        var characters = await characterServices.TryGetAllAccountCharacterIds(id);
+        var dbCharactersSet = characters.Values.ToHashSet();
+        //var result = record.LastUpdateHttpResult;
+        var apiCharactersSet = new HashSet<string>();
+
+        using var client = _warcraftClientProvider.Get(record.BlizzardRegionId);
+        var accountSummaryResult = await client.GetAccountProfile(record.BattleNetToken, 0 /*record.BlizzardAccountLastModified*/).ConfigureAwait(false);
+        if (accountSummaryResult.IsSuccess)
         {
-            _warcraftClientProvider = services.GetRequiredService<WarcraftClientProvider>();
-        }
+            //await accountGrain.OnAccountUpdate(accountSummaryResult.ResultLastModified.ToUnixTimeMilliseconds());
 
-        public async Task<HttpStatusCode> TryUpdate(long id, DbContext dbContext, AccountRecord record)
-        {
-            //var characters = await db.Characters.Select(x => new { x.Id, x.AccountId, Ref = x.MoaRef }).Where(x => x.AccountId == record.Id).ToDictionaryAsync(x => x.Id, x => x.Ref);
-            //var dbCharactersSet = characters.Values.ToHashSet(
-            //var result = record.LastUpdateHttpResult;
-            //var apiCharactersSet = new HashSet<string>();
-
-            using var client = _warcraftClientProvider.Get(record.BlizzardRegion);
-            var accountSummaryResult = await client.GetAccountProfile(record.BattleNetToken, 0 /*record.BlizzardAccountLastModified*/).ConfigureAwait(false);
-            if (accountSummaryResult.IsSuccess)
+            foreach (var account in accountSummaryResult.ResultData.WowAccounts)
             {
-                //await accountGrain.OnAccountUpdate(accountSummaryResult.ResultLastModified.ToUnixTimeMilliseconds());
+                foreach (var accountCharacter in account.Characters)
+                {
+                    var characterRef = MoaRef.GetCharacterRef(record.BlizzardRegionId, accountCharacter.Realm.Slug, accountCharacter.Name, accountCharacter.Id);
 
-                //foreach (var account in accountSummaryResult.ResultData.WowAccounts)
-                //{
-                //    foreach (var accountCharacter in account.Characters)
-                //    {
-                //        var characterRef = MoaRef.GetCharacterRef(record.RegionId, accountCharacter.Realm.Slug, accountCharacter.Name, accountCharacter.Id);
-                //        var characterGrain = commonServices.ClusterClient.GetGrain<ICharacterGrain>(characterRef.Full);
-
-                //        apiCharactersSet.Add(characterRef.Full);
-                //        tasks.Add(characterGrain.OnAccountUpdate(accountGrain, record.Id, accountCharacter));
-                //    }
-                //}
-
-                //dbCharactersSet.ExceptWith(apiCharactersSet);
-
-                //if (dbCharactersSet.Count > 0)
-                //{
-                //    foreach (var characterRef in dbCharactersSet)
-                //    {
-                //        var characterGrain = commonServices.ClusterClient.GetGrain<ICharacterGrain>(characterRef);
-                //        tasks.Add(characterGrain.OnCharacterDeleted(accountGrain, record.Id));
-                //    }
-                //}
-            }
-            else if (accountSummaryResult.IsNotModified)
-            {
+                    apiCharactersSet.Add(characterRef.Full);
+                    tasks.Add(characterServices.OnAccountUpdate(id, characterRef.Full, accountCharacter));
+                }
             }
 
-            //foreach (var characterRef in dbCharactersSet)
-            //{
-            //    var characterGrain = commonServices.ClusterClient.GetGrain<ICharacterGrain>(characterRef);
-            //    tasks.Add(characterGrain.WakeUp());
-            //}
+            dbCharactersSet.ExceptWith(apiCharactersSet);
 
-            //await Task.WhenAll(tasks).ConfigureAwait(false);
-
-            //await accountGrain.OnCharactersChanged();
-
-            return accountSummaryResult.ResultCode;
+            if (dbCharactersSet.Count > 0)
+            {
+                foreach (var characterRef in dbCharactersSet)
+                {
+                    tasks.Add(characterServices.OnCharacterDeleted(id, new MoaRef(characterRef).Id, characterRef));
+                }
+            }
         }
+        else if (accountSummaryResult.IsNotModified)
+        {
+        }
+
+        //foreach (var characterRef in dbCharactersSet)
+        //{
+        //    //var characterGrain = commonServices.ClusterClient.GetGrain<ICharacterGrain>(characterRef);
+        //    //tasks.Add(characterGrain.WakeUp());
+        //}
+
+        await Task.WhenAll(tasks).ConfigureAwait(false);
+
+        //await accountGrain.OnCharactersChanged();
+
+        return accountSummaryResult.ResultCode;
     }
 }

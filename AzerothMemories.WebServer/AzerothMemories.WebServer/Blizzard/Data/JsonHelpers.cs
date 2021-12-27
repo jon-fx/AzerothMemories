@@ -1,18 +1,17 @@
-﻿namespace AzerothMemories.Blizzard.Data
-{
-    internal static class JsonHelpers
-    {
-        public static readonly JsonSerializerOptions JsonSerializerOptions;
+﻿namespace AzerothMemories.WebServer.Blizzard.Data;
 
-        static JsonHelpers()
+internal static class JsonHelpers
+{
+    public static readonly JsonSerializerOptions JsonSerializerOptions;
+
+    static JsonHelpers()
+    {
+        JsonSerializerOptions = new JsonSerializerOptions
         {
-            JsonSerializerOptions = new JsonSerializerOptions
-            {
-                //JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.Always;
-                //JsonSerializerOptions.Converters.Add(new MillisecondTimeSpanConverter());
-                //JsonSerializerOptions.Converters.Add(new EpochConverter());
-                PropertyNameCaseInsensitive = true
-            };
-        }
+            //JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.Always;
+            //JsonSerializerOptions.Converters.Add(new MillisecondTimeSpanConverter());
+            //JsonSerializerOptions.Converters.Add(new EpochConverter());
+            PropertyNameCaseInsensitive = true
+        };
     }
 }

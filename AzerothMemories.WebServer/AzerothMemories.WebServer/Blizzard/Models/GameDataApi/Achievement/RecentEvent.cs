@@ -1,4 +1,4 @@
-﻿namespace AzerothMemories.Blizzard.Models.GameDataApi;
+﻿namespace AzerothMemories.WebServer.Blizzard.Models.GameDataApi;
 
 /// <summary>
 /// A recent achievement by a character or guild.

@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.Blizzard.Models.ProfileApi;
+﻿using AzerothMemories.WebServer.Blizzard.Models.GameDataApi;
+
+namespace AzerothMemories.WebServer.Blizzard.Models.ProfileApi;
 
 /// <summary>
 /// Gets a name description modifier for an item.

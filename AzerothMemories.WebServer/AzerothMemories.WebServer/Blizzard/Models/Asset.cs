@@ -1,4 +1,4 @@
-﻿namespace AzerothMemories.Blizzard.Models;
+﻿namespace AzerothMemories.WebServer.Blizzard.Models;
 
 /// <summary>
 /// A media asset.

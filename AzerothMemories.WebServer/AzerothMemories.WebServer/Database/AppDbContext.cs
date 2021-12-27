@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Database;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace AzerothMemories.WebServer.Database;
 
 public class AppDbContext : DbContextBase
 {
@@ -12,10 +14,6 @@ public class AppDbContext : DbContextBase
     public DbSet<DbKeyValue> KeyValues { get; protected set; } = null!;
 
     public DbSet<DbOperation> Operations { get; protected set; } = null!;
-
-    // Tables
-
-    public DbSet<AccountRecord> Accounts { get; protected set; } = null!;
 
     public AppDbContext(DbContextOptions options) : base(options)
     {

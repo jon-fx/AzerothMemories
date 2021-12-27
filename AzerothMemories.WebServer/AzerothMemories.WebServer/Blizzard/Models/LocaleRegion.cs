@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.Blizzard.Models;
+﻿using AzerothMemories.WebServer.Blizzard.Models.Enumerations;
+
+namespace AzerothMemories.WebServer.Blizzard.Models;
 
 /// <summary>
 ///     Used to set a valid region for a locale.

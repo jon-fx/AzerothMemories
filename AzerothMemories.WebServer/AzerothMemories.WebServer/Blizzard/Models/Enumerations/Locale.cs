@@ -1,4 +1,4 @@
-﻿namespace AzerothMemories.Blizzard.Models.Enumerations;
+﻿namespace AzerothMemories.WebServer.Blizzard.Models.Enumerations;
 
 /// <summary>
 ///     Represents the different locales supported by the Blizzard API.

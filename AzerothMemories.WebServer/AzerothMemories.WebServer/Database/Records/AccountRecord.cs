@@ -1,29 +1,33 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿namespace AzerothMemories.WebServer.Database.Records;
 
-namespace AzerothMemories.WebServer.Database.Records;
-
-public class AccountRecord
+[Table("Accounts")]
+public class AccountRecord : IBlizzardGrainUpdateRecord
 {
-    [Key] public long Id { get; set; }
+    [Column(IsPrimaryKey = true, IsIdentity = true)] public long Id { get; set; }
 
-    [Column] public string FusionId { get; set; }
+    [Column, NotNull] public string FusionId { get; set; }
 
-    [Column] public DateTimeOffset CreatedDateTime { get; set; }
+    [Column, NotNull] public DateTimeOffset CreatedDateTime { get; set; }
 
-    [Column] public long BlizzardId { get; set; }
+    [Column, NotNull] public long BlizzardId;
 
-    [Column] public BlizzardRegion BlizzardRegion { get; set; }
+    [Column, NotNull] public BlizzardRegion BlizzardRegionId;
 
-    [Column] public string BattleTag { get; set; }
+    [Column, Nullable] public string BattleTag;
 
-    [Column] public string BattleNetToken { get; set; }
+    [Column, Nullable] public string BattleNetToken;
 
-    [Column] public DateTimeOffset BattleNetTokenExpiresAt { get; set; }
+    [Column, Nullable] public DateTimeOffset? BattleNetTokenExpiresAt;
 
-    [Column] public string Username { get; set; }
+    [Column, Nullable] public string Username;
 
-    [Column] public string UpdateJob { get; set; }
+    [Column, Nullable] public string UpdateJob { get; set; }
 
-    [Column] public DateTimeOffset UpdateJobStartTime { get; set; }
+    [Column, Nullable] public DateTimeOffset? UpdateJobQueueTime { get; set; }
+
+    [Column, Nullable] public DateTimeOffset? UpdateJobStartTime { get; set; }
+
+    [Column, Nullable] public DateTimeOffset? UpdateJobEndTime { get; set; }
+
+    [Column, NotNull] public HttpStatusCode UpdateJobLastResult { get; set; }
 }
