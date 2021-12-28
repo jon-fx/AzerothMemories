@@ -35,6 +35,18 @@ public class CharacterRecord : IBlizzardGrainUpdateRecord
 
     [Column, Nullable] public string AvatarLink;
 
+    [Column, NotNull] public int AchievementTotalQuantity;
+
+    [Column, NotNull] public int AchievementTotalPoints;
+
+    [Column, NotNull] public long GuildId;
+
+    [Column, NotNull] public byte GuildRank;
+
+    [Column, Nullable] public string GuildName;
+
+    [Column, Nullable] public string GuildRef;
+
     [Column, Nullable] public string UpdateJob { get; set; }
 
     [Column, Nullable] public DateTimeOffset? UpdateJobQueueTime { get; set; }
@@ -45,9 +57,9 @@ public class CharacterRecord : IBlizzardGrainUpdateRecord
 
     [Column, Nullable] public HttpStatusCode UpdateJobLastResult { get; set; }
 
-    [Column, NotNull] public long BlizzardProfileLastModified { get; set; }
+    [Column, NotNull] public long BlizzardProfileLastModified;
 
-    [Column, NotNull] public long BlizzardRendersLastModified { get; set; }
+    [Column, NotNull] public long BlizzardRendersLastModified;
 
-    [Column, NotNull] public long BlizzardAchievementsLastModified { get; set; }
+    [Column, NotNull] public long BlizzardAchievementsLastModified;
 }
