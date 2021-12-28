@@ -1,7 +1,7 @@
 ﻿namespace AzerothMemories.Services;
 
-[BasePath("account")]
-public interface IAccountServices
+[BasePath("character")]
+public interface ICharacterServices
 {
     //[ComputeMethod] [Get(nameof(TryGetAccount) + "/{accountId}")] Task<AccountViewModel> TryGetAccount(Session session, [Path] long accountId, CancellationToken cancellationToken = default);
 

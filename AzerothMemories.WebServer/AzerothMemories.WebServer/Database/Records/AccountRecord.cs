@@ -21,6 +21,8 @@ public class AccountRecord : IBlizzardGrainUpdateRecord
 
     [Column, Nullable] public string Username;
 
+    [Column, Nullable] public string UsernameSearchable;
+
     [Column, Nullable] public string UpdateJob { get; set; }
 
     [Column, Nullable] public DateTimeOffset? UpdateJobQueueTime { get; set; }

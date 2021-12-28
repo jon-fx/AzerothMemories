@@ -1,5 +1,7 @@
-﻿using LinqToDB.Configuration;
+﻿using AzerothMemories.Common;
+using LinqToDB.Configuration;
 using LinqToDB.Data;
+using LinqToDB.Linq;
 
 namespace AzerothMemories.WebServer.Database;
 
@@ -38,4 +40,13 @@ public sealed class DatabaseConnection : DataConnection
     //public ITable<AccountHistoryRecord> AccountHistory => GetTable<AccountHistoryRecord>();
 
     //public ITable<AccountFollowingRecord> AccountFollowing => GetTable<AccountFollowingRecord>();
+
+    public IUpdatable<TRecord> GetUpdateQuery<TRecord>(TRecord record, out bool changed) where TRecord : class, IDatabaseRecord
+    {
+        Exceptions.ThrowIf(record.Id == 0);
+
+        changed = false;
+
+        return GetTable<TRecord>().Where(x => x.Id == record.Id).AsUpdatable();
+    }
 }

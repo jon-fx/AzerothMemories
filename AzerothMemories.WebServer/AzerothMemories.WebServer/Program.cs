@@ -1,5 +1,7 @@
 using AzerothMemories.WebServer.Blizzard;
+using AzerothMemories.WebServer.Database.Migrations;
 using AzerothMemories.WebServer.Services.Updates;
+using FluentMigrator.Runner;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.EntityFrameworkCore;
@@ -52,6 +54,12 @@ builder.Services.AddDbContextServices<AppDbContext>(dbContext =>
 
     //dbContext.AddKeyValueStore();
 });
+
+builder.Services.AddFluentMigratorCore()
+    .ConfigureRunner(rb => rb
+        .AddPostgres()
+        .WithGlobalConnectionString(config.DatabaseConnectionString)
+        .ScanIn(typeof(Migration0001).Assembly).For.Migrations());
 
 builder.Services.AddHangfire(options =>
 {
@@ -119,6 +127,11 @@ var commanderBuilder = builder.Services.AddCommander();
 builder.Services.UseRegisterAttributeScanner().RegisterFrom(typeof(CommonServices).Assembly);
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
+    runner.MigrateUp();
+}
 
 if (app.Environment.IsDevelopment())
 {
@@ -137,8 +150,6 @@ else
 app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
-
-//app.UseHangfireServer();
 app.UseHangfireDashboard();
 
 app.UseWebSockets(new WebSocketOptions

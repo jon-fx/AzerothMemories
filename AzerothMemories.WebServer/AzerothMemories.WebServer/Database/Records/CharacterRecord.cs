@@ -5,7 +5,7 @@ public class CharacterRecord : IBlizzardGrainUpdateRecord
 {
     [Column(IsPrimaryKey = true, IsIdentity = true)] public long Id { get; set; }
 
-    [Column, NotNull] public string MoaRef { get; set; }
+    [Column, NotNull] public string MoaRef;
 
     [Column, NotNull] public long BlizzardId;
 
@@ -13,7 +13,7 @@ public class CharacterRecord : IBlizzardGrainUpdateRecord
 
     [Column, Nullable] public string Name;
 
-    [Column, Nullable] public string SearchableName;
+    [Column, Nullable] public string NameSearchable;
 
     [Column, NotNull] public DateTimeOffset CreatedDateTime;
 

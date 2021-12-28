@@ -1,4 +1,5 @@
-﻿using Hangfire;
+﻿using AzerothMemories.Common;
+using Hangfire;
 using Hangfire.Server;
 
 namespace AzerothMemories.WebServer.Services.Updates;
@@ -25,99 +26,92 @@ internal sealed class BlizzardUpdateHandler
         _guildUpdateHandler = new BlizzardGuildUpdateHandler(services);
     }
 
-    public async Task TryUpdateAccount(AppDbContext dbContext, AccountRecord record)
+    public async Task TryUpdateAccount(DatabaseConnection database, AccountRecord record)
+    {
+        await TryUpdate(database, record, () => BackgroundJob.Enqueue(() => OnAccountUpdate(record.Id, null)));
+    }
+
+    public async Task TryUpdateCharacter(DatabaseConnection database, CharacterRecord record)
+    {
+        await TryUpdate(database, record, () => BackgroundJob.Enqueue(() => OnCharacterUpdate1(record.Id, null)));
+    }
+
+    private async Task TryUpdate<TRecord>(DatabaseConnection database, TRecord record, Func<string> callback) where TRecord : class, IBlizzardGrainUpdateRecord
     {
         if (!RecordRequiresUpdate(record))
         {
             return;
         }
 
-        record.UpdateJob = BackgroundJob.Enqueue(() => OnAccountUpdate(record.Id, null));
-        record.UpdateJobQueueTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset();
-        record.UpdateJobStartTime = null;
+        var updateQuery = database.GetUpdateQuery(record, out _);
 
-        await dbContext.SaveChangesAsync();
+        updateQuery = updateQuery.Set(x => x.UpdateJob, record.UpdateJob = callback());
+        updateQuery = updateQuery.Set(x => x.UpdateJobQueueTime, record.UpdateJobQueueTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset());
+        updateQuery = updateQuery.Set(x => x.UpdateJobStartTime, record.UpdateJobStartTime = null);
+        updateQuery = updateQuery.Set(x => x.UpdateJobEndTime, record.UpdateJobEndTime = null);
+
+        var result = await updateQuery.UpdateAsync();
     }
 
-    public async Task TryUpdateCharacter(AppDbContext dbContext, CharacterRecord record)
-    {
-        if (!RecordRequiresUpdate(record))
-        {
-            return;
-        }
-
-        record.UpdateJob = BackgroundJob.Enqueue(() => OnCharacterUpdate1(record.Id, null));
-        record.UpdateJobQueueTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset();
-        record.UpdateJobStartTime = null;
-
-        await dbContext.SaveChangesAsync();
-    }
-
-    private static bool RecordRequiresUpdate(IBlizzardGrainUpdateRecord record)
+    private bool RecordRequiresUpdate(IBlizzardGrainUpdateRecord record)
     {
         return true;
     }
 
-    private static bool RecordRequiresUpdateNow(IBlizzardGrainUpdateRecord record, PerformContext context)
+    private async Task<bool> OnUpdateStarted<TRecord>(DatabaseConnection database, TRecord record, PerformContext context) where TRecord : class, IBlizzardGrainUpdateRecord
     {
         if (record.UpdateJob != context.BackgroundJob.Id)
         {
             return false;
         }
 
-        return true;
+        var updateQuery = database.GetUpdateQuery(record, out _);
+        updateQuery = updateQuery.Set(x => x.UpdateJob, record.UpdateJob = string.Empty);
+        updateQuery = updateQuery.Set(x => x.UpdateJobQueueTime, record.UpdateJobQueueTime = null);
+        updateQuery = updateQuery.Set(x => x.UpdateJobStartTime, record.UpdateJobStartTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset());
+        updateQuery = updateQuery.Set(x => x.UpdateJobEndTime, record.UpdateJobEndTime = null);
+
+        var result = await updateQuery.UpdateAsync();
+
+        return result > 0;
     }
 
-    //private static async Task OnUpdateStarted(DatabaseConnection dbContext, IBlizzardGrainUpdateRecord record)
-    //{
-    //    Exceptions.ThrowIf(string.IsNullOrEmpty(record.UpdateJob));
-    //    Exceptions.ThrowIf(record.UpdateJobQueueTime == null);
-    //    Exceptions.ThrowIf(record.UpdateJobStartTime != null);
-    //    //Exceptions.ThrowIf(record.UpdateJobEndTime != null);
+    private async Task OnUpdateFinished<TRecord>(DatabaseConnection database, TRecord record, HttpStatusCode updateResult) where TRecord : class, IBlizzardGrainUpdateRecord
+    {
+        Exceptions.ThrowIf(record.UpdateJob != string.Empty);
+        Exceptions.ThrowIf(record.UpdateJobQueueTime != null);
+        Exceptions.ThrowIf(record.UpdateJobStartTime == null);
+        Exceptions.ThrowIf(record.UpdateJobEndTime != null);
 
-    //    //dbContext.Attach(record);
+        var updateQuery = database.GetUpdateQuery(record, out _);
+        updateQuery = updateQuery.Set(x => x.UpdateJob, record.UpdateJob = null);
+        updateQuery = updateQuery.Set(x => x.UpdateJobStartTime, record.UpdateJobStartTime = null);
+        updateQuery = updateQuery.Set(x => x.UpdateJobQueueTime, record.UpdateJobQueueTime = null);
+        updateQuery = updateQuery.Set(x => x.UpdateJobEndTime, record.UpdateJobEndTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset());
+        updateQuery = updateQuery.Set(x => x.UpdateJobLastResult, record.UpdateJobLastResult = updateResult);
 
-    //    record.UpdateJob = string.Empty;
-    //    record.UpdateJobStartTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset();
-
-    //    //await dbContext.SaveChangesAsync();
-    //}
-
-    //private static async Task OnUpdateFinished(DatabaseConnection dbContext, IBlizzardGrainUpdateRecord record, HttpStatusCode updateResult)
-    //{
-    //    Exceptions.ThrowIf(record.UpdateJob != string.Empty);
-    //    Exceptions.ThrowIf(record.UpdateJobQueueTime == null);
-    //    Exceptions.ThrowIf(record.UpdateJobStartTime == null);
-    //    //Exceptions.ThrowIf(record.UpdateJobEndTime != null);
-
-    //    //dbContext.Attach(record);
-
-    //    record.UpdateJob = null;
-    //    record.UpdateJobStartTime = null;
-    //    record.UpdateJobQueueTime = null;
-    //    record.UpdateJobEndTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset();
-    //    record.UpdateJobLastResult = updateResult;
-
-    //    //await dbContext.SaveChangesAsync();
-    //}
+        var result = await updateQuery.UpdateAsync();
+    }
 
     [Queue(AccountQueue1)]
     public async Task OnAccountUpdate(long id, PerformContext context)
     {
-        //var record = await _services.GetRequiredService<AccountServices>().TryGetAccountRecord(id);
-        //if (record == null || context == null)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        var record = await _services.GetRequiredService<AccountServices>().TryGetAccountRecord(id);
+        if (record == null || context == null)
+        {
+            throw new NotImplementedException();
+        }
 
-        //if (!RecordRequiresUpdateNow(record, context))
-        //{
-        //    return;
-        //}
+        await using var database = _databaseProvider.GetDatabase();
+        var requiresUpdate = await OnUpdateStarted(database, record, context);
+        if (!requiresUpdate)
+        {
+            return;
+        }
 
-        //await using var dbContext = _databaseProvider.GetDatabase();
-        //await OnUpdateStarted(dbContext, record);
-        //await OnUpdateFinished(dbContext, record, await _accountUpdateHandler.TryUpdate(id, dbContext, record));
+        var result = await _accountUpdateHandler.TryUpdate(id, database, record);
+
+        await OnUpdateFinished(database, record, result);
     }
 
     [Queue(CharacterQueue1)]
@@ -126,27 +120,29 @@ internal sealed class BlizzardUpdateHandler
         return OnCharacterUpdate(id, context);
     }
 
-    //[Queue(CharacterQueue2)]
-    //public Task OnCharacterUpdate2(long id, PerformContext context)
-    //{
-    //    return OnCharacterUpdate(id, context);
-    //}
+    [Queue(CharacterQueue2)]
+    public Task OnCharacterUpdate2(long id, PerformContext context)
+    {
+        return OnCharacterUpdate(id, context);
+    }
 
     private async Task OnCharacterUpdate(long id, PerformContext context)
     {
-        //var record = await _services.GetRequiredService<CharacterServices>().TryGetCharacterRecord(id);
-        //if (record == null || context == null)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        var record = await _services.GetRequiredService<CharacterServices>().TryGetCharacterRecord(id);
+        if (record == null || context == null)
+        {
+            throw new NotImplementedException();
+        }
 
-        //if (!RecordRequiresUpdateNow(record, context))
-        //{
-        //    return;
-        //}
+        await using var database = _databaseProvider.GetDatabase();
+        var requiresUpdate = await OnUpdateStarted(database, record, context);
+        if (!requiresUpdate)
+        {
+            return;
+        }
 
-        //await using var dbContext = _databaseProvider.GetDatabase();
-        //await OnUpdateStarted(dbContext, record);
-        //await OnUpdateFinished(dbContext, record, await _characterUpdateHandler.TryUpdate(id, dbContext, record));
+        var result = await _characterUpdateHandler.TryUpdate(id, database, record);
+
+        await OnUpdateFinished(database, record, result);
     }
 }

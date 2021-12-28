@@ -14,7 +14,7 @@ internal sealed class BlizzardAccountUpdateHandler
         _warcraftClientProvider = _services.GetRequiredService<WarcraftClientProvider>();
     }
 
-    public async Task<HttpStatusCode> TryUpdate(long id, DatabaseConnection dbContext, AccountRecord record)
+    public async Task<HttpStatusCode> TryUpdate(long id, DatabaseConnection database, AccountRecord record)
     {
         var tasks = new List<Task>();
         var characterServices = _services.GetRequiredService<CharacterServices>();

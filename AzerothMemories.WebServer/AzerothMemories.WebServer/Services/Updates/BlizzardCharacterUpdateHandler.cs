@@ -6,7 +6,7 @@ internal sealed class BlizzardCharacterUpdateHandler
     {
     }
 
-    public async Task<HttpStatusCode> TryUpdate(long id, AppDbContext dbContext, CharacterRecord record)
+    public async Task<HttpStatusCode> TryUpdate(long id, DatabaseConnection database, CharacterRecord record)
     {
         return HttpStatusCode.UnavailableForLegalReasons;
     }

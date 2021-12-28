@@ -1,11 +1,7 @@
-﻿using System.Net;
+﻿namespace AzerothMemories.WebServer.Database.Records;
 
-namespace AzerothMemories.WebServer.Database.Records;
-
-public interface IBlizzardGrainUpdateRecord
+public interface IBlizzardGrainUpdateRecord : IDatabaseRecord
 {
-    long Id { get; set; }
-
     string UpdateJob { get; set; }
 
     DateTimeOffset? UpdateJobQueueTime { get; set; }
