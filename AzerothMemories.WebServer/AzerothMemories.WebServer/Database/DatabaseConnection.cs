@@ -10,7 +10,7 @@ public sealed class DatabaseConnection : DataConnection
 
     public ITable<CharacterRecord> Characters => GetTable<CharacterRecord>();
 
-    //public ITable<CharacterAchievementRecord> CharacterAchievements => GetTable<CharacterAchievementRecord>();
+    public ITable<CharacterAchievementRecord> CharacterAchievements => GetTable<CharacterAchievementRecord>();
 
     //public ITable<GuildGrainRecord> Guilds => GetTable<GuildGrainRecord>();
 

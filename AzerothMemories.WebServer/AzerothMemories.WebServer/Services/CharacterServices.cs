@@ -54,6 +54,11 @@ public class CharacterServices : ICharacterServices
             updateQuery = updateQuery.Set(x => x.BlizzardId, characterRecord.BlizzardId);
         }
 
+        if (CheckAndChange.Check(ref characterRecord.BlizzardRegionId, new MoaRef(characterRef).Region, ref changed))
+        {
+            updateQuery = updateQuery.Set(x => x.BlizzardRegionId, characterRecord.BlizzardRegionId);
+        }
+
         if (CheckAndChange.Check(ref characterRecord.RealmId, accountCharacter.Realm.Id, ref changed))
         {
             updateQuery = updateQuery.Set(x => x.RealmId, characterRecord.RealmId);

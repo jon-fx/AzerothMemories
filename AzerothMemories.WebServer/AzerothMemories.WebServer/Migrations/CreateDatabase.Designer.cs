@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AzerothMemories.WebServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20211228001635_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20211228182307_CreateDatabase")]
+    partial class CreateDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -37,12 +37,26 @@ namespace AzerothMemories.WebServer.Database.Migrations
                 .WithColumn(nameof(CharacterRecord.Level)).AsByte().WithDefaultValue(0)
                 .WithColumn(nameof(CharacterRecord.Faction)).AsByte().WithDefaultValue(0)
                 .WithColumn(nameof(CharacterRecord.AvatarLink)).AsString(128).Nullable()
+                .WithColumn(nameof(CharacterRecord.BlizzardProfileLastModified)).AsInt64().WithDefaultValue(0)
+                .WithColumn(nameof(CharacterRecord.BlizzardRendersLastModified)).AsInt64().WithDefaultValue(0)
+                .WithColumn(nameof(CharacterRecord.BlizzardAchievementsLastModified)).AsInt64().WithDefaultValue(0)
                 .WithUpdateJobInfo();
+
+            Create.Table("Characters_Achievements")
+                .WithColumn(nameof(CharacterAchievementRecord.Id)).AsInt64().PrimaryKey().Identity()
+                .WithColumn(nameof(CharacterAchievementRecord.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey("Accounts", "Id")
+                .WithColumn(nameof(CharacterAchievementRecord.CharacterId)).AsInt64().WithDefaultValue(0).ForeignKey("Characters", "Id")
+                .WithColumn(nameof(CharacterAchievementRecord.AchievementId)).AsInt32().WithDefaultValue(0)
+                .WithColumn(nameof(CharacterAchievementRecord.AchievementTimeStamp)).AsInt64().WithDefaultValue(0)
+                .WithColumn(nameof(CharacterAchievementRecord.CompletedByCharacter)).AsBoolean().WithDefaultValue(false);
         }
 
         public override void Down()
         {
-            throw new NotImplementedException();
+            Delete.Table("Characters_Achievements");
+
+            Delete.Table("Accounts");
+            Delete.Table("Characters");
         }
     }
 }

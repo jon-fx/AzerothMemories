@@ -44,4 +44,10 @@ public class CharacterRecord : IBlizzardGrainUpdateRecord
     [Column, Nullable] public DateTimeOffset? UpdateJobEndTime { get; set; }
 
     [Column, Nullable] public HttpStatusCode UpdateJobLastResult { get; set; }
+
+    [Column, NotNull] public long BlizzardProfileLastModified { get; set; }
+
+    [Column, NotNull] public long BlizzardRendersLastModified { get; set; }
+
+    [Column, NotNull] public long BlizzardAchievementsLastModified { get; set; }
 }

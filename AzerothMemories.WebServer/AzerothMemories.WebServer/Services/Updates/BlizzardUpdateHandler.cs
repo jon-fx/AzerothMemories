@@ -97,6 +97,10 @@ internal sealed class BlizzardUpdateHandler
         var record = await _services.GetRequiredService<AccountServices>().TryGetAccountRecord(id);
         if (record == null || context == null)
         {
+#if DEBUG
+            return;
+#endif
+
             throw new NotImplementedException();
         }
 
@@ -129,6 +133,9 @@ internal sealed class BlizzardUpdateHandler
         var record = await _services.GetRequiredService<CharacterServices>().TryGetCharacterRecord(id);
         if (record == null || context == null)
         {
+#if DEBUG
+            return;
+#endif
             throw new NotImplementedException();
         }
 

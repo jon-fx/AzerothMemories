@@ -17,7 +17,7 @@ Welcome to your new app.
 	<Authorized>
 		<MudText Color="Color.Tertiary">Authorized</MudText>
 		<MudText Color="Color.Tertiary">@_clientAuthHelper.Session.Id</MudText>
-		<MudText Color="Color.Tertiary">@_clientAuthHelper.Auth.GetSessionUser(_clientAuthHelper.Session).Result.Name</MudText>
+		<MudText Color="Color.Tertiary">@_clientAuthHelper.Auth.GetUser(_clientAuthHelper.Session).Result.Name</MudText>
 	</Authorized>
 	<NotAuthorized>
 		<MudText Color="Color.Error">NotAuthorized</MudText>
