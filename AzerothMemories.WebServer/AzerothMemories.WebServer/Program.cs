@@ -1,8 +1,5 @@
-using AzerothMemories.WebServer.Blizzard;
 using AzerothMemories.WebServer.Database.Migrations;
-using AzerothMemories.WebServer.Services.Updates;
 using FluentMigrator.Runner;
-using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Headers;

@@ -1,8 +1,4 @@
-﻿using AzerothMemories.Database;
-using AzerothMemories.WebServer.Services.Updates;
-using Stl.Fusion.Operations;
-
-namespace AzerothMemories.WebServer.Services;
+﻿namespace AzerothMemories.WebServer.Services;
 
 [RegisterComputeService]
 [RegisterAlias(typeof(IAccountServices))]

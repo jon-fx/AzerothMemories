@@ -1,9 +1,4 @@
-﻿using AzerothMemories.Common;
-using LinqToDB.Configuration;
-using LinqToDB.Data;
-using LinqToDB.Linq;
-
-namespace AzerothMemories.WebServer.Database;
+﻿namespace AzerothMemories.WebServer.Database;
 
 public sealed class DatabaseConnection : DataConnection
 {

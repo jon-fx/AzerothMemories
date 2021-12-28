@@ -1,7 +1,6 @@
 ﻿using AzerothMemories.WebServer.Blizzard.Data;
 using NodaTime;
 using System.Net.Http.Headers;
-using AzerothMemories.WebServer.Blizzard.Models.ProfileApi;
 
 namespace AzerothMemories.WebServer.Blizzard;
 

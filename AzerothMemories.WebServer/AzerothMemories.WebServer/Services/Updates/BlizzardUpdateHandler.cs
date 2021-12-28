@@ -1,6 +1,4 @@
-﻿using AzerothMemories.Common;
-using Hangfire;
-using Hangfire.Server;
+﻿using Hangfire.Server;
 
 namespace AzerothMemories.WebServer.Services.Updates;
 

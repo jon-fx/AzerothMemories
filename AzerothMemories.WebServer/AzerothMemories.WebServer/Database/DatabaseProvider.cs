@@ -1,5 +1,4 @@
-﻿using LinqToDB.Configuration;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace AzerothMemories.WebServer.Database;
 

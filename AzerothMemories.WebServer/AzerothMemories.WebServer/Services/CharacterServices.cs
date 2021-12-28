@@ -1,8 +1,4 @@
-﻿using AzerothMemories.Database;
-using AzerothMemories.WebServer.Blizzard.Models.ProfileApi;
-using AzerothMemories.WebServer.Services.Updates;
-
-namespace AzerothMemories.WebServer.Services;
+﻿namespace AzerothMemories.WebServer.Services;
 
 [RegisterComputeService]
 [RegisterAlias(typeof(IAccountServices))]

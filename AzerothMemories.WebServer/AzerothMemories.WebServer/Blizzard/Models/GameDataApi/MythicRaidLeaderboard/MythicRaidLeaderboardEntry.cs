@@ -1,6 +1,4 @@
-﻿using AzerothMemories.WebServer.Blizzard.Models.ProfileApi;
-
-namespace AzerothMemories.WebServer.Blizzard.Models.GameDataApi;
+﻿namespace AzerothMemories.WebServer.Blizzard.Models.GameDataApi;
 
 /// <summary>
 /// An entry in a Mythic Raid leaderboard.

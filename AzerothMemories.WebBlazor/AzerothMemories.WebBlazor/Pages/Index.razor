@@ -1,7 +1,7 @@
 ﻿@page "/"
 @inject IAccountServices _accountServices;
 @inject ClientAuthHelper _clientAuthHelper
-@inherits ComputedStateComponent<AzerothMemories.Services.AccountViewModel?>
+@inherits ComputedStateComponent<AzerothMemories.Services.AccountViewModel>
 
 <PageTitle>Index</PageTitle>
 
@@ -52,7 +52,7 @@ Welcome to your new app.
 		await _clientAuthHelper.SignOut();
 	}
 
-	protected override async Task<AccountViewModel?> ComputeState(CancellationToken cancellationToken)
+	protected override async Task<AccountViewModel> ComputeState(CancellationToken cancellationToken)
 	{
 		//var account = await _accountServices.TryGetAccount(null, 1, cancellationToken);
 		//return account;

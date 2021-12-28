@@ -1,4 +1,4 @@
-﻿namespace AzerothMemories.Database
+﻿namespace AzerothMemories.WebServer.Database
 {
     public static class CheckAndChange
     {
