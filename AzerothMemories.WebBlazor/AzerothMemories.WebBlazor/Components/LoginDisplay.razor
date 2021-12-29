@@ -1,0 +1,34 @@
+﻿@*@inherits MoaComponentBase*@
+@inject ClientAuthHelper _clientAuthHelper
+
+<AuthorizeView>
+    <Authorized>
+        <MudMenu EndIcon="@Icons.Filled.KeyboardArrowDown" Label="Account" Color="Color.Inherit" Dense="true" Direction="Direction.Right" OffsetY="true">
+            <MudMenuItem Link="AddMemory">Restore</MudMenuItem>
+            <MudMenuItem Link="AccountHistory">History</MudMenuItem>
+            <MudMenuItem Link="AccountManage">Manage</MudMenuItem>
+            <MudMenuItem OnClick=@(_ => TryLogout())>Log out</MudMenuItem>
+        </MudMenu>
+    </Authorized>
+    <NotAuthorized>
+        <MudMenu EndIcon="@Icons.Filled.KeyboardArrowDown" Label="Account" Color="Color.Inherit" Dense="true" Direction="Direction.Right" OffsetY="true">
+            <MudMenuItem OnClick=@(x => TrySignIn(x, "BattleNet-Europe"))>Log In - EU</MudMenuItem>
+            <MudMenuItem OnClick=@(x => TrySignIn(x, "BattleNet-UnitedStates"))>Log In - US</MudMenuItem>
+            <MudMenuItem OnClick=@(x => TrySignIn(x, "BattleNet-Taiwan"))>Log In - TW</MudMenuItem>
+            <MudMenuItem OnClick=@(x => TrySignIn(x, "BattleNet-Korea"))>Log In - KR</MudMenuItem>
+        </MudMenu>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code
+{
+    private async Task TrySignIn(MouseEventArgs e, string schema)
+    {
+	    await _clientAuthHelper.SignIn(schema);
+    }
+
+    private async Task TryLogout()
+    {
+	    await _clientAuthHelper.SignOut();
+    }
+}

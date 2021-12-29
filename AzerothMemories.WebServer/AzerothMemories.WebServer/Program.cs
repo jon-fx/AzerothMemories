@@ -24,10 +24,10 @@ builder.Services.AddDbContextFactory<AppDbContext>(optionsBuilder =>
 {
     optionsBuilder.UseNpgsql(config.DatabaseConnectionString);
 
-    if (builder.Environment.IsDevelopment())
-    {
-        optionsBuilder.EnableSensitiveDataLogging();
-    }
+    //if (builder.Environment.IsDevelopment())
+    //{
+    //    optionsBuilder.EnableSensitiveDataLogging();
+    //}
 });
 builder.Services.AddTransient(c => new DbOperationScope<AppDbContext>(c)
 {
