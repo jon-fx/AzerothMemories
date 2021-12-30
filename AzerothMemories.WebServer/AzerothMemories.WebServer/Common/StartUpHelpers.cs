@@ -63,7 +63,7 @@ internal static class StartUpHelpers
             throw new NotImplementedException();
         }
 
-        var tokenExpiresAt = (SystemClock.Instance.GetCurrentInstant() + context.ExpiresIn.GetValueOrDefault().ToDuration()).ToUnixTimeMilliseconds();
+        var tokenExpiresAt = (DateTimeOffset.UtcNow + context.ExpiresIn.GetValueOrDefault()).ToUnixTimeMilliseconds();
 
         context.Identity.AddClaim(new Claim("BattleNet-Token", token));
         context.Identity.AddClaim(new Claim("BattleNet-TokenExpires", tokenExpiresAt.ToString(CultureInfo.InvariantCulture)));

@@ -44,7 +44,7 @@ internal sealed class BlizzardUpdateHandler
         var updateQuery = database.GetUpdateQuery(record, out _);
 
         updateQuery = updateQuery.Set(x => x.UpdateJob, record.UpdateJob = callback());
-        updateQuery = updateQuery.Set(x => x.UpdateJobQueueTime, record.UpdateJobQueueTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset());
+        updateQuery = updateQuery.Set(x => x.UpdateJobQueueTime, record.UpdateJobQueueTime = DateTimeOffset.UtcNow);
         updateQuery = updateQuery.Set(x => x.UpdateJobStartTime, record.UpdateJobStartTime = null);
         updateQuery = updateQuery.Set(x => x.UpdateJobEndTime, record.UpdateJobEndTime = null);
 
@@ -66,7 +66,7 @@ internal sealed class BlizzardUpdateHandler
         var updateQuery = database.GetUpdateQuery(record, out _);
         updateQuery = updateQuery.Set(x => x.UpdateJob, record.UpdateJob = string.Empty);
         updateQuery = updateQuery.Set(x => x.UpdateJobQueueTime, record.UpdateJobQueueTime = null);
-        updateQuery = updateQuery.Set(x => x.UpdateJobStartTime, record.UpdateJobStartTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset());
+        updateQuery = updateQuery.Set(x => x.UpdateJobStartTime, record.UpdateJobStartTime = DateTimeOffset.UtcNow);
         updateQuery = updateQuery.Set(x => x.UpdateJobEndTime, record.UpdateJobEndTime = null);
 
         var result = await updateQuery.UpdateAsync();
@@ -85,7 +85,7 @@ internal sealed class BlizzardUpdateHandler
         updateQuery = updateQuery.Set(x => x.UpdateJob, record.UpdateJob = null);
         updateQuery = updateQuery.Set(x => x.UpdateJobStartTime, record.UpdateJobStartTime = null);
         updateQuery = updateQuery.Set(x => x.UpdateJobQueueTime, record.UpdateJobQueueTime = null);
-        updateQuery = updateQuery.Set(x => x.UpdateJobEndTime, record.UpdateJobEndTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset());
+        updateQuery = updateQuery.Set(x => x.UpdateJobEndTime, record.UpdateJobEndTime = DateTimeOffset.UtcNow);
         updateQuery = updateQuery.Set(x => x.UpdateJobLastResult, record.UpdateJobLastResult = updateResult);
 
         var result = await updateQuery.UpdateAsync();

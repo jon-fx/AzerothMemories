@@ -1,0 +1,293 @@
+﻿@using System.Runtime.Serialization
+@using System.Security.Cryptography
+@using System.Text
+@inject TimeProvider _timeProvider;
+@inject IAccountServices _accountServices;
+
+@if (IsVisible && _uploadResults != null)
+{
+	<MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+		<MudGrid>
+			<MudItem xs="12">
+				@{
+					var time = _componentSharedData.PostTimeStamp.LocalDateTime;
+					var timeStr = $"Time {time.Humanize()} - {time.ToOrdinalWords()} - {time.ToShortTimeString()}";
+				}
+
+				<MudText Typo="Typo.h6">@timeStr</MudText>
+			</MudItem>
+
+			<MudItem xs="12">
+				<DateTimeComponent DateTime="@_componentSharedData.PostTimeStamp" OnDateTimeEventCallback="@OnDateTimeChanged" />
+			</MudItem>
+
+			<MudItem xs="12">
+				<MudCheckBox Label="Followers only" @bind-Checked="@_componentSharedData.PrivatePost">
+				</MudCheckBox>
+			</MudItem>
+		</MudGrid>
+	</MudPaper>
+
+	<MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+		@for (var i = 0; i < _uploadResults.Count; i++)
+		{
+			var index = i;
+			var upload = _uploadResults[index];
+			var timeStr = "Unknown";
+			if (upload.FileTimeStamp > 0)
+			{
+				var time = DateTimeOffset.FromUnixTimeMilliseconds(upload.FileTimeStamp).LocalDateTime;
+				timeStr = $"Time {time.Humanize()} - {time.ToOrdinalWords()} - {time.ToShortTimeString()}";
+			}
+
+			<MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+				<MudCardHeader>
+					<CardHeaderContent>
+						<MudText Typo="Typo.h6">@upload.FileName</MudText>
+						<MudText Typo="Typo.body1">@timeStr</MudText>
+					</CardHeaderContent>
+					<CardHeaderActions>
+						<MudTooltip Text="Delete" Color="Color.Dark">
+							<MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Disabled="@(index == 0)" />
+						</MudTooltip>
+					</CardHeaderActions>
+				</MudCardHeader>
+				<MudCardContent>
+					@{
+						var imageSource = $"data:{upload.ContentType};base64,{upload.ContentBase64}";;
+						<img src="@imageSource" style="width: 100%; height: auto; object-fit: cover;" />
+					}
+				</MudCardContent>
+			</MudCard>
+		}
+	</MudPaper>
+
+	<MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+		<InputFile id="fileInput2" OnChange="UploadMoreImages" hidden multiple accept=".jpg, .jpeg, .png" />
+		<MudButton HtmlTag="label" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Filled.CloudUpload" Disabled="@_maxUploadReached" for="fileInput2">Upload Images</MudButton>
+	</MudPaper>
+
+	<AddMemoryMainTagComponent SharedData="@_componentSharedData"  />
+
+@*	<MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+		<PublishCommentComponent @ref="_commentComponent" Lines="10" TagsList="@ActiveAccountServices.GetUserTagList()" />
+	</MudPaper>*@
+
+	<AddMemoryPostAvatarComponent SharedData="@_componentSharedData" />
+
+	<AddMemoryAllTagChipsComponent SharedData="@_componentSharedData" />
+
+	<MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+		<MudGrid>
+			@if (_errorStrings.Count > 0)
+			{
+				foreach (var errorString in _errorStrings)
+				{
+					<MudItem xs="12">
+						<MudAlert Severity="@errorString.Item1">@errorString.Item2</MudAlert>
+					</MudItem>
+				}
+			}
+
+			<MudItem xs="6">
+				<MudButton Variant="Variant.Filled" FullWidth="true" EndIcon="@Icons.Material.Filled.Delete" IconColor="Color.Secondary" OnClick="UserCancel">Cancel</MudButton>
+			</MudItem>
+
+			<MudItem xs="6">
+				<MudButton Variant="Variant.Filled" FullWidth="true" EndIcon="@Icons.Material.Filled.Save" IconColor="Color.Secondary" Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+			</MudItem>
+		</MudGrid>
+	</MudPaper>
+}
+
+@code
+{
+	private bool _maxUploadReached;
+	private long _currentFileTimeStamp;
+	private List<UploadResult> _uploadResults;
+	private PublishCommentComponent _commentComponent;
+
+	private List<(Severity, string)> _errorStrings;
+	private AddMemoryComponentSharedData _componentSharedData;
+
+	[Parameter, EditorRequired] public bool IsVisible { get; set; }
+
+	[Parameter, EditorRequired] public EventCallback<AddMemoryComponentResult> OnPostMemoryResult { get; set; }
+
+	public async Task<UploadResult[]> UploadFiles(InputFileChangeEventArgs arg)
+	{
+		//DialogService.ShowLoadingDialog();
+
+		Cancel();
+
+		//_componentSharedData.InitializeAccount(ActiveAccountServices.AccountGrain, ActiveAccountServices.AccountViewModel);
+
+		//await _timeProvider.EnsureInitialized(CancellationToken);
+		
+		_uploadResults = new List<UploadResult>();
+
+		foreach (var file in arg.GetMultipleFiles())
+		{
+			await TryAddFile(file);
+		}
+
+	//var uploadResult = await Services.UploadService.TryUploadScreenShot(ActiveAccountServices, TimeProvider, arg.File, CancellationToken);
+		//if (uploadResult != null)
+		//{
+		//	var now = SystemClock.Instance.GetCurrentInstant();
+		//	var fileTimeStamp = Instant.FromUnixTimeMilliseconds(uploadResult.FileTimeStamp);
+		//	var postTimeStamp = now;
+		//	var initializeAchievements = false;
+
+		//	if (uploadResult.FileTimeStamp > 0 && fileTimeStamp < now)
+		//	{
+		//		postTimeStamp = fileTimeStamp;
+		//		initializeAchievements = true;
+		//	}
+
+		//	_componentSharedData.SetPostTimeStamp(postTimeStamp);
+
+		//	if (initializeAchievements)
+		//	{
+		//		await _componentSharedData.InitializeAchievements();
+		//	}
+
+		//	_postTime = TimeProvider.GetTimeAsLocalDateTime(postTimeStamp);
+		//}
+
+		//DialogService.HideLoadingDialog();
+
+		if (_uploadResults.Count > 0)
+		{
+			_currentFileTimeStamp = _uploadResults[0].FileTimeStamp;
+			
+			await _componentSharedData.SetPostTimeStamp(DateTimeOffset.FromUnixTimeMilliseconds(_currentFileTimeStamp).ToLocalTime());
+			
+			return _uploadResults.ToArray();
+		}
+
+		_uploadResults = null;
+
+		return null;
+	}
+
+	private async Task Submit()
+	{
+		//DialogService.ShowLoadingDialog();
+
+		//var result = await _componentSharedData.Submit(_commentComponent, _uploadResults);
+
+		//DialogService.HideLoadingDialog();
+
+		//await OnPostMemoryResult.InvokeAsync(result);
+	}
+
+	private void Cancel()
+	{
+		_uploadResults = null;
+		_errorStrings = new List<(Severity, string)>();
+
+		if (_componentSharedData != null)
+		{
+			//_componentSharedData.OnModelChanged = null;
+		}
+
+		_componentSharedData = new AddMemoryComponentSharedData(_accountServices /*Services*/);// { OnModelChanged = OnComponentSharedDataChanged };
+	}
+
+	private async Task UserCancel()
+	{
+		Cancel();
+
+		//await OnPostMemoryResult.InvokeAsync(new AddMemoryComponentResult(null, AddMemoryResult.Canceled, 0, 0));
+	}
+
+	private async Task UploadMoreImages(InputFileChangeEventArgs arg)
+	{
+		if (_maxUploadReached)
+		{
+			return;
+		}
+		
+		//await TimeProvider.EnsureInitialized(CancellationToken);
+
+		//DialogService.ShowLoadingDialog();
+		
+		foreach (var file in arg.GetMultipleFiles())
+		{
+			await TryAddFile(file);
+		}
+
+		//foreach (var file in arg.GetMultipleFiles())
+		//{
+		//	var uploadResult = await Services.UploadService.TryUploadScreenShot(ActiveAccountServices, TimeProvider, file, CancellationToken);
+		//	if (uploadResult.FileTimeStamp > 0)
+		//	{
+		//	}
+
+		//	var previous = _uploadResults.FirstOrDefault(x => x.Hash == uploadResult.Hash);
+		//	if (previous == null)
+		//	{
+		//		_uploadResults.Add(uploadResult);
+		//		_maxUploadReached = _uploadResults.Count > 3;
+		//	}
+
+		//	if (_maxUploadReached)
+		//	{
+		//		break;
+		//	}
+		//}
+
+		//DialogService.HideLoadingDialog();
+	}
+
+	private async Task TryAddFile(IBrowserFile file)
+	{
+		if (_maxUploadReached)
+		{
+			return;
+		}
+
+		var previous = _uploadResults.FirstOrDefault(x => x.FileName == file.Name);
+		if (previous != null)
+		{
+			return;
+		}
+
+		await using var memoryStream = new MemoryStream();
+		var stream = file.OpenReadStream(5120000 * 2);
+		await stream.CopyToAsync(memoryStream);
+
+		var buffer = memoryStream.ToArray();
+		var contentBase64 = Convert.ToBase64String(buffer);
+		previous = _uploadResults.FirstOrDefault(x => x.ContentBase64 == contentBase64);
+		if (previous != null)
+		{
+			return;
+		}
+
+		if (!_timeProvider.TryGetTimeFromFileName(file.Name, out var screenShotUnixTime))
+		{
+			screenShotUnixTime = file.LastModified.ToUnixTimeMilliseconds();
+		}
+
+		var uploadResult = new UploadResult
+		{
+			FileName = file.Name,
+			FileTimeStamp = screenShotUnixTime,
+			ContentType = file.ContentType,
+			ContentBase64 = contentBase64
+		};
+		
+		_uploadResults.Add(uploadResult);
+		_maxUploadReached = _uploadResults.Count > 3;
+	}
+
+	private async Task OnDateTimeChanged(DateTime? arg)
+	{
+		if (arg.HasValue)
+		{
+			await _componentSharedData.SetPostTimeStamp(arg.Value.ToLocalTime());
+		}
+	}
+}

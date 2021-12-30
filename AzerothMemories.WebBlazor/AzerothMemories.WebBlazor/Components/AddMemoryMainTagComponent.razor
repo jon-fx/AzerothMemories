@@ -1,0 +1,63 @@
+﻿@{
+    var isRetailSelected = SharedData.SelectedMainTags.FirstOrDefault() == SharedData.MainTags[0];
+    <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+        <MudChipSet SelectedValues="@SharedData.SelectedMainTags" SelectedValuesChanged="@SharedData.SelectedMainTagsChanged" Mandatory="true" Filter="true">
+            @for (var i = 0; i < SharedData.MainTags.Length; i++)
+            {
+                var index = i;
+                var tagInfo = SharedData.MainTags[index];
+                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" Default="@(index == 0)" />
+            }
+        </MudChipSet>
+    </MudPaper>
+
+    <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+        <MudChipSet SelectedValues="@SharedData.SelectedCommonTags" SelectedValuesChanged="@SharedData.SelectedCommonTagsChanged" Mandatory="true" MultiSelection="true" Filter="true">
+            @for (var i = 1; i < SharedData.CommonTags.Length; i++)
+            {
+                var index = i;
+                var tagInfo = SharedData.CommonTags[index];
+                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" Default="@(index == 0)" />
+            }
+        </MudChipSet>
+    </MudPaper>
+
+    if (isRetailSelected)
+    {
+        <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+            @{
+                var minTime = SharedData.PostTimeStamp.LocalDateTime;
+            }
+            <MudText Typo="Typo.h6">Matching Achievements from @minTime.Humanize() - (@minTime.ToOrdinalWords())</MudText>
+
+            @if (SharedData.AchievementTags.Length > 0)
+            {
+                <MudChipSet SelectedValues="@SharedData.SelectedAchievementTags" SelectedValuesChanged="@SharedData.SelectedAchievementTagsChanged" MultiSelection="true" Filter="true">
+                    @for (var i = 0; i < SharedData.AchievementTags.Length; i++)
+                    {
+                        var index = i;
+                        var tagInfo = SharedData.AchievementTags[index];
+
+                        <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" />
+                    }
+                </MudChipSet>
+            }
+            else
+            {
+                <MudText Typo="Typo.subtitle1">None</MudText>
+            }
+        </MudPaper>
+
+    }
+
+    <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+    </MudPaper>
+    
+    <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+    </MudPaper>
+}
+
+@code {
+    [Parameter, EditorRequired] public AddMemoryComponentSharedData SharedData { get; init; }
+    //[Parameter, EditorRequired] public StringLocalizer StringLocalizer { get; init; }
+}

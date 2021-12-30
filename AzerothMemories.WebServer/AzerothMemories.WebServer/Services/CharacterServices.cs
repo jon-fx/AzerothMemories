@@ -32,7 +32,7 @@ public class CharacterServices : ICharacterServices
             characterRecord = new CharacterRecord
             {
                 MoaRef = characterRef,
-                CreatedDateTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset()
+                CreatedDateTime = DateTimeOffset.UtcNow
             };
 
             characterRecord.Id = await database.InsertWithInt64IdentityAsync(characterRecord);

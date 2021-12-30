@@ -4,11 +4,13 @@
 [RegisterAlias(typeof(IAccountServices))]
 public class AccountServices : IAccountServices
 {
+    private readonly IAuth _auth;
     private readonly BlizzardUpdateHandler _updateHandler;
     private readonly DatabaseProvider _databaseProvider;
 
     public AccountServices(IServiceProvider serviceProvider)
     {
+        _auth = serviceProvider.GetRequiredService<IAuth>();
         _updateHandler = serviceProvider.GetRequiredService<BlizzardUpdateHandler>();
         _databaseProvider = serviceProvider.GetRequiredService<DatabaseProvider>();
     }
@@ -133,7 +135,7 @@ public class AccountServices : IAccountServices
                 FusionId = userId,
                 //MoaRef = moaRef.Full,
                 //BlizzardId = moaRef.Id,
-                CreatedDateTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset(),
+                CreatedDateTime = DateTimeOffset.UtcNow,
                 //LastLoginDateTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset(),
             };
 
@@ -178,5 +180,73 @@ public class AccountServices : IAccountServices
         await using var dbContext = _databaseProvider.GetDatabase();
         var user = await dbContext.Accounts.Where(a => a.FusionId == fusionId).FirstOrDefaultAsync();
         return user;
+    }
+
+    [ComputeMethod]
+    public virtual async Task<ActiveAccountViewModel> TryGetAccount(Session session, CancellationToken cancellationToken = default)
+    {
+        var accountRecord = await GetCurrentSessionAccountRecord(session, cancellationToken);
+
+        var viewModel = accountRecord.CreateActiveAccountViewModel();
+
+        return viewModel;
+    }
+
+    [ComputeMethod]
+    public virtual async Task<AccountViewModel> TryGetAccount(Session session, long accountId, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    [ComputeMethod]
+    public virtual async Task<AccountViewModel> TryGetAccount(Session session, string username, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    [ComputeMethod]
+    public virtual async Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, long timeStamp, int diffInSeconds, CancellationToken cancellationToken = default)
+    {
+        var accountRecord = await GetCurrentSessionAccountRecord(session, cancellationToken);
+
+        diffInSeconds = Math.Clamp(diffInSeconds, 0, 300);
+
+        var min = (DateTimeOffset.FromUnixTimeMilliseconds(timeStamp) - TimeSpan.FromSeconds(diffInSeconds)).ToUnixTimeMilliseconds();
+        var max = (DateTimeOffset.FromUnixTimeMilliseconds(timeStamp) + TimeSpan.FromSeconds(diffInSeconds)).ToUnixTimeMilliseconds();
+
+        await using var database = _databaseProvider.GetDatabase();
+        var query = from a in database.CharacterAchievements
+                    where a.AccountId == accountRecord.Id && a.AchievementTimeStamp > min && a.AchievementTimeStamp < max
+                    select a.AchievementId;
+
+        var results = await query.ToArrayAsync(cancellationToken);
+        var hashSet = new HashSet<long>();
+        var postTagSet = new HashSet<PostTagInfo>();
+
+        foreach (var tagId in results)
+        {
+            if (hashSet.Add(tagId))
+            {
+                var postTag = new PostTagInfo(PostTagType.Achievement, tagId, "TODO-Name", "TODO-Image");
+                postTagSet.Add(postTag);
+            }
+        }
+
+        return postTagSet.ToArray();
+    }
+
+    [ComputeMethod]
+    public virtual async Task<AccountRecord> GetCurrentSessionAccountRecord(Session session, CancellationToken cancellationToken = default)
+    {
+        var user = await _auth.GetUser(session, cancellationToken);
+        user.MustBeAuthenticated();
+
+        var accountRecord = await TryGetAccountRecord(user.Id.Value);
+        if (accountRecord == null)
+        {
+            throw new NotImplementedException();
+        }
+
+        return accountRecord;
     }
 }

@@ -1,0 +1,36 @@
+﻿@page "/accountmanage"
+@inherits ComputedStateComponent<AccountManagePageViewModel>
+@inject AccountManagePageViewModel _viewModel;
+
+<PageTitle>Manage Account - Memories of Azeroth</PageTitle>
+
+@if (_viewModel != null && _viewModel.AccountViewModel != null)
+{
+        <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+            <MudCardHeader>
+                <CardHeaderAvatar>
+                    <MudAvatar Size="Size.Large" Image="@_viewModel.AccountViewModel.Avatar">@_viewModel.AccountViewModel.GetAvatarText()</MudAvatar>
+                </CardHeaderAvatar>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">Manage Account</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudGrid>
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
+}
+<AuthorizeView>
+   
+</AuthorizeView>
+
+@code
+{
+	protected override async Task<AccountManagePageViewModel> ComputeState(CancellationToken cancellationToken)
+	{
+		await _viewModel.ComputeState(cancellationToken);
+
+		return _viewModel;
+	}
+}

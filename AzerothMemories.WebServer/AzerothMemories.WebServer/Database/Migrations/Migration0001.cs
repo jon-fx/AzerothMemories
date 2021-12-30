@@ -18,6 +18,7 @@ namespace AzerothMemories.WebServer.Database.Migrations
                 .WithColumn(nameof(AccountRecord.BattleNetTokenExpiresAt)).AsDateTimeOffset().Nullable()
                 .WithColumn(nameof(AccountRecord.Username)).AsString(60).Unique().Nullable()
                 .WithColumn(nameof(AccountRecord.UsernameSearchable)).AsString(60).Nullable()
+                .WithColumn(nameof(AccountRecord.Avatar)).AsString(100).Nullable()
                 .WithUpdateJobInfo();
 
             Create.Table("Characters")
