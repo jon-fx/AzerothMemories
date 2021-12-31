@@ -8,7 +8,9 @@
             accountViewModel.Avatar = accountRecord.Avatar;
             accountViewModel.Username = accountRecord.Username;
             accountViewModel.BattleTag = accountRecord.BattleTag;
+            accountViewModel.BattleTagIsPublic = accountRecord.BattleTagIsPublic;
             accountViewModel.CreatedDateTime = accountRecord.CreatedDateTime;
+            accountViewModel.IsPrivate = accountRecord.IsPrivate;
         }
 
         public static AccountViewModel CreateAccountViewModel(this AccountRecord accountRecord)

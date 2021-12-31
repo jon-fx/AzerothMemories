@@ -1,36 +1,138 @@
 ﻿@page "/accountmanage"
 @inherits ComputedStateComponent<AccountManagePageViewModel>
 @inject AccountManagePageViewModel _viewModel;
+@implements IDisposable
 
 <PageTitle>Manage Account - Memories of Azeroth</PageTitle>
 
 @if (_viewModel != null && _viewModel.AccountViewModel != null)
 {
-        <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-            <MudCardHeader>
-                <CardHeaderAvatar>
-                    <MudAvatar Size="Size.Large" Image="@_viewModel.AccountViewModel.Avatar">@_viewModel.AccountViewModel.GetAvatarText()</MudAvatar>
-                </CardHeaderAvatar>
-                <CardHeaderContent>
-                    <MudText Typo="Typo.h6">Manage Account</MudText>
-                </CardHeaderContent>
-            </MudCardHeader>
-            <MudCardContent>
-                <MudGrid>
-                </MudGrid>
-            </MudCardContent>
-        </MudCard>
+    <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+        <MudCardHeader>
+            <CardHeaderAvatar>
+                <MudAvatar Size="Size.Large" Image="@_viewModel.AccountViewModel.Avatar">@_viewModel.AccountViewModel.GetAvatarText()</MudAvatar>
+            </CardHeaderAvatar>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h6">Manage Account</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudGrid>
+                <MudItem xs="6">
+                    <MudTextField T="string"
+                              Label="Username"
+                              @bind-Value="_viewModel.NewUsername"
+                              Disabled="!_viewModel.AccountViewModel.CanChangeUsername"
+                              Adornment="Adornment.End"
+                              AdornmentIcon=@_viewModel.NewUsernameTextBoxAdornmentIcon
+                              AdornmentColor=@_viewModel.NewUsernameTextBoxAdornmentColor
+                              DebounceInterval="500"
+                              OnDebounceIntervalElapsed="_viewModel.OnNewUsernameTextChanged"
+                              MaxLength="49" />
+                </MudItem>
+                <MudItem xs="6" Class="my-auto">
+                    @if (_viewModel.ChangeUsernameButtonVisible)
+                    {
+                        <MudButton Variant="Variant.Filled" Disabled="!_viewModel.NewUsernameValid" FullWidth="true" OnClick="_viewModel.OnChangeUsernameClicked">Change Username</MudButton>
+                    }
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField T="string" Label="Battle Tag" @bind-Value="_viewModel.AccountViewModel.BattleTag" Disabled="true" MaxLength="49" />
+                </MudItem>
+                <MudItem xs="6" Class="my-auto">
+                    <MudSwitch T="bool" Checked="@_viewModel.AccountViewModel.BattleTagIsPublic" Color="Color.Primary" Label="Public" CheckedChanged="_viewModel.OnBattleTagVisibilityChanged" />
+                </MudItem>
+                <MudItem xs="6">
+                    <MudSelect T="(string,string)" @bind-Value="@_viewModel.Avatar" Label="Avatar" Dense="true" OffsetY="true">
+                        @{
+                            var avatarText = _viewModel.AccountViewModel.GetAvatarText();
+                            foreach (var av in _viewModel.AllAvatars)
+                            {
+                                <MudSelectItem Value="@av">
+                                    <div class="d-flex justify-start align-center">
+                                        <MudAvatar Class="mr-3" Size="Size.Small" Image="@av.Item1">@avatarText</MudAvatar><MudText Inline="true">@av.Item2</MudText>
+                                    </div>
+                                </MudSelectItem>
+                            }
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="3" Class="my-auto">
+                    <MudButton Variant="Variant.Filled" FullWidth="true">TODO UPLOAD</MudButton>
+                </MudItem>
+                <MudItem xs="3" Class="my-auto">
+                    <MudButton Variant="Variant.Filled" FullWidth="true" OnClick="_viewModel.OnChangeAvatarClicked">Change</MudButton>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudSwitch T="bool" Checked="@_viewModel.AccountViewModel.IsPrivate" Color="Color.Primary" Label="Private" CheckedChanged="_viewModel.OnIsPrivateChanged" />
+                </MudItem>
+            </MudGrid>
+
+        </MudCardContent>
+    </MudCard>
+    <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+        <MudCardHeader>
+            <CardHeaderAvatar>
+            </CardHeaderAvatar>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h6">Manage Characters</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudSimpleTable Hover="true" Dense="true" Striped="true" Breakpoint="Breakpoint.None">
+                <thead>
+                    <tr>
+                        <MudTh></MudTh>
+
+                        <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                            <MudTh>Name</MudTh>
+                            <MudTh>Realm</MudTh>
+                            <MudTh>Race</MudTh>
+                            <MudTh>Class</MudTh>
+                            <MudTh>Level</MudTh>
+                        </MudHidden>
+
+                        <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
+                            <MudTh>Name</MudTh>
+                        </MudHidden>
+
+                        <MudTh>Sync</MudTh>
+                        <MudTh>Result</MudTh>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </MudSimpleTable>
+        </MudCardContent>
+    </MudCard>
 }
 <AuthorizeView>
-   
+
 </AuthorizeView>
 
 @code
 {
-	protected override async Task<AccountManagePageViewModel> ComputeState(CancellationToken cancellationToken)
-	{
-		await _viewModel.ComputeState(cancellationToken);
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
 
-		return _viewModel;
-	}
+        _viewModel.OnViewModelChanged = EventCallback.Factory.Create(this, OnViewModelChanged);
+    }
+
+    public void Dispose()
+    {
+        _viewModel.OnViewModelChanged = EventCallback.Empty;
+    }
+
+    private async Task OnViewModelChanged()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    protected override async Task<AccountManagePageViewModel> ComputeState(CancellationToken cancellationToken)
+    {
+        await _viewModel.ComputeState(cancellationToken);
+
+        return _viewModel;
+    }
 }

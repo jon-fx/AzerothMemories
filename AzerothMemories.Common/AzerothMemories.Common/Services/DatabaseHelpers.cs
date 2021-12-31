@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace AzerothMemories.WebServer.Database;
+namespace AzerothMemories.Services;
 
 public static class DatabaseHelpers
 {

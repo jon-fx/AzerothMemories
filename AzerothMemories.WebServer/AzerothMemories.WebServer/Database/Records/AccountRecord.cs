@@ -15,6 +15,8 @@ public class AccountRecord : IBlizzardGrainUpdateRecord
 
     [Column, Nullable] public string BattleTag;
 
+    [Column, Nullable] public bool BattleTagIsPublic;
+
     [Column, Nullable] public string BattleNetToken;
 
     [Column, Nullable] public DateTimeOffset? BattleNetTokenExpiresAt;
@@ -23,7 +25,9 @@ public class AccountRecord : IBlizzardGrainUpdateRecord
 
     [Column, Nullable] public string UsernameSearchable;
 
-    [Column, Nullable] public string Avatar { get; set; }
+    [Column, Nullable] public bool IsPrivate;
+
+    [Column, Nullable] public string Avatar;
 
     [Column, Nullable] public string UpdateJob { get; set; }
 

@@ -10,6 +10,10 @@ public class AccountViewModel
 
     [JsonInclude] public string BattleTag;
 
+    [JsonInclude] public bool BattleTagIsPublic;
+
+    [JsonInclude] public bool IsPrivate;
+
     [JsonInclude] public string Avatar;
 
     [JsonInclude] public DateTimeOffset CreatedDateTime;
@@ -28,8 +32,4 @@ public class AccountViewModel
 
         return "?";
     }
-}
-
-public sealed class ActiveAccountViewModel : AccountViewModel
-{
 }

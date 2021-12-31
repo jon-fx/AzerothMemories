@@ -14,10 +14,12 @@ namespace AzerothMemories.WebServer.Database.Migrations
                 .WithColumn(nameof(AccountRecord.BlizzardId)).AsInt64().WithDefaultValue(0)
                 .WithColumn(nameof(AccountRecord.BlizzardRegionId)).AsByte().WithDefaultValue(0)
                 .WithColumn(nameof(AccountRecord.BattleTag)).AsString(60).Nullable()
+                .WithColumn(nameof(AccountRecord.BattleTagIsPublic)).AsBoolean().WithDefaultValue(false)
                 .WithColumn(nameof(AccountRecord.BattleNetToken)).AsString(200).Nullable()
                 .WithColumn(nameof(AccountRecord.BattleNetTokenExpiresAt)).AsDateTimeOffset().Nullable()
                 .WithColumn(nameof(AccountRecord.Username)).AsString(60).Unique().Nullable()
                 .WithColumn(nameof(AccountRecord.UsernameSearchable)).AsString(60).Nullable()
+                .WithColumn(nameof(AccountRecord.IsPrivate)).AsBoolean().WithDefaultValue(false)
                 .WithColumn(nameof(AccountRecord.Avatar)).AsString(100).Nullable()
                 .WithUpdateJobInfo();
 

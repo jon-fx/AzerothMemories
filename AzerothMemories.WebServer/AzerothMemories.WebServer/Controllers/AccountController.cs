@@ -31,6 +31,30 @@ public class AccountController : ControllerBase, IAccountServices
         return _accountServices.TryGetAccount(session, username, cancellationToken);
     }
 
+    [HttpGet("{username}"), Publish]
+    public Task<bool> TryReserveUsername(Session session, string username, CancellationToken cancellationToken = default)
+    {
+        return _accountServices.TryReserveUsername(session, username, cancellationToken);
+    }
+
+    [HttpPost("{newUsername}")]
+    public Task<bool> TryChangeUsername(Session session, string newUsername, CancellationToken cancellationToken = default)
+    {
+        return _accountServices.TryChangeUsername(session, newUsername, cancellationToken);
+    }
+
+    [HttpPost("{newValue}")]
+    public Task<bool> TryChangeIsPrivate(Session session, bool newValue, CancellationToken cancellationToken = default)
+    {
+        return _accountServices.TryChangeIsPrivate(session, newValue, cancellationToken);
+    }
+
+    [HttpPost("{newValue}")]
+    public Task<bool> TryChangeBattleTagVisibility(Session session, bool newValue, CancellationToken cancellationToken = default)
+    {
+        return _accountServices.TryChangeBattleTagVisibility(session, newValue, cancellationToken);
+    }
+
     //[HttpPost("{newUsername}")]
     //public Task<string> TryChangeUsername(Session session, [FromRoute] string newUsername, CancellationToken cancellationToken = default)
     //{
