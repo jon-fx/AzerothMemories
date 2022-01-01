@@ -4,17 +4,11 @@
 [RegisterAlias(typeof(IAccountServices))]
 public class AccountServices : IAccountServices
 {
-    private readonly IAuth _auth;
-    private readonly BlizzardUpdateHandler _updateHandler;
-    private readonly DatabaseProvider _databaseProvider;
-    private readonly CharacterServices _characterServices;
+    private readonly CommonServices _commonServices;
 
-    public AccountServices(IServiceProvider serviceProvider)
+    public AccountServices(CommonServices commonServices)
     {
-        _auth = serviceProvider.GetRequiredService<IAuth>();
-        _updateHandler = serviceProvider.GetRequiredService<BlizzardUpdateHandler>();
-        _databaseProvider = serviceProvider.GetRequiredService<DatabaseProvider>();
-        _characterServices = serviceProvider.GetRequiredService<CharacterServices>();
+        _commonServices = commonServices;
     }
 
     [CommandHandler(IsFilter = true, Priority = 1)]
@@ -61,7 +55,7 @@ public class AccountServices : IAccountServices
         var sessionInfo = context.Operation().Items.Get<SessionInfo>();
         var userId = sessionInfo.UserId;
 
-        await using var database = _databaseProvider.GetDatabase();
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var accountRecord = await GetOrCreateAccount(database, userId);
 
         var updateQuery = database.GetUpdateQuery(accountRecord, out var changed);
@@ -125,7 +119,7 @@ public class AccountServices : IAccountServices
             _ = TryGetAccountRecordUsername(accountRecord.Username);
         }
 
-        await _updateHandler.TryUpdateAccount(database, accountRecord);
+        await _commonServices.BlizzardUpdateHandler.TryUpdateAccount(database, accountRecord);
     }
 
     private async Task<AccountRecord> GetOrCreateAccount(IDataContext database, string userId)
@@ -167,7 +161,7 @@ public class AccountServices : IAccountServices
             //return null;
         }
 
-        await using var dbContext = _databaseProvider.GetDatabase();
+        await using var dbContext = _commonServices.DatabaseProvider.GetDatabase();
         var user = await dbContext.Accounts.Where(a => a.Id == id).FirstOrDefaultAsync();
 
         return user;
@@ -181,7 +175,7 @@ public class AccountServices : IAccountServices
             //return null;
         }
 
-        await using var dbContext = _databaseProvider.GetDatabase();
+        await using var dbContext = _commonServices.DatabaseProvider.GetDatabase();
         var user = await dbContext.Accounts.Where(a => a.FusionId == fusionId).FirstOrDefaultAsync();
         return user;
     }
@@ -194,7 +188,7 @@ public class AccountServices : IAccountServices
             //return null;
         }
 
-        await using var dbContext = _databaseProvider.GetDatabase();
+        await using var dbContext = _commonServices.DatabaseProvider.GetDatabase();
         var user = await dbContext.Accounts.Where(a => a.Username == username).FirstOrDefaultAsync();
         return user;
     }
@@ -204,7 +198,7 @@ public class AccountServices : IAccountServices
     {
         var accountRecord = await GetCurrentSessionAccountRecord(session, cancellationToken);
 
-        var characters = await _characterServices.TryGetAllAccountCharacters(accountRecord.Id);
+        var characters = await _commonServices.CharacterServices.TryGetAllAccountCharacters(accountRecord.Id);
         var viewModel = accountRecord.CreateActiveAccountViewModel(characters);
 
         return viewModel;
@@ -236,7 +230,7 @@ public class AccountServices : IAccountServices
             return false;
         }
 
-        await using var database = _databaseProvider.GetDatabase();
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var usernameExists = await database.Accounts.AnyAsync(x => x.Username == username);
         if (usernameExists)
         {
@@ -253,7 +247,7 @@ public class AccountServices : IAccountServices
             return false;
         }
 
-        await using var database = _databaseProvider.GetDatabase();
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var usernameExists = await database.Accounts.AnyAsync(x => x.Username == newUsername, cancellationToken);
         if (usernameExists)
         {
@@ -285,7 +279,7 @@ public class AccountServices : IAccountServices
     {
         var accountRecord = await GetCurrentSessionAccountRecord(session, cancellationToken);
 
-        await using var database = _databaseProvider.GetDatabase();
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.IsPrivate == !newValue).AsUpdatable()
             .Set(x => x.IsPrivate, newValue)
             .UpdateAsync(cancellationToken);
@@ -308,7 +302,7 @@ public class AccountServices : IAccountServices
     {
         var accountRecord = await GetCurrentSessionAccountRecord(session, cancellationToken);
 
-        await using var database = _databaseProvider.GetDatabase();
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.BattleTagIsPublic == !newValue).AsUpdatable()
             .Set(x => x.BattleTagIsPublic, newValue)
             .UpdateAsync(cancellationToken);
@@ -337,7 +331,7 @@ public class AccountServices : IAccountServices
         var min = (DateTimeOffset.FromUnixTimeMilliseconds(timeStamp) - TimeSpan.FromSeconds(diffInSeconds)).ToUnixTimeMilliseconds();
         var max = (DateTimeOffset.FromUnixTimeMilliseconds(timeStamp) + TimeSpan.FromSeconds(diffInSeconds)).ToUnixTimeMilliseconds();
 
-        await using var database = _databaseProvider.GetDatabase();
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var query = from a in database.CharacterAchievements
                     where a.AccountId == accountRecord.Id && a.AchievementTimeStamp > min && a.AchievementTimeStamp < max
                     select a.AchievementId;
@@ -361,7 +355,7 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<AccountRecord> GetCurrentSessionAccountRecord(Session session, CancellationToken cancellationToken = default)
     {
-        var user = await _auth.GetUser(session, cancellationToken);
+        var user = await _commonServices.Auth.GetUser(session, cancellationToken);
         user.MustBeAuthenticated();
 
         var accountRecord = await TryGetAccountRecordFusionId(user.Id.Value);

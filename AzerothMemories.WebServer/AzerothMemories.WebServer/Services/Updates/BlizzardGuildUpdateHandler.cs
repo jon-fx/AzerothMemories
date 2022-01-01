@@ -2,7 +2,7 @@
 
 internal sealed class BlizzardGuildUpdateHandler
 {
-    public BlizzardGuildUpdateHandler(IServiceProvider services)
+    public BlizzardGuildUpdateHandler(CommonServices services)
     {
     }
 }

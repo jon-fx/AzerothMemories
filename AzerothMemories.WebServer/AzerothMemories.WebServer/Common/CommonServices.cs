@@ -1,37 +1,42 @@
-﻿namespace AzerothMemories.WebServer.Common;
+﻿using AzerothMemories.WebServer.Services;
+
+namespace AzerothMemories.WebServer.Common;
 
 public sealed class CommonServices
 {
     private readonly IServiceProvider _serviceProvider;
 
-    //private IClusterClient _clusterClient;
-    //private QueuedUpdateHandler _queuedUpdateHandler;
-    //private PubSubProvider _pubSubProvider;
-
     public CommonServices(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
+    }
 
+    public void Initialize()
+    {
         Auth = _serviceProvider.GetRequiredService<IAuth>();
         Config = _serviceProvider.GetRequiredService<CommonConfig>();
         Commander = _serviceProvider.GetRequiredService<ICommander>();
-        //DatabaseProvider = _serviceProvider.GetRequiredService<DatabaseProvider>();
-        //WarcraftClientProvider = _serviceProvider.GetRequiredService<WarcraftClientProvider>();
+        DatabaseProvider = _serviceProvider.GetRequiredService<DatabaseProvider>();
+        BlizzardUpdateHandler = _serviceProvider.GetRequiredService<BlizzardUpdateHandler>();
+        WarcraftClientProvider = _serviceProvider.GetRequiredService<WarcraftClientProvider>();
+
+        AccountServices = _serviceProvider.GetRequiredService<AccountServices>();
+        CharacterServices = _serviceProvider.GetRequiredService<CharacterServices>();
     }
 
-    public IAuth Auth { get; }
+    internal IAuth Auth { get; private set; }
 
-    public ICommander Commander { get; }
+    internal ICommander Commander { get; private set; }
 
-    public CommonConfig Config { get; }
+    internal CommonConfig Config { get; private set; }
 
-    //public IClusterClient ClusterClient => _clusterClient ??= _serviceProvider.GetRequiredService<IClusterClient>();
+    internal DatabaseProvider DatabaseProvider { get; private set; }
 
-    //public DatabaseProvider DatabaseProvider { get; }
+    internal WarcraftClientProvider WarcraftClientProvider { get; private set; }
 
-    //internal QueuedUpdateHandler QueuedUpdateHandler => _queuedUpdateHandler ??= _serviceProvider.GetRequiredService<QueuedUpdateHandler>();
+    internal AccountServices AccountServices { get; private set; }
 
-    //internal WarcraftClientProvider WarcraftClientProvider { get; }
+    internal CharacterServices CharacterServices { get; private set; }
 
-    //public PubSubProvider PubSubProvider => _pubSubProvider ??= _serviceProvider.GetRequiredService<PubSubProvider>();
+    internal BlizzardUpdateHandler BlizzardUpdateHandler { get; private set; }
 }

@@ -2,23 +2,18 @@
 
 internal sealed class BlizzardCharacterUpdateHandler
 {
-    private readonly IServiceProvider _services;
-    private readonly DatabaseProvider _databaseProvider;
-    private readonly WarcraftClientProvider _warcraftClientProvider;
+    private readonly CommonServices _commonServices;
 
-    public BlizzardCharacterUpdateHandler(IServiceProvider services)
+    public BlizzardCharacterUpdateHandler(CommonServices commonServices)
     {
-        _services = services;
-        _databaseProvider = _services.GetRequiredService<DatabaseProvider>();
-        _warcraftClientProvider = _services.GetRequiredService<WarcraftClientProvider>();
+        _commonServices = commonServices;
     }
 
     public async Task<HttpStatusCode> TryUpdate(long id, DatabaseConnection database, CharacterRecord record)
     {
-        var characterServices = _services.GetRequiredService<CharacterServices>();
         var result = await TryUpdateInternal(id, database, record);
 
-        characterServices.OnCharacterUpdate(record);
+        _commonServices.CharacterServices.OnCharacterUpdate(record);
 
         return result;
     }
@@ -26,7 +21,7 @@ internal sealed class BlizzardCharacterUpdateHandler
     private async Task<HttpStatusCode> TryUpdateInternal(long id, DatabaseConnection database, CharacterRecord record)
     {
         var characterRef = new MoaRef(record.MoaRef);
-        using var client = _warcraftClientProvider.Get(record.BlizzardRegionId);
+        using var client = _commonServices.WarcraftClientProvider.Get(record.BlizzardRegionId);
         var characterSummary = await client.GetCharacterProfileSummaryAsync(characterRef.Realm, characterRef.Name, record.BlizzardProfileLastModified).ConfigureAwait(false);
         if (characterSummary.IsSuccess)
         {

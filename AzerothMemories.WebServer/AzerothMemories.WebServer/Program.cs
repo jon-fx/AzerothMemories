@@ -124,12 +124,15 @@ var commanderBuilder = builder.Services.AddCommander();
 builder.Services.UseRegisterAttributeScanner().RegisterFrom(typeof(CommonServices).Assembly);
 
 var app = builder.Build();
+
 using (var scope = app.Services.CreateScope())
 {
     var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
     runner.MigrateDown(0);
     runner.MigrateUp();
 }
+
+app.Services.GetRequiredService<CommonServices>().Initialize();
 
 if (app.Environment.IsDevelopment())
 {

@@ -4,19 +4,17 @@
 [RegisterAlias(typeof(ICharacterServices))]
 public class CharacterServices : ICharacterServices
 {
-    private readonly DatabaseProvider _databaseProvider;
-    private readonly BlizzardUpdateHandler _updateHandler;
+    private readonly CommonServices _commonServices;
 
-    public CharacterServices(IServiceProvider serviceProvider)
+    public CharacterServices(CommonServices commonServices)
     {
-        _databaseProvider = serviceProvider.GetRequiredService<DatabaseProvider>();
-        _updateHandler = serviceProvider.GetRequiredService<BlizzardUpdateHandler>();
+        _commonServices = commonServices;
     }
 
     [ComputeMethod]
     public virtual async Task<CharacterRecord> TryGetCharacterRecord(long id)
     {
-        await using var database = _databaseProvider.GetDatabase();
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var character = await database.Characters.Where(a => a.Id == id).FirstOrDefaultAsync();
 
         return character;
@@ -24,7 +22,7 @@ public class CharacterServices : ICharacterServices
 
     public async Task OnAccountUpdate(long accountId, string characterRef, AccountCharacter accountCharacter)
     {
-        await using var database = _databaseProvider.GetDatabase();
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         var characterRecord = await database.Characters.Where(x => x.MoaRef == characterRef).FirstOrDefaultAsync();
         if (characterRecord == null)
@@ -104,7 +102,7 @@ public class CharacterServices : ICharacterServices
             await updateQuery.UpdateAsync();
         }
 
-        await _updateHandler.TryUpdateCharacter(database, characterRecord);
+        await _commonServices.BlizzardUpdateHandler.TryUpdateCharacter(database, characterRecord);
 
         using var computed = Computed.Invalidate();
         _ = TryGetCharacterRecord(characterRecord.Id);
@@ -120,7 +118,7 @@ public class CharacterServices : ICharacterServices
     [ComputeMethod]
     public virtual async Task<Dictionary<long, string>> TryGetAllAccountCharacterIds(long accountId)
     {
-        await using var database = _databaseProvider.GetDatabase();
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         var query = database.Characters.Where(x => x.AccountId == accountId).Select(x => new { x.Id, x.MoaRef });
         var results = await query.ToDictionaryAsync(x => x.Id, x => x.MoaRef);
@@ -131,7 +129,7 @@ public class CharacterServices : ICharacterServices
     [ComputeMethod]
     public virtual async Task<Dictionary<long, CharacterViewModel>> TryGetAllAccountCharacters(long accountId)
     {
-        await using var database = _databaseProvider.GetDatabase();
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         var query = database.Characters.Where(x => x.AccountId == accountId);
         var results = await query.ToDictionaryAsync(x => x.Id, x => x.CreateViewModel());
@@ -141,31 +139,32 @@ public class CharacterServices : ICharacterServices
 
     public void OnCharacterUpdate(CharacterRecord characterRecord)
     {
+        OnCharacterUpdate(characterRecord.Id, characterRecord.AccountId);
+    }
+
+    private void OnCharacterUpdate(long characterId, long characterAccountId)
+    {
         using var computed = Computed.Invalidate();
-        _ = TryGetCharacterRecord(characterRecord.Id);
-        _ = TryGetAllAccountCharacters(characterRecord.AccountId);
-        _ = TryGetAllAccountCharacterIds(characterRecord.AccountId);
+        _ = TryGetCharacterRecord(characterId);
+        _ = TryGetAllAccountCharacters(characterAccountId);
+        _ = TryGetAllAccountCharacterIds(characterAccountId);
     }
 
     public async Task<bool> TryChangeCharacterAccountSync(Session session, long characterId, bool newValue, CancellationToken cancellationToken = default)
     {
-        //var accountRecord = await GetCurrentSessionAccountRecord(session, cancellationToken);
+        var accountRecord = await _commonServices.AccountServices.GetCurrentSessionAccountRecord(session, cancellationToken);
 
-        //await using var database = _databaseProvider.GetDatabase();
-        //var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.IsPrivate == !newValue).AsUpdatable()
-        //    .Set(x => x.IsPrivate, newValue)
-        //    .UpdateAsync(cancellationToken);
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        var updateResult = await database.Characters.Where(x => x.Id == characterId && x.AccountId == accountRecord.Id && x.AccountSync == !newValue).AsUpdatable()
+            .Set(x => x.AccountSync, newValue)
+            .UpdateAsync(cancellationToken);
 
-        //if (updateResult == 0)
-        //{
-        //    return !newValue;
-        //}
+        if (updateResult == 0)
+        {
+            return !newValue;
+        }
 
-        //using var computed = Computed.Invalidate();
-
-        //_ = TryGetAccountRecord(accountRecord.Id);
-        //_ = TryGetAccountRecordFusionId(accountRecord.FusionId);
-        //_ = TryGetAccountRecordUsername(accountRecord.Username);
+        OnCharacterUpdate(characterId, accountRecord.Id);
 
         return newValue;
     }

@@ -9,19 +9,17 @@ internal sealed class BlizzardUpdateHandler
     public const string CharacterQueue2 = "c-character";
     public const string GuildQueue1 = "d-guild";
 
-    private readonly IServiceProvider _services;
-    private readonly DatabaseProvider _databaseProvider;
+    private readonly CommonServices _commonServices;
     private readonly BlizzardAccountUpdateHandler _accountUpdateHandler;
     private readonly BlizzardCharacterUpdateHandler _characterUpdateHandler;
     private readonly BlizzardGuildUpdateHandler _guildUpdateHandler;
 
-    public BlizzardUpdateHandler(IServiceProvider services)
+    public BlizzardUpdateHandler(CommonServices commonServices)
     {
-        _services = services;
-        _databaseProvider = _services.GetRequiredService<DatabaseProvider>();
-        _accountUpdateHandler = new BlizzardAccountUpdateHandler(services);
-        _characterUpdateHandler = new BlizzardCharacterUpdateHandler(services);
-        _guildUpdateHandler = new BlizzardGuildUpdateHandler(services);
+        _commonServices = commonServices;
+        _accountUpdateHandler = new BlizzardAccountUpdateHandler(commonServices);
+        _characterUpdateHandler = new BlizzardCharacterUpdateHandler(commonServices);
+        _guildUpdateHandler = new BlizzardGuildUpdateHandler(commonServices);
     }
 
     public async Task TryUpdateAccount(DatabaseConnection database, AccountRecord record)
@@ -94,7 +92,7 @@ internal sealed class BlizzardUpdateHandler
     [Queue(AccountQueue1)]
     public async Task OnAccountUpdate(long id, PerformContext context)
     {
-        var record = await _services.GetRequiredService<AccountServices>().TryGetAccountRecord(id);
+        var record = await _commonServices.AccountServices.TryGetAccountRecord(id);
         if (record == null || context == null)
         {
 #if DEBUG
@@ -104,7 +102,7 @@ internal sealed class BlizzardUpdateHandler
             throw new NotImplementedException();
         }
 
-        await using var database = _databaseProvider.GetDatabase();
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var requiresUpdate = await OnUpdateStarted(database, record, context);
         if (!requiresUpdate)
         {
@@ -130,7 +128,7 @@ internal sealed class BlizzardUpdateHandler
 
     private async Task OnCharacterUpdate(long id, PerformContext context)
     {
-        var record = await _services.GetRequiredService<CharacterServices>().TryGetCharacterRecord(id);
+        var record = await _commonServices.CharacterServices.TryGetCharacterRecord(id);
         if (record == null || context == null)
         {
 #if DEBUG
@@ -139,7 +137,7 @@ internal sealed class BlizzardUpdateHandler
             throw new NotImplementedException();
         }
 
-        await using var database = _databaseProvider.GetDatabase();
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var requiresUpdate = await OnUpdateStarted(database, record, context);
         if (!requiresUpdate)
         {

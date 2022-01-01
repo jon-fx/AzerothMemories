@@ -2,25 +2,23 @@
 
 internal sealed class BlizzardAccountUpdateHandler
 {
-    private readonly IServiceProvider _services;
-    private readonly WarcraftClientProvider _warcraftClientProvider;
+    private readonly CommonServices _commonServices;
 
-    public BlizzardAccountUpdateHandler(IServiceProvider services)
+    public BlizzardAccountUpdateHandler(CommonServices commonServices)
     {
-        _services = services;
-        _warcraftClientProvider = _services.GetRequiredService<WarcraftClientProvider>();
+        _commonServices = commonServices;
     }
 
     public async Task<HttpStatusCode> TryUpdate(long id, DatabaseConnection database, AccountRecord record)
     {
         var tasks = new List<Task>();
-        var characterServices = _services.GetRequiredService<CharacterServices>();
-        var characters = await characterServices.TryGetAllAccountCharacterIds(id);
+        //var characterServices = .GetRequiredService<CharacterServices>();
+        var characters = await _commonServices.CharacterServices.TryGetAllAccountCharacterIds(id);
         var dbCharactersSet = characters.Values.ToHashSet();
         //var result = record.LastUpdateHttpResult;
         var apiCharactersSet = new HashSet<string>();
 
-        using var client = _warcraftClientProvider.Get(record.BlizzardRegionId);
+        using var client = _commonServices.WarcraftClientProvider.Get(record.BlizzardRegionId);
         var accountSummaryResult = await client.GetAccountProfile(record.BattleNetToken, 0 /*record.BlizzardAccountLastModified*/).ConfigureAwait(false);
         if (accountSummaryResult.IsSuccess)
         {
@@ -33,7 +31,7 @@ internal sealed class BlizzardAccountUpdateHandler
                     var characterRef = MoaRef.GetCharacterRef(record.BlizzardRegionId, accountCharacter.Realm.Slug, accountCharacter.Name, accountCharacter.Id);
 
                     apiCharactersSet.Add(characterRef.Full);
-                    tasks.Add(characterServices.OnAccountUpdate(id, characterRef.Full, accountCharacter));
+                    tasks.Add(_commonServices.CharacterServices.OnAccountUpdate(id, characterRef.Full, accountCharacter));
                 }
             }
 
@@ -43,7 +41,7 @@ internal sealed class BlizzardAccountUpdateHandler
             {
                 foreach (var characterRef in dbCharactersSet)
                 {
-                    tasks.Add(characterServices.OnCharacterDeleted(id, new MoaRef(characterRef).Id, characterRef));
+                    tasks.Add(_commonServices.CharacterServices.OnCharacterDeleted(id, new MoaRef(characterRef).Id, characterRef));
                 }
             }
         }
