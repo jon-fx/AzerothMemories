@@ -1,0 +1,9 @@
+﻿global using AzerothMemories.Blizzard;
+global using AzerothMemories.Common;
+global using AzerothMemories.Database.Seeder.Base;
+global using AzerothMemories.Database.Seeder.Seeders;
+global using AzerothMemories.WebServer.Blizzard;
+global using AzerothMemories.WebServer.Blizzard.Models;
+global using AzerothMemories.WebServer.Blizzard.Models.GameDataApi;
+global using Microsoft.Extensions.Logging;
+global using System.Text.Json;
