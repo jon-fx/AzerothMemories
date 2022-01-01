@@ -28,6 +28,7 @@ fusionClient.ConfigureHttpClientFactory((c, name, o) =>
 });
 
 fusionClient.AddReplicaService<IAccountServices>();
+fusionClient.AddReplicaService<ICharacterServices>();
 fusion.AddAuthentication().AddRestEaseClient().AddBlazor();
 
 //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });

@@ -1,7 +1,7 @@
 ﻿namespace AzerothMemories.WebServer.Services;
 
 [RegisterComputeService]
-[RegisterAlias(typeof(IAccountServices))]
+[RegisterAlias(typeof(ICharacterServices))]
 public class CharacterServices : ICharacterServices
 {
     private readonly DatabaseProvider _databaseProvider;
@@ -108,6 +108,7 @@ public class CharacterServices : ICharacterServices
 
         using var computed = Computed.Invalidate();
         _ = TryGetCharacterRecord(characterRecord.Id);
+        _ = TryGetAllAccountCharacters(characterRecord.AccountId);
         _ = TryGetAllAccountCharacterIds(characterRecord.AccountId);
     }
 
@@ -125,5 +126,47 @@ public class CharacterServices : ICharacterServices
         var results = await query.ToDictionaryAsync(x => x.Id, x => x.MoaRef);
 
         return results;
+    }
+
+    [ComputeMethod]
+    public virtual async Task<Dictionary<long, CharacterViewModel>> TryGetAllAccountCharacters(long accountId)
+    {
+        await using var database = _databaseProvider.GetDatabase();
+
+        var query = database.Characters.Where(x => x.AccountId == accountId);
+        var results = await query.ToDictionaryAsync(x => x.Id, x => x.CreateViewModel());
+
+        return results;
+    }
+
+    public void OnCharacterUpdate(CharacterRecord characterRecord)
+    {
+        using var computed = Computed.Invalidate();
+        _ = TryGetCharacterRecord(characterRecord.Id);
+        _ = TryGetAllAccountCharacters(characterRecord.AccountId);
+        _ = TryGetAllAccountCharacterIds(characterRecord.AccountId);
+    }
+
+    public async Task<bool> TryChangeCharacterAccountSync(Session session, long characterId, bool newValue, CancellationToken cancellationToken = default)
+    {
+        //var accountRecord = await GetCurrentSessionAccountRecord(session, cancellationToken);
+
+        //await using var database = _databaseProvider.GetDatabase();
+        //var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.IsPrivate == !newValue).AsUpdatable()
+        //    .Set(x => x.IsPrivate, newValue)
+        //    .UpdateAsync(cancellationToken);
+
+        //if (updateResult == 0)
+        //{
+        //    return !newValue;
+        //}
+
+        //using var computed = Computed.Invalidate();
+
+        //_ = TryGetAccountRecord(accountRecord.Id);
+        //_ = TryGetAccountRecordFusionId(accountRecord.FusionId);
+        //_ = TryGetAccountRecordUsername(accountRecord.Username);
+
+        return newValue;
     }
 }

@@ -5,10 +5,12 @@ namespace AzerothMemories.WebBlazor.Pages
     public sealed class AccountManagePageViewModel
     {
         private readonly IAccountServices _accountServices;
+        private readonly ICharacterServices _characterServices;
 
-        public AccountManagePageViewModel(IAccountServices accountServices)
+        public AccountManagePageViewModel(IAccountServices accountServices, ICharacterServices characterServices)
         {
             _accountServices = accountServices;
+            _characterServices = characterServices;
 
             AllAvatars = new List<(string, string)>();
         }
@@ -36,10 +38,10 @@ namespace AzerothMemories.WebBlazor.Pages
                 AllAvatars = new List<(string, string)> { none, Avatar };
             }
 
-            //foreach (var character in AccountViewModel.CharactersArray)
-            //{
-            //    AllAvatars.Add((character.AvatarLinkWithFallBack, character.Name));
-            //}
+            foreach (var character in AccountViewModel.CharactersArray)
+            {
+                AllAvatars.Add((character.AvatarLinkWithFallBack, character.Name));
+            }
         }
 
         public string NewUsername { get; set; }
@@ -184,6 +186,27 @@ namespace AzerothMemories.WebBlazor.Pages
         public async Task OnChangeAvatarClicked()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task OnAccountSyncToggleChanged(CharacterViewModel character, bool newValue)
+        {
+            if (AccountViewModel == null)
+            {
+                return;
+            }
+
+            if (character.AccountSync != newValue)
+            {
+                var result = await _characterServices.TryChangeCharacterAccountSync(null, character.Id, newValue);
+                if (character.AccountSync == result)
+                {
+                    return;
+                }
+
+                character.AccountSync = newValue;
+
+                await OnViewModelChanged.InvokeAsync();
+            }
         }
     }
 }

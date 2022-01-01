@@ -15,9 +15,17 @@ internal sealed class BlizzardCharacterUpdateHandler
 
     public async Task<HttpStatusCode> TryUpdate(long id, DatabaseConnection database, CharacterRecord record)
     {
-        var characterRef = new MoaRef(record.MoaRef);
-        //var characterServices = _services.GetRequiredService<CharacterServices>();
+        var characterServices = _services.GetRequiredService<CharacterServices>();
+        var result = await TryUpdateInternal(id, database, record);
 
+        characterServices.OnCharacterUpdate(record);
+
+        return result;
+    }
+
+    private async Task<HttpStatusCode> TryUpdateInternal(long id, DatabaseConnection database, CharacterRecord record)
+    {
+        var characterRef = new MoaRef(record.MoaRef);
         using var client = _warcraftClientProvider.Get(record.BlizzardRegionId);
         var characterSummary = await client.GetCharacterProfileSummaryAsync(characterRef.Realm, characterRef.Name, record.BlizzardProfileLastModified).ConfigureAwait(false);
         if (characterSummary.IsSuccess)

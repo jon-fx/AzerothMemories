@@ -4,7 +4,7 @@ public class AccountViewModel
 {
     [JsonInclude] public long Id;
 
-    [JsonInclude] public string Ref;
+    //[JsonInclude] public string Ref;
 
     [JsonInclude] public string Username;
 
@@ -17,6 +17,8 @@ public class AccountViewModel
     [JsonInclude] public string Avatar;
 
     [JsonInclude] public DateTimeOffset CreatedDateTime;
+
+    [JsonInclude] public CharacterViewModel[] CharactersArray = Array.Empty<CharacterViewModel>();
 
     public string GetAvatarText()
     {

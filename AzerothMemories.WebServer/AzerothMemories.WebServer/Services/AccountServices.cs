@@ -7,12 +7,14 @@ public class AccountServices : IAccountServices
     private readonly IAuth _auth;
     private readonly BlizzardUpdateHandler _updateHandler;
     private readonly DatabaseProvider _databaseProvider;
+    private readonly CharacterServices _characterServices;
 
     public AccountServices(IServiceProvider serviceProvider)
     {
         _auth = serviceProvider.GetRequiredService<IAuth>();
         _updateHandler = serviceProvider.GetRequiredService<BlizzardUpdateHandler>();
         _databaseProvider = serviceProvider.GetRequiredService<DatabaseProvider>();
+        _characterServices = serviceProvider.GetRequiredService<CharacterServices>();
     }
 
     [CommandHandler(IsFilter = true, Priority = 1)]
@@ -202,7 +204,8 @@ public class AccountServices : IAccountServices
     {
         var accountRecord = await GetCurrentSessionAccountRecord(session, cancellationToken);
 
-        var viewModel = accountRecord.CreateActiveAccountViewModel();
+        var characters = await _characterServices.TryGetAllAccountCharacters(accountRecord.Id);
+        var viewModel = accountRecord.CreateActiveAccountViewModel(characters);
 
         return viewModel;
     }

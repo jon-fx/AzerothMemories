@@ -99,9 +99,56 @@
                         <MudTh>Sync</MudTh>
                         <MudTh>Result</MudTh>
                     </tr>
-                </thead>
+                </thead> 
                 <tbody>
-                </tbody>
+                        @{
+                            var characters = _viewModel.AccountViewModel.CharactersArray.OrderByDescending(x => x.Level).ThenBy(x => x.Name).ToArray();
+                            @foreach (var row in characters)
+                            {
+                                <tr @key="row.Id">
+                                    <MudTd>
+                                        <MudAvatar Size="Size.Medium" Image="@row.AvatarLinkWithFallBack" />
+                                    </MudTd>
+                                    <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                                        <MudTd DataLabel="Name">
+                                            <CharacterNameLinkComponent CharacterName="@row.Name"
+                                                                CharacterClass="@row.Class"
+                                                                CharacterRealmId="@row.RealmId"
+                                                                CharacterRegionInfo="@row.RegionId.ToInfo()" />
+                                        </MudTd>
+                                        <MudTd DataLabel="Realm">
+                                            <RealmLinkComponent BlizzardRealmId="@row.RealmId" />
+                                        </MudTd>
+
+                                        <MudTd DataLabel="Race">
+                                        </MudTd>
+
+                                        <MudTd DataLabel="Class">
+                                        </MudTd>
+
+                                        <MudTd DataLabel="Level">
+                                            @row.Level
+                                        </MudTd>
+                                    </MudHidden>
+                                    <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
+                                        <MudTd DataLabel="Name">
+                                        </MudTd>
+                                    </MudHidden>
+
+                                    <MudTd DataLabel="Sync">
+                                        <MudToggleIconButton Toggled="@row.AccountSync"
+                                                             Icon="@Icons.Material.Filled.HourglassDisabled" Color="@Color.Error"
+                                                             ToggledIcon="@Icons.Material.Filled.HourglassBottom" ToggledColor="@Color.Success"
+                                                             ToggledChanged=@(x => _viewModel.OnAccountSyncToggleChanged(row, x)) />
+                                    </MudTd>
+
+                                    <MudTd DataLabel="Result">
+                                        @row.LastUpdateHttpResult
+                                    </MudTd>
+                                </tr>
+                            }
+                        }
+                    </tbody>
             </MudSimpleTable>
         </MudCardContent>
     </MudCard>

@@ -1,0 +1,5 @@
+﻿@code {
+    [Parameter] public Typo Typo { get; init; } = Typo.body1;
+    [Parameter] public bool LinkDisabled { get; init; }
+    [Parameter, EditorRequired] public int BlizzardRealmId { get; init; }
+}
