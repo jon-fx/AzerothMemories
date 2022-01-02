@@ -101,6 +101,7 @@ internal sealed class MoaResourceWriter
 
         var realmData = await database.BlizzardData.Where(x => x.TagType == PostTagType.Realm).OrderBy(x => x.TagId).ToListAsync();
         var characterClassData = await database.BlizzardData.Where(x => x.TagType == PostTagType.CharacterClass).OrderBy(x => x.TagId).ToListAsync();
+        var characterRaceData = await database.BlizzardData.Where(x => x.TagType == PostTagType.CharacterRace).OrderBy(x => x.TagId).ToListAsync();
         var characterSpecData = await database.BlizzardData.Where(x => x.TagType == PostTagType.CharacterClassSpecialization).OrderBy(x => x.TagId).ToListAsync();
 
         var noneDict = new Dictionary<string, string>();
@@ -114,6 +115,11 @@ internal sealed class MoaResourceWriter
             SetExtensions.Update(record.Key, record.Name, clientSideDataDict);
 
             noneDict.Add($"RealmSlug-{record.TagId}", record.Media);
+        }
+
+        foreach (var record in characterRaceData)
+        {
+            SetExtensions.Update(record.Key, record.Name, clientSideDataDict);
         }
 
         foreach (var record in characterClassData)

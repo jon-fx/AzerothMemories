@@ -1726,6 +1726,81 @@
   <data name="Realm-3738" xml:space="preserve">
     <value>US-Saurfang</value>
   </data>
+  <data name="CharacterRace-1" xml:space="preserve">
+    <value>Human</value>
+  </data>
+  <data name="CharacterRace-2" xml:space="preserve">
+    <value>Orc</value>
+  </data>
+  <data name="CharacterRace-3" xml:space="preserve">
+    <value>Dwarf</value>
+  </data>
+  <data name="CharacterRace-4" xml:space="preserve">
+    <value>Night Elf</value>
+  </data>
+  <data name="CharacterRace-5" xml:space="preserve">
+    <value>Undead</value>
+  </data>
+  <data name="CharacterRace-6" xml:space="preserve">
+    <value>Tauren</value>
+  </data>
+  <data name="CharacterRace-7" xml:space="preserve">
+    <value>Gnome</value>
+  </data>
+  <data name="CharacterRace-8" xml:space="preserve">
+    <value>Troll</value>
+  </data>
+  <data name="CharacterRace-9" xml:space="preserve">
+    <value>Goblin</value>
+  </data>
+  <data name="CharacterRace-10" xml:space="preserve">
+    <value>Blood Elf</value>
+  </data>
+  <data name="CharacterRace-11" xml:space="preserve">
+    <value>Draenei</value>
+  </data>
+  <data name="CharacterRace-22" xml:space="preserve">
+    <value>Worgen</value>
+  </data>
+  <data name="CharacterRace-24" xml:space="preserve">
+    <value>Pandaren</value>
+  </data>
+  <data name="CharacterRace-25" xml:space="preserve">
+    <value>Pandaren</value>
+  </data>
+  <data name="CharacterRace-26" xml:space="preserve">
+    <value>Pandaren</value>
+  </data>
+  <data name="CharacterRace-27" xml:space="preserve">
+    <value>Nightborne</value>
+  </data>
+  <data name="CharacterRace-28" xml:space="preserve">
+    <value>Highmountain Tauren</value>
+  </data>
+  <data name="CharacterRace-29" xml:space="preserve">
+    <value>Void Elf</value>
+  </data>
+  <data name="CharacterRace-30" xml:space="preserve">
+    <value>Lightforged Draenei</value>
+  </data>
+  <data name="CharacterRace-31" xml:space="preserve">
+    <value>Zandalari Troll</value>
+  </data>
+  <data name="CharacterRace-32" xml:space="preserve">
+    <value>Kul Tiran</value>
+  </data>
+  <data name="CharacterRace-34" xml:space="preserve">
+    <value>Dark Iron Dwarf</value>
+  </data>
+  <data name="CharacterRace-35" xml:space="preserve">
+    <value>Vulpera</value>
+  </data>
+  <data name="CharacterRace-36" xml:space="preserve">
+    <value>Mag'har Orc</value>
+  </data>
+  <data name="CharacterRace-37" xml:space="preserve">
+    <value>Mechagnome</value>
+  </data>
   <data name="CharacterClass-1" xml:space="preserve">
     <value>Warrior</value>
   </data>
