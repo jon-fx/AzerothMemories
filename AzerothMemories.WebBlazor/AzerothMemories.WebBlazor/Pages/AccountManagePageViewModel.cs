@@ -1,23 +1,15 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace AzerothMemories.WebBlazor.Pages
+﻿namespace AzerothMemories.WebBlazor.Pages
 {
-    public sealed class AccountManagePageViewModel
+    public sealed class AccountManagePageViewModel : ViewModelBase
     {
-        private readonly IAccountServices _accountServices;
-        private readonly ICharacterServices _characterServices;
-
-        public AccountManagePageViewModel(IAccountServices accountServices, ICharacterServices characterServices)
+        public AccountManagePageViewModel()
         {
-            _accountServices = accountServices;
-            _characterServices = characterServices;
-
             AllAvatars = new List<(string, string)>();
         }
 
-        public async Task ComputeState(CancellationToken cancellationToken)
+        public override async Task ComputeState(CancellationToken cancellationToken)
         {
-            AccountViewModel = await _accountServices.TryGetAccount(null, cancellationToken);
+            AccountViewModel = await Services.AccountServices.TryGetAccount(null, cancellationToken);
 
             if (AccountViewModel == null)
             {
@@ -67,8 +59,6 @@ namespace AzerothMemories.WebBlazor.Pages
 
         public List<(string, string)> AllAvatars { get; private set; }
 
-        public EventCallback OnViewModelChanged { get; set; }
-
         public Task OnNewUsernameTextChanged(string username)
         {
             return CheckValidUsername(username);
@@ -93,7 +83,7 @@ namespace AzerothMemories.WebBlazor.Pages
             }
             else if (DatabaseHelpers.IsValidAccountName(username))
             {
-                isValid = await _accountServices.TryReserveUsername(null, username);
+                isValid = await Services.AccountServices.TryReserveUsername(null, username);
                 isVisible = isValid;
             }
 
@@ -145,13 +135,15 @@ namespace AzerothMemories.WebBlazor.Pages
                 return;
             }
 
-            var result = await _accountServices.TryChangeUsername(null, NewUsername);
+            var result = await Services.AccountServices.TryChangeUsername(null, NewUsername);
             if (result)
             {
                 AccountViewModel.Username = NewUsername;
             }
 
             ChangeUsernameButtonVisible = false;
+
+            await OnViewModelChanged.InvokeAsync();
         }
 
         public async Task OnIsPrivateChanged(bool newValue)
@@ -161,7 +153,7 @@ namespace AzerothMemories.WebBlazor.Pages
                 return;
             }
 
-            var result = await _accountServices.TryChangeIsPrivate(null, newValue);
+            var result = await Services.AccountServices.TryChangeIsPrivate(null, newValue);
             if (AccountViewModel.IsPrivate == result)
             {
                 return;
@@ -179,7 +171,7 @@ namespace AzerothMemories.WebBlazor.Pages
                 return;
             }
 
-            var result = await _accountServices.TryChangeBattleTagVisibility(null, newValue);
+            var result = await Services.AccountServices.TryChangeBattleTagVisibility(null, newValue);
             if (AccountViewModel.BattleTagIsPublic == result)
             {
                 return;
@@ -204,7 +196,7 @@ namespace AzerothMemories.WebBlazor.Pages
 
             if (character.AccountSync != newValue)
             {
-                var result = await _characterServices.TryChangeCharacterAccountSync(null, character.Id, newValue);
+                var result = await Services.CharacterServices.TryChangeCharacterAccountSync(null, character.Id, newValue);
                 if (character.AccountSync == result)
                 {
                     return;

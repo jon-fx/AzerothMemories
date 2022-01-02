@@ -1,6 +1,4 @@
-﻿using AzerothMemories.WebServer.Database.Records;
-
-namespace AzerothMemories.Database.Seeder.Base;
+﻿namespace AzerothMemories.Database.Seeder.Base;
 
 internal sealed class WowToolsData
 {

@@ -1,7 +1,4 @@
-﻿using AzerothMemories.WebBlazor.Pages;
-using AzerothMemories.WebBlazor.Services;
-
-namespace AzerothMemories.WebBlazor
+﻿namespace AzerothMemories.WebBlazor
 {
     public static class ProgramEx
     {
@@ -11,7 +8,9 @@ namespace AzerothMemories.WebBlazor
             services.AddLocalization();
 
             services.AddSingleton<TimeProvider>();
-            services.AddSingleton<AccountManagePageViewModel>();
+            //services.AddSingleton<IndexPageViewModel>();
+            services.AddSingleton<ActiveAccountServices>();
+            //services.AddSingleton<AccountManagePageViewModel>();
         }
     }
 }

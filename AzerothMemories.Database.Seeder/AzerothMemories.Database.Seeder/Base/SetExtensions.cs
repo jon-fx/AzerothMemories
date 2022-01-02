@@ -1,5 +1,4 @@
-﻿using AzerothMemories.WebServer.Database.Records;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace AzerothMemories.Database.Seeder.Base;
 

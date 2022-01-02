@@ -1,8 +1,14 @@
 ﻿@page "/"
-@inject IStringLocalizer<BlizzardResources> _stringLocalizer;
+@inherits MoaComponentBase<IndexPageViewModel>
+
+<AuthorizeView>
+    <Authorized>
+        <AccountHeaderCardComponent AccountViewModel="@ViewModel.AccountViewModel" />
+    </Authorized>
+</AuthorizeView>
 
 @for (var i = 0; i < 13; i++)
 {
     var i1 = i;
-    <MudText Class=@($"wowclass-{i1}")>@_stringLocalizer[$"CharacterClass-{i1}"]</MudText>
+    <MudText Class=@($"wowclass-{i1}")>@StringLocalizer[$"CharacterClass-{i1}"]</MudText>
 }

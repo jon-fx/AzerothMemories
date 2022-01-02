@@ -2,9 +2,9 @@
 
 public sealed class CommonConfig
 {
-    public string DatabaseConnectionString { get; } = @"***REMOVED***";
+    public string DatabaseConnectionString { get; } = "***REMOVED***";
 
-    public string HangfireConnectionString { get; } = @"***REMOVED***";
+    public string HangfireConnectionString { get; } = "***REMOVED***";
 
     //public string BlobStorageConnectionString { get; } = "***REMOVED***";
 

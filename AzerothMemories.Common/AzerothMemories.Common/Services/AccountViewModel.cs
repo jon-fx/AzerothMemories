@@ -20,6 +20,21 @@ public class AccountViewModel
 
     [JsonInclude] public CharacterViewModel[] CharactersArray = Array.Empty<CharacterViewModel>();
 
+    public string GetDisplayName()
+    {
+        if (!string.IsNullOrWhiteSpace(Username))
+        {
+            return Username;
+        }
+
+        if (!string.IsNullOrWhiteSpace(BattleTag))
+        {
+            return BattleTag;
+        }
+
+        return "Unknown";
+    }
+
     public string GetAvatarText()
     {
         if (!string.IsNullOrWhiteSpace(Username))
