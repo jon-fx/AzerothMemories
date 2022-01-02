@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzerothMemories.Common", "..\AzerothMemories.Common\AzerothMemories.Common\AzerothMemories.Common.csproj", "{62C3558D-78F4-4040-AD5B-173397999116}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzerothMemories.Database.Seeder", "..\AzerothMemories.Database.Seeder\AzerothMemories.Database.Seeder\AzerothMemories.Database.Seeder.csproj", "{322F0108-E401-4064-A796-6760379C095D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzerothMemories.WebBlazor", "..\AzerothMemories.WebBlazor\AzerothMemories.WebBlazor\AzerothMemories.WebBlazor.csproj", "{D6411883-563E-4188-820F-78A44C6FA174}"
@@ -17,10 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{62C3558D-78F4-4040-AD5B-173397999116}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{62C3558D-78F4-4040-AD5B-173397999116}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{62C3558D-78F4-4040-AD5B-173397999116}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{62C3558D-78F4-4040-AD5B-173397999116}.Release|Any CPU.Build.0 = Release|Any CPU
 		{322F0108-E401-4064-A796-6760379C095D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{322F0108-E401-4064-A796-6760379C095D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{322F0108-E401-4064-A796-6760379C095D}.Release|Any CPU.ActiveCfg = Release|Any CPU

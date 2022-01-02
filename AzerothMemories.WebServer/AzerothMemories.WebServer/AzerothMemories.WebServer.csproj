@@ -30,7 +30,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\AzerothMemories.Common\AzerothMemories.Common\AzerothMemories.Common.csproj" />
         <ProjectReference Include="..\..\AzerothMemories.WebBlazor\AzerothMemories.WebBlazor\AzerothMemories.WebBlazor.csproj" />
     </ItemGroup>
 

@@ -11,7 +11,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\AzerothMemories.Common\AzerothMemories.Common\AzerothMemories.Common.csproj" />
         <ProjectReference Include="..\..\AzerothMemories.WebServer\AzerothMemories.WebServer\AzerothMemories.WebServer.csproj" />
     </ItemGroup>
 
