@@ -18,29 +18,36 @@ namespace AzerothMemories.WebBlazor.Pages
         public async Task ComputeState(CancellationToken cancellationToken)
         {
             AccountViewModel = await _accountServices.TryGetAccount(null, cancellationToken);
-            NewUsername = AccountViewModel.Username;
-            NewUsernameTextBoxAdornmentColor = Color.Success;
-            NewUsernameTextBoxAdornmentIcon = Icons.Filled.Check;
 
-            //SocialLinks = AccountViewModel.SocialLinks;
-            //SocialLinksAdornmentIcons = new string[SocialLinks.Length];
-            //SocialLinksAdornmentColors = new Color[SocialLinks.Length];
-
-            var none = ("", "None");
-            if (AccountViewModel.Avatar == null)
+            if (AccountViewModel == null)
             {
-                Avatar = none;
-                AllAvatars = new List<(string, string)> { none };
             }
             else
             {
-                Avatar = (AccountViewModel.Avatar, "Current");
-                AllAvatars = new List<(string, string)> { none, Avatar };
-            }
+                NewUsername = AccountViewModel.Username;
+                NewUsernameTextBoxAdornmentColor = Color.Success;
+                NewUsernameTextBoxAdornmentIcon = Icons.Filled.Check;
 
-            foreach (var character in AccountViewModel.CharactersArray)
-            {
-                AllAvatars.Add((character.AvatarLinkWithFallBack, character.Name));
+                //SocialLinks = AccountViewModel.SocialLinks;
+                //SocialLinksAdornmentIcons = new string[SocialLinks.Length];
+                //SocialLinksAdornmentColors = new Color[SocialLinks.Length];
+
+                var none = ("", "None");
+                if (AccountViewModel.Avatar == null)
+                {
+                    Avatar = none;
+                    AllAvatars = new List<(string, string)> { none };
+                }
+                else
+                {
+                    Avatar = (AccountViewModel.Avatar, "Current");
+                    AllAvatars = new List<(string, string)> { none, Avatar };
+                }
+
+                foreach (var character in AccountViewModel.CharactersArray)
+                {
+                    AllAvatars.Add((character.AvatarLinkWithFallBack, character.Name));
+                }
             }
         }
 

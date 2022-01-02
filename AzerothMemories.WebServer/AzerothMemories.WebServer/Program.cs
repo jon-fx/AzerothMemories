@@ -1,3 +1,4 @@
+using AzerothMemories.WebBlazor;
 using AzerothMemories.WebServer.Database.Migrations;
 using FluentMigrator.Runner;
 using Hangfire.PostgreSql;
@@ -10,7 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-builder.Services.AddMudServices();
+ProgramEx.Initialize(builder.Services);
+
+//builder.Services.AddMudServices();
+//builder.Services.AddLocalization();
 
 builder.Services.AddRazorPages();
 

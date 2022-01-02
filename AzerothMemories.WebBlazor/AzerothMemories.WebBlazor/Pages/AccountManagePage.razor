@@ -1,6 +1,7 @@
 ﻿@page "/accountmanage"
 @inherits ComputedStateComponent<AccountManagePageViewModel>
 @inject AccountManagePageViewModel _viewModel;
+@inject IStringLocalizer<BlizzardResources>  _stringLocalizer;
 @implements IDisposable
 
 <PageTitle>Manage Account - Memories of Azeroth</PageTitle>
@@ -121,9 +122,11 @@
                                         </MudTd>
 
                                         <MudTd DataLabel="Race">
+                                            @_stringLocalizer[$"CharacterRace-{row.Race}"]
                                         </MudTd>
 
                                         <MudTd DataLabel="Class">
+                                            <MudText Class=@($"wowclass-{row.Class}")>@_stringLocalizer[$"CharacterClass-{row.Class}"]</MudText>
                                         </MudTd>
 
                                         <MudTd DataLabel="Level">
@@ -132,6 +135,17 @@
                                     </MudHidden>
                                     <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
                                         <MudTd DataLabel="Name">
+                                            <CharacterNameLinkComponent CharacterName="@row.Name"
+                                                                        CharacterClass="@row.Class"
+                                                                        CharacterRealmId="@row.RealmId"
+                                                                        CharacterRegionInfo="@row.RegionId.ToInfo()" />
+
+                                            &nbsp;
+
+                                            <RealmLinkComponent BlizzardRealmId="@row.RealmId" /> <br />
+
+                                            <MudText Class="d-inline">@row.Level @_stringLocalizer[$"CharacterRace-{row.Race}"]</MudText>
+                                            <MudText Class=@($"d-inline wowclass-{row.Class}")>@_stringLocalizer[$"CharacterClass-{row.Class}"]</MudText>
                                         </MudTd>
                                     </MudHidden>
 

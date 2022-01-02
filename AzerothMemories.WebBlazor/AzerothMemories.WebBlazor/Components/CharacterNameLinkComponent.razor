@@ -1,11 +1,10 @@
-﻿@using AzerothMemories.Blizzard
-@*@inject StringLocalizer _stringLocalizer*@
+﻿@inject IStringLocalizer<BlizzardResources> _stringLocalizer
 
 @if (CharacterRealmId > 0)
 {
-@*    <a href="character\@CharacterRegionInfo.TwoLetters\@_stringLocalizer[$"RealmSlug-{CharacterRealmId}"]\@CharacterName">
-    </a>*@
-    <CharacterNameComponent Typo="@Typo" CharacterName="@CharacterName" CharacterClass="@CharacterClass" />
+    <a href="character\@CharacterRegionInfo.TwoLetters\@_stringLocalizer[$"RealmSlug-{CharacterRealmId}"]\@CharacterName">
+        <CharacterNameComponent Typo="@Typo" CharacterName="@CharacterName" CharacterClass="@CharacterClass" />
+    </a>
 }
 else if (!string.IsNullOrWhiteSpace(CharacterRealmSlug))
 {

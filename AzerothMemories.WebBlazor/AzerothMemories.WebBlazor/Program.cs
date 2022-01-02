@@ -1,13 +1,15 @@
-using AzerothMemories.WebBlazor.Pages;
-using AzerothMemories.WebBlazor.Services;
+using AzerothMemories.WebBlazor;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddMudServices();
+ProgramEx.Initialize(builder.Services);
 
-builder.Services.AddSingleton<TimeProvider>();
-builder.Services.AddSingleton<AccountManagePageViewModel>();
+//builder.Services.AddMudServices();
+//builder.Services.AddLocalization();
+
+//builder.Services.AddSingleton<TimeProvider>();
+//builder.Services.AddSingleton<AccountManagePageViewModel>();
 
 var baseUri = new Uri(builder.HostEnvironment.BaseAddress);
 var apiBaseUri = new Uri($"{baseUri}api/");

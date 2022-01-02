@@ -62,3 +62,106 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+.wowclass-1,
+.wowclass-1:hover {
+    color: #c69b6d
+}
+
+.wowclass-2,
+.wowclass-2:hover {
+    color: #f48cba
+}
+
+.wowclass-3,
+.wowclass-3:hover {
+    color: #aad372
+}
+
+.wowclass-4,
+.wowclass-4:hover {
+    color: #fff468
+}
+
+.wowclass-5,
+.wowclass-5:hover {
+    color: #f0ebe0
+}
+
+.wowclass-6,
+.wowclass-6:hover {
+    color: #c41e3b
+}
+
+.wowclass-7,
+.wowclass-7:hover {
+    color: #2359ff
+}
+
+.wowclass-8,
+.wowclass-8:hover {
+    color: #68ccef
+}
+
+.wowclass-9,
+.wowclass-9:hover {
+    color: #9382c9
+}
+
+.wowclass-10,
+.wowclass-10:hover {
+    color: #00ffba
+}
+
+.wowclass-11,
+.wowclass-11:hover {
+    color: #ff7c0a
+}
+
+.wowclass-12,
+.wowclass-12:hover {
+    color: #a330c9
+}
+
+.card {
+}
+
+    .card a {
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+        .card a:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .card a.cardlink2 {
+            font-weight: normal;
+        }
+
+            .card a.cardlink2:hover {
+            }
+
+.postCard {
+    opacity: .9;
+}
+
+    .postCard:hover {
+        opacity: 1;
+    }
+
+.postIndent {
+    margin-left: 50px;
+}
+
+.cardLinkText {
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+}
+
+    .cardLinkText:hover {
+        text-decoration: underline;
+        cursor: pointer;
+    }

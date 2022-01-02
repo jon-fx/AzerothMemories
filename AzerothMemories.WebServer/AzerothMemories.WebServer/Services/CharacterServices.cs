@@ -153,6 +153,10 @@ public class CharacterServices : ICharacterServices
     public async Task<bool> TryChangeCharacterAccountSync(Session session, long characterId, bool newValue, CancellationToken cancellationToken = default)
     {
         var accountRecord = await _commonServices.AccountServices.GetCurrentSessionAccountRecord(session, cancellationToken);
+        if (accountRecord == null)
+        {
+            return false;
+        }
 
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var updateResult = await database.Characters.Where(x => x.Id == characterId && x.AccountId == accountRecord.Id && x.AccountSync == !newValue).AsUpdatable()

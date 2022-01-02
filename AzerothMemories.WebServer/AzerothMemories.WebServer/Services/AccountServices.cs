@@ -197,6 +197,10 @@ public class AccountServices : IAccountServices
     public virtual async Task<ActiveAccountViewModel> TryGetAccount(Session session, CancellationToken cancellationToken = default)
     {
         var accountRecord = await GetCurrentSessionAccountRecord(session, cancellationToken);
+        if (accountRecord == null)
+        {
+            return null;
+        }
 
         var characters = await _commonServices.CharacterServices.TryGetAllAccountCharacters(accountRecord.Id);
         var viewModel = accountRecord.CreateActiveAccountViewModel(characters);
@@ -255,6 +259,11 @@ public class AccountServices : IAccountServices
         }
 
         var accountRecord = await GetCurrentSessionAccountRecord(session, cancellationToken);
+        if (accountRecord == null)
+        {
+            return false;
+        }
+
         var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.Username == accountRecord.Username).AsUpdatable()
             .Set(x => x.Username, newUsername)
             .Set(x => x.UsernameSearchable, DatabaseHelpers.GetSearchableName(newUsername))
@@ -278,6 +287,10 @@ public class AccountServices : IAccountServices
     public async Task<bool> TryChangeIsPrivate(Session session, bool newValue, CancellationToken cancellationToken = default)
     {
         var accountRecord = await GetCurrentSessionAccountRecord(session, cancellationToken);
+        if (accountRecord == null)
+        {
+            return false;
+        }
 
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.IsPrivate == !newValue).AsUpdatable()
@@ -301,6 +314,10 @@ public class AccountServices : IAccountServices
     public async Task<bool> TryChangeBattleTagVisibility(Session session, bool newValue, CancellationToken cancellationToken = default)
     {
         var accountRecord = await GetCurrentSessionAccountRecord(session, cancellationToken);
+        if (accountRecord == null)
+        {
+            return false;
+        }
 
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.BattleTagIsPublic == !newValue).AsUpdatable()
@@ -325,6 +342,10 @@ public class AccountServices : IAccountServices
     public virtual async Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, long timeStamp, int diffInSeconds, CancellationToken cancellationToken = default)
     {
         var accountRecord = await GetCurrentSessionAccountRecord(session, cancellationToken);
+        if (accountRecord == null)
+        {
+            return Array.Empty<PostTagInfo>();
+        }
 
         diffInSeconds = Math.Clamp(diffInSeconds, 0, 300);
 
@@ -355,8 +376,18 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<AccountRecord> GetCurrentSessionAccountRecord(Session session, CancellationToken cancellationToken = default)
     {
+        if (session == null)
+        {
+            return null;
+        }
+
         var user = await _commonServices.Auth.GetUser(session, cancellationToken);
-        user.MustBeAuthenticated();
+        if (user == null || user.IsAuthenticated == false)
+        {
+            return null;
+        }
+
+        //user.MustBeAuthenticated();
 
         var accountRecord = await TryGetAccountRecordFusionId(user.Id.Value);
         if (accountRecord == null)
