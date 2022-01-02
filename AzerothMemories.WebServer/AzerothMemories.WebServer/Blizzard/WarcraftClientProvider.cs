@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Blizzard;
+﻿using AzerothMemories.WebBlazor.Blizzard;
+
+namespace AzerothMemories.WebServer.Blizzard;
 
 public sealed class WarcraftClientProvider
 {

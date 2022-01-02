@@ -1,5 +1,6 @@
 ﻿using AzerothMemories.WebServer.Blizzard.Data;
 using System.Net.Http.Headers;
+using AzerothMemories.WebBlazor.Blizzard;
 
 namespace AzerothMemories.WebServer.Blizzard;
 

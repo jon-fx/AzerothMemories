@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Security.Claims;
+using AzerothMemories.WebBlazor.Blizzard;
 
 namespace AzerothMemories.WebServer.Common;
 

@@ -7,6 +7,7 @@
             services.AddMudServices();
             services.AddLocalization();
 
+            services.AddSingleton<TagHelpers>();
             services.AddSingleton<TimeProvider>();
             //services.AddSingleton<IndexPageViewModel>();
             services.AddSingleton<ActiveAccountServices>();

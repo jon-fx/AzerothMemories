@@ -1,4 +1,7 @@
-﻿namespace AzerothMemories.WebServer.Services
+﻿using AzerothMemories.WebBlazor.Services;
+using AzerothMemories.WebBlazor.ViewModels;
+
+namespace AzerothMemories.WebServer.Services
 {
     public static class RecordToViewModels
     {

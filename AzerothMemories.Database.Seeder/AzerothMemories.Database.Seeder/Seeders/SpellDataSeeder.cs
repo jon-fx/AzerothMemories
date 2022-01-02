@@ -24,7 +24,7 @@ internal sealed class SpellDataSeeder : GenericBase<SpellDataSeeder>
                 else if (WowTools.TryGetIconName(iconId, out var iconName))
                 {
                     var newValue = $"https://render.worldofwarcraft.com/eu/icons/56/{iconName}.jpg";
-                    ResourceWriter.AddServerSideLocalizationMedia(PostTagType.Spell, reference.Id,  newValue);
+                    ResourceWriter.AddServerSideLocalizationMedia(PostTagType.Spell, reference.Id, newValue);
                 }
                 else
                 {

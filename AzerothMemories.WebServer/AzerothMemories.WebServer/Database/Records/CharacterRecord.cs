@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Database.Records;
+﻿using AzerothMemories.WebBlazor.Blizzard;
+
+namespace AzerothMemories.WebServer.Database.Records;
 
 [Table("Characters")]
 public class CharacterRecord : IBlizzardGrainUpdateRecord

@@ -1,0 +1,105 @@
+﻿@using AzerothMemories.WebBlazor.Common
+<MudDatePicker @ref="_datePicker" Date="@_postDate" OpenTo="OpenTo.Year" Label="Date" MinDate="@_minDateTime" MaxDate="System.DateTime.Now" AutoClose="true" DateChanged="OnDateChanged">
+    <PickerActions>
+        <MudButton Class="mr-auto align-self-start" OnClick="@(() => _datePicker.Clear())">Clear</MudButton>
+        <MudButton OnClick="@(() => _datePicker.Close(false))">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="@(() => _datePicker.Close())">Ok</MudButton>
+    </PickerActions>
+</MudDatePicker>
+<MudTimePicker @ref="_timePicker" Time="@_postTime" Label="24 hours" AutoClose="true" TimeChanged="OnTimeChanged" PickerOpened="@OnTimeOpened" PickerClosed="@OnTimeClosed">
+    <PickerActions>
+        <MudButton Class="mr-auto align-self-start" OnClick="@(() => _timePicker.Clear())">Clear</MudButton>
+        <MudButton OnClick="@(() => _timePicker.Close(false))">Cancel</MudButton>
+        <MudButton OnClick="@(() => _timePicker.Close())">Ok</MudButton>
+    </PickerActions>
+</MudTimePicker>
+
+@code {
+
+    private static readonly DateTime _minDateTime = new(2000, 1, 1);
+
+    private DateTime? _postDate;
+    private TimeSpan? _postTime;
+
+    private MudDatePicker _datePicker;
+    private MudTimePicker _timePicker;
+    private bool _isTimePickerOpened;
+
+    [Parameter, EditorRequired]
+    public DateTimeOffset? DateTime
+    {
+        get => _postDate;
+        set
+        {
+
+            if (value.HasValue)
+            {
+	            _postDate = value.Value.LocalDateTime;
+                _postTime = _postDate.Value.TimeOfDay;
+
+                if (_minDateTime > _postDate)
+                {
+                    _postDate = _minDateTime;
+                }
+            }
+            else
+            {
+                _postTime = null;
+	            _postDate = null;
+            }
+        }
+    }
+
+    [Parameter, EditorRequired] public EventCallback<DateTime?> OnDateTimeEventCallback { get; set; }
+
+    private void OnTimeOpened()
+    {
+        Exceptions.ThrowIf(_isTimePickerOpened);
+
+        _isTimePickerOpened = true;
+    }
+
+    private async Task OnTimeClosed()
+    {
+        Exceptions.ThrowIf(!_isTimePickerOpened);
+
+        _isTimePickerOpened = false;
+
+        await TryUpdateDateTime();
+    }
+
+    private async Task OnDateChanged(DateTime? dateTime)
+    {
+        _postDate = dateTime;
+
+        await TryUpdateDateTime();
+    }
+
+    private async Task OnTimeChanged(TimeSpan? timeSpan)
+    {
+        _postTime = timeSpan.GetValueOrDefault(TimeSpan.Zero);
+
+        await TryUpdateDateTime();
+    }
+
+    private async Task TryUpdateDateTime()
+    {
+        var time = _postTime;
+        var dateTime = _postDate;
+
+        if (dateTime.HasValue && time.HasValue)
+        {
+            dateTime = dateTime.Value.At(time.Value.Hours, time.Value.Minutes);
+        }
+
+	    _postDate = dateTime;
+
+        if (_isTimePickerOpened)
+        {
+        }
+        else
+        {
+            await OnDateTimeEventCallback.InvokeAsync(_postDate);
+        }
+    }
+}

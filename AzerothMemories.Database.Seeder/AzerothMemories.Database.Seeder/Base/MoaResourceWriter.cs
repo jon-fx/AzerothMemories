@@ -1,10 +1,4 @@
-﻿using AzerothMemories.Common;
-using LinqToDB;
-using LinqToDB.Data;
-using System.Globalization;
-using System.Resources;
-
-namespace AzerothMemories.Database.Seeder.Base;
+﻿namespace AzerothMemories.Database.Seeder.Base;
 
 internal sealed class MoaResourceWriter
 {
@@ -99,6 +93,9 @@ internal sealed class MoaResourceWriter
             await database.UpdateAsync(resource);
         }
 
+        var typeTags = await database.BlizzardData.Where(x => x.TagType == PostTagType.Type).OrderBy(x => x.TagId).ToListAsync();
+        var mainTags = await database.BlizzardData.Where(x => x.TagType == PostTagType.Main).OrderBy(x => x.TagId).ToListAsync();
+
         var realmData = await database.BlizzardData.Where(x => x.TagType == PostTagType.Realm).OrderBy(x => x.TagId).ToListAsync();
         var characterClassData = await database.BlizzardData.Where(x => x.TagType == PostTagType.CharacterClass).OrderBy(x => x.TagId).ToListAsync();
         var characterRaceData = await database.BlizzardData.Where(x => x.TagType == PostTagType.CharacterRace).OrderBy(x => x.TagId).ToListAsync();
@@ -115,6 +112,16 @@ internal sealed class MoaResourceWriter
             SetExtensions.Update(record.Key, record.Name, clientSideDataDict);
 
             noneDict.Add($"RealmSlug-{record.TagId}", record.Media);
+        }
+
+        foreach (var record in typeTags)
+        {
+            SetExtensions.Update(record.Key, record.Name, clientSideDataDict);
+        }
+
+        foreach (var record in mainTags)
+        {
+            SetExtensions.Update(record.Key, record.Name, clientSideDataDict);
         }
 
         foreach (var record in characterRaceData)

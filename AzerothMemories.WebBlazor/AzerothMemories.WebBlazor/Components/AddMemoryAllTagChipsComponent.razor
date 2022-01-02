@@ -1,0 +1,32 @@
+﻿<MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+    @{
+        foreach (var chip in SharedData.SelectedMainTags)
+        {
+            var tagInfo = (PostTagInfo)chip;
+            <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClose="SharedData.OnSelectedMainTagChipClose" />
+        }
+
+        foreach (var chip in SharedData.SelectedCommonTags)
+        {
+            var tagInfo = (PostTagInfo)chip;
+            <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClose="SharedData.OnSelectedCommonTagChipClose" />
+        }
+
+        foreach (var tagInfo in SharedData.SelectedExtraTags)
+        {
+            <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClose="SharedData.OnSelectedExtraTagChipClose" />
+        }
+
+        foreach (var chip in SharedData.SelectedAchievementTags)
+        {
+            if (chip is PostTagInfo tagInfo)
+            {
+                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClose="SharedData.OnSelectedAchievementTagChipClose" />
+            }
+        }
+    }
+</MudPaper>
+
+@code {
+    [Parameter, EditorRequired] public AddMemoryComponentSharedData SharedData { get; init; }
+}

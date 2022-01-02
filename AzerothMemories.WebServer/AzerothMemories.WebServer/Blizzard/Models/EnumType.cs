@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Blizzard.Models;
+﻿using AzerothMemories.WebBlazor.Blizzard;
+
+namespace AzerothMemories.WebServer.Blizzard.Models;
 
 /// <summary>
 /// An enumerated type.

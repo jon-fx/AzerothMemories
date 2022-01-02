@@ -1,4 +1,8 @@
-﻿namespace AzerothMemories.WebServer.Services;
+﻿using AzerothMemories.WebBlazor.Common;
+using AzerothMemories.WebBlazor.Services;
+using AzerothMemories.WebBlazor.ViewModels;
+
+namespace AzerothMemories.WebServer.Services;
 
 [RegisterComputeService]
 [RegisterAlias(typeof(ICharacterServices))]

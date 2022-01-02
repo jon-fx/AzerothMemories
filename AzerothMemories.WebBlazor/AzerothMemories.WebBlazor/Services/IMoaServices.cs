@@ -8,5 +8,9 @@ public interface IMoaServices
 
     ActiveAccountServices ActiveAccountServices { get; init; }
 
+    TagHelpers TagHelpers { get; init; }
+
+    TimeProvider TimeProvider { get; init; }
+
     IStringLocalizer<BlizzardResources> StringLocalizer { get; init; }
 }

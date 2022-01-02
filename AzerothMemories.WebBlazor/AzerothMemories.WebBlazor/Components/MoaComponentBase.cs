@@ -18,6 +18,10 @@
 
         [Inject] public ActiveAccountServices ActiveAccountServices { get; init; }
 
+        [Inject] public TagHelpers TagHelpers { get; init; }
+
+        [Inject] public TimeProvider TimeProvider { get; init; }
+
         [Inject] public IStringLocalizer<BlizzardResources> StringLocalizer { get; init; }
 
         protected override async Task OnParametersSetAsync()

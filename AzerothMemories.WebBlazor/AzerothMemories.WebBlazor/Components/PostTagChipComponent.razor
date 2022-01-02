@@ -1,0 +1,71 @@
+﻿@if (TagInfo == null)
+{
+
+}
+else if (TagInfo.WowHeadLink == null)
+{
+    <MudBadge Origin="Origin.TopRight" Content="TagInfo.ReportCounter" Visible="@(TagInfo.ReportCounter > 0)" Color="Color.Error" Overlap="true" Dot="true">
+        @if (TagInfo.IsChipClosable)
+        {
+            <MudChip @key="TagInfo.TagString" Color="TagInfo.GetChipColor()" Default="Default" Value="TagInfo" OnClick="OnClick" OnClose="OnClose">
+                @if (TagInfo.Image != null)
+                {
+                    <MudAvatar Class="mr-2" Size="Size.Small" Image="@TagInfo.Image" />
+                }
+
+                @TagInfo.NameWithIcon
+            </MudChip>
+        }
+        else
+        {
+            <MudChip @key="TagInfo.TagString" Color="TagInfo.GetChipColor()" Default="Default" Value="TagInfo" OnClick="OnClick">
+                @if (TagInfo.Image != null)
+                {
+                    <MudAvatar Class="mr-2" Size="Size.Small" Image="@TagInfo.Image" />
+                }
+
+                @TagInfo.NameWithIcon
+            </MudChip>
+        }
+    </MudBadge>
+}
+else
+{
+    <MudBadge Origin="Origin.TopRight" Content="TagInfo.ReportCounter" Visible="@(TagInfo.ReportCounter > 0)" Color="Color.Error" Overlap="true" Dot="true">
+        <a class="cardlink2" data-wowhead="@TagInfo.WowHeadLink">
+            @if (TagInfo.IsChipClosable)
+            {
+                <MudChip @key="TagInfo.TagString" Color="TagInfo.GetChipColor()" Default="Default" Value="TagInfo" OnClick="OnClick" OnClose="OnClose">
+                    @if (TagInfo.Image != null)
+                    {
+                        <MudAvatar Class="mr-2" Size="Size.Small" Image="@TagInfo.Image" />
+                    }
+
+                    @TagInfo.NameWithIcon
+                </MudChip>
+            }
+            else
+            {
+                <MudChip @key="TagInfo.TagString" Color="TagInfo.GetChipColor()" Default="Default" Value="TagInfo" OnClick="OnClick">
+                    @if (TagInfo.Image != null)
+                    {
+                        <MudAvatar Class="mr-2" Size="Size.Small" Image="@TagInfo.Image" />
+                    }
+
+                    @TagInfo.NameWithIcon
+                </MudChip>
+            }
+        </a>
+    </MudBadge>
+}
+
+@code {
+
+    [Parameter, EditorRequired] public PostTagInfo TagInfo { get; init; }
+
+    [Parameter] public bool? Default { get; init; }
+
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; init; }
+
+    [Parameter] public EventCallback<MudChip> OnClose { get; init; }
+}

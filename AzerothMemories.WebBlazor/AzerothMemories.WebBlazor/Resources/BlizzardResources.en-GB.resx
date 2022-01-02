@@ -1726,6 +1726,45 @@
   <data name="Realm-3738" xml:space="preserve">
     <value>US-Saurfang</value>
   </data>
+  <data name="Type-0" xml:space="preserve">
+    <value>Retail</value>
+  </data>
+  <data name="Type-1" xml:space="preserve">
+    <value>Classic</value>
+  </data>
+  <data name="Type-2" xml:space="preserve">
+    <value>Season of Mastery</value>
+  </data>
+  <data name="Main-0" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="Main-1" xml:space="preserve">
+    <value>Dungeons</value>
+  </data>
+  <data name="Main-2" xml:space="preserve">
+    <value>Raids</value>
+  </data>
+  <data name="Main-3" xml:space="preserve">
+    <value>Arena</value>
+  </data>
+  <data name="Main-4" xml:space="preserve">
+    <value>Battlegrounds</value>
+  </data>
+  <data name="Main-5" xml:space="preserve">
+    <value>PvP</value>
+  </data>
+  <data name="Main-6" xml:space="preserve">
+    <value>Achievements</value>
+  </data>
+  <data name="Main-7" xml:space="preserve">
+    <value>Collections</value>
+  </data>
+  <data name="Main-8" xml:space="preserve">
+    <value>Mounts</value>
+  </data>
+  <data name="Main-9" xml:space="preserve">
+    <value>Pets</value>
+  </data>
   <data name="CharacterRace-1" xml:space="preserve">
     <value>Human</value>
   </data>

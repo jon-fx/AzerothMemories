@@ -1,2 +1,44 @@
 ﻿@page "/addmemory/"
-@inherits MoaComponentBase<AddMemoryPageViewModel>
+
+<AuthorizeView>
+    <Authorized>
+        @if (_uploadResults == null)
+        {
+            <InputFile id="fileInput" OnChange="UploadFiles" hidden multiple accept=".jpg, .jpeg, .png" />
+            <MudButton HtmlTag="label" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Filled.CloudUpload" for="fileInput">Upload Image</MudButton>
+        }
+
+        <AddMemoryComponent @ref="_addMemoryComponent" IsVisible="@_isMemoryVisible" OnPostMemoryResult="@OnPostMemoryCallback" />
+    </Authorized>
+</AuthorizeView>
+
+@code
+{
+    private bool _isMemoryVisible;
+    private AddMemoryComponent _addMemoryComponent;
+    //private AddMemoryResult _addMemoryResult;
+    private AddMemoryUploadResult[] _uploadResults;
+
+    private async Task UploadFiles(InputFileChangeEventArgs arg)
+    {
+        _uploadResults = await _addMemoryComponent.UploadFiles(arg);
+        _isMemoryVisible = true;
+    }
+
+    private Task OnPostMemoryCallback(AddMemoryComponentResult result)
+    {
+    //_addMemoryResult = result.Result;
+        _isMemoryVisible = false;
+
+    //if (result.Result == AddMemoryResult.Success)
+    //{
+    //	NavigationManager.NavigateTo($"post/{result.AccountId}/{result.PostId}");
+    //}
+    //else if (result.Result == AddMemoryResult.Canceled)
+    //{
+    //	_uploadResults = null;
+    //}
+
+        return Task.CompletedTask;
+    }
+}
