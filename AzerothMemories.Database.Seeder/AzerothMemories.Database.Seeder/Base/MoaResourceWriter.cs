@@ -1,155 +1,165 @@
-﻿namespace AzerothMemories.Database.Seeder.Base;
+﻿using AzerothMemories.Common;
+using LinqToDB;
+using LinqToDB.Data;
+using System.Globalization;
+using System.Resources;
+
+namespace AzerothMemories.Database.Seeder.Base;
 
 internal sealed class MoaResourceWriter
 {
-    private readonly Dictionary<string, string>[] _resourcesByLocal;
+    private readonly DatabaseProvider _databaseProvider;
+    private readonly Dictionary<string, BlizzardDataRecord> _serverSideResources;
+    private readonly Dictionary<string, BlizzardDataRecord> _changedServerSideResources;
+    private readonly Dictionary<string, Dictionary<string, string>> _allResourceStringsByLocal;
 
-    public MoaResourceWriter()
+    public MoaResourceWriter(DatabaseProvider databaseProvider)
     {
-        _resourcesByLocal = new Dictionary<string, string>[15];
-        for (var i = 0; i < _resourcesByLocal.Length; i++)
+        _databaseProvider = databaseProvider;
+        _serverSideResources = new Dictionary<string, BlizzardDataRecord>();
+        _changedServerSideResources = new Dictionary<string, BlizzardDataRecord>();
+        _allResourceStringsByLocal = new Dictionary<string, Dictionary<string, string>>
         {
-            _resourcesByLocal[i] = new Dictionary<string, string>();
-        }
+            {"None", new Dictionary<string, string>()}
+        };
     }
 
-    public void AddLocalizationData(string key, Name data)
+    public void AddServerSideLocalizationName(PostTagType tagType, long tagId, BlizzardDataRecordLocal data)
     {
-        AddLocalizationData(BlizzardLocale.en_US, key, data.EnUS);
-        AddLocalizationData(BlizzardLocale.es_MX, key, data.EsMX);
-        AddLocalizationData(BlizzardLocale.pt_BR, key, data.PtBR);
+        var resource = GetOrCreateServerSideResource(tagType, tagId);
+        var updated = resource.Name.Update(data);
 
-        AddLocalizationData(BlizzardLocale.en_GB, key, data.EnGB);
-        AddLocalizationData(BlizzardLocale.es_ES, key, data.EsES);
-        AddLocalizationData(BlizzardLocale.fr_FR, key, data.FrFR);
-        AddLocalizationData(BlizzardLocale.ru_RU, key, data.RuRU);
-        AddLocalizationData(BlizzardLocale.de_DE, key, data.DeDE);
-        AddLocalizationData(BlizzardLocale.pt_PT, key, data.PtBR);
-        AddLocalizationData(BlizzardLocale.it_IT, key, data.ItIT);
+        OnServerSideRecordUpdated(updated, resource);
 
-        AddLocalizationData(BlizzardLocale.ko_KR, key, data.KoKR);
-        AddLocalizationData(BlizzardLocale.zh_TW, key, data.ZhTW);
-        AddLocalizationData(BlizzardLocale.zh_CN, key, data.ZhCN);
+        SetExtensions.Update($"{tagType}-{tagId}", data, _allResourceStringsByLocal);
     }
 
-    public void AddLocalizationData(string key, Name data, Func<BlizzardLocale, string, string> func)
+    public void AddServerSideLocalizationMedia(PostTagType tagType, long tagId, string media)
     {
-        AddLocalizationData(BlizzardLocale.en_US, key, data.EnUS, func);
-        AddLocalizationData(BlizzardLocale.es_MX, key, data.EsMX, func);
-        AddLocalizationData(BlizzardLocale.pt_BR, key, data.PtBR, func);
+        var resource = GetOrCreateServerSideResource(tagType, tagId);
+        var updated = resource.UpdateMedia(media);
 
-        AddLocalizationData(BlizzardLocale.en_GB, key, data.EnGB, func);
-        AddLocalizationData(BlizzardLocale.es_ES, key, data.EsES, func);
-        AddLocalizationData(BlizzardLocale.fr_FR, key, data.FrFR, func);
-        AddLocalizationData(BlizzardLocale.ru_RU, key, data.RuRU, func);
-        AddLocalizationData(BlizzardLocale.de_DE, key, data.DeDE, func);
-        AddLocalizationData(BlizzardLocale.pt_PT, key, data.PtBR, func);
-        AddLocalizationData(BlizzardLocale.it_IT, key, data.ItIT, func);
-
-        AddLocalizationData(BlizzardLocale.ko_KR, key, data.KoKR, func);
-        AddLocalizationData(BlizzardLocale.zh_TW, key, data.ZhTW, func);
-        AddLocalizationData(BlizzardLocale.zh_CN, key, data.ZhCN, func);
+        OnServerSideRecordUpdated(updated, resource);
     }
 
-    public void AddCommonLocalizationData(string key, string value)
+    public bool GetClientSideLocalizationData(string locale, string key, out string value)
     {
-        AddLocalizationData(BlizzardLocale.None, key, value);
-    }
-
-    private void AddLocalizationData(BlizzardLocale locale, string key, string value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
+        if (!_allResourceStringsByLocal.TryGetValue(locale, out var dict))
         {
-            return;
+            value = null;
+            return false;
         }
 
-        var id = (int)locale;
-        if (_resourcesByLocal[id].TryGetValue(key, out var oldValue))
-        {
-            Exceptions.ThrowIf(value != oldValue);
-        }
-
-        _resourcesByLocal[id][key] = value;
+        return dict.TryGetValue(key, out value);
     }
 
-    private void AddLocalizationData(BlizzardLocale locale, string key, string value, Func<BlizzardLocale, string, string> func)
+    public BlizzardDataRecord GetOrCreateServerSideResource(PostTagType tagType, long tagId)
     {
-        if (string.IsNullOrWhiteSpace(value))
+        var key = $"{tagType}-{tagId}";
+        if (!_serverSideResources.TryGetValue(key, out var value))
         {
-            return;
-        }
-
-        var id = (int)locale;
-        var newValue = func(locale, value);
-        if (_resourcesByLocal[id].TryGetValue(key, out var oldValue))
-        {
-            Exceptions.ThrowIf(newValue != oldValue);
-        }
-
-        _resourcesByLocal[id][key] = newValue;
-    }
-
-    public void CloneLocalizationData(string oldKey, string newKey)
-    {
-        foreach (var dictionary in _resourcesByLocal)
-        {
-            if (dictionary.TryGetValue(oldKey, out var value))
+            using (var database = _databaseProvider.GetDatabase())
             {
-                dictionary[newKey] = value;
+                value = database.BlizzardData.FirstOrDefault(x => x.Key == key);
             }
+
+            if (value == null)
+            {
+                value = new BlizzardDataRecord(tagType, tagId);
+            }
+
+            Exceptions.ThrowIf(value.TagId != tagId);
+            Exceptions.ThrowIf(value.TagType != tagType);
+            Exceptions.ThrowIf(value.Key != key);
+
+            _serverSideResources.Add(key, value);
+        }
+
+        return value;
+    }
+
+    private void OnServerSideRecordUpdated(bool updated, BlizzardDataRecord resource)
+    {
+        if (updated)
+        {
+            _changedServerSideResources[resource.Key] = resource;
         }
     }
 
-    public bool GetLocalizationData(BlizzardLocale locale, string key, out string value)
+    public async Task Save()
     {
-        var id = (int)locale;
-        return _resourcesByLocal[id].TryGetValue(key, out value);
+        var newResources = _changedServerSideResources.Values.Where(x => x.Id == 0);
+        var updatedResources = _changedServerSideResources.Values.Where(x => x.Id > 0);
+
+        await using var database = _databaseProvider.GetDatabase();
+        await database.BulkCopyAsync(newResources);
+
+        foreach (var resource in updatedResources)
+        {
+            await database.UpdateAsync(resource);
+        }
+
+        var realmData = await database.BlizzardData.Where(x => x.TagType == PostTagType.Realm).OrderBy(x => x.TagId).ToListAsync();
+        var characterClassData = await database.BlizzardData.Where(x => x.TagType == PostTagType.CharacterClass).OrderBy(x => x.TagId).ToListAsync();
+        var characterSpecData = await database.BlizzardData.Where(x => x.TagType == PostTagType.CharacterClassSpecialization).OrderBy(x => x.TagId).ToListAsync();
+
+        var noneDict = new Dictionary<string, string>();
+        var clientSideDataDict = new Dictionary<string, Dictionary<string, string>>
+        {
+            {"None", noneDict}
+        };
+
+        foreach (var record in realmData)
+        {
+            SetExtensions.Update(record.Key, record.Name, clientSideDataDict);
+
+            noneDict.Add($"RealmSlug-{record.TagId}", record.Media);
+        }
+
+        foreach (var record in characterClassData)
+        {
+            SetExtensions.Update(record.Key, record.Name, clientSideDataDict);
+        }
+
+        foreach (var record in characterSpecData)
+        {
+            SetExtensions.Update(record.Key, record.Name, clientSideDataDict);
+        }
+
+        foreach (var dict in clientSideDataDict)
+        {
+            using var writer = CreateResourceWriter(dict.Key);
+            foreach (var kvp in dict.Value)
+            {
+                writer.AddResource(kvp.Key, kvp.Value);
+            }
+
+            writer.Generate();
+        }
     }
 
-    public void Save()
+    private ResXResourceWriter CreateResourceWriter(string key)
     {
-        //for (var i = 0; i < _resourcesByLocal.Length; i++)
-        //{
-        //    var resources = _resourcesByLocal[i];
-        //    if (resources == null || resources.Count == 0)
-        //    {
-        //        continue;
-        //    }
+        var filePath = @"..\..\..\AzerothMemories.WebBlazor\AzerothMemories.WebBlazor\Resources\BlizzardResources.";
 
-        //    var stringBuilder = new StringBuilder();
-        //    using var stringWriter = new StringWriter(stringBuilder);
-        //    using var writer = new JsonTextWriter(stringWriter);
-        //    writer.Formatting = Formatting.Indented;
-        //    writer.WriteStartObject();
+        if (key == "None")
+        {
+        }
+        else if (key.Contains("_"))
+        {
+            var localeText = key.Replace('_', '-');
+            var locale = new CultureInfo(localeText);
 
-        //    foreach (var resource in resources)
-        //    {
-        //        writer.WritePropertyName(resource.Key);
-        //        writer.WriteValue(resource.Value);
-        //    }
+            filePath += $"{locale.Name}.";
+        }
 
-        //    writer.WriteEndObject();
-        //    writer.Flush();
+        filePath += "resx";
 
-        //    var outputFile = GetOuputFile(i);
-        //    File.WriteAllText(outputFile, stringBuilder.ToString());
-        //}
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
+        }
+
+        return new ResXResourceWriter(filePath);
     }
-
-    //private string GetOuputFile(int index)
-    //{
-    //    var locale = (BlizzardLocale)index;
-    //    var filePath = @"..\..\..\AzerothMemories.WebBlazor\AzerothMemories.WebBlazor\Resources\Resources.json";
-    //    if (locale != BlizzardLocale.None)
-    //    {
-    //        filePath = $@"..\..\..\AzerothMemories.WebBlazor\AzerothMemories.WebBlazor\Resources\Resources.{locale.ToString().Replace('_', '-')}.json";
-    //    }
-
-    //    if (File.Exists(filePath))
-    //    {
-    //        File.Delete(filePath);
-    //    }
-
-    //    return filePath;
-    //}
 }

@@ -2,8 +2,6 @@
 
 internal sealed class PlayerDataSeeder : GenericBase<PlayerDataSeeder>
 {
-    //protected override string FileName => "PlayerData.json";
-
     public PlayerDataSeeder(ILogger<PlayerDataSeeder> logger, WarcraftClientProvider clientProvider, MoaResourceCache resourceCache, MoaResourceWriter resourceWriter) : base(logger, clientProvider, resourceCache, resourceWriter)
     {
     }
@@ -19,7 +17,7 @@ internal sealed class PlayerDataSeeder : GenericBase<PlayerDataSeeder>
                 var classInfo = await ResourceCache.GetOrRequestData($"Class-{reference.Id}", async k => await client.GetPlayableClass(reference.Id));
                 if (classInfo != null)
                 {
-                    ResourceWriter.AddLocalizationData($"CharacterClassName-{classInfo.Id}", classInfo.Name);
+                    ResourceWriter.AddServerSideLocalizationName(PostTagType.CharacterClass, classInfo.Id, classInfo.Name.ToRecord());
 
                     var classMedia = await ResourceCache.GetOrRequestData($"Class-{classInfo.Id}-Media", async k => await client.GetPlayableClassMedia(classInfo.Id));
                     if (classMedia != null)
@@ -27,7 +25,7 @@ internal sealed class PlayerDataSeeder : GenericBase<PlayerDataSeeder>
                         var media = classMedia.Assets.FirstOrDefault(x => x.Key == "icon");
                         if (media != null)
                         {
-                            ResourceWriter.AddCommonLocalizationData($"CharacterClassIconMediaPath-{classInfo.Id}", media.Value.AbsoluteUri);
+                            ResourceWriter.AddServerSideLocalizationMedia(PostTagType.CharacterClass, classInfo.Id, media.Value.AbsoluteUri);
                         }
                         else
                         {
@@ -37,9 +35,11 @@ internal sealed class PlayerDataSeeder : GenericBase<PlayerDataSeeder>
 
                     foreach (var dataSpecialization in classInfo.Specializations)
                     {
-                        ResourceWriter.AddLocalizationData($"CharacterClassSpecializationName-{dataSpecialization.Id}", dataSpecialization.Name, (l, x) =>
+                        var specRecord = dataSpecialization.Name.ToRecord();
+
+                        SetExtensions.Update(specRecord, (l, x) =>
                         {
-                            if (ResourceWriter.GetLocalizationData(l, $"CharacterClassName-{classInfo.Id}", out var classNameString))
+                            if (ResourceWriter.GetClientSideLocalizationData(l, $"CharacterClass-{classInfo.Id}", out var classNameString))
                             {
                                 return $"{x} ({classNameString})";
                             }
@@ -47,13 +47,15 @@ internal sealed class PlayerDataSeeder : GenericBase<PlayerDataSeeder>
                             return x;
                         });
 
+                        ResourceWriter.AddServerSideLocalizationName(PostTagType.CharacterClassSpecialization, dataSpecialization.Id, specRecord);
+
                         var specMedia = await ResourceCache.GetOrRequestData($"ClassSpecialization-{dataSpecialization.Id}-Media", async k => await client.GetPlayableSpecializationClassMedia(dataSpecialization.Id));
                         if (specMedia != null)
                         {
                             var media = specMedia.Assets.FirstOrDefault(x => x.Key == "icon");
                             if (media != null)
                             {
-                                ResourceWriter.AddCommonLocalizationData($"CharacterClassSpecializationIconMediaPath-{dataSpecialization.Id}", media.Value.AbsoluteUri);
+                                ResourceWriter.AddServerSideLocalizationMedia(PostTagType.CharacterClassSpecialization, dataSpecialization.Id, media.Value.AbsoluteUri);
                             }
                             else
                             {
@@ -73,7 +75,7 @@ internal sealed class PlayerDataSeeder : GenericBase<PlayerDataSeeder>
                 var raceInfo = await ResourceCache.GetOrRequestData($"Race-{reference.Id}", async k => await client.GetPlayableRace(reference.Id));
                 if (raceInfo != null)
                 {
-                    ResourceWriter.AddLocalizationData($"CharacterRaceName-{raceInfo.Id}", raceInfo.Name);
+                    ResourceWriter.AddServerSideLocalizationName(PostTagType.CharacterRace, raceInfo.Id, raceInfo.Name.ToRecord());
                 }
             }
         }

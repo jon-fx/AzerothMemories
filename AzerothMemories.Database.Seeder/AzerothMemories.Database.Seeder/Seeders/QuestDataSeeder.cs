@@ -13,7 +13,7 @@ internal sealed class QuestDataSeeder : GenericBase<QuestDataSeeder>
 
         foreach (var reference in data.Values)
         {
-            ResourceWriter.AddLocalizationData($"QuestName-{reference.Id}", reference.GetLocalised("QuestTitle_lang"));
+            ResourceWriter.AddServerSideLocalizationName(PostTagType.Quest, reference.Id, reference.GetLocalised("QuestTitle_lang"));
         }
 
         return Task.CompletedTask;

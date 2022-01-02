@@ -14,7 +14,7 @@ internal sealed class SpellDataSeeder : GenericBase<SpellDataSeeder>
 
         foreach (var reference in data.Values)
         {
-            ResourceWriter.AddLocalizationData($"SpellName-{reference.Id}", reference.GetLocalised("Name_lang"));
+            ResourceWriter.AddServerSideLocalizationName(PostTagType.Spell, reference.Id, reference.GetLocalised("Name_lang"));
 
             if (reference.TryGetData<int>("SpellIconFileDataID", out var iconId))
             {
@@ -24,7 +24,7 @@ internal sealed class SpellDataSeeder : GenericBase<SpellDataSeeder>
                 else if (WowTools.TryGetIconName(iconId, out var iconName))
                 {
                     var newValue = $"https://render.worldofwarcraft.com/eu/icons/56/{iconName}.jpg";
-                    ResourceWriter.AddCommonLocalizationData($"SpellIconMediaPath-{reference.Id}", newValue);
+                    ResourceWriter.AddServerSideLocalizationMedia(PostTagType.Spell, reference.Id,  newValue);
                 }
                 else
                 {

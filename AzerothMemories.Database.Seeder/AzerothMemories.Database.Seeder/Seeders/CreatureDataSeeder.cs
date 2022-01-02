@@ -13,7 +13,7 @@ internal sealed class CreatureDataSeeder : GenericBase<CreatureDataSeeder>
 
         foreach (var reference in data.Values)
         {
-            ResourceWriter.AddLocalizationData($"NpcName-{reference.Id}", reference.GetLocalised("Name_lang"));
+            ResourceWriter.AddServerSideLocalizationName(PostTagType.Npc, reference.Id, reference.GetLocalised("Name_lang"));
         }
 
         return Task.CompletedTask;

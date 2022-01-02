@@ -2,7 +2,7 @@
 
 namespace AzerothMemories.WebServer.Database;
 
-internal sealed class DatabaseProvider
+public sealed class DatabaseProvider
 {
     private readonly CommonConfig _commonConfig;
     private readonly ILogger<DatabaseProvider> _logger;

@@ -8,22 +8,22 @@
         <OutputPath>..\..\AzerothMemories.Build\$(Configuration)\$(AssemblyName)</OutputPath>
     </PropertyGroup>
 
-	<PropertyGroup>
-		<RunAOTCompilation>false</RunAOTCompilation>
-		<!--<InvariantGlobalization>true</InvariantGlobalization>-->
-		<TrimMode>link</TrimMode>
-	</PropertyGroup>
+    <PropertyGroup>
+        <RunAOTCompilation>false</RunAOTCompilation>
+        <!--<InvariantGlobalization>true</InvariantGlobalization>-->
+        <TrimMode>link</TrimMode>
+    </PropertyGroup>
 
-	<PropertyGroup>
-		<!--<ServerGarbageCollection>true</ServerGarbageCollection>-->
-		<!--<InvariantGlobalization>true</InvariantGlobalization>-->
-	</PropertyGroup>
+    <PropertyGroup>
+        <!--<ServerGarbageCollection>true</ServerGarbageCollection>-->
+        <!--<InvariantGlobalization>true</InvariantGlobalization>-->
+    </PropertyGroup>
 
-	<ItemGroup>
-		<TrimmerRootAssembly Include="System.Security.Cryptography.X509Certificates" />
-		<TrimmerRootAssembly Include="System.Text.Json" />
-		<TrimmerRootAssembly Include="System.Collections.Immutable" />
-	</ItemGroup>
+    <ItemGroup>
+        <TrimmerRootAssembly Include="System.Security.Cryptography.X509Certificates" />
+        <TrimmerRootAssembly Include="System.Text.Json" />
+        <TrimmerRootAssembly Include="System.Collections.Immutable" />
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.1" />
@@ -34,11 +34,24 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\AzerothMemories.Common\AzerothMemories.Common\AzerothMemories.Common.csproj" />
+        <ProjectReference Include="..\..\AzerothMemories.Common\AzerothMemories.Common\AzerothMemories.Common.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Services\" />
+        <EmbeddedResource Update="Resources\BlizzardResources.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>BlizzardResources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+
+        <Compile Update="Resources\BlizzardResources.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>BlizzardResources.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Services\" />
     </ItemGroup>
 
 </Project>

@@ -13,7 +13,7 @@ internal sealed class ZoneDataSeeder : GenericBase<ZoneDataSeeder>
 
         foreach (var reference in data.Values)
         {
-            ResourceWriter.AddLocalizationData($"ZoneName-{reference.Id}", reference.GetLocalised("AreaName_lang"));
+            ResourceWriter.AddServerSideLocalizationName(PostTagType.Zone, reference.Id, reference.GetLocalised("AreaName_lang"));
         }
 
         return Task.CompletedTask;

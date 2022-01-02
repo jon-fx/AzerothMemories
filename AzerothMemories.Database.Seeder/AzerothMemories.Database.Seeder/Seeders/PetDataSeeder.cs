@@ -15,7 +15,8 @@ internal sealed class PetDataSeeder : GenericBase<PetDataSeeder>
         {
             if (reference.TryGetData<int>("SummonSpellID", out var spellId))
             {
-                ResourceWriter.CloneLocalizationData($"SpellName-{spellId}", $"PetName-{reference.Id}");
+                var dataToCopy = ResourceWriter.GetOrCreateServerSideResource(PostTagType.Spell, spellId);
+                ResourceWriter.AddServerSideLocalizationName(PostTagType.Pet, reference.Id, dataToCopy.Name);
             }
 
             if (reference.TryGetData<int>("IconFileDataID", out var iconId))
@@ -23,7 +24,7 @@ internal sealed class PetDataSeeder : GenericBase<PetDataSeeder>
                 if (iconId > 0 && WowTools.TryGetIconName(iconId, out var iconName))
                 {
                     var newValue = $"https://render.worldofwarcraft.com/eu/icons/56/{iconName}.jpg";
-                    ResourceWriter.AddCommonLocalizationData($"PetIconMediaPath-{reference.Id}", newValue);
+                    ResourceWriter.AddServerSideLocalizationMedia(PostTagType.Pet, reference.Id, newValue);
                 }
                 else
                 {

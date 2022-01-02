@@ -13,14 +13,14 @@ internal sealed class AchievementDataSeeder : GenericBase<AchievementDataSeeder>
 
         foreach (var reference in data.Values)
         {
-            ResourceWriter.AddLocalizationData($"AchievementName-{reference.Id}", reference.GetLocalised("Title_lang"));
+            ResourceWriter.AddServerSideLocalizationName(PostTagType.Achievement, reference.Id, reference.GetLocalised("Title_lang"));
 
             if (reference.TryGetData<int>("IconFileID", out var iconId))
             {
                 if (WowTools.TryGetIconName(iconId, out var iconName))
                 {
                     var newValue = $"https://render.worldofwarcraft.com/eu/icons/56/{iconName}.jpg";
-                    ResourceWriter.AddCommonLocalizationData($"AchievementIconMediaPath-{reference.Id}", newValue);
+                    ResourceWriter.AddServerSideLocalizationMedia(PostTagType.Achievement, reference.Id, newValue);
                 }
                 else
                 {

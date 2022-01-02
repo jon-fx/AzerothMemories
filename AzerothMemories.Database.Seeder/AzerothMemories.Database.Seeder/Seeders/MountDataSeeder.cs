@@ -13,13 +13,14 @@ internal sealed class MountDataSeeder : GenericBase<MountDataSeeder>
 
         foreach (var reference in data.Values)
         {
-            ResourceWriter.AddLocalizationData($"MountName-{reference.Id}", reference.GetLocalised("Name_lang"));
+            ResourceWriter.AddServerSideLocalizationName(PostTagType.Mount, reference.Id, reference.GetLocalised("Name_lang"));
 
             if (reference.TryGetData<int>("SourceSpellID", out var sourceSpellId))
             {
-                if (ResourceWriter.GetLocalizationData(BlizzardLocale.None, $"SpellIconMediaPath-{sourceSpellId}", out var spellResourceResult))
+                var spellResource = ResourceWriter.GetOrCreateServerSideResource(PostTagType.Spell, sourceSpellId);
+                if (spellResource != null)
                 {
-                    ResourceWriter.AddCommonLocalizationData($"MountIconMediaPath-{reference.Id}", spellResourceResult);
+                    ResourceWriter.AddServerSideLocalizationMedia(PostTagType.Mount, reference.Id, spellResource.Media);
                 }
                 else
                 {

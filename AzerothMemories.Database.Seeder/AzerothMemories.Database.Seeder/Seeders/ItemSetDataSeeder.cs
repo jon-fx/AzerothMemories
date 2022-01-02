@@ -13,7 +13,7 @@ internal sealed class ItemSetDataSeeder : GenericBase<ItemSetDataSeeder>
 
         foreach (var reference in data.Values)
         {
-            ResourceWriter.AddLocalizationData($"ItemSetName-{reference.Id}", reference.GetLocalised("Name_lang"));
+            ResourceWriter.AddServerSideLocalizationName(PostTagType.ItemSet, reference.Id, reference.GetLocalised("Name_lang"));
         }
 
         return Task.CompletedTask;

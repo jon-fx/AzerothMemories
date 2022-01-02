@@ -58,6 +58,26 @@ namespace AzerothMemories.WebServer.Database.Migrations
                 .WithColumn(nameof(CharacterAchievementRecord.AchievementId)).AsInt32().WithDefaultValue(0)
                 .WithColumn(nameof(CharacterAchievementRecord.AchievementTimeStamp)).AsInt64().WithDefaultValue(0)
                 .WithColumn(nameof(CharacterAchievementRecord.CompletedByCharacter)).AsBoolean().WithDefaultValue(false);
+
+            //Create.Table("Blizzard_Data")
+            //    .WithColumn(nameof(BlizzardDataRecord.Id)).AsInt64().PrimaryKey().Identity()
+            //    .WithColumn(nameof(BlizzardDataRecord.TagId)).AsInt64()
+            //    .WithColumn(nameof(BlizzardDataRecord.TagType)).AsByte()
+            //    .WithColumn(nameof(BlizzardDataRecord.Key)).AsString(128).Unique().NotNullable()
+            //    .WithColumn(nameof(BlizzardDataRecord.Media)).AsString(250).Nullable()
+            //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.En_Us).Replace("_", string.Empty)}").AsString(250).Nullable()
+            //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.Ko_Kr).Replace("_", string.Empty)}").AsString(250).Nullable()
+            //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.Fr_Fr).Replace("_", string.Empty)}").AsString(250).Nullable()
+            //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.De_De).Replace("_", string.Empty)}").AsString(250).Nullable()
+            //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.Zh_Cn).Replace("_", string.Empty)}").AsString(250).Nullable()
+            //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.Es_Es).Replace("_", string.Empty)}").AsString(250).Nullable()
+            //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.Zh_Tw).Replace("_", string.Empty)}").AsString(250).Nullable()
+            //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.En_Gb).Replace("_", string.Empty)}").AsString(250).Nullable()
+            //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.Es_Mx).Replace("_", string.Empty)}").AsString(250).Nullable()
+            //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.Ru_Ru).Replace("_", string.Empty)}").AsString(250).Nullable()
+            //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.Pt_Br).Replace("_", string.Empty)}").AsString(250).Nullable()
+            //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.It_It).Replace("_", string.Empty)}").AsString(250).Nullable()
+            //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.Pt_Pt).Replace("_", string.Empty)}").AsString(250).Nullable();
         }
 
         public override void Down()
@@ -66,6 +86,8 @@ namespace AzerothMemories.WebServer.Database.Migrations
 
             Delete.Table("Accounts");
             Delete.Table("Characters");
+
+            //Delete.Table("Blizzard_Data");
         }
     }
 }

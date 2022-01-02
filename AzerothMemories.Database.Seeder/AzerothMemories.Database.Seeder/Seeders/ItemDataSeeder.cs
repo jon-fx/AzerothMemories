@@ -19,9 +19,6 @@ internal sealed class ItemDataSeeder : GenericBase<ItemDataSeeder>
         var appearance = new Dictionary<int, WowToolsData>();
         WowTools.LoadDataFromWowTools("ItemAppearance", "ID", ref appearance, "engb", new[] { "DefaultIconFileDataID" });
 
-        //var itemEffects = new Dictionary<int, WowToolsData>();
-        //WowTools.LoadDataFromWowTools("ItemEffect", "ID", ref itemEffects, "engb", new[] { "SpellID" });
-
         foreach (var reference in data.Values)
         {
             if (reference.TryGetData<int>("OverallQualityID", out var quality) && (quality == 0 || quality == 1))
@@ -30,7 +27,7 @@ internal sealed class ItemDataSeeder : GenericBase<ItemDataSeeder>
             }
 
             var displayLangName = reference.GetLocalised("Display_lang");
-            if (displayLangName.IsNull())
+            if (reference.HasLocalised("Display_lang"))
             {
                 //if (reference.TryGetData<int>("ItemEffectID", out var itemEffectId) && itemEffects.TryGetValue(itemEffectId, out var itemEffectWowData))
                 //{
@@ -41,7 +38,7 @@ internal sealed class ItemDataSeeder : GenericBase<ItemDataSeeder>
             }
             else
             {
-                ResourceWriter.AddLocalizationData($"ItemName-{reference.Id}", displayLangName);
+                ResourceWriter.AddServerSideLocalizationName(PostTagType.Item, reference.Id, displayLangName);
             }
 
             if (reference.TryGetData<int>("IconFileDataID", out var iconId))
@@ -59,7 +56,7 @@ internal sealed class ItemDataSeeder : GenericBase<ItemDataSeeder>
                 if (iconId > 0 && WowTools.TryGetIconName(iconId, out var iconName))
                 {
                     var newValue = $"https://render.worldofwarcraft.com/eu/icons/56/{iconName}.jpg";
-                    ResourceWriter.AddCommonLocalizationData($"ItemIconMediaPath-{reference.Id}", newValue);
+                    ResourceWriter.AddServerSideLocalizationMedia(PostTagType.Item, reference.Id, newValue);
                 }
                 else
                 {

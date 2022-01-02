@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.Database.Seeder.Base;
+﻿using AzerothMemories.WebServer.Database.Records;
+
+namespace AzerothMemories.Database.Seeder.Base;
 
 internal sealed class WowToolsData
 {
@@ -44,23 +46,29 @@ internal sealed class WowToolsData
         return false;
     }
 
-    public Name GetLocalised(string name)
+    public bool HasLocalised(string name)
     {
-        var result = new Name();
+        return _data.Keys.Any(x => x.StartsWith(name.Replace("_lang", "_")));
+    }
+
+    public BlizzardDataRecordLocal GetLocalised(string name)
+    {
+        var result = new BlizzardDataRecordLocal();
 
         if (!name.EndsWith("_lang"))
         {
             throw new NotImplementedException();
         }
 
-        foreach (var locale in AllLocales)
+        var keys = _data.Keys.Where(x => x.StartsWith(name.Replace("_lang", "_")));
+        foreach (var header in keys)
         {
-            var key = name.Replace("_lang", $"_{locale}");
-
-            if (TryGetData<string>(key, out var value))
+            if (!TryGetData(header, out string value))
             {
-                result = result.SetValue(locale, value);
+                continue;
             }
+
+            SetExtensions.SetValue(result, header, value);
         }
 
         return result;

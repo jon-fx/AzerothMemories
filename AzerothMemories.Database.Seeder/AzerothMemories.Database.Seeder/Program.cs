@@ -1,5 +1,4 @@
-﻿using AzerothMemories.WebServer.Blizzard;
-using AzerothMemories.WebServer.Common;
+﻿using AzerothMemories.WebServer.Common;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http.Headers;
 
@@ -14,11 +13,10 @@ services.AddHttpClient("Default", x =>
 });
 
 services.AddSingleton<WowTools>();
+services.AddSingleton<DatabaseProvider>();
 services.AddSingleton<MoaResourceCache>();
 services.AddSingleton<MoaResourceWriter>();
 services.AddSingleton<WarcraftClientProvider>();
-
-//CommonSetup.SetUpCommon(services, commonConfig);
 
 var seeders = new List<Func<ServiceProvider, AbstractBase>>();
 
@@ -51,4 +49,4 @@ foreach (var func in seeders)
     await func(serviceProvider).Execute().ConfigureAwait(false);
 }
 
-serviceProvider.GetRequiredService<MoaResourceWriter>().Save();
+await serviceProvider.GetRequiredService<MoaResourceWriter>().Save();

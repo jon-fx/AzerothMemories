@@ -6,8 +6,6 @@ internal sealed class RealmDataSeeder : GenericBase<RealmDataSeeder>
     {
     }
 
-    //protected override string FileName => "Realms.json";
-
     protected override async Task DoSomething()
     {
         var regions = new[] { BlizzardRegion.Europe, BlizzardRegion.UnitedStates, BlizzardRegion.Taiwan, BlizzardRegion.Korea /* BlizzardRegionId.China */};
@@ -22,8 +20,13 @@ internal sealed class RealmDataSeeder : GenericBase<RealmDataSeeder>
             {
                 foreach (var realmData in allRealmSearchResults.Realms)
                 {
-                    ResourceWriter.AddLocalizationData($"RealmName-{realmData.Id}", realmData.Name, (l, x) => $"{twoLetters}-{x}");
-                    ResourceWriter.AddCommonLocalizationData($"RealmSlug-{realmData.Id}", realmData.Slug);
+                    var realmRecord = realmData.Name.ToRecord();
+                    SetExtensions.Update(realmRecord, (l, x) => $"{twoLetters}-{x}");
+
+                    ResourceWriter.AddServerSideLocalizationName(PostTagType.Realm, realmData.Id, realmRecord);
+                    ResourceWriter.AddServerSideLocalizationMedia(PostTagType.Realm, realmData.Id, realmData.Slug);
+
+                    //ResourceWriter.AddClientSideCommonLocalizationData($"RealmSlug-{realmData.Id}", realmData.Slug);
                 }
             }
 

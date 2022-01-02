@@ -13,7 +13,7 @@ internal sealed class TitleDataSeeder : GenericBase<TitleDataSeeder>
 
         foreach (var reference in data.Values)
         {
-            ResourceWriter.AddLocalizationData($"TitleName-{reference.Id}", reference.GetLocalised("Name_lang"));
+            ResourceWriter.AddServerSideLocalizationName(PostTagType.Title, reference.Id, reference.GetLocalised("Name_lang"));
         }
 
         return Task.CompletedTask;

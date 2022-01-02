@@ -36,6 +36,8 @@ public sealed class DatabaseConnection : DataConnection
 
     //public ITable<AccountFollowingRecord> AccountFollowing => GetTable<AccountFollowingRecord>();
 
+    public ITable<BlizzardDataRecord> BlizzardData => GetTable<BlizzardDataRecord>();
+
     public IUpdatable<TRecord> GetUpdateQuery<TRecord>(TRecord record, out bool changed) where TRecord : class, IDatabaseRecord
     {
         Exceptions.ThrowIf(record.Id == 0);
