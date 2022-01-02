@@ -1,0 +1,1948 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.1.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.1.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Realm-1" xml:space="preserve">
+    <value>US-光明使者</value>
+  </data>
+  <data name="Realm-2" xml:space="preserve">
+    <value>US-塞纳留斯</value>
+  </data>
+  <data name="Realm-3" xml:space="preserve">
+    <value>US-乌瑟尔</value>
+  </data>
+  <data name="Realm-4" xml:space="preserve">
+    <value>US-基尔罗格</value>
+  </data>
+  <data name="Realm-5" xml:space="preserve">
+    <value>US-普罗德摩</value>
+  </data>
+  <data name="Realm-6" xml:space="preserve">
+    <value>US-海加尔</value>
+  </data>
+  <data name="Realm-7" xml:space="preserve">
+    <value>US-霜狼</value>
+  </data>
+  <data name="Realm-8" xml:space="preserve">
+    <value>US-耐奥祖</value>
+  </data>
+  <data name="Realm-9" xml:space="preserve">
+    <value>US-基尔加丹</value>
+  </data>
+  <data name="Realm-10" xml:space="preserve">
+    <value>US-黑石尖塔</value>
+  </data>
+  <data name="Realm-11" xml:space="preserve">
+    <value>US-提克迪奥斯</value>
+  </data>
+  <data name="Realm-12" xml:space="preserve">
+    <value>US-白银之手</value>
+  </data>
+  <data name="Realm-13" xml:space="preserve">
+    <value>US-毁灭之锤</value>
+  </data>
+  <data name="Realm-14" xml:space="preserve">
+    <value>US-寒冰皇冠</value>
+  </data>
+  <data name="Realm-15" xml:space="preserve">
+    <value>US-死亡之翼</value>
+  </data>
+  <data name="Realm-16" xml:space="preserve">
+    <value>US-克尔苏加德</value>
+  </data>
+  <data name="Realm-47" xml:space="preserve">
+    <value>US-伊崔格</value>
+  </data>
+  <data name="Realm-51" xml:space="preserve">
+    <value>US-迦罗娜</value>
+  </data>
+  <data name="Realm-52" xml:space="preserve">
+    <value>US-奥蕾莉亚</value>
+  </data>
+  <data name="Realm-53" xml:space="preserve">
+    <value>US-地狱咆哮</value>
+  </data>
+  <data name="Realm-54" xml:space="preserve">
+    <value>US-黑手军团</value>
+  </data>
+  <data name="Realm-55" xml:space="preserve">
+    <value>US-轻风之语</value>
+  </data>
+  <data name="Realm-56" xml:space="preserve">
+    <value>US-阿克蒙德</value>
+  </data>
+  <data name="Realm-57" xml:space="preserve">
+    <value>US-伊利丹</value>
+  </data>
+  <data name="Realm-58" xml:space="preserve">
+    <value>US-风暴裂隙</value>
+  </data>
+  <data name="Realm-59" xml:space="preserve">
+    <value>US-梅尔加尼</value>
+  </data>
+  <data name="Realm-60" xml:space="preserve">
+    <value>US-风暴之怒</value>
+  </data>
+  <data name="Realm-61" xml:space="preserve">
+    <value>US-祖尔金</value>
+  </data>
+  <data name="Realm-62" xml:space="preserve">
+    <value>US-麦迪文</value>
+  </data>
+  <data name="Realm-63" xml:space="preserve">
+    <value>US-杜隆坦</value>
+  </data>
+  <data name="Realm-64" xml:space="preserve">
+    <value>US-凯恩血蹄</value>
+  </data>
+  <data name="Realm-65" xml:space="preserve">
+    <value>US-卡德加</value>
+  </data>
+  <data name="Realm-66" xml:space="preserve">
+    <value>US-达拉然</value>
+  </data>
+  <data name="Realm-67" xml:space="preserve">
+    <value>US-艾露恩</value>
+  </data>
+  <data name="Realm-68" xml:space="preserve">
+    <value>US-洛萨</value>
+  </data>
+  <data name="Realm-69" xml:space="preserve">
+    <value>US-阿尔萨斯</value>
+  </data>
+  <data name="Realm-70" xml:space="preserve">
+    <value>US-玛诺洛斯</value>
+  </data>
+  <data name="Realm-71" xml:space="preserve">
+    <value>US-战歌</value>
+  </data>
+  <data name="Realm-72" xml:space="preserve">
+    <value>US-碎手</value>
+  </data>
+  <data name="Realm-73" xml:space="preserve">
+    <value>US-血环</value>
+  </data>
+  <data name="Realm-74" xml:space="preserve">
+    <value>US-碎颅者</value>
+  </data>
+  <data name="Realm-75" xml:space="preserve">
+    <value>US-银色黎明</value>
+  </data>
+  <data name="Realm-76" xml:space="preserve">
+    <value>US-萨格拉斯</value>
+  </data>
+  <data name="Realm-77" xml:space="preserve">
+    <value>US-埃加洛尔</value>
+  </data>
+  <data name="Realm-78" xml:space="preserve">
+    <value>US-玛瑟里顿</value>
+  </data>
+  <data name="Realm-79" xml:space="preserve">
+    <value>US-迪托马斯</value>
+  </data>
+  <data name="Realm-80" xml:space="preserve">
+    <value>US-戈古纳斯</value>
+  </data>
+  <data name="Realm-81" xml:space="preserve">
+    <value>US-Dethecus</value>
+  </data>
+  <data name="Realm-82" xml:space="preserve">
+    <value>US-断背</value>
+  </data>
+  <data name="Realm-83" xml:space="preserve">
+    <value>US-嚼骨者</value>
+  </data>
+  <data name="Realm-84" xml:space="preserve">
+    <value>US-巨龙之吼</value>
+  </data>
+  <data name="Realm-85" xml:space="preserve">
+    <value>US-影歌</value>
+  </data>
+  <data name="Realm-86" xml:space="preserve">
+    <value>US-银月</value>
+  </data>
+  <data name="Realm-87" xml:space="preserve">
+    <value>US-风行者</value>
+  </data>
+  <data name="Realm-88" xml:space="preserve">
+    <value>US-塞纳里奥议会</value>
+  </data>
+  <data name="Realm-89" xml:space="preserve">
+    <value>US-纳斯雷兹姆</value>
+  </data>
+  <data name="Realm-90" xml:space="preserve">
+    <value>US-泰瑞纳斯</value>
+  </data>
+  <data name="Realm-91" xml:space="preserve">
+    <value>US-燃烧之刃</value>
+  </data>
+  <data name="Realm-92" xml:space="preserve">
+    <value>US-血牙魔王</value>
+  </data>
+  <data name="Realm-93" xml:space="preserve">
+    <value>US-埃雷达尔</value>
+  </data>
+  <data name="Realm-94" xml:space="preserve">
+    <value>US-暗影之月</value>
+  </data>
+  <data name="Realm-95" xml:space="preserve">
+    <value>US-闪电之刃</value>
+  </data>
+  <data name="Realm-96" xml:space="preserve">
+    <value>US-艾欧娜尔</value>
+  </data>
+  <data name="Realm-97" xml:space="preserve">
+    <value>US-吉尔尼斯</value>
+  </data>
+  <data name="Realm-98" xml:space="preserve">
+    <value>US-卡格斯</value>
+  </data>
+  <data name="Realm-99" xml:space="preserve">
+    <value>US-莱恩</value>
+  </data>
+  <data name="Realm-100" xml:space="preserve">
+    <value>US-大地之环</value>
+  </data>
+  <data name="Realm-101" xml:space="preserve">
+    <value>US-嘲颅</value>
+  </data>
+  <data name="Realm-102" xml:space="preserve">
+    <value>US-燃烧军团</value>
+  </data>
+  <data name="Realm-103" xml:space="preserve">
+    <value>US-雷霆之王</value>
+  </data>
+  <data name="Realm-104" xml:space="preserve">
+    <value>US-玛里苟斯</value>
+  </data>
+  <data name="Realm-105" xml:space="preserve">
+    <value>US-雷霆号角</value>
+  </data>
+  <data name="Realm-106" xml:space="preserve">
+    <value>US-阿格拉玛</value>
+  </data>
+  <data name="Realm-107" xml:space="preserve">
+    <value>US-破碎岭</value>
+  </data>
+  <data name="Realm-108" xml:space="preserve">
+    <value>US-石锤</value>
+  </data>
+  <data name="Realm-109" xml:space="preserve">
+    <value>US-刺骨利刃</value>
+  </data>
+  <data name="Realm-110" xml:space="preserve">
+    <value>US-风暴之鳞</value>
+  </data>
+  <data name="Realm-111" xml:space="preserve">
+    <value>US-流沙之槌</value>
+  </data>
+  <data name="Realm-112" xml:space="preserve">
+    <value>US-冰川之拳</value>
+  </data>
+  <data name="Realm-113" xml:space="preserve">
+    <value>US-苏拉玛</value>
+  </data>
+  <data name="Realm-114" xml:space="preserve">
+    <value>US-龙骨平原</value>
+  </data>
+  <data name="Realm-115" xml:space="preserve">
+    <value>US-德拉诺</value>
+  </data>
+  <data name="Realm-116" xml:space="preserve">
+    <value>US-奥丹姆</value>
+  </data>
+  <data name="Realm-117" xml:space="preserve">
+    <value>US-山丘之王</value>
+  </data>
+  <data name="Realm-118" xml:space="preserve">
+    <value>US-羽月</value>
+  </data>
+  <data name="Realm-119" xml:space="preserve">
+    <value>US-血顶</value>
+  </data>
+  <data name="Realm-120" xml:space="preserve">
+    <value>US-黑暗之矛</value>
+  </data>
+  <data name="Realm-121" xml:space="preserve">
+    <value>US-蜘蛛王国</value>
+  </data>
+  <data name="Realm-122" xml:space="preserve">
+    <value>US-匹瑞诺德</value>
+  </data>
+  <data name="Realm-123" xml:space="preserve">
+    <value>US-埃德萨拉</value>
+  </data>
+  <data name="Realm-124" xml:space="preserve">
+    <value>US-岩石巨塔</value>
+  </data>
+  <data name="Realm-125" xml:space="preserve">
+    <value>US-暗影议会</value>
+  </data>
+  <data name="Realm-126" xml:space="preserve">
+    <value>US-血色十字军</value>
+  </data>
+  <data name="Realm-127" xml:space="preserve">
+    <value>US-火焰之树</value>
+  </data>
+  <data name="Realm-128" xml:space="preserve">
+    <value>US-冰霜之刃</value>
+  </data>
+  <data name="Realm-129" xml:space="preserve">
+    <value>US-古拉巴什</value>
+  </data>
+  <data name="Realm-130" xml:space="preserve">
+    <value>US-烈焰荆棘</value>
+  </data>
+  <data name="Realm-131" xml:space="preserve">
+    <value>US-天空之墙</value>
+  </data>
+  <data name="Realm-151" xml:space="preserve">
+    <value>US-Public Test EU</value>
+  </data>
+  <data name="Realm-153" xml:space="preserve">
+    <value>US-月行者</value>
+  </data>
+  <data name="Realm-154" xml:space="preserve">
+    <value>US-迪瑟洛克</value>
+  </data>
+  <data name="Realm-155" xml:space="preserve">
+    <value>US-卡雷苟斯</value>
+  </data>
+  <data name="Realm-156" xml:space="preserve">
+    <value>US-Ursin</value>
+  </data>
+  <data name="Realm-157" xml:space="preserve">
+    <value>US-黑铁</value>
+  </data>
+  <data name="Realm-158" xml:space="preserve">
+    <value>US-格雷迈恩</value>
+  </data>
+  <data name="Realm-159" xml:space="preserve">
+    <value>US-蛮锤</value>
+  </data>
+  <data name="Realm-160" xml:space="preserve">
+    <value>US-范达尔鹿盔</value>
+  </data>
+  <data name="Realm-162" xml:space="preserve">
+    <value>US-翡翠梦境</value>
+  </data>
+  <data name="Realm-163" xml:space="preserve">
+    <value>US-大漩涡</value>
+  </data>
+  <data name="Realm-164" xml:space="preserve">
+    <value>US-黑暗虚空</value>
+  </data>
+  <data name="Realm-201" xml:space="preserve">
+    <value>KR-燃烧军团</value>
+  </data>
+  <data name="Realm-205" xml:space="preserve">
+    <value>KR-艾萨拉</value>
+  </data>
+  <data name="Realm-207" xml:space="preserve">
+    <value>KR-达拉然</value>
+  </data>
+  <data name="Realm-210" xml:space="preserve">
+    <value>KR-杜隆坦</value>
+  </data>
+  <data name="Realm-211" xml:space="preserve">
+    <value>KR-诺甘农</value>
+  </data>
+  <data name="Realm-212" xml:space="preserve">
+    <value>KR-迦罗娜</value>
+  </data>
+  <data name="Realm-214" xml:space="preserve">
+    <value>KR-风行者</value>
+  </data>
+  <data name="Realm-215" xml:space="preserve">
+    <value>KR-古尔丹</value>
+  </data>
+  <data name="Realm-258" xml:space="preserve">
+    <value>KR-红龙女王</value>
+  </data>
+  <data name="Realm-264" xml:space="preserve">
+    <value>KR-玛法里奥</value>
+  </data>
+  <data name="Realm-293" xml:space="preserve">
+    <value>KR-地狱咆哮</value>
+  </data>
+  <data name="Realm-500" xml:space="preserve">
+    <value>EU-阿格拉玛</value>
+  </data>
+  <data name="Realm-501" xml:space="preserve">
+    <value>EU-阿拉索</value>
+  </data>
+  <data name="Realm-502" xml:space="preserve">
+    <value>EU-艾苏恩</value>
+  </data>
+  <data name="Realm-503" xml:space="preserve">
+    <value>EU-蜘蛛王国</value>
+  </data>
+  <data name="Realm-504" xml:space="preserve">
+    <value>EU-凯恩血蹄</value>
+  </data>
+  <data name="Realm-505" xml:space="preserve">
+    <value>EU-毁灭之锤</value>
+  </data>
+  <data name="Realm-506" xml:space="preserve">
+    <value>EU-德拉诺</value>
+  </data>
+  <data name="Realm-507" xml:space="preserve">
+    <value>EU-龙骨平原</value>
+  </data>
+  <data name="Realm-508" xml:space="preserve">
+    <value>EU-翡翠梦境</value>
+  </data>
+  <data name="Realm-509" xml:space="preserve">
+    <value>EU-迦罗娜</value>
+  </data>
+  <data name="Realm-510" xml:space="preserve">
+    <value>EU-沃金</value>
+  </data>
+  <data name="Realm-511" xml:space="preserve">
+    <value>EU-逐日者</value>
+  </data>
+  <data name="Realm-512" xml:space="preserve">
+    <value>EU-阿兰卡拉</value>
+  </data>
+  <data name="Realm-513" xml:space="preserve">
+    <value>EU-暮光之锤</value>
+  </data>
+  <data name="Realm-515" xml:space="preserve">
+    <value>EU-Zenedar</value>
+  </data>
+  <data name="Realm-516" xml:space="preserve">
+    <value>EU-Forscherliga</value>
+  </data>
+  <data name="Realm-517" xml:space="preserve">
+    <value>EU-麦迪文</value>
+  </data>
+  <data name="Realm-518" xml:space="preserve">
+    <value>EU-阿迦玛甘</value>
+  </data>
+  <data name="Realm-519" xml:space="preserve">
+    <value>EU-奥拉基尔</value>
+  </data>
+  <data name="Realm-521" xml:space="preserve">
+    <value>EU-利刃之拳</value>
+  </data>
+  <data name="Realm-522" xml:space="preserve">
+    <value>EU-血顶</value>
+  </data>
+  <data name="Realm-523" xml:space="preserve">
+    <value>EU-燃烧之刃</value>
+  </data>
+  <data name="Realm-524" xml:space="preserve">
+    <value>EU-燃烧军团</value>
+  </data>
+  <data name="Realm-525" xml:space="preserve">
+    <value>EU-破碎岭</value>
+  </data>
+  <data name="Realm-526" xml:space="preserve">
+    <value>EU-刺骨利刃</value>
+  </data>
+  <data name="Realm-527" xml:space="preserve">
+    <value>EU-死亡之翼</value>
+  </data>
+  <data name="Realm-528" xml:space="preserve">
+    <value>EU-巨龙之吼</value>
+  </data>
+  <data name="Realm-529" xml:space="preserve">
+    <value>EU-流沙之槌</value>
+  </data>
+  <data name="Realm-531" xml:space="preserve">
+    <value>EU-Dethecus</value>
+  </data>
+  <data name="Realm-533" xml:space="preserve">
+    <value>EU-Sinstralis</value>
+  </data>
+  <data name="Realm-535" xml:space="preserve">
+    <value>EU-杜隆坦</value>
+  </data>
+  <data name="Realm-536" xml:space="preserve">
+    <value>EU-银色黎明</value>
+  </data>
+  <data name="Realm-537" xml:space="preserve">
+    <value>EU-肯瑞托</value>
+  </data>
+  <data name="Realm-538" xml:space="preserve">
+    <value>EU-达拉然</value>
+  </data>
+  <data name="Realm-539" xml:space="preserve">
+    <value>EU-阿克蒙德</value>
+  </data>
+  <data name="Realm-540" xml:space="preserve">
+    <value>EU-艾露恩</value>
+  </data>
+  <data name="Realm-541" xml:space="preserve">
+    <value>EU-伊利丹</value>
+  </data>
+  <data name="Realm-542" xml:space="preserve">
+    <value>EU-海加尔</value>
+  </data>
+  <data name="Realm-543" xml:space="preserve">
+    <value>EU-凯尔萨斯</value>
+  </data>
+  <data name="Realm-544" xml:space="preserve">
+    <value>EU-耐奥祖</value>
+  </data>
+  <data name="Realm-545" xml:space="preserve">
+    <value>EU-古加尔</value>
+  </data>
+  <data name="Realm-546" xml:space="preserve">
+    <value>EU-萨格拉斯</value>
+  </data>
+  <data name="Realm-547" xml:space="preserve">
+    <value>EU-符文图腾</value>
+  </data>
+  <data name="Realm-548" xml:space="preserve">
+    <value>EU-影歌</value>
+  </data>
+  <data name="Realm-549" xml:space="preserve">
+    <value>EU-银月</value>
+  </data>
+  <data name="Realm-550" xml:space="preserve">
+    <value>EU-风暴之怒</value>
+  </data>
+  <data name="Realm-551" xml:space="preserve">
+    <value>EU-泰瑞纳斯</value>
+  </data>
+  <data name="Realm-552" xml:space="preserve">
+    <value>EU-雷霆号角</value>
+  </data>
+  <data name="Realm-553" xml:space="preserve">
+    <value>EU-图拉扬</value>
+  </data>
+  <data name="Realm-554" xml:space="preserve">
+    <value>EU-拉文凯斯</value>
+  </data>
+  <data name="Realm-556" xml:space="preserve">
+    <value>EU-碎手</value>
+  </data>
+  <data name="Realm-557" xml:space="preserve">
+    <value>EU-碎颅者</value>
+  </data>
+  <data name="Realm-558" xml:space="preserve">
+    <value>EU-断背</value>
+  </data>
+  <data name="Realm-559" xml:space="preserve">
+    <value>EU-风暴裂隙</value>
+  </data>
+  <data name="Realm-560" xml:space="preserve">
+    <value>EU-风暴之鳞</value>
+  </data>
+  <data name="Realm-561" xml:space="preserve">
+    <value>EU-大地之环</value>
+  </data>
+  <data name="Realm-562" xml:space="preserve">
+    <value>EU-红龙女王</value>
+  </data>
+  <data name="Realm-563" xml:space="preserve">
+    <value>EU-奥蕾莉亚</value>
+  </data>
+  <data name="Realm-564" xml:space="preserve">
+    <value>EU-安东尼达斯</value>
+  </data>
+  <data name="Realm-565" xml:space="preserve">
+    <value>EU-巴尔古恩</value>
+  </data>
+  <data name="Realm-566" xml:space="preserve">
+    <value>EU-黑手军团</value>
+  </data>
+  <data name="Realm-567" xml:space="preserve">
+    <value>EU-吉尔尼斯</value>
+  </data>
+  <data name="Realm-568" xml:space="preserve">
+    <value>EU-卡格斯</value>
+  </data>
+  <data name="Realm-569" xml:space="preserve">
+    <value>EU-卡兹格罗斯</value>
+  </data>
+  <data name="Realm-570" xml:space="preserve">
+    <value>EU-洛萨</value>
+  </data>
+  <data name="Realm-571" xml:space="preserve">
+    <value>EU-Madmortem</value>
+  </data>
+  <data name="Realm-572" xml:space="preserve">
+    <value>EU-玛法里奥</value>
+  </data>
+  <data name="Realm-573" xml:space="preserve">
+    <value>EU-祖鲁希德</value>
+  </data>
+  <data name="Realm-574" xml:space="preserve">
+    <value>EU-诺滋多姆</value>
+  </data>
+  <data name="Realm-575" xml:space="preserve">
+    <value>EU-匹瑞诺德</value>
+  </data>
+  <data name="Realm-576" xml:space="preserve">
+    <value>EU-Die Silberne Hand</value>
+  </data>
+  <data name="Realm-577" xml:space="preserve">
+    <value>EU-艾格文</value>
+  </data>
+  <data name="Realm-578" xml:space="preserve">
+    <value>EU-阿尔萨斯</value>
+  </data>
+  <data name="Realm-579" xml:space="preserve">
+    <value>EU-艾萨拉</value>
+  </data>
+  <data name="Realm-580" xml:space="preserve">
+    <value>EU-布莱克摩</value>
+  </data>
+  <data name="Realm-581" xml:space="preserve">
+    <value>EU-黑石尖塔</value>
+  </data>
+  <data name="Realm-582" xml:space="preserve">
+    <value>EU-迪托马斯</value>
+  </data>
+  <data name="Realm-583" xml:space="preserve">
+    <value>EU-埃雷达尔</value>
+  </data>
+  <data name="Realm-584" xml:space="preserve">
+    <value>EU-霜之哀伤</value>
+  </data>
+  <data name="Realm-585" xml:space="preserve">
+    <value>EU-霜狼</value>
+  </data>
+  <data name="Realm-586" xml:space="preserve">
+    <value>EU-戈古纳斯</value>
+  </data>
+  <data name="Realm-587" xml:space="preserve">
+    <value>EU-古尔丹</value>
+  </data>
+  <data name="Realm-588" xml:space="preserve">
+    <value>EU-克尔苏加德</value>
+  </data>
+  <data name="Realm-589" xml:space="preserve">
+    <value>EU-基尔加丹</value>
+  </data>
+  <data name="Realm-590" xml:space="preserve">
+    <value>EU-梅尔加尼</value>
+  </data>
+  <data name="Realm-591" xml:space="preserve">
+    <value>EU-玛诺洛斯</value>
+  </data>
+  <data name="Realm-592" xml:space="preserve">
+    <value>EU-Zirkel des Cenarius</value>
+  </data>
+  <data name="Realm-593" xml:space="preserve">
+    <value>EU-普罗德摩</value>
+  </data>
+  <data name="Realm-594" xml:space="preserve">
+    <value>EU-纳斯雷兹姆</value>
+  </data>
+  <data name="Realm-600" xml:space="preserve">
+    <value>EU-丹莫罗</value>
+  </data>
+  <data name="Realm-601" xml:space="preserve">
+    <value>EU-阿曼苏尔</value>
+  </data>
+  <data name="Realm-602" xml:space="preserve">
+    <value>EU-森金</value>
+  </data>
+  <data name="Realm-604" xml:space="preserve">
+    <value>EU-萨尔</value>
+  </data>
+  <data name="Realm-605" xml:space="preserve">
+    <value>EU-瑟莱德丝</value>
+  </data>
+  <data name="Realm-606" xml:space="preserve">
+    <value>EU-Genjuros</value>
+  </data>
+  <data name="Realm-607" xml:space="preserve">
+    <value>EU-巴纳扎尔</value>
+  </data>
+  <data name="Realm-608" xml:space="preserve">
+    <value>EU-阿努巴拉克</value>
+  </data>
+  <data name="Realm-609" xml:space="preserve">
+    <value>EU-天罚使者</value>
+  </data>
+  <data name="Realm-610" xml:space="preserve">
+    <value>EU-奥妮克希亚</value>
+  </data>
+  <data name="Realm-611" xml:space="preserve">
+    <value>EU-Nera'thor</value>
+  </data>
+  <data name="Realm-612" xml:space="preserve">
+    <value>EU-奈法利安</value>
+  </data>
+  <data name="Realm-613" xml:space="preserve">
+    <value>EU-Kult der Verdammten</value>
+  </data>
+  <data name="Realm-614" xml:space="preserve">
+    <value>EU-Das Syndikat</value>
+  </data>
+  <data name="Realm-615" xml:space="preserve">
+    <value>EU-泰罗达尔</value>
+  </data>
+  <data name="Realm-616" xml:space="preserve">
+    <value>EU-Krag'jin</value>
+  </data>
+  <data name="Realm-617" xml:space="preserve">
+    <value>EU-Der Rat von Dalaran</value>
+  </data>
+  <data name="Realm-618" xml:space="preserve">
+    <value>EU-诺达希尔</value>
+  </data>
+  <data name="Realm-619" xml:space="preserve">
+    <value>EU-地狱咆哮</value>
+  </data>
+  <data name="Realm-621" xml:space="preserve">
+    <value>EU-嘲颅</value>
+  </data>
+  <data name="Realm-622" xml:space="preserve">
+    <value>EU-玛瑟里顿</value>
+  </data>
+  <data name="Realm-623" xml:space="preserve">
+    <value>EU-奎尔萨拉斯</value>
+  </data>
+  <data name="Realm-624" xml:space="preserve">
+    <value>EU-耐普图隆</value>
+  </data>
+  <data name="Realm-625" xml:space="preserve">
+    <value>EU-黑暗虚空</value>
+  </data>
+  <data name="Realm-626" xml:space="preserve">
+    <value>EU-拉格纳罗斯</value>
+  </data>
+  <data name="Realm-627" xml:space="preserve">
+    <value>EU-大漩涡</value>
+  </data>
+  <data name="Realm-628" xml:space="preserve">
+    <value>EU-希尔瓦娜斯</value>
+  </data>
+  <data name="Realm-629" xml:space="preserve">
+    <value>EU-瓦丝琪</value>
+  </data>
+  <data name="Realm-630" xml:space="preserve">
+    <value>EU-血羽</value>
+  </data>
+  <data name="Realm-631" xml:space="preserve">
+    <value>EU-Darksorrow</value>
+  </data>
+  <data name="Realm-632" xml:space="preserve">
+    <value>EU-霜语</value>
+  </data>
+  <data name="Realm-633" xml:space="preserve">
+    <value>EU-考戈尔</value>
+  </data>
+  <data name="Realm-635" xml:space="preserve">
+    <value>EU-迪菲亚兄弟会</value>
+  </data>
+  <data name="Realm-636" xml:space="preserve">
+    <value>EU-The Venture Co</value>
+  </data>
+  <data name="Realm-637" xml:space="preserve">
+    <value>EU-闪电之刃</value>
+  </data>
+  <data name="Realm-638" xml:space="preserve">
+    <value>EU-Haomarush</value>
+  </data>
+  <data name="Realm-639" xml:space="preserve">
+    <value>EU-萨维斯</value>
+  </data>
+  <data name="Realm-640" xml:space="preserve">
+    <value>EU-卡兹莫丹</value>
+  </data>
+  <data name="Realm-641" xml:space="preserve">
+    <value>EU-德雷克塔尔</value>
+  </data>
+  <data name="Realm-642" xml:space="preserve">
+    <value>EU-Rashgarroth</value>
+  </data>
+  <data name="Realm-643" xml:space="preserve">
+    <value>EU-Throk'Feroth</value>
+  </data>
+  <data name="Realm-644" xml:space="preserve">
+    <value>EU-Conseil des Ombres</value>
+  </data>
+  <data name="Realm-645" xml:space="preserve">
+    <value>EU-瓦里玛萨斯</value>
+  </data>
+  <data name="Realm-646" xml:space="preserve">
+    <value>EU-哈卡</value>
+  </data>
+  <data name="Realm-647" xml:space="preserve">
+    <value>EU-Les Sentinelles</value>
+  </data>
+  <data name="Realm-963" xml:space="preserve">
+    <value>TW-暗影之月</value>
+  </data>
+  <data name="Realm-964" xml:space="preserve">
+    <value>TW-岩石巨塔</value>
+  </data>
+  <data name="Realm-965" xml:space="preserve">
+    <value>TW-风暴之鳞</value>
+  </data>
+  <data name="Realm-966" xml:space="preserve">
+    <value>TW-巨龙之吼</value>
+  </data>
+  <data name="Realm-977" xml:space="preserve">
+    <value>TW-冰霜之刃</value>
+  </data>
+  <data name="Realm-978" xml:space="preserve">
+    <value>TW-日落沼泽</value>
+  </data>
+  <data name="Realm-979" xml:space="preserve">
+    <value>TW-地狱咆哮</value>
+  </data>
+  <data name="Realm-980" xml:space="preserve">
+    <value>TW-天空之墙</value>
+  </data>
+  <data name="Realm-982" xml:space="preserve">
+    <value>TW-世界之树</value>
+  </data>
+  <data name="Realm-985" xml:space="preserve">
+    <value>TW-水晶之刺</value>
+  </data>
+  <data name="Realm-999" xml:space="preserve">
+    <value>TW-狂热之刃</value>
+  </data>
+  <data name="Realm-1001" xml:space="preserve">
+    <value>TW-冰风岗</value>
+  </data>
+  <data name="Realm-1006" xml:space="preserve">
+    <value>TW-米奈希尔</value>
+  </data>
+  <data name="Realm-1023" xml:space="preserve">
+    <value>TW-屠魔山谷</value>
+  </data>
+  <data name="Realm-1033" xml:space="preserve">
+    <value>TW-轻风之语</value>
+  </data>
+  <data name="Realm-1037" xml:space="preserve">
+    <value>TW-血环</value>
+  </data>
+  <data name="Realm-1038" xml:space="preserve">
+    <value>TW-亚雷戈斯</value>
+  </data>
+  <data name="Realm-1043" xml:space="preserve">
+    <value>TW-夜空之歌</value>
+  </data>
+  <data name="Realm-1046" xml:space="preserve">
+    <value>TW-圣光之愿</value>
+  </data>
+  <data name="Realm-1048" xml:space="preserve">
+    <value>TW-银翼要塞</value>
+  </data>
+  <data name="Realm-1049" xml:space="preserve">
+    <value>TW-天罚使者</value>
+  </data>
+  <data name="Realm-1054" xml:space="preserve">
+    <value>TW-阿尔萨斯</value>
+  </data>
+  <data name="Realm-1056" xml:space="preserve">
+    <value>TW-奎尔多雷</value>
+  </data>
+  <data name="Realm-1057" xml:space="preserve">
+    <value>TW-寒冰皇冠</value>
+  </data>
+  <data name="Realm-1067" xml:space="preserve">
+    <value>US-古加尔</value>
+  </data>
+  <data name="Realm-1068" xml:space="preserve">
+    <value>US-古尔丹</value>
+  </data>
+  <data name="Realm-1069" xml:space="preserve">
+    <value>US-凯尔萨斯</value>
+  </data>
+  <data name="Realm-1070" xml:space="preserve">
+    <value>US-红龙女王</value>
+  </data>
+  <data name="Realm-1071" xml:space="preserve">
+    <value>US-肯瑞托</value>
+  </data>
+  <data name="Realm-1072" xml:space="preserve">
+    <value>US-拉文凯斯</value>
+  </data>
+  <data name="Realm-1075" xml:space="preserve">
+    <value>US-巴纳扎尔</value>
+  </data>
+  <data name="Realm-1080" xml:space="preserve">
+    <value>EU-卡德加</value>
+  </data>
+  <data name="Realm-1081" xml:space="preserve">
+    <value>EU-山丘之王</value>
+  </data>
+  <data name="Realm-1082" xml:space="preserve">
+    <value>EU-库尔提拉斯</value>
+  </data>
+  <data name="Realm-1083" xml:space="preserve">
+    <value>EU-克洛玛古斯</value>
+  </data>
+  <data name="Realm-1084" xml:space="preserve">
+    <value>EU-丹塔格</value>
+  </data>
+  <data name="Realm-1085" xml:space="preserve">
+    <value>EU-月光林地</value>
+  </data>
+  <data name="Realm-1086" xml:space="preserve">
+    <value>EU-La Croisade écarlate</value>
+  </data>
+  <data name="Realm-1087" xml:space="preserve">
+    <value>EU-埃克索图斯</value>
+  </data>
+  <data name="Realm-1088" xml:space="preserve">
+    <value>EU-托尔贝恩</value>
+  </data>
+  <data name="Realm-1089" xml:space="preserve">
+    <value>EU-Mazrigos</value>
+  </data>
+  <data name="Realm-1090" xml:space="preserve">
+    <value>EU-托尼瓦尔</value>
+  </data>
+  <data name="Realm-1091" xml:space="preserve">
+    <value>EU-艾莫莉丝</value>
+  </data>
+  <data name="Realm-1092" xml:space="preserve">
+    <value>EU-Drak'thul</value>
+  </data>
+  <data name="Realm-1093" xml:space="preserve">
+    <value>EU-安其拉</value>
+  </data>
+  <data name="Realm-1096" xml:space="preserve">
+    <value>EU-裂盾军团</value>
+  </data>
+  <data name="Realm-1097" xml:space="preserve">
+    <value>EU-伊瑟拉</value>
+  </data>
+  <data name="Realm-1098" xml:space="preserve">
+    <value>EU-玛里苟斯</value>
+  </data>
+  <data name="Realm-1099" xml:space="preserve">
+    <value>EU-雷克萨</value>
+  </data>
+  <data name="Realm-1104" xml:space="preserve">
+    <value>EU-安纳塞隆</value>
+  </data>
+  <data name="Realm-1105" xml:space="preserve">
+    <value>EU-纳沙塔尔</value>
+  </data>
+  <data name="Realm-1106" xml:space="preserve">
+    <value>EU-提克迪奥斯</value>
+  </data>
+  <data name="Realm-1117" xml:space="preserve">
+    <value>EU-热砂港</value>
+  </data>
+  <data name="Realm-1118" xml:space="preserve">
+    <value>EU-Die ewige Wacht</value>
+  </data>
+  <data name="Realm-1119" xml:space="preserve">
+    <value>EU-Die Todeskrallen</value>
+  </data>
+  <data name="Realm-1121" xml:space="preserve">
+    <value>EU-Die Arguswacht</value>
+  </data>
+  <data name="Realm-1122" xml:space="preserve">
+    <value>EU-奥达曼</value>
+  </data>
+  <data name="Realm-1123" xml:space="preserve">
+    <value>EU-伊崔格</value>
+  </data>
+  <data name="Realm-1127" xml:space="preserve">
+    <value>EU-Confrérie du Thorium</value>
+  </data>
+  <data name="Realm-1128" xml:space="preserve">
+    <value>US-艾萨拉</value>
+  </data>
+  <data name="Realm-1129" xml:space="preserve">
+    <value>US-阿迦玛甘</value>
+  </data>
+  <data name="Realm-1130" xml:space="preserve">
+    <value>US-雷蹄</value>
+  </data>
+  <data name="Realm-1131" xml:space="preserve">
+    <value>US-纳沙塔尔</value>
+  </data>
+  <data name="Realm-1132" xml:space="preserve">
+    <value>US-玛法里奥</value>
+  </data>
+  <data name="Realm-1136" xml:space="preserve">
+    <value>US-艾格文</value>
+  </data>
+  <data name="Realm-1137" xml:space="preserve">
+    <value>US-阿卡玛</value>
+  </data>
+  <data name="Realm-1138" xml:space="preserve">
+    <value>US-克洛玛古斯</value>
+  </data>
+  <data name="Realm-1139" xml:space="preserve">
+    <value>US-德拉卡</value>
+  </data>
+  <data name="Realm-1140" xml:space="preserve">
+    <value>US-Drak'thul</value>
+  </data>
+  <data name="Realm-1141" xml:space="preserve">
+    <value>US-加里索斯</value>
+  </data>
+  <data name="Realm-1142" xml:space="preserve">
+    <value>US-哈卡</value>
+  </data>
+  <data name="Realm-1143" xml:space="preserve">
+    <value>US-卡兹莫丹</value>
+  </data>
+  <data name="Realm-1145" xml:space="preserve">
+    <value>US-玛格索尔</value>
+  </data>
+  <data name="Realm-1146" xml:space="preserve">
+    <value>US-Korgath</value>
+  </data>
+  <data name="Realm-1147" xml:space="preserve">
+    <value>US-库尔提拉斯</value>
+  </data>
+  <data name="Realm-1148" xml:space="preserve">
+    <value>US-玛洛恩</value>
+  </data>
+  <data name="Realm-1151" xml:space="preserve">
+    <value>US-雷克萨</value>
+  </data>
+  <data name="Realm-1154" xml:space="preserve">
+    <value>US-瑟银兄弟会</value>
+  </data>
+  <data name="Realm-1165" xml:space="preserve">
+    <value>US-阿拉索</value>
+  </data>
+  <data name="Realm-1173" xml:space="preserve">
+    <value>US-玛多兰</value>
+  </data>
+  <data name="Realm-1175" xml:space="preserve">
+    <value>US-托尔贝恩</value>
+  </data>
+  <data name="Realm-1182" xml:space="preserve">
+    <value>US-穆拉丁</value>
+  </data>
+  <data name="Realm-1184" xml:space="preserve">
+    <value>US-维克尼拉斯</value>
+  </data>
+  <data name="Realm-1185" xml:space="preserve">
+    <value>US-森金</value>
+  </data>
+  <data name="Realm-1190" xml:space="preserve">
+    <value>US-巴尔古恩</value>
+  </data>
+  <data name="Realm-1258" xml:space="preserve">
+    <value>US-暮色森林</value>
+  </data>
+  <data name="Realm-1259" xml:space="preserve">
+    <value>US-祖鲁希德</value>
+  </data>
+  <data name="Realm-1260" xml:space="preserve">
+    <value>US-热砂港</value>
+  </data>
+  <data name="Realm-1262" xml:space="preserve">
+    <value>US-诺甘农</value>
+  </data>
+  <data name="Realm-1263" xml:space="preserve">
+    <value>US-萨尔</value>
+  </data>
+  <data name="Realm-1264" xml:space="preserve">
+    <value>US-安纳塞隆</value>
+  </data>
+  <data name="Realm-1265" xml:space="preserve">
+    <value>US-图拉扬</value>
+  </data>
+  <data name="Realm-1266" xml:space="preserve">
+    <value>US-Haomarush</value>
+  </data>
+  <data name="Realm-1267" xml:space="preserve">
+    <value>US-Scilla</value>
+  </data>
+  <data name="Realm-1268" xml:space="preserve">
+    <value>US-伊森德雷</value>
+  </data>
+  <data name="Realm-1270" xml:space="preserve">
+    <value>US-伊瑟拉</value>
+  </data>
+  <data name="Realm-1271" xml:space="preserve">
+    <value>US-丹塔格</value>
+  </data>
+  <data name="Realm-1276" xml:space="preserve">
+    <value>US-安多哈尔</value>
+  </data>
+  <data name="Realm-1277" xml:space="preserve">
+    <value>US-埃克索图斯</value>
+  </data>
+  <data name="Realm-1278" xml:space="preserve">
+    <value>US-达文格尔</value>
+  </data>
+  <data name="Realm-1280" xml:space="preserve">
+    <value>US-黑龙军团</value>
+  </data>
+  <data name="Realm-1282" xml:space="preserve">
+    <value>US-暴风祭坛</value>
+  </data>
+  <data name="Realm-1283" xml:space="preserve">
+    <value>US-奥达曼</value>
+  </data>
+  <data name="Realm-1284" xml:space="preserve">
+    <value>US-鹰巢山</value>
+  </data>
+  <data name="Realm-1285" xml:space="preserve">
+    <value>US-奥妮克希亚</value>
+  </data>
+  <data name="Realm-1286" xml:space="preserve">
+    <value>US-恶魔之魂</value>
+  </data>
+  <data name="Realm-1287" xml:space="preserve">
+    <value>US-诺莫瑞根</value>
+  </data>
+  <data name="Realm-1288" xml:space="preserve">
+    <value>US-安威玛尔</value>
+  </data>
+  <data name="Realm-1289" xml:space="preserve">
+    <value>US-The Venture Co</value>
+  </data>
+  <data name="Realm-1290" xml:space="preserve">
+    <value>US-哨兵</value>
+  </data>
+  <data name="Realm-1291" xml:space="preserve">
+    <value>US-加德纳尔</value>
+  </data>
+  <data name="Realm-1292" xml:space="preserve">
+    <value>US-塔纳利斯</value>
+  </data>
+  <data name="Realm-1293" xml:space="preserve">
+    <value>US-奥特兰克</value>
+  </data>
+  <data name="Realm-1294" xml:space="preserve">
+    <value>US-安德麦</value>
+  </data>
+  <data name="Realm-1295" xml:space="preserve">
+    <value>US-莱索恩</value>
+  </data>
+  <data name="Realm-1296" xml:space="preserve">
+    <value>US-黑翼之巢</value>
+  </data>
+  <data name="Realm-1297" xml:space="preserve">
+    <value>US-亚雷戈斯</value>
+  </data>
+  <data name="Realm-1298" xml:space="preserve">
+    <value>EU-维克尼拉斯</value>
+  </data>
+  <data name="Realm-1299" xml:space="preserve">
+    <value>EU-冰川之拳</value>
+  </data>
+  <data name="Realm-1300" xml:space="preserve">
+    <value>EU-冰霜之刃</value>
+  </data>
+  <data name="Realm-1301" xml:space="preserve">
+    <value>EU-外域</value>
+  </data>
+  <data name="Realm-1303" xml:space="preserve">
+    <value>EU-格瑞姆巴托</value>
+  </data>
+  <data name="Realm-1304" xml:space="preserve">
+    <value>EU-加德纳尔</value>
+  </data>
+  <data name="Realm-1305" xml:space="preserve">
+    <value>EU-卡扎克</value>
+  </data>
+  <data name="Realm-1306" xml:space="preserve">
+    <value>EU-塔伦米尔</value>
+  </data>
+  <data name="Realm-1307" xml:space="preserve">
+    <value>EU-龙神之厅</value>
+  </data>
+  <data name="Realm-1308" xml:space="preserve">
+    <value>EU-拉文霍德</value>
+  </data>
+  <data name="Realm-1309" xml:space="preserve">
+    <value>EU-Pozzo dell'Eternità</value>
+  </data>
+  <data name="Realm-1310" xml:space="preserve">
+    <value>EU-艾欧娜尔</value>
+  </data>
+  <data name="Realm-1311" xml:space="preserve">
+    <value>EU-基尔罗格</value>
+  </data>
+  <data name="Realm-1312" xml:space="preserve">
+    <value>EU-鹰巢山</value>
+  </data>
+  <data name="Realm-1313" xml:space="preserve">
+    <value>EU-蛮锤</value>
+  </data>
+  <data name="Realm-1314" xml:space="preserve">
+    <value>EU-萨鲁法尔</value>
+  </data>
+  <data name="Realm-1316" xml:space="preserve">
+    <value>EU-涅墨西斯</value>
+  </data>
+  <data name="Realm-1317" xml:space="preserve">
+    <value>EU-暗月马戏团</value>
+  </data>
+  <data name="Realm-1318" xml:space="preserve">
+    <value>EU-维克洛尔</value>
+  </data>
+  <data name="Realm-1319" xml:space="preserve">
+    <value>EU-玛格索尔</value>
+  </data>
+  <data name="Realm-1320" xml:space="preserve">
+    <value>EU-泰拉尔</value>
+  </data>
+  <data name="Realm-1321" xml:space="preserve">
+    <value>EU-达文格尔</value>
+  </data>
+  <data name="Realm-1322" xml:space="preserve">
+    <value>EU-拉贾克斯</value>
+  </data>
+  <data name="Realm-1323" xml:space="preserve">
+    <value>EU-奥杜尔</value>
+  </data>
+  <data name="Realm-1324" xml:space="preserve">
+    <value>EU-玛洛恩</value>
+  </data>
+  <data name="Realm-1326" xml:space="preserve">
+    <value>EU-Der abyssische Rat</value>
+  </data>
+  <data name="Realm-1327" xml:space="preserve">
+    <value>EU-Der Mithrilorden</value>
+  </data>
+  <data name="Realm-1328" xml:space="preserve">
+    <value>EU-提里奥</value>
+  </data>
+  <data name="Realm-1330" xml:space="preserve">
+    <value>EU-Ambossar</value>
+  </data>
+  <data name="Realm-1331" xml:space="preserve">
+    <value>EU-苏拉玛</value>
+  </data>
+  <data name="Realm-1332" xml:space="preserve">
+    <value>EU-克拉苏斯</value>
+  </data>
+  <data name="Realm-1333" xml:space="preserve">
+    <value>EU-Die Nachtwache</value>
+  </data>
+  <data name="Realm-1334" xml:space="preserve">
+    <value>EU-阿拉希</value>
+  </data>
+  <data name="Realm-1335" xml:space="preserve">
+    <value>EU-伊森德雷</value>
+  </data>
+  <data name="Realm-1336" xml:space="preserve">
+    <value>EU-埃德萨拉</value>
+  </data>
+  <data name="Realm-1337" xml:space="preserve">
+    <value>EU-Culte de la Rive noire</value>
+  </data>
+  <data name="Realm-1342" xml:space="preserve">
+    <value>US-回音群岛</value>
+  </data>
+  <data name="Realm-1344" xml:space="preserve">
+    <value>US-遗忘海岸</value>
+  </data>
+  <data name="Realm-1345" xml:space="preserve">
+    <value>US-芬里斯</value>
+  </data>
+  <data name="Realm-1346" xml:space="preserve">
+    <value>US-阿努巴拉克</value>
+  </data>
+  <data name="Realm-1347" xml:space="preserve">
+    <value>US-黑水强盗</value>
+  </data>
+  <data name="Realm-1348" xml:space="preserve">
+    <value>US-瓦丝琪</value>
+  </data>
+  <data name="Realm-1349" xml:space="preserve">
+    <value>US-考雷斯特拉兹</value>
+  </data>
+  <data name="Realm-1350" xml:space="preserve">
+    <value>US-米莎</value>
+  </data>
+  <data name="Realm-1351" xml:space="preserve">
+    <value>US-达隆米尔</value>
+  </data>
+  <data name="Realm-1352" xml:space="preserve">
+    <value>US-拉文霍德</value>
+  </data>
+  <data name="Realm-1353" xml:space="preserve">
+    <value>US-利刃之拳</value>
+  </data>
+  <data name="Realm-1354" xml:space="preserve">
+    <value>US-舒哈鲁</value>
+  </data>
+  <data name="Realm-1355" xml:space="preserve">
+    <value>US-冬蹄</value>
+  </data>
+  <data name="Realm-1356" xml:space="preserve">
+    <value>US-艾露恩姐妹</value>
+  </data>
+  <data name="Realm-1357" xml:space="preserve">
+    <value>US-玛维</value>
+  </data>
+  <data name="Realm-1358" xml:space="preserve">
+    <value>US-瑞文戴尔</value>
+  </data>
+  <data name="Realm-1359" xml:space="preserve">
+    <value>US-诺达希尔</value>
+  </data>
+  <data name="Realm-1360" xml:space="preserve">
+    <value>US-托塞德林</value>
+  </data>
+  <data name="Realm-1361" xml:space="preserve">
+    <value>US-凯恩</value>
+  </data>
+  <data name="Realm-1362" xml:space="preserve">
+    <value>US-达克萨隆</value>
+  </data>
+  <data name="Realm-1363" xml:space="preserve">
+    <value>US-安东尼达斯</value>
+  </data>
+  <data name="Realm-1364" xml:space="preserve">
+    <value>US-珊蒂斯</value>
+  </data>
+  <data name="Realm-1365" xml:space="preserve">
+    <value>US-月之守卫</value>
+  </data>
+  <data name="Realm-1367" xml:space="preserve">
+    <value>US-纳兹格雷尔</value>
+  </data>
+  <data name="Realm-1368" xml:space="preserve">
+    <value>US-海达希亚</value>
+  </data>
+  <data name="Realm-1369" xml:space="preserve">
+    <value>US-Wyrmrest Accord</value>
+  </data>
+  <data name="Realm-1370" xml:space="preserve">
+    <value>US-远行者</value>
+  </data>
+  <data name="Realm-1371" xml:space="preserve">
+    <value>US-北风苔原</value>
+  </data>
+  <data name="Realm-1372" xml:space="preserve">
+    <value>US-奎尔多雷</value>
+  </data>
+  <data name="Realm-1373" xml:space="preserve">
+    <value>US-加尔鲁什</value>
+  </data>
+  <data name="Realm-1374" xml:space="preserve">
+    <value>US-莫克纳萨</value>
+  </data>
+  <data name="Realm-1375" xml:space="preserve">
+    <value>US-奈辛瓦里</value>
+  </data>
+  <data name="Realm-1377" xml:space="preserve">
+    <value>US-Drenden</value>
+  </data>
+  <data name="Realm-1378" xml:space="preserve">
+    <value>EU-丹莫德</value>
+  </data>
+  <data name="Realm-1379" xml:space="preserve">
+    <value>EU-祖尔金</value>
+  </data>
+  <data name="Realm-1380" xml:space="preserve">
+    <value>EU-奥丹姆</value>
+  </data>
+  <data name="Realm-1381" xml:space="preserve">
+    <value>EU-克苏恩</value>
+  </data>
+  <data name="Realm-1382" xml:space="preserve">
+    <value>EU-Sanguino</value>
+  </data>
+  <data name="Realm-1383" xml:space="preserve">
+    <value>EU-辛德拉</value>
+  </data>
+  <data name="Realm-1384" xml:space="preserve">
+    <value>EU-泰兰德</value>
+  </data>
+  <data name="Realm-1385" xml:space="preserve">
+    <value>EU-埃索达</value>
+  </data>
+  <data name="Realm-1386" xml:space="preserve">
+    <value>EU-Minahonda</value>
+  </data>
+  <data name="Realm-1387" xml:space="preserve">
+    <value>EU-Los Errantes</value>
+  </data>
+  <data name="Realm-1388" xml:space="preserve">
+    <value>EU-光明使者</value>
+  </data>
+  <data name="Realm-1389" xml:space="preserve">
+    <value>EU-黑暗之矛</value>
+  </data>
+  <data name="Realm-1391" xml:space="preserve">
+    <value>EU-阿隆索斯</value>
+  </data>
+  <data name="Realm-1392" xml:space="preserve">
+    <value>EU-燃烧平原</value>
+  </data>
+  <data name="Realm-1393" xml:space="preserve">
+    <value>EU-铜龙军团</value>
+  </data>
+  <data name="Realm-1394" xml:space="preserve">
+    <value>EU-阿纳克洛斯</value>
+  </data>
+  <data name="Realm-1395" xml:space="preserve">
+    <value>EU-Colinas Pardas</value>
+  </data>
+  <data name="Realm-1400" xml:space="preserve">
+    <value>EU-安戈洛</value>
+  </data>
+  <data name="Realm-1401" xml:space="preserve">
+    <value>EU-加尔鲁什</value>
+  </data>
+  <data name="Realm-1404" xml:space="preserve">
+    <value>EU-Area 52</value>
+  </data>
+  <data name="Realm-1405" xml:space="preserve">
+    <value>EU-Todeswache</value>
+  </data>
+  <data name="Realm-1406" xml:space="preserve">
+    <value>EU-亚雷戈斯</value>
+  </data>
+  <data name="Realm-1407" xml:space="preserve">
+    <value>EU-泰达希尔</value>
+  </data>
+  <data name="Realm-1408" xml:space="preserve">
+    <value>EU-诺甘农</value>
+  </data>
+  <data name="Realm-1409" xml:space="preserve">
+    <value>EU-洛丹伦</value>
+  </data>
+  <data name="Realm-1413" xml:space="preserve">
+    <value>EU-Aggra (Português)</value>
+  </data>
+  <data name="Realm-1415" xml:space="preserve">
+    <value>EU-泰罗卡</value>
+  </data>
+  <data name="Realm-1416" xml:space="preserve">
+    <value>EU-刀锋山</value>
+  </data>
+  <data name="Realm-1417" xml:space="preserve">
+    <value>EU-秘蓝岛</value>
+  </data>
+  <data name="Realm-1425" xml:space="preserve">
+    <value>US-达卡莱</value>
+  </data>
+  <data name="Realm-1427" xml:space="preserve">
+    <value>US-拉格纳罗斯</value>
+  </data>
+  <data name="Realm-1428" xml:space="preserve">
+    <value>US-奎尔萨拉斯</value>
+  </data>
+  <data name="Realm-1549" xml:space="preserve">
+    <value>US-秘蓝岛</value>
+  </data>
+  <data name="Realm-1555" xml:space="preserve">
+    <value>US-奥金顿</value>
+  </data>
+  <data name="Realm-1556" xml:space="preserve">
+    <value>US-盘牙</value>
+  </data>
+  <data name="Realm-1557" xml:space="preserve">
+    <value>US-破碎大厅</value>
+  </data>
+  <data name="Realm-1558" xml:space="preserve">
+    <value>US-鲜血熔炉</value>
+  </data>
+  <data name="Realm-1559" xml:space="preserve">
+    <value>US-幽暗沼泽</value>
+  </data>
+  <data name="Realm-1563" xml:space="preserve">
+    <value>US-泰罗卡</value>
+  </data>
+  <data name="Realm-1564" xml:space="preserve">
+    <value>US-刀锋山</value>
+  </data>
+  <data name="Realm-1565" xml:space="preserve">
+    <value>US-埃索达</value>
+  </data>
+  <data name="Realm-1566" xml:space="preserve">
+    <value>US-Area 52</value>
+  </data>
+  <data name="Realm-1567" xml:space="preserve">
+    <value>US-维伦</value>
+  </data>
+  <data name="Realm-1570" xml:space="preserve">
+    <value>US-占星者</value>
+  </data>
+  <data name="Realm-1572" xml:space="preserve">
+    <value>US-赞加沼泽</value>
+  </data>
+  <data name="Realm-1576" xml:space="preserve">
+    <value>US-菲兹兰克</value>
+  </data>
+  <data name="Realm-1578" xml:space="preserve">
+    <value>US-幽魂之地</value>
+  </data>
+  <data name="Realm-1579" xml:space="preserve">
+    <value>US-灰熊丘陵</value>
+  </data>
+  <data name="Realm-1581" xml:space="preserve">
+    <value>US-迦拉克隆</value>
+  </data>
+  <data name="Realm-1582" xml:space="preserve">
+    <value>US-黎明使者</value>
+  </data>
+  <data name="Realm-1587" xml:space="preserve">
+    <value>EU-地狱火</value>
+  </data>
+  <data name="Realm-1588" xml:space="preserve">
+    <value>EU-幽魂之地</value>
+  </data>
+  <data name="Realm-1589" xml:space="preserve">
+    <value>EU-纳格兰</value>
+  </data>
+  <data name="Realm-1595" xml:space="preserve">
+    <value>EU-沙塔尔</value>
+  </data>
+  <data name="Realm-1596" xml:space="preserve">
+    <value>EU-卡拉赞</value>
+  </data>
+  <data name="Realm-1597" xml:space="preserve">
+    <value>EU-奥金顿</value>
+  </data>
+  <data name="Realm-1598" xml:space="preserve">
+    <value>EU-破碎大厅</value>
+  </data>
+  <data name="Realm-1602" xml:space="preserve">
+    <value>EU-戈杜尼</value>
+  </data>
+  <data name="Realm-1603" xml:space="preserve">
+    <value>EU-巫妖之王</value>
+  </data>
+  <data name="Realm-1604" xml:space="preserve">
+    <value>EU-夺灵者</value>
+  </data>
+  <data name="Realm-1605" xml:space="preserve">
+    <value>EU-亡灵卫士</value>
+  </data>
+  <data name="Realm-1606" xml:space="preserve">
+    <value>EU-孢子村</value>
+  </data>
+  <data name="Realm-1607" xml:space="preserve">
+    <value>EU-虚空风暴</value>
+  </data>
+  <data name="Realm-1608" xml:space="preserve">
+    <value>EU-沙塔斯</value>
+  </data>
+  <data name="Realm-1609" xml:space="preserve">
+    <value>EU-深渊之巢</value>
+  </data>
+  <data name="Realm-1610" xml:space="preserve">
+    <value>EU-格雷迈恩</value>
+  </data>
+  <data name="Realm-1611" xml:space="preserve">
+    <value>EU-Festung der Stürme</value>
+  </data>
+  <data name="Realm-1612" xml:space="preserve">
+    <value>EU-Echsenkessel</value>
+  </data>
+  <data name="Realm-1613" xml:space="preserve">
+    <value>EU-Blutkessel</value>
+  </data>
+  <data name="Realm-1614" xml:space="preserve">
+    <value>EU-迦拉克隆</value>
+  </data>
+  <data name="Realm-1615" xml:space="preserve">
+    <value>EU-嚎风峡湾</value>
+  </data>
+  <data name="Realm-1616" xml:space="preserve">
+    <value>EU-拉苏维奥斯</value>
+  </data>
+  <data name="Realm-1617" xml:space="preserve">
+    <value>EU-织亡者</value>
+  </data>
+  <data name="Realm-1618" xml:space="preserve">
+    <value>EU-Die Aldor</value>
+  </data>
+  <data name="Realm-1619" xml:space="preserve">
+    <value>EU-Das Konsortium</value>
+  </data>
+  <data name="Realm-1620" xml:space="preserve">
+    <value>EU-Chants éternels</value>
+  </data>
+  <data name="Realm-1621" xml:space="preserve">
+    <value>EU-Marécage de Zangar</value>
+  </data>
+  <data name="Realm-1622" xml:space="preserve">
+    <value>EU-Temple noir</value>
+  </data>
+  <data name="Realm-1623" xml:space="preserve">
+    <value>EU-弗塔根</value>
+  </data>
+  <data name="Realm-1624" xml:space="preserve">
+    <value>EU-纳克萨玛斯</value>
+  </data>
+  <data name="Realm-1625" xml:space="preserve">
+    <value>EU-北风苔原</value>
+  </data>
+  <data name="Realm-1626" xml:space="preserve">
+    <value>EU-Les Clairvoyants</value>
+  </data>
+  <data name="Realm-1922" xml:space="preserve">
+    <value>EU-埃苏雷格</value>
+  </data>
+  <data name="Realm-1923" xml:space="preserve">
+    <value>EU-灰谷</value>
+  </data>
+  <data name="Realm-1924" xml:space="preserve">
+    <value>EU-藏宝海湾</value>
+  </data>
+  <data name="Realm-1925" xml:space="preserve">
+    <value>EU-永歌</value>
+  </data>
+  <data name="Realm-1926" xml:space="preserve">
+    <value>EU-瑟玛普拉格</value>
+  </data>
+  <data name="Realm-1927" xml:space="preserve">
+    <value>EU-格罗姆</value>
+  </data>
+  <data name="Realm-1928" xml:space="preserve">
+    <value>EU-戈德林</value>
+  </data>
+  <data name="Realm-1929" xml:space="preserve">
+    <value>EU-黑痕</value>
+  </data>
+  <data name="Realm-2075" xml:space="preserve">
+    <value>TW-云端翔龙骑士团</value>
+  </data>
+  <data name="Realm-2079" xml:space="preserve">
+    <value>KR-蛮锤</value>
+  </data>
+  <data name="Realm-2106" xml:space="preserve">
+    <value>KR-雷克萨</value>
+  </data>
+  <data name="Realm-2107" xml:space="preserve">
+    <value>KR-海加尔</value>
+  </data>
+  <data name="Realm-2108" xml:space="preserve">
+    <value>KR-死亡之翼</value>
+  </data>
+  <data name="Realm-2110" xml:space="preserve">
+    <value>KR-塞纳留斯</value>
+  </data>
+  <data name="Realm-2111" xml:space="preserve">
+    <value>KR-风暴之怒</value>
+  </data>
+  <data name="Realm-2116" xml:space="preserve">
+    <value>KR-祖尔金</value>
+  </data>
+  <data name="Realm-3207" xml:space="preserve">
+    <value>US-戈德林</value>
+  </data>
+  <data name="Realm-3208" xml:space="preserve">
+    <value>US-涅墨西斯</value>
+  </data>
+  <data name="Realm-3209" xml:space="preserve">
+    <value>US-阿兹拉隆</value>
+  </data>
+  <data name="Realm-3210" xml:space="preserve">
+    <value>US-托尔巴拉德</value>
+  </data>
+  <data name="Realm-3234" xml:space="preserve">
+    <value>US-加里维克斯</value>
+  </data>
+  <data name="Realm-3721" xml:space="preserve">
+    <value>US-凯雷斯特拉兹</value>
+  </data>
+  <data name="Realm-3722" xml:space="preserve">
+    <value>US-阿曼苏尔</value>
+  </data>
+  <data name="Realm-3723" xml:space="preserve">
+    <value>US-巴瑟拉斯</value>
+  </data>
+  <data name="Realm-3724" xml:space="preserve">
+    <value>US-索瑞森</value>
+  </data>
+  <data name="Realm-3725" xml:space="preserve">
+    <value>US-霜之哀伤</value>
+  </data>
+  <data name="Realm-3726" xml:space="preserve">
+    <value>US-卡兹格罗斯</value>
+  </data>
+  <data name="Realm-3733" xml:space="preserve">
+    <value>US-巨槌</value>
+  </data>
+  <data name="Realm-3734" xml:space="preserve">
+    <value>US-纳格兰</value>
+  </data>
+  <data name="Realm-3735" xml:space="preserve">
+    <value>US-达斯雷玛</value>
+  </data>
+  <data name="Realm-3736" xml:space="preserve">
+    <value>US-朱倍尔索斯</value>
+  </data>
+  <data name="Realm-3737" xml:space="preserve">
+    <value>US-古达克</value>
+  </data>
+  <data name="Realm-3738" xml:space="preserve">
+    <value>US-萨鲁法尔</value>
+  </data>
+  <data name="CharacterRace-1" xml:space="preserve">
+    <value>人类</value>
+  </data>
+  <data name="CharacterRace-2" xml:space="preserve">
+    <value>兽人</value>
+  </data>
+  <data name="CharacterRace-3" xml:space="preserve">
+    <value>矮人</value>
+  </data>
+  <data name="CharacterRace-4" xml:space="preserve">
+    <value>暗夜精灵</value>
+  </data>
+  <data name="CharacterRace-5" xml:space="preserve">
+    <value>亡灵</value>
+  </data>
+  <data name="CharacterRace-6" xml:space="preserve">
+    <value>牛头人</value>
+  </data>
+  <data name="CharacterRace-7" xml:space="preserve">
+    <value>侏儒</value>
+  </data>
+  <data name="CharacterRace-8" xml:space="preserve">
+    <value>巨魔</value>
+  </data>
+  <data name="CharacterRace-9" xml:space="preserve">
+    <value>地精</value>
+  </data>
+  <data name="CharacterRace-10" xml:space="preserve">
+    <value>血精灵</value>
+  </data>
+  <data name="CharacterRace-11" xml:space="preserve">
+    <value>德莱尼</value>
+  </data>
+  <data name="CharacterRace-22" xml:space="preserve">
+    <value>狼人</value>
+  </data>
+  <data name="CharacterRace-24" xml:space="preserve">
+    <value>熊猫人</value>
+  </data>
+  <data name="CharacterRace-25" xml:space="preserve">
+    <value>熊猫人</value>
+  </data>
+  <data name="CharacterRace-26" xml:space="preserve">
+    <value>熊猫人</value>
+  </data>
+  <data name="CharacterRace-27" xml:space="preserve">
+    <value>夜之子</value>
+  </data>
+  <data name="CharacterRace-28" xml:space="preserve">
+    <value>至高岭牛头人</value>
+  </data>
+  <data name="CharacterRace-29" xml:space="preserve">
+    <value>虚空精灵</value>
+  </data>
+  <data name="CharacterRace-30" xml:space="preserve">
+    <value>光铸德莱尼</value>
+  </data>
+  <data name="CharacterRace-31" xml:space="preserve">
+    <value>赞达拉巨魔</value>
+  </data>
+  <data name="CharacterRace-32" xml:space="preserve">
+    <value>库尔提拉斯人</value>
+  </data>
+  <data name="CharacterRace-34" xml:space="preserve">
+    <value>黑铁矮人</value>
+  </data>
+  <data name="CharacterRace-35" xml:space="preserve">
+    <value>狐人</value>
+  </data>
+  <data name="CharacterRace-36" xml:space="preserve">
+    <value>玛格汉兽人</value>
+  </data>
+  <data name="CharacterRace-37" xml:space="preserve">
+    <value>机械侏儒</value>
+  </data>
+  <data name="CharacterClass-1" xml:space="preserve">
+    <value>战士</value>
+  </data>
+  <data name="CharacterClass-2" xml:space="preserve">
+    <value>圣骑士</value>
+  </data>
+  <data name="CharacterClass-3" xml:space="preserve">
+    <value>猎人</value>
+  </data>
+  <data name="CharacterClass-4" xml:space="preserve">
+    <value>潜行者</value>
+  </data>
+  <data name="CharacterClass-5" xml:space="preserve">
+    <value>牧师</value>
+  </data>
+  <data name="CharacterClass-6" xml:space="preserve">
+    <value>死亡骑士</value>
+  </data>
+  <data name="CharacterClass-7" xml:space="preserve">
+    <value>萨满祭司</value>
+  </data>
+  <data name="CharacterClass-8" xml:space="preserve">
+    <value>法师</value>
+  </data>
+  <data name="CharacterClass-9" xml:space="preserve">
+    <value>术士</value>
+  </data>
+  <data name="CharacterClass-10" xml:space="preserve">
+    <value>武僧</value>
+  </data>
+  <data name="CharacterClass-11" xml:space="preserve">
+    <value>德鲁伊</value>
+  </data>
+  <data name="CharacterClass-12" xml:space="preserve">
+    <value>恶魔猎手</value>
+  </data>
+  <data name="CharacterClassSpecialization-62" xml:space="preserve">
+    <value>奥术 (法师)</value>
+  </data>
+  <data name="CharacterClassSpecialization-63" xml:space="preserve">
+    <value>火焰 (法师)</value>
+  </data>
+  <data name="CharacterClassSpecialization-64" xml:space="preserve">
+    <value>冰霜 (法师)</value>
+  </data>
+  <data name="CharacterClassSpecialization-65" xml:space="preserve">
+    <value>神圣 (圣骑士)</value>
+  </data>
+  <data name="CharacterClassSpecialization-66" xml:space="preserve">
+    <value>防护 (圣骑士)</value>
+  </data>
+  <data name="CharacterClassSpecialization-70" xml:space="preserve">
+    <value>惩戒 (圣骑士)</value>
+  </data>
+  <data name="CharacterClassSpecialization-71" xml:space="preserve">
+    <value>武器 (战士)</value>
+  </data>
+  <data name="CharacterClassSpecialization-72" xml:space="preserve">
+    <value>狂怒 (战士)</value>
+  </data>
+  <data name="CharacterClassSpecialization-73" xml:space="preserve">
+    <value>防护 (战士)</value>
+  </data>
+  <data name="CharacterClassSpecialization-102" xml:space="preserve">
+    <value>平衡 (德鲁伊)</value>
+  </data>
+  <data name="CharacterClassSpecialization-103" xml:space="preserve">
+    <value>野性 (德鲁伊)</value>
+  </data>
+  <data name="CharacterClassSpecialization-104" xml:space="preserve">
+    <value>守护 (德鲁伊)</value>
+  </data>
+  <data name="CharacterClassSpecialization-105" xml:space="preserve">
+    <value>恢复 (德鲁伊)</value>
+  </data>
+  <data name="CharacterClassSpecialization-250" xml:space="preserve">
+    <value>鲜血 (死亡骑士)</value>
+  </data>
+  <data name="CharacterClassSpecialization-251" xml:space="preserve">
+    <value>冰霜 (死亡骑士)</value>
+  </data>
+  <data name="CharacterClassSpecialization-252" xml:space="preserve">
+    <value>邪恶 (死亡骑士)</value>
+  </data>
+  <data name="CharacterClassSpecialization-253" xml:space="preserve">
+    <value>野兽控制 (猎人)</value>
+  </data>
+  <data name="CharacterClassSpecialization-254" xml:space="preserve">
+    <value>射击 (猎人)</value>
+  </data>
+  <data name="CharacterClassSpecialization-255" xml:space="preserve">
+    <value>生存 (猎人)</value>
+  </data>
+  <data name="CharacterClassSpecialization-256" xml:space="preserve">
+    <value>戒律 (牧师)</value>
+  </data>
+  <data name="CharacterClassSpecialization-257" xml:space="preserve">
+    <value>神圣 (牧师)</value>
+  </data>
+  <data name="CharacterClassSpecialization-258" xml:space="preserve">
+    <value>暗影 (牧师)</value>
+  </data>
+  <data name="CharacterClassSpecialization-259" xml:space="preserve">
+    <value>奇袭 (潜行者)</value>
+  </data>
+  <data name="CharacterClassSpecialization-260" xml:space="preserve">
+    <value>狂徒 (潜行者)</value>
+  </data>
+  <data name="CharacterClassSpecialization-261" xml:space="preserve">
+    <value>敏锐 (潜行者)</value>
+  </data>
+  <data name="CharacterClassSpecialization-262" xml:space="preserve">
+    <value>元素 (萨满祭司)</value>
+  </data>
+  <data name="CharacterClassSpecialization-263" xml:space="preserve">
+    <value>增强 (萨满祭司)</value>
+  </data>
+  <data name="CharacterClassSpecialization-264" xml:space="preserve">
+    <value>恢复 (萨满祭司)</value>
+  </data>
+  <data name="CharacterClassSpecialization-265" xml:space="preserve">
+    <value>痛苦 (术士)</value>
+  </data>
+  <data name="CharacterClassSpecialization-266" xml:space="preserve">
+    <value>恶魔学识 (术士)</value>
+  </data>
+  <data name="CharacterClassSpecialization-267" xml:space="preserve">
+    <value>毁灭 (术士)</value>
+  </data>
+  <data name="CharacterClassSpecialization-268" xml:space="preserve">
+    <value>酒仙 (武僧)</value>
+  </data>
+  <data name="CharacterClassSpecialization-269" xml:space="preserve">
+    <value>踏风 (武僧)</value>
+  </data>
+  <data name="CharacterClassSpecialization-270" xml:space="preserve">
+    <value>织雾 (武僧)</value>
+  </data>
+  <data name="CharacterClassSpecialization-577" xml:space="preserve">
+    <value>浩劫 (恶魔猎手)</value>
+  </data>
+  <data name="CharacterClassSpecialization-581" xml:space="preserve">
+    <value>复仇 (恶魔猎手)</value>
+  </data>
+</root>
