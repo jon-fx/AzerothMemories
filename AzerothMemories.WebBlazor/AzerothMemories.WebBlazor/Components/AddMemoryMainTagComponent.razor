@@ -71,8 +71,9 @@
                     {
                         continue;
                     }
-
-                    <MudTooltip Placement="Placement.Bottom" Color="Color.Dark">
+                    
+                    var key = $"c-a-tt-{character.Id}";
+                    <MudTooltip @key="@key" Placement="Placement.Bottom" Color="Color.Dark">
                         <ChildContent>
                             <MudButton Id="@index" Variant="Variant.Filled" Disabled="SharedData.SelectedCharacterId == character.Id" OnClick="@(_ => SharedData.ChangeSelectedCharacter(character.Id))">
                                 <MudAvatar Size="Size.Medium" Image="@character.AvatarLinkWithFallBack" />

@@ -27,28 +27,8 @@
         {
             var index = i;
             var upload = ViewModel.UploadedImages[index];
-            var timeStr = "Unknown";
-            if (upload.FileTimeStamp > 0)
-            {
-                var time = DateTimeOffset.FromUnixTimeMilliseconds(upload.FileTimeStamp).LocalDateTime;
-                timeStr = $"Time {time.Humanize()} - {time.ToOrdinalWords()} - {time.ToShortTimeString()}";
-            }
 
-            <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-                <MudCardHeader>
-                    <CardHeaderContent>
-                        <MudText Typo="Typo.h6">@upload.FileName</MudText>
-                        <MudText Typo="Typo.body1">@timeStr</MudText>
-                    </CardHeaderContent>
-                    <CardHeaderActions>
-                        <MudTooltip Text="Delete" Color="Color.Dark">
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Disabled="@(index == 0)" />
-                        </MudTooltip>
-                    </CardHeaderActions>
-                </MudCardHeader>
-                <MudCardContent>
-                </MudCardContent>
-            </MudCard>
+            <AddMemoryPreviewScreenShotComponent Index="index" UploadedImage="upload" />
         }
     </MudPaper>
 

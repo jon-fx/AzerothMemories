@@ -59,6 +59,8 @@ public sealed class AddMemoryComponentSharedData
 
     public List<(PostTagInfo Tag, string ImageLink, string ImageText, string ToolTipText)> PostAvatarImages { get; }
 
+    public Action OnTagsChanged { get; set; }
+
     public Task InitializeAccount(ActiveAccountViewModel accountViewModel)
     {
         Exceptions.ThrowIf(accountViewModel == null);
@@ -72,6 +74,8 @@ public sealed class AddMemoryComponentSharedData
 
         _selectedExtraTags.Add(new PostTagInfo(PostTagType.Account, accountViewModel.Id, accountViewModel.GetDisplayName(), null) { IsChipClosable = false });
         _selectedExtraTags.Add(new PostTagInfo(PostTagType.Region, (int)accountRegion.Region, accountRegion.Name, null) { IsChipClosable = false });
+
+        OnTagsChanged?.Invoke();
 
         return Task.CompletedTask;
     }
@@ -269,14 +273,14 @@ public sealed class AddMemoryComponentSharedData
             _selectedExtraTags.RemoveWhere(x => x.Type.IsRetailOnlyTag());
         }
 
-        _viewModel.OnViewModelChanged?.Invoke();
+        OnTagsChanged?.Invoke();
     }
 
     public void SelectedCommonTagsChanged(ICollection<object> collection)
     {
         _selectedCommonTags = collection.ToHashSet();
 
-        _viewModel.OnViewModelChanged?.Invoke();
+        OnTagsChanged?.Invoke();
     }
 
     public void SelectedAchievementTagsChanged(ICollection<object> collection)
@@ -298,7 +302,9 @@ public sealed class AddMemoryComponentSharedData
         }
 
         _selectedAchievementTags = collection.ToHashSet();
-        _viewModel.OnViewModelChanged?.Invoke();
+        //_viewModel.OnViewModelChanged?.Invoke();
+
+        OnTagsChanged?.Invoke();
     }
 
     public Task ChangeSelectedCharacter(long newSelectedCharacter)
@@ -329,7 +335,8 @@ public sealed class AddMemoryComponentSharedData
             }
         }
 
-        _viewModel.OnViewModelChanged?.Invoke();
+        OnTagsChanged?.Invoke();
+        //_viewModel.OnViewModelChanged?.Invoke();
 
         return Task.CompletedTask;
     }
@@ -444,7 +451,7 @@ public sealed class AddMemoryComponentSharedData
 
         RemoveImageFromSelection(postTagInfo);
 
-        _viewModel.OnViewModelChanged?.Invoke();
+        OnTagsChanged?.Invoke();
     }
 
     public void OnSelectedCommonTagChipClose(MudChip mudChip)
@@ -454,7 +461,7 @@ public sealed class AddMemoryComponentSharedData
 
         RemoveImageFromSelection(postTagInfo);
 
-        _viewModel.OnViewModelChanged?.Invoke();
+        OnTagsChanged?.Invoke();
     }
 
     public void OnSelectedExtraTagChipClose(MudChip mudChip)
@@ -464,7 +471,7 @@ public sealed class AddMemoryComponentSharedData
 
         RemoveImageFromSelection(postTagInfo);
 
-        _viewModel.OnViewModelChanged?.Invoke();
+        OnTagsChanged?.Invoke();
     }
 
     public void OnSelectedAchievementTagChipClose(MudChip mudChip)
@@ -474,6 +481,6 @@ public sealed class AddMemoryComponentSharedData
 
         RemoveImageFromSelection(postTagInfo);
 
-        _viewModel.OnViewModelChanged?.Invoke();
+        OnTagsChanged?.Invoke();
     }
 }
