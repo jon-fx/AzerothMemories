@@ -1,0 +1,108 @@
+﻿@{
+    var isRetailSelected = SharedData.SelectedMainTags.FirstOrDefault() == SharedData.MainTags[0];
+    <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+        <MudChipSet SelectedValues="@SharedData.SelectedMainTags" SelectedValuesChanged="@SharedData.SelectedMainTagsChanged" Mandatory="true" Filter="true">
+            @for (var i = 0; i < SharedData.MainTags.Length; i++)
+            {
+                var index = i;
+                var tagInfo = SharedData.MainTags[index];
+                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" Default="@(index == 0)" />
+            }
+        </MudChipSet>
+    </MudPaper>
+
+    <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+        <MudChipSet SelectedValues="@SharedData.SelectedCommonTags" SelectedValuesChanged="@SharedData.SelectedCommonTagsChanged" Mandatory="true" MultiSelection="true" Filter="true">
+            @for (var i = 1; i < SharedData.CommonTags.Length; i++)
+            {
+                var index = i;
+                var tagInfo = SharedData.CommonTags[index];
+                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" Default="@(index == 0)" />
+            }
+        </MudChipSet>
+    </MudPaper>
+
+    if (isRetailSelected)
+    {
+        <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+            @{
+                var minTime = SharedData.PostTimeStamp.LocalDateTime;
+            }
+            <MudText Typo="Typo.h6">Matching Achievements from @minTime.Humanize() - (@minTime.ToOrdinalWords())</MudText>
+
+            @if (SharedData.AchievementTags.Length > 0)
+            {
+                <MudChipSet SelectedValues="@SharedData.SelectedAchievementTags" SelectedValuesChanged="@SharedData.SelectedAchievementTagsChanged" MultiSelection="true" Filter="true">
+                    @for (var i = 0; i < SharedData.AchievementTags.Length; i++)
+                    {
+                        var index = i;
+                        var tagInfo = SharedData.AchievementTags[index];
+
+                        <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" />
+                    }
+                </MudChipSet>
+            }
+            else
+            {
+                <MudText Typo="Typo.subtitle1">None</MudText>
+            }
+        </MudPaper>
+        
+        var characters = Services.ActiveAccountServices.AccountViewModel.CharactersArray.OrderByDescending(x => x.Level).ThenBy(x => x.Name).ToArray();
+        if (characters.Length > 0)
+        {
+            <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+                <MudTooltip Placement="Placement.End" Color="Color.Dark">
+                    <ChildContent>
+                        <MudButton Variant="Variant.Filled" Disabled="SharedData.SelectedCharacterId == 0" OnClick="@(_ => SharedData.ChangeSelectedCharacter(0))">
+                            <MudAvatar Size="Size.Medium">?</MudAvatar>
+                        </MudButton>
+                    </ChildContent>
+                    <TooltipContent>
+                        <MudText>None</MudText>
+                    </TooltipContent>
+                </MudTooltip>
+
+                @for (var i = 0; i < characters.Length; i++)
+                {
+                    var index = i;
+                    var character = characters[index];
+                    if (string.IsNullOrWhiteSpace(character.AvatarLinkWithFallBack))
+                    {
+                        continue;
+                    }
+
+                    <MudTooltip Placement="Placement.Bottom" Color="Color.Dark">
+                        <ChildContent>
+                            <MudButton Id="@index" Variant="Variant.Filled" Disabled="SharedData.SelectedCharacterId == character.Id" OnClick="@(_ => SharedData.ChangeSelectedCharacter(character.Id))">
+                                <MudAvatar Size="Size.Medium" Image="@character.AvatarLinkWithFallBack" />
+                            </MudButton>
+                        </ChildContent>
+                        <TooltipContent>
+                            <CharacterNameLinkComponent CharacterName="@character.Name"
+                                        CharacterClass="@character.Class"
+                                        CharacterRealmId="@character.RealmId"
+                                        CharacterRegionInfo="@character.RegionId.ToInfo()" />
+
+                            <RealmLinkComponent BlizzardRealmId="@character.RealmId" />
+
+                            <MudText Class="d-inline">@character.Level @Services.StringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
+                            <MudText Class=@($"d-inline wowclass-{character.Class}")>@Services.StringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
+                        </TooltipContent>
+                    </MudTooltip>
+                }
+            </MudPaper>
+        }
+    }
+
+    <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+    </MudPaper>
+    
+    <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+    </MudPaper>
+}
+
+@code {
+    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
+    [Parameter, EditorRequired] public AddMemoryComponentSharedData SharedData { get; init; }
+}

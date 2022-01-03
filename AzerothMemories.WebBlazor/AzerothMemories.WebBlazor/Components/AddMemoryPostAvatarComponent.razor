@@ -1,0 +1,33 @@
+﻿<MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+    @for (var i = 0; i < SharedData.PostAvatarImages.Count; i++)
+    {
+        var index = i;
+        var avatar = SharedData.PostAvatarImages[index];
+
+        if (avatar.Tag == null || avatar.Tag.WowHeadLink == null)
+        {
+            <MudTooltip Placement="Placement.Bottom" Color="Color.Dark">
+                <ChildContent>
+                    <MudButton Id="@index" Variant="Variant.Filled" Disabled="SharedData.SelectedPostAvatarImage == index" OnClick="@(_ => SharedData.SelectedPostAvatarImage = index)">
+                        <MudAvatar Size="Size.Medium" Image="@avatar.ImageLink">@avatar.ImageText</MudAvatar>
+                    </MudButton>
+                </ChildContent>
+                <TooltipContent>
+                    <MudText>@avatar.ToolTipText</MudText>
+                </TooltipContent>
+            </MudTooltip>
+        }
+        else
+        {
+            <a class="cardlink2" data-wowhead="@avatar.Tag.WowHeadLink">
+                <MudButton Id="@index" Variant="Variant.Filled" Disabled="SharedData.SelectedPostAvatarImage == index" OnClick="@(_ => SharedData.SelectedPostAvatarImage = index)">
+                    <MudAvatar Size="Size.Medium" Image="@avatar.ImageLink">@avatar.ImageText</MudAvatar>
+                </MudButton>
+            </a>
+        }
+    }
+</MudPaper>
+
+@code {
+    [Parameter, EditorRequired] public AddMemoryComponentSharedData SharedData { get; init; }
+}

@@ -1,2 +1,27 @@
 ﻿@page "/addmemory/"
 @inherits MoaComponentBase<AddMemoryPageViewModel>
+
+<AuthorizeView>
+    <Authorized>
+        @if (ViewModel == null)
+        {
+        }
+        else if (ViewModel.UploadedImages.Count > 0)
+        {
+            <AddMemoryComponent ViewModel="@ViewModel" OnPostMemoryResult="@OnPostMemoryCallback" />
+        }
+        else
+        {
+            <InputFile id="fileInput" OnChange="ViewModel.Initialize" hidden multiple accept=".jpg, .jpeg, .png" />
+            <MudButton HtmlTag="label" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Filled.CloudUpload" for="fileInput">Upload Image</MudButton>
+        }
+    </Authorized>
+</AuthorizeView>
+
+@code
+{
+    private Task OnPostMemoryCallback(AddMemoryComponentResult result)
+    {
+        return Task.CompletedTask;
+    }
+}

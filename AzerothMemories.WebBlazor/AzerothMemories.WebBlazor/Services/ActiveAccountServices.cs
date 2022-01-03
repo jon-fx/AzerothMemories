@@ -17,5 +17,10 @@
         {
             AccountViewModel = await _accountServices.TryGetAccount(null, cancellationToken);
         }
+
+        public Dictionary<long, string> GetUserTagList()
+        {
+            return new Dictionary<long, string>();
+        }
     }
 }

@@ -1,0 +1,99 @@
+﻿<form @onsubmit=OnFormSubmit>
+    <MudGrid>
+        <MudItem xs="@(Lines == 1 ? 11 : 12)" Class="my-auto">
+            <MudTextField id="mudTextField"
+                          @ref="_textField"
+                          @bind-Value="_currentTextFieldText"
+                          T="string"
+                          Label="Comment"
+                          Variant="Variant.Filled"
+                          Lines="@Lines"
+                          FullWidth="true"
+                          Margin="Margin.Dense"
+                          DisableUnderLine="true"
+                          Disabled="@Disabled"
+                          AutoFocus="@AutoFocus"
+                          MaxLength="@MaxLength"
+                          autocomplete="off">
+            </MudTextField>
+        </MudItem>
+
+        @if (Lines == 1)
+        {
+            <MudItem xs="1" Class="my-auto mx-n4">
+                <MudIconButton Variant="Variant.Filled"
+                               Size="Size.Medium"
+                               Icon="@Icons.Filled.Send"
+                               Color="Color.Primary"
+                               Disabled="@(string.IsNullOrWhiteSpace(_currentTextFieldText) || _currentTextFieldText.Length <= 1)"
+                               OnClick="OnFormSubmit"/>
+            </MudItem>
+        }
+    </MudGrid>
+</form>
+
+@code
+{
+    private MudTextField<string> _textField;
+    private string _currentTextFieldText;
+
+    [Parameter] public int Lines { get; init; } = 1;
+
+    [Parameter] public int MaxLength { get; init; } = 500;
+
+    [Parameter] public bool Disabled { get; init; }
+
+    [Parameter] public bool AutoFocus { get; init; }
+
+    [Parameter] public Dictionary<long, string> TagsList { get; init; }
+
+    [Parameter] public EventCallback<string> OnSingleLineSubmit { get; init; }
+
+    public string CommentText => _currentTextFieldText;
+
+    public Dictionary<long, string> ExtraTags { get; } = new();
+
+    public Dictionary<long, string> FullTagsList
+    {
+        get
+        {
+            var newDict = new Dictionary<long, string>(TagsList);
+            foreach (var kvp in ExtraTags)
+            {
+                newDict.TryAdd(kvp.Key, kvp.Value);
+            }
+
+            return newDict;
+        }
+    }
+
+    //protected override async Task<bool> OnAfterFirstRender()
+    //{
+    //    await base.OnAfterFirstRender();
+
+    //    var jsArray = (from userTag in FullTagsList
+    //                   select new { key = userTag.Value }).ToArray();
+
+    //    await JsRuntime.InvokeVoidAsync("SetUpTagTextBox", CancellationToken, "mudTextField", jsArray);
+
+    //    return false;
+    //}
+
+    public void SetText(string text)
+    {
+        _currentTextFieldText = text;
+    }
+
+    public void Reset()
+    {
+        _currentTextFieldText = string.Empty;
+    }
+
+    private async Task OnFormSubmit(EventArgs obj)
+    {
+        if (Lines == 1 && !string.IsNullOrWhiteSpace(_currentTextFieldText) && _currentTextFieldText.Length > 1)
+        {
+            await OnSingleLineSubmit.InvokeAsync(_currentTextFieldText);
+        }
+    }
+}

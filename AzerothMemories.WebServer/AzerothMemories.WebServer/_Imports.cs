@@ -1,4 +1,5 @@
-﻿global using AzerothMemories.WebServer.Blizzard;
+﻿global using AzerothMemories.WebBlazor.Blizzard;
+global using AzerothMemories.WebServer.Blizzard;
 global using AzerothMemories.WebServer.Blizzard.Models.ProfileApi;
 global using AzerothMemories.WebServer.Common;
 global using AzerothMemories.WebServer.Database;
@@ -14,7 +15,6 @@ global using Microsoft.AspNetCore.Authentication;
 global using Microsoft.AspNetCore.Authentication.Cookies;
 global using Microsoft.AspNetCore.Authentication.OAuth;
 global using Microsoft.AspNetCore.Mvc;
-global using MudBlazor.Services;
 global using Stl.CommandR;
 global using Stl.CommandR.Configuration;
 global using Stl.Fusion;

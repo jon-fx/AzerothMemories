@@ -1,5 +1,4 @@
-﻿using AzerothMemories.WebBlazor.Services;
-using AzerothMemories.WebBlazor.ViewModels;
+﻿using AzerothMemories.WebBlazor.ViewModels;
 
 namespace AzerothMemories.WebServer.Services
 {
@@ -10,6 +9,7 @@ namespace AzerothMemories.WebServer.Services
             accountViewModel.Id = accountRecord.Id;
             accountViewModel.Avatar = accountRecord.Avatar;
             accountViewModel.Username = accountRecord.Username;
+            accountViewModel.RegionId = accountRecord.BlizzardRegionId;
             accountViewModel.BattleTag = accountRecord.BattleTag;
             accountViewModel.BattleTagIsPublic = accountRecord.BattleTagIsPublic;
             accountViewModel.CreatedDateTime = accountRecord.CreatedDateTime;
@@ -53,6 +53,8 @@ namespace AzerothMemories.WebServer.Services
                 Name = characterRecord.Name,
                 RealmId = characterRecord.RealmId,
                 RegionId = characterRecord.BlizzardRegionId,
+                GuildId = characterRecord.GuildId,
+                GuildName = characterRecord.GuildName,
                 LastUpdateHttpResult = characterRecord.UpdateJobLastResult
             };
         }

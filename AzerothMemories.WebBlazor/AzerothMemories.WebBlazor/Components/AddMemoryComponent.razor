@@ -1,0 +1,116 @@
+﻿@if (ViewModel.SharedData != null && ViewModel.UploadedImages.Count > 0)
+{
+    <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+        <MudGrid>
+            <MudItem xs="12">
+                @{
+                    var time = ViewModel.SharedData.PostTimeStamp.LocalDateTime;
+                    var timeStr = $"Time {time.Humanize()} - {time.ToOrdinalWords()} - {time.ToShortTimeString()}";
+                }
+
+                <MudText Typo="Typo.h6">@timeStr</MudText>
+            </MudItem>
+
+            <MudItem xs="12">
+                <DateTimeComponent DateTime="@ViewModel.SharedData.PostTimeStamp" OnDateTimeEventCallback="@OnDateTimeChanged" />
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudCheckBox Label="Followers only" @bind-Checked="@ViewModel.SharedData.PrivatePost">
+                </MudCheckBox>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+
+    <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+        @for (var i = 0; i < ViewModel.UploadedImages.Count; i++)
+        {
+            var index = i;
+            var upload = ViewModel.UploadedImages[index];
+            var timeStr = "Unknown";
+            if (upload.FileTimeStamp > 0)
+            {
+                var time = DateTimeOffset.FromUnixTimeMilliseconds(upload.FileTimeStamp).LocalDateTime;
+                timeStr = $"Time {time.Humanize()} - {time.ToOrdinalWords()} - {time.ToShortTimeString()}";
+            }
+
+            <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">@upload.FileName</MudText>
+                        <MudText Typo="Typo.body1">@timeStr</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudTooltip Text="Delete" Color="Color.Dark">
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Disabled="@(index == 0)" />
+                        </MudTooltip>
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardContent>
+                </MudCardContent>
+            </MudCard>
+        }
+    </MudPaper>
+
+    <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+        <InputFile id="fileInput2" OnChange="ViewModel.UploadMoreImages" hidden multiple accept=".jpg, .jpeg, .png" />
+        <MudButton HtmlTag="label" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Filled.CloudUpload" Disabled="@ViewModel.MaxUploadReached" for="fileInput2">Upload Images</MudButton>
+    </MudPaper>
+
+    <AddMemoryMainTagComponent Services="ViewModel.Services" SharedData="@ViewModel.SharedData"/>
+
+	<MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+		<PublishCommentComponent @ref="ViewModel.PublishCommentComponent" Lines="10" TagsList="@ViewModel.Services.ActiveAccountServices.GetUserTagList()" />
+	</MudPaper>
+
+    <AddMemoryPostAvatarComponent SharedData="@ViewModel.SharedData" />
+
+    <AddMemoryAllTagChipsComponent SharedData="@ViewModel.SharedData" />
+
+    <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+        <MudGrid>
+            @*            @if (ViewModel.SharedData.ErrorStrings.Count > 0)
+            {
+                foreach (var errorString in ViewModel.SharedData.ErrorStrings)
+                {
+                    <MudItem xs="12">
+                        <MudAlert Severity="@errorString.Item1">@errorString.Item2</MudAlert>
+                    </MudItem>
+                }
+            }*@
+
+            <MudItem xs="6">
+                <MudButton Variant="Variant.Filled" FullWidth="true" EndIcon="@Icons.Material.Filled.Delete" IconColor="Color.Secondary" OnClick="UserCancel">Cancel</MudButton>
+            </MudItem>
+
+            <MudItem xs="6">
+                <MudButton Variant="Variant.Filled" FullWidth="true" EndIcon="@Icons.Material.Filled.Save" IconColor="Color.Secondary" Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+}
+
+@code {
+    
+    [Parameter, EditorRequired] public AddMemoryPageViewModel ViewModel { get; init; }
+
+    [Parameter, EditorRequired] public EventCallback<AddMemoryComponentResult> OnPostMemoryResult { get; init; }
+    
+
+    private async Task Submit()
+    {
+    }
+
+    private async Task UserCancel()
+    {
+        await ViewModel.Reset();
+    }
+
+    private async Task OnDateTimeChanged(DateTime? arg)
+    {
+        if (arg.HasValue)
+        {
+            await ViewModel.SharedData.SetPostTimeStamp(arg.Value.ToLocalTime());
+        }
+    }
+}

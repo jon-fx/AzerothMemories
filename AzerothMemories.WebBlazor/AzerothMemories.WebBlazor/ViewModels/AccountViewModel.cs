@@ -12,6 +12,8 @@ public class AccountViewModel
 
     [JsonInclude] public bool BattleTagIsPublic;
 
+    [JsonInclude] public BlizzardRegion RegionId;
+
     [JsonInclude] public bool IsPrivate;
 
     [JsonInclude] public string Avatar;

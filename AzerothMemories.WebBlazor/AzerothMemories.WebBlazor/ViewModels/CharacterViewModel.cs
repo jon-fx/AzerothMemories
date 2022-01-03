@@ -26,6 +26,10 @@ public sealed class CharacterViewModel
 
     [JsonInclude] public string AvatarLink;
 
+    [JsonInclude] public long GuildId;
+
+    [JsonInclude] public string GuildName;
+
     [JsonInclude] public HttpStatusCode LastUpdateHttpResult;
 
     [JsonIgnore]
