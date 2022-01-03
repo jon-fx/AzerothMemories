@@ -106,7 +106,7 @@
                 NewUsernameTextBoxAdornmentIcon = Icons.Filled.Warning;
             }
 
-            await OnViewModelChanged.InvokeAsync();
+            OnViewModelChanged?.Invoke();
 
             return NewUsernameValid;
         }
@@ -143,7 +143,7 @@
 
             ChangeUsernameButtonVisible = false;
 
-            await OnViewModelChanged.InvokeAsync();
+            OnViewModelChanged?.Invoke();
         }
 
         public async Task OnIsPrivateChanged(bool newValue)
@@ -161,7 +161,7 @@
 
             AccountViewModel.IsPrivate = newValue;
 
-            await OnViewModelChanged.InvokeAsync();
+            OnViewModelChanged?.Invoke();
         }
 
         public async Task OnBattleTagVisibilityChanged(bool newValue)
@@ -179,7 +179,7 @@
 
             AccountViewModel.BattleTagIsPublic = newValue;
 
-            await OnViewModelChanged.InvokeAsync();
+            OnViewModelChanged?.Invoke();
         }
 
         public async Task OnChangeAvatarClicked()
@@ -204,7 +204,7 @@
 
                 character.AccountSync = newValue;
 
-                await OnViewModelChanged.InvokeAsync();
+                OnViewModelChanged?.Invoke();
             }
         }
     }

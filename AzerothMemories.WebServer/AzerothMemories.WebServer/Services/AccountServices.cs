@@ -396,7 +396,7 @@ public class AccountServices : IAccountServices
         var accountRecord = await TryGetAccountRecordFusionId(user.Id.Value);
         if (accountRecord == null)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         return accountRecord;
