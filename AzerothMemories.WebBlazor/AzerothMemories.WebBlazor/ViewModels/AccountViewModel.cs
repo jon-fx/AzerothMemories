@@ -51,4 +51,14 @@ public class AccountViewModel
 
         return "?";
     }
+
+    public CharacterViewModel[] GetCharactersSafe()
+    {
+        if (CharactersArray == null || CharactersArray.Length == 0)
+        {
+            return Array.Empty<CharacterViewModel>();
+        }
+
+        return CharactersArray.OrderByDescending(x => x.Level).ThenBy(x => x.Name).ToArray();
+    }
 }

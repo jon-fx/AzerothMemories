@@ -29,16 +29,16 @@ internal sealed class ItemDataSeeder : GenericBase<ItemDataSeeder>
             var displayLangName = reference.GetLocalised("Display_lang");
             if (reference.HasLocalised("Display_lang"))
             {
+                ResourceWriter.AddServerSideLocalizationName(PostTagType.Item, reference.Id, displayLangName);
+            }
+            else
+            {
                 //if (reference.TryGetData<int>("ItemEffectID", out var itemEffectId) && itemEffects.TryGetValue(itemEffectId, out var itemEffectWowData))
                 //{
                 //    if (itemEffectWowData.TryGetData<int>("SpellID", out var spellId))
                 //    {
                 //    }
                 //}
-            }
-            else
-            {
-                ResourceWriter.AddServerSideLocalizationName(PostTagType.Item, reference.Id, displayLangName);
             }
 
             if (reference.TryGetData<int>("IconFileDataID", out var iconId))

@@ -47,9 +47,9 @@
                 <MudText Typo="Typo.subtitle1">None</MudText>
             }
         </MudPaper>
-        
-        var characters = Services.ActiveAccountServices.AccountViewModel.CharactersArray.OrderByDescending(x => x.Level).ThenBy(x => x.Name).ToArray();
-        if (characters.Length > 0)
+
+        var characters = Services.ActiveAccountServices?.AccountViewModel?.GetCharactersSafe();
+        if (characters != null && characters.Length > 0)
         {
             <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
                 <MudTooltip Placement="Placement.End" Color="Color.Dark">

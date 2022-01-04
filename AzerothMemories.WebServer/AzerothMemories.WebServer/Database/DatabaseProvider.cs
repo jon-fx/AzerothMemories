@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace AzerothMemories.WebServer.Database;
+﻿namespace AzerothMemories.WebServer.Database;
 
 public sealed class DatabaseProvider
 {
@@ -15,9 +13,9 @@ public sealed class DatabaseProvider
 
         var builder = new LinqToDbConnectionOptionsBuilder();
         builder.UsePostgreSQL(_commonConfig.DatabaseConnectionString);
-        builder.WithTraceLevel(TraceLevel.Verbose).WithTracing(x =>
-        {
-        });
+        //builder.WithTraceLevel(TraceLevel.Verbose).WithTracing(x =>
+        //{
+        //});
 
         _databaseConfig = builder.Build();
 

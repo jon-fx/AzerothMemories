@@ -406,35 +406,33 @@ public sealed class AddMemoryComponentSharedData
 
     public void AddSearchDataToTags(PostTagInfo postTag)
     {
-        //var extra = _selectedExtraTags.FirstOrDefault(x => TagHelpers.AreEqual(x, postTag));
-        //var achievement = _achievementTags.FirstOrDefault(x => TagHelpers.AreEqual(x, postTag));
+        var extra = _selectedExtraTags.FirstOrDefault(x => PostTagInfo.EqualityComparer1.Equals(x, postTag));
+        var achievement = _achievementTags.FirstOrDefault(x => PostTagInfo.EqualityComparer1.Equals(x, postTag));
 
-        //if (extra != null)
-        //{
-        //}
-        //else if (_selectedExtraTags.Count > 64)
-        //{
-        //}
-        //else if (achievement != null)
-        //{
-        //    if (_selectedAchievementTags.Add(achievement))
-        //    {
-        //        AddImageToSelection(achievement);
+        if (extra != null)
+        {
+        }
+        else if (_selectedExtraTags.Count > 64)
+        {
+        }
+        else if (achievement != null)
+        {
+            if (_selectedAchievementTags.Add(achievement))
+            {
+                AddImageToSelection(achievement);
 
-        //        OnModelChanged?.Invoke();
-        //    }
-        //}
-        //else
-        //{
-        //    if (_selectedExtraTags.Add(postTag))
-        //    {
-        //        AddImageToSelection(postTag);
+                OnTagsChanged?.Invoke();
+            }
+        }
+        else
+        {
+            if (_selectedExtraTags.Add(postTag))
+            {
+                AddImageToSelection(postTag);
 
-        //        OnModelChanged?.Invoke();
-        //    }
-        //}
-
-        throw new NotImplementedException();
+                OnTagsChanged?.Invoke();
+            }
+        }
     }
 
     //public async Task AddSearchDataToTags(AccountSearchResult searchResult)
