@@ -1,6 +1,4 @@
-﻿using AzerothMemories.WebBlazor.Common;
-
-namespace AzerothMemories.WebServer.Services.Updates;
+﻿namespace AzerothMemories.WebServer.Services.Updates;
 
 internal sealed class BlizzardAccountUpdateHandler
 {

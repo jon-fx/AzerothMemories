@@ -1,6 +1,4 @@
-﻿using AzerothMemories.WebBlazor.Blizzard;
-
-namespace AzerothMemories.WebBlazor.Common;
+﻿namespace AzerothMemories.WebBlazor.Common;
 
 public sealed class MoaRef
 {

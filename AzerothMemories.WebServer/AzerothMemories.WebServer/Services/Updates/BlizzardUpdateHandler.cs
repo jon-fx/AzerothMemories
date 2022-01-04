@@ -1,5 +1,4 @@
-﻿using AzerothMemories.WebBlazor.Common;
-using Hangfire.Server;
+﻿using Hangfire.Server;
 
 namespace AzerothMemories.WebServer.Services.Updates;
 

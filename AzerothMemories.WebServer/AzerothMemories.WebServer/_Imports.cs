@@ -1,5 +1,9 @@
 ﻿global using AzerothMemories.WebBlazor.Blizzard;
+global using AzerothMemories.WebBlazor.Common;
+global using AzerothMemories.WebBlazor.Services;
+global using AzerothMemories.WebBlazor.ViewModels;
 global using AzerothMemories.WebServer.Blizzard;
+global using AzerothMemories.WebServer.Blizzard.Data;
 global using AzerothMemories.WebServer.Blizzard.Models.ProfileApi;
 global using AzerothMemories.WebServer.Common;
 global using AzerothMemories.WebServer.Database;

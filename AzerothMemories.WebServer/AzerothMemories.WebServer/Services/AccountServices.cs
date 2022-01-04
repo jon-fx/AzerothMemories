@@ -1,8 +1,4 @@
-﻿using AzerothMemories.WebBlazor.Blizzard;
-using AzerothMemories.WebBlazor.Services;
-using AzerothMemories.WebBlazor.ViewModels;
-
-namespace AzerothMemories.WebServer.Services;
+﻿namespace AzerothMemories.WebServer.Services;
 
 [RegisterComputeService]
 [RegisterAlias(typeof(IAccountServices))]
@@ -369,7 +365,7 @@ public class AccountServices : IAccountServices
         {
             if (hashSet.Add(tagId))
             {
-                var postTag = new PostTagInfo(PostTagType.Achievement, tagId, "TODO-Name", "TODO-Image");
+                var postTag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, tagId);
                 postTagSet.Add(postTag);
             }
         }

@@ -1,6 +1,4 @@
-﻿using AzerothMemories.WebBlazor.Services;
-
-namespace AzerothMemories.WebServer.Database.Records;
+﻿namespace AzerothMemories.WebServer.Database.Records;
 
 [Table("Blizzard_Data")]
 public class BlizzardDataRecord

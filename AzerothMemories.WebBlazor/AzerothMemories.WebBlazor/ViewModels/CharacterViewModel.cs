@@ -1,6 +1,4 @@
-﻿using AzerothMemories.WebBlazor.Blizzard;
-
-namespace AzerothMemories.WebBlazor.ViewModels;
+﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
 public sealed class CharacterViewModel
 {

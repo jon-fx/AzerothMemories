@@ -1,7 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Net.Http.Headers;
 using System.Text;
-using AzerothMemories.WebBlazor.Blizzard;
 
 namespace AzerothMemories.WebServer.Blizzard;
 

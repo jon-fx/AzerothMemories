@@ -12,7 +12,7 @@ public sealed class PostTagInfo
     [JsonInclude] public readonly string Image;
     [JsonInclude] public readonly PostTagType Type;
     [JsonInclude] public readonly string NameWithIcon;
-    [JsonInclude] public string WowHeadLink;
+    [JsonInclude] public readonly string WowHeadLink;
     [JsonInclude] public int ReportCounter;
 
     public PostTagInfo(PostTagType type, long id, string name, string image, int reportCounter = 0)

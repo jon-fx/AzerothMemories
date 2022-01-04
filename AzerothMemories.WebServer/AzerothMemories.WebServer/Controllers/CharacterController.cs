@@ -1,5 +1,3 @@
-using AzerothMemories.WebBlazor.Services;
-
 namespace AzerothMemories.WebServer.Controllers;
 
 [ApiController, JsonifyErrors]

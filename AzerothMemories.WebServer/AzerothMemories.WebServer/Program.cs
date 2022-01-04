@@ -5,7 +5,6 @@ using Hangfire.PostgreSql;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Headers;
 using System.Text;
-using AzerothMemories.WebBlazor.Blizzard;
 
 var config = new CommonConfig();
 var builder = WebApplication.CreateBuilder(args);

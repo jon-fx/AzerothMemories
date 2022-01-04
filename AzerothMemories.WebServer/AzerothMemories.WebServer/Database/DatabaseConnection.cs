@@ -1,6 +1,4 @@
-﻿using AzerothMemories.WebBlazor.Common;
-
-namespace AzerothMemories.WebServer.Database;
+﻿namespace AzerothMemories.WebServer.Database;
 
 public sealed class DatabaseConnection : DataConnection
 {
