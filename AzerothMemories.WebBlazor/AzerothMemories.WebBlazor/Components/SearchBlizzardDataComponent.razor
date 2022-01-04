@@ -1,17 +1,73 @@
-﻿@using System.Text
-<AutoCompleteComponent Placeholder="Search tags..."
-                 T="PostTagInfo"
-                 Value="@_selectedValue"
-                 SearchFunc="SearchMemoryItems">
+﻿<AutoCompleteComponent @bind-text="@_autoCompleteText"
+                        @bind-value="@SelectedValue"
+                        Placeholder="Search tags..."
+                        T="PostTagInfo"
+                        SearchFunc="SearchMemoryItems"
+                        ToStringFunc="ToStringFunc">
+
+    <ItemTemplate Context="e">
+        <AlignmentControl @key="e">
+            <Left>
+                @if (e.WowHeadLink == null)
+                {
+                    <MudAvatar Size="Size.Small" Image="@e.Image" Square="true">?</MudAvatar>
+                }
+                else
+                {
+                    <a class="cardlink2" data-wowhead="@e.WowHeadLink">
+                        <MudAvatar Size="Size.Small" Image="@e.Image" Square="true">?</MudAvatar>
+                    </a>
+                }
+            </Left>
+            <Centre>
+                <MudText>@e.Name</MudText>
+            </Centre>
+            <Right>
+                @if (e.WowHeadLink == null)
+                {
+                    <MudText>@e.Type: @e.Id</MudText>
+                }
+                else
+                {
+                    <a class="cardlink2" data-wowhead="@e.WowHeadLink">
+                        <MudText>@e.Type: @e.Id</MudText>
+                    </a>
+                }
+            </Right>
+        </AlignmentControl>
+    </ItemTemplate>
 </AutoCompleteComponent>
 
 @code
 {
-    private PostTagInfo _selectedValue;
+    private string _autoCompleteText;
+    private PostTagInfo _lastSelectedValue;
 
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired] public EventCallback<PostTagInfo> OnSelectedItemChanged { get; init; }
+    
+    public PostTagInfo SelectedValue
+    {
+        get => null;
+        set
+        {
+            if (_lastSelectedValue == value)
+            {
+                return;
+            }
+            
+            
+            _lastSelectedValue = value;
+
+            if (_lastSelectedValue != null)
+            {
+                OnSelectedItemChanged.InvokeAsync(_lastSelectedValue).AndForget();
+            }
+
+            _autoCompleteText = null;
+        }
+    }
 
     private async Task<IEnumerable<PostTagInfo>> SearchMemoryItems(string searchString)
     {
@@ -21,7 +77,16 @@
         }
 
         var results = await Services.TagServices.Search(null, searchString, CultureInfo.CurrentCulture.Name);
+        return results;
+    }
 
-        return Array.Empty<PostTagInfo>();
+    private string ToStringFunc(PostTagInfo arg)
+    {
+        if (arg == null)
+        {
+            return string.Empty;
+        }
+
+        return arg.Name;
     }
 }

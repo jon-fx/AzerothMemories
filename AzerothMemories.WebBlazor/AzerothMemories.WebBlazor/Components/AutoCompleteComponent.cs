@@ -9,10 +9,11 @@
             Margin = Margin.Dense;
             MinCharacters = 2;
             Dense = true;
-            CoerceText = true;
-            CoerceValue = true;
+            //CoerceText = true;
+            //CoerceValue = true;
             MaxItems = null;
             InputMode = InputMode.search;
+            DebounceInterval = 500;
         }
     }
 }

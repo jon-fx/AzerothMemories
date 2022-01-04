@@ -1,6 +1,7 @@
 ﻿@page "/"
 @inherits MoaComponentBase<IndexPageViewModel>
 
+
 <AuthorizeView>
     <Authorized>
         <AccountHeaderCardComponent AccountViewModel="@ViewModel.AccountViewModel" />
@@ -11,4 +12,15 @@
 {
     var i1 = i;
     <MudText Class=@($"wowclass-{i1}")>@StringLocalizer[$"CharacterClass-{i1}"]</MudText>
+}
+
+<MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+    <SearchBlizzardDataComponent Services="ViewModel.Services" OnSelectedItemChanged="@AddSearchDataToTags" />
+</MudPaper>
+
+@code {
+    private Task AddSearchDataToTags(PostTagInfo arg)
+    {
+        return Task.CompletedTask;
+    }
 }
