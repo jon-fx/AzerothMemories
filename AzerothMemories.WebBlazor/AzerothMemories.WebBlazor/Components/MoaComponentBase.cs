@@ -17,6 +17,8 @@
 
         [Inject] public ICharacterServices CharacterServices { get; init; }
 
+        [Inject] public ITagServices TagServices { get; init; }
+
         [Inject] public ActiveAccountServices ActiveAccountServices { get; init; }
 
         [Inject] public TagHelpers TagHelpers { get; init; }

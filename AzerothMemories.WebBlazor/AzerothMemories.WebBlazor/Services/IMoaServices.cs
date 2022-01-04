@@ -6,6 +6,8 @@ public interface IMoaServices
 
     ICharacterServices CharacterServices { get; init; }
 
+    ITagServices TagServices { get; init; }
+
     ActiveAccountServices ActiveAccountServices { get; init; }
 
     TagHelpers TagHelpers { get; init; }

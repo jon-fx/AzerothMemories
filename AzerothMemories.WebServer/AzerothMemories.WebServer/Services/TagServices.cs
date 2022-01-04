@@ -29,4 +29,10 @@ public class TagServices : ITagServices
 
         return new PostTagInfo(record.TagType, record.TagId, record.Name.En_Gb, record.Media);
     }
+
+    [ComputeMethod]
+    public virtual async Task<PostTagInfo[]> Search(Session session, string searchString, string locale = null, CancellationToken cancellationToken = default)
+    {
+        return Array.Empty<PostTagInfo>();
+    }
 }

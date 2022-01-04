@@ -1,0 +1,27 @@
+﻿@using System.Text
+<AutoCompleteComponent Placeholder="Search tags..."
+                 T="PostTagInfo"
+                 Value="@_selectedValue"
+                 SearchFunc="SearchMemoryItems">
+</AutoCompleteComponent>
+
+@code
+{
+    private PostTagInfo _selectedValue;
+
+    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
+
+    [Parameter, EditorRequired] public EventCallback<PostTagInfo> OnSelectedItemChanged { get; init; }
+
+    private async Task<IEnumerable<PostTagInfo>> SearchMemoryItems(string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString) || searchString.Length < 3)
+        {
+            return Enumerable.Empty<PostTagInfo>();
+        }
+
+        var results = await Services.TagServices.Search(null, searchString, CultureInfo.CurrentCulture.Name);
+
+        return Array.Empty<PostTagInfo>();
+    }
+}

@@ -10,6 +10,7 @@ global using MudBlazor;
 global using MudBlazor.Services;
 global using RestEase;
 global using Stl.Fusion;
+global using Stl.Fusion.Authentication;
 global using Stl.Fusion.Blazor;
 global using Stl.Fusion.Client;
 global using System.Net;
