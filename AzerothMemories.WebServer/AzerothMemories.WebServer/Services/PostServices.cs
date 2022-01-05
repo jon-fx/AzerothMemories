@@ -209,15 +209,25 @@ public class PostServices : IPostServices
             activeAccountId = activeAccount.Id;
         }
 
+        var posterAccount = await _commonServices.AccountServices.TryGetAccountById(session, postAccountId, cancellationToken);
+        if (posterAccount == null)
+        {
+            return null;
+        }
+
+        if (posterAccount.IsPrivate)
+        {
+            throw new NotImplementedException();
+        }
+
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
-        //var query = from p in database.Posts
-        //            where p.DeletedTimeStamp == 0 && p.Id == postId && p.AccountId == postAccountId
-        //            from a in database.Accounts.Where(x => x.Id == p.AccountId)
-        //            from r in database.PostReactions.Where(r => r.PostId == p.Id && r.AccountId == activeAccountId).DefaultIfEmpty()
-        //            where p.Id == postId
-        //            select PostViewModel.Create(p, a, r);
+        var query = from p in database.Posts
+                    where p.DeletedTimeStamp == 0 && p.Id == postId && p.AccountId == postAccountId
+                    from r in database.PostReactions.Where(r => r.PostId == p.Id && r.AccountId == activeAccountId).DefaultIfEmpty()
+                    select RecordToViewModels.CreatePostViewModel(p, posterAccount, r);
 
-        return new PostViewModel();
+        var result = await query.FirstOrDefaultAsync(cancellationToken);
+        return result;
     }
 }

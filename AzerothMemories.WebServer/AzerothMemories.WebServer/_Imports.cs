@@ -8,6 +8,7 @@ global using AzerothMemories.WebServer.Blizzard.Models.ProfileApi;
 global using AzerothMemories.WebServer.Common;
 global using AzerothMemories.WebServer.Database;
 global using AzerothMemories.WebServer.Database.Records;
+global using AzerothMemories.WebServer.Services;
 global using AzerothMemories.WebServer.Services.Updates;
 global using Hangfire;
 global using LinqToDB;

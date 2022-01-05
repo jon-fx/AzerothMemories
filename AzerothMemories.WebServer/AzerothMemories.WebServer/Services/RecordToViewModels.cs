@@ -56,5 +56,41 @@
                 LastUpdateHttpResult = characterRecord.UpdateJobLastResult
             };
         }
+
+        public static PostViewModel CreatePostViewModel(PostRecord postRecord, AccountViewModel accountViewModel, PostReactionRecord reactionRecord)
+        {
+            return new()
+            {
+                Id = postRecord.Id,
+                AccountId = postRecord.AccountId,
+                AccountUsername = accountViewModel.Username,
+                AccountAvatar = accountViewModel.Avatar,
+                PostComment = postRecord.PostComment,
+                PostAvatar = postRecord.PostAvatar,
+                PostVisibility = postRecord.PostVisibility,
+                PostTime = postRecord.PostTime,
+                PostCreatedTime = postRecord.PostCreatedTime,
+                PostEditedTime = postRecord.PostEditedTime,
+                ImageBlobNames = postRecord.BlobNames.Split('|'),
+                SystemTags = postRecord.SystemTags,
+                ReactionId = reactionRecord?.Id ?? 0,
+                Reaction = reactionRecord?.Reaction ?? 0,
+                ReactionCounters = new[]
+                {
+                    postRecord.ReactionCount1,
+                    postRecord.ReactionCount2,
+                    postRecord.ReactionCount3,
+                    postRecord.ReactionCount4,
+                    postRecord.ReactionCount5,
+                    postRecord.ReactionCount6,
+                    postRecord.ReactionCount7,
+                    postRecord.ReactionCount8,
+                    postRecord.ReactionCount9
+                },
+                TotalReactionCount = postRecord.TotalReactionCount,
+                TotalCommentCount = postRecord.TotalCommentCount,
+                DeletedTimeStamp = postRecord.DeletedTimeStamp
+            };
+        }
     }
 }

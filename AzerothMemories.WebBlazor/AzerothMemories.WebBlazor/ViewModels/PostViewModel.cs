@@ -2,43 +2,43 @@
 
 public class PostViewModel
 {
-    public long Id;
+    [JsonInclude] public long Id;
 
-    public long AccountId;
+    [JsonInclude] public long AccountId;
 
-    public string AccountAvatar;
+    [JsonInclude] public string AccountAvatar;
 
-    public string AccountUsername;
+    [JsonInclude] public string AccountUsername;
 
-    public string PostAvatar;
+    [JsonInclude] public string PostAvatar;
 
-    public string PostComment;
+    [JsonInclude] public string PostComment;
 
-    public byte PostVisibility;
+    [JsonInclude] public byte PostVisibility;
 
-    public DateTimeOffset PostTime;
+    [JsonInclude] public DateTimeOffset PostTime;
 
-    public DateTimeOffset PostEditedTime;
+    [JsonInclude] public DateTimeOffset PostEditedTime;
 
-    public DateTimeOffset PostCreatedTime;
+    [JsonInclude] public DateTimeOffset PostCreatedTime;
 
-    public string[] ImageBlobNames;
+    [JsonInclude] public string[] ImageBlobNames;
 
-    public string SystemTags;
+    [JsonInclude] public string SystemTags;
 
-    public PostTagInfo[] SystemTagsArray;
+    //public PostTagInfo[] SystemTagsArray;
 
-    public long ReactionId;
+    [JsonInclude] public long ReactionId;
 
-    public PostReaction Reaction;
+    [JsonInclude] public PostReaction Reaction;
 
-    public int TotalCommentCount;
+    [JsonInclude] public int TotalCommentCount;
 
-    public int TotalReactionCount;
+    [JsonInclude] public int TotalReactionCount;
 
-    public int[] ReactionCounters;
+    [JsonInclude] public int[] ReactionCounters;
 
-    public long DeletedTimeStamp;
+    [JsonInclude] public long DeletedTimeStamp;
 
     //public PostReactionViewModel[] ReactionData;
 }

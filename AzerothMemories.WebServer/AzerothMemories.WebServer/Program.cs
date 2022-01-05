@@ -5,6 +5,7 @@ using Hangfire.PostgreSql;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Headers;
 using System.Text;
+using CommonServices = AzerothMemories.WebServer.Services.CommonServices;
 
 var config = new CommonConfig();
 var builder = WebApplication.CreateBuilder(args);
@@ -132,10 +133,11 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
-    runner.MigrateDown(0);
+    //runner.MigrateDown(0);
     runner.MigrateUp();
 }
 
+app.Services.GetRequiredService<BlazorServices>().Initialize();
 app.Services.GetRequiredService<CommonServices>().Initialize();
 
 if (app.Environment.IsDevelopment())

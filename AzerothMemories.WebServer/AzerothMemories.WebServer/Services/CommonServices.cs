@@ -1,6 +1,4 @@
-﻿using AzerothMemories.WebServer.Services;
-
-namespace AzerothMemories.WebServer.Common;
+﻿namespace AzerothMemories.WebServer.Services;
 
 public sealed class CommonServices
 {
