@@ -1,6 +1,6 @@
-﻿using System.Security.Cryptography;
+﻿using SixLabors.ImageSharp;
+using System.Security.Cryptography;
 using System.Text;
-using SixLabors.ImageSharp;
 
 namespace AzerothMemories.WebServer.Services;
 
@@ -15,29 +15,29 @@ public class PostServices : IPostServices
         _commonServices = commonServices;
     }
 
-    public async Task<(AddMemoryResult Result, long PostId)> TryPostMemory(Session session, AddMemoryTransferData transferData)
+    public async Task<AddMemoryResult> TryPostMemory(Session session, AddMemoryTransferData transferData)
     {
         const int maxLength = 2048;
         if (transferData.Comment.Length >= maxLength)
         {
-            return (AddMemoryResult.CommentTooLong, 0);
+            return new AddMemoryResult(AddMemoryResultCode.CommentTooLong);
         }
 
         var dateTimeOffset = DateTimeOffset.FromUnixTimeMilliseconds(transferData.TimeStamp);
         if (dateTimeOffset < DateTimeOffset.FromUnixTimeMilliseconds(946684800) || dateTimeOffset > DateTimeOffset.UtcNow)
         {
-            return (AddMemoryResult.InvalidTime, 0);
+            return new AddMemoryResult(AddMemoryResultCode.InvalidTime);
         }
 
         var accountViewModel = await _commonServices.AccountServices.TryGetAccount(session);
         if (accountViewModel == null)
         {
-            return (AddMemoryResult.SessionNotFound, 0);
+            return new AddMemoryResult(AddMemoryResultCode.SessionNotFound);
         }
 
         if (!_commonServices.TagServices.GetCommentText(transferData.Comment, accountViewModel, out var commentText, out var accountsTaggedInComment, out var hashTagsTaggedInComment))
         {
-            return (AddMemoryResult.ParseCommentFailed, 0);
+            return new AddMemoryResult(AddMemoryResultCode.ParseCommentFailed);
         }
 
         var tagIds = new HashSet<long>();
@@ -53,21 +53,21 @@ public class PostServices : IPostServices
         };
 
         var buildSystemTagsResult = await BuildSystemTagsString(postRecord, accountViewModel, transferData.SystemTags, tagIds);
-        if (buildSystemTagsResult != AddMemoryResult.Success)
+        if (buildSystemTagsResult != AddMemoryResultCode.Success)
         {
-            return (buildSystemTagsResult, 0);
+            return new AddMemoryResult(buildSystemTagsResult);
         }
 
         var addCommentTagResult = await AddCommentTags(postRecord, accountsTaggedInComment, hashTagsTaggedInComment, tagIds);
-        if (addCommentTagResult != AddMemoryResult.Success)
+        if (addCommentTagResult != AddMemoryResultCode.Success)
         {
-            return (addCommentTagResult, 0);
+            return new AddMemoryResult(addCommentTagResult);
         }
 
         var uploadAndSortResult = await UploadAndSortImages(postRecord, transferData.UploadResults);
-        if (uploadAndSortResult != AddMemoryResult.Success)
+        if (uploadAndSortResult != AddMemoryResultCode.Success)
         {
-            return (uploadAndSortResult, 0);
+            return new AddMemoryResult(uploadAndSortResult);
         }
 
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
@@ -81,14 +81,14 @@ public class PostServices : IPostServices
 
         await database.PostTags.BulkCopyAsync(tagRecords);
 
-        return (AddMemoryResult.Failed, 0);
+        return new AddMemoryResult(AddMemoryResultCode.Success, postRecord.AccountId, postRecord.Id);
     }
 
-    private async Task<AddMemoryResult> BuildSystemTagsString(PostRecord postRecord, ActiveAccountViewModel accountViewModel, HashSet<string> systemTags, HashSet<long> tagIds)
+    private async Task<AddMemoryResultCode> BuildSystemTagsString(PostRecord postRecord, ActiveAccountViewModel accountViewModel, HashSet<string> systemTags, HashSet<long> tagIds)
     {
         if (!string.IsNullOrWhiteSpace(postRecord.PostAvatar) && !systemTags.Contains(postRecord.PostAvatar))
         {
-            return AddMemoryResult.InvalidTags;
+            return AddMemoryResultCode.InvalidTags;
         }
 
         var systemTagBuilder = new StringBuilder();
@@ -102,16 +102,16 @@ public class PostServices : IPostServices
             }
             else
             {
-                return AddMemoryResult.InvalidTags;
+                return AddMemoryResultCode.InvalidTags;
             }
         }
 
         postRecord.SystemTags = systemTagBuilder.ToString().TrimEnd('|');
 
-        return AddMemoryResult.Success;
+        return AddMemoryResultCode.Success;
     }
 
-    private async Task<AddMemoryResult> AddCommentTags(PostRecord postRecord, HashSet<long> accountsTaggedInComment, HashSet<string> hashTagsTaggedInComment, HashSet<long> tagIds)
+    private async Task<AddMemoryResultCode> AddCommentTags(PostRecord postRecord, HashSet<long> accountsTaggedInComment, HashSet<string> hashTagsTaggedInComment, HashSet<long> tagIds)
     {
         foreach (var accountId in accountsTaggedInComment)
         {
@@ -122,7 +122,7 @@ public class PostServices : IPostServices
             }
             else
             {
-                return AddMemoryResult.InvalidTags;
+                return AddMemoryResultCode.InvalidTags;
             }
         }
 
@@ -135,21 +135,21 @@ public class PostServices : IPostServices
             }
             else
             {
-                return AddMemoryResult.InvalidTags;
+                return AddMemoryResultCode.InvalidTags;
             }
         }
 
-        return AddMemoryResult.Success;
+        return AddMemoryResultCode.Success;
     }
 
-    private async Task<AddMemoryResult> UploadAndSortImages(PostRecord postRecord, List<AddMemoryUploadResult> uploadResults)
+    private async Task<AddMemoryResultCode> UploadAndSortImages(PostRecord postRecord, List<AddMemoryUploadResult> uploadResults)
     {
         var data = new List<(byte[] Buffer, string Hash, string Name, long TimeStamp, string ImageBlobName)>();
         foreach (var uploadResult in uploadResults)
         {
             if (uploadResult.FileContent.Length > 1024 * 1024 * 10)
             {
-                return AddMemoryResult.Failed;
+                return AddMemoryResultCode.Failed;
             }
 
             try
@@ -172,7 +172,7 @@ public class PostServices : IPostServices
             }
             catch (Exception)
             {
-                return AddMemoryResult.Failed;
+                return AddMemoryResultCode.Failed;
             }
         }
 
@@ -185,7 +185,7 @@ public class PostServices : IPostServices
 
         postRecord.BlobNames = imageNameBuilder.ToString().TrimEnd('|');
 
-        return AddMemoryResult.Success;
+        return AddMemoryResultCode.Success;
     }
 
     private string GetHashString(byte[] hashData)

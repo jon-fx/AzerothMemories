@@ -12,7 +12,7 @@ public class PostController : ControllerBase, IPostServices
     }
 
     [HttpPost]
-    public Task<(AddMemoryResult Result, long PostId)> TryPostMemory(Session session, [FromBody] AddMemoryTransferData transferData)
+    public Task<AddMemoryResult> TryPostMemory(Session session, [FromBody] AddMemoryTransferData transferData)
     {
         return _commonServices.PostServices.TryPostMemory(session, transferData);
     }

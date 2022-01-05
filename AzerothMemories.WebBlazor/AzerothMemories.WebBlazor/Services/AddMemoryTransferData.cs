@@ -3,7 +3,6 @@
 public sealed class AddMemoryTransferData
 {
     [JsonInclude] public long TimeStamp { get; init; }
-    [JsonInclude] public string Avatar { get; init; }
     [JsonInclude] public string AvatarTag { get; init; }
     [JsonInclude] public bool IsPrivate { get; init; }
     [JsonInclude] public string Comment { get; init; }
@@ -14,10 +13,10 @@ public sealed class AddMemoryTransferData
     {
     }
 
-    public AddMemoryTransferData(long timeStamp, string avatar, string avatarTag, bool privatePost, string comment, HashSet<string> systemTags, List<AddMemoryUploadResult> uploadResults)
+    public AddMemoryTransferData(long timeStamp, string avatarTag, bool privatePost, string comment, HashSet<string> systemTags, List<AddMemoryUploadResult> uploadResults)
     {
         TimeStamp = timeStamp;
-        Avatar = avatar;
+        //Avatar = avatar;
         AvatarTag = avatarTag;
         IsPrivate = privatePost;
         Comment = comment;

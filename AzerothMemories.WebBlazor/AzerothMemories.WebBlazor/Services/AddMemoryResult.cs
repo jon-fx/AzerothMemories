@@ -1,16 +1,16 @@
-﻿namespace AzerothMemories.WebBlazor.Services
+﻿namespace AzerothMemories.WebBlazor.Services;
+
+public sealed class AddMemoryResult
 {
-    public enum AddMemoryResult
+    [JsonInclude] public readonly long AccountId;
+    [JsonInclude] public readonly long PostId;
+    [JsonInclude] public readonly AddMemoryResultCode Result;
+    [JsonInclude] public readonly AddMemoryTransferData Data;
+
+    public AddMemoryResult(AddMemoryResultCode result, long accountId = 0, long postId = 0)
     {
-        None,
-        Success,
-        Canceled,
-        Failed,
-        CommentTooLong,
-        ParseCommentFailed,
-        SessionNotFound,
-        InvalidTime,
-        InvalidTags,
-        TagsTooLong
+        Result = result;
+        AccountId = accountId;
+        PostId = postId;
     }
 }

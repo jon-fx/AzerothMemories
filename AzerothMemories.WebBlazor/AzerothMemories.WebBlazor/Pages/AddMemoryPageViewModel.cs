@@ -63,7 +63,7 @@ namespace AzerothMemories.WebBlazor.Pages
             //DialogService.HideLoadingDialog();
         }
 
-        public Task<AddMemoryComponentResult> Submit()
+        public Task<AddMemoryResult> Submit()
         {
             return SharedData.Submit(PublishCommentComponent, UploadedImages);
         }

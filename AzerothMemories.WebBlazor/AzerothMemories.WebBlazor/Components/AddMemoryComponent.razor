@@ -74,7 +74,7 @@
     
     [Parameter, EditorRequired] public AddMemoryPageViewModel ViewModel { get; init; }
 
-    [Parameter, EditorRequired] public EventCallback<AddMemoryComponentResult> OnPostMemoryResult { get; init; }
+    [Parameter, EditorRequired] public EventCallback<AddMemoryResult> OnPostMemoryResult { get; init; }
     
 
     private async Task Submit()
@@ -92,7 +92,7 @@
     {
         await ViewModel.Reset();
 
-        await OnPostMemoryResult.InvokeAsync(new AddMemoryComponentResult(null, AddMemoryResult.Canceled, 0, 0));
+        await OnPostMemoryResult.InvokeAsync(new AddMemoryResult(AddMemoryResultCode.Canceled, 0, 0));
     }
 
     private async Task OnDateTimeChanged(DateTime? arg)

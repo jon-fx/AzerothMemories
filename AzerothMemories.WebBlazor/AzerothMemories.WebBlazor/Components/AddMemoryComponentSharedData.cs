@@ -173,24 +173,24 @@ public sealed class AddMemoryComponentSharedData
     //    OnModelChanged?.Invoke();
     //}
 
-    public async Task<AddMemoryComponentResult> Submit(PublishCommentComponent commentComponent, List<AddMemoryUploadResult> uploadResults)
+    public async Task<AddMemoryResult> Submit(PublishCommentComponent commentComponent, List<AddMemoryUploadResult> uploadResults)
     {
         var timeStamp = PostTimeStamp;
         var finalText = commentComponent.GetCommentText();
         var systemTags = GetSystemHashTags();
 
-        string avatarImage = null;
+        //string avatarImage = null;
         string avatarTag = null;
         if (SelectedPostAvatarImage > 0 && SelectedPostAvatarImage < PostAvatarImages.Count)
         {
-            avatarImage = PostAvatarImages[SelectedPostAvatarImage].ImageLink;
+            //avatarImage = PostAvatarImages[SelectedPostAvatarImage].ImageLink;
             avatarTag = PostAvatarImages[SelectedPostAvatarImage].Tag.TagString;
         }
 
-        var transferData = new AddMemoryTransferData(timeStamp.ToUnixTimeMilliseconds(), avatarImage, avatarTag, PrivatePost, finalText, systemTags, uploadResults);
-        var (result, postId) = await _viewModel.Services.PostServices.TryPostMemory(null, transferData);
+        var transferData = new AddMemoryTransferData(timeStamp.ToUnixTimeMilliseconds(), avatarTag, PrivatePost, finalText, systemTags, uploadResults);
+        var result = await _viewModel.Services.PostServices.TryPostMemory(null, transferData);
 
-        return new AddMemoryComponentResult(transferData, result, _viewModel.Services.ActiveAccountServices.ActiveAccountId, postId);
+        return result;
     }
 
     //public async Task<(bool Result, string SystemTags)> SubmitOnEditingPost(PostViewModel currentPost)

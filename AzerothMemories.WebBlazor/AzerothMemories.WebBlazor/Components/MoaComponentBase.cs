@@ -27,6 +27,8 @@
 
         [Inject] public TimeProvider TimeProvider { get; init; }
 
+        [Inject] public NavigationManager NavigationManager { get; init; }
+
         [Inject] public IStringLocalizer<BlizzardResources> StringLocalizer { get; init; }
 
         protected override sealed async Task<TViewModel> ComputeState(CancellationToken cancellationToken)
