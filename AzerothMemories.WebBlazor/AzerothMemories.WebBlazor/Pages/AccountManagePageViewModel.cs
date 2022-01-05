@@ -182,7 +182,7 @@
             OnViewModelChanged?.Invoke();
         }
 
-        public async Task OnChangeAvatarClicked()
+        public Task OnChangeAvatarClicked()
         {
             throw new NotImplementedException();
         }

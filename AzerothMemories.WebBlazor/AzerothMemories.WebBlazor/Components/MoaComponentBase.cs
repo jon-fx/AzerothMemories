@@ -19,6 +19,8 @@
 
         [Inject] public ITagServices TagServices { get; init; }
 
+        [Inject] public IPostServices PostServices { get; init; }
+
         [Inject] public ActiveAccountServices ActiveAccountServices { get; init; }
 
         [Inject] public TagHelpers TagHelpers { get; init; }

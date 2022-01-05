@@ -8,6 +8,8 @@ public interface IMoaServices
 
     ITagServices TagServices { get; init; }
 
+    IPostServices PostServices { get; init; }
+
     ActiveAccountServices ActiveAccountServices { get; init; }
 
     TagHelpers TagHelpers { get; init; }

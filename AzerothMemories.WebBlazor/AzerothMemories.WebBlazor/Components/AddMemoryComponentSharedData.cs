@@ -188,7 +188,7 @@ public sealed class AddMemoryComponentSharedData
         }
 
         var transferData = new AddMemoryTransferData(timeStamp.ToUnixTimeMilliseconds(), avatarImage, avatarTag, PrivatePost, finalText, systemTags, uploadResults);
-        var (result, postId) = await _viewModel.Services.AccountServices.TryPostMemory(null, transferData);
+        var (result, postId) = await _viewModel.Services.PostServices.TryPostMemory(null, transferData);
 
         return new AddMemoryComponentResult(transferData, result, _viewModel.Services.ActiveAccountServices.ActiveAccountId, postId);
     }
