@@ -1,0 +1,10 @@
+﻿<MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+    <MudCardContent>
+        <MudText Align="Align.Center">Error</MudText>
+        <MudText Align="Align.Center">@ErrorMessage</MudText>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Parameter] public string ErrorMessage { get; init; }
+}

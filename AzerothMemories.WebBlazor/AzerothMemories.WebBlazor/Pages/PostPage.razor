@@ -1,0 +1,38 @@
+﻿@page "/post/{Id:long}/{PostId:long}"
+@page "/post/{Name}/{PostId:long}"
+@inherits MoaComponentBase<PostPageViewModel>
+
+@if (!string.IsNullOrWhiteSpace(ViewModel.ErrorMessage))
+{
+    <CardErrorComponent ErrorMessage="@ViewModel.ErrorMessage" />
+}
+else if ( ViewModel.AccountViewModel == null || ViewModel.PostViewModel == null )
+{
+    <CardLoadingComponent />
+}
+else
+{
+    <PageTitle>@ViewModel.AccountViewModel.GetDisplayName()'s Memory of Azeroth</PageTitle>
+    <AccountHeaderCardComponent AccountViewModel="@ViewModel.AccountViewModel" />
+    <PostViewComponent Post="@ViewModel.PostViewModel" Page="@ViewModel.CurrentPage" FocusedCommentId="@ViewModel.FocusedCommentId" />
+}
+
+@code 
+{
+    [Parameter, EditorRequired] public long Id { get; set; }
+
+    [Parameter, EditorRequired] public long PostId { get; set; }
+
+    [Parameter, EditorRequired] public string Name { get; set; }
+
+    [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }
+
+    [Parameter, SupplyParameterFromQuery(Name = "comment")] public string FocusedCommentId { get; init; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        ViewModel.OnParametersSet(Id, Name, PostId, CurrentPage, FocusedCommentId);
+    }
+}

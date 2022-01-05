@@ -20,17 +20,17 @@ public sealed class DatabaseConnection : DataConnection
 
     public ITable<PostTagRecord> PostTags => GetTable<PostTagRecord>();
 
-    //public ITable<PostReactionRecord> PostReactions => GetTable<PostReactionRecord>();
+    public ITable<PostReactionRecord> PostReactions => GetTable<PostReactionRecord>();
 
-    //public ITable<PostCommentRecord> PostComments => GetTable<PostCommentRecord>();
+    public ITable<PostCommentRecord> PostComments => GetTable<PostCommentRecord>();
+
+    public ITable<PostCommentReactionRecord> PostCommentReactions => GetTable<PostCommentReactionRecord>();
 
     //public ITable<PostReportRecord> PostReports => GetTable<PostReportRecord>();
 
     //public ITable<PostTagReportRecord> PostTagReports => GetTable<PostTagReportRecord>();
 
     //public ITable<PostCommentReportRecord> PostCommentReports => GetTable<PostCommentReportRecord>();
-
-    //public ITable<PostCommentReactionRecord> PostCommentsReactions => GetTable<PostCommentReactionRecord>();
 
     //public ITable<AccountHistoryRecord> AccountHistory => GetTable<AccountHistoryRecord>();
 

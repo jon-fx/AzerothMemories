@@ -8,12 +8,12 @@ public interface IAccountServices
     Task<ActiveAccountViewModel> TryGetAccount(Session session, CancellationToken cancellationToken = default);
 
     [ComputeMethod]
-    [Get(nameof(TryGetAccount) + "/{accountId}")]
-    Task<AccountViewModel> TryGetAccount(Session session, [Path] long accountId, CancellationToken cancellationToken = default);
+    [Get(nameof(TryGetAccountById) + "/{accountId}")]
+    Task<AccountViewModel> TryGetAccountById(Session session, [Path] long accountId, CancellationToken cancellationToken = default);
 
     [ComputeMethod]
-    [Get(nameof(TryGetAccount) + "/{username}")]
-    Task<AccountViewModel> TryGetAccount(Session session, [Path] string username, CancellationToken cancellationToken = default);
+    [Get(nameof(TryGetAccountByUsername) + "/{username}")]
+    Task<AccountViewModel> TryGetAccountByUsername(Session session, [Path] string username, CancellationToken cancellationToken = default);
 
     [ComputeMethod]
     [Get(nameof(TryReserveUsername) + "/{username}")]

@@ -18,15 +18,15 @@ public class AccountController : ControllerBase, IAccountServices
     }
 
     [HttpGet("{accountId}"), Publish]
-    public Task<AccountViewModel> TryGetAccount(Session session, [FromRoute] long accountId, CancellationToken cancellationToken = default)
+    public Task<AccountViewModel> TryGetAccountById(Session session, [FromRoute] long accountId, CancellationToken cancellationToken = default)
     {
-        return _commonServices.AccountServices.TryGetAccount(session, accountId, cancellationToken);
+        return _commonServices.AccountServices.TryGetAccountById(session, accountId, cancellationToken);
     }
 
     [HttpGet("{username}"), Publish]
-    public Task<AccountViewModel> TryGetAccount(Session session, [FromRoute] string username, CancellationToken cancellationToken = default)
+    public Task<AccountViewModel> TryGetAccountByUsername(Session session, [FromRoute] string username, CancellationToken cancellationToken = default)
     {
-        return _commonServices.AccountServices.TryGetAccount(session, username, cancellationToken);
+        return _commonServices.AccountServices.TryGetAccountByUsername(session, username, cancellationToken);
     }
 
     [HttpGet("{username}"), Publish]

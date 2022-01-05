@@ -31,7 +31,7 @@ namespace AzerothMemories.WebServer.Database.Migrations
                 .WithColumn(nameof(CharacterRecord.Name)).AsString(60).Nullable()
                 .WithColumn(nameof(CharacterRecord.NameSearchable)).AsString(60).Nullable()
                 .WithColumn(nameof(CharacterRecord.CreatedDateTime)).AsDateTimeOffset().NotNullable()
-                .WithColumn(nameof(CharacterRecord.AccountId)).AsInt64().WithDefaultValue(0)
+                .WithColumn(nameof(CharacterRecord.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey("Accounts", "Id")
                 .WithColumn(nameof(CharacterRecord.AccountSync)).AsBoolean().WithDefaultValue(false)
                 .WithColumn(nameof(CharacterRecord.RealmId)).AsInt32().WithDefaultValue(0)
                 .WithColumn(nameof(CharacterRecord.Class)).AsByte().WithDefaultValue(0)
@@ -96,26 +96,59 @@ namespace AzerothMemories.WebServer.Database.Migrations
                 .WithColumn(nameof(PostRecord.BlobNames)).AsString(2048)
                 .WithColumn(nameof(PostRecord.PostTime)).AsDateTimeOffset()
                 .WithColumn(nameof(PostRecord.PostEditedTime)).AsDateTimeOffset()
-                .WithColumn(nameof(PostRecord.PostCreatedTime)).AsDateTimeOffset();
+                .WithColumn(nameof(PostRecord.PostCreatedTime)).AsDateTimeOffset()
+                .WithReactionInfo()
+                .WithColumn(nameof(PostRecord.TotalCommentCount)).AsInt64().WithDefaultValue(0)
+                .WithColumn(nameof(PostRecord.TotalReportCount)).AsInt64().WithDefaultValue(0)
+                .WithColumn(nameof(PostRecord.DeletedTimeStamp)).AsInt64().WithDefaultValue(0);
 
             Create.Table("Posts_Tags")
                 .WithColumn(nameof(PostTagRecord.Id)).AsInt64().PrimaryKey().Identity()
                 .WithColumn(nameof(PostTagRecord.PostId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts", "Id")
                 .WithColumn(nameof(PostTagRecord.TagId)).AsInt64().WithDefaultValue(0).ForeignKey("Tags", "Id")
                 .WithColumn(nameof(PostTagRecord.CreatedTime)).AsDateTimeOffset();
+
+            Create.Table("Posts_Reactions")
+                .WithColumn(nameof(PostReactionRecord.Id)).AsInt64().PrimaryKey().Identity()
+                .WithColumn(nameof(PostReactionRecord.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey("Accounts", "Id")
+                .WithColumn(nameof(PostReactionRecord.PostId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts", "Id")
+                .WithColumn(nameof(PostReactionRecord.Reaction)).AsByte().WithDefaultValue(0)
+                .WithColumn(nameof(PostReactionRecord.LastUpdateTime)).AsDateTimeOffset();
+
+            Create.Table("Posts_Comments")
+                .WithColumn(nameof(PostCommentRecord.Id)).AsInt64().PrimaryKey().Identity()
+                .WithColumn(nameof(PostCommentRecord.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey("Accounts", "Id")
+                .WithColumn(nameof(PostCommentRecord.PostId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts", "Id")
+                .WithColumn(nameof(PostCommentRecord.ParentId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts_Comments", "Id")
+                .WithColumn(nameof(PostCommentRecord.PostComment)).AsString(2048).NotNullable()
+                .WithReactionInfo()
+                .WithColumn(nameof(PostCommentRecord.CreatedTime)).AsDateTimeOffset()
+                .WithColumn(nameof(PostCommentRecord.TotalReportCount)).AsInt64().WithDefaultValue(0)
+                .WithColumn(nameof(PostCommentRecord.DeletedTimeStamp)).AsInt64().WithDefaultValue(0);
+
+            Create.Table("Posts_Comments_Reactions")
+                .WithColumn(nameof(PostCommentReactionRecord.Id)).AsInt64().PrimaryKey().Identity()
+                .WithColumn(nameof(PostCommentReactionRecord.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey("Accounts", "Id")
+                .WithColumn(nameof(PostCommentReactionRecord.CommentId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts_Comments", "Id")
+                .WithColumn(nameof(PostCommentReactionRecord.Reaction)).AsByte().WithDefaultValue(0)
+                .WithColumn(nameof(PostCommentReactionRecord.LastUpdateTime)).AsDateTimeOffset();
         }
 
         public override void Down()
         {
-            Delete.Table("Characters_Achievements");
+            Delete.Table("Posts_Comments_Reactions");
+            Delete.Table("Posts_Comments");
 
             Delete.Table("Posts_Tags");
-            Delete.Table("Tags");
+            Delete.Table("Posts_Reactions");
             Delete.Table("Posts");
 
-            Delete.Table("Accounts");
+            Delete.Table("Tags");
+
+            Delete.Table("Characters_Achievements");
             Delete.Table("Characters");
 
+            Delete.Table("Accounts");
             //Delete.Table("Blizzard_Data");
         }
     }

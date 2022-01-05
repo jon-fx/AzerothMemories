@@ -1,0 +1,79 @@
+﻿
+@if (Post == null)
+{
+    <CardLoadingComponent/>
+}
+else if (Post.DeletedTimeStamp != 0)
+{
+    <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.body1">Post Deleted</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+    </MudCard>
+}
+else
+{
+    <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
+        <MudCardHeader>
+            <CardHeaderAvatar>
+                <MudAvatar Size="Size.Medium" Image="@Post.AccountAvatar">@Post.AccountUsername[0]</MudAvatar>
+                @if (!string.IsNullOrWhiteSpace(Post.PostAvatar))
+                {
+                    <MudAvatar Class="ml-n3 mt-5" Style="float: right" Size="Size.Small" Image="@Post.PostAvatar">?</MudAvatar>
+                }
+            </CardHeaderAvatar>
+            <CardHeaderContent>
+                <a href="@($"/account/{Post.AccountId}")" tabindex="-1">
+                    <MudText Typo="Typo.body1">@Post.AccountUsername</MudText>
+                </a>
+                <div class="d-flex justify-space-between">
+                    <MudText Typo="Typo.body2" Inline="true">@Post.PostTime.ToLocalTime()</MudText>
+                    <MudText Typo="Typo.body2" Inline="true">@Post.PostCreatedTime.ToLocalTime()</MudText>
+                </div>
+            </CardHeaderContent>
+            <CardHeaderActions>
+                <MudMenu Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Dense="true">
+
+                </MudMenu>
+            </CardHeaderActions>
+        </MudCardHeader>
+
+        <MudDivider/>
+
+        <MudCardContent Class="pa-0 ma-2">
+        </MudCardContent>
+
+        <MudCardActions>
+        </MudCardActions>
+    </MudCard>    
+}
+
+@code {
+    private bool _postChanged;
+    private readonly PostViewModel _post;
+
+    //private bool _userReacting;
+    //private bool _showReactions;
+    //private bool _showReactionIsLoading;
+
+    //private bool _showTagMenu;
+    //private bool _isChangingTags;
+    //private bool _loadFailed;
+
+    [Parameter, EditorRequired]
+    public PostViewModel Post
+    {
+        get => _post;
+        init
+        {
+            _postChanged = _post != value;
+            _post = value;
+        }
+    }
+
+    [Parameter] public bool InDialog { get; init; }
+
+    [Parameter] public EventCallback<PostTagInfo> OnTagChipClickedCallback { get; init; }
+}

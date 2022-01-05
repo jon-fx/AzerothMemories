@@ -16,4 +16,10 @@ public class PostController : ControllerBase, IPostServices
     {
         return _commonServices.PostServices.TryPostMemory(session, transferData);
     }
+
+    [HttpGet("{accountId}/{postId}"), Publish]
+    public Task<PostViewModel> TryGetPostViewModel(Session session, long accountId, long postId, CancellationToken cancellationToken = default)
+    {
+        return _commonServices.PostServices.TryGetPostViewModel(session, accountId, postId, cancellationToken);
+    }
 }

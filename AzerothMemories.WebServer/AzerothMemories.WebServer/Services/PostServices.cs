@@ -198,4 +198,26 @@ public class PostServices : IPostServices
 
         return output.ToString();
     }
+
+    [ComputeMethod]
+    public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postAccountId, long postId, CancellationToken cancellationToken)
+    {
+        var activeAccount = await _commonServices.AccountServices.GetCurrentSessionAccountRecord(session, cancellationToken);
+        long activeAccountId = 0;
+        if (activeAccount != null)
+        {
+            activeAccountId = activeAccount.Id;
+        }
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        //var query = from p in database.Posts
+        //            where p.DeletedTimeStamp == 0 && p.Id == postId && p.AccountId == postAccountId
+        //            from a in database.Accounts.Where(x => x.Id == p.AccountId)
+        //            from r in database.PostReactions.Where(r => r.PostId == p.Id && r.AccountId == activeAccountId).DefaultIfEmpty()
+        //            where p.Id == postId
+        //            select PostViewModel.Create(p, a, r);
+
+        return new PostViewModel();
+    }
 }

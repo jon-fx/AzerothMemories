@@ -1,0 +1,65 @@
+﻿<h3>PostViewComponent</h3>
+
+<PostComponent Post="@Post" InDialog="true"/>
+
+@if (Post == null || Post.DeletedTimeStamp != 0)
+{
+
+}
+else if (_isLoading)
+{
+    <CardLoadingComponent />
+}
+else
+{
+
+}
+
+@code {
+    
+    private bool _postChanged;
+    private PostViewModel _post;
+    //private CommentTreeNode _focusedCommentTreeNode;
+
+    private int _currentPage = 1;
+    private bool _currentPageChanged;
+    private long _scrollToFocusId;
+    private long _focusedCommentId;
+    private bool _focusedCommentIdChanged;
+    
+    private bool _isLoading;
+    private int _commentsPerPage = 10;
+
+    [Parameter, EditorRequired]
+    public PostViewModel Post
+    {
+        get => _post;
+        init
+        {
+            _postChanged = _post != value;
+            _post = value;
+        }
+    }
+
+    [Parameter, EditorRequired]
+    public int Page
+    {
+        get => _currentPage;
+        init
+        {
+            _currentPageChanged = _currentPage != value;
+            _currentPage = value;
+        }
+    }
+
+    [Parameter, EditorRequired]
+    public long FocusedCommentId
+    {
+        get => _focusedCommentId;
+        init
+        {
+            _focusedCommentIdChanged = _focusedCommentId != value;
+            _focusedCommentId = value;
+        }
+    }
+}

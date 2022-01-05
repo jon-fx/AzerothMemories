@@ -4,8 +4,6 @@ public class AccountViewModel
 {
     [JsonInclude] public long Id;
 
-    //[JsonInclude] public string Ref;
-
     [JsonInclude] public string Username;
 
     [JsonInclude] public string BattleTag;

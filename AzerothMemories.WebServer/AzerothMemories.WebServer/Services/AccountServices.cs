@@ -209,15 +209,41 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountViewModel> TryGetAccount(Session session, long accountId, CancellationToken cancellationToken = default)
+    public virtual async Task<AccountViewModel> TryGetAccountById(Session session, long accountId, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var sessionAccount = await TryGetAccount(session, cancellationToken);
+        if (sessionAccount != null && sessionAccount.Id == accountId)
+        {
+            return sessionAccount;
+        }
+
+        var accountRecord = await TryGetAccountRecord(accountId);
+        if (accountRecord == null)
+        {
+            return null;
+        }
+
+        var characters = await _commonServices.CharacterServices.TryGetAllAccountCharacters(accountRecord.Id);
+        return accountRecord.CreateAccountViewModel(characters);
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountViewModel> TryGetAccount(Session session, string username, CancellationToken cancellationToken = default)
+    public virtual async Task<AccountViewModel> TryGetAccountByUsername(Session session, string username, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var sessionAccount = await TryGetAccount(session, cancellationToken);
+        if (sessionAccount != null && sessionAccount.Username == username)
+        {
+            return sessionAccount;
+        }
+
+        var accountRecord = await TryGetAccountRecordUsername(username);
+        if (accountRecord == null)
+        {
+            return null;
+        }
+
+        var characters = await _commonServices.CharacterServices.TryGetAllAccountCharacters(accountRecord.Id);
+        return accountRecord.CreateAccountViewModel(characters);
     }
 
     [ComputeMethod]
