@@ -35,6 +35,12 @@ else
             </CardHeaderContent>
             <CardHeaderActions>
                 <MudMenu Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Dense="true">
+                    
+                    <MudMenuItem Link="@($"/post/{Post.AccountId}/{Post.Id}")">
+                        <MudTooltip Text="Link" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
+                            <MudIcon Icon="@Icons.Material.Filled.AddLink" Size="Size.Small"/>
+                        </MudTooltip>
+                    </MudMenuItem>
 
                 </MudMenu>
             </CardHeaderActions>
@@ -43,8 +49,20 @@ else
         <MudDivider/>
 
         <MudCardContent Class="pa-0 ma-2">
-        </MudCardContent>
+            @if (!string.IsNullOrWhiteSpace(Post.PostComment))
+            {
+                <MudText Typo="Typo.body2" Style="overflow-wrap: anywhere;">@(new MarkupString(Post.PostComment))</MudText>
+            }
 
+            @foreach (var blobName in Post.ImageBlobNames)
+            {
+            }
+            
+            <div class="d-flex justify-space-between pa-0 ma-2">
+
+            </div>
+        </MudCardContent>
+        
         <MudCardActions>
         </MudCardActions>
     </MudCard>    

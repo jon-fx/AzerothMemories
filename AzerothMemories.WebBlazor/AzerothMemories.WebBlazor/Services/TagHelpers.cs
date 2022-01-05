@@ -2,9 +2,9 @@
 
 public sealed class TagHelpers
 {
-    public PostTagInfo[] MainTags { get; set; }
+    public PostTagInfo[] MainTags { get; }
 
-    public PostTagInfo[] CommonTags { get; set; }
+    public PostTagInfo[] CommonTags { get; }
 
     public TagHelpers(IStringLocalizer<BlizzardResources> stringLocalizer)
     {
@@ -16,6 +16,16 @@ public sealed class TagHelpers
 
         var allTypeTags = stringLocalizer.GetAllStrings().Where(x => x.Name.StartsWith("Type-")).ToDictionary(x => GetId(x.Name), x => x.Value);
         var allCommonTags = stringLocalizer.GetAllStrings().Where(x => x.Name.StartsWith("Main-")).ToDictionary(x => GetId(x.Name), x => x.Value);
+        
+        if (allTypeTags.Count == 0)
+        {
+            throw new NotImplementedException();
+        }
+
+        if (allCommonTags.Count == 0)
+        {
+            throw new NotImplementedException();
+        }
 
         static PostTagInfo[] GetArray(PostTagType type, Dictionary<int, string> dictionary, bool isChipClosable)
         {

@@ -137,7 +137,6 @@ using (var scope = app.Services.CreateScope())
     runner.MigrateUp();
 }
 
-app.Services.GetRequiredService<BlazorServices>().Initialize();
 app.Services.GetRequiredService<CommonServices>().Initialize();
 
 if (app.Environment.IsDevelopment())
