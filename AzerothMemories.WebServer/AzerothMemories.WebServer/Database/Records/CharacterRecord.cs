@@ -17,7 +17,7 @@ public class CharacterRecord : IBlizzardGrainUpdateRecord
 
     [Column, NotNull] public DateTimeOffset CreatedDateTime;
 
-    [Column, NotNull] public long AccountId;
+    [Column, NotNull] public long? AccountId;
 
     [Column, NotNull] public bool AccountSync;
 

@@ -106,8 +106,8 @@ public class CharacterServices : ICharacterServices
 
         using var computed = Computed.Invalidate();
         _ = TryGetCharacterRecord(characterRecord.Id);
-        _ = TryGetAllAccountCharacters(characterRecord.AccountId);
-        _ = TryGetAllAccountCharacterIds(characterRecord.AccountId);
+        _ = TryGetAllAccountCharacters(characterRecord.AccountId.GetValueOrDefault());
+        _ = TryGetAllAccountCharacterIds(characterRecord.AccountId.GetValueOrDefault());
     }
 
     public Task OnCharacterDeleted(long accountId, long characterId, string characterRef)
@@ -139,7 +139,7 @@ public class CharacterServices : ICharacterServices
 
     public void OnCharacterUpdate(CharacterRecord characterRecord)
     {
-        OnCharacterUpdate(characterRecord.Id, characterRecord.AccountId);
+        OnCharacterUpdate(characterRecord.Id, characterRecord.AccountId.GetValueOrDefault());
     }
 
     private void OnCharacterUpdate(long characterId, long characterAccountId)

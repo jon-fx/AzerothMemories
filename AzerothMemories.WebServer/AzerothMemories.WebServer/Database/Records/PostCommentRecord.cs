@@ -9,7 +9,7 @@
 
         [Column, NotNull] public long PostId;
 
-        [Column, NotNull] public long ParentId;
+        [Column, NotNull] public long? ParentId;
 
         [Column, NotNull] public string PostComment;
 
