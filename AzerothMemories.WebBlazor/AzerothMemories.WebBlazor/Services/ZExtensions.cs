@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebBlazor.Services;
 
-public static class PostTagInfoAdd
+public static class ZExtensions
 {
     public static bool IsRetailOnlyTag(this PostTagType tagType)
     {
@@ -79,6 +79,50 @@ public static class PostTagInfoAdd
                 return false;
             }
         }
+    }
+
+    public static bool ParseTagInfoFrom(string key, out (PostTagType Type, long Id, string Text) result)
+    {
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            result = default;
+            return false;
+        }
+
+        var split = key.Split('-');
+
+        PostTagType type;
+        if (int.TryParse(split[0], out var typeAsInt))
+        {
+            if (Enum.IsDefined(typeof(PostTagType), typeAsInt))
+            {
+                type = (PostTagType)typeAsInt;
+            }
+            else
+            {
+                result = default;
+                return false;
+            }
+        }
+        else if (!Enum.TryParse(split[0], true, out type))
+        {
+            result = default;
+            return false;
+        }
+
+        long id = -1;
+        if (type == PostTagType.HashTag)
+        {
+        }
+        else if (split.Length < 2 || !long.TryParse(split[1], out id))
+        {
+            result = default;
+            return false;
+        }
+
+        result = (type, id, split[1]);
+
+        return true;
     }
 
     public static string GetTagIcon(this PostTagType tagType)

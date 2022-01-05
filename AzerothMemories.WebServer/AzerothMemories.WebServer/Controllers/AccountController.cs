@@ -58,4 +58,10 @@ public class AccountController : ControllerBase, IAccountServices
     {
         return _commonServices.AccountServices.TryGetAchievementsByTime(session, timeStamp, diffInSeconds, cancellationToken);
     }
+
+    [HttpPost]
+    public Task<(AddMemoryResult Result, long PostId)> TryPostMemory(Session session, [FromBody] AddMemoryTransferData transferData, CancellationToken cancellationToken = default)
+    {
+        return _commonServices.AccountServices.TryPostMemory(session, transferData, cancellationToken);
+    }
 }

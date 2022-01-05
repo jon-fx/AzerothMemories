@@ -2,19 +2,16 @@
 
 public sealed class AddMemoryComponentResult
 {
-    //public AddMemoryComponentResult(AddMemoryTransferData data, AddMemoryResult result, long accountId, long postId)
-    //{
-    //    Data = data;
-    //    Result = result;
-    //    AccountId = accountId;
-    //    PostId = postId;
-    //}
+    [JsonInclude] public readonly long AccountId;
+    [JsonInclude] public readonly long PostId;
+    [JsonInclude] public readonly AddMemoryResult Result;
+    [JsonInclude] public readonly AddMemoryTransferData Data;
 
-    //public long AccountId { get; init; }
-
-    //public long PostId { get; init; }
-
-    //public AddMemoryResult Result { get; init; }
-
-    //public AddMemoryTransferData Data { get; init; }
+    public AddMemoryComponentResult(AddMemoryTransferData data, AddMemoryResult result, long accountId, long postId)
+    {
+        Data = data;
+        Result = result;
+        AccountId = accountId;
+        PostId = postId;
+    }
 }

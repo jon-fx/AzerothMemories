@@ -79,11 +79,20 @@
 
     private async Task Submit()
     {
+        //DialogService.ShowLoadingDialog();
+
+        var result = await ViewModel.Submit();
+
+        //DialogService.HideLoadingDialog();
+
+        await OnPostMemoryResult.InvokeAsync(result);
     }
 
     private async Task UserCancel()
     {
         await ViewModel.Reset();
+
+        await OnPostMemoryResult.InvokeAsync(new AddMemoryComponentResult(null, AddMemoryResult.Canceled, 0, 0));
     }
 
     private async Task OnDateTimeChanged(DateTime? arg)

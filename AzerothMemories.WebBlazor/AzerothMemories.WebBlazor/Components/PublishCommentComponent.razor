@@ -96,4 +96,20 @@
             await OnSingleLineSubmit.InvokeAsync(_currentTextFieldText);
         }
     }
+
+    public string GetCommentText()
+    {
+        var commentText = CommentText;
+        if (string.IsNullOrWhiteSpace(commentText))
+        {
+            return string.Empty;
+        }
+
+        if (commentText.Length > MaxLength)
+        {
+            commentText = commentText[..MaxLength];
+        }
+
+        return commentText;
+    }
 }

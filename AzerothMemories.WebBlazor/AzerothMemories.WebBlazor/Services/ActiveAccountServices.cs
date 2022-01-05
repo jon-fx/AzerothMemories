@@ -11,6 +11,19 @@
             _characterServices = characterServices;
         }
 
+        public long ActiveAccountId
+        {
+            get
+            {
+                if (AccountViewModel == null)
+                {
+                    throw new NotImplementedException();
+                }
+
+                return AccountViewModel.Id;
+            }
+        }
+
         public ActiveAccountViewModel AccountViewModel { get; private set; }
 
         public async Task ComputeState(CancellationToken cancellationToken)

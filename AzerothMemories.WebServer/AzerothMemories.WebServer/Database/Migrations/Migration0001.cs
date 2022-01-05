@@ -78,11 +78,40 @@ namespace AzerothMemories.WebServer.Database.Migrations
             //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.Pt_Br).Replace("_", string.Empty)}").AsString(250).Nullable()
             //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.It_It).Replace("_", string.Empty)}").AsString(250).Nullable()
             //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.Pt_Pt).Replace("_", string.Empty)}").AsString(250).Nullable();
+
+            Create.Table("Tags")
+                .WithColumn(nameof(TagRecord.Id)).AsInt64().PrimaryKey().Identity()
+                .WithColumn(nameof(TagRecord.Tag)).AsString(128)
+                .WithColumn(nameof(TagRecord.CreatedTime)).AsDateTimeOffset();
+            //.WithColumn(nameof(TagRecord.TotalCount)).AsInt64().WithDefaultValue(0);
+
+            Create.Table("Posts")
+                .WithColumn(nameof(PostRecord.Id)).AsInt64().PrimaryKey().Identity()
+                .WithColumn(nameof(PostRecord.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey("Accounts", "Id")
+                .WithColumn(nameof(PostRecord.PostComment)).AsString(2048).Nullable()
+                .WithColumn(nameof(PostRecord.PostAvatar)).AsString(256).Nullable()
+                .WithColumn(nameof(PostRecord.PostVisibility)).AsByte().WithDefaultValue(0)
+                .WithColumn(nameof(PostRecord.PostFlags)).AsByte().WithDefaultValue(0)
+                .WithColumn(nameof(PostRecord.SystemTags)).AsString(2048)
+                .WithColumn(nameof(PostRecord.BlobNames)).AsString(2048)
+                .WithColumn(nameof(PostRecord.PostTime)).AsDateTimeOffset()
+                .WithColumn(nameof(PostRecord.PostEditedTime)).AsDateTimeOffset()
+                .WithColumn(nameof(PostRecord.PostCreatedTime)).AsDateTimeOffset();
+
+            Create.Table("Posts_Tags")
+                .WithColumn(nameof(PostTagRecord.Id)).AsInt64().PrimaryKey().Identity()
+                .WithColumn(nameof(PostTagRecord.PostId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts", "Id")
+                .WithColumn(nameof(PostTagRecord.TagId)).AsInt64().WithDefaultValue(0).ForeignKey("Tags", "Id")
+                .WithColumn(nameof(PostTagRecord.CreatedTime)).AsDateTimeOffset();
         }
 
         public override void Down()
         {
             Delete.Table("Characters_Achievements");
+
+            Delete.Table("Posts_Tags");
+            Delete.Table("Tags");
+            Delete.Table("Posts");
 
             Delete.Table("Accounts");
             Delete.Table("Characters");

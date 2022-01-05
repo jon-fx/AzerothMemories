@@ -20,6 +20,7 @@
 	      <PrivateAssets>all</PrivateAssets>
 	      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	    </PackageReference>
+	    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
 	    <PackageReference Include="Stl.Fusion.Blazor" Version="2.2.18" />
 	    <PackageReference Include="Stl.Fusion.RegisterAttributes" Version="2.2.18" />
 	    <PackageReference Include="Stl.Fusion.Server" Version="2.2.18" />

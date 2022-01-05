@@ -173,22 +173,25 @@ public sealed class AddMemoryComponentSharedData
     //    OnModelChanged?.Invoke();
     //}
 
-    //public async Task<AddMemoryComponentResult> Submit(PublishCommentComponent commentComponent, List<UploadResult> uploadResults)
-    //{
-    //    //var timeStamp = PostTimeStampUtc;
-    //    //var finalText = TagHelpers.GetCommentText(commentComponent, out var userTags, out var hashTags);
-    //    //var systemTags = GetSystemHashTags();
+    public async Task<AddMemoryComponentResult> Submit(PublishCommentComponent commentComponent, List<AddMemoryUploadResult> uploadResults)
+    {
+        var timeStamp = PostTimeStamp;
+        var finalText = commentComponent.GetCommentText();
+        var systemTags = GetSystemHashTags();
 
-    //    //string avatarImage = null;
-    //    //if (SelectedPostAvatarImage > 0 && SelectedPostAvatarImage < PostAvatarImages.Count)
-    //    //{
-    //    //    avatarImage = PostAvatarImages[SelectedPostAvatarImage].ImageLink;
-    //    //}
+        string avatarImage = null;
+        string avatarTag = null;
+        if (SelectedPostAvatarImage > 0 && SelectedPostAvatarImage < PostAvatarImages.Count)
+        {
+            avatarImage = PostAvatarImages[SelectedPostAvatarImage].ImageLink;
+            avatarTag = PostAvatarImages[SelectedPostAvatarImage].Tag.TagString;
+        }
 
-    //    //var transferData = new AddMemoryTransferData(timeStamp.ToUnixTimeMilliseconds(), avatarImage, PrivatePost, finalText, systemTags, userTags, hashTags, uploadResults);
-    //    //var (result, postId) = await _accountGrain.TryPostMemory(transferData);
-    //    return new AddMemoryComponentResult(/*transferData, result, _accountViewModel.Id, postId*/);
-    //}
+        var transferData = new AddMemoryTransferData(timeStamp.ToUnixTimeMilliseconds(), avatarImage, avatarTag, PrivatePost, finalText, systemTags, uploadResults);
+        var (result, postId) = await _viewModel.Services.AccountServices.TryPostMemory(null, transferData);
+
+        return new AddMemoryComponentResult(transferData, result, _viewModel.Services.ActiveAccountServices.ActiveAccountId, postId);
+    }
 
     //public async Task<(bool Result, string SystemTags)> SubmitOnEditingPost(PostViewModel currentPost)
     //{
@@ -220,46 +223,46 @@ public sealed class AddMemoryComponentSharedData
     //    return result;
     //}
 
-    //private HashSet<string> GetSystemHashTags()
-    //{
-    //    var isRetailSelected = _selectedMainTags.FirstOrDefault() == MainTags[0];
-    //    if (!isRetailSelected)
-    //    {
-    //        _selectedExtraTags.RemoveWhere(x => x.Type.IsRetailOnlyTag());
-    //    }
+    private HashSet<string> GetSystemHashTags()
+    {
+        var isRetailSelected = _selectedMainTags.FirstOrDefault() == MainTags[0];
+        if (!isRetailSelected)
+        {
+            _selectedExtraTags.RemoveWhere(x => x.Type.IsRetailOnlyTag());
+        }
 
-    //    var allTags = new List<PostTagInfo>();
-    //    foreach (var mudChip in _selectedMainTags)
-    //    {
-    //        var tag = (PostTagInfo)mudChip;
-    //        allTags.Add(tag);
-    //    }
+        var allTags = new List<PostTagInfo>();
+        foreach (var mudChip in _selectedMainTags)
+        {
+            var tag = (PostTagInfo)mudChip;
+            allTags.Add(tag);
+        }
 
-    //    foreach (var mudChip in _selectedCommonTags)
-    //    {
-    //        var tag = (PostTagInfo)mudChip;
-    //        allTags.Add(tag);
-    //    }
+        foreach (var mudChip in _selectedCommonTags)
+        {
+            var tag = (PostTagInfo)mudChip;
+            allTags.Add(tag);
+        }
 
-    //    foreach (var mudChip in _selectedAchievementTags)
-    //    {
-    //        var tag = (PostTagInfo)mudChip;
-    //        allTags.Add(tag);
-    //    }
+        foreach (var mudChip in _selectedAchievementTags)
+        {
+            var tag = (PostTagInfo)mudChip;
+            allTags.Add(tag);
+        }
 
-    //    foreach (var tag in _selectedExtraTags)
-    //    {
-    //        allTags.Add(tag);
-    //    }
+        foreach (var tag in _selectedExtraTags)
+        {
+            allTags.Add(tag);
+        }
 
-    //    var tagsAsTags = new HashSet<string>();
-    //    foreach (var tag in allTags)
-    //    {
-    //        tagsAsTags.Add(tag.TagString);
-    //    }
+        var tagsAsTags = new HashSet<string>();
+        foreach (var tag in allTags)
+        {
+            tagsAsTags.Add(tag.TagString);
+        }
 
-    //    return tagsAsTags;
-    //}
+        return tagsAsTags;
+    }
 
     public void SelectedMainTagsChanged(ICollection<object> collection)
     {

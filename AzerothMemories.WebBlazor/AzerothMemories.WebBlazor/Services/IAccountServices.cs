@@ -31,4 +31,7 @@ public interface IAccountServices
     [ComputeMethod]
     [Get(nameof(TryGetAchievementsByTime) + "/{timeStamp}/{diffInSeconds}")]
     Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, [Path] long timeStamp, [Path] int diffInSeconds, CancellationToken cancellationToken = default);
+
+    [Post(nameof(TryPostMemory))]
+    Task<(AddMemoryResult Result, long PostId)> TryPostMemory(Session session, [Body] AddMemoryTransferData transferData, CancellationToken cancellationToken = default);
 }

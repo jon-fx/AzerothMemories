@@ -63,6 +63,11 @@ namespace AzerothMemories.WebBlazor.Pages
             //DialogService.HideLoadingDialog();
         }
 
+        public Task<AddMemoryComponentResult> Submit()
+        {
+            return SharedData.Submit(PublishCommentComponent, UploadedImages);
+        }
+
         public Task Reset()
         {
             UploadedImages.Clear();
@@ -106,6 +111,7 @@ namespace AzerothMemories.WebBlazor.Pages
             {
                 FileName = file.Name,
                 FileTimeStamp = screenShotUnixTime,
+                FileContent = buffer,
                 ContentType = file.ContentType,
                 ContentBase64 = contentBase64
             };

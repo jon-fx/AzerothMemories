@@ -22,6 +22,20 @@
 {
     private Task OnPostMemoryCallback(AddMemoryComponentResult result)
     {
+        //_addMemoryResult = result.Result;
+        //_isMemoryVisible = false;
+
+        if (result.Result == AddMemoryResult.Success)
+        {
+            //NavigationManager.NavigateTo($"post/{result.AccountId}/{result.PostId}");
+        }
+        else if (result.Result == AddMemoryResult.Canceled)
+        {
+            //_uploadResults = null;
+        }
+
+        StateHasChanged();
+
         return Task.CompletedTask;
     }
 }
