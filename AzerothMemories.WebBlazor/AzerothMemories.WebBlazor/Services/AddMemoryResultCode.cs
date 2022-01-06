@@ -11,6 +11,6 @@
         SessionNotFound,
         InvalidTime,
         InvalidTags,
-        TagsTooLong
+        TooManyTags
     }
 }

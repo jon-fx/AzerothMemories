@@ -64,6 +64,11 @@ public class PostServices : IPostServices
             return new AddMemoryResult(addCommentTagResult);
         }
 
+        if (tagRecords.Count > 64)
+        {
+            return new AddMemoryResult(AddMemoryResultCode.TooManyTags);
+        }
+
         var uploadAndSortResult = await UploadAndSortImages(postRecord, transferData.UploadResults);
         if (uploadAndSortResult != AddMemoryResultCode.Success)
         {
@@ -73,7 +78,6 @@ public class PostServices : IPostServices
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
         postRecord.Id = await database.InsertWithInt64IdentityAsync(postRecord);
 
-        //var tagRecords = new List<PostTagRecord>();
         foreach (var tagRecord in tagRecords)
         {
             tagRecord.PostId = postRecord.Id;

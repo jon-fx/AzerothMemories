@@ -76,20 +76,18 @@
 
         public static PostViewModel CreatePostViewModel(PostRecord postRecord, AccountViewModel accountViewModel, PostReactionRecord reactionRecord, PostTagInfo[] postTagRecords)
         {
-            return new()
+            var viewModel = new PostViewModel
             {
                 Id = postRecord.Id,
                 AccountId = postRecord.AccountId,
                 AccountUsername = accountViewModel.Username,
                 AccountAvatar = accountViewModel.Avatar,
                 PostComment = postRecord.PostComment,
-                PostAvatar = postRecord.PostAvatar,
                 PostVisibility = postRecord.PostVisibility,
                 PostTime = postRecord.PostTime.ToUnixTimeMilliseconds(),
                 PostCreatedTime = postRecord.PostCreatedTime.ToUnixTimeMilliseconds(),
                 PostEditedTime = postRecord.PostEditedTime.ToUnixTimeMilliseconds(),
                 ImageBlobNames = postRecord.BlobNames.Split('|'),
-                //SystemTags = postRecord.SystemTags,
                 ReactionId = reactionRecord?.Id ?? 0,
                 Reaction = reactionRecord?.Reaction ?? 0,
                 ReactionCounters = new[]
@@ -109,6 +107,13 @@
                 DeletedTimeStamp = postRecord.DeletedTimeStamp,
                 SystemTags = postTagRecords,
             };
+
+            if (postRecord.PostAvatar != null)
+            {
+                viewModel.PostAvatar = viewModel.SystemTags.First(x => x.TagString == postRecord.PostAvatar).Image;
+            }
+
+            return viewModel;
         }
     }
 }
