@@ -11,7 +11,7 @@
             };
         }
 
-        public TViewModel ViewModel { get; }
+        protected TViewModel ViewModel { get; }
 
         [Inject] public IAccountServices AccountServices { get; init; }
 

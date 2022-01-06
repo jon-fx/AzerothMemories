@@ -23,8 +23,8 @@ public class PostServices : IPostServices
             return new AddMemoryResult(AddMemoryResultCode.CommentTooLong);
         }
 
-        var dateTimeOffset = DateTimeOffset.FromUnixTimeMilliseconds(transferData.TimeStamp);
-        if (dateTimeOffset < DateTimeOffset.FromUnixTimeMilliseconds(946684800) || dateTimeOffset > DateTimeOffset.UtcNow)
+        var dateTime = Instant.FromUnixTimeMilliseconds(transferData.TimeStamp);
+        if (dateTime < Instant.FromUnixTimeMilliseconds(946684800) || dateTime > SystemClock.Instance.GetCurrentInstant())
         {
             return new AddMemoryResult(AddMemoryResultCode.InvalidTime);
         }
@@ -46,9 +46,9 @@ public class PostServices : IPostServices
             AccountId = accountViewModel.Id,
             PostAvatar = transferData.AvatarTag,
             PostComment = commentText,
-            PostTime = dateTimeOffset,
-            PostEditedTime = dateTimeOffset,
-            PostCreatedTime = dateTimeOffset,
+            PostTime = dateTime,
+            PostCreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            PostEditedTime =  SystemClock.Instance.GetCurrentInstant(),
             PostVisibility = transferData.IsPrivate ? (byte)1 : (byte)0,
         };
 
@@ -76,7 +76,7 @@ public class PostServices : IPostServices
         var tagRecords = new List<PostTagRecord>();
         foreach (var tagId in tagIds)
         {
-            tagRecords.Add(new PostTagRecord { PostId = postRecord.Id, TagId = tagId, CreatedTime = DateTimeOffset.UtcNow });
+            tagRecords.Add(new PostTagRecord { PostId = postRecord.Id, TagId = tagId, CreatedTime = SystemClock.Instance.GetCurrentInstant() });
         }
 
         await database.PostTags.BulkCopyAsync(tagRecords);

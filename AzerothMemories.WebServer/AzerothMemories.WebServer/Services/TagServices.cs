@@ -171,7 +171,7 @@ public class TagServices : ITagServices
             tagRecordId = await database.InsertWithInt64IdentityAsync(new TagRecord
             {
                 Tag = tagString,
-                CreatedTime = DateTimeOffset.UtcNow
+                CreatedTime = SystemClock.Instance.GetCurrentInstant()
             });
         }
 
@@ -201,7 +201,7 @@ public class TagServices : ITagServices
             tagRecordId = await database.InsertWithInt64IdentityAsync(new TagRecord
             {
                 Tag = tagString,
-                CreatedTime = DateTimeOffset.UtcNow
+                CreatedTime = SystemClock.Instance.GetCurrentInstant()
             });
         }
 
@@ -222,7 +222,7 @@ public class TagServices : ITagServices
             tagRecordId = await database.InsertWithInt64IdentityAsync(new TagRecord
             {
                 Tag = tagString,
-                CreatedTime = DateTimeOffset.UtcNow
+                CreatedTime = SystemClock.Instance.GetCurrentInstant()
             });
         }
 

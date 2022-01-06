@@ -4,11 +4,11 @@ public interface IBlizzardGrainUpdateRecord : IDatabaseRecord
 {
     string UpdateJob { get; set; }
 
-    DateTimeOffset? UpdateJobQueueTime { get; set; }
+    Instant? UpdateJobQueueTime { get; set; }
 
-    DateTimeOffset? UpdateJobStartTime { get; set; }
+    Instant? UpdateJobStartTime { get; set; }
 
-    DateTimeOffset? UpdateJobEndTime { get; set; }
+    Instant? UpdateJobEndTime { get; set; }
 
     HttpStatusCode UpdateJobLastResult { get; set; }
 }

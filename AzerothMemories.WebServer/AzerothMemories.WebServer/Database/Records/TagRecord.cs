@@ -9,6 +9,6 @@
 
         //[Column, NotNull] public long TotalCount;
 
-        [Column, NotNull] public DateTimeOffset CreatedTime;
+        [Column, NotNull] public Instant CreatedTime;
     }
 }

@@ -8,7 +8,7 @@
         }
         else if (ViewModel.UploadedImages.Count > 0)
         {
-            <AddMemoryComponent ViewModel="@ViewModel" OnPostMemoryResult="@OnPostMemoryCallback" />
+            <AddMemoryComponent Services="@this" ViewModel="@ViewModel" OnPostMemoryResult="@OnPostMemoryCallback" />
         }
         else
         {

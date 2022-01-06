@@ -1,6 +1,6 @@
 ﻿<h3>PostViewComponent</h3>
 
-<PostComponent Post="@Post" InDialog="true"/>
+<PostComponent Services="@Services" Post="@Post" InDialog="true"/>
 
 @if (Post == null || Post.DeletedTimeStamp != 0)
 {
@@ -29,6 +29,9 @@ else
     
     private bool _isLoading;
     private int _commentsPerPage = 10;
+    
+    [Parameter, EditorRequired] 
+    public IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired]
     public PostViewModel Post

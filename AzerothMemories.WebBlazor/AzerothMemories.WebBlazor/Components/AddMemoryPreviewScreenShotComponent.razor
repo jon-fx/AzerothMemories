@@ -7,8 +7,7 @@ else
     var timeStr = "Unknown";
     if (UploadedImage.FileTimeStamp > 0)
     {
-        var time = DateTimeOffset.FromUnixTimeMilliseconds(UploadedImage.FileTimeStamp).LocalDateTime;
-        timeStr = $"Time {time.Humanize()} - {time.ToOrdinalWords()} - {time.ToShortTimeString()}";
+        timeStr = Services.TimeProvider.GetTimeAsLocalStringAgo(UploadedImage.FileTimeStamp, false);
     }
 
     <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
@@ -34,6 +33,7 @@ else
 
 @code {
     [Parameter, EditorRequired] public int Index { get; init; }
+    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
     [Parameter, EditorRequired] public AddMemoryUploadResult UploadedImage { get; init; }
 
     protected override bool ShouldRender()

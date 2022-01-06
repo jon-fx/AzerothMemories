@@ -38,7 +38,7 @@ namespace AzerothMemories.WebBlazor.Pages
             {
                 var currentFileTimeStamp = UploadedImages[0].FileTimeStamp;
 
-                await SharedData.SetPostTimeStamp(DateTimeOffset.FromUnixTimeMilliseconds(currentFileTimeStamp).ToLocalTime());
+                await SharedData.SetPostTimeStamp(Instant.FromUnixTimeMilliseconds(currentFileTimeStamp));
 
                 OnViewModelChanged?.Invoke();
             }

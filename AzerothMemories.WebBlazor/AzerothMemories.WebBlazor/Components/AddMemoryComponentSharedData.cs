@@ -1,6 +1,4 @@
-﻿using AzerothMemories.WebBlazor.Common;
-
-namespace AzerothMemories.WebBlazor.Components;
+﻿namespace AzerothMemories.WebBlazor.Components;
 
 public sealed class AddMemoryComponentSharedData
 {
@@ -37,7 +35,7 @@ public sealed class AddMemoryComponentSharedData
 
     public bool PrivatePost { get; set; }
 
-    public DateTimeOffset PostTimeStamp { get; private set; }
+    public Instant PostTimeStamp { get; private set; }
 
     public PostTagInfo[] MainTags { get; }
 
@@ -82,8 +80,8 @@ public sealed class AddMemoryComponentSharedData
 
     public async Task InitializeAchievements()
     {
-        var timeStamp = PostTimeStamp.ToUniversalTime().ToUnixTimeMilliseconds();
-        if (timeStamp > 0 && DateTimeOffset.FromUnixTimeMilliseconds(timeStamp) < DateTimeOffset.UtcNow)
+        var timeStamp = PostTimeStamp.ToUnixTimeMilliseconds();
+        if (timeStamp > 0 && PostTimeStamp < SystemClock.Instance.GetCurrentInstant())
         {
             var achievements = await _viewModel.Services.AccountServices.TryGetAchievementsByTime(null, timeStamp, 120);
 
@@ -97,7 +95,7 @@ public sealed class AddMemoryComponentSharedData
         }
     }
 
-    public async Task SetPostTimeStamp(DateTimeOffset postTimeStamp)
+    public async Task SetPostTimeStamp(Instant postTimeStamp)
     {
         PostTimeStamp = postTimeStamp;
 

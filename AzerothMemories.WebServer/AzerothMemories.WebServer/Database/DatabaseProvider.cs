@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Database;
+﻿using Npgsql;
+
+namespace AzerothMemories.WebServer.Database;
 
 public sealed class DatabaseProvider
 {
@@ -10,6 +12,8 @@ public sealed class DatabaseProvider
     {
         _logger = logger;
         _commonConfig = commonConfig;
+
+        //NpgsqlConnection.GlobalTypeMapper.UseNodaTime();
 
         var builder = new LinqToDbConnectionOptionsBuilder();
         builder.UsePostgreSQL(_commonConfig.DatabaseConnectionString);
@@ -30,6 +34,9 @@ public sealed class DatabaseProvider
     public DatabaseConnection GetDatabase()
     {
         var database = new DatabaseConnection(_databaseConfig);
+        var connection = (NpgsqlConnection)database.Connection;
+        connection.TypeMapper.UseNodaTime();
+
         return database;
     }
 }

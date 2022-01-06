@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+﻿using NodaTime.Extensions;
 using System.Security.Claims;
 
 namespace AzerothMemories.WebServer.Common;
@@ -63,10 +63,10 @@ internal static class StartUpHelpers
             throw new NotImplementedException();
         }
 
-        var tokenExpiresAt = (DateTimeOffset.UtcNow + context.ExpiresIn.GetValueOrDefault()).ToUnixTimeMilliseconds();
+        var tokenExpiresAt = (SystemClock.Instance.GetCurrentInstant() + context.ExpiresIn.GetValueOrDefault().ToDuration()).ToUnixTimeMilliseconds();
 
         context.Identity.AddClaim(new Claim("BattleNet-Token", token));
-        context.Identity.AddClaim(new Claim("BattleNet-TokenExpires", tokenExpiresAt.ToString(CultureInfo.InvariantCulture)));
+        context.Identity.AddClaim(new Claim("BattleNet-TokenExpires", tokenExpiresAt.ToString()));
         context.Identity.AddClaim(new Claim("BattleNet-Region", blizzardRegion.ToString()));
 
         return Task.CompletedTask;

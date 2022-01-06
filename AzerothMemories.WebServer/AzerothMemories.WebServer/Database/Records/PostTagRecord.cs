@@ -11,6 +11,6 @@
 
         //[Column, NotNull] public int ReportedCount;
 
-        [Column, NotNull] public DateTimeOffset CreatedTime;
+        [Column, NotNull] public Instant CreatedTime;
     }
 }

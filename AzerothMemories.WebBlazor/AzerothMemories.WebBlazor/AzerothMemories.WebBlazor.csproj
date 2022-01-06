@@ -32,6 +32,8 @@
         <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
         <PackageReference Include="Microsoft.Extensions.Localization" Version="6.0.1" />
         <PackageReference Include="MudBlazor" Version="6.0.4" />
+        <PackageReference Include="NodaTime" Version="3.0.9" />
+        <PackageReference Include="Npgsql.NodaTime" Version="6.0.2" />
         <PackageReference Include="Stl.Fusion" Version="2.2.18" />
         <PackageReference Include="Stl.CommandR" Version="2.2.18" />
         <PackageReference Include="Stl.Fusion.Blazor" Version="2.2.18" />

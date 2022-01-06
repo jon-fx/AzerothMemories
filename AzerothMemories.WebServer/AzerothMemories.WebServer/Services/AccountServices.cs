@@ -76,7 +76,7 @@ public class AccountServices : IAccountServices
             updateQuery = updateQuery.Set(x => x.BattleNetToken, accountRecord.BattleNetToken);
         }
 
-        if (CheckAndChange.Check(ref accountRecord.BattleNetTokenExpiresAt, DateTimeOffset.FromUnixTimeMilliseconds(battleNetTokenExpires), ref changed))
+        if (CheckAndChange.Check(ref accountRecord.BattleNetTokenExpiresAt, Instant.FromUnixTimeMilliseconds(battleNetTokenExpires), ref changed))
         {
             updateQuery = updateQuery.Set(x => x.BattleNetTokenExpiresAt, accountRecord.BattleNetTokenExpiresAt);
         }
@@ -132,7 +132,7 @@ public class AccountServices : IAccountServices
                 FusionId = userId,
                 //MoaRef = moaRef.Full,
                 //BlizzardId = moaRef.Id,
-                CreatedDateTime = DateTimeOffset.UtcNow,
+                CreatedDateTime = SystemClock.Instance.GetCurrentInstant()
                 //LastLoginDateTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset(),
             };
 
@@ -375,8 +375,8 @@ public class AccountServices : IAccountServices
 
         diffInSeconds = Math.Clamp(diffInSeconds, 0, 300);
 
-        var min = (DateTimeOffset.FromUnixTimeMilliseconds(timeStamp) - TimeSpan.FromSeconds(diffInSeconds)).ToUnixTimeMilliseconds();
-        var max = (DateTimeOffset.FromUnixTimeMilliseconds(timeStamp) + TimeSpan.FromSeconds(diffInSeconds)).ToUnixTimeMilliseconds();
+        var min = Instant.FromUnixTimeMilliseconds(timeStamp).Minus(Duration.FromSeconds(diffInSeconds)).ToUnixTimeMilliseconds();
+        var max = Instant.FromUnixTimeMilliseconds(timeStamp).Plus(Duration.FromSeconds(diffInSeconds)).ToUnixTimeMilliseconds();
 
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var query = from a in database.CharacterAchievements

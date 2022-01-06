@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using NodaTime.Extensions;
+using System.Net.Http.Headers;
 
 namespace AzerothMemories.WebServer.Blizzard;
 
@@ -91,16 +92,16 @@ public sealed class WarcraftClient : IDisposable
                 }
 
                 var resultData = await JsonSerializer.DeserializeAsync<T>(contentStream, JsonHelpers.JsonSerializerOptions).ConfigureAwait(false);
-                var requestResult = new RequestResult<T>(response.StatusCode, resultData, response.Content.Headers.LastModified.GetValueOrDefault(), resultString);
+                var requestResult = new RequestResult<T>(response.StatusCode, resultData, response.Content.Headers.LastModified.GetValueOrDefault().ToInstant(), resultString);
 
                 return requestResult;
             }
 
-            return new RequestResult<T>(response.StatusCode, null, DateTimeOffset.MinValue, null);
+            return new RequestResult<T>(response.StatusCode, null, Instant.MinValue, null);
         }
         catch (TaskCanceledException)
         {
-            return new RequestResult<T>(HttpStatusCode.RequestTimeout, null, DateTimeOffset.MinValue, null);
+            return new RequestResult<T>(HttpStatusCode.RequestTimeout, null, Instant.MinValue, null);
         }
     }
 }

@@ -16,7 +16,7 @@ public class AccountViewModel
 
     [JsonInclude] public string Avatar;
 
-    [JsonInclude] public DateTimeOffset CreatedDateTime;
+    [JsonInclude] public long CreatedDateTime;
 
     [JsonInclude] public CharacterViewModel[] CharactersArray = Array.Empty<CharacterViewModel>();
 

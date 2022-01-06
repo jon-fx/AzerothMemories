@@ -10,7 +10,7 @@
             accountViewModel.RegionId = accountRecord.BlizzardRegionId;
             accountViewModel.BattleTag = accountRecord.BattleTag;
             accountViewModel.BattleTagIsPublic = accountRecord.BattleTagIsPublic;
-            accountViewModel.CreatedDateTime = accountRecord.CreatedDateTime;
+            accountViewModel.CreatedDateTime = accountRecord.CreatedDateTime.ToUnixTimeMilliseconds();
             accountViewModel.IsPrivate = accountRecord.IsPrivate;
         }
 
@@ -68,9 +68,9 @@
                 PostComment = postRecord.PostComment,
                 PostAvatar = postRecord.PostAvatar,
                 PostVisibility = postRecord.PostVisibility,
-                PostTime = postRecord.PostTime,
-                PostCreatedTime = postRecord.PostCreatedTime,
-                PostEditedTime = postRecord.PostEditedTime,
+                PostTime = postRecord.PostTime.ToUnixTimeMilliseconds(),
+                PostCreatedTime = postRecord.PostCreatedTime.ToUnixTimeMilliseconds(),
+                PostEditedTime = postRecord.PostEditedTime.ToUnixTimeMilliseconds(),
                 ImageBlobNames = postRecord.BlobNames.Split('|'),
                 SystemTags = postRecord.SystemTags,
                 ReactionId = reactionRecord?.Id ?? 0,

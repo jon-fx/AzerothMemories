@@ -4,15 +4,13 @@
         <MudGrid>
             <MudItem xs="12">
                 @{
-                    var time = ViewModel.SharedData.PostTimeStamp.LocalDateTime;
-                    var timeStr = $"Time {time.Humanize()} - {time.ToOrdinalWords()} - {time.ToShortTimeString()}";
+                    var timeStr = Services.TimeProvider.GetTimeAsLocalStringAgo(ViewModel.SharedData.PostTimeStamp, false);
                 }
-
                 <MudText Typo="Typo.h6">@timeStr</MudText>
             </MudItem>
 
             <MudItem xs="12">
-                <DateTimeComponent DateTime="@ViewModel.SharedData.PostTimeStamp" OnDateTimeEventCallback="@OnDateTimeChanged" />
+                <DateTimeComponent DateTime="@Services.TimeProvider.GetTimeAsLocal(ViewModel.SharedData.PostTimeStamp).ToDateTimeOffset()" OnDateTimeEventCallback="@OnDateTimeChanged" />
             </MudItem>
 
             <MudItem xs="12">
@@ -28,7 +26,7 @@
             var index = i;
             var upload = ViewModel.UploadedImages[index];
 
-            <AddMemoryPreviewScreenShotComponent Index="index" UploadedImage="upload" />
+            <AddMemoryPreviewScreenShotComponent Services="@Services" Index="index" UploadedImage="upload" />
         }
     </MudPaper>
 
@@ -37,10 +35,10 @@
         <MudButton HtmlTag="label" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Filled.CloudUpload" Disabled="@ViewModel.MaxUploadReached" for="fileInput2">Upload Images</MudButton>
     </MudPaper>
 
-    <AddMemoryMainTagComponent Services="ViewModel.Services" SharedData="@ViewModel.SharedData"/>
+    <AddMemoryMainTagComponent Services="Services" SharedData="@ViewModel.SharedData"/>
 
 	<MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-		<PublishCommentComponent @ref="ViewModel.PublishCommentComponent" Lines="10" TagsList="@ViewModel.Services.ActiveAccountServices.GetUserTagList()" />
+		<PublishCommentComponent @ref="ViewModel.PublishCommentComponent" Lines="10" TagsList="@Services.ActiveAccountServices.GetUserTagList()" />
 	</MudPaper>
 
     <AddMemoryPostAvatarComponent SharedData="@ViewModel.SharedData" />
@@ -71,6 +69,7 @@
 }
 
 @code {
+    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
     
     [Parameter, EditorRequired] public AddMemoryPageViewModel ViewModel { get; init; }
 
@@ -99,7 +98,8 @@
     {
         if (arg.HasValue)
         {
-            await ViewModel.SharedData.SetPostTimeStamp(arg.Value.ToLocalTime());
+            var value = arg.Value.ToInstant();
+            await ViewModel.SharedData.SetPostTimeStamp(value);
         }
     }
 }

@@ -8,6 +8,14 @@
     </Authorized>
 </AuthorizeView>
 
+@{
+    var id = $"post/1/1";
+    var name = $"post/Lightfx/1";
+}
+
+<MudButton OnClick="() => NavigationManager.NavigateTo(id)" >Tests Id</MudButton>
+<MudButton OnClick="() => NavigationManager.NavigateTo(name)" >Tests Username</MudButton>
+
 @for (var i = 0; i < 13; i++)
 {
     var i1 = i;

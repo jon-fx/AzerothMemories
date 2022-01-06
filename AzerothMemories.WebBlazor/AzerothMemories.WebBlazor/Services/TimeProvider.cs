@@ -1,6 +1,9 @@
-﻿namespace AzerothMemories.WebBlazor.Services
+﻿using Humanizer;
+using System.Globalization;
+
+namespace AzerothMemories.WebBlazor.Services
 {
-    public sealed class TimeProvider
+    public class TimeProvider
     {
         //private readonly IJSRuntime _jsRuntime;
 
@@ -25,6 +28,53 @@
         //    }
 
         //    return false;
+        //}
+
+        public ZonedDateTime GetTimeAsLocal(Instant instant)
+        {
+            var timeZone = DateTimeZoneProviders.Tzdb[TimeZoneInfo.Local.Id];
+            return instant.InZone(timeZone);
+        }
+
+        //public static string GetTimeAsLocalString(long postTime)
+        //{
+        //    return GetTimeAsLocalString(Instant.FromUnixTimeMilliseconds(postTime));
+        //}
+
+        public string GetTimeAsLocalStringAgo(long unixTimeStamp, bool shortDate)
+        {
+            return GetTimeAsLocalStringAgo(Instant.FromUnixTimeMilliseconds(unixTimeStamp), shortDate);
+        }
+
+        public string GetTimeAsLocalStringAgo(Instant instant, bool shortDate)
+        {
+            //var time = DateTimeOffset.FromUnixTimeMilliseconds(instant.ToUnixTimeMilliseconds()).LocalDateTime;
+            //var timeStr = $"Time {time.Humanize()} - {time.ToOrdinalWords()} - {time.ToShortTimeString()}";
+
+            var culture = CultureInfo.CurrentCulture;
+            var timeZone = DateTimeZoneProviders.Tzdb[TimeZoneInfo.Local.Id];
+            var zoned = instant.InZone(timeZone);
+
+            var dateFormat = zoned.LocalDateTime.ToString(shortDate ? culture.DateTimeFormat.ShortDatePattern : culture.DateTimeFormat.LongDatePattern, culture);
+            var timeFormat = zoned.LocalDateTime.ToString(culture.DateTimeFormat.LongTimePattern, culture);
+
+            var nowZoned = SystemClock.Instance.GetCurrentInstant().InZone(timeZone);
+            var humanized = zoned.LocalDateTime.ToDateTimeUnspecified().Humanize(dateToCompareAgainst: nowZoned.LocalDateTime.ToDateTimeUnspecified());
+
+            var timeString = $"{dateFormat} {timeFormat} ({humanized}) ({timeZone.Id})";
+            return timeString;
+        }
+
+        //public static string GetTimeAsLocalString(Instant instant)
+        //{
+        //    var culture = CultureInfo.CurrentCulture;
+        //    var timeZone = DateTimeZoneProviders.Tzdb[TimeZoneInfo.Local.Id];
+        //    var zonedDateTime = instant.InZone(timeZone);
+        //    var dateFormat = zonedDateTime.LocalDateTime.ToString(culture.DateTimeFormat.ShortDatePattern, culture);
+        //    var timeFormat = zonedDateTime.LocalDateTime.ToString(culture.DateTimeFormat.ShortTimePattern, culture);
+
+        //    var timeSince = zonedDateTime - SystemClock.Instance.GetCurrentInstant().InZone(timeZone);
+        //    return $"{timeFormat} {dateFormat} ({timeSince.ToTimeSpan().Humanize(minUnit: TimeUnit.Minute, maxUnit: TimeUnit.Year)}) ({timeZone.Id})";
         //}
 
         //public DateTimeOffset GetTimeAsLocalDateTime(Instant postTimeStamp)
@@ -106,8 +156,12 @@
                 //    return false;
                 //}
 
-                var screenShotLocalTime = new DateTimeOffset(2000 + year, month, day, hour, minute, 0, TimeSpan.Zero);
-                screenShotUnixTime = screenShotLocalTime.ToUnixTimeMilliseconds();
+                var screenShotLocalTime = new LocalDateTime(2000 + year, month, day, hour, minute, 0);
+
+                var timeZone = DateTimeZoneProviders.Tzdb[TimeZoneInfo.Local.Id];
+                var screenShotZoned = screenShotLocalTime.InZoneStrictly(timeZone);
+                var screenShotInstant = screenShotZoned.ToInstant();
+                screenShotUnixTime = screenShotInstant.ToUnixTimeMilliseconds();
 
                 return true;
             }

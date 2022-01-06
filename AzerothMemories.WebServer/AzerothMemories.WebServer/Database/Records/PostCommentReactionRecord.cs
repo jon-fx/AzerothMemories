@@ -11,6 +11,6 @@
 
         [Column, NotNull] public PostReaction Reaction;
 
-        [Column, NotNull] public DateTimeOffset LastUpdateTime;
+        [Column, NotNull] public Instant LastUpdateTime;
     }
 }

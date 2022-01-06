@@ -15,7 +15,7 @@ public class CharacterRecord : IBlizzardGrainUpdateRecord
 
     [Column, Nullable] public string NameSearchable;
 
-    [Column, NotNull] public DateTimeOffset CreatedDateTime;
+    [Column, NotNull] public Instant CreatedDateTime;
 
     [Column, NotNull] public long? AccountId;
 
@@ -49,11 +49,11 @@ public class CharacterRecord : IBlizzardGrainUpdateRecord
 
     [Column, Nullable] public string UpdateJob { get; set; }
 
-    [Column, Nullable] public DateTimeOffset? UpdateJobQueueTime { get; set; }
+    [Column, Nullable] public Instant? UpdateJobQueueTime { get; set; }
 
-    [Column, Nullable] public DateTimeOffset? UpdateJobStartTime { get; set; }
+    [Column, Nullable] public Instant? UpdateJobStartTime { get; set; }
 
-    [Column, Nullable] public DateTimeOffset? UpdateJobEndTime { get; set; }
+    [Column, Nullable] public Instant? UpdateJobEndTime { get; set; }
 
     [Column, Nullable] public HttpStatusCode UpdateJobLastResult { get; set; }
 

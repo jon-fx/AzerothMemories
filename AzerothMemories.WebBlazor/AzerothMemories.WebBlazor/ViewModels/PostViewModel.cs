@@ -16,11 +16,11 @@ public class PostViewModel
 
     [JsonInclude] public byte PostVisibility;
 
-    [JsonInclude] public DateTimeOffset PostTime;
+    [JsonInclude] public long PostTime;
 
-    [JsonInclude] public DateTimeOffset PostEditedTime;
+    [JsonInclude] public long PostEditedTime;
 
-    [JsonInclude] public DateTimeOffset PostCreatedTime;
+    [JsonInclude] public long PostCreatedTime;
 
     [JsonInclude] public string[] ImageBlobNames;
 

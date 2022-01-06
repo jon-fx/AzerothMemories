@@ -35,7 +35,7 @@
 
         [Column, NotNull] public int TotalReportCount;
 
-        [Column, NotNull] public DateTimeOffset CreatedTime;
+        [Column, NotNull] public Instant CreatedTime;
 
         [Column, NotNull] public long DeletedTimeStamp;
     }

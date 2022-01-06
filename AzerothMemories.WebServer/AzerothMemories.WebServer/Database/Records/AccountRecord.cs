@@ -7,7 +7,7 @@ public class AccountRecord : IBlizzardGrainUpdateRecord
 
     [Column, NotNull] public string FusionId { get; set; }
 
-    [Column, NotNull] public DateTimeOffset CreatedDateTime { get; set; }
+    [Column, NotNull] public Instant CreatedDateTime { get; set; }
 
     [Column, NotNull] public long BlizzardId;
 
@@ -19,7 +19,7 @@ public class AccountRecord : IBlizzardGrainUpdateRecord
 
     [Column, Nullable] public string BattleNetToken;
 
-    [Column, Nullable] public DateTimeOffset? BattleNetTokenExpiresAt;
+    [Column, Nullable] public Instant? BattleNetTokenExpiresAt;
 
     [Column, Nullable] public string Username;
 
@@ -31,11 +31,11 @@ public class AccountRecord : IBlizzardGrainUpdateRecord
 
     [Column, Nullable] public string UpdateJob { get; set; }
 
-    [Column, Nullable] public DateTimeOffset? UpdateJobQueueTime { get; set; }
+    [Column, Nullable] public Instant? UpdateJobQueueTime { get; set; }
 
-    [Column, Nullable] public DateTimeOffset? UpdateJobStartTime { get; set; }
+    [Column, Nullable] public Instant? UpdateJobStartTime { get; set; }
 
-    [Column, Nullable] public DateTimeOffset? UpdateJobEndTime { get; set; }
+    [Column, Nullable] public Instant? UpdateJobEndTime { get; set; }
 
     [Column, NotNull] public HttpStatusCode UpdateJobLastResult { get; set; }
 }

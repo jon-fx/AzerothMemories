@@ -26,9 +26,9 @@
     {
         <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
             @{
-                var minTime = SharedData.PostTimeStamp.LocalDateTime;
+                var minTime = Services.TimeProvider.GetTimeAsLocalStringAgo(SharedData.PostTimeStamp, false);
             }
-            <MudText Typo="Typo.h6">Matching Achievements from @minTime.Humanize() - (@minTime.ToOrdinalWords())</MudText>
+            <MudText Typo="Typo.h6">Matching Achievements from @minTime</MudText>
 
             @if (SharedData.AchievementTags.Length > 0)
             {

@@ -15,11 +15,11 @@
 
         [Column, NotNull] public PostFlags PostFlags;
 
-        [Column, NotNull] public DateTimeOffset PostTime;
+        [Column, NotNull] public Instant PostTime;
 
-        [Column, NotNull] public DateTimeOffset PostEditedTime;
+        [Column, NotNull] public Instant PostEditedTime;
 
-        [Column, NotNull] public DateTimeOffset PostCreatedTime;
+        [Column, NotNull] public Instant PostCreatedTime;
 
         [Column, NotNull] public string SystemTags;
 
