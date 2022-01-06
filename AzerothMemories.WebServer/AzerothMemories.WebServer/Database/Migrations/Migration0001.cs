@@ -10,7 +10,7 @@ namespace AzerothMemories.WebServer.Database.Migrations
             Create.Table("Accounts")
                 .WithColumn(nameof(AccountRecord.Id)).AsInt64().PrimaryKey().Identity()
                 .WithColumn(nameof(AccountRecord.FusionId)).AsString(60).Unique().NotNullable()
-                .WithColumn(nameof(AccountRecord.CreatedDateTime)).AsDateTimeOffset().NotNullable()
+                .WithColumn(nameof(AccountRecord.AccountType)).AsByte().WithDefaultValue(0)
                 .WithColumn(nameof(AccountRecord.BlizzardId)).AsInt64().WithDefaultValue(0)
                 .WithColumn(nameof(AccountRecord.BlizzardRegionId)).AsByte().WithDefaultValue(0)
                 .WithColumn(nameof(AccountRecord.BattleTag)).AsString(60).Nullable()
@@ -20,7 +20,12 @@ namespace AzerothMemories.WebServer.Database.Migrations
                 .WithColumn(nameof(AccountRecord.Username)).AsString(60).Unique().Nullable()
                 .WithColumn(nameof(AccountRecord.UsernameSearchable)).AsString(60).Nullable()
                 .WithColumn(nameof(AccountRecord.IsPrivate)).AsBoolean().WithDefaultValue(false)
-                .WithColumn(nameof(AccountRecord.Avatar)).AsString(100).Nullable()
+                .WithColumn(nameof(AccountRecord.Avatar)).AsString(200).Nullable()
+                .WithColumn(nameof(AccountRecord.SocialDiscord)).AsString(50).Nullable()
+                .WithColumn(nameof(AccountRecord.SocialTwitter)).AsString(50).Nullable()
+                .WithColumn(nameof(AccountRecord.SocialTwitch)).AsString(50).Nullable()
+                .WithColumn(nameof(AccountRecord.SocialYouTube)).AsString(50).Nullable()
+                .WithColumn(nameof(AccountRecord.CreatedDateTime)).AsDateTimeOffset().NotNullable()
                 .WithUpdateJobInfo();
 
             Create.Table("Characters")

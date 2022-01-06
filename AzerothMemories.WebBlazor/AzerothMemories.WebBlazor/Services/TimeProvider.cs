@@ -48,9 +48,6 @@ namespace AzerothMemories.WebBlazor.Services
 
         public string GetTimeAsLocalStringAgo(Instant instant, bool shortDate)
         {
-            //var time = DateTimeOffset.FromUnixTimeMilliseconds(instant.ToUnixTimeMilliseconds()).LocalDateTime;
-            //var timeStr = $"Time {time.Humanize()} - {time.ToOrdinalWords()} - {time.ToShortTimeString()}";
-
             var culture = CultureInfo.CurrentCulture;
             var timeZone = DateTimeZoneProviders.Tzdb[TimeZoneInfo.Local.Id];
             var zoned = instant.InZone(timeZone);
@@ -112,6 +109,17 @@ namespace AzerothMemories.WebBlazor.Services
 
         //    return screenShotInstant.ToUnixTimeMilliseconds();
         //}
+
+        public string GetJoinedDate(long timeStamp)
+        {
+            var culture = CultureInfo.CurrentCulture;
+            var timeZone = DateTimeZoneProviders.Tzdb[TimeZoneInfo.Local.Id];
+            var instant = Instant.FromUnixTimeMilliseconds(timeStamp);
+            var zoned = instant.InZone(timeZone);
+            var dateFormat = zoned.LocalDateTime.ToString(culture.DateTimeFormat.YearMonthPattern, culture);
+
+            return dateFormat;
+        }
 
         public bool TryGetTimeFromFileName(string fileName, out long screenShotUnixTime)
         {

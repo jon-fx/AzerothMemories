@@ -28,6 +28,12 @@ public interface IAccountServices
     [Post(nameof(TryChangeBattleTagVisibility) + "/{newValue}")]
     Task<bool> TryChangeBattleTagVisibility(Session session, [Path] bool newValue, CancellationToken cancellationToken = default);
 
+    [Post(nameof(TryChangeAvatar) + "/{newValue}")]
+    Task<string> TryChangeAvatar(Session session, [Path] string newValue);
+
+    [Post(nameof(TryChangeSocialLink) + "/{linkId}/{newValue}")]
+    Task<string> TryChangeSocialLink(Session session, [Path] int linkId, [Path] string newValue);
+
     [ComputeMethod]
     [Get(nameof(TryGetAchievementsByTime) + "/{timeStamp}/{diffInSeconds}")]
     Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, [Path] long timeStamp, [Path] int diffInSeconds, CancellationToken cancellationToken = default);

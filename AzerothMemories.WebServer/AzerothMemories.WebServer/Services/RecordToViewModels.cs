@@ -7,11 +7,20 @@
             accountViewModel.Id = accountRecord.Id;
             accountViewModel.Avatar = accountRecord.Avatar;
             accountViewModel.Username = accountRecord.Username;
+            accountViewModel.AccountType = accountRecord.AccountType;
             accountViewModel.RegionId = accountRecord.BlizzardRegionId;
             accountViewModel.BattleTag = accountRecord.BattleTag;
             accountViewModel.BattleTagIsPublic = accountRecord.BattleTagIsPublic;
             accountViewModel.CreatedDateTime = accountRecord.CreatedDateTime.ToUnixTimeMilliseconds();
             accountViewModel.IsPrivate = accountRecord.IsPrivate;
+
+            accountViewModel.SocialLinks = new[]
+            {
+                accountRecord.SocialDiscord,
+                accountRecord.SocialTwitter,
+                accountRecord.SocialTwitch,
+                accountRecord.SocialYouTube,
+            };
         }
 
         public static AccountViewModel CreateAccountViewModel(this AccountRecord accountRecord, Dictionary<long, CharacterViewModel> characters)
@@ -19,6 +28,14 @@
             var viewModel = new ActiveAccountViewModel();
 
             PopulateViewModel(viewModel, accountRecord);
+
+            if (viewModel.BattleTagIsPublic)
+            {
+            }
+            else
+            {
+                viewModel.BattleTag = null;
+            }
 
             viewModel.CharactersArray = characters.Values.Where(x => x.AccountSync).ToArray();
 

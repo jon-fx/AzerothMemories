@@ -17,4 +17,6 @@ public interface IMoaServices
     TimeProvider TimeProvider { get; init; }
 
     IStringLocalizer<BlizzardResources> StringLocalizer { get; init; }
+
+    NavigationManager NavigationManager { get; init; }
 }

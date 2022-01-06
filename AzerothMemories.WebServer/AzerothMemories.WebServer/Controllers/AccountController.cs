@@ -53,6 +53,20 @@ public class AccountController : ControllerBase, IAccountServices
         return _commonServices.AccountServices.TryChangeBattleTagVisibility(session, newValue, cancellationToken);
     }
 
+    [HttpPost]
+    [HttpPost("{newValue}")]
+    public Task<string> TryChangeAvatar(Session session, [FromRoute] string newValue)
+    {
+        return _commonServices.AccountServices.TryChangeAvatar(session, newValue);
+    }
+
+    [HttpPost("{linkId}")]
+    [HttpPost("{linkId}/{newValue}")]
+    public Task<string> TryChangeSocialLink(Session session, [FromRoute] int linkId, [FromRoute] string newValue)
+    {
+        return _commonServices.AccountServices.TryChangeSocialLink(session, linkId, newValue);
+    }
+
     [HttpGet("{timeStamp}/{diffInSeconds}"), Publish]
     public Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, [FromRoute] long timeStamp, [FromRoute] int diffInSeconds, CancellationToken cancellationToken = default)
     {

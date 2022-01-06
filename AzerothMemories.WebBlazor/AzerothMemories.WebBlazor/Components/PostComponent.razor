@@ -59,11 +59,34 @@ else
             }
             
             <div class="d-flex justify-space-between pa-0 ma-2">
-
+                @if (InDialog)
+                {
+                    <MudText Typo="Typo.body2">@ZExtensions.BuildReactionString(Post.TotalReactionCount, Post.ReactionCounters)</MudText>
+                    <MudText Typo="Typo.body2">@Post.TotalCommentCount.ToMetric() Comments</MudText>
+                }
+                else
+                {
+                    <MudText Class="cardLinkText" Typo="Typo.body2" @onclick="OnReactionLinkClicked">@ZExtensions.BuildReactionString(Post.TotalReactionCount, Post.ReactionCounters)</MudText>
+                    <MudText Class="cardLinkText" Typo="Typo.body2" @onclick="OnCommentButtonClicked">@Post.TotalCommentCount.ToMetric() Comments</MudText>
+                }
             </div>
         </MudCardContent>
         
         <MudCardActions>
+            <MudButtonGroup OverrideStyles="true" Class="pa-2 ma-2" Variant="Variant.Filled" Size="Size.Small">
+                <MudButton StartIcon="@Icons.Material.Filled.Favorite" IconColor="@(Post.Reaction == PostReaction.None ? Color.Default : Color.Secondary)" Disabled="@(IsDisabled || _userReacting)" OnClick="() => OnReactButtonClicked(Post.Reaction)">@Post.Reaction.Humanize()</MudButton>
+                <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Disabled="@(IsDisabled || _userReacting)" Direction="Direction.Bottom" OffsetY="true">
+                    <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction1)">@PostReaction.Reaction1.Humanize()</MudMenuItem>
+                    <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction2)">@PostReaction.Reaction2.Humanize()</MudMenuItem>
+                    <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction3)">@PostReaction.Reaction3.Humanize()</MudMenuItem>
+                    <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction4)">@PostReaction.Reaction4.Humanize()</MudMenuItem>
+                    <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction5)">@PostReaction.Reaction5.Humanize()</MudMenuItem>
+                    <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction6)">@PostReaction.Reaction6.Humanize()</MudMenuItem>
+                </MudMenu>
+                <MudButton StartIcon="@Icons.Material.Filled.Comment" Disabled="@IsDisabled" OnClick="OnCommentButtonClicked">Comments</MudButton>
+                @*<MudButton StartIcon="@Icons.Material.Filled.Share" Disabled="@(IsDisabled || Post.SystemTagsArray == null || _isChangingTags)" OnClick="() => _showTagMenu = !_showTagMenu">Restore Memory</MudButton>*@
+                @*<MudButton StarIcon="@Icons.Material.Filled.Share" Disabled="@(IsDisabled || Post.ReferencedAccountId > 0 || Post.ReferencedPostId > 0 || Post.AccountId == ActiveAccountServices.AccountId)" OnClick="OnShareButtonClicked">Restore Memory</MudButton>*@
+            </MudButtonGroup>
         </MudCardActions>
     </MudCard>    
 }
@@ -72,8 +95,8 @@ else
     private bool _postChanged;
     private readonly PostViewModel _post;
 
-    //private bool _userReacting;
-    //private bool _showReactions;
+    private bool _userReacting;
+    private bool _showReactions;
     //private bool _showReactionIsLoading;
 
     //private bool _showTagMenu;
@@ -97,4 +120,55 @@ else
     [Parameter] public bool InDialog { get; init; }
 
     [Parameter] public EventCallback<PostTagInfo> OnTagChipClickedCallback { get; init; }
+
+    public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActive;
+
+    private  Task OnReactButtonClicked(PostReaction newReaction)
+    {
+        //if (_userReacting)
+        //{
+        //    return;
+        //}
+
+        //if (newReaction == PostReaction.None)
+        //{
+        //    newReaction = PostReaction.Reaction1;
+        //}
+
+        //var postId = Post.Id;
+        //var accountId = ActiveAccountServices.AccountId;
+        //var postGrain = Services.CommonServices.ClusterClient.GetGrain<IPostGrain>(postId);
+
+        //if (Post.Reaction == newReaction)
+        //{
+        //    newReaction = PostReaction.None;
+        //}
+
+        //_userReacting = true;
+
+        //Post.ReactionId = await postGrain.OnReactToPost(accountId, newReaction);
+        //Post.Reaction = newReaction;
+
+        //_userReacting = false;
+
+        //StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private  Task OnReactionLinkClicked()
+    {
+        //_showReactions = !_showReactions;
+
+        //if (_showReactions && Post.ReactionData == null)
+        //{
+        //    await TryLoadReactions();
+        //}
+
+        return Task.CompletedTask;
+    }
+
+    private void OnCommentButtonClicked()
+    {
+        Services.NavigationManager.NavigateTo($"/post/{Post.AccountId}/{Post.Id}");
+    }
 }

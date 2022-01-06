@@ -4,7 +4,7 @@
 
 <AuthorizeView>
     <Authorized>
-        <AccountHeaderCardComponent AccountViewModel="@ViewModel.AccountViewModel" />
+        <AccountHeaderCardComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" />
     </Authorized>
 </AuthorizeView>
 

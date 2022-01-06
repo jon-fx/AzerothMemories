@@ -13,7 +13,7 @@ else if ( ViewModel.AccountViewModel == null || ViewModel.PostViewModel == null 
 else
 {
     <PageTitle>@ViewModel.AccountViewModel.GetDisplayName()'s Memory of Azeroth</PageTitle>
-    <AccountHeaderCardComponent AccountViewModel="@ViewModel.AccountViewModel" />
+    <AccountHeaderCardComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" />
     <PostViewComponent Services="@this" Post="@ViewModel.PostViewModel" Page="@ViewModel.CurrentPage" FocusedCommentId="@ViewModel.FocusedCommentId" />
 }
 

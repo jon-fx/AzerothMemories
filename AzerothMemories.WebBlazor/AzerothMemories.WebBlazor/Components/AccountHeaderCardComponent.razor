@@ -21,6 +21,51 @@ else
         </MudCardHeader>
         <MudCardContent>
             
+            @if (string.IsNullOrWhiteSpace(AccountViewModel.BattleTag))
+            {
+            }
+            else
+            {
+                <div class="d-flex align-baseline">
+                    <img src="@SocialHelpers.BlizzardIconLink" width="18" height="18" />
+                    <MudText Class="px-2">@AccountViewModel.BattleTag</MudText>
+                </div>
+            }
+            
+            @foreach (var socialHelper in SocialHelpers.All)
+            {
+                var suffix = AccountViewModel.SocialLinks[socialHelper.LinkId];
+                if (string.IsNullOrWhiteSpace(suffix))
+                {
+                    continue;
+                }
+
+                <div class="d-flex align-baseline">
+                    <img src="@socialHelper.SocialIconLink" width="18" height="18" />
+
+                    @if (string.IsNullOrWhiteSpace(socialHelper.LinkPrefix))
+                    {
+                        <MudText Class="px-2">@suffix</MudText>
+                    }
+                    else
+                    {
+                        var fullLink = $"{socialHelper.LinkPrefix}{suffix}";
+                        <a href="@fullLink">
+                            <MudText Class="px-2">@suffix</MudText>
+                        </a>
+                    }
+                </div>
+            }
+
+            <MudText><MudIcon Icon="@Icons.Filled.CalendarToday" Size="Size.Small" /> Joined @Services.TimeProvider.GetJoinedDate(AccountViewModel.CreatedDateTime)</MudText>
+
+            <a href="@($"/follow/{AccountViewModel.Id}")">
+                <MudText><b>@_followingCount</b> Following</MudText>
+            </a>
+            <a href="@($"/follow/{AccountViewModel.Id}")">
+                <MudText><b>@_followerCount</b> Followers</MudText>
+            </a>
+
         </MudCardContent>
         <MudCardActions>
             <MudButtonGroup OverrideStyles="true" Class="pa-0 ma-2" Variant="Variant.Filled">
@@ -28,14 +73,57 @@ else
             </MudButtonGroup>
         </MudCardActions>
     </MudCard>
+
+    var characters = AccountViewModel.GetCharactersSafe();
+    if (characters.Length > 0)
+    {
+        <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+            <MudCardContent>
+                @for (var i = 0; i < characters.Length; i++)
+                {
+                    var index = i;
+                    var character = characters[index];
+                    if (string.IsNullOrWhiteSpace(character.AvatarLink))
+                    {
+                        continue;
+                    }
+
+                    <a href="character\@character.RegionId.ToInfo().TwoLetters\@Services.StringLocalizer[$"RealmSlug-{character.RealmId}"]\@character.Name">
+                        <MudTooltip Placement="Placement.Bottom" Color="Color.Dark">
+                            <ChildContent>
+                                <MudButton Id="@index" Variant="Variant.Filled">
+                                    <MudAvatar Size="Size.Medium" Image="@character.AvatarLink" />
+                                </MudButton>
+                            </ChildContent>
+                            <TooltipContent>
+
+                                <CharacterNameLinkComponent CharacterName="@character.Name"
+                                                CharacterClass="@character.Class"
+                                                CharacterRealmId="@character.RealmId"
+                                                CharacterRegionInfo="@character.RegionId.ToInfo()" />
+
+                                <RealmLinkComponent BlizzardRealmId="@character.RealmId" />
+
+                                <MudText Class="d-inline">@character.Level @Services.StringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
+                                <MudText Class=@($"d-inline wowclass-{character.Class}")>@Services.StringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
+                            </TooltipContent>
+                        </MudTooltip>
+                    </a>
+                }
+            </MudCardContent>
+        </MudCard>
+    }
 }
 
 @code {
     private bool _accountChanged;
     private AccountViewModel _account;
 
-    //private int _followerCount;
-    //private int _followingCount;
+    private int _followerCount;
+    private int _followingCount;
+
+    [Parameter, EditorRequired]
+    public IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired]
     public AccountViewModel AccountViewModel

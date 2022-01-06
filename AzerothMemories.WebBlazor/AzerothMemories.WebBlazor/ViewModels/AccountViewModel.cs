@@ -6,6 +6,8 @@ public class AccountViewModel
 
     [JsonInclude] public string Username;
 
+    [JsonInclude] public AccountType AccountType;
+
     [JsonInclude] public string BattleTag;
 
     [JsonInclude] public bool BattleTagIsPublic;
@@ -17,6 +19,8 @@ public class AccountViewModel
     [JsonInclude] public string Avatar;
 
     [JsonInclude] public long CreatedDateTime;
+
+    [JsonInclude] public string[] SocialLinks;
 
     [JsonInclude] public CharacterViewModel[] CharactersArray = Array.Empty<CharacterViewModel>();
 

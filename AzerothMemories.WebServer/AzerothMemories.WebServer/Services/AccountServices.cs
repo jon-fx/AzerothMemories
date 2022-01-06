@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Services;
+﻿using System.Web;
+
+namespace AzerothMemories.WebServer.Services;
 
 [RegisterComputeService]
 [RegisterAlias(typeof(IAccountServices))]
@@ -353,6 +355,85 @@ public class AccountServices : IAccountServices
         if (updateResult == 0)
         {
             return !newValue;
+        }
+
+        using var computed = Computed.Invalidate();
+
+        _ = TryGetAccountRecord(accountRecord.Id);
+        _ = TryGetAccountRecordFusionId(accountRecord.FusionId);
+        _ = TryGetAccountRecordUsername(accountRecord.Username);
+
+        return newValue;
+    }
+
+    public async Task<string> TryChangeAvatar(Session session, string newAvatar)
+    {
+        var accountRecord = await GetCurrentSessionAccountRecord(session);
+        if (accountRecord == null)
+        {
+            return null;
+        }
+
+        newAvatar = HttpUtility.UrlDecode(newAvatar);
+
+        if (accountRecord.Avatar == newAvatar)
+        {
+            return accountRecord.Avatar;
+        }
+
+        if (string.IsNullOrWhiteSpace(newAvatar))
+        {
+        }
+        else if (newAvatar.Length > 200)
+        {
+            return accountRecord.Avatar;
+        }
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        var updateResult = await database.GetUpdateQuery(accountRecord, out _).Set(x => x.Avatar, newAvatar).UpdateAsync();
+        if (updateResult == 0)
+        {
+            return accountRecord.Avatar;
+        }
+
+        using var computed = Computed.Invalidate();
+
+        _ = TryGetAccountRecord(accountRecord.Id);
+        _ = TryGetAccountRecordFusionId(accountRecord.FusionId);
+        _ = TryGetAccountRecordUsername(accountRecord.Username);
+
+        return accountRecord.Avatar;
+    }
+
+    public async Task<string> TryChangeSocialLink(Session session, int linkId, string newValue)
+    {
+        var accountRecord = await GetCurrentSessionAccountRecord(session);
+        if (accountRecord == null)
+        {
+            return null;
+        }
+
+        newValue = HttpUtility.UrlDecode(newValue);
+
+        var helper = SocialHelpers.All[linkId];
+        var previous = ServerSocialHelpers.GetterFunc[helper.LinkId](accountRecord);
+        if (!string.IsNullOrWhiteSpace(newValue) && !helper.ValidatorFunc(newValue))
+        {
+            return previous;
+        }
+
+        if (previous == newValue)
+        {
+            return previous;
+        }
+
+        ServerSocialHelpers.SetterFunc[helper.LinkId](accountRecord, newValue);
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        var updateResult = await database.GetUpdateQuery(accountRecord, out _).Set(ServerSocialHelpers.QuerySetter[helper.LinkId], newValue).UpdateAsync();
+        if (updateResult == 0)
+        {
+            return previous;
         }
 
         using var computed = Computed.Invalidate();

@@ -1,4 +1,7 @@
-﻿namespace AzerothMemories.WebBlazor.Services;
+﻿using Humanizer;
+using System.Text;
+
+namespace AzerothMemories.WebBlazor.Services;
 
 public static class ZExtensions
 {
@@ -262,5 +265,46 @@ public static class ZExtensions
     public static Color GetChipColor(this PostTagInfo tagInfo)
     {
         return Color.Primary;
+    }
+
+    public static string BuildReactionString(int totalReactionCount, int[] reactionCounters)
+    {
+        if (totalReactionCount == 0)
+        {
+            return string.Empty;
+        }
+
+        var added = false;
+        var commentStr = new StringBuilder();
+        commentStr.Append('(');
+
+        for (var i = 1; i < (int)PostReaction.Reaction7; i++)
+        {
+            var r = (PostReaction)i;
+            var c = reactionCounters[i - 1];
+            if (c > 0)
+            {
+                commentStr.Append(r.Humanize());
+                commentStr.Append(' ');
+                commentStr.Append(c.ToMetric());
+                commentStr.Append(' ');
+
+                added = true;
+            }
+        }
+
+        if (added)
+        {
+            commentStr.Remove(commentStr.Length - 1, 1);
+            commentStr.Append(')');
+        }
+        else
+        {
+            commentStr.Clear();
+        }
+
+        commentStr.Insert(0, $"{totalReactionCount.ToMetric()} ");
+
+        return commentStr.ToString();
     }
 }

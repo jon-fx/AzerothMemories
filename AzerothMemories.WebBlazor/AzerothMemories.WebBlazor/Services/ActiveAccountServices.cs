@@ -26,6 +26,10 @@
 
         public ActiveAccountViewModel AccountViewModel { get; private set; }
 
+        public bool IsAccountActive => AccountViewModel != null && AccountViewModel.Id > 0;
+
+        public bool IsAdmin => IsAccountActive && AccountViewModel.AccountType == AccountType.Admin;
+
         public async Task ComputeState(CancellationToken cancellationToken)
         {
             AccountViewModel = await _accountServices.TryGetAccount(null, cancellationToken);

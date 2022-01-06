@@ -7,7 +7,9 @@ public class AccountRecord : IBlizzardGrainUpdateRecord
 
     [Column, NotNull] public string FusionId { get; set; }
 
-    [Column, NotNull] public Instant CreatedDateTime { get; set; }
+    [Column, NotNull] public AccountType AccountType;
+
+    [Column, NotNull] public Instant CreatedDateTime;
 
     [Column, NotNull] public long BlizzardId;
 
@@ -28,6 +30,14 @@ public class AccountRecord : IBlizzardGrainUpdateRecord
     [Column, Nullable] public bool IsPrivate;
 
     [Column, Nullable] public string Avatar;
+
+    [Column, Nullable] public string SocialDiscord;
+
+    [Column, Nullable] public string SocialTwitter;
+
+    [Column, Nullable] public string SocialTwitch;
+
+    [Column, Nullable] public string SocialYouTube;
 
     [Column, Nullable] public string UpdateJob { get; set; }
 
