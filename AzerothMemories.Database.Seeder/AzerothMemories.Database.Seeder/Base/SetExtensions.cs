@@ -47,7 +47,9 @@ internal static class SetExtensions
             var fieldValue = fieldInfo.GetValue(record) as string;
             if (string.IsNullOrWhiteSpace(fieldValue))
             {
-                continue;
+                fieldValue = record.En_Gb;
+
+                Console.WriteLine("Set Extensions lang field == null using en_GB");
             }
 
             if (!clientSideResourcesByLocal.TryGetValue(fieldName, out var dict))
