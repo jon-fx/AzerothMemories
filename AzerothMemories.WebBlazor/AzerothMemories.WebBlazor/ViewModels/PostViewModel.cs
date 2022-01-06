@@ -24,9 +24,7 @@ public class PostViewModel
 
     [JsonInclude] public string[] ImageBlobNames;
 
-    [JsonInclude] public string SystemTags;
-
-    //public PostTagInfo[] SystemTagsArray;
+    [JsonInclude] public PostTagInfo[] SystemTags;
 
     [JsonInclude] public long ReactionId;
 
@@ -40,5 +38,5 @@ public class PostViewModel
 
     [JsonInclude] public long DeletedTimeStamp;
 
-    //public PostReactionViewModel[] ReactionData;
+    [JsonInclude] public PostReactionViewModel[] ReactionData;
 }

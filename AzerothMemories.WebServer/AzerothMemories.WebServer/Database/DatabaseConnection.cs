@@ -14,7 +14,7 @@ public sealed class DatabaseConnection : DataConnection
 
     //public ITable<GuildGrainRecord> Guilds => GetTable<GuildGrainRecord>();
 
-    public ITable<TagRecord> Tags => GetTable<TagRecord>();
+    //public ITable<TagRecord> Tags => GetTable<TagRecord>();
 
     public ITable<PostRecord> Posts => GetTable<PostRecord>();
 

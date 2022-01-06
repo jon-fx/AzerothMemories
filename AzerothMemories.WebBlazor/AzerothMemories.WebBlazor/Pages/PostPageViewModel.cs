@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebBlazor.Pages
+﻿using System.Globalization;
+
+namespace AzerothMemories.WebBlazor.Pages
 {
     public sealed class PostPageViewModel : ViewModelBase
     {
@@ -53,7 +55,7 @@
 
             if (AccountViewModel != null && _postId > 0)
             {
-                PostViewModel = await Services.PostServices.TryGetPostViewModel(null, AccountViewModel.Id, _postId, cancellationToken);
+                PostViewModel = await Services.PostServices.TryGetPostViewModel(null, AccountViewModel.Id, _postId, CultureInfo.CurrentCulture.Name, cancellationToken);
             }
 
             if (AccountViewModel == null)

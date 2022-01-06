@@ -18,8 +18,8 @@ public class PostController : ControllerBase, IPostServices
     }
 
     [HttpGet("{accountId}/{postId}"), Publish]
-    public Task<PostViewModel> TryGetPostViewModel(Session session, long accountId, long postId, CancellationToken cancellationToken = default)
+    public Task<PostViewModel> TryGetPostViewModel(Session session, [FromRoute] long accountId, [FromRoute] long postId, [FromQuery] string locale = null, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TryGetPostViewModel(session, accountId, postId, cancellationToken);
+        return _commonServices.PostServices.TryGetPostViewModel(session, accountId, postId, locale, cancellationToken);
     }
 }

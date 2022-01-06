@@ -16,8 +16,13 @@ public class TagServices : ITagServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostTagInfo> GetTagInfo(PostTagType tagType, int tagId)
+    public virtual async Task<PostTagInfo> GetTagInfo(PostTagType tagType, long tagId, string locale)
     {
+        if (tagType == PostTagType.Account || tagType == PostTagType.Character || tagType == PostTagType.Guild)
+        {
+            return await TryGetUserTagInfo(tagType, tagId);
+        }
+
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         var record = await database.BlizzardData.Where(r => r.TagType == tagType && r.TagId == tagId).FirstOrDefaultAsync();
@@ -30,6 +35,52 @@ public class TagServices : ITagServices
     }
 
     [ComputeMethod]
+    public virtual async Task<PostTagInfo> TryGetUserTagInfo(PostTagType tagType, long tagId)
+    {
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        if (tagType == PostTagType.Account)
+        {
+            var data = await (from r in database.Accounts
+                              where r.Id == tagId
+                              select new { r.Username, r.Avatar }).FirstOrDefaultAsync();
+
+            if (data != null)
+            {
+                return new PostTagInfo(PostTagType.Account, tagId, data.Username, data.Avatar);
+            }
+        }
+
+        if (tagType == PostTagType.Character)
+        {
+            var data = await (from r in database.Characters
+                              where r.Id == tagId
+                              select new { r.Name, r.AvatarLink }).FirstOrDefaultAsync();
+
+            if (data != null)
+            {
+                return new PostTagInfo(PostTagType.Character, tagId, data.Name, data.AvatarLink);
+            }
+        }
+
+        if (tagType == PostTagType.Guild)
+        {
+            //var data = await (from r in database.G
+            //                  where r.Id == tagId
+            //                  select new { r.Username, r.Avatar }).FirstOrDefaultAsync();
+
+            //if (data != null)
+            //{
+            //    return new PostTagInfo(PostTagType.Account, tagId, data.Username, data.Avatar);
+            //}
+
+            throw new NotImplementedException();
+        }
+
+        return new PostTagInfo(tagType, tagId, $"{tagType}-{tagId}", null);
+    }
+
+    [ComputeMethod]
     public virtual async Task<PostTagInfo[]> Search(Session session, string searchString, string locale = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(searchString) || searchString.Length < 3)
@@ -37,7 +88,7 @@ public class TagServices : ITagServices
             return Array.Empty<PostTagInfo>();
         }
 
-        var cultureInfo = locale == null ? CultureInfo.CurrentCulture : new CultureInfo(locale);
+        locale ??= CultureInfo.CurrentCulture.Name;
         var tempBytes = Encoding.GetEncoding("ISO-8859-8").GetBytes(searchString);
         searchString = Encoding.UTF8.GetString(tempBytes);
         searchString = searchString.Trim().ToLower();
@@ -46,15 +97,15 @@ public class TagServices : ITagServices
             return Array.Empty<PostTagInfo>();
         }
 
-        return await Search(searchString, cultureInfo);
+        return await Search(searchString, locale);
     }
 
     [ComputeMethod]
-    protected virtual async Task<PostTagInfo[]> Search(string searchString, CultureInfo cultureInfo)
+    protected virtual async Task<PostTagInfo[]> Search(string searchString, string locale)
     {
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
-        var query = GetSearchQuery(database, cultureInfo, searchString);
+        var query = GetSearchQuery(database, locale, searchString);
         var records = await query.ToArrayAsync();
         var postTags = new List<PostTagInfo>();
         foreach (var record in records)
@@ -66,7 +117,7 @@ public class TagServices : ITagServices
         return postTags.ToArray();
     }
 
-    private IQueryable<BlizzardDataRecord> GetSearchQuery(DatabaseConnection database, CultureInfo cultureInfo, string searchString)
+    private IQueryable<BlizzardDataRecord> GetSearchQuery(DatabaseConnection database, string locale, string searchString)
     {
         return database.BlizzardData.Where(r => Sql.Lower(r.Name.En_Gb).StartsWith(searchString)).OrderBy(r => r.TagType).ThenBy(r => Sql.Length(r.Name.En_Gb)).Take(50);
     }
@@ -81,51 +132,55 @@ public class TagServices : ITagServices
         return new PostTagInfo(record.TagType, record.TagId, record.Name.En_Gb, record.Media);
     }
 
-    public async Task<long> IsValidTags(string systemTag, ActiveAccountViewModel accountViewModel)
+    public async Task<PostTagRecord> TryCreateTagRecord(string systemTag, ActiveAccountViewModel accountViewModel)
     {
         if (!ZExtensions.ParseTagInfoFrom(systemTag, out var postTagInfo))
         {
-            return 0;
+            return null;
         }
 
-        var result = await GetTagRecordId(postTagInfo.Type, postTagInfo.Id);
-        if (result > 0)
+        var result = await TryCreateTagRecord(postTagInfo.Type, postTagInfo.Id);
+        if (result != null)
         {
             if (postTagInfo.Type == PostTagType.Account && accountViewModel.Id != postTagInfo.Id)
             {
-                return 0;
+                return null;
             }
 
             if (postTagInfo.Type == PostTagType.Character && accountViewModel.CharactersArray.FirstOrDefault(x => x.Id == postTagInfo.Id) == null)
             {
-                return 0;
+                return null;
             }
         }
 
         return result;
     }
 
-    [ComputeMethod]
-    public virtual async Task<long> GetTagRecordId(PostTagType tagType, long tagId)
+    public async Task<PostTagRecord> TryCreateTagRecord(PostTagType tagType, long tagId)
     {
         switch (tagType)
         {
             case PostTagType.None:
             {
-                return 0;
+                return null;
             }
             case PostTagType.Type:
             case PostTagType.Main:
             case PostTagType.Region:
             case PostTagType.Realm:
             {
-                return await GetTagIdWithBlizzardDataSanityChecks(tagType, tagId);
+                if (await IsValidTagIdWithBlizzardDataSanityChecks(tagType, tagId))
+                {
+                    break;
+                }
+
+                return null;
             }
             case PostTagType.Account:
             case PostTagType.Character:
             case PostTagType.Guild:
             {
-                return await GetTagIdWithoutBlizzardSanityChecks(tagType, tagId);
+                break;
             }
             case PostTagType.Achievement:
             case PostTagType.Item:
@@ -143,43 +198,47 @@ public class TagServices : ITagServices
             case PostTagType.CharacterClass:
             case PostTagType.CharacterClassSpecialization:
             {
-                return await GetTagIdWithBlizzardDataSanityChecks(tagType, tagId);
+                if (await IsValidTagIdWithBlizzardDataSanityChecks(tagType, tagId))
+                {
+                    break;
+                }
+
+                return null;
             }
             case PostTagType.HashTag:
             {
-                return 0;
+                return null;
             }
             default:
             {
-                return 0;
+                return null;
             }
         }
-    }
 
-    [ComputeMethod]
-    protected virtual async Task<long> GetTagIdWithoutBlizzardSanityChecks(PostTagType tagType, long tagId)
-    {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-
-        var tagString = $"{tagType}-{tagId}";
-        var tagRecordId = await (from tag in database.Tags
-                                 where tag.Tag == tagString
-                                 select tag.Id).FirstOrDefaultAsync();
-
-        if (tagRecordId == 0)
+        return new PostTagRecord
         {
-            tagRecordId = await database.InsertWithInt64IdentityAsync(new TagRecord
-            {
-                Tag = tagString,
-                CreatedTime = SystemClock.Instance.GetCurrentInstant()
-            });
-        }
+            CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            TagId = tagId,
+            TagType = tagType,
+            TagString = $"{tagType}-{tagId}"
+        };
+    }
 
-        return tagRecordId;
+    public Task<PostTagRecord> GetHashTagRecord(string hashTag)
+    {
+        var result = new PostTagRecord
+        {
+            CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            TagKind = PostTagKind.Comment,
+            TagType = PostTagType.HashTag,
+            TagString = hashTag,
+        };
+
+        return Task.FromResult(result);
     }
 
     [ComputeMethod]
-    protected virtual async Task<long> GetTagIdWithBlizzardDataSanityChecks(PostTagType tagType, long tagId)
+    protected virtual async Task<bool> IsValidTagIdWithBlizzardDataSanityChecks(PostTagType tagType, long tagId)
     {
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
@@ -187,46 +246,7 @@ public class TagServices : ITagServices
                                where data.TagType == tagType && data.TagId == tagId
                                select data.Key).FirstOrDefaultAsync();
 
-        if (tagString == null)
-        {
-            return 0;
-        }
-
-        var tagRecordId = await (from tag in database.Tags
-                                 where tag.Tag == tagString
-                                 select tag.Id).FirstOrDefaultAsync();
-
-        if (tagRecordId == 0)
-        {
-            tagRecordId = await database.InsertWithInt64IdentityAsync(new TagRecord
-            {
-                Tag = tagString,
-                CreatedTime = SystemClock.Instance.GetCurrentInstant()
-            });
-        }
-
-        return tagRecordId;
-    }
-
-    [ComputeMethod]
-    public virtual async Task<long> GetHashTagRecordId(string tagString)
-    {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-
-        var tagRecordId = await (from tag in database.Tags
-                                 where tag.Tag == tagString
-                                 select tag.Id).FirstOrDefaultAsync();
-
-        if (tagRecordId == 0)
-        {
-            tagRecordId = await database.InsertWithInt64IdentityAsync(new TagRecord
-            {
-                Tag = tagString,
-                CreatedTime = SystemClock.Instance.GetCurrentInstant()
-            });
-        }
-
-        return tagRecordId;
+        return tagString != null;
     }
 
     public bool GetCommentText(string commentText, ActiveAccountViewModel accountViewModel, out string newCommentText, out HashSet<long> userTags, out HashSet<string> hashTags)

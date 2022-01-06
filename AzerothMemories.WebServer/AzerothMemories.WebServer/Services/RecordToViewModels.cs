@@ -74,7 +74,7 @@
             };
         }
 
-        public static PostViewModel CreatePostViewModel(PostRecord postRecord, AccountViewModel accountViewModel, PostReactionRecord reactionRecord)
+        public static PostViewModel CreatePostViewModel(PostRecord postRecord, AccountViewModel accountViewModel, PostReactionRecord reactionRecord, PostTagInfo[] postTagRecords)
         {
             return new()
             {
@@ -89,7 +89,7 @@
                 PostCreatedTime = postRecord.PostCreatedTime.ToUnixTimeMilliseconds(),
                 PostEditedTime = postRecord.PostEditedTime.ToUnixTimeMilliseconds(),
                 ImageBlobNames = postRecord.BlobNames.Split('|'),
-                SystemTags = postRecord.SystemTags,
+                //SystemTags = postRecord.SystemTags,
                 ReactionId = reactionRecord?.Id ?? 0,
                 Reaction = reactionRecord?.Reaction ?? 0,
                 ReactionCounters = new[]
@@ -106,7 +106,8 @@
                 },
                 TotalReactionCount = postRecord.TotalReactionCount,
                 TotalCommentCount = postRecord.TotalCommentCount,
-                DeletedTimeStamp = postRecord.DeletedTimeStamp
+                DeletedTimeStamp = postRecord.DeletedTimeStamp,
+                SystemTags = postTagRecords,
             };
         }
     }

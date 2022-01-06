@@ -150,6 +150,7 @@ public class AccountServices : IAccountServices
             _ = TryGetAccountRecord(accountRecord.Id);
             _ = TryGetAccountRecordFusionId(accountRecord.FusionId);
             _ = TryGetAccountRecordUsername(accountRecord.Username);
+            _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Account, accountRecord.Id);
         }
 
         return accountRecord;
@@ -308,6 +309,7 @@ public class AccountServices : IAccountServices
         _ = TryGetAccountRecordFusionId(accountRecord.FusionId);
         _ = TryGetAccountRecordUsername(accountRecord.Username);
         _ = TryReserveUsername(accountRecord.Username);
+        _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Account, accountRecord.Id);
 
         return true;
     }
@@ -401,6 +403,7 @@ public class AccountServices : IAccountServices
         _ = TryGetAccountRecord(accountRecord.Id);
         _ = TryGetAccountRecordFusionId(accountRecord.FusionId);
         _ = TryGetAccountRecordUsername(accountRecord.Username);
+        _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Account, accountRecord.Id);
 
         return accountRecord.Avatar;
     }
@@ -446,7 +449,7 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, long timeStamp, int diffInSeconds, CancellationToken cancellationToken = default)
+    public virtual async Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, long timeStamp, int diffInSeconds, string locale = null, CancellationToken cancellationToken = default)
     {
         var accountRecord = await GetCurrentSessionAccountRecord(session, cancellationToken);
         if (accountRecord == null)
@@ -472,7 +475,7 @@ public class AccountServices : IAccountServices
         {
             if (hashSet.Add(tagId))
             {
-                var postTag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, tagId);
+                var postTag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, tagId, locale);
                 postTagSet.Add(postTag);
             }
         }

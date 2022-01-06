@@ -21,7 +21,7 @@
 
         [Column, NotNull] public Instant PostCreatedTime;
 
-        [Column, NotNull] public string SystemTags;
+        //[Column, NotNull] public string SystemTags;
 
         [Column, NotNull] public string BlobNames;
 

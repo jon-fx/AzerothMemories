@@ -5,9 +5,15 @@
     {
         [Column(IsPrimaryKey = true, IsIdentity = true)] public long Id { get; set; }
 
+        [Column, NotNull] public PostTagKind TagKind;
+
+        [Column, NotNull] public PostTagType TagType;
+
         [Column, NotNull] public long PostId;
 
         [Column, NotNull] public long TagId;
+
+        [Column, NotNull] public string TagString;
 
         //[Column, NotNull] public int ReportedCount;
 

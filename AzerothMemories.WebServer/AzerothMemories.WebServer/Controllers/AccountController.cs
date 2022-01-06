@@ -68,8 +68,8 @@ public class AccountController : ControllerBase, IAccountServices
     }
 
     [HttpGet("{timeStamp}/{diffInSeconds}"), Publish]
-    public Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, [FromRoute] long timeStamp, [FromRoute] int diffInSeconds, CancellationToken cancellationToken = default)
+    public Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, [FromRoute] long timeStamp, [FromRoute] int diffInSeconds, [FromQuery] string locale = null, CancellationToken cancellationToken = default)
     {
-        return _commonServices.AccountServices.TryGetAchievementsByTime(session, timeStamp, diffInSeconds, cancellationToken);
+        return _commonServices.AccountServices.TryGetAchievementsByTime(session, timeStamp, diffInSeconds, locale, cancellationToken);
     }
 }

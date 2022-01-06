@@ -8,5 +8,5 @@ public interface IPostServices
 
     [ComputeMethod]
     [Get(nameof(TryGetPostViewModel) + "/{accountId}/{postId}")]
-    Task<PostViewModel> TryGetPostViewModel(Session session, [Path] long accountId, [Path] long postId, CancellationToken cancellationToken = default);
+    Task<PostViewModel> TryGetPostViewModel(Session session, [Path] long accountId, [Path] long postId, [Query] string locale = null, CancellationToken cancellationToken = default);
 }

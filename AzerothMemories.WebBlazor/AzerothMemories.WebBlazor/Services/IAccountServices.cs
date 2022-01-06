@@ -36,5 +36,5 @@ public interface IAccountServices
 
     [ComputeMethod]
     [Get(nameof(TryGetAchievementsByTime) + "/{timeStamp}/{diffInSeconds}")]
-    Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, [Path] long timeStamp, [Path] int diffInSeconds, CancellationToken cancellationToken = default);
+    Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, [Path] long timeStamp, [Path] int diffInSeconds, [Query] string locale = null, CancellationToken cancellationToken = default);
 }

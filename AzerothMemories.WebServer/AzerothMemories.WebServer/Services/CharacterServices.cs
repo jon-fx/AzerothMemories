@@ -108,6 +108,7 @@ public class CharacterServices : ICharacterServices
         _ = TryGetCharacterRecord(characterRecord.Id);
         _ = TryGetAllAccountCharacters(characterRecord.AccountId.GetValueOrDefault());
         _ = TryGetAllAccountCharacterIds(characterRecord.AccountId.GetValueOrDefault());
+        _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Character, characterRecord.Id);
     }
 
     public Task OnCharacterDeleted(long accountId, long characterId, string characterRef)
@@ -148,6 +149,7 @@ public class CharacterServices : ICharacterServices
         _ = TryGetCharacterRecord(characterId);
         _ = TryGetAllAccountCharacters(characterAccountId);
         _ = TryGetAllAccountCharacterIds(characterAccountId);
+        _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Character, characterId);
     }
 
     public async Task<bool> TryChangeCharacterAccountSync(Session session, long characterId, bool newValue, CancellationToken cancellationToken = default)

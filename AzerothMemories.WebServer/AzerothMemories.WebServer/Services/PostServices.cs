@@ -40,7 +40,7 @@ public class PostServices : IPostServices
             return new AddMemoryResult(AddMemoryResultCode.ParseCommentFailed);
         }
 
-        var tagIds = new HashSet<long>();
+        var tagRecords = new HashSet<PostTagRecord>();
         var postRecord = new PostRecord
         {
             AccountId = accountViewModel.Id,
@@ -48,17 +48,17 @@ public class PostServices : IPostServices
             PostComment = commentText,
             PostTime = dateTime,
             PostCreatedTime = SystemClock.Instance.GetCurrentInstant(),
-            PostEditedTime =  SystemClock.Instance.GetCurrentInstant(),
+            PostEditedTime = SystemClock.Instance.GetCurrentInstant(),
             PostVisibility = transferData.IsPrivate ? (byte)1 : (byte)0,
         };
 
-        var buildSystemTagsResult = await BuildSystemTagsString(postRecord, accountViewModel, transferData.SystemTags, tagIds);
+        var buildSystemTagsResult = await CreateSystemTags(postRecord, accountViewModel, transferData.SystemTags, tagRecords);
         if (buildSystemTagsResult != AddMemoryResultCode.Success)
         {
             return new AddMemoryResult(buildSystemTagsResult);
         }
 
-        var addCommentTagResult = await AddCommentTags(postRecord, accountsTaggedInComment, hashTagsTaggedInComment, tagIds);
+        var addCommentTagResult = await AddCommentTags(postRecord, accountsTaggedInComment, hashTagsTaggedInComment, tagRecords);
         if (addCommentTagResult != AddMemoryResultCode.Success)
         {
             return new AddMemoryResult(addCommentTagResult);
@@ -73,10 +73,10 @@ public class PostServices : IPostServices
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
         postRecord.Id = await database.InsertWithInt64IdentityAsync(postRecord);
 
-        var tagRecords = new List<PostTagRecord>();
-        foreach (var tagId in tagIds)
+        //var tagRecords = new List<PostTagRecord>();
+        foreach (var tagRecord in tagRecords)
         {
-            tagRecords.Add(new PostTagRecord { PostId = postRecord.Id, TagId = tagId, CreatedTime = SystemClock.Instance.GetCurrentInstant() });
+            tagRecord.PostId = postRecord.Id;
         }
 
         await database.PostTags.BulkCopyAsync(tagRecords);
@@ -84,59 +84,52 @@ public class PostServices : IPostServices
         return new AddMemoryResult(AddMemoryResultCode.Success, postRecord.AccountId, postRecord.Id);
     }
 
-    private async Task<AddMemoryResultCode> BuildSystemTagsString(PostRecord postRecord, ActiveAccountViewModel accountViewModel, HashSet<string> systemTags, HashSet<long> tagIds)
+    private async Task<AddMemoryResultCode> CreateSystemTags(PostRecord postRecord, ActiveAccountViewModel accountViewModel, HashSet<string> systemTags, HashSet<PostTagRecord> tagRecords)
     {
         if (!string.IsNullOrWhiteSpace(postRecord.PostAvatar) && !systemTags.Contains(postRecord.PostAvatar))
         {
             return AddMemoryResultCode.InvalidTags;
         }
 
-        var systemTagBuilder = new StringBuilder();
         foreach (var systemTag in systemTags)
         {
-            var tagId = await _commonServices.TagServices.IsValidTags(systemTag, accountViewModel);
-            if (tagId > 0 && tagIds.Add(tagId))
-            {
-                systemTagBuilder.Append(systemTag);
-                systemTagBuilder.Append("~0|");
-            }
-            else
+            var tagRecord = await _commonServices.TagServices.TryCreateTagRecord(systemTag, accountViewModel);
+            if (tagRecord == null)
             {
                 return AddMemoryResultCode.InvalidTags;
             }
-        }
 
-        postRecord.SystemTags = systemTagBuilder.ToString().TrimEnd('|');
+            tagRecord.TagKind = PostTagKind.Post;
+            tagRecords.Add(tagRecord);
+        }
 
         return AddMemoryResultCode.Success;
     }
 
-    private async Task<AddMemoryResultCode> AddCommentTags(PostRecord postRecord, HashSet<long> accountsTaggedInComment, HashSet<string> hashTagsTaggedInComment, HashSet<long> tagIds)
+    private async Task<AddMemoryResultCode> AddCommentTags(PostRecord postRecord, HashSet<long> accountsTaggedInComment, HashSet<string> hashTagsTaggedInComment, HashSet<PostTagRecord> tagRecords)
     {
         foreach (var accountId in accountsTaggedInComment)
         {
-            var tagId = await _commonServices.TagServices.GetTagRecordId(PostTagType.Account, accountId);
-            if (tagId > 0)
-            {
-                tagIds.Add(tagId);
-            }
-            else
+            var tagRecord = await _commonServices.TagServices.TryCreateTagRecord(PostTagType.Account, accountId);
+            if (tagRecord == null)
             {
                 return AddMemoryResultCode.InvalidTags;
             }
+
+            tagRecord.TagKind = PostTagKind.Comment;
+            tagRecords.Add(tagRecord);
         }
 
         foreach (var hashTag in hashTagsTaggedInComment)
         {
-            var tagId = await _commonServices.TagServices.GetHashTagRecordId(hashTag);
-            if (tagId > 0)
-            {
-                tagIds.Add(tagId);
-            }
-            else
+            var tagRecord = await _commonServices.TagServices.GetHashTagRecord(hashTag);
+            if (tagRecord == null)
             {
                 return AddMemoryResultCode.InvalidTags;
             }
+
+            tagRecord.TagKind = PostTagKind.Comment;
+            tagRecords.Add(tagRecord);
         }
 
         return AddMemoryResultCode.Success;
@@ -200,7 +193,7 @@ public class PostServices : IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postAccountId, long postId, CancellationToken cancellationToken)
+    public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postAccountId, long postId, string locale = null, CancellationToken cancellationToken = default)
     {
         var activeAccount = await _commonServices.AccountServices.GetCurrentSessionAccountRecord(session, cancellationToken);
         long activeAccountId = 0;
@@ -220,14 +213,55 @@ public class PostServices : IPostServices
             throw new NotImplementedException();
         }
 
+        var postRecord = await GetPostRecord(postAccountId, postId);
+        var postTagInfos = await GetAllPostTagRecord(postId, locale);
+
+        return RecordToViewModels.CreatePostViewModel(postRecord, posterAccount, null, postTagInfos);
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<PostRecord> GetPostRecord(long postAccountId, long postId)
+    {
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         var query = from p in database.Posts
                     where p.DeletedTimeStamp == 0 && p.Id == postId && p.AccountId == postAccountId
-                    from r in database.PostReactions.Where(r => r.PostId == p.Id && r.AccountId == activeAccountId).DefaultIfEmpty()
-                    select RecordToViewModels.CreatePostViewModel(p, posterAccount, r);
+                    select p;
 
-        var result = await query.FirstOrDefaultAsync(cancellationToken);
-        return result;
+        return await query.FirstOrDefaultAsync();
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<PostTagInfo[]> GetAllPostTagRecord(long postId, string locale)
+    {
+        var allTagInfo = new List<PostTagInfo>();
+        var allTagRecords = await GetAllPostTags(postId);
+
+        foreach (var tagRecord in allTagRecords)
+        {
+            var tagInfo = await _commonServices.TagServices.GetTagInfo(tagRecord.TagType, tagRecord.TagId, locale);
+            if (tagInfo == null)
+            {
+                throw new NotImplementedException();
+            }
+            else
+            {
+                allTagInfo.Add(tagInfo);
+            }
+        }
+
+        return allTagInfo.ToArray();
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<PostTagRecord[]> GetAllPostTags(long postId)
+    {
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        var allTags = from tag in database.PostTags
+                      where tag.PostId == postId /*&& tag.TagKind == PostTagKind.Post*/
+                      select tag;
+
+        return await allTags.ToArrayAsync();
     }
 }
