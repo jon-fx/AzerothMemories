@@ -18,8 +18,8 @@ public interface IPostServices
     Task<PostReactionViewModel[]> TryGetReactions(Session session, [Path] long postId);
 
     [ComputeMethod]
-    [Get(nameof(TryGetComments) + "/{postId}")]
-    Task<PostCommentViewModel[]> TryGetComments(Session session, [Path] long postId);
+    [Get(nameof(TryGetCommentsPage) + "/{postId}")]
+    Task<PostCommentsPageViewModel> TryGetCommentsPage(Session session, [Path] long postId, [Query] int page = 0, [Query] long focusedCommentId = 0);
 
     [Post(nameof(TryRestoreMemory) + "/{postId}/{previousCharacterId}/{newCharacterId}")]
     Task<bool> TryRestoreMemory(Session session, [Path] long postId, [Path] long previousCharacterId, [Path] long newCharacterId);

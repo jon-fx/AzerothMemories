@@ -36,9 +36,9 @@ public class PostController : ControllerBase, IPostServices
     }
 
     [HttpGet("{postId}"), Publish]
-    public Task<PostCommentViewModel[]> TryGetComments(Session session, [FromRoute] long postId)
+    public Task<PostCommentsPageViewModel> TryGetCommentsPage(Session session, [FromRoute] long postId, [FromQuery] int page = 0, [FromQuery] long focusedCommentId = 0)
     {
-        return _commonServices.PostServices.TryGetComments(session, postId);
+        return _commonServices.PostServices.TryGetCommentsPage(session, postId, page, focusedCommentId);
     }
 
     [HttpPost("{postId}/{previousCharacterId}/{newCharacterId}")]

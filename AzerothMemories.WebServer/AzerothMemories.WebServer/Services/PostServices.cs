@@ -390,9 +390,9 @@ public class PostServices : IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostCommentViewModel[]> TryGetComments(Session session, long postId)
+    public virtual async Task<PostCommentsPageViewModel> TryGetCommentsPage(Session session, long postId, int page, long focusedCommentId)
     {
-        return Array.Empty<PostCommentViewModel>();
+        return null;
     }
 
     public async Task<bool> TryRestoreMemory(Session session, long postId, long previousCharacterId, long newCharacterId)
