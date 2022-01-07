@@ -30,9 +30,15 @@ public class PostController : ControllerBase, IPostServices
     }
 
     [HttpGet("{postId}"), Publish]
-    public Task<PostReactionViewModel[]> TryGetReactionData(Session session, [FromRoute] long postId)
+    public Task<PostReactionViewModel[]> TryGetReactions(Session session, [FromRoute] long postId)
     {
-        return _commonServices.PostServices.TryGetReactionData(session, postId);
+        return _commonServices.PostServices.TryGetReactions(session, postId);
+    }
+
+    [HttpGet("{postId}"), Publish]
+    public Task<PostCommentViewModel[]> TryGetComments(Session session, [FromRoute] long postId)
+    {
+        return _commonServices.PostServices.TryGetComments(session, postId);
     }
 
     [HttpPost("{postId}/{previousCharacterId}/{newCharacterId}")]

@@ -364,7 +364,7 @@ public class PostServices : IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostReactionViewModel[]> TryGetReactionData(Session session, long postId)
+    public virtual async Task<PostReactionViewModel[]> TryGetReactions(Session session, long postId)
     {
         var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
         var posterAccountId = await GetAccountIdOfPost(postId);
@@ -387,6 +387,12 @@ public class PostServices : IPostServices
 
         var dict = await GetPostReactions(postId);
         return dict.Values.ToArray();
+    }
+
+    [ComputeMethod]
+    public virtual async Task<PostCommentViewModel[]> TryGetComments(Session session, long postId)
+    {
+        return Array.Empty<PostCommentViewModel>();
     }
 
     public async Task<bool> TryRestoreMemory(Session session, long postId, long previousCharacterId, long newCharacterId)

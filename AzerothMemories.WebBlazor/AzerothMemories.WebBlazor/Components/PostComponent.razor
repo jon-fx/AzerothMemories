@@ -334,7 +334,7 @@ else
         _reactionAreLoading = true;
 
         var postId = Post.Id;
-        var reactionData = await Services.PostServices.TryGetReactionData(null, postId);
+        var reactionData = await Services.PostServices.TryGetReactions(null, postId);
         if (reactionData == null)
         {
             _postReactions = null;

@@ -65,4 +65,25 @@
             _focusedCommentId = value;
         }
     }
+
+    [Inject] IScrollManager ScrollManager { get; init; }
+    
+    public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActive;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        if (_postChanged )
+        {
+            if (Post != null)
+            {
+                var postId = Post.Id;
+                var postComments = Services.PostServices.TryGetComments(null, postId);
+            }
+
+            _postChanged = false;
+        }
+    }
+
 }

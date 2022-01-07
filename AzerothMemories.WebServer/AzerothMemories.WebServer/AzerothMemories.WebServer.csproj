@@ -26,7 +26,7 @@
 	    <PackageReference Include="Stl.Fusion.Server" Version="2.2.18" />
 	    <PackageReference Include="Stl.Fusion.EntityFramework" Version="2.2.18" />
 	    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-	    <PackageReference Include="AspNet.Security.OAuth.BattleNet" Version="6.0.1" />
+	    <PackageReference Include="AspNet.Security.OAuth.BattleNet" Version="6.0.2" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.1" />
     </ItemGroup>
 
