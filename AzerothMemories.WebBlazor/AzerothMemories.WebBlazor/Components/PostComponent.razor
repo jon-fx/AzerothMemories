@@ -109,15 +109,32 @@ else
 
     @if (_showReactions)
     {
-        if (_showReactionIsLoading)
+        var reactionData = _postReactions;
+        if (_reactionAreLoading)
         {
             <CardLoadingComponent/>
         }
-        else if (Post.ReactionData.Length > 0)
+        else if (reactionData == null)
         {
             <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
                 <MudCardContent>
-                    @foreach (var reaction in Post.ReactionData)
+                    <MudText Align="Align.Center">Failed</MudText>
+                </MudCardContent>
+            </MudCard>
+        }
+        else if (reactionData.Length == 0)
+        {
+            <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+                <MudCardContent>
+                    <MudText Align="Align.Center">None</MudText>
+                </MudCardContent>
+            </MudCard>
+        }
+        else if (reactionData.Length > 0)
+        {
+            <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+                <MudCardContent>
+                    @foreach (var reaction in reactionData)
                     {
                         var text = $"{reaction.Reaction.Humanize()} {reaction.AccountUsername}";
                         <MudChip @key="@reaction.Id" Text="@text" OnClick="() => OnReactionChipClickedCallback(reaction)"/>
@@ -216,11 +233,11 @@ else
 
     private bool _userReacting;
     private bool _showReactions;
-    private bool _showReactionIsLoading;
+    private bool _reactionAreLoading;
+    private PostReactionViewModel[] _postReactions;
 
     private bool _showTagMenu;
     private bool _isChangingTags;
-    //private bool _loadFailed;
 
     [Parameter, EditorRequired] 
     public IMoaServices Services { get; init; }
@@ -241,6 +258,24 @@ else
     [Parameter] public EventCallback<PostTagInfo> OnTagChipClickedCallback { get; init; }
 
     public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActive;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        if (_postChanged )
+        {
+            if (Post != null)
+            {
+                if (_showReactions)
+                {
+                    await TryLoadReactions();
+                }
+            }
+
+            _postChanged = false;
+        }
+    }
 
     private async Task OnReactButtonClicked(PostReaction newReaction)
     {
@@ -272,16 +307,47 @@ else
         //return Task.CompletedTask;
     }
 
-    private  Task OnReactionLinkClicked()
+    private async Task OnReactionLinkClicked()
     {
-        //_showReactions = !_showReactions;
+        _showReactions = !_showReactions;
 
-        //if (_showReactions && Post.ReactionData == null)
-        //{
-        //    await TryLoadReactions();
-        //}
+        if (_showReactions && _postReactions == null)
+        {
+            await TryLoadReactions();
+        }
+    }
+    
 
-        return Task.CompletedTask;
+    private async Task TryLoadReactions()
+    {
+        if (!_showReactions)
+        {
+            return;
+        }
+
+        if (_reactionAreLoading)
+        {
+            return;
+        }
+
+        _reactionAreLoading = true;
+
+        var postId = Post.Id;
+        var reactionData = await Services.PostServices.TryGetReactionData(null, postId);
+        if (reactionData == null)
+        {
+            _postReactions = null;
+        }
+        else if (reactionData.Length == 0)
+        {
+            _postReactions= Array.Empty<PostReactionViewModel>();
+        }
+        else
+        {
+            _postReactions = reactionData.OrderBy(x => x.LastUpdateTime).ToArray();
+        }
+
+        _reactionAreLoading = false;
     }
 
     private void OnCommentButtonClicked()
