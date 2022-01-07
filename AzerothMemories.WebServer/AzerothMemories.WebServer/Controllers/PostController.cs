@@ -23,6 +23,12 @@ public class PostController : ControllerBase, IPostServices
         return _commonServices.PostServices.TryGetPostViewModel(session, accountId, postId, locale, cancellationToken);
     }
 
+    [HttpPost("{postId}/{newReaction}")]
+    public Task<long> TryReactToPost(Session session, long postId, PostReaction newReaction)
+    {
+        return _commonServices.PostServices.TryReactToPost(session, postId, newReaction);
+    }
+
     [HttpPost("{postId}/{previousCharacterId}/{newCharacterId}")]
     public Task<bool> TryRestoreMemory(Session session, [FromRoute] long postId, [FromRoute] long previousCharacterId, [FromRoute] long newCharacterId)
     {

@@ -74,7 +74,7 @@
             };
         }
 
-        public static PostViewModel CreatePostViewModel(PostRecord postRecord, AccountViewModel accountViewModel, PostReactionRecord reactionRecord, PostTagInfo[] postTagRecords)
+        public static PostViewModel CreatePostViewModel(PostRecord postRecord, AccountViewModel accountViewModel, PostReactionViewModel reactionRecord, PostTagInfo[] postTagRecords)
         {
             var viewModel = new PostViewModel
             {

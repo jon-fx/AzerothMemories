@@ -242,36 +242,34 @@ else
 
     public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActive;
 
-    private  Task OnReactButtonClicked(PostReaction newReaction)
+    private async Task OnReactButtonClicked(PostReaction newReaction)
     {
-        //if (_userReacting)
-        //{
-        //    return;
-        //}
+        if (_userReacting)
+        {
+            return;
+        }
 
-        //if (newReaction == PostReaction.None)
-        //{
-        //    newReaction = PostReaction.Reaction1;
-        //}
+        if (newReaction == PostReaction.None)
+        {
+            newReaction = PostReaction.Reaction1;
+        }
 
-        //var postId = Post.Id;
-        //var accountId = ActiveAccountServices.AccountId;
-        //var postGrain = Services.CommonServices.ClusterClient.GetGrain<IPostGrain>(postId);
+        if (Post.Reaction == newReaction)
+        {
+            newReaction = PostReaction.None;
+        }
 
-        //if (Post.Reaction == newReaction)
-        //{
-        //    newReaction = PostReaction.None;
-        //}
+        _userReacting = true;
+        
+        var postId = Post.Id;
 
-        //_userReacting = true;
+        Post.ReactionId =   await Services.PostServices.TryReactToPost(null, postId, newReaction);
+        Post.Reaction = newReaction;
 
-        //Post.ReactionId = await postGrain.OnReactToPost(accountId, newReaction);
-        //Post.Reaction = newReaction;
-
-        //_userReacting = false;
+        _userReacting = false;
 
         //StateHasChanged();
-        return Task.CompletedTask;
+        //return Task.CompletedTask;
     }
 
     private  Task OnReactionLinkClicked()

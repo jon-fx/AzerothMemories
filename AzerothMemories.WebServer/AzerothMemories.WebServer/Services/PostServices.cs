@@ -27,22 +27,27 @@ public class PostServices : IPostServices
         return await query.FirstOrDefaultAsync();
     }
 
-    [ComputeMethod]
-    protected virtual async Task<bool> CanActiveUserSeePostsOf(Session session, long otherAccountId)
-    {
-        var activeAccount = await _commonServices.AccountServices.TryGetAccount(session);
-        long activeAccountId = 0;
-        if (activeAccount != null)
-        {
-            activeAccountId = activeAccount.Id;
-        }
+    //[ComputeMethod]
+    //protected virtual async Task<bool> CanActiveUserSeePostsOf(Session session, long otherAccountId)
+    //{
+    //    var activeAccount = await _commonServices.AccountServices.TryGetAccount(session);
+    //    long activeAccountId = 0;
+    //    if (activeAccount != null)
+    //    {
+    //        activeAccountId = activeAccount.Id;
+    //    }
 
-        return await CanActiveUserSeePostsOf(activeAccountId, otherAccountId);
-    }
+    //    return await CanAccountIdSeePostsOf(activeAccountId, otherAccountId);
+    //}
 
     [ComputeMethod]
-    protected virtual async Task<bool> CanActiveUserSeePostsOf(long activeAccountId, long otherAccountId)
+    protected virtual async Task<bool> CanAccountIdSeePostsOf(long activeAccountId, long otherAccountId)
     {
+        //if (posterAccount.IsPrivate)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
         return true;
     }
 
@@ -230,19 +235,14 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postAccountId, long postId, string locale = null, CancellationToken cancellationToken = default)
     {
-        //var activeAccount = await _commonServices.AccountServices.GetCurrentSessionAccountRecord(session, cancellationToken);
-        ////long activeAccountId = 0;
-        //if (activeAccount != null)
-        //{
-        //    activeAccountId = activeAccount.Id;
-        //}
+        var activeAccount = await _commonServices.AccountServices.TryGetAccount(session, cancellationToken);
+        long activeAccountId = 0;
+        if (activeAccount != null)
+        {
+            activeAccountId = activeAccount.Id;
+        }
 
-        //if (posterAccount.IsPrivate)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        var canSeePost = await CanActiveUserSeePostsOf(session, postAccountId);
+        var canSeePost = await CanAccountIdSeePostsOf(activeAccountId, postAccountId);
         if (!canSeePost)
         {
             return null;
@@ -254,10 +254,118 @@ public class PostServices : IPostServices
             return null;
         }
 
-        var postRecord = await GetPostRecord(postAccountId, postId);
-        var postTagInfos = await GetAllPostTagRecord(postId, locale);
+        var postRecord = await GetPostRecord(postId);
+        if (postRecord.AccountId != postAccountId)
+        {
+            return null;
+        }
 
-        return RecordToViewModels.CreatePostViewModel(postRecord, posterAccount, null, postTagInfos);
+        var postTagInfos = await GetAllPostTagRecord(postId, locale);
+        var reactionRecords = await GetPostReactions(postId);
+
+        reactionRecords.TryGetValue(activeAccountId, out var reactionViewModel);
+
+        return RecordToViewModels.CreatePostViewModel(postRecord, posterAccount, reactionViewModel, postTagInfos);
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<Dictionary<long, PostReactionViewModel>> GetPostReactions(long postId)
+    {
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        var query = from r in database.PostReactions
+                    where r.PostId == postId && r.Reaction != PostReaction.None
+                    from a in database.Accounts.Where(x => x.Id == r.AccountId)
+                    select new PostReactionViewModel
+                    {
+                        Id = r.Id,
+                        AccountId = r.AccountId,
+                        Reaction = r.Reaction,
+                        AccountUsername = a.Username
+                    };
+
+        return await query.ToDictionaryAsync(x => x.AccountId, x => x);
+    }
+
+    public async Task<long> TryReactToPost(Session session, long postId, PostReaction newReaction)
+    {
+        var activeAccount = await _commonServices.AccountServices.TryGetAccount(session);
+        if (activeAccount == null)
+        {
+            return 0;
+        }
+
+        var posterAccountId = await GetAccountIdOfPost(postId);
+        if (posterAccountId == 0)
+        {
+            return 0;
+        }
+
+        var canSeePost = await CanAccountIdSeePostsOf(activeAccount.Id, posterAccountId);
+        if (!canSeePost)
+        {
+            return 0;
+        }
+
+        var postRecord = await GetPostRecord(postId);
+        if (postRecord == null)
+        {
+            return 0;
+        }
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        var postQuery = database.GetUpdateQuery(postRecord, out _);
+        var reactionRecord = await database.PostReactions.FirstOrDefaultAsync(x => x.AccountId == activeAccount.Id && x.PostId == postId);
+        if (reactionRecord == null)
+        {
+            if (newReaction == PostReaction.None)
+            {
+                return 0;
+            }
+
+            reactionRecord = new PostReactionRecord
+            {
+                AccountId = activeAccount.Id,
+                PostId = postId,
+                Reaction = newReaction,
+                LastUpdateTime = SystemClock.Instance.GetCurrentInstant()
+            };
+
+            reactionRecord.Id = await database.InsertWithInt64IdentityAsync(reactionRecord);
+            postQuery = ModifyPostQueryWithReaction(postQuery, newReaction, +1, true);
+        }
+        else
+        {
+            if (newReaction == reactionRecord.Reaction)
+            {
+                return reactionRecord.Id;
+            }
+
+            var reactionQuery = database.GetUpdateQuery(reactionRecord, out _);
+            var previousReaction = reactionRecord.Reaction;
+            if (previousReaction != PostReaction.None)
+            {
+                reactionQuery = reactionQuery.Set(x => x.Reaction, PostReaction.None);
+                postQuery = ModifyPostQueryWithReaction(postQuery, previousReaction, -1, newReaction == PostReaction.None);
+            }
+
+            if (newReaction != PostReaction.None)
+            {
+                reactionQuery = reactionQuery.Set(x => x.Reaction, newReaction);
+                postQuery = ModifyPostQueryWithReaction(postQuery, newReaction, +1, previousReaction == PostReaction.None);
+            }
+
+            await reactionQuery.UpdateAsync();
+        }
+
+        await postQuery.UpdateAsync();
+
+        using var computed = Computed.Invalidate();
+        _ = GetPostRecord(postId);
+        _ = GetPostReactions(postId);
+
+        return reactionRecord.Id;
     }
 
     public async Task<bool> TryRestoreMemory(Session session, long postId, long previousCharacterId, long newCharacterId)
@@ -274,8 +382,14 @@ public class PostServices : IPostServices
             return false;
         }
 
-        var canSeePost = await CanActiveUserSeePostsOf(session, posterAccountId);
+        var canSeePost = await CanAccountIdSeePostsOf(activeAccount.Id, posterAccountId);
         if (!canSeePost)
+        {
+            return false;
+        }
+
+        var postRecord = await GetPostRecord(postId);
+        if (postRecord == null)
         {
             return false;
         }
@@ -347,12 +461,12 @@ public class PostServices : IPostServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<PostRecord> GetPostRecord(long postAccountId, long postId)
+    protected virtual async Task<PostRecord> GetPostRecord(long postId)
     {
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         var query = from p in database.Posts
-                    where p.DeletedTimeStamp == 0 && p.Id == postId && p.AccountId == postAccountId
+                    where p.DeletedTimeStamp == 0 && p.Id == postId
                     select p;
 
         return await query.FirstOrDefaultAsync();
@@ -390,5 +504,72 @@ public class PostServices : IPostServices
                       select tag;
 
         return await allTags.ToArrayAsync();
+    }
+
+    private static IUpdatable<PostRecord> ModifyPostQueryWithReaction(IUpdatable<PostRecord> query, PostReaction reaction, int change, bool modifyTotal)
+    {
+        switch (reaction)
+        {
+            case PostReaction.None:
+            {
+                return query;
+            }
+            case PostReaction.Reaction1:
+            {
+                query = query.Set(x => x.ReactionCount1, x => x.ReactionCount1 + change);
+                break;
+            }
+            case PostReaction.Reaction2:
+            {
+                query = query.Set(x => x.ReactionCount2, x => x.ReactionCount2 + change);
+                break;
+            }
+            case PostReaction.Reaction3:
+            {
+                query = query.Set(x => x.ReactionCount3, x => x.ReactionCount3 + change);
+                break;
+            }
+            case PostReaction.Reaction4:
+            {
+                query = query.Set(x => x.ReactionCount4, x => x.ReactionCount4 + change);
+                break;
+            }
+            case PostReaction.Reaction5:
+            {
+                query = query.Set(x => x.ReactionCount5, x => x.ReactionCount5 + change);
+                break;
+            }
+            case PostReaction.Reaction6:
+            {
+                query = query.Set(x => x.ReactionCount6, x => x.ReactionCount6 + change);
+                break;
+            }
+            case PostReaction.Reaction7:
+            {
+                query = query.Set(x => x.ReactionCount7, x => x.ReactionCount7 + change);
+                break;
+            }
+            case PostReaction.Reaction8:
+            {
+                query = query.Set(x => x.ReactionCount8, x => x.ReactionCount8 + change);
+                break;
+            }
+            case PostReaction.Reaction9:
+            {
+                query = query.Set(x => x.ReactionCount9, x => x.ReactionCount9 + change);
+                break;
+            }
+            default:
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        if (modifyTotal)
+        {
+            query = query.Set(x => x.TotalReactionCount, x => x.TotalReactionCount + change);
+        }
+
+        return query;
     }
 }
