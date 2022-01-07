@@ -61,7 +61,8 @@ else
             <div class="d-flex justify-space-between pa-0 ma-2">
                 @if (InDialog)
                 {
-                    <MudText Typo="Typo.body2">@ZExtensions.BuildReactionString(Post.TotalReactionCount, Post.ReactionCounters)</MudText>
+                    @*<MudText Typo="Typo.body2">@ZExtensions.BuildReactionString(Post.TotalReactionCount, Post.ReactionCounters)</MudText>*@
+                    <MudText Class="cardLinkText" Typo="Typo.body2" @onclick="OnReactionLinkClicked">@ZExtensions.BuildReactionString(Post.TotalReactionCount, Post.ReactionCounters)</MudText>
                     <MudText Typo="Typo.body2">@Post.TotalCommentCount.ToMetric() Comments</MudText>
                 }
                 else
