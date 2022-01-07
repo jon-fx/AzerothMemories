@@ -235,13 +235,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postAccountId, long postId, string locale = null, CancellationToken cancellationToken = default)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetAccount(session, cancellationToken);
-        long activeAccountId = 0;
-        if (activeAccount != null)
-        {
-            activeAccountId = activeAccount.Id;
-        }
-
+        var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session, cancellationToken);
         var canSeePost = await CanAccountIdSeePostsOf(activeAccountId, postAccountId);
         if (!canSeePost)
         {
@@ -281,7 +275,8 @@ public class PostServices : IPostServices
                         Id = r.Id,
                         AccountId = r.AccountId,
                         Reaction = r.Reaction,
-                        AccountUsername = a.Username
+                        AccountUsername = a.Username,
+                        LastUpdateTime = r.LastUpdateTime.ToUnixTimeMilliseconds(),
                     };
 
         return await query.ToDictionaryAsync(x => x.AccountId, x => x);
@@ -289,8 +284,8 @@ public class PostServices : IPostServices
 
     public async Task<long> TryReactToPost(Session session, long postId, PostReaction newReaction)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetAccount(session);
-        if (activeAccount == null)
+        var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
+        if (activeAccountId == 0)
         {
             return 0;
         }
@@ -301,7 +296,7 @@ public class PostServices : IPostServices
             return 0;
         }
 
-        var canSeePost = await CanAccountIdSeePostsOf(activeAccount.Id, posterAccountId);
+        var canSeePost = await CanAccountIdSeePostsOf(activeAccountId, posterAccountId);
         if (!canSeePost)
         {
             return 0;
@@ -316,7 +311,7 @@ public class PostServices : IPostServices
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         var postQuery = database.GetUpdateQuery(postRecord, out _);
-        var reactionRecord = await database.PostReactions.FirstOrDefaultAsync(x => x.AccountId == activeAccount.Id && x.PostId == postId);
+        var reactionRecord = await database.PostReactions.FirstOrDefaultAsync(x => x.AccountId == activeAccountId && x.PostId == postId);
         if (reactionRecord == null)
         {
             if (newReaction == PostReaction.None)
@@ -326,7 +321,7 @@ public class PostServices : IPostServices
 
             reactionRecord = new PostReactionRecord
             {
-                AccountId = activeAccount.Id,
+                AccountId = activeAccountId,
                 PostId = postId,
                 Reaction = newReaction,
                 LastUpdateTime = SystemClock.Instance.GetCurrentInstant()
@@ -356,7 +351,7 @@ public class PostServices : IPostServices
                 postQuery = ModifyPostQueryWithReaction(postQuery, newReaction, +1, previousReaction == PostReaction.None);
             }
 
-            await reactionQuery.UpdateAsync();
+            await reactionQuery.Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync();
         }
 
         await postQuery.UpdateAsync();
@@ -366,6 +361,32 @@ public class PostServices : IPostServices
         _ = GetPostReactions(postId);
 
         return reactionRecord.Id;
+    }
+
+    [ComputeMethod]
+    public virtual async Task<PostReactionViewModel[]> TryGetReactionData(Session session, long postId)
+    {
+        var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
+        var posterAccountId = await GetAccountIdOfPost(postId);
+        if (posterAccountId == 0)
+        {
+            return null;
+        }
+
+        var canSeePost = await CanAccountIdSeePostsOf(activeAccountId, posterAccountId);
+        if (!canSeePost)
+        {
+            return null;
+        }
+
+        //var postRecord = await GetPostRecord(postId);
+        //if (postRecord == null)
+        //{
+        //    return null;
+        //}
+
+        var dict = await GetPostReactions(postId);
+        return dict.Values.ToArray();
     }
 
     public async Task<bool> TryRestoreMemory(Session session, long postId, long previousCharacterId, long newCharacterId)

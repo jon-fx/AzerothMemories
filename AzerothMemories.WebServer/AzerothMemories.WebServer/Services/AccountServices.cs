@@ -212,6 +212,18 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
+    public virtual async Task<long> TryGetActiveAccountId(Session session, CancellationToken cancellationToken = default)
+    {
+        var accountViewModel = await TryGetAccount(session, cancellationToken);
+        if (accountViewModel == null)
+        {
+            return 0;
+        }
+
+        return accountViewModel.Id;
+    }
+
+    [ComputeMethod]
     public virtual async Task<AccountViewModel> TryGetAccountById(Session session, long accountId, CancellationToken cancellationToken = default)
     {
         var sessionAccount = await TryGetAccount(session, cancellationToken);

@@ -24,9 +24,15 @@ public class PostController : ControllerBase, IPostServices
     }
 
     [HttpPost("{postId}/{newReaction}")]
-    public Task<long> TryReactToPost(Session session, long postId, PostReaction newReaction)
+    public Task<long> TryReactToPost(Session session, [FromRoute] long postId, [FromRoute] PostReaction newReaction)
     {
         return _commonServices.PostServices.TryReactToPost(session, postId, newReaction);
+    }
+
+    [HttpGet("{postId}"), Publish]
+    public Task<PostReactionViewModel[]> TryGetReactionData(Session session, [FromRoute] long postId)
+    {
+        return _commonServices.PostServices.TryGetReactionData(session, postId);
     }
 
     [HttpPost("{postId}/{previousCharacterId}/{newCharacterId}")]

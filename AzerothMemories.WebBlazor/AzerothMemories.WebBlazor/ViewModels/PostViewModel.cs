@@ -38,5 +38,5 @@ public class PostViewModel
 
     [JsonInclude] public long DeletedTimeStamp;
 
-    [JsonInclude] public PostReactionViewModel[] ReactionData;
+    //[JsonInclude] public PostReactionViewModel[] ReactionData;
 }

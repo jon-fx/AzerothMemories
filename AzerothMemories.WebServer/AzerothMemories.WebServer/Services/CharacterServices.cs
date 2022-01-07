@@ -154,14 +154,14 @@ public class CharacterServices : ICharacterServices
 
     public async Task<bool> TryChangeCharacterAccountSync(Session session, long characterId, bool newValue, CancellationToken cancellationToken = default)
     {
-        var accountViewModel = await _commonServices.AccountServices.TryGetAccount(session, cancellationToken);
-        if (accountViewModel == null)
+        var accountId = await _commonServices.AccountServices.TryGetActiveAccountId(session, cancellationToken);
+        if (accountId == 0)
         {
             return false;
         }
 
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var updateResult = await database.Characters.Where(x => x.Id == characterId && x.AccountId == accountViewModel.Id && x.AccountSync == !newValue).AsUpdatable()
+        var updateResult = await database.Characters.Where(x => x.Id == characterId && x.AccountId == accountId && x.AccountSync == !newValue).AsUpdatable()
             .Set(x => x.AccountSync, newValue)
             .UpdateAsync(cancellationToken);
 
@@ -170,7 +170,7 @@ public class CharacterServices : ICharacterServices
             return !newValue;
         }
 
-        OnCharacterUpdate(characterId, accountViewModel.Id);
+        OnCharacterUpdate(characterId, accountId);
 
         return newValue;
     }
