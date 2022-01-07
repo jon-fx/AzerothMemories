@@ -15,6 +15,37 @@ public class PostServices : IPostServices
         _commonServices = commonServices;
     }
 
+    [ComputeMethod]
+    protected virtual async Task<long> GetAccountIdOfPost(long postId)
+    {
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        var query = from p in database.Posts
+                    where p.Id == postId
+                    select p.AccountId;
+
+        return await query.FirstOrDefaultAsync();
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<bool> CanActiveUserSeePostsOf(Session session, long otherAccountId)
+    {
+        var activeAccount = await _commonServices.AccountServices.TryGetAccount(session);
+        long activeAccountId = 0;
+        if (activeAccount != null)
+        {
+            activeAccountId = activeAccount.Id;
+        }
+
+        return await CanActiveUserSeePostsOf(activeAccountId, otherAccountId);
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<bool> CanActiveUserSeePostsOf(long activeAccountId, long otherAccountId)
+    {
+        return true;
+    }
+
     public async Task<AddMemoryResult> TryPostMemory(Session session, AddMemoryTransferData transferData)
     {
         const int maxLength = 2048;
@@ -199,11 +230,22 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postAccountId, long postId, string locale = null, CancellationToken cancellationToken = default)
     {
-        var activeAccount = await _commonServices.AccountServices.GetCurrentSessionAccountRecord(session, cancellationToken);
-        long activeAccountId = 0;
-        if (activeAccount != null)
+        //var activeAccount = await _commonServices.AccountServices.GetCurrentSessionAccountRecord(session, cancellationToken);
+        ////long activeAccountId = 0;
+        //if (activeAccount != null)
+        //{
+        //    activeAccountId = activeAccount.Id;
+        //}
+
+        //if (posterAccount.IsPrivate)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        var canSeePost = await CanActiveUserSeePostsOf(session, postAccountId);
+        if (!canSeePost)
         {
-            activeAccountId = activeAccount.Id;
+            return null;
         }
 
         var posterAccount = await _commonServices.AccountServices.TryGetAccountById(session, postAccountId, cancellationToken);
@@ -212,15 +254,96 @@ public class PostServices : IPostServices
             return null;
         }
 
-        if (posterAccount.IsPrivate)
-        {
-            throw new NotImplementedException();
-        }
-
         var postRecord = await GetPostRecord(postAccountId, postId);
         var postTagInfos = await GetAllPostTagRecord(postId, locale);
 
         return RecordToViewModels.CreatePostViewModel(postRecord, posterAccount, null, postTagInfos);
+    }
+
+    public async Task<bool> TryRestoreMemory(Session session, long postId, long previousCharacterId, long newCharacterId)
+    {
+        var activeAccount = await _commonServices.AccountServices.TryGetAccount(session);
+        if (activeAccount == null)
+        {
+            return false;
+        }
+
+        var posterAccountId = await GetAccountIdOfPost(postId);
+        if (posterAccountId == 0)
+        {
+            return false;
+        }
+
+        var canSeePost = await CanActiveUserSeePostsOf(session, posterAccountId);
+        if (!canSeePost)
+        {
+            return false;
+        }
+
+        long? newAccountTag = newCharacterId > 0 ? activeAccount.Id : null;
+        long? newCharacterTag = newCharacterId > 0 ? newCharacterId : null;
+
+        long? accountTagToRemove = newCharacterId > 0 ? null : activeAccount.Id;
+        long? characterTagToRemove = previousCharacterId > 0 ? previousCharacterId : null;
+        if (activeAccount.Id == posterAccountId)
+        {
+            accountTagToRemove = null;
+        }
+
+        if (characterTagToRemove != null && activeAccount.GetCharactersSafe().FirstOrDefault(x => x.Id == characterTagToRemove.Value) == null)
+        {
+            return false;
+        }
+
+        if (newCharacterTag != null && activeAccount.GetCharactersSafe().FirstOrDefault(x => x.Id == newCharacterTag.Value) == null)
+        {
+            return false;
+        }
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        await TryRestoreMemoryUpdate(database, postId, PostTagType.Account, accountTagToRemove, newAccountTag);
+        await TryRestoreMemoryUpdate(database, postId, PostTagType.Character, characterTagToRemove, newCharacterTag);
+
+        using var computed = Computed.Invalidate();
+        _ = GetAllPostTags(postId);
+
+        return true;
+    }
+
+    private async Task TryRestoreMemoryUpdate(DatabaseConnection database, long postId, PostTagType tagType, long? oldTag, long? newTag)
+    {
+        if (oldTag == null)
+        {
+        }
+        else
+        {
+            await database.PostTags.Where(x => x.PostId == postId && x.TagType == tagType && x.TagId == oldTag.Value).Set(x => x.TagKind, PostTagKind.Deleted).UpdateAsync();
+        }
+
+        if (newTag == null)
+        {
+        }
+        else
+        {
+            var update = await database.PostTags.Where(x => x.PostId == postId && x.TagType == tagType && x.TagId == newTag.Value).Set(x => x.TagKind, PostTagKind.PostRestored).UpdateAsync();
+            if (update == 0)
+            {
+                var tagString = PostTagInfo.GetTagString(tagType, newTag.Value);
+
+                var record = new PostTagRecord
+                {
+                    TagId = newTag.Value,
+                    TagType = tagType,
+                    TagString = tagString,
+                    PostId = postId,
+                    CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+                    TagKind = PostTagKind.PostRestored
+                };
+
+                await database.InsertAsync(record);
+            }
+        }
     }
 
     [ComputeMethod]
@@ -263,7 +386,7 @@ public class PostServices : IPostServices
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         var allTags = from tag in database.PostTags
-                      where tag.PostId == postId /*&& tag.TagKind == PostTagKind.Post*/
+                      where tag.PostId == postId /*&& tag.TagKind == PostTagKind.Post*/ && tag.TagKind != PostTagKind.Deleted
                       select tag;
 
         return await allTags.ToArrayAsync();

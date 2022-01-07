@@ -22,4 +22,10 @@ public class PostController : ControllerBase, IPostServices
     {
         return _commonServices.PostServices.TryGetPostViewModel(session, accountId, postId, locale, cancellationToken);
     }
+
+    [HttpPost("{postId}/{previousCharacterId}/{newCharacterId}")]
+    public Task<bool> TryRestoreMemory(Session session, [FromRoute] long postId, [FromRoute] long previousCharacterId, [FromRoute] long newCharacterId)
+    {
+        return _commonServices.PostServices.TryRestoreMemory(session, postId, previousCharacterId, newCharacterId);
+    }
 }

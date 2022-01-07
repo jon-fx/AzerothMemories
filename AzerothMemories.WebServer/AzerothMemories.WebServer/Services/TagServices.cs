@@ -28,7 +28,7 @@ public class TagServices : ITagServices
         var record = await database.BlizzardData.Where(r => r.TagType == tagType && r.TagId == tagId).FirstOrDefaultAsync();
         if (record == null)
         {
-            return new PostTagInfo(tagType, tagId, $"{tagType}-{tagId}", null);
+            return new PostTagInfo(tagType, tagId, PostTagInfo.GetTagString(tagType, tagId), null);
         }
 
         return CreatePostTagInfo(record);
@@ -77,7 +77,7 @@ public class TagServices : ITagServices
             throw new NotImplementedException();
         }
 
-        return new PostTagInfo(tagType, tagId, $"{tagType}-{tagId}", null);
+        return new PostTagInfo(tagType, tagId, PostTagInfo.GetTagString(tagType, tagId), null);
     }
 
     [ComputeMethod]
@@ -220,7 +220,7 @@ public class TagServices : ITagServices
             CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             TagId = tagId,
             TagType = tagType,
-            TagString = $"{tagType}-{tagId}"
+            TagString = PostTagInfo.GetTagString(tagType, tagId)
         };
     }
 

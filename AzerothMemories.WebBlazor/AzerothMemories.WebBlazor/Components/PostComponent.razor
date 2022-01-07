@@ -103,7 +103,6 @@ else
                 </MudMenu>
                 <MudButton StartIcon="@Icons.Material.Filled.Comment" Disabled="@IsDisabled" OnClick="OnCommentButtonClicked">Comments</MudButton>
                 <MudButton StartIcon="@Icons.Material.Filled.Share" Disabled="@(IsDisabled ||  _isChangingTags)" OnClick="() => _showTagMenu = !_showTagMenu">Restore Memory</MudButton>
-                @*<MudButton StarIcon="@Icons.Material.Filled.Share" Disabled="@(IsDisabled || Post.ReferencedAccountId > 0 || Post.ReferencedPostId > 0 || Post.AccountId == ActiveAccountServices.AccountId)" OnClick="OnShareButtonClicked">Restore Memory</MudButton>*@
             </MudButtonGroup>
         </MudCardActions>
     </MudCard>    
@@ -190,8 +189,8 @@ else
 
                                         <RealmLinkComponent BlizzardRealmId="@character.RealmId"/>
 
-                                        <MudText Class="d-inline">@character.Level @Services.StringLocalizer[$"CharacterRaceName-{character.Race}"]</MudText>
-                                        <MudText Class=@($"d-inline wowclass-{character.Class}")>@Services.StringLocalizer[$"CharacterClassName-{character.Class}"]</MudText>
+                                        <MudText Class="d-inline">@character.Level @Services.StringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
+                                        <MudText Class=@($"d-inline wowclass-{character.Class}")>@Services.StringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
                                     </TooltipContent>
                                 </MudTooltip>
                             }
@@ -299,21 +298,20 @@ else
 
     private async Task OnRestoreButtonClicked(CharacterViewModel previousCharacter, CharacterViewModel character)
     {
-        //if (_isChangingTags)
-        //{
-        //    return;
-        //}
+        if (_isChangingTags)
+        {
+            return;
+        }
 
-        //_isChangingTags = true;
+        _isChangingTags = true;
 
-        //var postId = Post.Id;
-        //var accountId = ActiveAccountServices.AccountId;
-        //var systemTags = Post.SystemTags;
-        //var postGrain = Services.CommonServices.ClusterClient.GetGrain<IPostGrain>(postId);
+        var postId = Post.Id;
+        var result = await Services.PostServices.TryRestoreMemory(null, postId, previousCharacter?.Id ?? -1, character?.Id ?? -1);
+        if (result)
+        {
+            _showTagMenu = false;
+        }
 
-        //var result = await postGrain.OnRestoreMemory(accountId, systemTags, previousCharacter?.Id ?? -1, character?.Id ?? -1);
-        //await Post.UpdateSystemTags(result.SystemTags, Services);
-
-        //_isChangingTags = false;
+        _isChangingTags = false;
     }
 }

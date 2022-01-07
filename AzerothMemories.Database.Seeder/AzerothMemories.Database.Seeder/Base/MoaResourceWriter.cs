@@ -25,7 +25,7 @@ internal sealed class MoaResourceWriter
 
         OnServerSideRecordUpdated(updated, resource);
 
-        SetExtensions.Update($"{tagType}-{tagId}", data, _allResourceStringsByLocal);
+        SetExtensions.Update(PostTagInfo.GetTagString(tagType, tagId), data, _allResourceStringsByLocal);
     }
 
     public void AddServerSideLocalizationMedia(PostTagType tagType, long tagId, string media)
@@ -49,7 +49,7 @@ internal sealed class MoaResourceWriter
 
     public BlizzardDataRecord GetOrCreateServerSideResource(PostTagType tagType, long tagId)
     {
-        var key = $"{tagType}-{tagId}";
+        var key = PostTagInfo.GetTagString(tagType, tagId);
         if (!_serverSideResources.TryGetValue(key, out var value))
         {
             using (var database = _databaseProvider.GetDatabase())

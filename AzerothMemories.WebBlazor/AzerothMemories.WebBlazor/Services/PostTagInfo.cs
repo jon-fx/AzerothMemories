@@ -38,7 +38,7 @@ public sealed class PostTagInfo
                 return $"{Type}-{Name}";
             }
 
-            return $"{Type}-{Id}";
+            return GetTagString(Type, Id);
         }
     }
 
@@ -60,5 +60,10 @@ public sealed class PostTagInfo
         }
 
         return $"{(int)Type}-{Id}";
+    }
+
+    public static string GetTagString(PostTagType tagType, long tagId)
+    {
+        return $"{tagType}-{tagId}";
     }
 }
