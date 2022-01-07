@@ -1,8 +1,7 @@
-﻿namespace AzerothMemories.WebBlazor.Services
+﻿namespace AzerothMemories.WebBlazor.Services;
+
+[Flags]
+public enum PostFlags
 {
-    [Flags]
-    public enum PostFlags
-    {
-        None,
-    }
+    None,
 }

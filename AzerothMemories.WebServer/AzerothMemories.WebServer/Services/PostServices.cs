@@ -8,6 +8,7 @@ namespace AzerothMemories.WebServer.Services;
 [RegisterAlias(typeof(IPostServices))]
 public class PostServices : IPostServices
 {
+    private const int commentsPerPage = 5;
     private readonly CommonServices _commonServices;
 
     public PostServices(CommonServices commonServices)

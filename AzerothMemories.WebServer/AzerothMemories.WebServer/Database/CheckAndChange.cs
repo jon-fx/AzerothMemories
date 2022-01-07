@@ -1,18 +1,17 @@
-﻿namespace AzerothMemories.WebServer.Database
+﻿namespace AzerothMemories.WebServer.Database;
+
+public static class CheckAndChange
 {
-    public static class CheckAndChange
+    public static bool Check<TValue>(ref TValue currentValue, TValue newValue, ref bool changed)
     {
-        public static bool Check<TValue>(ref TValue currentValue, TValue newValue, ref bool changed)
+        if (EqualityComparer<TValue>.Default.Equals(currentValue, newValue))
         {
-            if (EqualityComparer<TValue>.Default.Equals(currentValue, newValue))
-            {
-                return false;
-            }
-
-            changed = true;
-            currentValue = newValue;
-
-            return true;
+            return false;
         }
+
+        changed = true;
+        currentValue = newValue;
+
+        return true;
     }
 }

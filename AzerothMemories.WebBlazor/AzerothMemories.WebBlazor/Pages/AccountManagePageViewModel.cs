@@ -1,313 +1,312 @@
-﻿namespace AzerothMemories.WebBlazor.Pages
+﻿namespace AzerothMemories.WebBlazor.Pages;
+
+public sealed class AccountManagePageViewModel : ViewModelBase
 {
-    public sealed class AccountManagePageViewModel : ViewModelBase
+    public AccountManagePageViewModel()
     {
-        public AccountManagePageViewModel()
+        AllAvatars = new Dictionary<long, (string Link, string Name, long Id)>();
+    }
+
+    public string NewUsername { get; set; }
+
+    public bool NewUsernameValid { get; private set; }
+
+    public bool ChangeUsernameButtonVisible { get; private set; }
+
+    public Color NewUsernameTextBoxAdornmentColor { get; private set; }
+
+    public string NewUsernameTextBoxAdornmentIcon { get; private set; }
+
+    public ActiveAccountViewModel AccountViewModel { get; private set; }
+
+    public string[] SocialLinks { get; set; }
+
+    public string[] SocialLinksAdornmentIcons { get; private set; }
+
+    public Color[] SocialLinksAdornmentColors { get; private set; }
+
+    public (string Link, string Name, long Id) Avatar { get; set; }
+
+    public Dictionary<long, (string Link, string Name, long Id)> AllAvatars { get; init; }
+
+    public override async Task ComputeState(CancellationToken cancellationToken)
+    {
+        AccountViewModel = await Services.AccountServices.TryGetAccount(null, cancellationToken);
+
+        if (AccountViewModel == null)
         {
-            AllAvatars = new Dictionary<long, (string Link, string Name, long Id)>();
+        }
+        else
+        {
+            if (NewUsername == null)
+            {
+                NewUsername = AccountViewModel.Username;
+            }
+
+            NewUsernameTextBoxAdornmentColor = Color.Success;
+            NewUsernameTextBoxAdornmentIcon = Icons.Filled.Check;
+
+            if (SocialLinks == null)
+            {
+                SocialLinks = AccountViewModel.SocialLinks;
+            }
+
+            SocialLinksAdornmentIcons = new string[SocialLinks.Length];
+            SocialLinksAdornmentColors = new Color[SocialLinks.Length];
+
+            ResetAvatars();
+        }
+    }
+
+    private void ResetAvatars()
+    {
+        var noneKey = 0;
+        var currentKey = -1;
+        var isDefault = Avatar == default;
+
+        if (!AllAvatars.ContainsKey(noneKey))
+        {
+            AllAvatars.Add(noneKey, (null, "None", noneKey));
+
+            if (isDefault) Avatar = AllAvatars[noneKey];
         }
 
-        public string NewUsername { get; set; }
-
-        public bool NewUsernameValid { get; private set; }
-
-        public bool ChangeUsernameButtonVisible { get; private set; }
-
-        public Color NewUsernameTextBoxAdornmentColor { get; private set; }
-
-        public string NewUsernameTextBoxAdornmentIcon { get; private set; }
-
-        public ActiveAccountViewModel AccountViewModel { get; private set; }
-
-        public string[] SocialLinks { get; set; }
-
-        public string[] SocialLinksAdornmentIcons { get; private set; }
-
-        public Color[] SocialLinksAdornmentColors { get; private set; }
-
-        public (string Link, string Name, long Id) Avatar { get; set; }
-
-        public Dictionary<long, (string Link, string Name, long Id)> AllAvatars { get; init; }
-
-        public override async Task ComputeState(CancellationToken cancellationToken)
+        if (!string.IsNullOrWhiteSpace(AccountViewModel.Avatar))
         {
-            AccountViewModel = await Services.AccountServices.TryGetAccount(null, cancellationToken);
+            AllAvatars[currentKey] = (AccountViewModel.Avatar, "Current", currentKey);
 
-            if (AccountViewModel == null)
+            if (isDefault) Avatar = AllAvatars[currentKey];
+        }
+
+        foreach (var character in AccountViewModel.GetCharactersSafe())
+        {
+            AllAvatars[character.Id] = (character.AvatarLinkWithFallBack, character.Name, character.Id);
+        }
+
+        if (!isDefault && AllAvatars.TryGetValue(currentKey, out var current) && AllAvatars.TryGetValue(Avatar.Id, out var selected))
+        {
+            if (current.Link == selected.Link)
             {
-            }
-            else
-            {
-                if (NewUsername == null)
-                {
-                    NewUsername = AccountViewModel.Username;
-                }
-
-                NewUsernameTextBoxAdornmentColor = Color.Success;
-                NewUsernameTextBoxAdornmentIcon = Icons.Filled.Check;
-
-                if (SocialLinks == null)
-                {
-                    SocialLinks = AccountViewModel.SocialLinks;
-                }
-
-                SocialLinksAdornmentIcons = new string[SocialLinks.Length];
-                SocialLinksAdornmentColors = new Color[SocialLinks.Length];
-
-                ResetAvatars();
+                Avatar = current;
             }
         }
 
-        private void ResetAvatars()
+        OnViewModelChanged?.Invoke();
+    }
+
+    public Task OnNewUsernameTextChanged(string username)
+    {
+        return CheckValidUsername(username);
+    }
+
+    public async Task<bool> CheckValidUsername(string username)
+    {
+        if (AccountViewModel == null)
         {
-            var noneKey = 0;
-            var currentKey = -1;
-            var isDefault = Avatar == default;
-
-            if (!AllAvatars.ContainsKey(noneKey))
-            {
-                AllAvatars.Add(noneKey, (null, "None", noneKey));
-
-                if (isDefault) Avatar = AllAvatars[noneKey];
-            }
-
-            if (!string.IsNullOrWhiteSpace(AccountViewModel.Avatar))
-            {
-                AllAvatars[currentKey] = (AccountViewModel.Avatar, "Current", currentKey);
-
-                if (isDefault) Avatar = AllAvatars[currentKey];
-            }
-
-            foreach (var character in AccountViewModel.GetCharactersSafe())
-            {
-                AllAvatars[character.Id] = (character.AvatarLinkWithFallBack, character.Name, character.Id);
-            }
-
-            if (!isDefault && AllAvatars.TryGetValue(currentKey, out var current) && AllAvatars.TryGetValue(Avatar.Id, out var selected))
-            {
-                if (current.Link == selected.Link)
-                {
-                    Avatar = current;
-                }
-            }
-
-            OnViewModelChanged?.Invoke();
+            return false;
         }
 
-        public Task OnNewUsernameTextChanged(string username)
+        var isValid = false;
+        var isVisible = false;
+
+        if (string.IsNullOrWhiteSpace(username))
         {
-            return CheckValidUsername(username);
+        }
+        else if (username == AccountViewModel.Username)
+        {
+            isValid = true;
+        }
+        else if (DatabaseHelpers.IsValidAccountName(username))
+        {
+            isValid = await Services.AccountServices.TryReserveUsername(null, username);
+            isVisible = isValid;
         }
 
-        public async Task<bool> CheckValidUsername(string username)
+        if (NewUsernameValid == isValid && ChangeUsernameButtonVisible == isVisible)
         {
-            if (AccountViewModel == null)
-            {
-                return false;
-            }
-
-            var isValid = false;
-            var isVisible = false;
-
-            if (string.IsNullOrWhiteSpace(username))
-            {
-            }
-            else if (username == AccountViewModel.Username)
-            {
-                isValid = true;
-            }
-            else if (DatabaseHelpers.IsValidAccountName(username))
-            {
-                isValid = await Services.AccountServices.TryReserveUsername(null, username);
-                isVisible = isValid;
-            }
-
-            if (NewUsernameValid == isValid && ChangeUsernameButtonVisible == isVisible)
-            {
-                return NewUsernameValid;
-            }
-
-            NewUsernameValid = isValid;
-            ChangeUsernameButtonVisible = isVisible;
-
-            if (NewUsernameValid)
-            {
-                NewUsernameTextBoxAdornmentColor = Color.Success;
-                NewUsernameTextBoxAdornmentIcon = Icons.Filled.Check;
-            }
-            else
-            {
-                NewUsernameTextBoxAdornmentColor = Color.Error;
-                NewUsernameTextBoxAdornmentIcon = Icons.Filled.Warning;
-            }
-
-            OnViewModelChanged?.Invoke();
-
             return NewUsernameValid;
         }
 
-        public async Task OnChangeUsernameClicked()
+        NewUsernameValid = isValid;
+        ChangeUsernameButtonVisible = isVisible;
+
+        if (NewUsernameValid)
         {
-            if (AccountViewModel == null)
-            {
-                return;
-            }
-
-            if (!AccountViewModel.CanChangeUsername)
-            {
-                return;
-            }
-
-            if (NewUsername == AccountViewModel.Username)
-            {
-                return;
-            }
-
-            ChangeUsernameButtonVisible = false;
-
-            if (!await CheckValidUsername(NewUsername))
-            {
-                return;
-            }
-
-            var result = await Services.AccountServices.TryChangeUsername(null, NewUsername);
-            if (result)
-            {
-                AccountViewModel.Username = NewUsername;
-            }
-
-            ChangeUsernameButtonVisible = false;
-
-            OnViewModelChanged?.Invoke();
+            NewUsernameTextBoxAdornmentColor = Color.Success;
+            NewUsernameTextBoxAdornmentIcon = Icons.Filled.Check;
+        }
+        else
+        {
+            NewUsernameTextBoxAdornmentColor = Color.Error;
+            NewUsernameTextBoxAdornmentIcon = Icons.Filled.Warning;
         }
 
-        public async Task OnIsPrivateChanged(bool newValue)
+        OnViewModelChanged?.Invoke();
+
+        return NewUsernameValid;
+    }
+
+    public async Task OnChangeUsernameClicked()
+    {
+        if (AccountViewModel == null)
         {
-            if (AccountViewModel == null)
-            {
-                return;
-            }
-
-            var result = await Services.AccountServices.TryChangeIsPrivate(null, newValue);
-            if (AccountViewModel.IsPrivate == result)
-            {
-                return;
-            }
-
-            AccountViewModel.IsPrivate = newValue;
-
-            OnViewModelChanged?.Invoke();
+            return;
         }
 
-        public async Task OnBattleTagVisibilityChanged(bool newValue)
+        if (!AccountViewModel.CanChangeUsername)
         {
-            if (AccountViewModel == null)
-            {
-                return;
-            }
-
-            var result = await Services.AccountServices.TryChangeBattleTagVisibility(null, newValue);
-            if (AccountViewModel.BattleTagIsPublic == result)
-            {
-                return;
-            }
-
-            AccountViewModel.BattleTagIsPublic = newValue;
-
-            OnViewModelChanged?.Invoke();
+            return;
         }
 
-        public async Task OnChangeAvatarClicked()
+        if (NewUsername == AccountViewModel.Username)
         {
-            if (AccountViewModel == null)
-            {
-                return;
-            }
-
-            var avatarLink = Avatar.Link;
-            if (AccountViewModel.Avatar == avatarLink)
-            {
-                return;
-            }
-
-            AccountViewModel.Avatar = await Services.AccountServices.TryChangeAvatar(null, avatarLink);
-            //OnViewModelChanged?.Invoke();
+            return;
         }
 
-        public async Task OnSocialLinkChanged(SocialHelpers link, string newValue)
+        ChangeUsernameButtonVisible = false;
+
+        if (!await CheckValidUsername(NewUsername))
         {
-            if (AccountViewModel == null)
-            {
-                return;
-            }
+            return;
+        }
 
-            var oldValue = AccountViewModel.SocialLinks[link.LinkId];
-            var shouldChange = false;
-            var color = Color.Error;
-            var icon = string.Empty;
+        var result = await Services.AccountServices.TryChangeUsername(null, NewUsername);
+        if (result)
+        {
+            AccountViewModel.Username = NewUsername;
+        }
 
-            if (newValue == oldValue)
-            {
-                color = Color.Success;
-                icon = Icons.Filled.Check;
-            }
-            else if (string.IsNullOrWhiteSpace(newValue))
-            {
-                if (string.IsNullOrWhiteSpace(oldValue))
-                {
-                }
-                else
-                {
-                    color = Color.Success;
-                    icon = Icons.Filled.Check;
-                    shouldChange = true;
-                }
-            }
-            else if (link.ValidatorFunc(newValue))
-            {
-                shouldChange = true;
+        ChangeUsernameButtonVisible = false;
 
-                color = Color.Success;
-                icon = Icons.Filled.Check;
+        OnViewModelChanged?.Invoke();
+    }
+
+    public async Task OnIsPrivateChanged(bool newValue)
+    {
+        if (AccountViewModel == null)
+        {
+            return;
+        }
+
+        var result = await Services.AccountServices.TryChangeIsPrivate(null, newValue);
+        if (AccountViewModel.IsPrivate == result)
+        {
+            return;
+        }
+
+        AccountViewModel.IsPrivate = newValue;
+
+        OnViewModelChanged?.Invoke();
+    }
+
+    public async Task OnBattleTagVisibilityChanged(bool newValue)
+    {
+        if (AccountViewModel == null)
+        {
+            return;
+        }
+
+        var result = await Services.AccountServices.TryChangeBattleTagVisibility(null, newValue);
+        if (AccountViewModel.BattleTagIsPublic == result)
+        {
+            return;
+        }
+
+        AccountViewModel.BattleTagIsPublic = newValue;
+
+        OnViewModelChanged?.Invoke();
+    }
+
+    public async Task OnChangeAvatarClicked()
+    {
+        if (AccountViewModel == null)
+        {
+            return;
+        }
+
+        var avatarLink = Avatar.Link;
+        if (AccountViewModel.Avatar == avatarLink)
+        {
+            return;
+        }
+
+        AccountViewModel.Avatar = await Services.AccountServices.TryChangeAvatar(null, avatarLink);
+        //OnViewModelChanged?.Invoke();
+    }
+
+    public async Task OnSocialLinkChanged(SocialHelpers link, string newValue)
+    {
+        if (AccountViewModel == null)
+        {
+            return;
+        }
+
+        var oldValue = AccountViewModel.SocialLinks[link.LinkId];
+        var shouldChange = false;
+        var color = Color.Error;
+        var icon = string.Empty;
+
+        if (newValue == oldValue)
+        {
+            color = Color.Success;
+            icon = Icons.Filled.Check;
+        }
+        else if (string.IsNullOrWhiteSpace(newValue))
+        {
+            if (string.IsNullOrWhiteSpace(oldValue))
+            {
             }
             else
             {
-                color = Color.Error;
-                icon = Icons.Filled.Warning;
+                color = Color.Success;
+                icon = Icons.Filled.Check;
+                shouldChange = true;
             }
+        }
+        else if (link.ValidatorFunc(newValue))
+        {
+            shouldChange = true;
 
-            SocialLinks[link.LinkId] = newValue;
-            SocialLinksAdornmentIcons[link.LinkId] = icon;
-            SocialLinksAdornmentColors[link.LinkId] = color;
-
-            if (shouldChange)
-            {
-                AccountViewModel.SocialLinks[link.LinkId] = await Services.AccountServices.TryChangeSocialLink(null, link.LinkId, newValue);
-                SocialLinksAdornmentIcons[link.LinkId] = string.Empty;
-            }
-
-            OnViewModelChanged?.Invoke();
+            color = Color.Success;
+            icon = Icons.Filled.Check;
+        }
+        else
+        {
+            color = Color.Error;
+            icon = Icons.Filled.Warning;
         }
 
-        public async Task OnAccountSyncToggleChanged(CharacterViewModel character, bool newValue)
+        SocialLinks[link.LinkId] = newValue;
+        SocialLinksAdornmentIcons[link.LinkId] = icon;
+        SocialLinksAdornmentColors[link.LinkId] = color;
+
+        if (shouldChange)
         {
-            if (AccountViewModel == null)
+            AccountViewModel.SocialLinks[link.LinkId] = await Services.AccountServices.TryChangeSocialLink(null, link.LinkId, newValue);
+            SocialLinksAdornmentIcons[link.LinkId] = string.Empty;
+        }
+
+        OnViewModelChanged?.Invoke();
+    }
+
+    public async Task OnAccountSyncToggleChanged(CharacterViewModel character, bool newValue)
+    {
+        if (AccountViewModel == null)
+        {
+            return;
+        }
+
+        if (character.AccountSync != newValue)
+        {
+            var result = await Services.CharacterServices.TryChangeCharacterAccountSync(null, character.Id, newValue);
+            if (character.AccountSync == result)
             {
                 return;
             }
 
-            if (character.AccountSync != newValue)
-            {
-                var result = await Services.CharacterServices.TryChangeCharacterAccountSync(null, character.Id, newValue);
-                if (character.AccountSync == result)
-                {
-                    return;
-                }
+            character.AccountSync = newValue;
 
-                character.AccountSync = newValue;
-
-                OnViewModelChanged?.Invoke();
-            }
+            OnViewModelChanged?.Invoke();
         }
     }
 }

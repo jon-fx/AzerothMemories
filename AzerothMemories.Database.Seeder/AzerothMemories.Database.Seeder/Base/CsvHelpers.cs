@@ -2,48 +2,47 @@
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 
-namespace AzerothMemories.Database.Seeder.Base
+namespace AzerothMemories.Database.Seeder.Base;
+
+internal static class CsvHelpers
 {
-    internal static class CsvHelpers
+    private static readonly CsvConfiguration _config;
+    private static readonly List<(Type type, ITypeConverter converter)> _converters;
+
+    static CsvHelpers()
     {
-        private static readonly CsvConfiguration _config;
-        private static readonly List<(Type type, ITypeConverter converter)> _converters;
+        _config = new CsvConfiguration(CultureInfo.InvariantCulture);
+        _converters = new List<(Type type, ITypeConverter converter)>();
 
-        static CsvHelpers()
+        _config.AllowComments = true;
+        _config.ShouldSkipRecord = record => record.Record.All(string.IsNullOrEmpty);
+    }
+
+    private static void Initialize(this CsvContext context)
+    {
+        context.TypeConverterOptionsCache.GetOptions<string>().NullValues.Add("NULL");
+        context.TypeConverterOptionsCache.GetOptions<string>().NullValues.Add(string.Empty);
+        context.TypeConverterOptionsCache.GetOptions<bool>().BooleanFalseValues.Add(string.Empty);
+
+        for (var i = 0; i < _converters.Count; i++)
         {
-            _config = new CsvConfiguration(CultureInfo.InvariantCulture);
-            _converters = new List<(Type type, ITypeConverter converter)>();
-
-            _config.AllowComments = true;
-            _config.ShouldSkipRecord = record => record.Record.All(string.IsNullOrEmpty);
+            context.TypeConverterCache.AddConverter(_converters[i].type, _converters[i].converter);
         }
+    }
 
-        private static void Initialize(this CsvContext context)
-        {
-            context.TypeConverterOptionsCache.GetOptions<string>().NullValues.Add("NULL");
-            context.TypeConverterOptionsCache.GetOptions<string>().NullValues.Add(string.Empty);
-            context.TypeConverterOptionsCache.GetOptions<bool>().BooleanFalseValues.Add(string.Empty);
+    public static CsvReader GetReader(StreamReader streamReader)
+    {
+        var reader = new CsvReader(streamReader, _config);
+        reader.Context.Initialize();
 
-            for (var i = 0; i < _converters.Count; i++)
-            {
-                context.TypeConverterCache.AddConverter(_converters[i].type, _converters[i].converter);
-            }
-        }
+        return reader;
+    }
 
-        public static CsvReader GetReader(StreamReader streamReader)
-        {
-            var reader = new CsvReader(streamReader, _config);
-            reader.Context.Initialize();
+    public static CsvWriter GetWriter(StreamWriter streamWriter)
+    {
+        var writer = new CsvWriter(streamWriter, _config);
+        writer.Context.Initialize();
 
-            return reader;
-        }
-
-        public static CsvWriter GetWriter(StreamWriter streamWriter)
-        {
-            var writer = new CsvWriter(streamWriter, _config);
-            writer.Context.Initialize();
-
-            return writer;
-        }
+        return writer;
     }
 }

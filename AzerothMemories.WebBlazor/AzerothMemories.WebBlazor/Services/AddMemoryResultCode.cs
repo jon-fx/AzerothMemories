@@ -1,16 +1,15 @@
-﻿namespace AzerothMemories.WebBlazor.Services
+﻿namespace AzerothMemories.WebBlazor.Services;
+
+public enum AddMemoryResultCode
 {
-    public enum AddMemoryResultCode
-    {
-        None,
-        Success,
-        Canceled,
-        Failed,
-        CommentTooLong,
-        ParseCommentFailed,
-        SessionNotFound,
-        InvalidTime,
-        InvalidTags,
-        TooManyTags
-    }
+    None,
+    Success,
+    Canceled,
+    Failed,
+    CommentTooLong,
+    ParseCommentFailed,
+    SessionNotFound,
+    InvalidTime,
+    InvalidTags,
+    TooManyTags
 }
