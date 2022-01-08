@@ -18,7 +18,7 @@ else
     {
         if (Services.ActiveAccountServices.ActiveCommentContext == this)
         {
-            <PublishCommentBoxComponent PostId="@Post.Id" />
+            <PublishCommentBoxComponent Services="@Services" PostId="@Post.Id" />
         }
         else
         {
@@ -45,7 +45,7 @@ else
         var showAdd = Services.ActiveAccountServices.ActiveCommentContext != this && PostComments.Page == PostComments.TotalPages;
         if (Services.ActiveAccountServices.ActiveCommentContext == this)
         {
-            <PublishCommentBoxComponent PostId="@Post.Id" />
+            <PublishCommentBoxComponent Services="@Services" PostId="@Post.Id" />
         }
 
         if (showAdd)

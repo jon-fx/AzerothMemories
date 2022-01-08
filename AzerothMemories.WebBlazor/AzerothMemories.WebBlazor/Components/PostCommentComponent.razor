@@ -107,7 +107,7 @@
 
     @if (Services.ActiveAccountServices.ActiveCommentContext == this)
     {
-        <PublishCommentBoxComponent ReplyToUserId="@comment.AccountId" ReplyToUsername="@comment.AccountUsername" CommentId="@comment.Id" PostId="@comment.PostId" />
+        <PublishCommentBoxComponent Services="@Services" ReplyToUserId="@comment.AccountId" ReplyToUsername="@comment.AccountUsername" PostId="@comment.PostId"  CommentId="@comment.Id"  />
     }
 </div>
 

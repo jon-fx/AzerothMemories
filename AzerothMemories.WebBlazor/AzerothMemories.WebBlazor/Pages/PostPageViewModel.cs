@@ -51,83 +51,79 @@ public sealed class PostPageViewModel : ViewModelBase
 
     public override async Task ComputeState(CancellationToken cancellationToken)
     {
+        var accountViewModel = AccountViewModel;
         if (_accountId > 0)
         {
-            AccountViewModel = await Services.AccountServices.TryGetAccountById(null, _accountId, cancellationToken);
+            accountViewModel = await Services.AccountServices.TryGetAccountById(null, _accountId, cancellationToken);
         }
         else if (!string.IsNullOrWhiteSpace(_username))
         {
-            AccountViewModel = await Services.AccountServices.TryGetAccountByUsername(null, _username, cancellationToken);
+            accountViewModel = await Services.AccountServices.TryGetAccountByUsername(null, _username, cancellationToken);
         }
 
-        if (AccountViewModel != null && _postId > 0)
-        {
-            PostViewModel = await Services.PostServices.TryGetPostViewModel(null, AccountViewModel.Id, _postId, CultureInfo.CurrentCulture.Name, cancellationToken);
-        }
-
-        if (AccountViewModel == null)
+        if (accountViewModel == null)
         {
             ErrorMessage = "Invalid Account";
+            return;
         }
-        else if (PostViewModel == null)
+
+        var postViewModel = await Services.PostServices.TryGetPostViewModel(null, accountViewModel.Id, _postId, CultureInfo.CurrentCulture.Name, cancellationToken);
+        if (postViewModel == null)
         {
             ErrorMessage = "Post Not Found";
-        }
-        else
-        {
-            ErrorMessage = null;
+            return;
         }
 
-        if (PostViewModel != null)
-        {
-            var commentReactions = await Services.PostServices.TryGetMyCommentReactions(null, _postId);
-            var pageViewModel = await Services.PostServices.TryGetCommentsPage(null, _postId, CurrentPage, FocusedCommentId);
+        AccountViewModel = accountViewModel;
+        PostViewModel = postViewModel;
 
-            foreach (var comment in pageViewModel.AllComments)
+        var commentReactions = await Services.PostServices.TryGetMyCommentReactions(null, _postId);
+        var pageViewModel = await Services.PostServices.TryGetCommentsPage(null, _postId, CurrentPage, FocusedCommentId);
+
+        foreach (var comment in pageViewModel.AllComments)
+        {
+            if (!_allCommentTreeNodes.TryGetValue(comment.Key, out var treeNode))
             {
-                if (!_allCommentTreeNodes.TryGetValue(comment.Key, out var treeNode))
+                _allCommentTreeNodes.Add(comment.Key, treeNode = new PostCommentTreeNode(PostViewModel.AccountId, _postId, comment.Key));
+            }
+
+            treeNode.Comment = comment.Value;
+
+            if (comment.Value.ParentId == 0)
+            {
+                if (pageViewModel.RootComments.Contains(treeNode))
                 {
-                    _allCommentTreeNodes.Add(comment.Key, treeNode = new PostCommentTreeNode(PostViewModel.AccountId, _postId, comment.Key));
                 }
-
-                treeNode.Comment = comment.Value;
-
-                if (comment.Value.ParentId == 0)
+                else
                 {
-                    if (pageViewModel.RootComments.Contains(treeNode))
+                    pageViewModel.RootComments.Add(treeNode);
+                }
+            }
+            else
+            {
+                if (_allCommentTreeNodes.TryGetValue(comment.Value.ParentId, out var parentNode))
+                {
+                    if (parentNode.Children.Contains(treeNode))
                     {
                     }
                     else
                     {
-                        pageViewModel.RootComments.Add(treeNode);
+                        parentNode.Children.Add(treeNode);
                     }
                 }
                 else
                 {
-                    if (_allCommentTreeNodes.TryGetValue(comment.Value.ParentId, out var parentNode))
-                    {
-                        if (parentNode.Children.Contains(treeNode))
-                        {
-                        }
-                        else
-                        {
-                            parentNode.Children.Add(treeNode);
-                        }
-                    }
-                    else
-                    {
-                        throw new NotImplementedException();
-                    }
-                }
-
-                if (commentReactions.TryGetValue(comment.Key, out var reactionViewModel))
-                {
-                    treeNode.Reaction = reactionViewModel.Reaction;
-                    treeNode.ReactionId = reactionViewModel.Id;
+                    throw new NotImplementedException();
                 }
             }
 
-            PostCommentPageViewModel = pageViewModel;
+            if (commentReactions.TryGetValue(comment.Key, out var reactionViewModel))
+            {
+                treeNode.Reaction = reactionViewModel.Reaction;
+                treeNode.ReactionId = reactionViewModel.Id;
+            }
         }
+
+        PostCommentPageViewModel = pageViewModel;
     }
 }

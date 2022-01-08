@@ -576,6 +576,11 @@ public class PostServices : IPostServices
         return true;
     }
 
+    public async Task<long> TryPublishComment(Session session, long postId, long parentId, AddCommentTransferData commentText)
+    {
+        return 1;
+    }
+
     private async Task TryRestoreMemoryUpdate(DatabaseConnection database, long postId, PostTagType tagType, long? oldTag, long? newTag)
     {
         if (oldTag == null)

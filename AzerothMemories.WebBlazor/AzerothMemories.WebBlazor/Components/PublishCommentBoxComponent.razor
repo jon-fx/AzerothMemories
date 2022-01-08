@@ -1,11 +1,98 @@
-﻿<h3>PublishCommentBoxComponent</h3>
+﻿<div class="postIndent">
+    @if (!Services.ActiveAccountServices.IsAccountActive)
+    {
+        <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.body1">NOT LOGGED IN</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+        </MudCard>
+    }
+    else
+    {
+        <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
+            <MudCardHeader>
+                <CardHeaderAvatar>
+                    <MudAvatar Size="Size.Small" Image="@Services.ActiveAccountServices.AccountViewModel.Avatar">@Services.ActiveAccountServices.AccountViewModel.GetAvatarText()</MudAvatar>
+                </CardHeaderAvatar>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.body1">@Services.ActiveAccountServices.AccountViewModel.Username</MudText>
+                </CardHeaderContent>
+                <CardHeaderActions>
+                </CardHeaderActions>
+            </MudCardHeader>
+
+            <MudCardContent Class="pa-0 ma-1">
+                <PublishCommentComponent @ref="_commentComponent" Lines="1" TagsList="@Services.ActiveAccountServices.GetUserTagList()" OnSingleLineSubmit="@OnSubmitComment" Disabled="@_isCommentBoxDisabled" AutoFocus="true" />
+            </MudCardContent>
+
+            <MudCardActions Class="pa-0 ma-2">
+            </MudCardActions>
+        </MudCard>
+    }
+</div>
 
 @code {
+    private string _prefixText;
+    private bool _isCommentBoxDisabled;
+    private PublishCommentComponent _commentComponent;
+
+    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
+
     [Parameter] public long ReplyToUserId { get; init; }
 
     [Parameter] public string ReplyToUsername { get; init; }
 
+    [Parameter, EditorRequired] public long PostId { get; init; }
+
     [Parameter] public long CommentId { get; init; }
 
-    [Parameter] public long PostId { get; init; }
+    //protected override async Task<bool> OnAfterFirstRender()
+    //{
+    //    await base.OnAfterFirstRender();
+
+    //    if (_commentComponent != null && ReplyToUserId > 0 && !string.IsNullOrEmpty(ReplyToUsername))
+    //    {
+    //        _prefixText = $"@{ReplyToUsername} ";
+    //        _commentComponent.ExtraTags.TryAdd(ReplyToUserId, ReplyToUsername);
+    //        _commentComponent.SetText(_prefixText);
+    //    }
+
+    //    return true;
+    //}
+
+    private async Task OnSubmitComment(string commentText)
+    {
+        _isCommentBoxDisabled = true;
+
+        //var accountId = Services.ActiveAccountServices.aa;
+        //if (accountId == 0)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        var postId = PostId;
+        var parentId = CommentId;
+
+        //var postGrain = Services.CommonServices.ClusterClient.GetGrain<IPostGrain>(postId);
+        //var finalText = TagHelpers.GetCommentText(_commentComponent, out var userTags, out var hashTags);
+        //var result = await postGrain.OnComment(accountId, parentId, userTags, finalText, hashTags);
+        //if (result > 0)
+        //{
+        //    _commentComponent.Reset();
+
+        //    ActiveAccountServices.ActiveCommentContext = null;
+        //}
+
+        var result = await Services.PostServices.TryPublishComment(null, postId, parentId, new AddCommentTransferData { Comment = commentText});
+        if (result > 0)
+        {
+            _commentComponent.Reset();
+
+            Services.ActiveAccountServices.ActiveCommentContext = null;
+        }
+
+        _isCommentBoxDisabled = false;
+    }
 }

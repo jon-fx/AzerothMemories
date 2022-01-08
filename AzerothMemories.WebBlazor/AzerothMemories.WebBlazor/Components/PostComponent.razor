@@ -1,7 +1,6 @@
-﻿
-@if (Post == null)
+﻿@if (Post == null)
 {
-    <CardLoadingComponent/>
+    <CardLoadingComponent />
 }
 else if (Post.DeletedTimeStamp != 0)
 {
@@ -35,10 +34,10 @@ else
             </CardHeaderContent>
             <CardHeaderActions>
                 <MudMenu Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Dense="true">
-                    
+
                     <MudMenuItem Link="@($"/post/{Post.AccountId}/{Post.Id}")">
                         <MudTooltip Text="Link" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
-                            <MudIcon Icon="@Icons.Material.Filled.AddLink" Size="Size.Small"/>
+                            <MudIcon Icon="@Icons.Material.Filled.AddLink" Size="Size.Small" />
                         </MudTooltip>
                     </MudMenuItem>
 
@@ -46,7 +45,7 @@ else
             </CardHeaderActions>
         </MudCardHeader>
 
-        <MudDivider/>
+        <MudDivider />
 
         <MudCardContent Class="pa-0 ma-2">
             @if (!string.IsNullOrWhiteSpace(Post.PostComment))
@@ -57,7 +56,7 @@ else
             @foreach (var blobName in Post.ImageBlobNames)
             {
             }
-            
+
             <div class="d-flex justify-space-between pa-0 ma-2">
                 @if (InDialog)
                 {
@@ -80,17 +79,17 @@ else
                     {
                         if (OnTagChipClickedCallback.HasDelegate)
                         {
-                            <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClick="@(() => OnTagChipClickedCallback.InvokeAsync(tagInfo))"/>
+                            <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClick="@(() => OnTagChipClickedCallback.InvokeAsync(tagInfo))" />
                         }
                         else
                         {
-                            <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClick="@(() => Services.NavigationManager.NavigateTo(tagInfo.GetTagQueryLink()))"/>
+                            <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClick="@(() => Services.NavigationManager.NavigateTo(tagInfo.GetTagQueryLink()))" />
                         }
                     }
                 }
             }
         </MudCardContent>
-        
+
         <MudCardActions>
             <MudButtonGroup OverrideStyles="true" Class="pa-2 ma-2" Variant="Variant.Filled" Size="Size.Small">
                 <MudButton StartIcon="@Icons.Material.Filled.Favorite" IconColor="@(Post.Reaction == PostReaction.None ? Color.Default : Color.Secondary)" Disabled="@(IsDisabled || _userReacting)" OnClick="() => OnReactButtonClicked(Post.Reaction)">@Post.Reaction.Humanize()</MudButton>
@@ -106,14 +105,14 @@ else
                 <MudButton StartIcon="@Icons.Material.Filled.Share" Disabled="@(IsDisabled ||  _isChangingTags)" OnClick="() => _showTagMenu = !_showTagMenu">Restore Memory</MudButton>
             </MudButtonGroup>
         </MudCardActions>
-    </MudCard>    
+    </MudCard>
 
     @if (_showReactions)
     {
         var reactionData = _postReactions;
         if (_reactionAreLoading)
         {
-            <CardLoadingComponent/>
+            <CardLoadingComponent />
         }
         else if (reactionData == null)
         {
@@ -138,7 +137,7 @@ else
                     @foreach (var reaction in reactionData)
                     {
                         var text = $"{reaction.Reaction.Humanize()} {reaction.AccountUsername}";
-                        <MudChip @key="@reaction.Id" Text="@text" OnClick="() => OnReactionChipClickedCallback(reaction)"/>
+                        <MudChip @key="@reaction.Id" Text="@text" OnClick="() => OnReactionChipClickedCallback(reaction)" />
                     }
                 </MudCardContent>
             </MudCard>
@@ -149,7 +148,7 @@ else
     {
         if (_isChangingTags)
         {
-            <CardLoadingComponent/>
+            <CardLoadingComponent />
         }
         else
         {
@@ -196,16 +195,16 @@ else
                                 <MudTooltip @key="@character.Id" Placement="Placement.Bottom" Color="Color.Dark">
                                     <ChildContent>
                                         <MudButton Id="@index" Variant="Variant.Filled" Disabled="taggedCharacter != null && taggedCharacter.Id == character.Id" OnClick="() => OnRestoreButtonClicked(taggedCharacter, character)">
-                                            <MudAvatar Size="Size.Medium" Image="@character.AvatarLink"/>
+                                            <MudAvatar Size="Size.Medium" Image="@character.AvatarLink" />
                                         </MudButton>
                                     </ChildContent>
                                     <TooltipContent>
                                         <CharacterNameLinkComponent CharacterName="@character.Name"
-                                                                    CharacterClass="@character.Class"
-                                                                    CharacterRealmId="@character.RealmId"
-                                                                    CharacterRegionInfo="@character.RegionId.ToInfo()"/>
+                                            CharacterClass="@character.Class"
+                                            CharacterRealmId="@character.RealmId"
+                                            CharacterRegionInfo="@character.RegionId.ToInfo()" />
 
-                                        <RealmLinkComponent BlizzardRealmId="@character.RealmId"/>
+                                        <RealmLinkComponent BlizzardRealmId="@character.RealmId" />
 
                                         <MudText Class="d-inline">@character.Level @Services.StringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
                                         <MudText Class=@($"d-inline wowclass-{character.Class}")>@Services.StringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
@@ -240,7 +239,7 @@ else
     private bool _showTagMenu;
     private bool _isChangingTags;
 
-    [Parameter, EditorRequired] 
+    [Parameter, EditorRequired]
     public IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired]
@@ -264,7 +263,7 @@ else
     {
         await base.OnParametersSetAsync();
 
-        if (_postChanged )
+        if (_postChanged)
         {
             if (Post != null)
             {
@@ -296,10 +295,10 @@ else
         }
 
         _userReacting = true;
-        
+
         var postId = Post.Id;
 
-        Post.ReactionId =   await Services.PostServices.TryReactToPost(null, postId, newReaction);
+        Post.ReactionId = await Services.PostServices.TryReactToPost(null, postId, newReaction);
         Post.Reaction = newReaction;
 
         _userReacting = false;
@@ -317,7 +316,6 @@ else
             await TryLoadReactions();
         }
     }
-    
 
     private async Task TryLoadReactions()
     {
@@ -341,7 +339,7 @@ else
         }
         else if (reactionData.Length == 0)
         {
-            _postReactions= Array.Empty<PostReactionViewModel>();
+            _postReactions = Array.Empty<PostReactionViewModel>();
         }
         else
         {
@@ -358,7 +356,7 @@ else
 
     private void OnReactionChipClickedCallback(PostReactionViewModel reaction)
     {
-        Services. NavigationManager.NavigateTo($"/account/{reaction.AccountId}");
+        Services.NavigationManager.NavigateTo($"/account/{reaction.AccountId}");
     }
 
     private async Task OnRestoreButtonClicked(CharacterViewModel previousCharacter, CharacterViewModel character)
