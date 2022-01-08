@@ -8,7 +8,6 @@ namespace AzerothMemories.WebServer.Services;
 [RegisterAlias(typeof(IPostServices))]
 public class PostServices : IPostServices
 {
-    private const int commentsPerPage = 5;
     private readonly CommonServices _commonServices;
 
     public PostServices(CommonServices commonServices)
@@ -391,9 +390,133 @@ public class PostServices : IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostCommentsPageViewModel> TryGetCommentsPage(Session session, long postId, int page, long focusedCommentId)
+    public virtual async Task<PostCommentPageViewModel> TryGetCommentsPage(Session session, long postId, int page, long focusedCommentId)
     {
-        return null;
+        var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
+        var posterAccountId = await GetAccountIdOfPost(postId);
+        if (posterAccountId == 0)
+        {
+            return null;
+        }
+
+        var canSeePost = await CanAccountIdSeePostsOf(activeAccountId, posterAccountId);
+        if (!canSeePost)
+        {
+            return null;
+        }
+
+        return await TryGetPostCommentsByPage(postId, page);
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<PostCommentPageViewModel> TryGetPostCommentsByPage(long postId, int page)
+    {
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        var allCommentPages = await TryGetAllPostComments(postId);
+        page = Math.Clamp(page, 1, allCommentPages.Length - 1);
+
+        return allCommentPages[page];
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<PostCommentPageViewModel[]> TryGetAllPostComments(long postId)
+    {
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        var query = from c in database.PostComments
+                    from a in database.Accounts.Where(r => r.Id == c.AccountId)
+                    where c.PostId == postId
+                    orderby c.CreatedTime
+                    select RecordToViewModels.CreateCommentViewModel(c, a.Username, a.Avatar);
+
+        var rootCommentNodes = new List<PostCommentViewModel>();
+        var allCommentNodes = await query.ToDictionaryAsync(x => x.Id, x => x);
+
+        var allPages = Array.Empty<PostCommentPageViewModel>();
+
+        void AddTopPage(PostCommentViewModel comment)
+        {
+            Exceptions.ThrowIf(comment.CommentPage == 0);
+
+            var page = comment.CommentPage;
+
+            if (allPages.Length <= page)
+            {
+                Array.Resize(ref allPages, page + 1);
+
+                allPages[page] = new PostCommentPageViewModel
+                {
+                    Page = page
+                };
+            }
+
+            allPages[page].AllComments.Add(comment.Id, comment);
+        }
+
+        const int commentsPerPage = 10;
+        foreach (var kvp in allCommentNodes)
+        {
+            if (kvp.Value.ParentId == 0)
+            {
+                kvp.Value.CommentPage = rootCommentNodes.Count / commentsPerPage + 1;
+
+                rootCommentNodes.Add(kvp.Value);
+
+                AddTopPage(kvp.Value);
+            }
+            else
+            {
+                if (!allCommentNodes.TryGetValue(kvp.Value.ParentId, out var parentTreeItem))
+                {
+                    throw new NotImplementedException();
+                }
+
+                parentTreeItem.Children.Add(kvp.Value);
+                kvp.Value.CommentPage = parentTreeItem.CommentPage;
+
+                AddTopPage(kvp.Value);
+            }
+        }
+
+        for (var i = 1; i < allPages.Length; i++)
+        {
+            allPages[i].TotalPages = allPages.Length - 1;
+        }
+
+        return allPages.ToArray();
+    }
+
+    [ComputeMethod]
+    public virtual async Task<Dictionary<long, PostCommentReactionViewModel>> TryGetMyCommentReactions(Session session, long postId)
+    {
+        var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
+        var posterAccountId = await GetAccountIdOfPost(postId);
+        if (posterAccountId == 0)
+        {
+            return new Dictionary<long, PostCommentReactionViewModel>();
+        }
+
+        var canSeePost = await CanAccountIdSeePostsOf(activeAccountId, posterAccountId);
+        if (!canSeePost)
+        {
+            return new Dictionary<long, PostCommentReactionViewModel>();
+        }
+
+        return await TryGetMyCommentReactions(activeAccountId, postId);
+    }
+
+    [ComputeMethod]
+    public virtual async Task<Dictionary<long, PostCommentReactionViewModel>> TryGetMyCommentReactions(long activeAccountId, long postId)
+    {
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        var query = from reaction in database.PostCommentReactions
+                    from comment in database.PostComments.Where(pr => pr.Id == reaction.CommentId)
+                    where reaction.AccountId == activeAccountId && comment.PostId == postId
+                    select RecordToViewModels.CreatePostCommentReactionViewModel(reaction, null);
+
+        return await query.ToDictionaryAsync(x => x.CommentId, x => x);
     }
 
     public async Task<bool> TryRestoreMemory(Session session, long postId, long previousCharacterId, long newCharacterId)

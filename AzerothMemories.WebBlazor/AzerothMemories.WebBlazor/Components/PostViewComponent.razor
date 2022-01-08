@@ -1,4 +1,6 @@
-﻿<h3>PostViewComponent</h3>
+﻿@using Microsoft.Extensions.Primitives
+@using Microsoft.AspNetCore.WebUtilities
+@implements IActiveCommentContext
 
 <PostComponent Services="@Services" Post="@Post" InDialog="true" />
 
@@ -6,66 +8,88 @@
 {
 
 }
-@*else if (_isLoading)
-    {
+else if (PostComments == null)
+{
     <CardLoadingComponent />
-    }*@
-@*else
+}
+else
+{
+    if (PostComments == null || PostComments.RootComments.Count == 0)
     {
-
-    }*@
-
-@code {
-
-    private bool _postChanged;
-    private PostViewModel _post;
-    //private CommentTreeNode _focusedCommentTreeNode;
-
-    private int _currentPage = 1;
-    //private bool _currentPageChanged;
-    private long _scrollToFocusId;
-    private long _focusedCommentId;
-    //private bool _focusedCommentIdChanged;
-
-    @*private bool _isLoading;*@
-    @*private int _commentsPerPage = 10;*@
-
-    [Parameter, EditorRequired]
-    public IMoaServices Services { get; init; }
-
-    [Parameter, EditorRequired]
-    public PostViewModel Post
-    {
-        get => _post;
-        init
+        if (Services.ActiveAccountServices.ActiveCommentContext == this)
         {
-            _postChanged = _post != value;
-            _post = value;
+            <PublishCommentBoxComponent PostId="@Post.Id" />
+        }
+        else
+        {
+            <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
+                <MudCardContent Class="pt-2 pb-2">
+                    <MudText Class="pa-2 ma-2" Align="Align.Center" Typo="Typo.body2">No comments</MudText>
+                    <MudButton Class="pa-2 ma-2" FullWidth="true" Variant="Variant.Filled" Disabled="@IsDisabled" OnClick="AddComment">Add comment</MudButton>
+                </MudCardContent>
+            </MudCard>
         }
     }
+    else
+    {
+        <div id="moa-top-header-comments"></div>
 
-    [Parameter, EditorRequired] public int Page { get; init; }
+        for (var i = 0; i < PostComments.RootComments.Count; i++)
+        {
+            var comment = PostComments.RootComments[i];
 
-    [Parameter, EditorRequired] public long FocusedCommentId { get; init; }
+            <PostCommentComponent @key="@comment" Services="@Services" Comment="@comment" />
+        }
+
+
+        var showAdd = Services.ActiveAccountServices.ActiveCommentContext != this && PostComments.Page == PostComments.TotalPages;
+        if (Services.ActiveAccountServices.ActiveCommentContext == this)
+        {
+            <PublishCommentBoxComponent PostId="@Post.Id" />
+        }
+
+        if (showAdd)
+        {
+            <div class="postIndent">
+                <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
+                    <MudCardContent Class="pt-2 pb-2">
+                        <MudButton Class="pa-2 ma-2" FullWidth="true" Variant="Variant.Filled" Disabled="@IsDisabled" OnClick="AddComment">Add comment</MudButton>
+                    </MudCardContent>
+                </MudCard>
+            </div>
+        }
+
+        <div class="d-flex justify-center">
+            <MudPagination Selected="@PostComments.Page" SelectedChanged="OnPageChanged" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@PostComments.TotalPages" />
+        </div>
+    }
+}
+
+@code
+{
+    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
+
+    [Parameter, EditorRequired] public PostViewModel Post { get; init; }
+
+    [Parameter, EditorRequired] public PostCommentPageViewModel PostComments { get; init; }
 
     [Inject] IScrollManager ScrollManager { get; init; }
 
     public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActive;
 
-    protected override async Task OnParametersSetAsync()
+    private void AddComment()
     {
-        await base.OnParametersSetAsync();
-
-        if (_postChanged)
-        {
-            if (Post != null)
-            {
-                var postId = Post.Id;
-                var postComments = Services.PostServices.TryGetCommentsPage(null, postId, Page, FocusedCommentId);
-            }
-
-            _postChanged = false;
-        }
+        Services.ActiveAccountServices.ActiveCommentContext = this;
     }
 
+    private void OnPageChanged(int currentPage)
+    {
+        if (currentPage == PostComments.Page)
+        {
+            return;
+        }
+
+        var newPath = Services.NavigationManager.GetUriWithQueryParameter("page", currentPage);
+        Services.NavigationManager.NavigateTo(newPath);
+    }
 }

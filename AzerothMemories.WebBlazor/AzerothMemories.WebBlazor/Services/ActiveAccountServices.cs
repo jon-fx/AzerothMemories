@@ -5,6 +5,8 @@ public sealed class ActiveAccountServices
     private readonly IAccountServices _accountServices;
     private readonly ICharacterServices _characterServices;
 
+    private IActiveCommentContext _activeCommentContext;
+
     public ActiveAccountServices(IAccountServices accountServices, ICharacterServices characterServices)
     {
         _accountServices = accountServices;
@@ -29,6 +31,24 @@ public sealed class ActiveAccountServices
     public bool IsAccountActive => AccountViewModel != null && AccountViewModel.Id > 0;
 
     public bool IsAdmin => IsAccountActive && AccountViewModel.AccountType == AccountType.Admin;
+
+    public IActiveCommentContext ActiveCommentContext
+    {
+        get => _activeCommentContext;
+        set
+        {
+            if (_activeCommentContext == value)
+            {
+                return;
+            }
+
+            //var previous = _activeCommentContext;
+
+            _activeCommentContext = value;
+
+            //previous?.InvokeStateHasChanged();
+        }
+    }
 
     public async Task ComputeState(CancellationToken cancellationToken)
     {

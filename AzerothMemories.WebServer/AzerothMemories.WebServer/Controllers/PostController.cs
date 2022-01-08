@@ -36,9 +36,15 @@ public class PostController : ControllerBase, IPostServices
     }
 
     [HttpGet("{postId}"), Publish]
-    public Task<PostCommentsPageViewModel> TryGetCommentsPage(Session session, [FromRoute] long postId, [FromQuery] int page = 0, [FromQuery] long focusedCommentId = 0)
+    public Task<PostCommentPageViewModel> TryGetCommentsPage(Session session, [FromRoute] long postId, [FromQuery] int page = 0, [FromQuery] long focusedCommentId = 0)
     {
         return _commonServices.PostServices.TryGetCommentsPage(session, postId, page, focusedCommentId);
+    }
+
+    [HttpGet("{postId}"), Publish]
+    public Task<Dictionary<long, PostCommentReactionViewModel>> TryGetMyCommentReactions(Session session, [FromRoute] long postId)
+    {
+        return _commonServices.PostServices.TryGetMyCommentReactions(session, postId);
     }
 
     [HttpPost("{postId}/{previousCharacterId}/{newCharacterId}")]

@@ -14,7 +14,7 @@ else
 {
     <PageTitle>@ViewModel.AccountViewModel.GetDisplayName()'s Memory of Azeroth</PageTitle>
     <AccountHeaderCardComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" />
-    <PostViewComponent Services="@this" Post="@ViewModel.PostViewModel" Page="@ViewModel.CurrentPage" FocusedCommentId="@ViewModel.FocusedCommentId" />
+    <PostViewComponent Services="@this" Post="@ViewModel.PostViewModel" PostComments="@ViewModel.PostCommentPageViewModel"/>
 }
 
 @code 

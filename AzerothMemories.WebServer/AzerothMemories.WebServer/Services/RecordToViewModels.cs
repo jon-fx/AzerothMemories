@@ -115,4 +115,52 @@ public static class RecordToViewModels
 
         return viewModel;
     }
+
+    public static PostCommentViewModel CreateCommentViewModel(PostCommentRecord comment, string username, string avatar)
+    {
+        var viewModel = new PostCommentViewModel
+        {
+            Id = comment.Id,
+            AccountId = comment.AccountId,
+            PostId = comment.PostId,
+            ParentId = comment.ParentId.GetValueOrDefault(),
+            AccountUsername = username,
+            AccountAvatar = avatar,
+            PostComment = comment.PostComment,
+            CreatedTime = comment.CreatedTime.ToUnixTimeMilliseconds(),
+            DeletedTimeStamp = comment.DeletedTimeStamp,
+            //ReactionId = reaction?.Id ?? 0,
+            //Reaction = reaction?.Reaction ?? PostReaction.None,
+            TotalReactionCount = comment.TotalReactionCount,
+            ReactionCounters = new[]
+            {
+                comment.ReactionCount1,
+                comment.ReactionCount2,
+                comment.ReactionCount3,
+                comment.ReactionCount4,
+                comment.ReactionCount5,
+                comment.ReactionCount6,
+                comment.ReactionCount7,
+                comment.ReactionCount8,
+                comment.ReactionCount9
+            }
+        };
+
+        return viewModel;
+    }
+
+    public static PostCommentReactionViewModel CreatePostCommentReactionViewModel(PostCommentReactionRecord reactionRecord, string username)
+    {
+        var viewModel = new PostCommentReactionViewModel
+        {
+            Id = reactionRecord.Id,
+            CommentId = reactionRecord.CommentId,
+            AccountId = reactionRecord.AccountId,
+            AccountUsername = username,
+            Reaction = reactionRecord.Reaction,
+            LastUpdateTime = reactionRecord.LastUpdateTime.ToUnixTimeMilliseconds(),
+        };
+
+        return viewModel;
+    }
 }

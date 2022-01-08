@@ -19,7 +19,11 @@ public interface IPostServices
 
     [ComputeMethod]
     [Get(nameof(TryGetCommentsPage) + "/{postId}")]
-    Task<PostCommentsPageViewModel> TryGetCommentsPage(Session session, [Path] long postId, [Query] int page = 0, [Query] long focusedCommentId = 0);
+    Task<PostCommentPageViewModel> TryGetCommentsPage(Session session, [Path] long postId, [Query] int page = 0, [Query] long focusedCommentId = 0);
+
+    [ComputeMethod]
+    [Get(nameof(TryGetMyCommentReactions) + "/{postId}")]
+    Task<Dictionary<long, PostCommentReactionViewModel>> TryGetMyCommentReactions(Session session, [Path] long postId);
 
     [Post(nameof(TryRestoreMemory) + "/{postId}/{previousCharacterId}/{newCharacterId}")]
     Task<bool> TryRestoreMemory(Session session, [Path] long postId, [Path] long previousCharacterId, [Path] long newCharacterId);

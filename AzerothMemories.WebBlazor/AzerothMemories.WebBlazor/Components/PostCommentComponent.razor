@@ -1,0 +1,144 @@
+﻿@implements IActiveCommentContext
+
+@{
+    var item = Comment;
+    var comment = item.Comment;
+    var username = comment.GetAccountUsernameSafe();
+    var accountLink = $"account/{comment.AccountId}";
+    var headerId = $"moa-top-comment-{item.Id}";
+}
+
+<div id="@headerId" class="postIndent">
+    <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
+        <MudCardHeader Class="@(item.IsFocused ? "pt-2 pb-2 mud-theme-primary" : "pt-2 pb-2")">
+            <CardHeaderAvatar>
+                <a href="@accountLink">
+                    <MudAvatar Class="cardLinkText" Size="Size.Small" Image="@comment.AccountAvatar">@username[0]</MudAvatar>
+                </a>
+            </CardHeaderAvatar>
+            <CardHeaderContent>
+                <a href="@accountLink">
+                    <MudText Class="cardLinkText" Typo="Typo.body1">@username</MudText>
+                </a>
+                <MudText Typo="Typo.body2">@Services.TimeProvider.GetTimeAsLocalStringAgo(comment.CreatedTime, true)</MudText>
+            </CardHeaderContent>
+            <CardHeaderActions>
+                <MudMenu Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Dense="true">
+                    <MudMenuItem Link="@($"/post/{item.PostersAccountId}/{comment.PostId}?comment={comment.Id}")">
+                        <MudTooltip Text="Link" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
+                            <MudIcon Icon="@Icons.Material.Filled.AddLink" Size="Size.Small" />
+                        </MudTooltip>
+                    </MudMenuItem>
+
+                    @if (comment.AccountId == Services.ActiveAccountServices.ActiveAccountId)
+                    {
+                        <MudMenuItem OnClick="@OnDeleteComment" Disabled="@(comment.DeletedTimeStamp != 0)">
+                            <MudTooltip Text="Delete" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
+                                <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Size="Size.Small" />
+                            </MudTooltip>
+                        </MudMenuItem>
+                    }
+
+                    @if (Services.ActiveAccountServices.IsAccountActive && comment.AccountId != Services.ActiveAccountServices.ActiveAccountId)
+                    {
+                        <MudMenuItem OnClick="@OnReportComment">
+                            <MudTooltip Text="Report" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
+                                <MudIcon Icon="@Icons.Material.Filled.Report" Size="Size.Small" />
+                            </MudTooltip>
+                        </MudMenuItem>
+                    }
+                </MudMenu>
+            </CardHeaderActions>
+        </MudCardHeader>
+
+        @if (comment.DeletedTimeStamp == 0)
+        {
+            <MudCardContent Class="pt-2 pb-2">
+                <MudText Typo="Typo.body2" Style="overflow-wrap: anywhere;">@(new MarkupString(comment.PostComment))</MudText>
+                <MudText Class="cardLinkText" Typo="Typo.body2" @onclick="OnReactionLinkClicked">@ZExtensions.BuildReactionString(comment.TotalReactionCount, comment.ReactionCounters)</MudText>
+            </MudCardContent>
+
+            <MudCardActions Class="pt-2 pb-2">
+                <MudButtonGroup OverrideStyles="true" Variant="Variant.Text" Size="Size.Small">
+                    <MudButton StartIcon="@Icons.Material.Filled.Favorite" IconColor="@(item.Reaction == PostReaction.None ? Color.Default : Color.Secondary)" Disabled="@(IsDisabled || _userReacting)" OnClick="() => OnReactButtonClicked(item.Reaction)">@item.Reaction.Humanize()</MudButton>
+                    <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Disabled="@(IsDisabled || _userReacting)" Direction="Direction.Bottom" OffsetY="true">
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction1)">@PostReaction.Reaction1.Humanize()</MudMenuItem>
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction2)">@PostReaction.Reaction2.Humanize()</MudMenuItem>
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction3)">@PostReaction.Reaction3.Humanize()</MudMenuItem>
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction4)">@PostReaction.Reaction4.Humanize()</MudMenuItem>
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction5)">@PostReaction.Reaction5.Humanize()</MudMenuItem>
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction6)">@PostReaction.Reaction6.Humanize()</MudMenuItem>
+                    </MudMenu>
+                    <MudButton OnClick="() => ReplyToComment(item)" Disabled="@IsDisabled">Reply</MudButton>
+                </MudButtonGroup>
+            </MudCardActions>
+        }
+        else
+        {
+            <MudCardContent Class="pt-2 pb-2">
+                <MudText Inline="true" Typo="Typo.body1">Deleted</MudText>
+            </MudCardContent>
+        }
+    </MudCard>
+
+    @if (item.ShowReactions)
+    {
+    }
+
+    @if (item.ShowChildren || item.Children.Count < 10)
+    {
+        for (var i = 0; i < item.Children.Count; i++)
+        {
+            var child = item.Children[i];
+
+            <PostCommentComponent @key="@child" Services="@Services" Comment="@child" />
+        }
+    }
+    else if (item.HasChild)
+    {
+        <div class="postIndent">
+            <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
+                <MudCardContent Class="pt-2 pb-2">
+                    <MudButton Class="pa-2 ma-2" FullWidth="true" Variant="Variant.Filled" OnClick="() => item.ShowChildren = true">Show @item.Children.Count comments</MudButton>
+                </MudCardContent>
+            </MudCard>
+        </div>
+    }
+
+    @if (Services.ActiveAccountServices.ActiveCommentContext == this)
+    {
+        <PublishCommentBoxComponent ReplyToUserId="@comment.AccountId" ReplyToUsername="@comment.AccountUsername" CommentId="@comment.Id" PostId="@comment.PostId" />
+    }
+</div>
+
+@code
+{
+    private bool _userReacting;
+
+    public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActive || Comment.Comment.DeletedTimeStamp != 0;
+    
+    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
+
+    [Parameter, EditorRequired] public PostCommentTreeNode Comment { get; init; }
+
+    private async Task OnReactButtonClicked(PostReaction newReaction)
+    {
+    }
+
+    private void ReplyToComment(PostCommentTreeNode item)
+    {
+        Services.ActiveAccountServices.ActiveCommentContext =  Services.ActiveAccountServices.ActiveCommentContext == this ? null : this;
+    }
+
+    private async Task OnDeleteComment()
+    {
+    }
+
+    private async Task OnReportComment()
+    {
+    }
+
+    private async Task OnReactionLinkClicked()
+    {
+    }
+}
