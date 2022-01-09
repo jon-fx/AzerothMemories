@@ -58,4 +58,10 @@ public class PostController : ControllerBase, IPostServices
     {
         return _commonServices.PostServices.TryPublishComment(session, postId, parentCommentId, transferData);
     }
+
+    [HttpPost("{postId}/{commentId}/{newReaction}")]
+    public Task<long> TryReactToPostComment(Session session,  [FromRoute]long postId, [FromRoute] long commentId, [FromRoute]PostReaction newReaction)
+    {
+        return _commonServices.PostServices.TryReactToPostComment(session, postId, commentId, newReaction);
+    }
 }

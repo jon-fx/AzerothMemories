@@ -123,6 +123,34 @@
 
     private async Task OnReactButtonClicked(PostReaction newReaction)
     {
+        if (_userReacting)
+        {
+            return;
+        }
+
+        if (newReaction == PostReaction.None)
+        {
+            newReaction = PostReaction.Reaction1;
+        }
+
+        var node = Comment;
+        var comment = node.Comment;
+        var postId = comment.PostId;
+        var commentId = comment.Id;
+        
+        if (node.Reaction == newReaction)
+        {
+            newReaction = PostReaction.None;
+        }
+
+        _userReacting = true;
+
+        node.ReactionId = await Services.PostServices.TryReactToPostComment(null,postId, commentId, newReaction);
+        node.Reaction = newReaction;
+
+        _userReacting = false;
+
+        StateHasChanged();
     }
 
     private void ReplyToComment(PostCommentTreeNode item)

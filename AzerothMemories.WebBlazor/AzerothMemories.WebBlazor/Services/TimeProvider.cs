@@ -32,7 +32,7 @@ public class TimeProvider
 
     public ZonedDateTime GetTimeAsLocal(Instant instant)
     {
-        var timeZone = DateTimeZoneProviders.Tzdb[TimeZoneInfo.Local.Id];
+        var timeZone = DateTimeZoneProviders.Bcl[TimeZoneInfo.Local.Id];
         return instant.InZone(timeZone);
     }
 
@@ -49,7 +49,7 @@ public class TimeProvider
     public string GetTimeAsLocalStringAgo(Instant instant, bool shortDate)
     {
         var culture = CultureInfo.CurrentCulture;
-        var timeZone = DateTimeZoneProviders.Tzdb[TimeZoneInfo.Local.Id];
+        var timeZone = DateTimeZoneProviders.Bcl[TimeZoneInfo.Local.Id];
         var zoned = instant.InZone(timeZone);
 
         var dateFormat = zoned.LocalDateTime.ToString(shortDate ? culture.DateTimeFormat.ShortDatePattern : culture.DateTimeFormat.LongDatePattern, culture);
@@ -113,7 +113,7 @@ public class TimeProvider
     public string GetJoinedDate(long timeStamp)
     {
         var culture = CultureInfo.CurrentCulture;
-        var timeZone = DateTimeZoneProviders.Tzdb[TimeZoneInfo.Local.Id];
+        var timeZone = DateTimeZoneProviders.Bcl[TimeZoneInfo.Local.Id];
         var instant = Instant.FromUnixTimeMilliseconds(timeStamp);
         var zoned = instant.InZone(timeZone);
         var dateFormat = zoned.LocalDateTime.ToString(culture.DateTimeFormat.YearMonthPattern, culture);
@@ -166,7 +166,7 @@ public class TimeProvider
 
             var screenShotLocalTime = new LocalDateTime(2000 + year, month, day, hour, minute, 0);
 
-            var timeZone = DateTimeZoneProviders.Tzdb[TimeZoneInfo.Local.Id];
+            var timeZone = DateTimeZoneProviders.Bcl[TimeZoneInfo.Local.Id];
             var screenShotZoned = screenShotLocalTime.InZoneStrictly(timeZone);
             var screenShotInstant = screenShotZoned.ToInstant();
             screenShotUnixTime = screenShotInstant.ToUnixTimeMilliseconds();

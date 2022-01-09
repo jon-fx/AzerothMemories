@@ -721,7 +721,95 @@ public class PostServices : IPostServices
         _ = GetPostRecord(postId);
         _ = TryGetAllPostComments(postId);
 
-        return 1;
+        return commentRecord.Id;
+    }
+
+    public async Task<long> TryReactToPostComment(Session session, long postId1, long commentId, PostReaction newReaction)
+    {
+        var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
+        if (activeAccountId == 0)
+        {
+            return 0;
+        }
+
+        var posterAccountId = await GetAccountIdOfPost(postId1);
+        if (posterAccountId == 0)
+        {
+            return 0;
+        }
+
+        var canSeePost = await CanAccountIdSeePostsOf(activeAccountId, posterAccountId);
+        if (!canSeePost)
+        {
+            return 0;
+        }
+
+        var postRecord = await GetPostRecord(postId1);
+        if (postRecord == null)
+        {
+            return 0;
+        }
+
+        var allCommentPages = await TryGetAllPostComments(postId1);
+        var allComments = allCommentPages[0].AllComments;
+        if (!allComments.TryGetValue(commentId, out var commentViewModel))
+        {
+            return 0;
+        }
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        var postQuery = database.PostComments.Where(x => x.Id == commentId).AsUpdatable();
+        var reactionRecord = await database.PostCommentReactions.FirstOrDefaultAsync(x => x.AccountId == activeAccountId && x.CommentId == commentId);
+        if (reactionRecord == null)
+        {
+            if (newReaction == PostReaction.None)
+            {
+                return 0;
+            }
+
+            reactionRecord = new PostCommentReactionRecord
+            {
+                AccountId = activeAccountId,
+                CommentId = commentId,
+                Reaction = newReaction,
+                LastUpdateTime = SystemClock.Instance.GetCurrentInstant()
+            };
+
+            reactionRecord.Id = await database.InsertWithInt64IdentityAsync(reactionRecord);
+            postQuery = ModifyPostQueryWithReaction(postQuery, newReaction, +1, true);
+        }
+        else
+        {
+            if (newReaction == reactionRecord.Reaction)
+            {
+                return reactionRecord.Id;
+            }
+
+            var reactionQuery = database.GetUpdateQuery(reactionRecord, out _);
+            var previousReaction = reactionRecord.Reaction;
+            if (previousReaction != PostReaction.None)
+            {
+                reactionQuery = reactionQuery.Set(x => x.Reaction, PostReaction.None);
+                postQuery = ModifyPostQueryWithReaction(postQuery, previousReaction, -1, newReaction == PostReaction.None);
+            }
+
+            if (newReaction != PostReaction.None)
+            {
+                reactionQuery = reactionQuery.Set(x => x.Reaction, newReaction);
+                postQuery = ModifyPostQueryWithReaction(postQuery, newReaction, +1, previousReaction == PostReaction.None);
+            }
+
+            await reactionQuery.Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync();
+        }
+
+        await postQuery.UpdateAsync();
+
+        using var computed = Computed.Invalidate();
+        _ = TryGetAllPostComments(postId1);
+        _ = TryGetMyCommentReactions(activeAccountId, postId1);
+
+        return reactionRecord.Id;
     }
 
     [ComputeMethod]
@@ -771,6 +859,73 @@ public class PostServices : IPostServices
     }
 
     private static IUpdatable<PostRecord> ModifyPostQueryWithReaction(IUpdatable<PostRecord> query, PostReaction reaction, int change, bool modifyTotal)
+    {
+        switch (reaction)
+        {
+            case PostReaction.None:
+            {
+                return query;
+            }
+            case PostReaction.Reaction1:
+            {
+                query = query.Set(x => x.ReactionCount1, x => x.ReactionCount1 + change);
+                break;
+            }
+            case PostReaction.Reaction2:
+            {
+                query = query.Set(x => x.ReactionCount2, x => x.ReactionCount2 + change);
+                break;
+            }
+            case PostReaction.Reaction3:
+            {
+                query = query.Set(x => x.ReactionCount3, x => x.ReactionCount3 + change);
+                break;
+            }
+            case PostReaction.Reaction4:
+            {
+                query = query.Set(x => x.ReactionCount4, x => x.ReactionCount4 + change);
+                break;
+            }
+            case PostReaction.Reaction5:
+            {
+                query = query.Set(x => x.ReactionCount5, x => x.ReactionCount5 + change);
+                break;
+            }
+            case PostReaction.Reaction6:
+            {
+                query = query.Set(x => x.ReactionCount6, x => x.ReactionCount6 + change);
+                break;
+            }
+            case PostReaction.Reaction7:
+            {
+                query = query.Set(x => x.ReactionCount7, x => x.ReactionCount7 + change);
+                break;
+            }
+            case PostReaction.Reaction8:
+            {
+                query = query.Set(x => x.ReactionCount8, x => x.ReactionCount8 + change);
+                break;
+            }
+            case PostReaction.Reaction9:
+            {
+                query = query.Set(x => x.ReactionCount9, x => x.ReactionCount9 + change);
+                break;
+            }
+            default:
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        if (modifyTotal)
+        {
+            query = query.Set(x => x.TotalReactionCount, x => x.TotalReactionCount + change);
+        }
+
+        return query;
+    }
+
+    private static IUpdatable<PostCommentRecord> ModifyPostQueryWithReaction(IUpdatable<PostCommentRecord> query, PostReaction reaction, int change, bool modifyTotal)
     {
         switch (reaction)
         {

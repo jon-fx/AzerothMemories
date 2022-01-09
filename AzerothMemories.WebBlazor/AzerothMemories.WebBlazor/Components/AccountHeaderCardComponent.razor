@@ -57,7 +57,7 @@ else
                 </div>
             }
 
-            <MudText><MudIcon Icon="@Icons.Filled.CalendarToday" Size="Size.Small" /> Joined @Services.TimeProvider.GetJoinedDate(AccountViewModel.CreatedDateTime)</MudText>
+            <MudText><MudIcon Icon="@Icons.Filled.CalendarToday" Size="Size.Small" />@Services.TimeProvider.GetJoinedDate(AccountViewModel.CreatedDateTime)</MudText>
 
             <a href="@($"/follow/{AccountViewModel.Id}")">
                 <MudText><b>@_followingCount</b> Following</MudText>

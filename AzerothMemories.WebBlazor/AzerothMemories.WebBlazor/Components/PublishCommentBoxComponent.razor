@@ -72,25 +72,8 @@
     {
         _isCommentBoxDisabled = true;
 
-        //var accountId = Services.ActiveAccountServices.aa;
-        //if (accountId == 0)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
         var postId = PostId;
         var parentId = CommentId;
-
-        //var postGrain = Services.CommonServices.ClusterClient.GetGrain<IPostGrain>(postId);
-        //var finalText = TagHelpers.GetCommentText(_commentComponent, out var userTags, out var hashTags);
-        //var result = await postGrain.OnComment(accountId, parentId, userTags, finalText, hashTags);
-        //if (result > 0)
-        //{
-        //    _commentComponent.Reset();
-
-        //    ActiveAccountServices.ActiveCommentContext = null;
-        //}
-
         var result = await Services.PostServices.TryPublishComment(null, postId, parentId, new AddCommentTransferData { Comment = commentText });
         if (result > 0)
         {

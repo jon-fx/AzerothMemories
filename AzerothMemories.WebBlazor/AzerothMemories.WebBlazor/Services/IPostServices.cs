@@ -30,4 +30,7 @@ public interface IPostServices
 
     [Post(nameof(TryPublishComment) + "/{postId}/{parentCommentId}")]
     Task<long> TryPublishComment(Session session, [Path] long postId, [Path] long parentCommentId, [Body] AddCommentTransferData transferData);
+
+    [Post(nameof(TryReactToPostComment) + "/{postId}/{commentId}/{newReaction}")]
+    Task<long> TryReactToPostComment(Session session, [Path] long postId, [Path] long commentId, [Path] PostReaction newReaction);
 }
