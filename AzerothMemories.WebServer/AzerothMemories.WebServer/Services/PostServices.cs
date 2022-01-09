@@ -27,19 +27,6 @@ public class PostServices : IPostServices
         return await query.FirstOrDefaultAsync();
     }
 
-    //[ComputeMethod]
-    //protected virtual async Task<bool> CanActiveUserSeePostsOf(Session session, long otherAccountId)
-    //{
-    //    var activeAccount = await _commonServices.AccountServices.TryGetAccount(session);
-    //    long activeAccountId = 0;
-    //    if (activeAccount != null)
-    //    {
-    //        activeAccountId = activeAccount.Id;
-    //    }
-
-    //    return await CanAccountIdSeePostsOf(activeAccountId, otherAccountId);
-    //}
-
     [ComputeMethod]
     protected virtual async Task<bool> CanAccountIdSeePostsOf(long activeAccountId, long otherAccountId)
     {
@@ -399,11 +386,11 @@ public class PostServices : IPostServices
             return null;
         }
 
-        //var postRecord = await GetPostRecord(postId);
-        //if (postRecord == null)
-        //{
-        //    return null;
-        //}
+        var postRecord = await GetPostRecord(postId);
+        if (postRecord == null)
+        {
+            return null;
+        }
 
         var dict = await TryGetPostReactions(postId);
         return dict.Values.ToArray();
@@ -562,7 +549,7 @@ public class PostServices : IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<Dictionary<long, PostCommentReactionViewModel>> TryGetMyCommentReactions(long activeAccountId, long postId)
+    protected virtual async Task<Dictionary<long, PostCommentReactionViewModel>> TryGetMyCommentReactions(long activeAccountId, long postId)
     {
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
