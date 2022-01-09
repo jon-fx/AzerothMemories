@@ -8,6 +8,8 @@ public sealed class PostReactionViewModel
 
     [JsonInclude] public string AccountUsername;
 
+    [JsonInclude] public string AccountAvatar;
+
     [JsonInclude] public PostReaction Reaction;
 
     [JsonInclude] public long LastUpdateTime;

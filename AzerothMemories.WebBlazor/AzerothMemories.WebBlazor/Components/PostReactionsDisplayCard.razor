@@ -1,0 +1,50 @@
+﻿@{
+    var reactionData = ReactionData;
+}
+
+@if (reactionData == null)
+{
+    <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+        <MudCardContent>
+            <MudText Align="Align.Center">Failed</MudText>
+        </MudCardContent>
+    </MudCard>
+}
+else if (reactionData.Length == 0)
+{
+    <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+        <MudCardContent>
+            <MudText Align="Align.Center">None</MudText>
+        </MudCardContent>
+    </MudCard>
+}
+else if (reactionData.Length > 0)
+{
+    <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+        <MudCardContent>
+            @foreach (var reaction in reactionData)
+            {
+                var text = $"{reaction.Reaction.Humanize()} {reaction.AccountUsername}";
+                <MudChip @key="reaction.Id" OnClick="() => OnReactionChipClickedCallback(reaction)">
+                    @if (reaction.AccountAvatar != null)
+                    {
+                        <MudAvatar Class="mr-2" Size="Size.Small" Image="@reaction.AccountAvatar" />
+                    }
+
+                    @text
+                </MudChip>
+            }
+        </MudCardContent>
+    </MudCard>
+}
+
+@code {
+    [Parameter, EditorRequired] public PostReactionViewModel[] ReactionData { get; init; }
+
+    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
+
+    private void OnReactionChipClickedCallback(PostReactionViewModel reaction)
+    {
+        Services.NavigationManager.NavigateTo($"/account/{reaction.AccountId}");
+    }
+}

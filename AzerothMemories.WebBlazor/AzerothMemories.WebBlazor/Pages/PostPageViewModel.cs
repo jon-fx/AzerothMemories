@@ -122,6 +122,11 @@ public sealed class PostPageViewModel : ViewModelBase
                 treeNode.Reaction = reactionViewModel.Reaction;
                 treeNode.ReactionId = reactionViewModel.Id;
             }
+
+            if (treeNode.ShowReactions)
+            {
+                await treeNode.TryLoadReactions(Services);
+            }
         }
 
         PostCommentPageViewModel = pageViewModel;

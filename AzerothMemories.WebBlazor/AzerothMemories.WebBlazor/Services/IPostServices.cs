@@ -22,6 +22,10 @@ public interface IPostServices
     Task<PostCommentPageViewModel> TryGetCommentsPage(Session session, [Path] long postId, [Query] int page = 0, [Query] long focusedCommentId = 0);
 
     [ComputeMethod]
+    [Get(nameof(TryGetCommentReactionData) + "/{postId}/{commentId}")]
+    Task<PostReactionViewModel[]> TryGetCommentReactionData(Session session, [Path] long postId, [Path] long commentId);
+
+    [ComputeMethod]
     [Get(nameof(TryGetMyCommentReactions) + "/{postId}")]
     Task<Dictionary<long, PostCommentReactionViewModel>> TryGetMyCommentReactions(Session session, [Path] long postId);
 

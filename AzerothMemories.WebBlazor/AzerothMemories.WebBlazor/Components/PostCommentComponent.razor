@@ -83,6 +83,15 @@
 
     @if (item.ShowReactions)
     {
+        var reactionData = item.ReactionData;
+        if (item.ShowReactionIsLoading)
+        {
+            <CardLoadingComponent />
+        }
+        else
+        {
+            <PostReactionsDisplayCard Services="@Services" ReactionData="@reactionData"/>
+        }
     }
 
     @if (item.ShowChildren || item.Children.Count < 10)
@@ -173,5 +182,16 @@
 
     private async Task OnReactionLinkClicked()
     {
+        Comment.ShowReactions = !Comment.ShowReactions;
+
+        if (Comment.ShowReactions && Comment.ReactionData == null)
+        {
+            await Comment.TryLoadReactions(Services);
+        }
+    }
+
+    private void OnReactionChipClickedCallback(PostReactionViewModel reaction)
+    {
+        Services.NavigationManager.NavigateTo($"/account/{reaction.AccountId}");
     }
 }

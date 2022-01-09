@@ -114,33 +114,9 @@ else
         {
             <CardLoadingComponent />
         }
-        else if (reactionData == null)
+        else
         {
-            <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-                <MudCardContent>
-                    <MudText Align="Align.Center">Failed</MudText>
-                </MudCardContent>
-            </MudCard>
-        }
-        else if (reactionData.Length == 0)
-        {
-            <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-                <MudCardContent>
-                    <MudText Align="Align.Center">None</MudText>
-                </MudCardContent>
-            </MudCard>
-        }
-        else if (reactionData.Length > 0)
-        {
-            <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-                <MudCardContent>
-                    @foreach (var reaction in reactionData)
-                    {
-                        var text = $"{reaction.Reaction.Humanize()} {reaction.AccountUsername}";
-                        <MudChip @key="@reaction.Id" Text="@text" OnClick="() => OnReactionChipClickedCallback(reaction)" />
-                    }
-                </MudCardContent>
-            </MudCard>
+            <PostReactionsDisplayCard Services="@Services" ReactionData="@reactionData"/>
         }
     }
 
@@ -351,11 +327,6 @@ else
     private void OnCommentButtonClicked()
     {
         Services.NavigationManager.NavigateTo($"/post/{Post.AccountId}/{Post.Id}");
-    }
-
-    private void OnReactionChipClickedCallback(PostReactionViewModel reaction)
-    {
-        Services.NavigationManager.NavigateTo($"/account/{reaction.AccountId}");
     }
 
     private async Task OnRestoreButtonClicked(CharacterViewModel previousCharacter, CharacterViewModel character)

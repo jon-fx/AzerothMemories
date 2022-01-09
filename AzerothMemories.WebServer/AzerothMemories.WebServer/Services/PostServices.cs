@@ -253,7 +253,7 @@ public class PostServices : IPostServices
         }
 
         var postTagInfos = await GetAllPostTagRecord(postId, locale);
-        var reactionRecords = await GetPostReactions(postId);
+        var reactionRecords = await TryGetPostReactions(postId);
 
         reactionRecords.TryGetValue(activeAccountId, out var reactionViewModel);
 
@@ -261,7 +261,7 @@ public class PostServices : IPostServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<Dictionary<long, PostReactionViewModel>> GetPostReactions(long postId)
+    protected virtual async Task<Dictionary<long, PostReactionViewModel>> TryGetPostReactions(long postId)
     {
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
@@ -271,9 +271,31 @@ public class PostServices : IPostServices
                     select new PostReactionViewModel
                     {
                         Id = r.Id,
-                        AccountId = r.AccountId,
                         Reaction = r.Reaction,
+                        AccountId = r.AccountId,
                         AccountUsername = a.Username,
+                        AccountAvatar = a.Avatar,
+                        LastUpdateTime = r.LastUpdateTime.ToUnixTimeMilliseconds(),
+                    };
+
+        return await query.ToDictionaryAsync(x => x.AccountId, x => x);
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<Dictionary<long, PostReactionViewModel>> TryGetPostCommentReactions(long commentId)
+    {
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        var query = from r in database.PostCommentReactions
+                    where r.CommentId == commentId && r.Reaction != PostReaction.None
+                    from a in database.Accounts.Where(x => x.Id == r.AccountId)
+                    select new PostReactionViewModel
+                    {
+                        Id = r.Id,
+                        Reaction = r.Reaction,
+                        AccountId = r.AccountId,
+                        AccountUsername = a.Username,
+                        AccountAvatar = a.Avatar,
                         LastUpdateTime = r.LastUpdateTime.ToUnixTimeMilliseconds(),
                     };
 
@@ -356,7 +378,7 @@ public class PostServices : IPostServices
 
         using var computed = Computed.Invalidate();
         _ = GetPostRecord(postId);
-        _ = GetPostReactions(postId);
+        _ = TryGetPostReactions(postId);
 
         return reactionRecord.Id;
     }
@@ -383,7 +405,7 @@ public class PostServices : IPostServices
         //    return null;
         //}
 
-        var dict = await GetPostReactions(postId);
+        var dict = await TryGetPostReactions(postId);
         return dict.Values.ToArray();
     }
 
@@ -404,6 +426,39 @@ public class PostServices : IPostServices
         }
 
         return await TryGetPostCommentsByPage(postId, page);
+    }
+
+    [ComputeMethod]
+    public virtual async Task<PostReactionViewModel[]> TryGetCommentReactionData(Session session, long postId, long commentId)
+    {
+        var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
+        var posterAccountId = await GetAccountIdOfPost(postId);
+        if (posterAccountId == 0)
+        {
+            return null;
+        }
+
+        var canSeePost = await CanAccountIdSeePostsOf(activeAccountId, posterAccountId);
+        if (!canSeePost)
+        {
+            return null;
+        }
+
+        var postRecord = await GetPostRecord(postId);
+        if (postRecord == null)
+        {
+            return null;
+        }
+
+        var allCommentPages = await TryGetAllPostComments(postId);
+        var allComments = allCommentPages[0].AllComments;
+        if (!allComments.TryGetValue(commentId, out var commentViewModel))
+        {
+            return null;
+        }
+
+        var dict = await TryGetPostCommentReactions(commentId);
+        return dict.Values.ToArray();
     }
 
     [ComputeMethod]
@@ -571,6 +626,7 @@ public class PostServices : IPostServices
         await TryRestoreMemoryUpdate(database, postId, PostTagType.Character, characterTagToRemove, newCharacterTag);
 
         using var computed = Computed.Invalidate();
+        _ = GetPostRecord(postId);
         _ = GetAllPostTags(postId);
 
         return true;
@@ -724,7 +780,7 @@ public class PostServices : IPostServices
         return commentRecord.Id;
     }
 
-    public async Task<long> TryReactToPostComment(Session session, long postId1, long commentId, PostReaction newReaction)
+    public async Task<long> TryReactToPostComment(Session session, long postId, long commentId, PostReaction newReaction)
     {
         var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
         if (activeAccountId == 0)
@@ -732,7 +788,7 @@ public class PostServices : IPostServices
             return 0;
         }
 
-        var posterAccountId = await GetAccountIdOfPost(postId1);
+        var posterAccountId = await GetAccountIdOfPost(postId);
         if (posterAccountId == 0)
         {
             return 0;
@@ -744,13 +800,13 @@ public class PostServices : IPostServices
             return 0;
         }
 
-        var postRecord = await GetPostRecord(postId1);
+        var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
         {
             return 0;
         }
 
-        var allCommentPages = await TryGetAllPostComments(postId1);
+        var allCommentPages = await TryGetAllPostComments(postId);
         var allComments = allCommentPages[0].AllComments;
         if (!allComments.TryGetValue(commentId, out var commentViewModel))
         {
@@ -806,8 +862,9 @@ public class PostServices : IPostServices
         await postQuery.UpdateAsync();
 
         using var computed = Computed.Invalidate();
-        _ = TryGetAllPostComments(postId1);
-        _ = TryGetMyCommentReactions(activeAccountId, postId1);
+        _ = TryGetAllPostComments(postId);
+        _ = TryGetPostCommentReactions(commentId);
+        _ = TryGetMyCommentReactions(activeAccountId, postId);
 
         return reactionRecord.Id;
     }
