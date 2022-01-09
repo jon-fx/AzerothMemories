@@ -52,7 +52,7 @@ public sealed class PostTagInfo
         return QueryHelpers.AddQueryString("postsearch", "tag", GetTagValue());
     }
 
-    public string GetTagValue()
+    private string GetTagValue()
     {
         if (Type == PostTagType.HashTag)
         {

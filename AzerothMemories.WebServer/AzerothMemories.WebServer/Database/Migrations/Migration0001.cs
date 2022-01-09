@@ -145,14 +145,14 @@ public sealed class Migration0001 : Migration
 
     public override void Down()
     {
+        Delete.Table("Posts_Tags");
         Delete.Table("Posts_Comments_Reactions");
         Delete.Table("Posts_Comments");
 
-        Delete.Table("Posts_Tags");
         Delete.Table("Posts_Reactions");
         Delete.Table("Posts");
 
-        Delete.Table("Tags");
+        //Delete.Table("Tags");
 
         Delete.Table("Characters_Achievements");
         Delete.Table("Characters");
