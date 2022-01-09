@@ -130,6 +130,11 @@
         Services.ActiveAccountServices.ActiveCommentContext =  Services.ActiveAccountServices.ActiveCommentContext == this ? null : this;
     }
 
+    public void InvokeStateHasChanged()
+    {
+        StateHasChanged();
+    }
+
     private async Task OnDeleteComment()
     {
     }

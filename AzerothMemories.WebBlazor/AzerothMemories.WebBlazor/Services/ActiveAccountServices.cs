@@ -42,11 +42,11 @@ public sealed class ActiveAccountServices
                 return;
             }
 
-            //var previous = _activeCommentContext;
+            var previous = _activeCommentContext;
 
             _activeCommentContext = value;
 
-            //previous?.InvokeStateHasChanged();
+            previous?.InvokeStateHasChanged();
         }
     }
 

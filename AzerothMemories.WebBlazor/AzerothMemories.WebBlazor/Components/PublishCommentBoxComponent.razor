@@ -35,6 +35,7 @@
 
 @code {
     private string _prefixText;
+    private bool _isFirstRenderDone;
     private bool _isCommentBoxDisabled;
     private PublishCommentComponent _commentComponent;
 
@@ -48,19 +49,24 @@
 
     [Parameter] public long CommentId { get; init; }
 
-    //protected override async Task<bool> OnAfterFirstRender()
-    //{
-    //    await base.OnAfterFirstRender();
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
 
-    //    if (_commentComponent != null && ReplyToUserId > 0 && !string.IsNullOrEmpty(ReplyToUsername))
-    //    {
-    //        _prefixText = $"@{ReplyToUsername} ";
-    //        _commentComponent.ExtraTags.TryAdd(ReplyToUserId, ReplyToUsername);
-    //        _commentComponent.SetText(_prefixText);
-    //    }
+        if (firstRender && !_isFirstRenderDone)
+        {
+            _isFirstRenderDone = true;
 
-    //    return true;
-    //}
+            if (_commentComponent != null && ReplyToUserId > 0 && !string.IsNullOrEmpty(ReplyToUsername))
+            {
+                _prefixText = $"@{ReplyToUsername} ";
+                _commentComponent.ExtraTags.TryAdd(ReplyToUserId, ReplyToUsername);
+                _commentComponent.SetText(_prefixText);
+
+                StateHasChanged();
+            }
+        }
+    }
 
     private async Task OnSubmitComment(string commentText)
     {
@@ -85,7 +91,7 @@
         //    ActiveAccountServices.ActiveCommentContext = null;
         //}
 
-        var result = await Services.PostServices.TryPublishComment(null, postId, parentId, new AddCommentTransferData { Comment = commentText});
+        var result = await Services.PostServices.TryPublishComment(null, postId, parentId, new AddCommentTransferData { Comment = commentText });
         if (result > 0)
         {
             _commentComponent.Reset();

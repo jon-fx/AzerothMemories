@@ -4,17 +4,23 @@ public sealed class ActiveAccountViewModel : AccountViewModel
 {
     public ActiveAccountViewModel()
     {
-        UserTags = new Dictionary<long, string>
-        {
-            {1, "Lightfx"},
-            {2, "Bob"},
-            {3, "Bill"},
-            {4, "Ben"},
-            {5, "Tests"},
-        };
     }
 
     public bool CanChangeUsername => true;
 
-    public Dictionary<long, string> UserTags { get; set; }
+    [JsonIgnore]
+    public Dictionary<long, string> UserTags
+    {
+        get
+        {
+            return new Dictionary<long, string>
+            {
+                {Id, Username},
+                {200, "Bob"},
+                {300, "Bill"},
+                {400, "Ben"},
+                {500, "Tests"},
+            };
+        }
+    }
 }

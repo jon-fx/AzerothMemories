@@ -82,6 +82,11 @@ else
         Services.ActiveAccountServices.ActiveCommentContext = this;
     }
 
+    public void InvokeStateHasChanged()
+    {
+        StateHasChanged();
+    }
+
     private void OnPageChanged(int currentPage)
     {
         if (currentPage == PostComments.Page)
