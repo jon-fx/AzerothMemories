@@ -24,7 +24,7 @@ else
         </MudCardHeader>
         <MudCardContent>
             @{
-                var imageSource = $"data:{UploadedImage.ContentType};base64,{UploadedImage.ContentBase64}"; ;
+                var imageSource = $"data:{UploadedImage.ContentType};base64,{UploadedImage.ContentBase64}";
                 <img src="@imageSource" style="width: 100%; height: auto; object-fit: cover;" />
             }
         </MudCardContent>

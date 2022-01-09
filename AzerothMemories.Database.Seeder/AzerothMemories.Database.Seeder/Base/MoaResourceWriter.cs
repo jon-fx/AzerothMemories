@@ -57,10 +57,7 @@ internal sealed class MoaResourceWriter
                 value = database.BlizzardData.FirstOrDefault(x => x.Key == key);
             }
 
-            if (value == null)
-            {
-                value = new BlizzardDataRecord(tagType, tagId);
-            }
+            value ??= new BlizzardDataRecord(tagType, tagId);
 
             Exceptions.ThrowIf(value.TagId != tagId);
             Exceptions.ThrowIf(value.TagType != tagType);

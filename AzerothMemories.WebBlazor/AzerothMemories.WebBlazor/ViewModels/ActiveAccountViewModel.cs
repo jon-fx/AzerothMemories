@@ -9,18 +9,13 @@ public sealed class ActiveAccountViewModel : AccountViewModel
     public bool CanChangeUsername => true;
 
     [JsonIgnore]
-    public Dictionary<long, string> UserTags
-    {
-        get
+    public Dictionary<long, string> UserTags =>
+        new()
         {
-            return new Dictionary<long, string>
-            {
-                {Id, Username},
-                {200, "Bob"},
-                {300, "Bill"},
-                {400, "Ben"},
-                {500, "Tests"},
-            };
-        }
-    }
+            { Id, Username },
+            { 200, "Bob" },
+            { 300, "Bill" },
+            { 400, "Ben" },
+            { 500, "Tests" },
+        };
 }

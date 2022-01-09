@@ -1,6 +1,4 @@
-﻿using NodaTime;
-
-namespace AzerothMemories.WebBlazor.Blizzard;
+﻿namespace AzerothMemories.WebBlazor.Blizzard;
 
 public sealed class RequestResult<T> where T : class
 {

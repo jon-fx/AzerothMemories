@@ -38,18 +38,12 @@ public sealed class AccountManagePageViewModel : ViewModelBase
         }
         else
         {
-            if (NewUsername == null)
-            {
-                NewUsername = AccountViewModel.Username;
-            }
+            NewUsername ??= AccountViewModel.Username;
 
             NewUsernameTextBoxAdornmentColor = Color.Success;
             NewUsernameTextBoxAdornmentIcon = Icons.Filled.Check;
 
-            if (SocialLinks == null)
-            {
-                SocialLinks = AccountViewModel.SocialLinks;
-            }
+            SocialLinks ??= AccountViewModel.SocialLinks;
 
             SocialLinksAdornmentIcons = new string[SocialLinks.Length];
             SocialLinksAdornmentColors = new Color[SocialLinks.Length];
