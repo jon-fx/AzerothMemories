@@ -71,7 +71,7 @@ public class PostServices : IPostServices
             return new AddMemoryResult(AddMemoryResultCode.SessionNotFound);
         }
 
-        if (!_commonServices.TagServices.GetCommentText(transferData.Comment, accountViewModel, out var commentText, out var accountsTaggedInComment, out var hashTagsTaggedInComment))
+        if (!_commonServices.TagServices.GetCommentText(transferData.Comment, accountViewModel.UserTags, out var commentText, out var accountsTaggedInComment, out var hashTagsTaggedInComment))
         {
             return new AddMemoryResult(AddMemoryResultCode.ParseCommentFailed);
         }
@@ -133,7 +133,7 @@ public class PostServices : IPostServices
 
         foreach (var systemTag in systemTags)
         {
-            var tagRecord = await _commonServices.TagServices.TryCreateTagRecord(systemTag, accountViewModel);
+            var tagRecord = await _commonServices.TagServices.TryCreateTagRecord(systemTag, accountViewModel, PostTagKind.Post);
             if (tagRecord == null)
             {
                 return AddMemoryResultCode.InvalidTags;
@@ -150,25 +150,23 @@ public class PostServices : IPostServices
     {
         foreach (var accountId in accountsTaggedInComment)
         {
-            var tagRecord = await _commonServices.TagServices.TryCreateTagRecord(PostTagType.Account, accountId);
+            var tagRecord = await _commonServices.TagServices.TryCreateTagRecord(PostTagType.Account, accountId, PostTagKind.PostComment);
             if (tagRecord == null)
             {
                 return AddMemoryResultCode.InvalidTags;
             }
 
-            tagRecord.TagKind = PostTagKind.Comment;
             tagRecords.Add(tagRecord);
         }
 
         foreach (var hashTag in hashTagsTaggedInComment)
         {
-            var tagRecord = await _commonServices.TagServices.GetHashTagRecord(hashTag);
+            var tagRecord = await _commonServices.TagServices.GetHashTagRecord(hashTag, PostTagKind.PostComment);
             if (tagRecord == null)
             {
                 return AddMemoryResultCode.InvalidTags;
             }
 
-            tagRecord.TagKind = PostTagKind.Comment;
             tagRecords.Add(tagRecord);
         }
 
@@ -433,28 +431,10 @@ public class PostServices : IPostServices
         var rootCommentNodes = new List<PostCommentViewModel>();
         var allCommentNodes = await query.ToDictionaryAsync(x => x.Id, x => x);
 
-        var allPages = Array.Empty<PostCommentPageViewModel>();
+        var allPages = new PostCommentPageViewModel[1];
+        allPages[0] = new PostCommentPageViewModel();
 
-        void AddTopPage(PostCommentViewModel comment)
-        {
-            Exceptions.ThrowIf(comment.CommentPage == 0);
-
-            var page = comment.CommentPage;
-
-            if (allPages.Length <= page)
-            {
-                Array.Resize(ref allPages, page + 1);
-
-                allPages[page] = new PostCommentPageViewModel
-                {
-                    Page = page
-                };
-            }
-
-            allPages[page].AllComments.Add(comment.Id, comment);
-        }
-
-        const int commentsPerPage = 10;
+        const int commentsPerPage = 5;
         foreach (var kvp in allCommentNodes)
         {
             if (kvp.Value.ParentId == 0)
@@ -463,7 +443,7 @@ public class PostServices : IPostServices
 
                 rootCommentNodes.Add(kvp.Value);
 
-                AddTopPage(kvp.Value);
+                AddToPage(kvp.Value, ref allPages);
             }
             else
             {
@@ -475,16 +455,36 @@ public class PostServices : IPostServices
                 parentTreeItem.Children.Add(kvp.Value);
                 kvp.Value.CommentPage = parentTreeItem.CommentPage;
 
-                AddTopPage(kvp.Value);
+                AddToPage(kvp.Value, ref allPages);
             }
         }
 
-        for (var i = 1; i < allPages.Length; i++)
+        return allPages.ToArray();
+    }
+
+    private void AddToPage(PostCommentViewModel comment, ref PostCommentPageViewModel[] allPages)
+    {
+        Exceptions.ThrowIf(comment.CommentPage == 0);
+
+        var pageId = comment.CommentPage;
+
+        if (allPages.Length <= pageId)
         {
-            allPages[i].TotalPages = allPages.Length - 1;
+            Array.Resize(ref allPages, pageId + 1);
+
+            allPages[pageId] = new PostCommentPageViewModel
+            {
+                Page = pageId
+            };
+
+            foreach (var pageModel in allPages)
+            {
+                pageModel.TotalPages = allPages.Length - 1;
+            }
         }
 
-        return allPages.ToArray();
+        allPages[0].AllComments.Add(comment.Id, comment);
+        allPages[pageId].AllComments.Add(comment.Id, comment);
     }
 
     [ComputeMethod]
@@ -576,11 +576,6 @@ public class PostServices : IPostServices
         return true;
     }
 
-    public async Task<long> TryPublishComment(Session session, long postId, long parentId, AddCommentTransferData commentText)
-    {
-        return 1;
-    }
-
     private async Task TryRestoreMemoryUpdate(DatabaseConnection database, long postId, PostTagType tagType, long? oldTag, long? newTag)
     {
         if (oldTag == null)
@@ -614,6 +609,119 @@ public class PostServices : IPostServices
                 await database.InsertAsync(record);
             }
         }
+    }
+
+    public async Task<long> TryPublishComment(Session session, long postId, long parentCommentId, AddCommentTransferData transferData)
+    {
+        var activeAccount = await _commonServices.AccountServices.TryGetAccount(session);
+        if (activeAccount == null)
+        {
+            return 0;
+        }
+
+        var posterAccountId = await GetAccountIdOfPost(postId);
+        if (posterAccountId == 0)
+        {
+            return 0;
+        }
+
+        var canSeePost = await CanAccountIdSeePostsOf(activeAccount.Id, posterAccountId);
+        if (!canSeePost)
+        {
+            return 0;
+        }
+
+        var postRecord = await GetPostRecord(postId);
+        if (postRecord == null)
+        {
+            return 0;
+        }
+
+        var commentText = transferData.Comment;
+        if (string.IsNullOrWhiteSpace(commentText))
+        {
+            return 0;
+        }
+
+        if (commentText.Length >= 2048)
+        {
+            return 0;
+        }
+
+        PostCommentViewModel parentComment = null;
+        var allCommentPages = await TryGetAllPostComments(postId);
+        var allComments = allCommentPages[0].AllComments;
+        if (parentCommentId > 0 && !allComments.TryGetValue(parentCommentId, out parentComment))
+        {
+            return 0;
+        }
+
+        var usersThatCanBeTagged = new Dictionary<long, string>(activeAccount.UserTags);
+        if (parentComment != null)
+        {
+            usersThatCanBeTagged.TryAdd(parentComment.AccountId, parentComment.AccountUsername);
+        }
+
+        if (!_commonServices.TagServices.GetCommentText(commentText, usersThatCanBeTagged, out commentText, out var accountsTaggedInComment, out var hashTagsTaggedInComment))
+        {
+            return 0;
+        }
+
+        var tagRecords = new HashSet<PostTagRecord>();
+        foreach (var accountId in accountsTaggedInComment)
+        {
+            var tagRecord = await _commonServices.TagServices.TryCreateTagRecord(PostTagType.Account, accountId, PostTagKind.UserComment);
+            if (tagRecord == null)
+            {
+                return 0;
+            }
+
+            tagRecords.Add(tagRecord);
+        }
+
+        foreach (var hashTag in hashTagsTaggedInComment)
+        {
+            var tagRecord = await _commonServices.TagServices.GetHashTagRecord(hashTag, PostTagKind.UserComment);
+            if (tagRecord == null)
+            {
+                return 0;
+            }
+
+            tagRecords.Add(tagRecord);
+        }
+
+        if (tagRecords.Count > 64)
+        {
+            return 0;
+        }
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        var commentRecord = new PostCommentRecord
+        {
+            AccountId = activeAccount.Id,
+            PostId = postId,
+            ParentId = parentComment?.Id,
+            PostComment = commentText,
+            CreatedTime = SystemClock.Instance.GetCurrentInstant()
+        };
+
+        commentRecord.Id = await database.InsertWithInt64IdentityAsync(commentRecord);
+
+        await database.GetUpdateQuery(postRecord, out _).Set(x => x.TotalCommentCount, x => x.TotalCommentCount + 1).UpdateAsync();
+
+        foreach (var tagRecord in tagRecords)
+        {
+            tagRecord.PostId = postRecord.Id;
+            tagRecord.CommentId = commentRecord.Id;
+        }
+
+        await database.PostTags.BulkCopyAsync(tagRecords);
+
+        using var computed = Computed.Invalidate();
+        _ = GetPostRecord(postId);
+        _ = TryGetAllPostComments(postId);
+
+        return 1;
     }
 
     [ComputeMethod]

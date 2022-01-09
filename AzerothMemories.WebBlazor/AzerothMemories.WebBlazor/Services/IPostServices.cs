@@ -28,6 +28,6 @@ public interface IPostServices
     [Post(nameof(TryRestoreMemory) + "/{postId}/{previousCharacterId}/{newCharacterId}")]
     Task<bool> TryRestoreMemory(Session session, [Path] long postId, [Path] long previousCharacterId, [Path] long newCharacterId);
 
-    [Post(nameof(TryPublishComment) + "/{postId}/{parentId}")]
-    Task<long> TryPublishComment(Session session, [Path] long postId, [Path] long parentId, [Body] AddCommentTransferData commentText);
+    [Post(nameof(TryPublishComment) + "/{postId}/{parentCommentId}")]
+    Task<long> TryPublishComment(Session session, [Path] long postId, [Path] long parentCommentId, [Body] AddCommentTransferData transferData);
 }

@@ -5,6 +5,7 @@ public enum PostTagKind
     None,
     Post,
     PostRestored,
-    Comment,
-    Deleted
+    PostComment,
+    Deleted,
+    UserComment,
 }

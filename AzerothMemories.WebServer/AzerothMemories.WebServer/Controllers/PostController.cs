@@ -53,9 +53,9 @@ public class PostController : ControllerBase, IPostServices
         return _commonServices.PostServices.TryRestoreMemory(session, postId, previousCharacterId, newCharacterId);
     }
 
-    [HttpPost("{postId}/{parentId}")]
-    public Task<long> TryPublishComment(Session session, [FromRoute] long postId, [FromRoute] long parentId, [FromBody] AddCommentTransferData commentText)
+    [HttpPost("{postId}/{parentCommentId}")]
+    public Task<long> TryPublishComment(Session session, [FromRoute] long postId, [FromRoute] long parentCommentId, [FromBody] AddCommentTransferData transferData)
     {
-        return _commonServices.PostServices.TryPublishComment(session, postId, parentId, commentText);
+        return _commonServices.PostServices.TryPublishComment(session, postId, parentCommentId, transferData);
     }
 }

@@ -107,22 +107,6 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(PostRecord.TotalReportCount)).AsInt64().WithDefaultValue(0)
             .WithColumn(nameof(PostRecord.DeletedTimeStamp)).AsInt64().WithDefaultValue(0);
 
-        Create.Table("Posts_Tags")
-            .WithColumn(nameof(PostTagRecord.Id)).AsInt64().PrimaryKey().Identity()
-            .WithColumn(nameof(PostTagRecord.TagKind)).AsByte().WithDefaultValue(0)
-            .WithColumn(nameof(PostTagRecord.TagType)).AsByte().WithDefaultValue(0)
-            .WithColumn(nameof(PostTagRecord.PostId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts", "Id")
-            .WithColumn(nameof(PostTagRecord.TagId)).AsInt64().WithDefaultValue(0)
-            .WithColumn(nameof(PostTagRecord.TagString)).AsString(128)
-            .WithColumn(nameof(PostTagRecord.CreatedTime)).AsDateTimeOffset();
-
-        Create.Table("Posts_Reactions")
-            .WithColumn(nameof(PostReactionRecord.Id)).AsInt64().PrimaryKey().Identity()
-            .WithColumn(nameof(PostReactionRecord.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey("Accounts", "Id")
-            .WithColumn(nameof(PostReactionRecord.PostId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts", "Id")
-            .WithColumn(nameof(PostReactionRecord.Reaction)).AsByte().WithDefaultValue(0)
-            .WithColumn(nameof(PostReactionRecord.LastUpdateTime)).AsDateTimeOffset();
-
         Create.Table("Posts_Comments")
             .WithColumn(nameof(PostCommentRecord.Id)).AsInt64().PrimaryKey().Identity()
             .WithColumn(nameof(PostCommentRecord.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey("Accounts", "Id")
@@ -133,6 +117,23 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(PostCommentRecord.CreatedTime)).AsDateTimeOffset()
             .WithColumn(nameof(PostCommentRecord.TotalReportCount)).AsInt64().WithDefaultValue(0)
             .WithColumn(nameof(PostCommentRecord.DeletedTimeStamp)).AsInt64().WithDefaultValue(0);
+
+        Create.Table("Posts_Tags")
+            .WithColumn(nameof(PostTagRecord.Id)).AsInt64().PrimaryKey().Identity()
+            .WithColumn(nameof(PostTagRecord.TagKind)).AsByte().WithDefaultValue(0)
+            .WithColumn(nameof(PostTagRecord.TagType)).AsByte().WithDefaultValue(0)
+            .WithColumn(nameof(PostTagRecord.PostId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts", "Id")
+            .WithColumn(nameof(PostTagRecord.CommentId)).AsInt64().WithDefaultValue(null).ForeignKey("Posts_Comments", "Id").Nullable()
+            .WithColumn(nameof(PostTagRecord.TagId)).AsInt64().WithDefaultValue(0)
+            .WithColumn(nameof(PostTagRecord.TagString)).AsString(128)
+            .WithColumn(nameof(PostTagRecord.CreatedTime)).AsDateTimeOffset();
+
+        Create.Table("Posts_Reactions")
+            .WithColumn(nameof(PostReactionRecord.Id)).AsInt64().PrimaryKey().Identity()
+            .WithColumn(nameof(PostReactionRecord.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey("Accounts", "Id")
+            .WithColumn(nameof(PostReactionRecord.PostId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts", "Id")
+            .WithColumn(nameof(PostReactionRecord.Reaction)).AsByte().WithDefaultValue(0)
+            .WithColumn(nameof(PostReactionRecord.LastUpdateTime)).AsDateTimeOffset();
 
         Create.Table("Posts_Comments_Reactions")
             .WithColumn(nameof(PostCommentReactionRecord.Id)).AsInt64().PrimaryKey().Identity()

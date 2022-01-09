@@ -132,14 +132,14 @@ public class TagServices : ITagServices
         return new PostTagInfo(record.TagType, record.TagId, record.Name.En_Gb, record.Media);
     }
 
-    public async Task<PostTagRecord> TryCreateTagRecord(string systemTag, ActiveAccountViewModel accountViewModel)
+    public async Task<PostTagRecord> TryCreateTagRecord(string systemTag, ActiveAccountViewModel accountViewModel, PostTagKind tagKind)
     {
         if (!ZExtensions.ParseTagInfoFrom(systemTag, out var postTagInfo))
         {
             return null;
         }
 
-        var result = await TryCreateTagRecord(postTagInfo.Type, postTagInfo.Id);
+        var result = await TryCreateTagRecord(postTagInfo.Type, postTagInfo.Id, tagKind);
         if (result != null)
         {
             if (postTagInfo.Type == PostTagType.Account && accountViewModel.Id != postTagInfo.Id)
@@ -156,7 +156,7 @@ public class TagServices : ITagServices
         return result;
     }
 
-    public async Task<PostTagRecord> TryCreateTagRecord(PostTagType tagType, long tagId)
+    public async Task<PostTagRecord> TryCreateTagRecord(PostTagType tagType, long tagId, PostTagKind tagKind)
     {
         switch (tagType)
         {
@@ -220,16 +220,17 @@ public class TagServices : ITagServices
             CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             TagId = tagId,
             TagType = tagType,
-            TagString = PostTagInfo.GetTagString(tagType, tagId)
+            TagString = PostTagInfo.GetTagString(tagType, tagId),
+            TagKind = tagKind
         };
     }
 
-    public Task<PostTagRecord> GetHashTagRecord(string hashTag)
+    public Task<PostTagRecord> GetHashTagRecord(string hashTag, PostTagKind tagKind)
     {
         var result = new PostTagRecord
         {
             CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-            TagKind = PostTagKind.Comment,
+            TagKind = tagKind,
             TagType = PostTagType.HashTag,
             TagString = hashTag,
         };
@@ -249,7 +250,7 @@ public class TagServices : ITagServices
         return tagString != null;
     }
 
-    public bool GetCommentText(string commentText, ActiveAccountViewModel accountViewModel, out string newCommentText, out HashSet<long> userTags, out HashSet<string> hashTags)
+    public bool GetCommentText(string commentText, Dictionary<long, string> userThatCanBeTagged, out string newCommentText, out HashSet<long> userTags, out HashSet<string> hashTags)
     {
         const int maxLength = 2048;
 
@@ -288,7 +289,7 @@ public class TagServices : ITagServices
                 return false;
             }
 
-            var tagInfo = accountViewModel.UserTags.FirstOrDefault(x => string.Equals(x.Value, str, StringComparison.OrdinalIgnoreCase));
+            var tagInfo = userThatCanBeTagged.FirstOrDefault(x => string.Equals(x.Value, str, StringComparison.OrdinalIgnoreCase));
             if (tagInfo.Key > 0 && tagInfo.Value != null)
             {
                 userTags.Add(tagInfo.Key);

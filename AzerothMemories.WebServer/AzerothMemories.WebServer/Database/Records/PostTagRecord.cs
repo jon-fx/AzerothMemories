@@ -11,11 +11,11 @@ public sealed class PostTagRecord : IDatabaseRecord
 
     [Column, NotNull] public long PostId;
 
+    [Column, NotNull] public long? CommentId;
+
     [Column, NotNull] public long TagId;
 
     [Column, NotNull] public string TagString;
-
-    //[Column, NotNull] public int ReportedCount;
 
     [Column, NotNull] public Instant CreatedTime;
 }
