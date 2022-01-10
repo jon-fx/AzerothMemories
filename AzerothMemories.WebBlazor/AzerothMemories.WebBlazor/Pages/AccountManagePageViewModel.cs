@@ -29,9 +29,9 @@ public sealed class AccountManagePageViewModel : ViewModelBase
 
     public Dictionary<long, (string Link, string Name, long Id)> AllAvatars { get; init; }
 
-    public override async Task ComputeState(CancellationToken cancellationToken)
+    public override async Task ComputeState()
     {
-        AccountViewModel = await Services.AccountServices.TryGetAccount(null, cancellationToken);
+        AccountViewModel = await Services.AccountServices.TryGetAccount(null);
 
         if (AccountViewModel == null)
         {

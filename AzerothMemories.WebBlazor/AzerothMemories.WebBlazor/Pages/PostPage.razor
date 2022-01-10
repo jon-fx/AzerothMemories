@@ -29,10 +29,10 @@ else
 
     [Parameter, SupplyParameterFromQuery(Name = "comment")] public string FocusedCommentId { get; init; }
 
-    protected override void OnParametersSet()
+    protected override async Task ComputeStateOnParametersChanged()
     {
-        base.OnParametersSet();
+        await base.ComputeStateOnParametersChanged();
 
-        ViewModel.OnParametersSet(Id, Name, PostId, CurrentPage, FocusedCommentId);
+        ViewModel.OnParametersChanged(Id, Name, PostId, CurrentPage, FocusedCommentId);
     }
 }

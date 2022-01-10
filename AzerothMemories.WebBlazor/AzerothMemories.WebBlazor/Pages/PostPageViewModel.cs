@@ -29,7 +29,7 @@ public sealed class PostPageViewModel : ViewModelBase
 
     public long FocusedCommentId { get; private set; }
 
-    public void OnParametersSet(long id, string name, long postId, string pageString, string focusedCommentIdString)
+    public void OnParametersChanged(long id, string name, long postId, string pageString, string focusedCommentIdString)
     {
         _accountId = id;
         _username = name;
@@ -49,16 +49,16 @@ public sealed class PostPageViewModel : ViewModelBase
         FocusedCommentId = focusedCommentId;
     }
 
-    public override async Task ComputeState(CancellationToken cancellationToken)
+    public override async Task ComputeState()
     {
         var accountViewModel = AccountViewModel;
         if (_accountId > 0)
         {
-            accountViewModel = await Services.AccountServices.TryGetAccountById(null, _accountId, cancellationToken);
+            accountViewModel = await Services.AccountServices.TryGetAccountById(null, _accountId);
         }
         else if (!string.IsNullOrWhiteSpace(_username))
         {
-            accountViewModel = await Services.AccountServices.TryGetAccountByUsername(null, _username, cancellationToken);
+            accountViewModel = await Services.AccountServices.TryGetAccountByUsername(null, _username);
         }
 
         if (accountViewModel == null)
@@ -67,7 +67,7 @@ public sealed class PostPageViewModel : ViewModelBase
             return;
         }
 
-        var postViewModel = await Services.PostServices.TryGetPostViewModel(null, accountViewModel.Id, _postId, CultureInfo.CurrentCulture.Name, cancellationToken);
+        var postViewModel = await Services.PostServices.TryGetPostViewModel(null, accountViewModel.Id, _postId, CultureInfo.CurrentCulture.Name);
         if (postViewModel == null)
         {
             ErrorMessage = "Post Not Found";

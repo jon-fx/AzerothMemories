@@ -6,5 +6,10 @@ public abstract class ViewModelBase
 
     public Action OnViewModelChanged { get; set; }
 
-    public abstract Task ComputeState(CancellationToken cancellationToken);
+    public virtual Task OnInitialized()
+    {
+        return Task.CompletedTask;
+    }
+
+    public abstract Task ComputeState();
 }

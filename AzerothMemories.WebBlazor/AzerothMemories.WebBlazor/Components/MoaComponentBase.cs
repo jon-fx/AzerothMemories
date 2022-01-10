@@ -2,6 +2,8 @@
 
 public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TViewModel>, IMoaServices where TViewModel : ViewModelBase, new()
 {
+    private bool _parametersChanged;
+
     protected MoaComponentBase()
     {
         ViewModel = new TViewModel
@@ -33,11 +35,41 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
 
     [Inject] public IStringLocalizer<BlizzardResources> StringLocalizer { get; init; }
 
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await ViewModel.OnInitialized();
+    }
+
+    protected override sealed void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        _parametersChanged = true;
+    }
+
+    protected override sealed Task OnParametersSetAsync()
+    {
+        return base.OnParametersSetAsync();
+    }
+
+    protected virtual Task ComputeStateOnParametersChanged()
+    {
+        return Task.CompletedTask;
+    }
+
     protected override sealed async Task<TViewModel> ComputeState(CancellationToken cancellationToken)
     {
         await ActiveAccountServices.ComputeState(cancellationToken);
 
-        await ViewModel.ComputeState(cancellationToken);
+        if (_parametersChanged)
+        {
+            await ComputeStateOnParametersChanged();
+
+            _parametersChanged = false;
+        }
+
+        await ViewModel.ComputeState();
 
         return ViewModel;
     }

@@ -1,7 +1,6 @@
 ﻿@page "/"
 @inherits MoaComponentBase<IndexPageViewModel>
 
-
 <AuthorizeView>
     <Authorized>
         <AccountHeaderCardComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" />
@@ -13,8 +12,8 @@
     var name = "post/Lightfx/1";
 }
 
-<MudButton OnClick="() => NavigationManager.NavigateTo(id)" >Tests Id</MudButton>
-<MudButton OnClick="() => NavigationManager.NavigateTo(name)" >Tests Username</MudButton>
+<MudButton OnClick="() => NavigationManager.NavigateTo(id)" >Test Post AccountId</MudButton>
+<MudButton OnClick="() => NavigationManager.NavigateTo(name)" >Test Post AccountUsername</MudButton>
 
 @for (var i = 0; i < 13; i++)
 {

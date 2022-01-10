@@ -10,7 +10,7 @@ public sealed class AddMemoryPageViewModel : ViewModelBase
         UploadedImages = new List<AddMemoryUploadResult>();
     }
 
-    public override Task ComputeState(CancellationToken cancellationToken)
+    public override Task ComputeState()
     {
         return Task.CompletedTask;
     }

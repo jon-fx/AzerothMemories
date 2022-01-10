@@ -37,9 +37,9 @@ else
     <CardLoadingComponent />
 }
 
-@code 
+@code
 {
-    [Inject] IScrollManager ScrollManager { get; init; }
+    @*[Inject] IScrollManager ScrollManager { get; init; }*@
 
     [Parameter, SupplyParameterFromQuery(Name = "tag")] public string[] Tags { get; init; }
 
@@ -55,13 +55,13 @@ else
     {
         base.OnInitialized();
 
-         ViewModel.OnInitialized();
+        ViewModel.OnInitialized();
     }
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task ComputeStateOnParametersChanged()
     {
-        await base.OnParametersSetAsync();
+        await base.ComputeStateOnParametersChanged();
 
-       await ViewModel.OnParametersSet(Tags, SortMode, CurrentPage, PostMinTime, PostMaxTime);
+        await ViewModel.OnParametersChanged(Tags, SortMode, CurrentPage, PostMinTime, PostMaxTime);
     }
 }
