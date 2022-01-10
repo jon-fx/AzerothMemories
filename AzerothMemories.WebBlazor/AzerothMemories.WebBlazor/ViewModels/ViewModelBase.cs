@@ -11,5 +11,8 @@ public abstract class ViewModelBase
         return Task.CompletedTask;
     }
 
-    public abstract Task ComputeState();
+    public virtual Task ComputeState()
+    {
+        return Task.CompletedTask;
+    }
 }

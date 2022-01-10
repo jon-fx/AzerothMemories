@@ -46,7 +46,7 @@ public sealed class PostSearchHelper
 
     public bool IsLoading { get; private set; }
 
-    public async Task OnParametersChanged(string[] tagStrings, string sortModeString, string currentPageString, string postMinTimeString, string postMaxTimeString)
+    public async Task ComputeState(string[] tagStrings, string sortModeString, string currentPageString, string postMinTimeString, string postMaxTimeString)
     {
         var sameTagStrings = StructuralComparisons.StructuralEqualityComparer.Equals(_tagStrings, tagStrings);
         if (sameTagStrings && sortModeString == _sortModeString && currentPageString == _currentPageString && postMinTimeString == _postMinTimeString && postMaxTimeString == _postMaxTimeString)
@@ -87,11 +87,6 @@ public sealed class PostSearchHelper
             _maxTime = Math.Clamp(maxTime, 0, SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
         }
 
-        await OnComputeState();
-    }
-
-    public async Task OnComputeState()
-    {
         IsLoading = true;
 
         var searchResults = await _services.SearchPostsServices.TrySearchPosts(null, _tagStrings.ToArray(), _sortMode, _currentPage, _minTime, _maxTime);

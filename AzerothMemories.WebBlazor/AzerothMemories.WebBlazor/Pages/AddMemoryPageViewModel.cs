@@ -10,11 +10,6 @@ public sealed class AddMemoryPageViewModel : ViewModelBase
         UploadedImages = new List<AddMemoryUploadResult>();
     }
 
-    public override Task ComputeState()
-    {
-        return Task.CompletedTask;
-    }
-
     public List<AddMemoryUploadResult> UploadedImages { get; }
 
     public bool MaxUploadReached => UploadedImages.Count > 3;

@@ -29,10 +29,8 @@
 
     [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }
 
-    protected override async Task ComputeStateOnParametersChanged()
+    protected override async Task InternalComputeState()
     {
-        await base.ComputeStateOnParametersChanged();
-
-        await ViewModel.OnParametersChanged(Id, Name, SortMode, CurrentPage);
+        await ViewModel.ComputeState(Id, Name, SortMode, CurrentPage);
     }
 }

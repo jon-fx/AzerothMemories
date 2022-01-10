@@ -2,8 +2,6 @@
 
 public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TViewModel>, IMoaServices where TViewModel : ViewModelBase, new()
 {
-    private bool _parametersChanged;
-
     protected MoaComponentBase()
     {
         ViewModel = new TViewModel
@@ -44,8 +42,6 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
     protected override sealed void OnParametersSet()
     {
         base.OnParametersSet();
-
-        _parametersChanged = true;
     }
 
     protected override sealed Task OnParametersSetAsync()
@@ -53,24 +49,19 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
         return base.OnParametersSetAsync();
     }
 
-    protected virtual Task ComputeStateOnParametersChanged()
-    {
-        return Task.CompletedTask;
-    }
-
     protected override sealed async Task<TViewModel> ComputeState(CancellationToken cancellationToken)
     {
         await ActiveAccountServices.ComputeState(cancellationToken);
 
-        if (_parametersChanged)
-        {
-            await ComputeStateOnParametersChanged();
-
-            _parametersChanged = false;
-        }
+        await InternalComputeState();
 
         await ViewModel.ComputeState();
 
         return ViewModel;
+    }
+
+    protected virtual Task InternalComputeState()
+    {
+        return Task.CompletedTask;
     }
 }

@@ -15,14 +15,9 @@
             return Task.CompletedTask;
         }
 
-        public async Task OnParametersChanged(string[] tagStrings, string sortModeString, string currentPageString, string minTimeString, string maxTimeString)
+        public async Task ComputeState(string[] tagStrings, string sortModeString, string currentPageString, string minTimeString, string maxTimeString)
         {
-            await PostSearchHelper.OnParametersChanged(tagStrings, sortModeString, currentPageString, minTimeString, maxTimeString);
-        }
-
-        public override async Task ComputeState()
-        {
-            await PostSearchHelper.OnComputeState();
+            await PostSearchHelper.ComputeState(tagStrings, sortModeString, currentPageString, minTimeString, maxTimeString);
         }
     }
 }

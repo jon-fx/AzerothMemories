@@ -58,10 +58,10 @@ else
         ViewModel.OnInitialized();
     }
 
-    protected override async Task ComputeStateOnParametersChanged()
+    protected override async Task InternalComputeState()
     {
-        await base.ComputeStateOnParametersChanged();
+        await base.InternalComputeState();
 
-        await ViewModel.OnParametersChanged(Tags, SortMode, CurrentPage, PostMinTime, PostMaxTime);
+        await ViewModel.ComputeState(Tags, SortMode, CurrentPage, PostMinTime, PostMaxTime);
     }
 }

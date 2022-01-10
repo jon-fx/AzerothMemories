@@ -28,11 +28,9 @@ else
     [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }
 
     [Parameter, SupplyParameterFromQuery(Name = "comment")] public string FocusedCommentId { get; init; }
-
-    protected override async Task ComputeStateOnParametersChanged()
+    
+    protected override async Task InternalComputeState()
     {
-        await base.ComputeStateOnParametersChanged();
-
-        ViewModel.OnParametersChanged(Id, Name, PostId, CurrentPage, FocusedCommentId);
+        await ViewModel.ComputeState(Id, Name, PostId, CurrentPage, FocusedCommentId);
     }
 }
