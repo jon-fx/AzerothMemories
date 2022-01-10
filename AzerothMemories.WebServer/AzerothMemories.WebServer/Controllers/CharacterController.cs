@@ -16,4 +16,16 @@ public class CharacterController : ControllerBase, ICharacterServices
     {
         return _commonServices.CharacterServices.TryChangeCharacterAccountSync(session, characterId, newValue, cancellationToken);
     }
+
+    [HttpGet("{characterId}"), Publish]
+    public Task<CharacterViewModel> TryGetCharacter(Session session, [FromRoute] long characterId)
+    {
+        return _commonServices.CharacterServices.TryGetCharacter(session, characterId);
+    }
+
+    [HttpGet("{region}/{realmSlug}/{characterName}"), Publish]
+    public Task<CharacterAccountViewModel> TryGetCharacter(Session session, [FromRoute] BlizzardRegion region, [FromRoute] string realmSlug, [FromRoute] string characterName)
+    {
+        return _commonServices.CharacterServices.TryGetCharacter(session, region, realmSlug, characterName);
+    }
 }

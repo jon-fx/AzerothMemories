@@ -20,22 +20,44 @@ public class CharacterServices : ICharacterServices
         return character;
     }
 
+    [ComputeMethod]
+    protected virtual async Task<CharacterRecord> GetOrCreateCharacterRecord(string characterRefFull)
+    {
+        var moaRef = new MoaRef(characterRefFull);
+        Exceptions.ThrowIf(moaRef.IsValidAccount);
+        Exceptions.ThrowIf(moaRef.IsValidGuild);
+        Exceptions.ThrowIf(moaRef.IsWildCard);
+
+        Exceptions.ThrowIf(!moaRef.IsValidCharacter);
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        var characterId = await (from r in database.Characters
+                                 where r.MoaRef == moaRef.Full
+                                 select r.Id).FirstOrDefaultAsync();
+
+        if (characterId == 0)
+        {
+            characterId = await database.InsertWithInt64IdentityAsync(new CharacterRecord
+            {
+                MoaRef = moaRef.Full,
+                BlizzardId = moaRef.Id,
+                BlizzardRegionId = moaRef.Region,
+                CreatedDateTime = SystemClock.Instance.GetCurrentInstant()
+            });
+        }
+
+        var characterRecord = await TryGetCharacterRecord(characterId);
+
+        await _commonServices.BlizzardUpdateHandler.TryUpdateCharacter(database, characterRecord);
+
+        return characterRecord;
+    }
+
     public async Task OnAccountUpdate(long accountId, string characterRef, AccountCharacter accountCharacter)
     {
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
-        var characterRecord = await database.Characters.Where(x => x.MoaRef == characterRef).FirstOrDefaultAsync();
-        if (characterRecord == null)
-        {
-            characterRecord = new CharacterRecord
-            {
-                MoaRef = characterRef,
-                CreatedDateTime = SystemClock.Instance.GetCurrentInstant()
-            };
-
-            characterRecord.Id = await database.InsertWithInt64IdentityAsync(characterRecord);
-        }
-
+        var characterRecord = await GetOrCreateCharacterRecord(characterRef);
         var updateQuery = database.GetUpdateQuery(characterRecord, out var changed);
         if (CheckAndChange.Check(ref characterRecord.AccountId, accountId, ref changed))
         {
@@ -173,5 +195,78 @@ public class CharacterServices : ICharacterServices
         OnCharacterUpdate(characterId, accountId);
 
         return newValue;
+    }
+
+    [ComputeMethod]
+    public virtual async Task<CharacterViewModel> TryGetCharacter(Session session, long characterId)
+    {
+        return new CharacterViewModel();
+    }
+
+    [ComputeMethod]
+    public virtual async Task<CharacterAccountViewModel> TryGetCharacter(Session session, BlizzardRegion region, string realmSlug, string characterName)
+    {
+        if (region is <= 0 or >= BlizzardRegion.Count || string.IsNullOrWhiteSpace(realmSlug) || string.IsNullOrWhiteSpace(characterName))
+        {
+            return null;
+        }
+
+        var realmId = await _commonServices.TagServices.TryGetRealmId(realmSlug);
+        if (realmId == 0)
+        {
+            return null;
+        }
+
+        if (characterName.Length > 50)
+        {
+            return null;
+        }
+
+        var characterRef = await GetFullCharacterRef(region, realmSlug, characterName, realmId);
+        if (characterRef == null)
+        {
+            return null;
+        }
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        var characterRecord = await GetOrCreateCharacterRecord(characterRef.Full);
+
+        var results = new CharacterAccountViewModel();
+        if (characterRecord.AccountSync && characterRecord.AccountId is > 0)
+        {
+            results.AccountViewModel = await _commonServices.AccountServices.TryGetAccountById(session, characterRecord.AccountId.Value);
+            results.CharacterViewModel = results.AccountViewModel.GetCharactersSafe().FirstOrDefault(x => x.Id == characterRecord.Id);
+        }
+        else
+        {
+            results.CharacterViewModel = await TryGetCharacter(session, characterRecord.Id);
+        }
+
+        return results;
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<MoaRef> GetFullCharacterRef(BlizzardRegion region, string realmSlug, string characterName, int realmId)
+    {
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        var query = from r in database.Characters
+                    where r.BlizzardRegionId == region && r.RealmId == realmId && Sql.Lower(r.Name) == Sql.Lower(characterName)
+                    select new { r.Id, r.AccountId, r.MoaRef };
+
+        var result = await query.FirstOrDefaultAsync();
+        if (result != null)
+        {
+            return new MoaRef(result.MoaRef);
+        }
+
+        using var client = _commonServices.WarcraftClientProvider.Get(region);
+        var statusResult = await client.GetCharacterStatusAsync(realmSlug, characterName);
+        if (statusResult.ResultData.IsValid && statusResult.ResultData.Id > 0)
+        {
+            return MoaRef.GetCharacterRef(region, realmSlug, characterName, statusResult.ResultData.Id);
+        }
+
+        return null;
     }
 }

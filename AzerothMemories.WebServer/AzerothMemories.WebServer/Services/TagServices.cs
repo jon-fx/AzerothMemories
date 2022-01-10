@@ -16,6 +16,18 @@ public class TagServices : ITagServices
     }
 
     [ComputeMethod]
+    public virtual async Task<int> TryGetRealmId(string realmSlug)
+    {
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        var query = from r in database.BlizzardData
+                    where r.TagType == PostTagType.Realm && r.Media == realmSlug
+                    select r.TagId;
+
+        return (int)await query.FirstOrDefaultAsync();
+    }
+
+    [ComputeMethod]
     public virtual async Task<PostTagInfo> GetTagInfo(PostTagType tagType, long tagId, string locale)
     {
         if (tagType == PostTagType.Account || tagType == PostTagType.Character || tagType == PostTagType.Guild)

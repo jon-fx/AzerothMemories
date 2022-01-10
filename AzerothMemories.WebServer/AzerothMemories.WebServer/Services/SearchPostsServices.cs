@@ -41,10 +41,10 @@ public class SearchPostsServices : ISearchPostsServices
         var allSearchResult = await TrySearchPosts(serverSideTagStrings, sortMode, postMinTime, postMaxTime);
         var allPostViewModels = new List<PostViewModel>();
         var totalPages = (int)Math.Ceiling(allSearchResult.Length / (float)postsPerPage);
-        currentPage = Math.Clamp(currentPage, 1, totalPages);
-
         if (allSearchResult.Length > 0)
         {
+            currentPage = Math.Clamp(currentPage, 1, totalPages);
+
             var pagedResults = allSearchResult.Skip((currentPage - 1) * postsPerPage).Take(postsPerPage).ToArray();
             foreach (var pagedResult in pagedResults)
             {

@@ -1,0 +1,41 @@
+﻿@page "/character/{Id:long}"
+@page "/character/{Region}/{Realm}/{Name}"
+@inherits MoaComponentBase<CharacterPagePageViewModel>
+
+@{
+    if (!string.IsNullOrWhiteSpace(ViewModel.ErrorMessage))
+    {
+        <CardErrorComponent ErrorMessage="@ViewModel.ErrorMessage" />
+    }
+    else if (ViewModel.IsLoading)
+    {
+        <CardLoadingComponent />
+    }
+    else
+    {
+        <PageTitle>@ViewModel.CharacterViewModel.Name's Memories of Azeroth</PageTitle>
+        <AccountHeaderCardComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" />
+        <CharacterHeaderCardComponent Services="@this" CharacterViewModel="@ViewModel.CharacterViewModel"/>
+        <SearchPostViewComponent PostSearchHelper="@ViewModel.PostSearchHelper" />
+    }
+}
+
+@code 
+{
+    [Parameter, EditorRequired] public long Id { get; set; }
+
+    [Parameter, EditorRequired] public string Region { get; set; }
+
+    [Parameter, EditorRequired] public string Realm { get; set; }
+
+    [Parameter, EditorRequired] public string Name { get; set; }
+
+    [Parameter, SupplyParameterFromQuery(Name = "sort")] public string SortMode { get; init; }
+
+    [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }
+
+    protected override async Task InternalComputeState()
+    {
+        await ViewModel.ComputeState(Id, Region, Realm, Name, SortMode, CurrentPage);
+    }
+}

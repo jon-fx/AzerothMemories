@@ -1,0 +1,36 @@
+﻿@if (CharacterViewModel == null)
+{
+
+}
+else
+{
+    <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+        <MudCardHeader>
+            <CardHeaderAvatar>
+                <MudAvatar Size="Size.Large" Image="@CharacterViewModel.AvatarLinkWithFallBack">@CharacterViewModel.Name[0]</MudAvatar>
+            </CardHeaderAvatar>
+            <CardHeaderContent>
+                <a href="@($"/character/{CharacterViewModel.Id}")" tabindex="-1">
+                    <MudText Typo="Typo.h6">@CharacterViewModel.Name</MudText>
+                </a>
+            </CardHeaderContent>
+            <CardHeaderActions>
+                <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+            </CardHeaderActions>
+        </MudCardHeader>
+        <MudCardContent>
+
+        </MudCardContent>
+        <MudCardActions>
+            <MudButtonGroup OverrideStyles="true" Class="pa-0 ma-2" Variant="Variant.Filled">
+
+            </MudButtonGroup>
+        </MudCardActions>
+    </MudCard>
+}
+
+@code {
+    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
+
+    [Parameter, EditorRequired] public CharacterViewModel CharacterViewModel { get; init; }
+}
