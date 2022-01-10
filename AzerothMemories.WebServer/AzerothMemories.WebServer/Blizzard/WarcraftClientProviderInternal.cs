@@ -26,6 +26,8 @@ internal sealed class WarcraftClientProviderInternal
 
         _clientId = clientId;
         _clientSecret = clientSecret;
+
+        Exceptions.ThrowIf(_blizzardRegionInfo == null);
     }
 
     public WarcraftClient GetClient()

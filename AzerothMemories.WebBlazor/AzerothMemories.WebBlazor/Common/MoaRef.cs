@@ -10,7 +10,8 @@ public sealed class MoaRef
         Realm = realm;
         Region = region;
 
-        Full = Id >= 0 ? $"{Type}|{Region.ToValue()}|{Id}|{Realm}|{Name}".ToLower() : $"{Type}|{Region.ToValue()}|%|{Realm}|{Name}".ToLower();
+        Full = $"{Type}|{Region.ToValue()}|{Id}|{Realm}|{Name}".ToLower();
+        //Full = Id >= 0 ? $"{Type}|{Region.ToValue()}|{Id}|{Realm}|{Name}".ToLower() : $"{Type}|{Region.ToValue()}|%|{Realm}|{Name}".ToLower();
     }
 
     public MoaRef(string full)

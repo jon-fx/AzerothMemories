@@ -5,7 +5,7 @@ public sealed class CharacterAchievementRecord : IDatabaseRecord
 {
     [Column(IsPrimaryKey = true, IsIdentity = true)] public long Id { get; set; }
 
-    [Column, NotNull] public long AccountId;
+    [Column, NotNull] public long? AccountId;
 
     [Column, NotNull] public long CharacterId;
 

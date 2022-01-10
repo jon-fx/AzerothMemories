@@ -187,7 +187,7 @@ internal sealed class BlizzardCharacterUpdateHandler
         var achievementData = achievementsSummary.ResultData;
         var currentAchievements = await database.CharacterAchievements.Where(x => x.CharacterId == record.Id && x.AchievementId > 0).ToDictionaryAsync(x => x.AchievementId, x => x).ConfigureAwait(false);
 
-        var accountId = record.AccountId.GetValueOrDefault();
+        var accountId = record.AccountId;
         var newAchievementRecords = new HashSet<CharacterAchievementRecord>();
         foreach (var achievement in achievementData.Achievements)
         {

@@ -22,7 +22,7 @@ public sealed class CommonConfig
 
     public readonly (string Id, string Secret)?[] BlizzardClientInfo =
     {
-        new("***REMOVED***", "***REMOVED***"),
+        null,
         new("***REMOVED***", "***REMOVED***"),
         new("***REMOVED***", "***REMOVED***"),
         new("***REMOVED***", "***REMOVED***"),

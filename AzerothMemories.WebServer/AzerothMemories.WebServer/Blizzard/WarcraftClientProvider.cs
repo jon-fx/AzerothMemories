@@ -12,7 +12,7 @@ public sealed class WarcraftClientProvider
         _commonConfig = commonConfig;
 
         _internalProviders = new WarcraftClientProviderInternal[_commonConfig.BlizzardClientInfo.Length];
-        for (var i = 0; i < _commonConfig.BlizzardClientInfo.Length; i++)
+        for (var i = 1; i < _commonConfig.BlizzardClientInfo.Length; i++)
         {
             var info = _commonConfig.BlizzardClientInfo[i];
             if (info.HasValue)

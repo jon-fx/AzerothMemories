@@ -58,8 +58,8 @@ public sealed class Migration0001 : Migration
 
         Create.Table("Characters_Achievements")
             .WithColumn(nameof(CharacterAchievementRecord.Id)).AsInt64().PrimaryKey().Identity()
-            .WithColumn(nameof(CharacterAchievementRecord.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey("Accounts", "Id")
-            .WithColumn(nameof(CharacterAchievementRecord.CharacterId)).AsInt64().WithDefaultValue(0).ForeignKey("Characters", "Id")
+            .WithColumn(nameof(CharacterAchievementRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").Nullable()
+            .WithColumn(nameof(CharacterAchievementRecord.CharacterId)).AsInt64().ForeignKey("Characters", "Id")
             .WithColumn(nameof(CharacterAchievementRecord.AchievementId)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(CharacterAchievementRecord.AchievementTimeStamp)).AsInt64().WithDefaultValue(0)
             .WithColumn(nameof(CharacterAchievementRecord.CompletedByCharacter)).AsBoolean().WithDefaultValue(false);

@@ -51,7 +51,34 @@ internal sealed class BlizzardUpdateHandler
 
     private bool RecordRequiresUpdate(IBlizzardGrainUpdateRecord record)
     {
-        return true;
+        var now = SystemClock.Instance.GetCurrentInstant();
+        //var isAccount = record is AccountRecord;
+        //var isCharacter = record is AccountRecord;
+        //var isGuild= record is GuildRecord;
+
+        if (string.IsNullOrWhiteSpace(record.UpdateJob))
+        {
+            if (!record.UpdateJobQueueTime.HasValue && !record.UpdateJobStartTime.HasValue && !record.UpdateJobEndTime.HasValue)
+            {
+                return true;
+            }
+
+            if (record.UpdateJobLastResult.IsFailure() && record.UpdateJobEndTime.HasValue && record.UpdateJobEndTime.Value + Duration.FromHours(1) > now)
+            {
+                return true;
+            }
+
+            if (record.UpdateJobEndTime.HasValue && record.UpdateJobEndTime.Value + Duration.FromHours(2) > now)
+            {
+                return true;
+            }
+        }
+        else if (record.UpdateJobQueueTime.HasValue && record.UpdateJobQueueTime.Value + Duration.FromHours(6) > now)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     private async Task<bool> OnUpdateStarted<TRecord>(DatabaseConnection database, TRecord record, PerformContext context) where TRecord : class, IBlizzardGrainUpdateRecord
