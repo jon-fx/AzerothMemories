@@ -1,0 +1,71 @@
+﻿@if (PostSearchHelper == null || PostSearchHelper.IsLoading)
+{
+    <CardLoadingComponent />
+}
+else if (PostSearchHelper.NoResults)
+{
+    <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+        <MudCardContent>
+            <MudText Align="Align.Center">None</MudText>
+        </MudCardContent>
+    </MudCard>
+}
+else if (PostSearchHelper.CurrentPosts.Length > 0)
+{
+    <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+        <MudCardContent Class="pa-0 ma-0">
+            <div class="d-flex justify-end">
+                <MudButtonGroup Variant="Variant.Filled">
+                    <MudIconButton Icon="@Icons.Material.Filled.Sort" Disabled="PostSearchHelper.PostSortMode == PostSortMode.PostTimeStampDesc" OnClick="@(_ => PostSearchHelper.OnSortChanged(PostSortMode.PostTimeStampDesc))" />
+                    <MudIconButton Icon="@Icons.Material.Filled.SortByAlpha" Disabled="PostSearchHelper.PostSortMode == PostSortMode.PostCreatedTimeStamp" OnClick="@(_ => PostSearchHelper.OnSortChanged(PostSortMode.PostCreatedTimeStamp))" />
+                </MudButtonGroup>
+            </div>
+        </MudCardContent>
+    </MudCard>
+
+    <div id="moa-top-header"></div>
+
+    for (var i = 0; i < PostSearchHelper.CurrentPosts.Length; i++)
+    {
+        var index = i;
+        var post = PostSearchHelper.CurrentPosts[index];
+        var id = $"moa-account-post-{index}";
+        var divKey = $"moa-post-div-{post?.Id ?? index}";
+        var postKey = $"moa-post-post-{post?.Id ?? index}";
+
+        <div id="@id" @key="@divKey">
+            @{
+                if (IsSearchPage)
+                {
+                    <PostComponent @key="@postKey" Services="@PostSearchHelper.Services" Post="@post" OnTagChipClickedCallback="@PostSearchHelper.OnTagChipClickedCallback" />
+                }
+                else
+                {
+                    <PostComponent @key="@postKey" Services="@PostSearchHelper.Services" Post="@post" />
+                }
+            }
+        </div>
+    }
+    
+
+    <div class="d-flex justify-center">
+        <MudPagination Selected="@PostSearchHelper.CurrentPage" SelectedChanged="@PostSearchHelper.TryChangePage" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@PostSearchHelper.TotalPages" />
+    </div>
+}
+else
+{
+    throw new NotImplementedException();
+}
+
+@code
+{
+    [Parameter] public bool IsSearchPage { get; init; }
+
+    [Parameter, EditorRequired] public PostSearchHelper PostSearchHelper { get; init; }
+
+    [Inject] IScrollManager ScrollManager { get; init; }
+    
+    private void OnPageChanged(int newPage)
+    {
+    }
+}

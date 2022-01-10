@@ -22,6 +22,7 @@ public sealed class CommonServices
         CharacterServices = _serviceProvider.GetRequiredService<CharacterServices>();
         TagServices = _serviceProvider.GetRequiredService<TagServices>();
         PostServices = _serviceProvider.GetRequiredService<PostServices>();
+        SearchPostsServices = _serviceProvider.GetRequiredService<SearchPostsServices>();
     }
 
     internal IAuth Auth { get; private set; }
@@ -41,6 +42,8 @@ public sealed class CommonServices
     internal TagServices TagServices { get; private set; }
 
     internal PostServices PostServices { get; private set; }
+
+    internal SearchPostsServices SearchPostsServices { get; private set; }
 
     internal BlizzardUpdateHandler BlizzardUpdateHandler { get; private set; }
 }

@@ -21,6 +21,8 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
 
     [Inject] public IPostServices PostServices { get; init; }
 
+    [Inject] public ISearchPostsServices SearchPostsServices { get; set; }
+
     [Inject] public ActiveAccountServices ActiveAccountServices { get; init; }
 
     [Inject] public TagHelpers TagHelpers { get; init; }

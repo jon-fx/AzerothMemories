@@ -1,0 +1,67 @@
+﻿@page "/postsearch/"
+@inherits MoaComponentBase<PostSearchPageViewModel>
+
+<h3>PostSearchPage</h3>
+
+@if (ViewModel.PostSearchHelper != null)
+{
+    <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+        <MudGrid>
+            <MudItem xs="6">
+                <DateTimeComponent DateTime="@ViewModel.PostSearchHelper.MinDateTime" OnDateTimeEventCallback="@ViewModel.PostSearchHelper.OnMaxDateTimeChanged" />
+            </MudItem>
+            <MudItem xs="6">
+                <DateTimeComponent DateTime="@ViewModel.PostSearchHelper.MaxDateTime" OnDateTimeEventCallback="@ViewModel.PostSearchHelper.OnMinDateTimeChanged" />
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+
+    <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+        <SearchBlizzardDataComponent Services="@this" OnSelectedItemChanged="@ViewModel.PostSearchHelper.AddSearchDataToTags" />
+    </MudPaper>
+
+    @if (ViewModel.PostSearchHelper.SelectedSearchTags.Length > 0)
+    {
+        <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+            @foreach (var tagInfo in ViewModel.PostSearchHelper.SelectedSearchTags)
+            {
+                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClose="ViewModel.PostSearchHelper.OnSelectedChipClose" />
+            }
+        </MudPaper>
+    }
+
+    <SearchPostViewComponent PostSearchHelper="@ViewModel.PostSearchHelper" IsSearchPage="true" />
+}
+else
+{
+    <CardLoadingComponent />
+}
+
+@code 
+{
+    [Inject] IScrollManager ScrollManager { get; init; }
+
+    [Parameter, SupplyParameterFromQuery(Name = "tag")] public string[] Tags { get; init; }
+
+    [Parameter, SupplyParameterFromQuery(Name = "sort")] public string SortMode { get; init; }
+
+    [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }
+
+    [Parameter, SupplyParameterFromQuery(Name = "ptmin")] public string PostMinTime { get; init; }
+
+    [Parameter, SupplyParameterFromQuery(Name = "ptmax")] public string PostMaxTime { get; init; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+         ViewModel.OnInitialized();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+       await ViewModel.OnParametersSet(Tags, SortMode, CurrentPage, PostMinTime, PostMaxTime);
+    }
+}

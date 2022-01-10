@@ -33,6 +33,7 @@ fusionClient.AddReplicaService<IAccountServices>();
 fusionClient.AddReplicaService<ICharacterServices>();
 fusionClient.AddReplicaService<ITagServices>();
 fusionClient.AddReplicaService<IPostServices>();
+fusionClient.AddReplicaService<ISearchPostsServices>();
 fusion.AddAuthentication().AddRestEaseClient().AddBlazor();
 
 //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });

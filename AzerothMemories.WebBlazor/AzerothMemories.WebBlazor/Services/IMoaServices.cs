@@ -10,6 +10,8 @@ public interface IMoaServices
 
     IPostServices PostServices { get; init; }
 
+    ISearchPostsServices SearchPostsServices { get; set; }
+
     ActiveAccountServices ActiveAccountServices { get; init; }
 
     TagHelpers TagHelpers { get; init; }
