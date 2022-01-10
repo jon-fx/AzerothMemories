@@ -24,7 +24,7 @@ public sealed class PostTagInfo
         ReportCounter = reportCounter;
     }
 
-    [JsonInclude] public bool IsChipClosable { get; init; } = true;
+    [JsonInclude] public bool IsChipClosable { get; set; } = true;
 
     [JsonIgnore]
     public string TagString
@@ -51,15 +51,15 @@ public sealed class PostTagInfo
         //return QueryHelpers.AddQueryString("postsearch", "tag", GetTagValue());
     }
 
-    //private string GetTagValue()
-    //{
-    //    if (Type == PostTagType.HashTag)
-    //    {
-    //        return $"{(int)Type}-{Name}";
-    //    }
+    public string GetTagValue()
+    {
+        if (Type == PostTagType.HashTag)
+        {
+            return $"{(int)Type}-{Name}";
+        }
 
-    //    return $"{(int)Type}-{Id}";
-    //}
+        return $"{(int)Type}-{Id}";
+    }
 
     public static string GetTagString(PostTagType tagType, long tagId)
     {

@@ -1,0 +1,22 @@
+﻿@inject IStringLocalizer<BlizzardResources> _stringLocalizer
+
+@{
+    if (LinkDisabled)
+    {
+        <MudText Class="@Class" Typo="@Typo">@_stringLocalizer[$"CharacterRace-{CharacterRace}"]</MudText>
+    }
+    else
+    {
+        var link = $"postsearch?tag={PostTagType.CharacterRace}-{CharacterRace}";
+        <a href="@link">
+            <MudText Class="@Class" Typo="@Typo">@_stringLocalizer[$"CharacterRace-{CharacterRace}"]</MudText>
+        </a>
+    }
+}
+
+@code {
+    [Parameter] public string Class { get; init; } = string.Empty;
+    [Parameter] public Typo Typo { get; init; } = Typo.body1;
+    [Parameter] public bool LinkDisabled { get; init; }
+    [Parameter, EditorRequired] public byte CharacterRace { get; init; }
+}

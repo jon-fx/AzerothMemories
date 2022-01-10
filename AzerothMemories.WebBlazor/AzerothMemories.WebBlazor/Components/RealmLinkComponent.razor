@@ -3,18 +3,19 @@
 @{
     if (LinkDisabled)
     {
-        <MudText Typo="@Typo">@_stringLocalizer[$"Realm-{BlizzardRealmId}"]</MudText>
+        <MudText Class="@Class" Typo="@Typo">@_stringLocalizer[$"Realm-{BlizzardRealmId}"]</MudText>
     }
     else
     {
-        var link = $"postsearch?tag={(int)PostTagType.Realm}-{BlizzardRealmId}";
+        var link = $"postsearch?tag={PostTagType.Realm}-{BlizzardRealmId}";
         <a href="@link">
-            <MudText Typo="@Typo">@_stringLocalizer[$"Realm-{BlizzardRealmId}"]</MudText>
+            <MudText Class="@Class" Typo="@Typo">@_stringLocalizer[$"Realm-{BlizzardRealmId}"]</MudText>
         </a>
     }
 }
 
 @code {
+    [Parameter] public string Class { get; init; } = string.Empty;
     [Parameter] public Typo Typo { get; init; } = Typo.body1;
     [Parameter] public bool LinkDisabled { get; init; }
     [Parameter, EditorRequired] public int BlizzardRealmId { get; init; }

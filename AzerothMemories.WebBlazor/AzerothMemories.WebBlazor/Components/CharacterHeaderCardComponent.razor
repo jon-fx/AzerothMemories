@@ -10,9 +10,16 @@ else
                 <MudAvatar Size="Size.Large" Image="@CharacterViewModel.AvatarLinkWithFallBack">@CharacterViewModel.Name[0]</MudAvatar>
             </CardHeaderAvatar>
             <CardHeaderContent>
-                <a href="@($"/character/{CharacterViewModel.Id}")" tabindex="-1">
-                    <MudText Typo="Typo.h6">@CharacterViewModel.Name</MudText>
-                </a>
+                <CharacterNameLinkComponent CharacterName="@CharacterViewModel.Name"
+                                            CharacterClass="@CharacterViewModel.Class"
+                                            CharacterRealmId="@CharacterViewModel.RealmId"
+                                            CharacterRegionInfo="@CharacterViewModel.RegionId.ToInfo()"/>
+
+                <RealmLinkComponent BlizzardRealmId="@CharacterViewModel.RealmId"/>
+                
+                <MudText Class="d-inline">@CharacterViewModel.Level</MudText>
+                <CharacterRaceComponent Class="d-inline" CharacterRace="@CharacterViewModel.Race"/>
+                <CharacterClassComponent Class="d-inline" CharacterClass="@CharacterViewModel.Class"/>
             </CardHeaderContent>
             <CardHeaderActions>
                 <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />

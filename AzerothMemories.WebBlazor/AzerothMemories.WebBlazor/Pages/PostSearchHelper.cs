@@ -96,6 +96,11 @@ public sealed class PostSearchHelper
         MinDateTime = _searchResults.MinTime > 0 ? _services.TimeProvider.GetTimeAsLocal(Instant.FromUnixTimeMilliseconds(_searchResults.MinTime)).ToDateTimeUnspecified() : null;
         MaxDateTime = _searchResults.MaxTime > 0 ? _services.TimeProvider.GetTimeAsLocal(Instant.FromUnixTimeMilliseconds(_searchResults.MaxTime)).ToDateTimeUnspecified() : null;
 
+        foreach (var info in _searchResults.Tags)
+        {
+            info.IsChipClosable = true;
+        }
+
         IsLoading = false;
     }
 
@@ -147,8 +152,12 @@ public sealed class PostSearchHelper
 
     private bool Add(PostTagInfo tagInfo)
     {
-        var tagString = tagInfo.TagString;
-        if (!_tagStrings.Add(tagString))
+        if (_tagStrings.Contains(tagInfo.TagString) || _tagStrings.Contains(tagInfo.GetTagValue()))
+        {
+            return false;
+        }
+
+        if (!_tagStrings.Add(tagInfo.TagString))
         {
             return false;
         }
@@ -160,15 +169,13 @@ public sealed class PostSearchHelper
 
     private bool Remove(PostTagInfo tagInfo)
     {
-        var tagString = tagInfo.TagString;
-        if (!_tagStrings.Remove(tagString))
+        if (_tagStrings.Remove(tagInfo.TagString) || _tagStrings.Remove(tagInfo.GetTagValue()))
         {
-            return false;
+            NavigateToNewQuery(true);
+            return true;
         }
 
-        NavigateToNewQuery(true);
-
-        return true;
+        return false;
     }
 
     private void NavigateToNewQuery(bool resetPage)
