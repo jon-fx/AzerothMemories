@@ -1,0 +1,38 @@
+﻿@page "/account/"
+@page "/account/{Id:long}"
+@page "/account/{Name}"
+@inherits MoaComponentBase<AccountPageViewModel>
+
+@{
+    if (!string.IsNullOrWhiteSpace(ViewModel.ErrorMessage))
+    {
+        <CardErrorComponent ErrorMessage="@ViewModel.ErrorMessage" />
+    }
+    else if (ViewModel.IsLoading)
+    {
+        <CardLoadingComponent />
+    }
+    else
+    {
+        <PageTitle>@ViewModel.AccountViewModel.GetDisplayName()'s Memories of Azeroth</PageTitle>
+        <AccountHeaderCardComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" />
+        <SearchPostViewComponent PostSearchHelper="@ViewModel.PostSearchHelper" />
+    }
+}
+
+@code {
+    [Parameter, EditorRequired] public long Id { get; init; }
+
+    [Parameter, EditorRequired] public string Name { get; init; }
+
+    [Parameter, SupplyParameterFromQuery(Name = "sort")] public string SortMode { get; init; }
+
+    [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }
+
+    protected override async Task ComputeStateOnParametersChanged()
+    {
+        await base.ComputeStateOnParametersChanged();
+
+        await ViewModel.OnParametersChanged(Id, Name, SortMode, CurrentPage);
+    }
+}
