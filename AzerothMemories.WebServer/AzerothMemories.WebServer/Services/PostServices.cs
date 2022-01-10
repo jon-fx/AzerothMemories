@@ -218,23 +218,24 @@ public class PostServices : IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postAccountId, long postId, string locale = null, CancellationToken cancellationToken = default)
+    public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postId, string locale)
     {
-        var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session, cancellationToken);
-        var canSeePost = await CanAccountIdSeePostsOf(activeAccountId, postAccountId);
+        var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
+
+        var postRecord = await GetPostRecord(postId);
+        if (postRecord == null)
+        {
+            return null;
+        }
+
+        var canSeePost = await CanAccountIdSeePostsOf(activeAccountId, postRecord.AccountId);
         if (!canSeePost)
         {
             return null;
         }
 
-        var posterAccount = await _commonServices.AccountServices.TryGetAccountById(session, postAccountId, cancellationToken);
+        var posterAccount = await _commonServices.AccountServices.TryGetAccountById(session, postRecord.AccountId);
         if (posterAccount == null)
-        {
-            return null;
-        }
-
-        var postRecord = await GetPostRecord(postId);
-        if (postRecord.AccountId != postAccountId)
         {
             return null;
         }
@@ -245,6 +246,18 @@ public class PostServices : IPostServices
         reactionRecords.TryGetValue(activeAccountId, out var reactionViewModel);
 
         return RecordToViewModels.CreatePostViewModel(postRecord, posterAccount, reactionViewModel, postTagInfos);
+    }
+
+    [ComputeMethod]
+    public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postAccountId, long postId, string locale = null, CancellationToken cancellationToken = default)
+    {
+        var result = await TryGetPostViewModel(session, postId, locale);
+        if (result.AccountId != postAccountId)
+        {
+            return null;
+        }
+
+        return result;
     }
 
     [ComputeMethod]
@@ -454,8 +467,16 @@ public class PostServices : IPostServices
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         var allCommentPages = await TryGetAllPostComments(postId);
-        page = Math.Clamp(page, 1, allCommentPages.Length - 1);
+        if (allCommentPages.Length == 1)
+        {
+            return new PostCommentPageViewModel
+            {
+                Page = 1,
+                TotalPages = 1
+            };
+        }
 
+        page = Math.Clamp(page, 1, allCommentPages.Length + 1);
         return allCommentPages[page];
     }
 

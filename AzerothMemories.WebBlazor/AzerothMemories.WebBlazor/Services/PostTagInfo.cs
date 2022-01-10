@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.WebUtilities;
-
-namespace AzerothMemories.WebBlazor.Services;
+﻿namespace AzerothMemories.WebBlazor.Services;
 
 public sealed class PostTagInfo
 {
@@ -49,18 +47,19 @@ public sealed class PostTagInfo
             throw new NotImplementedException();
         }
 
-        return QueryHelpers.AddQueryString("postsearch", "tag", GetTagValue());
+        return $"postsearch?tag={TagString}";
+        //return QueryHelpers.AddQueryString("postsearch", "tag", GetTagValue());
     }
 
-    private string GetTagValue()
-    {
-        if (Type == PostTagType.HashTag)
-        {
-            return $"{(int)Type}-{Name}";
-        }
+    //private string GetTagValue()
+    //{
+    //    if (Type == PostTagType.HashTag)
+    //    {
+    //        return $"{(int)Type}-{Name}";
+    //    }
 
-        return $"{(int)Type}-{Id}";
-    }
+    //    return $"{(int)Type}-{Id}";
+    //}
 
     public static string GetTagString(PostTagType tagType, long tagId)
     {
