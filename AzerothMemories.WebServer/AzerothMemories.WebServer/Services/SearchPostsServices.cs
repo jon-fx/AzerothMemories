@@ -19,13 +19,13 @@ public class SearchPostsServices : ISearchPostsServices
         postMinTime = Math.Clamp(postMinTime, 0, SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
         postMaxTime = Math.Clamp(postMaxTime, 0, SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
 
-        {
-            var min = Math.Min(postMinTime, postMaxTime);
-            var max = Math.Max(postMinTime, postMaxTime);
+        //{
+        //    var min = Math.Min(postMinTime, postMaxTime);
+        //    var max = Math.Max(postMinTime, postMaxTime);
 
-            postMinTime = min;
-            postMaxTime = max;
-        }
+        //    postMinTime = min;
+        //    postMaxTime = max;
+        //}
 
         var searchPostTags = Array.Empty<PostTagInfo>();
         var serverSideTagStrings = new HashSet<string>();
@@ -138,7 +138,7 @@ public class SearchPostsServices : ISearchPostsServices
             if (maxTimeStamp > 0)
             {
                 query = from post in query
-                        where post.PostTime >= Instant.FromUnixTimeMilliseconds(maxTimeStamp)
+                        where post.PostTime <= Instant.FromUnixTimeMilliseconds(maxTimeStamp)
                         select post;
             }
         }

@@ -8,10 +8,10 @@
     <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
         <MudGrid>
             <MudItem xs="6">
-                <DateTimeComponent DateTime="@ViewModel.PostSearchHelper.MinDateTime" OnDateTimeEventCallback="@ViewModel.PostSearchHelper.OnMaxDateTimeChanged" />
+                <DateTimeComponent Instant="@ViewModel.PostSearchHelper.MinDateTime" OnInstantEventCallback="@ViewModel.PostSearchHelper.OnMinDateTimeChanged" />
             </MudItem>
             <MudItem xs="6">
-                <DateTimeComponent DateTime="@ViewModel.PostSearchHelper.MaxDateTime" OnDateTimeEventCallback="@ViewModel.PostSearchHelper.OnMinDateTimeChanged" />
+                <DateTimeComponent Instant="@ViewModel.PostSearchHelper.MaxDateTime" OnInstantEventCallback="@ViewModel.PostSearchHelper.OnMaxDateTimeChanged" />
             </MudItem>
         </MudGrid>
     </MudPaper>

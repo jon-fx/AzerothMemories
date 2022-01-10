@@ -55,8 +55,12 @@ else
                     }
                 </div>
             }
+            
+            <div class="d-flex align-baseline">
+                <MudIcon Class="mr-1" Icon="@Icons.Filled.CalendarToday" Size="Size.Small" /> 
+                <MudText Class="my-auto">@Services.TimeProvider.GetJoinedDate(AccountViewModel.CreatedDateTime)</MudText>
+            </div>
 
-            <MudText><MudIcon Icon="@Icons.Filled.CalendarToday" Size="Size.Small" />@Services.TimeProvider.GetJoinedDate(AccountViewModel.CreatedDateTime)</MudText>
 
             <a href="@($"/follow/{AccountViewModel.Id}")">
                 <MudText><b>@_followingCount</b> Following</MudText>

@@ -8,8 +8,8 @@ public sealed class PostSearchHelper
 
     private SearchPostsResults _searchResults;
 
-    public DateTime? MinDateTime;
-    public DateTime? MaxDateTime;
+    public Instant? MinDateTime;
+    public Instant? MaxDateTime;
 
     private string _sortModeString;
     private string _currentPageString;
@@ -19,8 +19,6 @@ public sealed class PostSearchHelper
 
     private int _currentPage;
     private PostSortMode _sortMode;
-    private long _minTime;
-    private long _maxTime;
 
     public PostSearchHelper(IMoaServices services)
     {
@@ -79,22 +77,22 @@ public sealed class PostSearchHelper
 
         if (long.TryParse(postMinTimeString, out var minTime))
         {
-            _minTime = Math.Clamp(minTime, 0, SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
+            minTime = Math.Clamp(minTime, 0, SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
         }
 
         if (long.TryParse(postMaxTimeString, out var maxTime))
         {
-            _maxTime = Math.Clamp(maxTime, 0, SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
+            maxTime = Math.Clamp(maxTime, 0, SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
         }
 
         IsLoading = true;
 
-        var searchResults = await _services.SearchPostsServices.TrySearchPosts(null, _tagStrings.ToArray(), _sortMode, _currentPage, _minTime, _maxTime);
+        var searchResults = await _services.SearchPostsServices.TrySearchPosts(null, _tagStrings.ToArray(), _sortMode, _currentPage, minTime, maxTime);
 
         _searchResults = searchResults;
 
-        MinDateTime = _searchResults.MinTime > 0 ? _services.TimeProvider.GetTimeAsLocal(Instant.FromUnixTimeMilliseconds(_searchResults.MinTime)).ToDateTimeUnspecified() : null;
-        MaxDateTime = _searchResults.MaxTime > 0 ? _services.TimeProvider.GetTimeAsLocal(Instant.FromUnixTimeMilliseconds(_searchResults.MaxTime)).ToDateTimeUnspecified() : null;
+        MinDateTime = _searchResults.MinTime > 0 ? Instant.FromUnixTimeMilliseconds(_searchResults.MinTime) : null;
+        MaxDateTime = _searchResults.MaxTime > 0 ? Instant.FromUnixTimeMilliseconds(_searchResults.MaxTime) : null;
 
         foreach (var info in _searchResults.Tags)
         {
@@ -116,12 +114,28 @@ public sealed class PostSearchHelper
         NavigateToNewQuery(false);
     }
 
-    public void OnMinDateTimeChanged(DateTime? dateTime)
+    public void OnMinDateTimeChanged(Instant? instant)
     {
+        if (MinDateTime == instant)
+        {
+            return;
+        }
+
+        MinDateTime = instant;
+
+        NavigateToNewQuery(true);
     }
 
-    public void OnMaxDateTimeChanged(DateTime? dateTime)
+    public void OnMaxDateTimeChanged(Instant? instant)
     {
+        if (MaxDateTime == instant)
+        {
+            return;
+        }
+
+        MaxDateTime = instant;
+
+        NavigateToNewQuery(true);
     }
 
     public void AddSearchDataToTags(PostTagInfo tagInfo)
@@ -204,8 +218,8 @@ public sealed class PostSearchHelper
             }
         }
 
-        //MinTime = ptmin
-        //MaxTime = ptmax
+        dictionary.Add("ptmin", MinDateTime?.ToUnixTimeMilliseconds());
+        dictionary.Add("ptmax", MaxDateTime?.ToUnixTimeMilliseconds());
 
         var newPath = _services.NavigationManager.GetUriWithQueryParameters(dictionary);
         if (newPath == oldPath)

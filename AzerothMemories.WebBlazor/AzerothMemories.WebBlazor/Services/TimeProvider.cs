@@ -30,7 +30,7 @@ public class TimeProvider
     //    return false;
     //}
 
-    private DateTimeZone GetCurrentTimeZone()
+    public DateTimeZone GetCurrentTimeZone()
     {
         return DateTimeZoneProviders.Tzdb.GetSystemDefault();
     }

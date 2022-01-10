@@ -1,12 +1,13 @@
-﻿@using AzerothMemories.WebBlazor.Common
-<MudDatePicker @ref="_datePicker" Date="@_postDate" OpenTo="OpenTo.Year" Label="Date" MinDate="@_minDateTime" MaxDate="System.DateTime.Now" AutoClose="true" DateChanged="OnDateChanged">
+﻿@inject TimeProvider _timeProvider;
+
+<MudDatePicker @ref="_datePicker" @bind-Date="@_postDate" OpenTo="OpenTo.Year" Label="Date" MinDate="@_minDateTime" MaxDate="System.DateTime.Now" AutoClose="true" PickerOpened="@OnPickerOpened" PickerClosed="@OnPickerClosed">
     <PickerActions>
         <MudButton Class="mr-auto align-self-start" OnClick="@(() => _datePicker.Clear())">Clear</MudButton>
         <MudButton OnClick="@(() => _datePicker.Close(false))">Cancel</MudButton>
         <MudButton Color="Color.Primary" OnClick="@(() => _datePicker.Close())">Ok</MudButton>
     </PickerActions>
 </MudDatePicker>
-<MudTimePicker @ref="_timePicker" Time="@_postTime" Label="24 hours" AutoClose="true" TimeChanged="OnTimeChanged" PickerOpened="@OnTimeOpened" PickerClosed="@OnTimeClosed">
+<MudTimePicker @ref="_timePicker" @bind-Time="@_postTime" Label="Time" AutoClose="true" PickerOpened="@OnPickerOpened" PickerClosed="@OnPickerClosed">
     <PickerActions>
         <MudButton Class="mr-auto align-self-start" OnClick="@(() => _timePicker.Clear())">Clear</MudButton>
         <MudButton OnClick="@(() => _timePicker.Close(false))">Cancel</MudButton>
@@ -25,16 +26,15 @@
     private MudTimePicker _timePicker;
     private bool _isTimePickerOpened;
 
-    [Parameter, EditorRequired]
-    public DateTimeOffset? DateTime
+    [Parameter]
+    public ZonedDateTime? DateTime
     {
-        get => _postDate;
+        //get => _postDate;
         set
         {
-
             if (value.HasValue)
             {
-	            _postDate = value.Value.LocalDateTime;
+                _postDate = value.Value.ToDateTimeUnspecified();
                 _postTime = _postDate.Value.TimeOfDay;
 
                 if (_minDateTime > _postDate)
@@ -49,35 +49,37 @@
             }
         }
     }
+    
+    [Parameter]
+    public Instant? Instant
+    {
+        set
+        {
+            if (value.HasValue)
+            {
+                DateTime = _timeProvider.GetTimeAsLocal(value.Value);
+            }
+            else
+            {
+                DateTime = null;
+            }
+        }
+    }
 
-    [Parameter, EditorRequired] public EventCallback<DateTime?> OnDateTimeEventCallback { get; set; }
+    [Parameter, EditorRequired] public EventCallback<Instant?> OnInstantEventCallback { get; set; }
 
-    private void OnTimeOpened()
+    private void OnPickerOpened()
     {
         Exceptions.ThrowIf(_isTimePickerOpened);
 
         _isTimePickerOpened = true;
     }
 
-    private async Task OnTimeClosed()
+    private async Task OnPickerClosed()
     {
         Exceptions.ThrowIf(!_isTimePickerOpened);
 
         _isTimePickerOpened = false;
-
-        await TryUpdateDateTime();
-    }
-
-    private async Task OnDateChanged(DateTime? dateTime)
-    {
-        _postDate = dateTime;
-
-        await TryUpdateDateTime();
-    }
-
-    private async Task OnTimeChanged(TimeSpan? timeSpan)
-    {
-        _postTime = timeSpan.GetValueOrDefault(TimeSpan.Zero);
 
         await TryUpdateDateTime();
     }
@@ -97,9 +99,17 @@
         if (_isTimePickerOpened)
         {
         }
+        else if (_postDate.HasValue)
+        {
+            var localTime = LocalDateTime.FromDateTime(_postDate.Value);
+            var zonedTime = localTime.InZoneStrictly(_timeProvider.GetCurrentTimeZone());
+            var instant = zonedTime.ToInstant();
+
+            await OnInstantEventCallback.InvokeAsync(instant);
+        }
         else
         {
-            await OnDateTimeEventCallback.InvokeAsync(_postDate);
+            await OnInstantEventCallback.InvokeAsync(null);
         }
     }
 }

@@ -10,7 +10,7 @@
             </MudItem>
 
             <MudItem xs="12">
-                <DateTimeComponent DateTime="@Services.TimeProvider.GetTimeAsLocal(ViewModel.SharedData.PostTimeStamp).ToDateTimeOffset()" OnDateTimeEventCallback="@OnDateTimeChanged" />
+                <DateTimeComponent Instant="@ViewModel.SharedData.PostTimeStamp" OnInstantEventCallback="@OnDateTimeChanged" />
             </MudItem>
 
             <MudItem xs="12">
@@ -94,12 +94,11 @@
         await OnPostMemoryResult.InvokeAsync(new AddMemoryResult(AddMemoryResultCode.Canceled, 0, 0));
     }
 
-    private async Task OnDateTimeChanged(DateTime? arg)
+    private async Task OnDateTimeChanged(Instant? arg)
     {
         if (arg.HasValue)
         {
-            var value = arg.Value.ToInstant();
-            await ViewModel.SharedData.SetPostTimeStamp(value);
+            await ViewModel.SharedData.SetPostTimeStamp(arg.Value);
         }
     }
 }
