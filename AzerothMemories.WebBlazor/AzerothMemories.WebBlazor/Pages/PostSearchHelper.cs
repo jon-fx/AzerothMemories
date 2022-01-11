@@ -208,14 +208,7 @@ public sealed class PostSearchHelper
 
         if (_currentPage > 1 || _currentPageString != null)
         {
-            if (resetPage)
-            {
-                dictionary.Add("page", 0);
-            }
-            else
-            {
-                dictionary.Add("page", _currentPage);
-            }
+            dictionary.Add("page", resetPage ? 0 : _currentPage);
         }
 
         dictionary.Add("ptmin", MinDateTime?.ToUnixTimeMilliseconds());

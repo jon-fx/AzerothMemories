@@ -91,7 +91,7 @@
     {
         await ViewModel.Reset();
 
-        await OnPostMemoryResult.InvokeAsync(new AddMemoryResult(AddMemoryResultCode.Canceled, 0, 0));
+        await OnPostMemoryResult.InvokeAsync(new AddMemoryResult(AddMemoryResultCode.Canceled));
     }
 
     private async Task OnDateTimeChanged(Instant? arg)
