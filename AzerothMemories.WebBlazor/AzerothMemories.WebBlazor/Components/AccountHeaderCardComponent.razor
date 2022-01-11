@@ -67,6 +67,21 @@ else
         </MudCardContent>
         <MudCardActions>
             <MudButtonGroup OverrideStyles="true" Class="pa-0 ma-2" Variant="Variant.Filled">
+                @{
+                    var accountViewModel = Services.ActiveAccountServices.AccountViewModel;
+                    if (accountViewModel != null)
+                    {
+                        if (IsActiveAccount)
+                        {
+                            <MudButton Link="AddMemory">Restore Memory</MudButton>
+                        }
+
+                        accountViewModel.FollowingViewModels.TryGetValue(AccountViewModel.Id, out var followingViewModel);
+                        accountViewModel.FollowersViewModels.TryGetValue(AccountViewModel.Id, out var followerViewModel);
+
+                        <AccountFollowingComponent Services="@Services" ActiveAccountViewModel="@accountViewModel" OtherAccountId="@AccountViewModel.Id" FollowingViewModel="@followingViewModel" FollowerViewModel="@followerViewModel" />
+                    }
+                }
             </MudButtonGroup>
         </MudCardActions>
     </MudCard>
@@ -119,8 +134,7 @@ else
     private int _followerCount;
     private int _followingCount;
 
-    [Parameter, EditorRequired]
-    public IMoaServices Services { get; init; }
+    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired]
     public AccountViewModel AccountViewModel
@@ -133,13 +147,13 @@ else
 
             if (_account != null)
             {
-                //_followerCount = _account.FollowersViewModels.Count(x => x.Value.Status == AccountFollowingStatus.Active);
-                //_followingCount = _account.FollowingViewModels.Count(x => x.Value.Status == AccountFollowingStatus.Active);
+                _followerCount = _account.FollowersViewModels.Count(x => x.Value.Status == AccountFollowingStatus.Active);
+                _followingCount = _account.FollowingViewModels.Count(x => x.Value.Status == AccountFollowingStatus.Active);
             }
         }
     }
 
-    //public bool IsDisabled => !ActiveAccountServices.IsAccountActive;
+    public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActive;
 
-    //public bool IsActiveAccount => ActiveAccountServices.IsAccountActive && ActiveAccountServices.AccountId == AccountViewModel.Id;
+    public bool IsActiveAccount => Services.ActiveAccountServices.IsAccountActive && Services.ActiveAccountServices.ActiveAccountId == AccountViewModel.Id;
 }

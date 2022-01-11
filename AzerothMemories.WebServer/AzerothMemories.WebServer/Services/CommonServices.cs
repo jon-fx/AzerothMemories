@@ -19,6 +19,7 @@ public sealed class CommonServices
         WarcraftClientProvider = _serviceProvider.GetRequiredService<WarcraftClientProvider>();
 
         AccountServices = _serviceProvider.GetRequiredService<AccountServices>();
+        AccountFollowingServices = _serviceProvider.GetRequiredService<AccountFollowingServices>();
         CharacterServices = _serviceProvider.GetRequiredService<CharacterServices>();
         GuildServices = _serviceProvider.GetRequiredService<GuildServices>();
         TagServices = _serviceProvider.GetRequiredService<TagServices>();
@@ -37,6 +38,8 @@ public sealed class CommonServices
     internal WarcraftClientProvider WarcraftClientProvider { get; private set; }
 
     internal AccountServices AccountServices { get; private set; }
+
+    internal AccountFollowingServices AccountFollowingServices { get; private set; }
 
     internal CharacterServices CharacterServices { get; private set; }
 

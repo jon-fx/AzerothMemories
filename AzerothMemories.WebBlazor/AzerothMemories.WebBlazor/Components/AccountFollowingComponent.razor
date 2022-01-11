@@ -1,0 +1,132 @@
+﻿@if (IsActiveAccount)
+{
+}
+else
+{
+    if (_followingStatus == AccountFollowingStatus.Active)
+    {
+        <MudButton StartIcon="@Icons.Material.Filled.PersonRemoveAlt1" Disabled="@IsDisabled" OnClick="() => OnFollowButtonClicked(FollowingViewModel)">Stop Following</MudButton>
+    }
+    else if (_followingStatus == AccountFollowingStatus.Pending)
+    {
+        <MudButton StartIcon="@Icons.Material.Filled.PersonRemoveAlt1" Disabled="@IsDisabled" OnClick="() => OnFollowButtonClicked(FollowingViewModel)">Cancel Pending Request</MudButton>
+    }
+    else if (_followingStatus == AccountFollowingStatus.None)
+    {
+        <MudButton StartIcon="@Icons.Material.Filled.PersonAddAlt1" Disabled="@IsDisabled" OnClick="() => OnFollowButtonClicked(FollowingViewModel)">Start Following</MudButton>
+    }
+    else
+    {
+        throw new NotImplementedException();
+    }
+
+    if (_followerStatus == AccountFollowingStatus.Active)
+    {
+        <MudButton StartIcon="@Icons.Material.Filled.PersonRemoveAlt1" Disabled="@IsDisabled" OnClick="() => OnFollowRemoveButtonClicked(FollowerViewModel)">Remove Follower</MudButton>
+    }
+    else if (_followerStatus == AccountFollowingStatus.Pending)
+    {
+        <MudButton StartIcon="@Icons.Material.Filled.PersonAddAlt1" Disabled="@IsDisabled" OnClick="() => OnFollowAcceptButtonClicked(FollowerViewModel)">Accept Follower</MudButton>
+        <MudButton StartIcon="@Icons.Material.Filled.PersonRemoveAlt1" Disabled="@IsDisabled" OnClick="() => OnFollowRemoveButtonClicked(FollowerViewModel)">Decline Follower</MudButton>
+    }
+    else if (_followerStatus == AccountFollowingStatus.None)
+    {
+    }
+    else
+    {
+        throw new NotImplementedException();
+    }
+}
+
+@code {
+    private AccountFollowingStatus _followingStatus;
+    private AccountFollowingStatus _followerStatus;
+
+    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
+
+    [Parameter, EditorRequired] public AccountViewModel ActiveAccountViewModel { get; init; }
+
+    [Parameter, EditorRequired] public long OtherAccountId { get; init; }
+
+    [Parameter, EditorRequired] public AccountFollowingViewModel FollowingViewModel { get; init; }
+
+    [Parameter, EditorRequired] public AccountFollowingViewModel FollowerViewModel { get; init; }
+
+    public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActive;
+    public bool IsActiveAccount => ActiveAccountViewModel != null && ActiveAccountViewModel.Id == OtherAccountId;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if (FollowingViewModel != null)
+        {
+            _followingStatus = FollowingViewModel.Status;
+        }
+
+        if (FollowerViewModel != null)
+        {
+            _followerStatus = FollowerViewModel.Status;
+        }
+    }
+
+    private async Task OnFollowButtonClicked(AccountFollowingViewModel viewModel)
+    {
+        var currentStatus = _followingStatus;
+        var newStatus = currentStatus == AccountFollowingStatus.None ? AccountFollowingStatus.Active : AccountFollowingStatus.None;
+        if (currentStatus == newStatus)
+        {
+            return;
+        }
+
+        AccountFollowingStatus? result;
+        if (newStatus == AccountFollowingStatus.None)
+        {
+            result = await Services.AccountFollowingServices.TryStopFollowing(null, OtherAccountId);
+        }
+        else
+        {
+            result = await Services.AccountFollowingServices.TryStartFollowing(null, OtherAccountId);
+        }
+
+        if (result != null)
+        {
+            if (viewModel != null)
+            {
+                viewModel.Status = result.Value;
+            }
+
+            _followingStatus = result.Value;
+        }
+    }
+
+    private async Task OnFollowAcceptButtonClicked(AccountFollowingViewModel viewModel)
+    {
+        if (viewModel.Status == AccountFollowingStatus.None)
+        {
+            return;
+        }
+
+        Exceptions.ThrowIf(viewModel.FollowerId != OtherAccountId);
+
+        var result = await Services.AccountFollowingServices.TryAcceptFollower(null, viewModel.FollowerId);
+        if (result != null)
+        {
+            viewModel.Status = _followerStatus = result.Value;
+        }
+    }
+
+    private async Task OnFollowRemoveButtonClicked(AccountFollowingViewModel viewModel)
+    {
+        if (viewModel.Status == AccountFollowingStatus.None)
+        {
+            return;
+        }
+
+        var result = await Services.AccountFollowingServices.TryRemoveFollower(null, viewModel.FollowerId);
+        if (result != null)
+        {
+            viewModel.Status = _followerStatus = result.Value;
+        }
+    }
+}

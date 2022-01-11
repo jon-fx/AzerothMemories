@@ -28,6 +28,14 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(AccountRecord.CreatedDateTime)).AsDateTimeOffset().NotNullable()
             .WithUpdateJobInfo();
 
+        Create.Table("Accounts_Following")
+            .WithColumn(nameof(AccountFollowingRecord.Id)).AsInt64().PrimaryKey().Identity()
+            .WithColumn(nameof(AccountFollowingRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade).Nullable()
+            .WithColumn(nameof(AccountFollowingRecord.FollowerId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade).Nullable()
+            .WithColumn(nameof(AccountFollowingRecord.Status)).AsByte().WithDefaultValue(0)
+            .WithColumn(nameof(AccountFollowingRecord.LastUpdateTime)).AsDateTimeOffset().NotNullable()
+            .WithColumn(nameof(AccountFollowingRecord.CreatedTime)).AsDateTimeOffset().NotNullable();
+
         Create.Table("Guilds")
             .WithColumn(nameof(GuildRecord.Id)).AsInt64().PrimaryKey().Identity()
             .WithColumn(nameof(GuildRecord.MoaRef)).AsString(128).Unique().NotNullable()
@@ -176,7 +184,9 @@ public sealed class Migration0001 : Migration
         Delete.Table("Characters_Achievements");
         Delete.Table("Characters");
 
+        Delete.Table("Accounts_Following");
         Delete.Table("Accounts");
+
         //Delete.Table("Blizzard_Data");
     }
 }

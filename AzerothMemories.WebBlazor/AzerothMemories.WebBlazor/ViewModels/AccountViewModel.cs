@@ -24,6 +24,10 @@ public class AccountViewModel
 
     [JsonInclude] public CharacterViewModel[] CharactersArray = Array.Empty<CharacterViewModel>();
 
+    [JsonInclude] public Dictionary<long, AccountFollowingViewModel> FollowingViewModels = new();
+
+    [JsonInclude] public Dictionary<long, AccountFollowingViewModel> FollowersViewModels = new();
+
     public string GetDisplayName()
     {
         if (!string.IsNullOrWhiteSpace(Username))

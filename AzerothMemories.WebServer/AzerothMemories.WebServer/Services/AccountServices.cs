@@ -74,7 +74,7 @@ public class AccountServices : IAccountServices
 
         if (CheckAndChange.Check(ref accountRecord.BlizzardId, blizzardId, ref changed))
         {
-            throw new NotImplementedException();
+            updateQuery = updateQuery.Set(x => x.BlizzardId, accountRecord.BlizzardId);
         }
 
         if (CheckAndChange.Check(ref accountRecord.BlizzardRegionId, blizzardRegion, ref changed))
@@ -216,7 +216,9 @@ public class AccountServices : IAccountServices
         }
 
         var characters = await _commonServices.CharacterServices.TryGetAllAccountCharacters(accountRecord.Id);
-        var viewModel = accountRecord.CreateActiveAccountViewModel(characters);
+        var following = await _commonServices.AccountFollowingServices.TryGetAccountFollowing(accountRecord.Id);
+        var followers = await _commonServices.AccountFollowingServices.TryGetAccountFollowers(accountRecord.Id);
+        var viewModel = accountRecord.CreateActiveAccountViewModel(characters, following, followers);
 
         return viewModel;
     }
@@ -249,7 +251,11 @@ public class AccountServices : IAccountServices
         }
 
         var characters = await _commonServices.CharacterServices.TryGetAllAccountCharacters(accountRecord.Id);
-        return accountRecord.CreateAccountViewModel(characters);
+        var following = await _commonServices.AccountFollowingServices.TryGetAccountFollowing(accountRecord.Id);
+        var followers = await _commonServices.AccountFollowingServices.TryGetAccountFollowers(accountRecord.Id);
+        var viewModel = accountRecord.CreateAccountViewModel(characters, following, followers);
+
+        return viewModel;
     }
 
     [ComputeMethod]
@@ -268,7 +274,11 @@ public class AccountServices : IAccountServices
         }
 
         var characters = await _commonServices.CharacterServices.TryGetAllAccountCharacters(accountRecord.Id);
-        return accountRecord.CreateAccountViewModel(characters);
+        var following = await _commonServices.AccountFollowingServices.TryGetAccountFollowing(accountRecord.Id);
+        var followers = await _commonServices.AccountFollowingServices.TryGetAccountFollowers(accountRecord.Id);
+        var viewModel = accountRecord.CreateAccountViewModel(characters, following, followers);
+
+        return viewModel;
     }
 
     [ComputeMethod]

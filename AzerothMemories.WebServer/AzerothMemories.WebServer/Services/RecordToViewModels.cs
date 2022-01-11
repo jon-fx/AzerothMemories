@@ -2,7 +2,7 @@
 
 public static class RecordToViewModels
 {
-    public static void PopulateViewModel(AccountViewModel accountViewModel, AccountRecord accountRecord)
+    public static void PopulateViewModel(AccountViewModel accountViewModel, AccountRecord accountRecord, Dictionary<long, AccountFollowingViewModel> followingViewModels, Dictionary<long, AccountFollowingViewModel> followersViewModels)
     {
         accountViewModel.Id = accountRecord.Id;
         accountViewModel.Avatar = accountRecord.Avatar;
@@ -21,13 +21,16 @@ public static class RecordToViewModels
             accountRecord.SocialTwitch,
             accountRecord.SocialYouTube,
         };
+
+        accountViewModel.FollowingViewModels = followingViewModels;
+        accountViewModel.FollowersViewModels = followersViewModels;
     }
 
-    public static AccountViewModel CreateAccountViewModel(this AccountRecord accountRecord, Dictionary<long, CharacterViewModel> characters)
+    public static AccountViewModel CreateAccountViewModel(this AccountRecord accountRecord, Dictionary<long, CharacterViewModel> characters, Dictionary<long, AccountFollowingViewModel> followingViewModels, Dictionary<long, AccountFollowingViewModel> followersViewModels)
     {
         var viewModel = new ActiveAccountViewModel();
 
-        PopulateViewModel(viewModel, accountRecord);
+        PopulateViewModel(viewModel, accountRecord, followingViewModels, followersViewModels);
 
         if (viewModel.BattleTagIsPublic)
         {
@@ -42,11 +45,11 @@ public static class RecordToViewModels
         return viewModel;
     }
 
-    public static ActiveAccountViewModel CreateActiveAccountViewModel(this AccountRecord accountRecord, Dictionary<long, CharacterViewModel> characters)
+    public static ActiveAccountViewModel CreateActiveAccountViewModel(this AccountRecord accountRecord, Dictionary<long, CharacterViewModel> characters, Dictionary<long, AccountFollowingViewModel> followingViewModels, Dictionary<long, AccountFollowingViewModel> followersViewModels)
     {
         var viewModel = new ActiveAccountViewModel();
 
-        PopulateViewModel(viewModel, accountRecord);
+        PopulateViewModel(viewModel, accountRecord, followingViewModels, followersViewModels);
 
         viewModel.CharactersArray = characters.Values.ToArray();
 
