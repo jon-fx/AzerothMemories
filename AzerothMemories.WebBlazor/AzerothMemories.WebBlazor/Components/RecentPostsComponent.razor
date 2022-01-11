@@ -2,7 +2,7 @@
 {
     <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
         <MudCardContent Class="pa-0 ma-0">
-            <MudSwitch T="bool" Checked="@_showAllRecentPosts" Color="Color.Primary" Class="d-flex justify-end" Label="" CheckedChanged="RecentPostsHelper.OnShowAllChanged" />
+            <MudSwitch T="bool" Checked="@(RecentPostsHelper.CurrentType != RecentPostsType.Default)" Color="Color.Primary" Class="d-flex justify-end" Label="" CheckedChanged="RecentPostsHelper.OnShowAllChanged" />
         </MudCardContent>
     </MudCard>
 }
@@ -42,8 +42,6 @@ else
 }
 
 @code {
-    private bool _showAllRecentPosts;
-
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired] public AccountViewModel AccountViewModel { get; init; }

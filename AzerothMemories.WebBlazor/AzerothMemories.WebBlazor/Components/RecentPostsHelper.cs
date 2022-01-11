@@ -27,6 +27,8 @@
 
         public int TotalPages => _searchResults.TotalPages;
 
+        public RecentPostsType CurrentType => _searchResults.PostsType;
+
         public PostViewModel[] CurrentPosts => _searchResults.PostViewModels;
 
         public bool IsLoading { get; private set; }
@@ -78,9 +80,22 @@
             IsLoading = false;
         }
 
-        public Task OnShowAllChanged()
+        public void OnShowAllChanged(bool showAll)
         {
-            throw new NotImplementedException();
+            var newValue = showAll ? RecentPostsType.Two : RecentPostsType.Default;
+            if (_recentPostType == newValue)
+            {
+                return;
+            }
+
+            if (_searchResults.PostsType == newValue)
+            {
+                return;
+            }
+
+            _recentPostType = newValue;
+
+            NavigateToNewQuery(false);
         }
 
         public void TryChangePage(int currentPage)
@@ -118,7 +133,7 @@
             var recentPostType = (int)_recentPostType;
             if (recentPostType != 0 || _recentPostTypeString != null)
             {
-                dictionary.Add("type", _recentPostType);
+                dictionary.Add("type", recentPostType);
             }
 
             var newPath = _services.NavigationManager.GetUriWithQueryParameters(dictionary);
