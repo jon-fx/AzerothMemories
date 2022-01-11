@@ -1,7 +1,0 @@
-﻿CREATE TABLE [dbo].[Posts_Tags]
-(
-    [Id] BIGINT NOT NULL PRIMARY KEY IDENTITY,
-    [PostId] BIGINT NOT NULL DEFAULT 0 ,
-    [TagId] BIGINT NOT NULL DEFAULT 0 ,
-    [ReportedCount] INT NOT NULL DEFAULT 0 ,
-)
