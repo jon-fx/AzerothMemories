@@ -9,7 +9,7 @@
 
 @if (RecentPostsHelper == null || RecentPostsHelper.IsLoading)
 {
-
+    <CardLoadingComponent />
 }
 else if (RecentPostsHelper.NoResults)
 {
