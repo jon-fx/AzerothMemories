@@ -1,7 +1,4 @@
-﻿using Humanizer;
-using System.Globalization;
-
-namespace AzerothMemories.WebBlazor.Services;
+﻿namespace AzerothMemories.WebBlazor.Services;
 
 public class TimeProvider
 {

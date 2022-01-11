@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace AzerothMemories.WebBlazor.Pages;
+﻿namespace AzerothMemories.WebBlazor.Pages;
 
 public sealed class PostPageViewModel : ViewModelBase
 {

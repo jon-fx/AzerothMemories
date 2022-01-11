@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace AzerothMemories.WebBlazor.Pages;
+﻿namespace AzerothMemories.WebBlazor.Pages;
 
 public sealed class PostSearchHelper
 {
@@ -87,7 +85,7 @@ public sealed class PostSearchHelper
 
         IsLoading = true;
 
-        var searchResults = await _services.SearchPostsServices.TrySearchPosts(null, _tagStrings.ToArray(), _sortMode, _currentPage, minTime, maxTime);
+        var searchResults = await _services.SearchPostsServices.TrySearchPosts(null, _tagStrings.ToArray(), _sortMode, _currentPage, minTime, maxTime, CultureInfo.CurrentCulture.Name);
 
         _searchResults = searchResults;
 
@@ -192,6 +190,23 @@ public sealed class PostSearchHelper
         return false;
     }
 
+    public void TryChangePage(int currentPage)
+    {
+        if (_currentPage == currentPage)
+        {
+            return;
+        }
+
+        if (_searchResults.CurrentPage == currentPage)
+        {
+            return;
+        }
+
+        _currentPage = currentPage;
+
+        NavigateToNewQuery(false);
+    }
+
     private void NavigateToNewQuery(bool resetPage)
     {
         var dictionary = new Dictionary<string, object>
@@ -220,23 +235,6 @@ public sealed class PostSearchHelper
             return;
         }
 
-        Services.NavigationManager.NavigateTo(newPath);
-    }
-
-    public void TryChangePage(int currentPage)
-    {
-        if (_currentPage == currentPage)
-        {
-            return;
-        }
-
-        if (_searchResults.CurrentPage == currentPage)
-        {
-            return;
-        }
-
-        _currentPage = currentPage;
-
-        NavigateToNewQuery(false);
+        _services.NavigationManager.NavigateTo(newPath);
     }
 }
