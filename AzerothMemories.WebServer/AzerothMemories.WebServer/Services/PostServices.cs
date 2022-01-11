@@ -476,7 +476,7 @@ public class PostServices : IPostServices
             };
         }
 
-        page = Math.Clamp(page, 1, allCommentPages.Length + 1);
+        page = Math.Clamp(page, 1, allCommentPages.Length);
         return allCommentPages[page];
     }
 

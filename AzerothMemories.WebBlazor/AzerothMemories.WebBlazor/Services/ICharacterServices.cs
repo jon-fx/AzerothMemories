@@ -8,7 +8,7 @@ public interface ICharacterServices
 
     [ComputeMethod]
     [Get(nameof(TryGetCharacter) + "/{characterId}")]
-    Task<CharacterViewModel> TryGetCharacter(Session session, [Path] long characterId);
+    Task<CharacterAccountViewModel> TryGetCharacter(Session session, [Path] long characterId);
 
     [ComputeMethod]
     [Get(nameof(TryGetCharacter) + "/{region}/{realmSlug}/{characterName}")]

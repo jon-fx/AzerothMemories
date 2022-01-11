@@ -21,11 +21,13 @@
 
         public async Task ComputeState(long id, string region, string realm, string name, string sortModeString, string currentPageString)
         {
-            var accountViewModel = AccountViewModel;
+            AccountViewModel accountViewModel;
             CharacterViewModel characterViewModel;
             if (id > 0)
             {
-                characterViewModel = await Services.CharacterServices.TryGetCharacter(null, id);
+                var result = await Services.CharacterServices.TryGetCharacter(null, id);
+                accountViewModel = result.AccountViewModel;
+                characterViewModel = result.CharacterViewModel;
             }
             else
             {

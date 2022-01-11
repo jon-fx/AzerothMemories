@@ -18,7 +18,7 @@ public class CharacterController : ControllerBase, ICharacterServices
     }
 
     [HttpGet("{characterId}"), Publish]
-    public Task<CharacterViewModel> TryGetCharacter(Session session, [FromRoute] long characterId)
+    public Task<CharacterAccountViewModel> TryGetCharacter(Session session, [FromRoute] long characterId)
     {
         return _commonServices.CharacterServices.TryGetCharacter(session, characterId);
     }

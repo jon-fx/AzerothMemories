@@ -198,9 +198,24 @@ public class CharacterServices : ICharacterServices
     }
 
     [ComputeMethod]
-    public virtual async Task<CharacterViewModel> TryGetCharacter(Session session, long characterId)
+    public virtual async Task<CharacterAccountViewModel> TryGetCharacter(Session session, long characterId)
     {
-        return new CharacterViewModel();
+        var results = new CharacterAccountViewModel();
+        var characterRecord = await TryGetCharacterRecord(characterId);
+        if (characterRecord == null)
+        {
+        }
+        else if (characterRecord.AccountSync && characterRecord.AccountId is > 0)
+        {
+            results.AccountViewModel = await _commonServices.AccountServices.TryGetAccountById(session, characterRecord.AccountId.Value);
+            results.CharacterViewModel = results.AccountViewModel.GetCharactersSafe().FirstOrDefault(x => x.Id == characterRecord.Id);
+        }
+        else
+        {
+            results.CharacterViewModel = characterRecord.CreateViewModel();
+        }
+
+        return results;
     }
 
     [ComputeMethod]
@@ -231,18 +246,7 @@ public class CharacterServices : ICharacterServices
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var characterRecord = await GetOrCreateCharacterRecord(characterRef.Full);
 
-        var results = new CharacterAccountViewModel();
-        if (characterRecord.AccountSync && characterRecord.AccountId is > 0)
-        {
-            results.AccountViewModel = await _commonServices.AccountServices.TryGetAccountById(session, characterRecord.AccountId.Value);
-            results.CharacterViewModel = results.AccountViewModel.GetCharactersSafe().FirstOrDefault(x => x.Id == characterRecord.Id);
-        }
-        else
-        {
-            results.CharacterViewModel = await TryGetCharacter(session, characterRecord.Id);
-        }
-
-        return results;
+        return await TryGetCharacter(session, characterRecord.Id);
     }
 
     [ComputeMethod]
@@ -262,7 +266,7 @@ public class CharacterServices : ICharacterServices
 
         using var client = _commonServices.WarcraftClientProvider.Get(region);
         var statusResult = await client.GetCharacterStatusAsync(realmSlug, characterName);
-        if (statusResult.ResultData.IsValid && statusResult.ResultData.Id > 0)
+        if (statusResult.IsSuccess && statusResult.ResultData != null && statusResult.ResultData.IsValid && statusResult.ResultData.Id > 0)
         {
             return MoaRef.GetCharacterRef(region, realmSlug, characterName, statusResult.ResultData.Id);
         }
