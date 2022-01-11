@@ -1,4 +1,4 @@
-﻿namespace AzerothMemories.WebBlazor.Services;
+﻿namespace AzerothMemories.WebBlazor.Common;
 
 public enum RecentPostsType
 {

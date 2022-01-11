@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace AzerothMemories.WebBlazor.Services;
+namespace AzerothMemories.WebBlazor.Common;
 
 public static class DatabaseHelpers
 {

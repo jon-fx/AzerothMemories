@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace AzerothMemories.WebBlazor.Services;
+namespace AzerothMemories.WebBlazor.Common;
 
 public enum PostReaction
 {

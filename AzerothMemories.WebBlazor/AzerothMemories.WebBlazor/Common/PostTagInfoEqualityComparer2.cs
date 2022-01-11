@@ -1,4 +1,4 @@
-﻿namespace AzerothMemories.WebBlazor.Services;
+﻿namespace AzerothMemories.WebBlazor.Common;
 
 internal sealed class PostTagInfoEqualityComparer2 : IEqualityComparer<object>
 {

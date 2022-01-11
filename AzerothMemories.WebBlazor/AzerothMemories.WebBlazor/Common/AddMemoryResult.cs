@@ -1,4 +1,4 @@
-﻿namespace AzerothMemories.WebBlazor.Services;
+﻿namespace AzerothMemories.WebBlazor.Common;
 
 public sealed class AddMemoryResult
 {

@@ -1,4 +1,4 @@
-﻿namespace AzerothMemories.WebBlazor.Services;
+﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
 public sealed class SearchPostsResults
 {

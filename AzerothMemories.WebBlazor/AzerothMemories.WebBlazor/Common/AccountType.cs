@@ -1,4 +1,4 @@
-﻿namespace AzerothMemories.WebBlazor.ViewModels;
+﻿namespace AzerothMemories.WebBlazor.Common;
 
 public enum AccountType
 {
