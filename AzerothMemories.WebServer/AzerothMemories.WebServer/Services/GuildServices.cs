@@ -15,9 +15,17 @@ public class GuildServices : IGuildServices
     public virtual async Task<GuildRecord> TryGetGuildRecord(long id)
     {
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var character = await database.Guilds.Where(a => a.Id == id).FirstOrDefaultAsync();
+        var record = await database.Guilds.Where(a => a.Id == id).FirstOrDefaultAsync();
 
-        return character;
+        if (record != null)
+        {
+            var moaRef = new MoaRef(record.MoaRef);
+
+            Exceptions.ThrowIf(!moaRef.IsValidGuild);
+            Exceptions.ThrowIf(moaRef.Id != record.BlizzardId);
+        }
+
+        return record;
     }
 
     public virtual async Task<GuildRecord> GetOrCreate(string refFull)
@@ -36,20 +44,30 @@ public class GuildServices : IGuildServices
 
         if (guildId == 0)
         {
-            guildId = await database.InsertWithInt64IdentityAsync(new GuildRecord
+            guildId = await (from r in database.Guilds
+                             where Sql.Like(r.MoaRef, moaRef.GetLikeQuery())
+                             select r.Id).FirstOrDefaultAsync();
+
+            if (guildId > 0)
             {
-                MoaRef = moaRef.Full,
-                BlizzardId = moaRef.Id,
-                BlizzardRegionId = moaRef.Region,
-                CreatedDateTime = SystemClock.Instance.GetCurrentInstant()
-            });
+            }
+            else
+            {
+                guildId = await database.InsertWithInt64IdentityAsync(new GuildRecord
+                {
+                    MoaRef = moaRef.Full,
+                    BlizzardId = moaRef.Id,
+                    BlizzardRegionId = moaRef.Region,
+                    CreatedDateTime = SystemClock.Instance.GetCurrentInstant()
+                });
+            }
         }
 
-        var characterRecord = await TryGetGuildRecord(guildId);
+        var guildRecord = await TryGetGuildRecord(guildId);
 
-        await _commonServices.BlizzardUpdateHandler.TryUpdate(database, characterRecord, BlizzardUpdatePriority.Guild);
+        await _commonServices.BlizzardUpdateHandler.TryUpdate(database, guildRecord, BlizzardUpdatePriority.Guild);
 
-        return characterRecord;
+        return guildRecord;
     }
 
     public void OnGuildUpdate(GuildRecord guildRecord)

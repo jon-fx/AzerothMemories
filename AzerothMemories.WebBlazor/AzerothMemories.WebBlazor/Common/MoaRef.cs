@@ -103,4 +103,9 @@ public sealed class MoaRef
     {
         return new MoaRef('g', region, realm, name, id);
     }
+
+    public string GetLikeQuery()
+    {
+        return $"{Type}|{Region.ToValue()}|%|{Realm}|{Name}".ToLower();
+    }
 }

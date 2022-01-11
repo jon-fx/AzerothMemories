@@ -9,6 +9,7 @@ internal sealed class BlizzardUpdateHandler
     public const string CharacterQueue2 = "c-character";
     public const string CharacterQueue3 = "d-character";
     public const string GuildQueue1 = "e-guild";
+    public static readonly string[] AllQueues = { AccountQueue1, CharacterQueue1, CharacterQueue2, CharacterQueue3, GuildQueue1 };
 
     private readonly CommonServices _commonServices;
     private readonly BlizzardAccountUpdateHandler _accountUpdateHandler;
@@ -64,7 +65,7 @@ internal sealed class BlizzardUpdateHandler
             return;
         }
 
-        var updateQuery = database.GetUpdateQuery<TRecord>(record, out _);
+        var updateQuery = database.GetUpdateQuery(record, out _);
 
         updateQuery = updateQuery.Set(x => x.UpdateJob, record.UpdateJob = callback(record.Id));
         updateQuery = updateQuery.Set(x => x.UpdateJobQueueTime, record.UpdateJobQueueTime = SystemClock.Instance.GetCurrentInstant());

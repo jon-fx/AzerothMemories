@@ -15,9 +15,17 @@ public class CharacterServices : ICharacterServices
     public virtual async Task<CharacterRecord> TryGetCharacterRecord(long id)
     {
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var character = await database.Characters.Where(a => a.Id == id).FirstOrDefaultAsync();
+        var record = await database.Characters.Where(a => a.Id == id).FirstOrDefaultAsync();
 
-        return character;
+        if (record != null)
+        {
+            var moaRef = new MoaRef(record.MoaRef);
+
+            Exceptions.ThrowIf(!moaRef.IsValidCharacter);
+            Exceptions.ThrowIf(moaRef.Id != record.BlizzardId);
+        }
+
+        return record;
     }
 
     [ComputeMethod]
@@ -83,7 +91,7 @@ public class CharacterServices : ICharacterServices
 
         if (CheckAndChange.Check(ref characterRecord.BlizzardId, accountCharacter.Id, ref changed))
         {
-            updateQuery = updateQuery.Set(x => x.BlizzardId, characterRecord.BlizzardId);
+            throw new NotImplementedException();
         }
 
         if (CheckAndChange.Check(ref characterRecord.BlizzardRegionId, new MoaRef(characterRef).Region, ref changed))
@@ -266,8 +274,9 @@ public class CharacterServices : ICharacterServices
     {
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
+        var moaRef = MoaRef.GetCharacterRef(region, realmSlug, characterName, -1);
         var query = from r in database.Characters
-                    where r.BlizzardRegionId == region && r.RealmId == realmId && Sql.Lower(r.Name) == Sql.Lower(characterName)
+                    where Sql.Like(r.MoaRef, moaRef.GetLikeQuery())
                     select new { r.Id, r.AccountId, r.MoaRef };
 
         var result = await query.FirstOrDefaultAsync();

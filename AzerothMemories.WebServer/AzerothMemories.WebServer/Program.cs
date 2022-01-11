@@ -69,7 +69,7 @@ builder.Services.AddHangfire(options =>
 });
 builder.Services.AddHangfireServer(options =>
 {
-    options.Queues = new[] { BlizzardUpdateHandler.AccountQueue1, BlizzardUpdateHandler.CharacterQueue1, BlizzardUpdateHandler.CharacterQueue2, BlizzardUpdateHandler.GuildQueue1 };
+    options.Queues = BlizzardUpdateHandler.AllQueues;
 });
 
 builder.Services.AddSingleton(new Publisher.Options { Id = "p-67567567" });

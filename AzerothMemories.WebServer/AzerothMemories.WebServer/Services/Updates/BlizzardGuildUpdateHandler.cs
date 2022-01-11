@@ -129,6 +129,8 @@ internal sealed class BlizzardGuildUpdateHandler
             query = query.Set(x => x.BlizzardProfileLastModified, record.BlizzardProfileLastModified);
         }
 
+        Exceptions.ThrowIf(new MoaRef(record.MoaRef).Id != record.BlizzardId);
+
         if (changed)
         {
             await query.UpdateAsync();

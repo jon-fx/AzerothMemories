@@ -74,7 +74,7 @@ public class AccountServices : IAccountServices
 
         if (CheckAndChange.Check(ref accountRecord.BlizzardId, blizzardId, ref changed))
         {
-            updateQuery = updateQuery.Set(x => x.BlizzardId, accountRecord.BlizzardId);
+            throw new NotImplementedException();
         }
 
         if (CheckAndChange.Check(ref accountRecord.BlizzardRegionId, blizzardRegion, ref changed))
