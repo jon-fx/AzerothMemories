@@ -51,13 +51,6 @@ else
 
     [Parameter, SupplyParameterFromQuery(Name = "ptmax")] public string PostMaxTime { get; init; }
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-
-        ViewModel.OnInitialized();
-    }
-
     protected override async Task InternalComputeState()
     {
         await base.InternalComputeState();

@@ -8,11 +8,11 @@
 
         public PostSearchHelper PostSearchHelper { get; private set; }
 
-        public override Task OnInitialized()
+        public override async Task OnInitialized()
         {
-            PostSearchHelper = new PostSearchHelper(Services);
+            await base.OnInitialized();
 
-            return Task.CompletedTask;
+            PostSearchHelper = new PostSearchHelper(Services);
         }
 
         public async Task ComputeState(string[] tagStrings, string sortModeString, string currentPageString, string minTimeString, string maxTimeString)

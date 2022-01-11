@@ -33,7 +33,12 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
 
     [Inject] public IStringLocalizer<BlizzardResources> StringLocalizer { get; init; }
 
-    protected override async Task OnInitializedAsync()
+    protected override sealed void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    protected override sealed async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         await ViewModel.OnInitialized();

@@ -12,11 +12,11 @@
 
         public bool IsLoading => CharacterViewModel == null || PostSearchHelper == null;
 
-        public override Task OnInitialized()
+        public override async Task OnInitialized()
         {
-            PostSearchHelper = new PostSearchHelper(Services);
+            await base.OnInitialized();
 
-            return Task.CompletedTask;
+            PostSearchHelper = new PostSearchHelper(Services);
         }
 
         public async Task ComputeState(long id, string region, string realm, string name, string sortModeString, string currentPageString)
