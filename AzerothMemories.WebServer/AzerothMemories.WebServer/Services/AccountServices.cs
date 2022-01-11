@@ -13,6 +13,15 @@ public class AccountServices : IAccountServices
         _commonServices = commonServices;
     }
 
+    public void OnAccountUpdate(AccountRecord accountRecord)
+    {
+        using var computed = Computed.Invalidate();
+        _ = TryGetAccountRecord(accountRecord.Id);
+        _ = TryGetAccountRecordFusionId(accountRecord.FusionId);
+        _ = TryGetAccountRecordUsername(accountRecord.Username);
+        _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Account, accountRecord.Id);
+    }
+
     [CommandHandler(IsFilter = true, Priority = 1)]
     protected virtual async Task OnSignIn(SignInCommand command, CancellationToken cancellationToken)
     {
@@ -117,11 +126,12 @@ public class AccountServices : IAccountServices
 
             using var computed = Computed.Invalidate();
             _ = TryGetAccountRecord(accountRecord.Id);
-            _ = TryGetAccountRecordFusionId(userId);
+            _ = TryGetAccountRecordFusionId(accountRecord.FusionId);
             _ = TryGetAccountRecordUsername(accountRecord.Username);
+            _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Account, accountRecord.Id);
         }
 
-        await _commonServices.BlizzardUpdateHandler.TryUpdateAccount(database, accountRecord);
+        await _commonServices.BlizzardUpdateHandler.TryUpdate(database, accountRecord, BlizzardUpdatePriority.Account);
     }
 
     private async Task<AccountRecord> GetOrCreateAccount(IDataContext database, string userId)

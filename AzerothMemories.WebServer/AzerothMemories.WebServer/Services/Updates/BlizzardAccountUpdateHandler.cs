@@ -11,11 +11,18 @@ internal sealed class BlizzardAccountUpdateHandler
 
     public async Task<HttpStatusCode> TryUpdate(long id, DatabaseConnection database, AccountRecord record)
     {
+        var result = await TryUpdateInternal(id, database, record);
+
+        _commonServices.AccountServices.OnAccountUpdate(record);
+
+        return result;
+    }
+
+    private async Task<HttpStatusCode> TryUpdateInternal(long id, DatabaseConnection database, AccountRecord record)
+    {
         var tasks = new List<Task>();
-        //var characterServices = .GetRequiredService<CharacterServices>();
         var characters = await _commonServices.CharacterServices.TryGetAllAccountCharacterIds(id);
         var dbCharactersSet = characters.Values.ToHashSet();
-        //var result = record.LastUpdateHttpResult;
         var apiCharactersSet = new HashSet<string>();
 
         using var client = _commonServices.WarcraftClientProvider.Get(record.BlizzardRegionId);

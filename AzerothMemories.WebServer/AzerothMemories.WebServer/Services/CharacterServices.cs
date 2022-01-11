@@ -21,9 +21,9 @@ public class CharacterServices : ICharacterServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<CharacterRecord> GetOrCreateCharacterRecord(string characterRefFull)
+    protected virtual async Task<CharacterRecord> GetOrCreateCharacterRecord(string refFull)
     {
-        var moaRef = new MoaRef(characterRefFull);
+        var moaRef = new MoaRef(refFull);
         Exceptions.ThrowIf(moaRef.IsValidAccount);
         Exceptions.ThrowIf(moaRef.IsValidGuild);
         Exceptions.ThrowIf(moaRef.IsWildCard);
@@ -48,7 +48,19 @@ public class CharacterServices : ICharacterServices
 
         var characterRecord = await TryGetCharacterRecord(characterId);
 
-        await _commonServices.BlizzardUpdateHandler.TryUpdateCharacter(database, characterRecord);
+        //await _commonServices.BlizzardUpdateHandler.TryUpdateCharacter(database, characterRecord);
+
+        return characterRecord;
+    }
+
+    [ComputeMethod]
+    public virtual async Task<CharacterRecord> GetOrCreateCharacterRecord(string refFull, BlizzardUpdatePriority priority)
+    {
+        Exceptions.ThrowIf(priority != BlizzardUpdatePriority.CharacterLow && priority != BlizzardUpdatePriority.CharacterMed && priority != BlizzardUpdatePriority.CharacterHigh);
+
+        var characterRecord = await GetOrCreateCharacterRecord(refFull);
+
+        await _commonServices.BlizzardUpdateHandler.TryUpdate(characterRecord, priority);
 
         return characterRecord;
     }
@@ -57,7 +69,7 @@ public class CharacterServices : ICharacterServices
     {
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
-        var characterRecord = await GetOrCreateCharacterRecord(characterRef);
+        var characterRecord = await GetOrCreateCharacterRecord(characterRef, BlizzardUpdatePriority.CharacterHigh);
         var updateQuery = database.GetUpdateQuery(characterRecord, out var changed);
         if (CheckAndChange.Check(ref characterRecord.AccountId, accountId, ref changed))
         {
@@ -124,7 +136,7 @@ public class CharacterServices : ICharacterServices
             await updateQuery.UpdateAsync();
         }
 
-        await _commonServices.BlizzardUpdateHandler.TryUpdateCharacter(database, characterRecord);
+        await _commonServices.BlizzardUpdateHandler.TryUpdate(database, characterRecord, BlizzardUpdatePriority.CharacterHigh);
 
         using var computed = Computed.Invalidate();
         _ = TryGetCharacterRecord(characterRecord.Id);
@@ -244,7 +256,7 @@ public class CharacterServices : ICharacterServices
         }
 
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var characterRecord = await GetOrCreateCharacterRecord(characterRef.Full);
+        var characterRecord = await GetOrCreateCharacterRecord(characterRef.Full, BlizzardUpdatePriority.CharacterMed);
 
         return await TryGetCharacter(session, characterRecord.Id);
     }

@@ -68,8 +68,8 @@ public static class RecordToViewModels
             Name = characterRecord.Name,
             RealmId = characterRecord.RealmId,
             RegionId = characterRecord.BlizzardRegionId,
-            GuildId = characterRecord.GuildId,
-            GuildName = characterRecord.GuildName,
+            GuildId = characterRecord.BlizzardGuildId,
+            GuildName = characterRecord.BlizzardGuildName,
             LastUpdateHttpResult = characterRecord.UpdateJobLastResult
         };
     }

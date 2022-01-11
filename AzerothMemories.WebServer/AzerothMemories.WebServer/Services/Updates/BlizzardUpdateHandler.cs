@@ -7,12 +7,16 @@ internal sealed class BlizzardUpdateHandler
     public const string AccountQueue1 = "a-account";
     public const string CharacterQueue1 = "b-character";
     public const string CharacterQueue2 = "c-character";
-    public const string GuildQueue1 = "d-guild";
+    public const string CharacterQueue3 = "d-character";
+    public const string GuildQueue1 = "e-guild";
 
     private readonly CommonServices _commonServices;
     private readonly BlizzardAccountUpdateHandler _accountUpdateHandler;
     private readonly BlizzardCharacterUpdateHandler _characterUpdateHandler;
     private readonly BlizzardGuildUpdateHandler _guildUpdateHandler;
+
+    private readonly Type[] _validRecordTypes;
+    private readonly Func<long, string>[] _callbacks;
 
     public BlizzardUpdateHandler(CommonServices commonServices)
     {
@@ -20,28 +24,49 @@ internal sealed class BlizzardUpdateHandler
         _accountUpdateHandler = new BlizzardAccountUpdateHandler(commonServices);
         _characterUpdateHandler = new BlizzardCharacterUpdateHandler(commonServices);
         _guildUpdateHandler = new BlizzardGuildUpdateHandler(commonServices);
+
+        _callbacks = new Func<long, string>[(int)BlizzardUpdatePriority.Count];
+        _callbacks[(int)BlizzardUpdatePriority.Account] = id => BackgroundJob.Enqueue(() => OnAccountUpdate(id, null));
+        _callbacks[(int)BlizzardUpdatePriority.CharacterHigh] = id => BackgroundJob.Enqueue(() => OnCharacterUpdate1(id, null));
+        _callbacks[(int)BlizzardUpdatePriority.CharacterMed] = id => BackgroundJob.Enqueue(() => OnCharacterUpdate2(id, null));
+        _callbacks[(int)BlizzardUpdatePriority.CharacterLow] = id => BackgroundJob.Enqueue(() => OnCharacterUpdate3(id, null));
+        _callbacks[(int)BlizzardUpdatePriority.Guild] = id => BackgroundJob.Enqueue(() => OnGuildUpdate(id, null));
+
+        _validRecordTypes = new Type[(int)BlizzardUpdatePriority.Count];
+        _validRecordTypes[(int)BlizzardUpdatePriority.Account] = typeof(AccountRecord);
+        _validRecordTypes[(int)BlizzardUpdatePriority.CharacterHigh] = typeof(CharacterRecord);
+        _validRecordTypes[(int)BlizzardUpdatePriority.CharacterMed] = typeof(CharacterRecord);
+        _validRecordTypes[(int)BlizzardUpdatePriority.CharacterLow] = typeof(CharacterRecord);
+        _validRecordTypes[(int)BlizzardUpdatePriority.Guild] = typeof(GuildRecord);
     }
 
-    public async Task TryUpdateAccount(DatabaseConnection database, AccountRecord record)
+    public async Task TryUpdate<TRecord>(TRecord record, BlizzardUpdatePriority priority) where TRecord : class, IBlizzardGrainUpdateRecord
     {
-        await TryUpdate(database, record, () => BackgroundJob.Enqueue(() => OnAccountUpdate(record.Id, null)));
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await TryUpdate(database, record, priority);
     }
 
-    public async Task TryUpdateCharacter(DatabaseConnection database, CharacterRecord record)
+    public async Task TryUpdate<TRecord>(DatabaseConnection database, TRecord record, BlizzardUpdatePriority priority) where TRecord : class, IBlizzardGrainUpdateRecord
     {
-        await TryUpdate(database, record, () => BackgroundJob.Enqueue(() => OnCharacterUpdate1(record.Id, null)));
+        if (typeof(TRecord) != _validRecordTypes[(int)priority])
+        {
+            throw new NotImplementedException();
+        }
+
+        var callback = _callbacks[(int)priority];
+        await TryUpdate(database, record, priority, callback);
     }
 
-    private async Task TryUpdate<TRecord>(DatabaseConnection database, TRecord record, Func<string> callback) where TRecord : class, IBlizzardGrainUpdateRecord
+    private async Task TryUpdate<TRecord>(DatabaseConnection database, TRecord record, BlizzardUpdatePriority priority, Func<long, string> callback) where TRecord : class, IBlizzardGrainUpdateRecord
     {
         if (!RecordRequiresUpdate(record))
         {
             return;
         }
 
-        var updateQuery = database.GetUpdateQuery(record, out _);
+        var updateQuery = database.GetUpdateQuery<TRecord>(record, out _);
 
-        updateQuery = updateQuery.Set(x => x.UpdateJob, record.UpdateJob = callback());
+        updateQuery = updateQuery.Set(x => x.UpdateJob, record.UpdateJob = callback(record.Id));
         updateQuery = updateQuery.Set(x => x.UpdateJobQueueTime, record.UpdateJobQueueTime = SystemClock.Instance.GetCurrentInstant());
         updateQuery = updateQuery.Set(x => x.UpdateJobStartTime, record.UpdateJobStartTime = null);
         updateQuery = updateQuery.Set(x => x.UpdateJobEndTime, record.UpdateJobEndTime = null);
@@ -122,11 +147,7 @@ internal sealed class BlizzardUpdateHandler
         var record = await _commonServices.AccountServices.TryGetAccountRecord(id);
         if (record == null || context == null)
         {
-#if DEBUG
             return;
-#endif
-
-            throw new NotImplementedException();
         }
 
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
@@ -153,15 +174,18 @@ internal sealed class BlizzardUpdateHandler
         return OnCharacterUpdate(id, context);
     }
 
+    [Queue(CharacterQueue3)]
+    public Task OnCharacterUpdate3(long id, PerformContext context)
+    {
+        return OnCharacterUpdate(id, context);
+    }
+
     private async Task OnCharacterUpdate(long id, PerformContext context)
     {
         var record = await _commonServices.CharacterServices.TryGetCharacterRecord(id);
         if (record == null || context == null)
         {
-#if DEBUG
             return;
-#endif
-            throw new NotImplementedException();
         }
 
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
@@ -172,6 +196,27 @@ internal sealed class BlizzardUpdateHandler
         }
 
         var result = await _characterUpdateHandler.TryUpdate(id, database, record);
+
+        await OnUpdateFinished(database, record, result);
+    }
+
+    [Queue(GuildQueue1)]
+    public async Task OnGuildUpdate(long id, PerformContext context)
+    {
+        var record = await _commonServices.GuildServices.TryGetGuildRecord(id);
+        if (record == null || context == null)
+        {
+            return;
+        }
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        var requiresUpdate = await OnUpdateStarted(database, record, context);
+        if (!requiresUpdate)
+        {
+            return;
+        }
+
+        var result = await _guildUpdateHandler.TryUpdate(id, database, record);
 
         await OnUpdateFinished(database, record, result);
     }

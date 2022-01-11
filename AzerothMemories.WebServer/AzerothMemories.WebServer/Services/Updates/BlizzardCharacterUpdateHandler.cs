@@ -119,14 +119,14 @@ internal sealed class BlizzardCharacterUpdateHandler
             newGuildRef = MoaRef.GetGuildRef(record.BlizzardRegionId, guildData.Realm.Slug, guildData.Name, guildData.Id).Full;
         }
 
-        if (CheckAndChange.Check(ref record.GuildId, newGuildId, ref changed))
+        if (CheckAndChange.Check(ref record.BlizzardGuildId, newGuildId, ref changed))
         {
-            query = query.Set(x => x.GuildId, record.GuildId);
+            query = query.Set(x => x.BlizzardGuildId, record.BlizzardGuildId);
         }
 
-        if (CheckAndChange.Check(ref record.GuildName, newGuildName, ref changed))
+        if (CheckAndChange.Check(ref record.BlizzardGuildName, newGuildName, ref changed))
         {
-            query = query.Set(x => x.GuildName, record.GuildName);
+            query = query.Set(x => x.BlizzardGuildName, record.BlizzardGuildName);
         }
 
         if (CheckAndChange.Check(ref record.GuildRef, newGuildRef, ref changed))
@@ -134,11 +134,18 @@ internal sealed class BlizzardCharacterUpdateHandler
             query = query.Set(x => x.GuildRef, record.GuildRef);
         }
 
-        if (record.GuildId > 0 && record.GuildRef != null)
+        GuildRecord guildRecord = null;
+        if (record.BlizzardGuildId > 0 && record.GuildRef != null)
         {
+            guildRecord = await _commonServices.GuildServices.GetOrCreate(record.GuildRef);
             //var guild = GrainFactory.GetGrain<IGuildGrain>(record.GuildRef);
             //var grainRef = this.AsReference<ICharacterGrain>();
             //await guild.OnCharacterUpdate(grainRef, record.GuildId);
+        }
+
+        if (CheckAndChange.Check(ref record.GuildId, guildRecord?.Id, ref changed))
+        {
+            query = query.Set(x => x.GuildId, record.GuildId);
         }
 
         if (CheckAndChange.Check(ref record.BlizzardProfileLastModified, lastModifiedTime, ref changed))

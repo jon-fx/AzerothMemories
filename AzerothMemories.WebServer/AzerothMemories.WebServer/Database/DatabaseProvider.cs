@@ -13,8 +13,6 @@ public sealed class DatabaseProvider
         _logger = logger;
         _commonConfig = commonConfig;
 
-        //NpgsqlConnection.GlobalTypeMapper.UseNodaTime();
-
         var builder = new LinqToDbConnectionOptionsBuilder();
         builder.UsePostgreSQL(_commonConfig.DatabaseConnectionString);
         //builder.WithTraceLevel(TraceLevel.Verbose).WithTracing(x =>
@@ -22,13 +20,6 @@ public sealed class DatabaseProvider
         //});
 
         _databaseConfig = builder.Build();
-
-        //using var database = GetDatabase();
-        //database.DropTable<AccountRecord>();
-        //database.CreateTable<AccountRecord>();
-
-        //database.DropTable<CharacterRecord>();
-        //database.CreateTable<CharacterRecord>();
     }
 
     public DatabaseConnection GetDatabase()

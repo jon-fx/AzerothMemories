@@ -28,6 +28,24 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(AccountRecord.CreatedDateTime)).AsDateTimeOffset().NotNullable()
             .WithUpdateJobInfo();
 
+        Create.Table("Guilds")
+            .WithColumn(nameof(GuildRecord.Id)).AsInt64().PrimaryKey().Identity()
+            .WithColumn(nameof(GuildRecord.MoaRef)).AsString(128).Unique().NotNullable()
+            .WithColumn(nameof(GuildRecord.BlizzardId)).AsInt64().WithDefaultValue(0)
+            .WithColumn(nameof(GuildRecord.BlizzardRegionId)).AsByte().WithDefaultValue(0)
+            .WithColumn(nameof(GuildRecord.Name)).AsString(60).Nullable()
+            .WithColumn(nameof(GuildRecord.NameSearchable)).AsString(60).Nullable()
+            .WithColumn(nameof(GuildRecord.RealmId)).AsInt32().WithDefaultValue(0)
+            .WithColumn(nameof(GuildRecord.Faction)).AsByte().WithDefaultValue(0)
+            .WithColumn(nameof(GuildRecord.MemberCount)).AsInt32().WithDefaultValue(0)
+            .WithColumn(nameof(GuildRecord.AchievementPoints)).AsInt32().WithDefaultValue(0)
+            .WithColumn(nameof(GuildRecord.CreatedDateTime)).AsDateTimeOffset().NotNullable()
+            .WithColumn(nameof(GuildRecord.BlizzardCreatedTimestamp)).AsInt64().WithDefaultValue(0)
+            .WithColumn(nameof(GuildRecord.BlizzardProfileLastModified)).AsInt64().WithDefaultValue(0)
+            .WithColumn(nameof(GuildRecord.BlizzardAchievementsLastModified)).AsInt64().WithDefaultValue(0)
+            .WithColumn(nameof(GuildRecord.BlizzardRosterLastModified)).AsInt64().WithDefaultValue(0)
+            .WithUpdateJobInfo();
+
         Create.Table("Characters")
             .WithColumn(nameof(CharacterRecord.Id)).AsInt64().PrimaryKey().Identity()
             .WithColumn(nameof(CharacterRecord.MoaRef)).AsString(128).Unique().NotNullable()
@@ -47,10 +65,11 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(CharacterRecord.AvatarLink)).AsString(128).Nullable()
             .WithColumn(nameof(CharacterRecord.AchievementTotalPoints)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(CharacterRecord.AchievementTotalQuantity)).AsInt32().WithDefaultValue(0)
-            .WithColumn(nameof(CharacterRecord.GuildId)).AsInt64().WithDefaultValue(0)
-            .WithColumn(nameof(CharacterRecord.GuildRank)).AsByte().WithDefaultValue(0)
-            .WithColumn(nameof(CharacterRecord.GuildName)).AsString(60).Nullable()
-            .WithColumn(nameof(CharacterRecord.GuildRef)).AsString(60).Nullable()
+            .WithColumn(nameof(CharacterRecord.GuildId)).AsInt64().ForeignKey("Guilds", "Id").Nullable()
+            .WithColumn(nameof(CharacterRecord.GuildRef)).AsString(128).Nullable()
+            .WithColumn(nameof(CharacterRecord.BlizzardGuildId)).AsInt64().WithDefaultValue(0)
+            .WithColumn(nameof(CharacterRecord.BlizzardGuildRank)).AsByte().WithDefaultValue(0)
+            .WithColumn(nameof(CharacterRecord.BlizzardGuildName)).AsString(60).Nullable()
             .WithColumn(nameof(CharacterRecord.BlizzardProfileLastModified)).AsInt64().WithDefaultValue(0)
             .WithColumn(nameof(CharacterRecord.BlizzardRendersLastModified)).AsInt64().WithDefaultValue(0)
             .WithColumn(nameof(CharacterRecord.BlizzardAchievementsLastModified)).AsInt64().WithDefaultValue(0)
@@ -152,7 +171,7 @@ public sealed class Migration0001 : Migration
         Delete.Table("Posts_Reactions");
         Delete.Table("Posts");
 
-        //Delete.Table("Tags");
+        Delete.Table("Guilds");
 
         Delete.Table("Characters_Achievements");
         Delete.Table("Characters");

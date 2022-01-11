@@ -39,13 +39,15 @@ public class CharacterRecord : IBlizzardGrainUpdateRecord
 
     [Column, NotNull] public int AchievementTotalPoints;
 
-    [Column, NotNull] public long GuildId;
-
-    [Column, NotNull] public byte GuildRank;
-
-    [Column, Nullable] public string GuildName;
+    [Column, Nullable] public long? GuildId;
 
     [Column, Nullable] public string GuildRef;
+
+    [Column, NotNull] public long BlizzardGuildId;
+
+    [Column, NotNull] public byte BlizzardGuildRank;
+
+    [Column, Nullable] public string BlizzardGuildName;
 
     [Column, Nullable] public string UpdateJob { get; set; }
 
