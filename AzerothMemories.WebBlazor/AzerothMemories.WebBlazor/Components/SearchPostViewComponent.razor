@@ -30,8 +30,8 @@ else if (PostSearchHelper.CurrentPosts.Length > 0)
         var index = i;
         var post = PostSearchHelper.CurrentPosts[index];
         var id = $"moa-account-post-{index}";
-        var divKey = $"moa-post-div-{post?.Id ?? index}";
-        var postKey = $"moa-post-post-{post?.Id ?? index}";
+        var divKey = $"moa-post-div-{post.Id }";
+        var postKey = $"moa-post-post-{post.Id}";
 
         <div id="@id" @key="@divKey">
             @{
@@ -61,10 +61,4 @@ else
     [Parameter] public bool IsSearchPage { get; init; }
 
     [Parameter, EditorRequired] public PostSearchHelper PostSearchHelper { get; init; }
-
-    [Inject] IScrollManager ScrollManager { get; init; }
-    
-    private void OnPageChanged(int newPage)
-    {
-    }
 }

@@ -1,0 +1,52 @@
+﻿@if (AccountViewModel != null && RecentPostsHelper != null)
+{
+    <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+        <MudCardContent Class="pa-0 ma-0">
+            <MudSwitch T="bool" Checked="@_showAllRecentPosts" Color="Color.Primary" Class="d-flex justify-end" Label="" CheckedChanged="RecentPostsHelper.OnShowAllChanged" />
+        </MudCardContent>
+    </MudCard>
+}
+
+@if (RecentPostsHelper == null || RecentPostsHelper.IsLoading)
+{
+
+}
+else if (RecentPostsHelper.NoResults)
+{
+    <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+        <MudCardContent>
+            <MudText Align="Align.Center">None</MudText>
+        </MudCardContent>
+    </MudCard>
+}
+else
+{
+    <div id="moa-top-header"></div>
+
+    for (var i = 0; i < RecentPostsHelper.CurrentPosts.Length; i++)
+    {
+        var index = i;
+        var post = RecentPostsHelper.CurrentPosts[index];
+        var id = $"moa-account-post-{index}";
+        var divKey = $"moa-post-div-{post.Id}";
+        var postKey = $"moa-post-post-{post.Id}";
+
+        <div id="@id" @key="@divKey">
+            <PostComponent @key="@postKey" Services="@Services" Post="@post" />
+        </div>
+    }
+
+    <div class="d-flex justify-center">
+        <MudPagination Selected="@RecentPostsHelper.CurrentPage" SelectedChanged="@RecentPostsHelper.TryChangePage" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@RecentPostsHelper.TotalPages" />
+    </div>
+}
+
+@code {
+    private bool _showAllRecentPosts;
+
+    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
+
+    [Parameter, EditorRequired] public AccountViewModel AccountViewModel { get; init; }
+
+    [Parameter, EditorRequired] public RecentPostsHelper RecentPostsHelper { get; init; }
+}

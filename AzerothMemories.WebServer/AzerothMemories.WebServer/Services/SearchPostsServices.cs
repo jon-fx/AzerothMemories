@@ -14,18 +14,63 @@ public class SearchPostsServices : ISearchPostsServices
     }
 
     [ComputeMethod]
+    public virtual async Task<RecentPostsResults> TryGetRecentPosts(Session session, RecentPostsType postsType, PostSortMode sortMode, int currentPage, string locale = null)
+    {
+        var account = _commonServices.AccountServices.TryGetAccount(session);
+        var allSearchResult = Array.Empty<long>();
+        if (account != null && postsType == RecentPostsType.Default)
+        {
+            allSearchResult = await TryGetRecentPosts(account.Id);
+        }
+
+        if (allSearchResult.Length == 0)
+        {
+            allSearchResult = await TryGetRecentPosts();
+        }
+
+        var postsPerPage = 5;
+        var allPostViewModels = Array.Empty<PostViewModel>();
+        var totalPages = (int)Math.Ceiling(allSearchResult.Length / (float)postsPerPage);
+        if (allSearchResult.Length > 0)
+        {
+            currentPage = Math.Clamp(currentPage, 1, totalPages);
+            allPostViewModels = await GetPostViewModelsForPage(session, allSearchResult, currentPage, postsPerPage, locale);
+        }
+
+        return new RecentPostsResults
+        {
+            CurrentPage = currentPage,
+            TotalPages = totalPages,
+            SortMode = sortMode,
+            PostsType = postsType,
+            PostViewModels = allPostViewModels.ToArray(),
+        };
+    }
+
+    [ComputeMethod(AutoInvalidateTime = 60)]
+    protected virtual async Task<long[]> TryGetRecentPosts()
+    {
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        var query = from p in database.Posts
+                    where p.DeletedTimeStamp == 0 && p.PostVisibility == 0
+                    orderby p.PostCreatedTime descending
+                    select p.Id;
+
+        return await query.ToArrayAsync();
+    }
+
+    [ComputeMethod(AutoInvalidateTime = 60)]
+    protected virtual async Task<long[]> TryGetRecentPosts(long accountId)
+    {
+        return Array.Empty<long>();
+    }
+
+    [ComputeMethod]
     public virtual async Task<SearchPostsResults> TrySearchPosts(Session session, string[] tagStrings, PostSortMode sortMode, int currentPage, long postMinTime, long postMaxTime, string locale = null)
     {
         postMinTime = Math.Clamp(postMinTime, 0, SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
         postMaxTime = Math.Clamp(postMaxTime, 0, SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
-
-        //{
-        //    var min = Math.Min(postMinTime, postMaxTime);
-        //    var max = Math.Max(postMinTime, postMaxTime);
-
-        //    postMinTime = min;
-        //    postMaxTime = max;
-        //}
 
         var searchPostTags = Array.Empty<PostTagInfo>();
         var serverSideTagStrings = new HashSet<string>();
@@ -39,19 +84,12 @@ public class SearchPostsServices : ISearchPostsServices
 
         var postsPerPage = 5;
         var allSearchResult = await TrySearchPosts(serverSideTagStrings, sortMode, postMinTime, postMaxTime);
-        var allPostViewModels = new List<PostViewModel>();
+        var allPostViewModels = Array.Empty<PostViewModel>();
         var totalPages = (int)Math.Ceiling(allSearchResult.Length / (float)postsPerPage);
         if (allSearchResult.Length > 0)
         {
             currentPage = Math.Clamp(currentPage, 1, totalPages);
-
-            var pagedResults = allSearchResult.Skip((currentPage - 1) * postsPerPage).Take(postsPerPage).ToArray();
-            foreach (var pagedResult in pagedResults)
-            {
-                var postViewModel = await _commonServices.PostServices.TryGetPostViewModel(session, pagedResult, locale);
-
-                allPostViewModels.Add(postViewModel);
-            }
+            allPostViewModels = await GetPostViewModelsForPage(session, allSearchResult, currentPage, postsPerPage, locale);
         }
 
         return new SearchPostsResults
@@ -64,6 +102,20 @@ public class SearchPostsServices : ISearchPostsServices
             SortMode = sortMode,
             PostViewModels = allPostViewModels.ToArray(),
         };
+    }
+
+    private async Task<PostViewModel[]> GetPostViewModelsForPage(Session session, long[] allSearchResult, int currentPage, int postsPerPage, string locale)
+    {
+        var allPostViewModels = new List<PostViewModel>();
+        var pagedResults = allSearchResult.Skip((currentPage - 1) * postsPerPage).Take(postsPerPage).ToArray();
+        foreach (var pagedResult in pagedResults)
+        {
+            var postViewModel = await _commonServices.PostServices.TryGetPostViewModel(session, pagedResult, locale);
+
+            allPostViewModels.Add(postViewModel);
+        }
+
+        return allPostViewModels.ToArray();
     }
 
     [ComputeMethod]

@@ -7,27 +7,16 @@
     </Authorized>
 </AuthorizeView>
 
-@{
-    var id = "post/1/1";
-    var name = "post/Lightfx/1";
-}
-
-<MudButton OnClick="() => NavigationManager.NavigateTo(id)" >Test Post AccountId</MudButton>
-<MudButton OnClick="() => NavigationManager.NavigateTo(name)" >Test Post AccountUsername</MudButton>
-
-@for (var i = 0; i < 13; i++)
-{
-    var i1 = i;
-    <MudText Class=@($"wowclass-{i1}")>@StringLocalizer[$"CharacterClass-{i1}"]</MudText>
-}
-
-<MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-    <SearchBlizzardDataComponent Services="ViewModel.Services" OnSelectedItemChanged="@AddSearchDataToTags" />
-</MudPaper>
+<RecentPostsComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" RecentPostsHelper="@ViewModel.RecentPostsHelper" />
 
 @code {
-    private Task AddSearchDataToTags(PostTagInfo arg)
+    [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }
+
+    [Parameter, SupplyParameterFromQuery(Name = "type")] public string RecentPostType { get; init; }
+
+    protected override async Task InternalComputeState()
     {
-        return Task.CompletedTask;
+        await base.InternalComputeState();
+        await ViewModel.ComputeState(CurrentPage, null, RecentPostType);
     }
 }

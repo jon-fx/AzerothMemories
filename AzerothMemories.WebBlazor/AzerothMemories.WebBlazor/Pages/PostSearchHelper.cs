@@ -21,7 +21,7 @@ public sealed class PostSearchHelper
     public PostSearchHelper(IMoaServices services)
     {
         _services = services;
-        _searchResults = new SearchPostsResults();
+        //_searchResults = new SearchPostsResults();
 
         IsLoading = true;
     }
@@ -44,10 +44,17 @@ public sealed class PostSearchHelper
 
     public async Task ComputeState(string[] tagStrings, string sortModeString, string currentPageString, string postMinTimeString, string postMaxTimeString)
     {
-        var sameTagStrings = StructuralComparisons.StructuralEqualityComparer.Equals(_tagStrings, tagStrings);
-        if (sameTagStrings && sortModeString == _sortModeString && currentPageString == _currentPageString && postMinTimeString == _postMinTimeString && postMaxTimeString == _postMaxTimeString)
+        if (_searchResults == null)
         {
-            return;
+            _searchResults = new SearchPostsResults();
+        }
+        else
+        {
+            var sameTagStrings = StructuralComparisons.StructuralEqualityComparer.Equals(_tagStrings, tagStrings);
+            if (sameTagStrings && sortModeString == _sortModeString && currentPageString == _currentPageString && postMinTimeString == _postMinTimeString && postMaxTimeString == _postMaxTimeString)
+            {
+                return;
+            }
         }
 
         _tagStrings = tagStrings.ToHashSet();
