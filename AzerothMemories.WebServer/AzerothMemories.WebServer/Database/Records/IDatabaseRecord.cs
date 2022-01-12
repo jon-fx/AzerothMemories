@@ -1,6 +1,8 @@
-﻿namespace AzerothMemories.WebServer.Database.Records;
+﻿using Stl;
 
-public interface IDatabaseRecord
+namespace AzerothMemories.WebServer.Database.Records;
+
+public interface IDatabaseRecord : IHasId<long>
 {
-    long Id { get; set; }
+    //long Id { get; set; }
 }

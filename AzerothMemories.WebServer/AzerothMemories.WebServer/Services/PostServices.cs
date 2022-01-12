@@ -26,7 +26,7 @@ public class PostServices : IPostServices
 
         return await query.FirstOrDefaultAsync();
     }
-    
+
     [ComputeMethod]
     protected virtual async Task<bool> CanAccountSeePost(long activeAccountId, PostRecord postRecord)
     {
@@ -42,7 +42,7 @@ public class PostServices : IPostServices
             return true;
         }
 
-        var following = await _commonServices.AccountFollowingServices.TryGetAccountFollowing(activeAccountId);   
+        var following = await _commonServices.AccountFollowingServices.TryGetAccountFollowing(activeAccountId);
         if (following == null || following.Count == 0)
         {
             return false;
@@ -246,11 +246,6 @@ public class PostServices : IPostServices
         }
 
         var canSeePost = await CanAccountSeePost(activeAccountId, postRecord);
-        if (!canSeePost)
-        {
-            return null;
-        }
-
         var posterAccount = await _commonServices.AccountServices.TryGetAccountById(session, postRecord.AccountId);
         if (posterAccount == null)
         {
@@ -262,7 +257,7 @@ public class PostServices : IPostServices
 
         reactionRecords.TryGetValue(activeAccountId, out var reactionViewModel);
 
-        return RecordToViewModels.CreatePostViewModel(postRecord, posterAccount, reactionViewModel, postTagInfos);
+        return RecordToViewModels.CreatePostViewModel(postRecord, posterAccount, canSeePost, reactionViewModel, postTagInfos);
     }
 
     [ComputeMethod]

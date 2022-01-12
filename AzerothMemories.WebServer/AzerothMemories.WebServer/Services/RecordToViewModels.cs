@@ -93,7 +93,7 @@ public static class RecordToViewModels
         };
     }
 
-    public static PostViewModel CreatePostViewModel(PostRecord postRecord, AccountViewModel accountViewModel, PostReactionViewModel reactionRecord, PostTagInfo[] postTagRecords)
+    public static PostViewModel CreatePostViewModel(PostRecord postRecord, AccountViewModel accountViewModel, bool canSeePost, PostReactionViewModel reactionRecord, PostTagInfo[] postTagRecords)
     {
         var viewModel = new PostViewModel
         {
@@ -130,6 +130,17 @@ public static class RecordToViewModels
         if (postRecord.PostAvatar != null)
         {
             viewModel.PostAvatar = viewModel.SystemTags.First(x => x.TagString == postRecord.PostAvatar).Image;
+        }
+
+        if (!canSeePost)
+        {
+            viewModel.PostComment = null;
+            viewModel.PostVisibility = 255;
+            viewModel.ImageBlobNames = Array.Empty<string>();
+            viewModel.TotalReactionCount = 0;
+            viewModel.TotalCommentCount = 0;
+
+            Array.Fill(viewModel.ReactionCounters, 0);
         }
 
         return viewModel;

@@ -40,7 +40,6 @@ else
                             <MudIcon Icon="@Icons.Material.Filled.AddLink" Size="Size.Small" />
                         </MudTooltip>
                     </MudMenuItem>
-
                 </MudMenu>
             </CardHeaderActions>
         </MudCardHeader>
@@ -48,28 +47,35 @@ else
         <MudDivider />
 
         <MudCardContent Class="pa-0 ma-2">
-            @if (!string.IsNullOrWhiteSpace(Post.PostComment))
+            @if (DoseNotHavePermission)
             {
-                <MudText Typo="Typo.body2" Style="overflow-wrap: anywhere;">@(new MarkupString(Post.PostComment))</MudText>
+                <MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Center">You do not have permission to view this post.</MudAlert>
             }
-
-            @foreach (var blobName in Post.ImageBlobNames)
+            else
             {
-            }
+                if (!string.IsNullOrWhiteSpace(Post.PostComment))
+                {
+                    <MudText Typo="Typo.body2" Style="overflow-wrap: anywhere;">@(new MarkupString(Post.PostComment))</MudText>
+                }
 
-            <div class="d-flex justify-space-between pa-0 ma-2">
-                @if (InDialog)
+                @foreach (var blobName in Post.ImageBlobNames)
                 {
-                    @*<MudText Typo="Typo.body2">@ZExtensions.BuildReactionString(Post.TotalReactionCount, Post.ReactionCounters)</MudText>*@
-                    <MudText Class="cardLinkText" Typo="Typo.body2" @onclick="OnReactionLinkClicked">@ZExtensions.BuildReactionString(Post.TotalReactionCount, Post.ReactionCounters)</MudText>
-                    <MudText Typo="Typo.body2">@Post.TotalCommentCount.ToMetric() Comments</MudText>
                 }
-                else
-                {
-                    <MudText Class="cardLinkText" Typo="Typo.body2" @onclick="OnReactionLinkClicked">@ZExtensions.BuildReactionString(Post.TotalReactionCount, Post.ReactionCounters)</MudText>
-                    <MudText Class="cardLinkText" Typo="Typo.body2" @onclick="OnCommentButtonClicked">@Post.TotalCommentCount.ToMetric() Comments</MudText>
-                }
-            </div>
+
+                <div class="d-flex justify-space-between pa-0 ma-2">
+                    @if (InDialog)
+                    {
+                        @*<MudText Typo="Typo.body2">@ZExtensions.BuildReactionString(Post.TotalReactionCount, Post.ReactionCounters)</MudText>*@
+                        <MudText Class="cardLinkText" Typo="Typo.body2" @onclick="OnReactionLinkClicked">@ZExtensions.BuildReactionString(Post.TotalReactionCount, Post.ReactionCounters)</MudText>
+                        <MudText Typo="Typo.body2">@Post.TotalCommentCount.ToMetric() Comments</MudText>
+                    }
+                    else
+                    {
+                        <MudText Class="cardLinkText" Typo="Typo.body2" @onclick="OnReactionLinkClicked">@ZExtensions.BuildReactionString(Post.TotalReactionCount, Post.ReactionCounters)</MudText>
+                        <MudText Class="cardLinkText" Typo="Typo.body2" @onclick="OnCommentButtonClicked">@Post.TotalCommentCount.ToMetric() Comments</MudText>
+                    }
+                </div>
+            }
 
             @{
                 var systemTags = Post.SystemTags;
@@ -107,96 +113,103 @@ else
         </MudCardActions>
     </MudCard>
 
-    @if (_showReactions)
+    @if (DoseNotHavePermission)
     {
-        var reactionData = _postReactions;
-        if (_reactionAreLoading)
-        {
-            <CardLoadingComponent />
-        }
-        else
-        {
-            <PostReactionsDisplayCard Services="@Services" ReactionData="@reactionData"/>
-        }
-    }
 
-    @if (_showTagMenu)
+    }
+    else
     {
-        if (_isChangingTags)
+        if (_showReactions)
         {
-            <CardLoadingComponent />
-        }
-        else
-        {
-            var systemTags = Post.SystemTags;
-            if (systemTags != null)
+            var reactionData = _postReactions;
+            if (_reactionAreLoading)
             {
-                var characters = Services.ActiveAccountServices.AccountViewModel.GetCharactersSafe();
-                if (characters.Length > 0)
+                <CardLoadingComponent />
+            }
+            else
+            {
+                <PostReactionsDisplayCard Services="@Services" ReactionData="@reactionData" />
+            }
+        }
+
+        if (_showTagMenu)
+        {
+            if (_isChangingTags)
+            {
+                <CardLoadingComponent />
+            }
+            else
+            {
+                var systemTags = Post.SystemTags;
+                if (systemTags != null)
                 {
-                    CharacterViewModel taggedCharacter = null;
-                    foreach (var moaCharacterViewModel in characters)
+                    var characters = Services.ActiveAccountServices.AccountViewModel.GetCharactersSafe();
+                    if (characters.Length > 0)
                     {
-                        var tagInfo = systemTags.FirstOrDefault(x => x.Type == PostTagType.Character && x.Id == moaCharacterViewModel.Id);
-                        if (tagInfo == null)
+                        CharacterViewModel taggedCharacter = null;
+                        foreach (var moaCharacterViewModel in characters)
                         {
-                            continue;
+                            var tagInfo = systemTags.FirstOrDefault(x => x.Type == PostTagType.Character && x.Id == moaCharacterViewModel.Id);
+                            if (tagInfo == null)
+                            {
+                                continue;
+                            }
+
+                            taggedCharacter = moaCharacterViewModel;
                         }
 
-                        taggedCharacter = moaCharacterViewModel;
-                    }
-
-                    <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-                        <MudCardContent>
-                            <MudTooltip Placement="Placement.End" Color="Color.Dark">
-                                <ChildContent>
-                                    <MudButton Variant="Variant.Filled" Disabled="taggedCharacter == null" OnClick="() => OnRestoreButtonClicked(taggedCharacter, null)">
-                                        <MudAvatar Size="Size.Medium">?</MudAvatar>
-                                    </MudButton>
-                                </ChildContent>
-                                <TooltipContent>
-                                    <MudText>None</MudText>
-                                </TooltipContent>
-                            </MudTooltip>
-
-                            @for (var i = 0; i < characters.Length; i++)
-                            {
-                                var index = i;
-                                var character = characters[index];
-                                if (string.IsNullOrWhiteSpace(character.AvatarLink))
-                                {
-                                    continue;
-                                }
-
-                                <MudTooltip @key="@character.Id" Placement="Placement.Bottom" Color="Color.Dark">
+                        <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+                            <MudCardContent>
+                                <MudTooltip Placement="Placement.End" Color="Color.Dark">
                                     <ChildContent>
-                                        <MudButton Id="@index" Variant="Variant.Filled" Disabled="taggedCharacter != null && taggedCharacter.Id == character.Id" OnClick="() => OnRestoreButtonClicked(taggedCharacter, character)">
-                                            <MudAvatar Size="Size.Medium" Image="@character.AvatarLink" />
+                                        <MudButton Variant="Variant.Filled" Disabled="taggedCharacter == null" OnClick="() => OnRestoreButtonClicked(taggedCharacter, null)">
+                                            <MudAvatar Size="Size.Medium">?</MudAvatar>
                                         </MudButton>
                                     </ChildContent>
                                     <TooltipContent>
-                                        <CharacterNameLinkComponent CharacterName="@character.Name"
+                                        <MudText>None</MudText>
+                                    </TooltipContent>
+                                </MudTooltip>
+
+                                @for (var i = 0; i < characters.Length; i++)
+                                {
+                                    var index = i;
+                                    var character = characters[index];
+                                    if (string.IsNullOrWhiteSpace(character.AvatarLink))
+                                    {
+                                        continue;
+                                    }
+
+                                    <MudTooltip @key="@character.Id" Placement="Placement.Bottom" Color="Color.Dark">
+                                        <ChildContent>
+                                            <MudButton Id="@index" Variant="Variant.Filled" Disabled="taggedCharacter != null && taggedCharacter.Id == character.Id" OnClick="() => OnRestoreButtonClicked(taggedCharacter, character)">
+                                                <MudAvatar Size="Size.Medium" Image="@character.AvatarLink" />
+                                            </MudButton>
+                                        </ChildContent>
+                                        <TooltipContent>
+                                            <CharacterNameLinkComponent CharacterName="@character.Name"
                                             CharacterClass="@character.Class"
                                             CharacterRealmId="@character.RealmId"
                                             CharacterRegionInfo="@character.RegionId.ToInfo()" />
 
-                                        <RealmLinkComponent BlizzardRealmId="@character.RealmId" />
+                                            <RealmLinkComponent BlizzardRealmId="@character.RealmId" />
 
-                                        <MudText Class="d-inline">@character.Level @Services.StringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
-                                        <MudText Class=@($"d-inline wowclass-{character.Class}")>@Services.StringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
-                                    </TooltipContent>
-                                </MudTooltip>
-                            }
-                        </MudCardContent>
-                    </MudCard>
-                }
-                else
-                {
-                    <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-                        <MudCardContent>
-                            <MudText Align="Align.Center">No Characters</MudText>
-                        </MudCardContent>
-                    </MudCard>
+                                            <MudText Class="d-inline">@character.Level @Services.StringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
+                                            <MudText Class=@($"d-inline wowclass-{character.Class}")>@Services.StringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
+                                        </TooltipContent>
+                                    </MudTooltip>
+                                }
+                            </MudCardContent>
+                        </MudCard>
+                    }
+                    else
+                    {
+                        <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+                            <MudCardContent>
+                                <MudText Align="Align.Center">No Characters</MudText>
+                            </MudCardContent>
+                        </MudCard>
+                    }
                 }
             }
         }
@@ -233,7 +246,9 @@ else
 
     [Parameter] public EventCallback<PostTagInfo> OnTagChipClickedCallback { get; init; }
 
-    public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActive;
+    public bool DoseNotHavePermission => Post.PostVisibility == 255;
+
+    public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActive || DoseNotHavePermission;
 
     protected override async Task OnParametersSetAsync()
     {
