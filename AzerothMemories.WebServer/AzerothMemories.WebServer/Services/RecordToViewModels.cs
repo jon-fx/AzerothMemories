@@ -22,8 +22,24 @@ public static class RecordToViewModels
             accountRecord.SocialYouTube,
         };
 
-        accountViewModel.FollowingViewModels = followingViewModels;
-        accountViewModel.FollowersViewModels = followersViewModels;
+        accountViewModel.FollowingViewModels = RemoveNoneStatus(followingViewModels);
+        accountViewModel.FollowersViewModels = RemoveNoneStatus(followersViewModels);
+    }
+
+    private static Dictionary<long, AccountFollowingViewModel> RemoveNoneStatus(Dictionary<long, AccountFollowingViewModel> viewModels)
+    {
+        var results = new Dictionary<long, AccountFollowingViewModel>();
+        foreach (var kvp in viewModels)
+        {
+            if (kvp.Value.Status == AccountFollowingStatus.None)
+            {
+                continue;
+            }
+
+            results.Add(kvp.Key, kvp.Value);
+        }
+
+        return results;
     }
 
     public static AccountViewModel CreateAccountViewModel(this AccountRecord accountRecord, Dictionary<long, CharacterViewModel> characters, Dictionary<long, AccountFollowingViewModel> followingViewModels, Dictionary<long, AccountFollowingViewModel> followersViewModels)

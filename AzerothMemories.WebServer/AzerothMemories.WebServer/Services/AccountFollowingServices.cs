@@ -144,6 +144,8 @@ public class AccountFollowingServices : IAccountFollowingServices
 
         using var computed = Computed.Invalidate();
         _ = TryGetAccountFollowing(activeAccountId);
+        _ = TryGetAccountFollowers(activeAccountId);
+        _ = TryGetAccountFollowing(otherAccountId);
         _ = TryGetAccountFollowers(otherAccountId);
 
         return viewModel.Status;
@@ -189,6 +191,8 @@ public class AccountFollowingServices : IAccountFollowingServices
 
         using var computed = Computed.Invalidate();
         _ = TryGetAccountFollowing(activeAccountId);
+        _ = TryGetAccountFollowers(activeAccountId);
+        _ = TryGetAccountFollowing(otherAccountId);
         _ = TryGetAccountFollowers(otherAccountId);
 
         return viewModel.Status;
@@ -242,6 +246,8 @@ public class AccountFollowingServices : IAccountFollowingServices
 
         using var computed = Computed.Invalidate();
         _ = TryGetAccountFollowing(activeAccountId);
+        _ = TryGetAccountFollowers(activeAccountId);
+        _ = TryGetAccountFollowing(otherAccountId);
         _ = TryGetAccountFollowers(otherAccountId);
 
         return viewModel.Status;
@@ -266,7 +272,7 @@ public class AccountFollowingServices : IAccountFollowingServices
             return null;
         }
 
-        viewModel.Status = AccountFollowingStatus.Active;
+        viewModel.Status = AccountFollowingStatus.None;
 
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
@@ -287,6 +293,8 @@ public class AccountFollowingServices : IAccountFollowingServices
 
         using var computed = Computed.Invalidate();
         _ = TryGetAccountFollowing(activeAccountId);
+        _ = TryGetAccountFollowers(activeAccountId);
+        _ = TryGetAccountFollowing(otherAccountId);
         _ = TryGetAccountFollowers(otherAccountId);
 
         return viewModel.Status;

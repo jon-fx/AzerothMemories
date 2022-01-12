@@ -1,0 +1,104 @@
+﻿@if (_doNotShowTab)
+{
+}
+else
+{
+    <MudTabPanel Text="@_header" BadgeData="@_badgeData">
+        @if (_viewModels.Length == 0)
+        {
+            <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+                <MudCardContent>
+                    <MudText Align="Align.Center">None</MudText>
+                </MudCardContent>
+            </MudCard>
+        }
+        else
+        {
+            foreach (var viewModel in _viewModels)
+            {
+                <MudCard @key="viewModel.Id" Class="pa-0 ma-10 postCard" Outlined="true" Elevation="10">
+                    <MudCardHeader>
+                        <CardHeaderAvatar>
+                            <MudAvatar Size="Size.Medium" Image="@viewModel.FollowerAvatarLink">@viewModel.FollowerUsername[0]</MudAvatar>
+                        </CardHeaderAvatar>
+                        <CardHeaderContent>
+                            <a href="@($"/account/{viewModel.FollowerId}")">
+                                <MudText Typo="Typo.body1">@viewModel.FollowerUsername</MudText>
+                            </a>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            @{
+                                var activeAccount = ActiveAccountViewModel;
+                                if (activeAccount != null)
+                                {
+                                    activeAccount.FollowingViewModels.TryGetValue(viewModel.FollowerId, out var followingViewModel);
+                                    activeAccount.FollowersViewModels.TryGetValue(viewModel.FollowerId, out var followerViewModel);
+
+                                    <AccountFollowingComponent Services="@Services" ActiveAccountViewModel="@activeAccount" OtherAccountId="@viewModel.FollowerId" FollowingViewModel="@followingViewModel" FollowerViewModel="@followerViewModel" />
+                                }
+                            }
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                </MudCard>
+            }
+        }
+    </MudTabPanel>
+}
+
+@code {
+    private string _header;
+    private string _badgeData;
+    private bool _doNotShowTab;
+    private bool _accountChanged;
+    private AccountViewModel _account;
+    private AccountFollowingViewModel[] _viewModels;
+
+    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
+
+    [Parameter, EditorRequired]
+    public AccountViewModel Account
+    {
+        get => _account;
+        init
+        {
+            _accountChanged = _account != value;
+            _account = value;
+        }
+    }
+
+    [Parameter, EditorRequired] public bool Following { get; init; }
+
+    [Parameter, EditorRequired] public AccountFollowingStatus StatusToShow { get; init; }
+
+    [Parameter, EditorRequired] public AccountViewModel ActiveAccountViewModel { get; init; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if (_accountChanged)
+        {
+            _accountChanged = false;
+
+            var header = "Followers";
+            var viewModels = _account?.FollowersViewModels;
+
+            if (Following)
+            {
+                header = "Following";
+                viewModels = _account?.FollowingViewModels;
+            }
+
+            if (StatusToShow == AccountFollowingStatus.Pending)
+            {
+                header = "Pending";
+            }
+
+            _viewModels = viewModels?.Values.Where(x => x.Status == StatusToShow).OrderBy(x => x.AccountId).ToArray() ?? Array.Empty<AccountFollowingViewModel>();
+            _header = $"{header}";
+            _badgeData = $"{_viewModels.Length}";
+
+            _doNotShowTab = StatusToShow == AccountFollowingStatus.Pending && _viewModels.Length == 0;
+        }
+    }
+}
