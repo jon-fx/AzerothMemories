@@ -42,7 +42,18 @@ public class PostServices : IPostServices
             return true;
         }
 
-        return false;
+        var following = await _commonServices.AccountFollowingServices.TryGetAccountFollowing(activeAccountId);   
+        if (following == null || following.Count == 0)
+        {
+            return false;
+        }
+
+        if (!following.TryGetValue(postRecord.AccountId, out var viewModel))
+        {
+            return false;
+        }
+
+        return viewModel.Status == AccountFollowingStatus.Active;
     }
 
     public async Task<AddMemoryResult> TryPostMemory(Session session, AddMemoryTransferData transferData)
