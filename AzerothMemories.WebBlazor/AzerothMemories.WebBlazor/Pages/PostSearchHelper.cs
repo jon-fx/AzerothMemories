@@ -9,19 +9,14 @@ public sealed class PostSearchHelper
     public Instant? MinDateTime;
     public Instant? MaxDateTime;
 
-    private string _sortModeString;
-    private string _currentPageString;
-    private string _postMinTimeString;
-    private string _postMaxTimeString;
-    private HashSet<string> _tagStrings;
-
     private int _currentPage;
     private PostSortMode _sortMode;
+    private HashSet<string> _tagStrings;
 
     public PostSearchHelper(IMoaServices services)
     {
         _services = services;
-        //_searchResults = new SearchPostsResults();
+        _searchResults = new SearchPostsResults();
 
         IsLoading = true;
     }
@@ -44,24 +39,7 @@ public sealed class PostSearchHelper
 
     public async Task ComputeState(string[] tagStrings, string sortModeString, string currentPageString, string postMinTimeString, string postMaxTimeString)
     {
-        if (_searchResults == null)
-        {
-            _searchResults = new SearchPostsResults();
-        }
-        else
-        {
-            var sameTagStrings = StructuralComparisons.StructuralEqualityComparer.Equals(_tagStrings, tagStrings);
-            if (sameTagStrings && sortModeString == _sortModeString && currentPageString == _currentPageString && postMinTimeString == _postMinTimeString && postMaxTimeString == _postMaxTimeString)
-            {
-                return;
-            }
-        }
-
         _tagStrings = tagStrings.ToHashSet();
-        _sortModeString = sortModeString;
-        _currentPageString = currentPageString;
-        _postMinTimeString = postMinTimeString;
-        _postMaxTimeString = postMaxTimeString;
 
         if (int.TryParse(currentPageString, out _currentPage) && _currentPage > 0)
         {
@@ -221,21 +199,13 @@ public sealed class PostSearchHelper
             { "tag", _tagStrings.ToArray() }
         };
 
-        var oldPath = _services.NavigationManager.Uri;
-        var sortMode = (int)_sortMode;
-        if (sortMode > 0 || _sortModeString != null)
-        {
-            dictionary.Add("sort", sortMode);
-        }
-
-        if (_currentPage > 1 || _currentPageString != null)
-        {
-            dictionary.Add("page", resetPage ? 0 : _currentPage);
-        }
+        ZExtensions.AddToDictOrNull(dictionary, "sort", (int)_sortMode, _sortMode == 0);
+        ZExtensions.AddToDictOrNull(dictionary, "page", _currentPage, _currentPage <= 1 || resetPage);
 
         dictionary.Add("ptmin", MinDateTime?.ToUnixTimeMilliseconds());
         dictionary.Add("ptmax", MaxDateTime?.ToUnixTimeMilliseconds());
 
+        var oldPath = _services.NavigationManager.Uri;
         var newPath = _services.NavigationManager.GetUriWithQueryParameters(dictionary);
         if (newPath == oldPath)
         {

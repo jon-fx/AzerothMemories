@@ -6,10 +6,6 @@
 
         private RecentPostsResults _searchResults;
 
-        private string _sortModeString;
-        private string _recentPostTypeString;
-        private string _currentPageString;
-
         private int _currentPage;
         private PostSortMode _sortMode;
         private RecentPostsType _recentPostType;
@@ -17,6 +13,7 @@
         public RecentPostsHelper(IMoaServices services)
         {
             _services = services;
+            _searchResults = new RecentPostsResults();
 
             IsLoading = true;
         }
@@ -35,19 +32,6 @@
 
         public async Task ComputeState(string currentPageString, string sortModeString, string postTypeString)
         {
-            if (_searchResults == null)
-            {
-                _searchResults = new RecentPostsResults();
-            }
-            else if (sortModeString == _sortModeString && currentPageString == _currentPageString && postTypeString == _recentPostTypeString)
-            {
-                return;
-            }
-
-            _sortModeString = sortModeString;
-            _currentPageString = currentPageString;
-            _recentPostTypeString = postTypeString;
-
             if (int.TryParse(currentPageString, out _currentPage) && _currentPage > 0)
             {
                 if (NoResults)
@@ -118,24 +102,12 @@
         private void NavigateToNewQuery(bool resetPage)
         {
             var dictionary = new Dictionary<string, object>();
+
+            ZExtensions.AddToDictOrNull(dictionary, "sort", (int)_sortMode, _sortMode == 0);
+            ZExtensions.AddToDictOrNull(dictionary, "page", _currentPage, _currentPage <= 1 || resetPage);
+            ZExtensions.AddToDictOrNull(dictionary, "type", (int)_recentPostType, _recentPostType == 0);
+
             var oldPath = _services.NavigationManager.Uri;
-            var sortMode = (int)_sortMode;
-            if (sortMode > 0 || _sortModeString != null)
-            {
-                dictionary.Add("sort", sortMode);
-            }
-
-            if (_currentPage > 1 || _currentPageString != null)
-            {
-                dictionary.Add("page", resetPage ? 0 : _currentPage);
-            }
-
-            var recentPostType = (int)_recentPostType;
-            if (recentPostType != 0 || _recentPostTypeString != null)
-            {
-                dictionary.Add("type", recentPostType);
-            }
-
             var newPath = _services.NavigationManager.GetUriWithQueryParameters(dictionary);
             if (newPath == oldPath)
             {

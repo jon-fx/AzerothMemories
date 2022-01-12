@@ -306,4 +306,16 @@ public static class ZExtensions
 
         return commentStr.ToString();
     }
+
+    public static void AddToDictOrNull<TValue>(Dictionary<string, object> dictionary, string key, TValue value, bool addNull)
+    {
+        if (addNull)
+        {
+            dictionary.Add(key, null);
+        }
+        else
+        {
+            dictionary.Add(key, value);
+        }
+    }
 }
