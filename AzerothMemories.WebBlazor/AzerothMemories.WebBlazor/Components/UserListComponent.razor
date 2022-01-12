@@ -1,20 +1,46 @@
-﻿@if (_doNotShowTab)
-{
-}
-else
-{
-    <MudTabPanel Text="@_header" BadgeData="@_badgeData">
-        @if (_viewModels.Length == 0)
+﻿<MudTabPanel Text="@_header">
+    @{
+        var showPending = _pendingViewModels != null && _pendingViewModels.Length > 0;
+        var showActive = _activeViewModels != null && _activeViewModels.Length > 0;
+        if (showPending)
         {
-            <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-                <MudCardContent>
-                    <MudText Align="Align.Center">None</MudText>
-                </MudCardContent>
-            </MudCard>
+            foreach (var viewModel in _pendingViewModels)
+            {
+                <MudCard @key="viewModel.Id" Class="pa-0 ma-10 postCard" Outlined="true" Elevation="10">
+                    <MudCardHeader>
+                        <CardHeaderAvatar>
+                            <MudAvatar Size="Size.Medium" Image="@viewModel.FollowerAvatarLink">@viewModel.FollowerUsername[0]</MudAvatar>
+                        </CardHeaderAvatar>
+                        <CardHeaderContent>
+                            <a href="@($"/account/{viewModel.FollowerId}")">
+                                <MudText Typo="Typo.body1">@viewModel.FollowerUsername</MudText>
+                            </a>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            @{
+                                var activeAccount = ActiveAccountViewModel;
+                                if (activeAccount != null)
+                                {
+                                    activeAccount.FollowingViewModels.TryGetValue(viewModel.FollowerId, out var followingViewModel);
+                                    activeAccount.FollowersViewModels.TryGetValue(viewModel.FollowerId, out var followerViewModel);
+
+                                    <AccountFollowingComponent Services="@Services" ActiveAccountViewModel="@activeAccount" OtherAccountId="@viewModel.FollowerId" FollowingViewModel="@followingViewModel" FollowerViewModel="@followerViewModel" />
+                                }
+                            }
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                </MudCard>
+            }
+
+            if (showActive)
+            {
+                <MudDivider DividerType="DividerType.Middle" Class="my-6" />
+            }
         }
-        else
+
+        if (showActive)
         {
-            foreach (var viewModel in _viewModels)
+            foreach (var viewModel in _activeViewModels)
             {
                 <MudCard @key="viewModel.Id" Class="pa-0 ma-10 postCard" Outlined="true" Elevation="10">
                     <MudCardHeader>
@@ -42,21 +68,29 @@ else
                 </MudCard>
             }
         }
-    </MudTabPanel>
-}
+
+        @if (!showPending && !showActive)
+        {
+            <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+                <MudCardContent>
+                    <MudText Align="Align.Center">None</MudText>
+                </MudCardContent>
+            </MudCard>
+        }
+    }
+</MudTabPanel>
 
 @code {
     private string _header;
-    private string _badgeData;
-    private bool _doNotShowTab;
     private bool _accountChanged;
     private AccountViewModel _account;
-    private AccountFollowingViewModel[] _viewModels;
+    private AccountFollowingViewModel[] _pendingViewModels;
+    private AccountFollowingViewModel[] _activeViewModels;
 
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired]
-    public AccountViewModel Account
+    public AccountViewModel AccountViewModel
     {
         get => _account;
         init
@@ -67,8 +101,6 @@ else
     }
 
     [Parameter, EditorRequired] public bool Following { get; init; }
-
-    [Parameter, EditorRequired] public AccountFollowingStatus StatusToShow { get; init; }
 
     [Parameter, EditorRequired] public AccountViewModel ActiveAccountViewModel { get; init; }
 
@@ -89,16 +121,23 @@ else
                 viewModels = _account?.FollowingViewModels;
             }
 
-            if (StatusToShow == AccountFollowingStatus.Pending)
+            var isActiveAccount = ActiveAccountViewModel != null && AccountViewModel != null && ActiveAccountViewModel.Id == AccountViewModel.Id;
+            if (isActiveAccount)
             {
-                header = "Pending";
+                _pendingViewModels = viewModels?.Values.Where(x => x.Status == AccountFollowingStatus.Pending).OrderBy(x => x.AccountId).ToArray() ?? Array.Empty<AccountFollowingViewModel>();
+
+                if (_pendingViewModels.Length == 0)
+                {
+                    _pendingViewModels = null;
+                }
+            }
+            else
+            {
+                _pendingViewModels = null;
             }
 
-            _viewModels = viewModels?.Values.Where(x => x.Status == StatusToShow).OrderBy(x => x.AccountId).ToArray() ?? Array.Empty<AccountFollowingViewModel>();
+            _activeViewModels = viewModels?.Values.Where(x => x.Status == AccountFollowingStatus.Active).OrderBy(x => x.AccountId).ToArray() ?? Array.Empty<AccountFollowingViewModel>();
             _header = $"{header}";
-            _badgeData = $"{_viewModels.Length}";
-
-            _doNotShowTab = StatusToShow == AccountFollowingStatus.Pending && _viewModels.Length == 0;
         }
     }
 }

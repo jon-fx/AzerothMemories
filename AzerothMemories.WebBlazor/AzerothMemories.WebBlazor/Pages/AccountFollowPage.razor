@@ -15,26 +15,13 @@ else
 
     <AccountHeaderCardComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" />
     <MudTabs Class="pa-2 ma-2 card" Outlined="true" Elevation="10" Rounded="true" Centered="true">
-
-        @if (IsActiveAccount)
-        {
-            <UserListComponent Services="@this" Account="@ViewModel.AccountViewModel" ActiveAccountViewModel="@ActiveAccountServices.AccountViewModel" Following="false" StatusToShow="AccountFollowingStatus.Pending" />
-        }
-
-        <UserListComponent Services="@this" Account="@ViewModel.AccountViewModel" ActiveAccountViewModel="@ActiveAccountServices.AccountViewModel" Following="false" StatusToShow="AccountFollowingStatus.Active" />
-        <UserListComponent Services="@this" Account="@ViewModel.AccountViewModel" ActiveAccountViewModel="@ActiveAccountServices.AccountViewModel" Following="true" StatusToShow="AccountFollowingStatus.Active" />
-
-        @if (IsActiveAccount)
-        {
-            <UserListComponent Services="@this" Account="@ViewModel.AccountViewModel" ActiveAccountViewModel="@ActiveAccountServices.AccountViewModel" Following="true" StatusToShow="AccountFollowingStatus.Pending" />
-        }
+        <UserListComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" ActiveAccountViewModel="@ActiveAccountServices.AccountViewModel" Following="false" />
+        <UserListComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" ActiveAccountViewModel="@ActiveAccountServices.AccountViewModel" Following="true" />
     </MudTabs>
 }
 
 @code {
     [Parameter] public long Id { get; init; }
-
-    public bool IsActiveAccount => ActiveAccountServices.IsAccountActive && ViewModel.AccountViewModel != null && ActiveAccountServices.ActiveAccountId == ViewModel.AccountViewModel.Id;
 
     protected override async Task InternalComputeState()
     {
