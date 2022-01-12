@@ -16,7 +16,7 @@ public class SearchPostsServices : ISearchPostsServices
     [ComputeMethod]
     public virtual async Task<RecentPostsResults> TryGetRecentPosts(Session session, RecentPostsType postsType, PostSortMode sortMode, int currentPage, string locale = null)
     {
-        var account = _commonServices.AccountServices.TryGetAccount(session);
+        var account = await _commonServices.AccountServices.TryGetAccount(session);
         var allSearchResult = Array.Empty<long>();
         if (account != null && postsType == RecentPostsType.Default)
         {
@@ -63,7 +63,31 @@ public class SearchPostsServices : ISearchPostsServices
     [ComputeMethod(AutoInvalidateTime = 60)]
     protected virtual async Task<long[]> TryGetRecentPosts(long accountId)
     {
-        return Array.Empty<long>();
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        var following = await _commonServices.AccountFollowingServices.TryGetAccountFollowing(accountId);
+        if (following == null || following.Count == 0)
+        {
+            return Array.Empty<long>();
+        }
+
+        var allFollowingIds = new HashSet<long> { accountId };
+        foreach (var kvp in following)
+        {
+            if (kvp.Value.Status != AccountFollowingStatus.Active)
+            {
+                continue;
+            }
+
+            allFollowingIds.Add(kvp.Key);
+        }
+
+        var query = from p in database.Posts
+                    where p.DeletedTimeStamp == 0 && p.AccountId.In(allFollowingIds)
+                    orderby p.PostCreatedTime descending
+                    select p.Id;
+
+        return await query.ToArrayAsync();
     }
 
     [ComputeMethod]

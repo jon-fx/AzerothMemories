@@ -71,6 +71,11 @@ public class AccountFollowingServices : IAccountFollowingServices
             return null;
         }
 
+        if (activeAccountId == otherAccountId)
+        {
+            return null;
+        }
+
         var followingViewModels = await TryGetAccountFollowing(activeAccountId);
         if (followingViewModels == null)
         {
@@ -159,6 +164,11 @@ public class AccountFollowingServices : IAccountFollowingServices
             return null;
         }
 
+        if (activeAccountId == otherAccountId)
+        {
+            return null;
+        }
+
         var followingViewModels = await TryGetAccountFollowing(activeAccountId);
         if (followingViewModels == null)
         {
@@ -202,6 +212,11 @@ public class AccountFollowingServices : IAccountFollowingServices
     {
         var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
         if (activeAccountId == 0)
+        {
+            return null;
+        }
+
+        if (activeAccountId == otherAccountId)
         {
             return null;
         }
@@ -257,6 +272,11 @@ public class AccountFollowingServices : IAccountFollowingServices
     {
         var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
         if (activeAccountId == 0)
+        {
+            return null;
+        }
+
+        if (activeAccountId == otherAccountId)
         {
             return null;
         }
