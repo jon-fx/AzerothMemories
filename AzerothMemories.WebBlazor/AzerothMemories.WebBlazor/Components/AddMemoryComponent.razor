@@ -35,11 +35,11 @@
         <MudButton HtmlTag="label" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Filled.CloudUpload" Disabled="@ViewModel.MaxUploadReached" for="fileInput2">Upload Images</MudButton>
     </MudPaper>
 
-    <AddMemoryMainTagComponent Services="Services" SharedData="@ViewModel.SharedData"/>
+    <AddMemoryMainTagComponent Services="Services" SharedData="@ViewModel.SharedData" />
 
-	<MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-		<PublishCommentComponent @ref="ViewModel.PublishCommentComponent" Lines="10" TagsList="@Services.ActiveAccountServices.GetUserTagList()" />
-	</MudPaper>
+    <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+        <PublishCommentComponent @ref="ViewModel.PublishCommentComponent" Lines="10" TagsList="@Services.ActiveAccountServices.GetUserTagList()" />
+    </MudPaper>
 
     <AddMemoryPostAvatarComponent SharedData="@ViewModel.SharedData" />
 
@@ -48,14 +48,14 @@
     <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
         <MudGrid>
             @*            @if (ViewModel.SharedData.ErrorStrings.Count > 0)
-            {
+                {
                 foreach (var errorString in ViewModel.SharedData.ErrorStrings)
                 {
-                    <MudItem xs="12">
-                        <MudAlert Severity="@errorString.Item1">@errorString.Item2</MudAlert>
-                    </MudItem>
+                <MudItem xs="12">
+                <MudAlert Severity="@errorString.Item1">@errorString.Item2</MudAlert>
+                </MudItem>
                 }
-            }*@
+                }*@
 
             <MudItem xs="6">
                 <MudButton Variant="Variant.Filled" FullWidth="true" EndIcon="@Icons.Material.Filled.Delete" IconColor="Color.Secondary" OnClick="UserCancel">Cancel</MudButton>
@@ -70,19 +70,16 @@
 
 @code {
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
-    
     [Parameter, EditorRequired] public AddMemoryPageViewModel ViewModel { get; init; }
 
     [Parameter, EditorRequired] public EventCallback<AddMemoryResult> OnPostMemoryResult { get; init; }
-    
-
     private async Task Submit()
     {
-        //DialogService.ShowLoadingDialog();
+        Services.DialogService.ShowLoadingDialog();
 
         var result = await ViewModel.Submit();
 
-        //DialogService.HideLoadingDialog();
+        Services.DialogService.HideLoadingDialog();
 
         await OnPostMemoryResult.InvokeAsync(result);
     }

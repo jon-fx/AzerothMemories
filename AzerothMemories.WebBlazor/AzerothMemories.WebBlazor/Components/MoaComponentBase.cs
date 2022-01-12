@@ -35,6 +35,8 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
 
     [Inject] public IStringLocalizer<BlizzardResources> StringLocalizer { get; init; }
 
+    [Inject] public DialogHelperService DialogService { get; init; }
+
     protected override sealed void OnInitialized()
     {
         base.OnInitialized();

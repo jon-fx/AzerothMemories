@@ -9,8 +9,8 @@ public static class ProgramEx
 
         services.AddSingleton<TagHelpers>();
         services.AddSingleton<TimeProvider>();
-        //services.AddSingleton<IndexPageViewModel>();
         services.AddSingleton<ActiveAccountServices>();
-        //services.AddSingleton<AccountManagePageViewModel>();
+
+        services.AddScoped<DialogHelperService>();
     }
 }

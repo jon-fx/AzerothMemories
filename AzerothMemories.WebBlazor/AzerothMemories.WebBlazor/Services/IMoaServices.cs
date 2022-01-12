@@ -20,6 +20,8 @@ public interface IMoaServices
 
     TimeProvider TimeProvider { get; init; }
 
+    DialogHelperService DialogService { get; init; }
+
     IStringLocalizer<BlizzardResources> StringLocalizer { get; init; }
 
     NavigationManager NavigationManager { get; init; }

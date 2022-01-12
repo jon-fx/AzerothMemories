@@ -3,12 +3,11 @@
 public sealed class TagHelpers
 {
     public PostTagInfo[] MainTags { get; }
-
     public PostTagInfo[] CommonTags { get; }
 
-    private readonly HashSet<string> _allValidRealmSlugs;
     private readonly Dictionary<string, int> _realmSlugsToId;
-    private readonly Dictionary<string, string> _realmNamesToSlugs;
+    //private readonly HashSet<string> _allValidRealmSlugs;
+    //private readonly Dictionary<string, string> _realmNamesToSlugs;
 
     public TagHelpers(IStringLocalizer<BlizzardResources> stringLocalizer)
     {
@@ -47,22 +46,22 @@ public sealed class TagHelpers
         MainTags = GetArray(PostTagType.Type, allTypeTags, false);
         CommonTags = GetArray(PostTagType.Main, allCommonTags, true);
 
-        var allRealmNames = stringLocalizer.GetAllStrings().Where(x => x.Name.StartsWith("Realm-")).ToDictionary(x => GetId(x.Name), x => x.Value);
+        //var allRealmNames = stringLocalizer.GetAllStrings().Where(x => x.Name.StartsWith("Realm-")).ToDictionary(x => GetId(x.Name), x => x.Value);
         var allRealmSlugs = stringLocalizer.GetAllStrings().Where(x => x.Name.StartsWith("RealmSlug-")).ToDictionary(x => GetId(x.Name), x => x.Value);
 
-        _allValidRealmSlugs = allRealmSlugs.Select(x => x.Value).ToHashSet();
+        //_allValidRealmSlugs = allRealmSlugs.Select(x => x.Value).ToHashSet();
         _realmSlugsToId = new Dictionary<string, int>();
-        _realmNamesToSlugs = new Dictionary<string, string>();
+        //_realmNamesToSlugs = new Dictionary<string, string>();
 
         foreach (var realmSlug in allRealmSlugs)
         {
             var id = realmSlug.Key;
             var slug = realmSlug.Value;
 
-            if (allRealmNames.TryGetValue(id, out var name))
-            {
-                _realmNamesToSlugs[name.ToLower()] = slug;
-            }
+            //if (allRealmNames.TryGetValue(id, out var name))
+            //{
+            //    _realmNamesToSlugs[name.ToLower()] = slug;
+            //}
 
             _realmSlugsToId[slug] = id;
         }

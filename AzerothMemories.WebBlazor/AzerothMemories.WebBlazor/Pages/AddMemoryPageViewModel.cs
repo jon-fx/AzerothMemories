@@ -48,14 +48,14 @@ public sealed class AddMemoryPageViewModel : ViewModelBase
 
         //await TimeProvider.EnsureInitialized(CancellationToken);
 
-        //DialogService.ShowLoadingDialog();
+        Services.DialogService.ShowLoadingDialog();
 
         foreach (var file in arg.GetMultipleFiles())
         {
             await TryAddFile(file);
         }
 
-        //DialogService.HideLoadingDialog();
+        Services.DialogService.HideLoadingDialog();
     }
 
     public Task<AddMemoryResult> Submit()
