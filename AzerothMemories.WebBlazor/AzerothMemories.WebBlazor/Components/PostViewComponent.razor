@@ -3,9 +3,18 @@
 
 <PostComponent Services="@Services" Post="@Post" InDialog="true" />
 
-@if (Post == null || Post.DeletedTimeStamp != 0)
+@if (Post == null)
 {
-
+}
+else if (Post.DeletedTimeStamp != 0)
+{
+    <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Center">Deleted by @(Post.DeletedTimeStamp > 0 ? "user" : "admin").</MudAlert>
+            </CardHeaderContent>
+        </MudCardHeader>
+    </MudCard>
 }
 else if (PostComments == null)
 {
@@ -39,7 +48,6 @@ else
 
             <PostCommentComponent @key="@comment" Services="@Services" Comment="@comment" />
         }
-
 
         var showAdd = Services.ActiveAccountServices.ActiveCommentContext != this && PostComments.Page == PostComments.TotalPages;
         if (Services.ActiveAccountServices.ActiveCommentContext == this)

@@ -76,7 +76,7 @@
         else
         {
             <MudCardContent Class="pt-2 pb-2">
-                <MudText Inline="true" Typo="Typo.body1">Deleted</MudText>
+                <MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Center">Deleted by @(comment.DeletedTimeStamp > 0 ? "user" : "admin").</MudAlert>
             </MudCardContent>
         }
     </MudCard>
@@ -90,7 +90,7 @@
         }
         else
         {
-            <PostReactionsDisplayCard Services="@Services" ReactionData="@reactionData"/>
+            <PostReactionsDisplayCard Services="@Services" ReactionData="@reactionData" />
         }
     }
 
@@ -116,7 +116,7 @@
 
     @if (Services.ActiveAccountServices.ActiveCommentContext == this)
     {
-        <PublishCommentBoxComponent Services="@Services" ReplyToUserId="@comment.AccountId" ReplyToUsername="@comment.AccountUsername" PostId="@comment.PostId"  CommentId="@comment.Id"  />
+        <PublishCommentBoxComponent Services="@Services" ReplyToUserId="@comment.AccountId" ReplyToUsername="@comment.AccountUsername" PostId="@comment.PostId" CommentId="@comment.Id" />
     }
 </div>
 
@@ -125,7 +125,6 @@
     private bool _userReacting;
 
     public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActive || Comment.Comment.DeletedTimeStamp != 0;
-    
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired] public PostCommentTreeNode Comment { get; init; }
@@ -146,7 +145,6 @@
         var comment = node.Comment;
         var postId = comment.PostId;
         var commentId = comment.Id;
-        
         if (node.Reaction == newReaction)
         {
             newReaction = PostReaction.None;
@@ -154,7 +152,7 @@
 
         _userReacting = true;
 
-        node.ReactionId = await Services.PostServices.TryReactToPostComment(null,postId, commentId, newReaction);
+        node.ReactionId = await Services.PostServices.TryReactToPostComment(null, postId, commentId, newReaction);
         node.Reaction = newReaction;
 
         _userReacting = false;
@@ -164,7 +162,7 @@
 
     private void ReplyToComment(PostCommentTreeNode item)
     {
-        Services.ActiveAccountServices.ActiveCommentContext =  Services.ActiveAccountServices.ActiveCommentContext == this ? null : this;
+        Services.ActiveAccountServices.ActiveCommentContext = Services.ActiveAccountServices.ActiveCommentContext == this ? null : this;
     }
 
     public void InvokeStateHasChanged()
@@ -174,6 +172,20 @@
 
     private async Task OnDeleteComment()
     {
+        var comment = Comment.Comment;
+        if (comment.DeletedTimeStamp != 0)
+        {
+            return;
+        }
+
+        var confirmationResult = await Services.DialogService.ShowMessageBox("Warning", "Deleting can not be undone!", "Delete!", "Cancel");
+        if (confirmationResult.HasValue && confirmationResult.Value)
+        {
+            var postId = comment.PostId;
+            var commentId = comment.Id;
+
+            comment.DeletedTimeStamp = await Services.PostServices.TryDeleteComment(null, postId, commentId);
+        }
     }
 
     private async Task OnReportComment()

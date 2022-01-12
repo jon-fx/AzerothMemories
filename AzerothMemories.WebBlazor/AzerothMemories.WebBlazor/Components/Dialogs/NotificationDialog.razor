@@ -1,0 +1,21 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudText>@Message</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="@(Success ? Color.Primary : Color.Error)" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code
+{
+    [Parameter] public bool Success { get; init; }
+    [Parameter] public string Message { get; init; }
+
+    [CascadingParameter] public MudDialogInstance MudDialog { get; init; }
+
+    private void Submit()
+    {
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+}

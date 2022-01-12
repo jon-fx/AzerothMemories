@@ -37,4 +37,10 @@ public interface IPostServices
 
     [Post(nameof(TryReactToPostComment) + "/{postId}/{commentId}/{newReaction}")]
     Task<long> TryReactToPostComment(Session session, [Path] long postId, [Path] long commentId, [Path] PostReaction newReaction);
+
+    [Post(nameof(TryDeletePost) + "/{postId}")]
+    Task<long> TryDeletePost(Session session, [Path] long postId);
+
+    [Post(nameof(TryDeleteComment) + "/{postId}/{commentId}")]
+    Task<long> TryDeleteComment(Session session, [Path] long postId, [Path] long commentId);
 }

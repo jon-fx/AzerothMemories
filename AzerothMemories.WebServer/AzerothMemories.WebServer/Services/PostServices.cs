@@ -853,6 +853,83 @@ public class PostServices : IPostServices
         return reactionRecord.Id;
     }
 
+    public async Task<long> TryDeletePost(Session session, long postId)
+    {
+        var activeAccount = await _commonServices.AccountServices.TryGetAccount(session);
+        if (activeAccount == null)
+        {
+            return 0;
+        }
+
+        var postRecord = await GetPostRecord(postId);
+        if (postRecord == null)
+        {
+            return 0;
+        }
+
+        var now = SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds();
+        if (activeAccount.Id == postRecord.AccountId)
+        {
+        }
+        else if (activeAccount.AccountType == AccountType.Admin)
+        {
+            now = -now;
+        }
+        else
+        {
+            return 0;
+        }
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await database.GetUpdateQuery(postRecord, out _).Set(x => x.DeletedTimeStamp, now).UpdateAsync();
+
+        using var computed = Computed.Invalidate();
+        _ = GetPostRecord(postId);
+
+        return now;
+    }
+
+    public async Task<long> TryDeleteComment(Session session, long postId, long commentId)
+    {
+        var activeAccount = await _commonServices.AccountServices.TryGetAccount(session);
+        if (activeAccount == null)
+        {
+            return 0;
+        }
+
+        var allCommentPages = await TryGetAllPostComments(postId);
+        var allComments = allCommentPages[0].AllComments;
+        if (!allComments.TryGetValue(commentId, out var commentViewModel))
+        {
+            return 0;
+        }
+
+        var now = SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds();
+        if (activeAccount.Id == commentViewModel.AccountId)
+        {
+        }
+        else if (activeAccount.AccountType == AccountType.Admin)
+        {
+            now = -now;
+        }
+        else
+        {
+            return 0;
+        }
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        var query = from comment in database.PostComments
+                    where comment.Id == commentId
+                    select comment;
+
+        await query.Set(x => x.DeletedTimeStamp, now).UpdateAsync();
+
+        using var computed = Computed.Invalidate();
+        _ = TryGetAllPostComments(postId);
+
+        return now;
+    }
+
     [ComputeMethod]
     protected virtual async Task<PostRecord> GetPostRecord(long postId)
     {

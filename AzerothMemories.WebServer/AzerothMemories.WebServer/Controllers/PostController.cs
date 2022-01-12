@@ -70,4 +70,16 @@ public class PostController : ControllerBase, IPostServices
     {
         return _commonServices.PostServices.TryReactToPostComment(session, postId, commentId, newReaction);
     }
+
+    [HttpPost("{postId}")]
+    public Task<long> TryDeletePost(Session session, [FromRoute] long postId)
+    {
+        return _commonServices.PostServices.TryDeletePost(session, postId);
+    }
+
+    [HttpPost("{postId}/{commentId}")]
+    public Task<long> TryDeleteComment(Session session, [FromRoute] long postId, [FromRoute] long commentId)
+    {
+        return _commonServices.PostServices.TryDeleteComment(session, postId, commentId);
+    }
 }

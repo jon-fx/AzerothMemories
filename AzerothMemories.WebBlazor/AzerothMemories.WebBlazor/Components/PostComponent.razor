@@ -7,7 +7,7 @@ else if (Post.DeletedTimeStamp != 0)
     <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
         <MudCardHeader>
             <CardHeaderContent>
-                <MudText Typo="Typo.body1">Post Deleted</MudText>
+                <MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Center">Deleted by @(Post.DeletedTimeStamp > 0 ? "user" : "admin").</MudAlert>
             </CardHeaderContent>
         </MudCardHeader>
     </MudCard>
