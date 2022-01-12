@@ -45,9 +45,43 @@ public sealed class DialogHelperService
         _loadingDialog = false;
     }
 
+    public async Task ShowNotificationDialog(bool success, string message)
+    {
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            CloseButton = true,
+            NoHeader = true
+        };
+
+        var parameters = new DialogParameters
+        {
+            ["success"] = success,
+            ["message"] = message
+        };
+
+        await ShowDialog<NotificationDialog>("Report Post", parameters, options);
+    }
+
     public async Task<bool?> ShowMessageBox(string title, string message = null, string yesText = null, string noText = null, string cancelText = null, DialogOptions options = null)
     {
         var result = await _dialogService.ShowMessageBox(title, message, yesText, noText, cancelText, options);
+
+        return result;
+    }
+
+    private async Task<DialogResult> ShowDialog<TDialog>(string title, DialogParameters dialogParameters = null, DialogOptions options = null) where TDialog : ComponentBase
+    {
+        if (_currentDialog != null || _loadingDialog)
+        {
+            throw new NotImplementedException();
+        }
+
+        _currentDialog = _dialogService.Show<TDialog>(title, dialogParameters, options);
+
+        var result = await _currentDialog.Result.ConfigureAwait(true);
+
+        _currentDialog = null;
 
         return result;
     }

@@ -13,18 +13,7 @@ public sealed class ActiveAccountServices
         _characterServices = characterServices;
     }
 
-    public long ActiveAccountId
-    {
-        get
-        {
-            if (AccountViewModel == null)
-            {
-                throw new NotImplementedException();
-            }
-
-            return AccountViewModel.Id;
-        }
-    }
+    public long ActiveAccountId => AccountViewModel?.Id ?? 0;
 
     public ActiveAccountViewModel AccountViewModel { get; private set; }
 

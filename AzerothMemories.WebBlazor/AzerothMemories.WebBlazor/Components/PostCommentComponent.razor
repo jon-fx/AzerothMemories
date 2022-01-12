@@ -185,6 +185,9 @@
             var commentId = comment.Id;
 
             comment.DeletedTimeStamp = await Services.PostServices.TryDeleteComment(null, postId, commentId);
+
+            var message = comment.DeletedTimeStamp == 0 ? "Comment delete failed." : "Comment deleted.";
+            await Services.DialogService.ShowNotificationDialog(true, message);
         }
     }
 

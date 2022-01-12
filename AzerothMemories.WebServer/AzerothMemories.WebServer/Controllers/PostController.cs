@@ -71,6 +71,12 @@ public class PostController : ControllerBase, IPostServices
         return _commonServices.PostServices.TryReactToPostComment(session, postId, commentId, newReaction);
     }
 
+    [HttpPost("{postId}/{newVisibility}")]
+    public Task<byte?> TrySetPostVisibility(Session session, [FromRoute] long postId, [FromRoute] byte newVisibility)
+    {
+        return _commonServices.PostServices.TrySetPostVisibility(session, postId, newVisibility);
+    }
+
     [HttpPost("{postId}")]
     public Task<long> TryDeletePost(Session session, [FromRoute] long postId)
     {

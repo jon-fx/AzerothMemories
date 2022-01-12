@@ -40,6 +40,31 @@ else
                             <MudIcon Icon="@Icons.Material.Filled.AddLink" Size="Size.Small" />
                         </MudTooltip>
                     </MudMenuItem>
+
+                    @if (Post.AccountId == Services.ActiveAccountServices.ActiveAccountId || Services.ActiveAccountServices.IsAdmin)
+                    {
+                        <MudMenuItem OnClick="@OnTogglePostVisibility">
+                            <MudTooltip Text="Toggle Visibility" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
+                                <MudIcon Icon="@(Post.PostVisibility == 0 ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility)" Size="Size.Small " />
+                            </MudTooltip>
+                        </MudMenuItem>
+
+                        <MudMenuItem OnClick="@OnEditPostTags">
+                            <MudTooltip Text="Edit Tags" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
+                                <MudIcon Icon="@Icons.Material.Filled.Edit" Size="Size.Small " />
+                            </MudTooltip>
+                        </MudMenuItem>
+
+                        <MudMenuItem OnClick="@OnDeletePost" Disabled="@(Post.DeletedTimeStamp != 0)">
+                            <MudTooltip Text="Delete" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
+                                <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Size="Size.Small " />
+                            </MudTooltip>
+                        </MudMenuItem>
+                    }
+
+                    @if (Services.ActiveAccountServices.IsAccountActive && Post.AccountId != Services.ActiveAccountServices.ActiveAccountId)
+                    {
+                    }
                 </MudMenu>
             </CardHeaderActions>
         </MudCardHeader>
@@ -361,5 +386,46 @@ else
         }
 
         _isChangingTags = false;
+    }
+
+    private async Task OnDeletePost()
+    {
+        if (Post.DeletedTimeStamp != 0)
+        {
+            return;
+        }
+        
+        var confirmationResult = await Services.DialogService.ShowMessageBox("Warning", "Deleting can not be undone!", "Delete!", "Cancel");
+        if (confirmationResult.HasValue && confirmationResult.Value)
+        {
+            var postId = Post.Id;
+
+            Post.DeletedTimeStamp = await Services.PostServices.TryDeletePost(null, postId);
+
+            var message = Post.DeletedTimeStamp == 0 ? "Post delete failed." : "Post deleted.";
+            await Services.DialogService.ShowNotificationDialog(true, message);
+        }
+    }
+
+    private void OnEditPostTags()
+    {
+        Services.NavigationManager.NavigateTo($"/edittags/{Post.Id}");
+    }
+
+    private async Task OnTogglePostVisibility()
+    {
+        var postId = Post.Id;
+        var newVisibility = Post.PostVisibility == 1 ? (byte)0 : (byte)1;
+        var result = await Services.PostServices.TrySetPostVisibility(null, postId, newVisibility);
+        if (result == null)
+        {
+            await Services.DialogService.ShowNotificationDialog(false, "Post visibility change failed.");
+        }
+        else
+        {
+            Post.PostVisibility = result.Value;
+
+            await Services.DialogService.ShowNotificationDialog(true, "Post visibility changed.");
+        }
     }
 }

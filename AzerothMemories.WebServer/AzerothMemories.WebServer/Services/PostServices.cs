@@ -853,6 +853,42 @@ public class PostServices : IPostServices
         return reactionRecord.Id;
     }
 
+    public async Task<byte?> TrySetPostVisibility(Session session, long postId, byte newVisibility)
+    {
+        var activeAccount = await _commonServices.AccountServices.TryGetAccount(session);
+        if (activeAccount == null)
+        {
+            return null;
+        }
+
+        var postRecord = await GetPostRecord(postId);
+        if (postRecord == null)
+        {
+            return null;
+        }
+
+        if (activeAccount.Id == postRecord.AccountId)
+        {
+        }
+        else if (activeAccount.AccountType == AccountType.Admin)
+        {
+        }
+        else
+        {
+            return null;
+        }
+
+        newVisibility = Math.Clamp(newVisibility, (byte)0, (byte)1);
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await database.GetUpdateQuery(postRecord, out _).Set(x => x.PostVisibility, newVisibility).UpdateAsync();
+
+        using var computed = Computed.Invalidate();
+        _ = GetPostRecord(postId);
+
+        return newVisibility;
+    }
+
     public async Task<long> TryDeletePost(Session session, long postId)
     {
         var activeAccount = await _commonServices.AccountServices.TryGetAccount(session);
