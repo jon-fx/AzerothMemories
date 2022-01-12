@@ -1,7 +1,7 @@
 ﻿namespace AzerothMemories.WebServer.Database.Records;
 
 [Table("Guilds")]
-public class GuildRecord : IBlizzardGrainUpdateRecord
+public sealed  class GuildRecord : IBlizzardUpdateRecord
 {
     [Column(IsPrimaryKey = true, IsIdentity = true)] public long Id { get; set; }
 

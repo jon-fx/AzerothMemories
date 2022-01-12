@@ -1,7 +1,7 @@
 ﻿namespace AzerothMemories.WebServer.Database.Records;
 
 [Table("Blizzard_Data")]
-public class BlizzardDataRecord
+public sealed  class BlizzardDataRecord: IDatabaseRecord
 {
     [Column(IsPrimaryKey = true, IsIdentity = true)] public long Id { get; set; }
 

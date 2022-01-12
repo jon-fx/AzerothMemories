@@ -1,7 +1,7 @@
 ﻿namespace AzerothMemories.WebServer.Database.Records;
 
 [Table("Characters")]
-public class CharacterRecord : IBlizzardGrainUpdateRecord
+public sealed  class CharacterRecord : IBlizzardUpdateRecord
 {
     [Column(IsPrimaryKey = true, IsIdentity = true)] public long Id { get; set; }
 

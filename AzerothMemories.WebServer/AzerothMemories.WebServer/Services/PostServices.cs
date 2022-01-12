@@ -26,16 +26,23 @@ public class PostServices : IPostServices
 
         return await query.FirstOrDefaultAsync();
     }
-
+    
     [ComputeMethod]
-    protected virtual async Task<bool> CanAccountIdSeePostsOf(long activeAccountId, long otherAccountId)
+    protected virtual async Task<bool> CanAccountSeePost(long activeAccountId, PostRecord postRecord)
     {
-        //if (posterAccount.IsPrivate)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        Exceptions.ThrowIf(postRecord == null);
 
-        return true;
+        if (postRecord.PostVisibility == 0)
+        {
+            return true;
+        }
+
+        if (postRecord.AccountId == activeAccountId)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     public async Task<AddMemoryResult> TryPostMemory(Session session, AddMemoryTransferData transferData)
@@ -221,14 +228,13 @@ public class PostServices : IPostServices
     public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postId, string locale)
     {
         var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
-
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
         {
             return null;
         }
 
-        var canSeePost = await CanAccountIdSeePostsOf(activeAccountId, postRecord.AccountId);
+        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord);
         if (!canSeePost)
         {
             return null;
@@ -310,20 +316,14 @@ public class PostServices : IPostServices
             return 0;
         }
 
-        var posterAccountId = await GetAccountIdOfPost(postId);
-        if (posterAccountId == 0)
-        {
-            return 0;
-        }
-
-        var canSeePost = await CanAccountIdSeePostsOf(activeAccountId, posterAccountId);
-        if (!canSeePost)
-        {
-            return 0;
-        }
-
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
+        {
+            return 0;
+        }
+
+        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord);
+        if (!canSeePost)
         {
             return 0;
         }
@@ -387,20 +387,14 @@ public class PostServices : IPostServices
     public virtual async Task<PostReactionViewModel[]> TryGetReactions(Session session, long postId)
     {
         var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
-        var posterAccountId = await GetAccountIdOfPost(postId);
-        if (posterAccountId == 0)
-        {
-            return null;
-        }
-
-        var canSeePost = await CanAccountIdSeePostsOf(activeAccountId, posterAccountId);
-        if (!canSeePost)
-        {
-            return null;
-        }
-
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
+        {
+            return null;
+        }
+
+        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord);
+        if (!canSeePost)
         {
             return null;
         }
@@ -413,13 +407,13 @@ public class PostServices : IPostServices
     public virtual async Task<PostCommentPageViewModel> TryGetCommentsPage(Session session, long postId, int page, long focusedCommentId)
     {
         var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
-        var posterAccountId = await GetAccountIdOfPost(postId);
-        if (posterAccountId == 0)
+        var postRecord = await GetPostRecord(postId);
+        if (postRecord == null)
         {
             return null;
         }
 
-        var canSeePost = await CanAccountIdSeePostsOf(activeAccountId, posterAccountId);
+        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord);
         if (!canSeePost)
         {
             return null;
@@ -432,20 +426,14 @@ public class PostServices : IPostServices
     public virtual async Task<PostReactionViewModel[]> TryGetCommentReactionData(Session session, long postId, long commentId)
     {
         var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
-        var posterAccountId = await GetAccountIdOfPost(postId);
-        if (posterAccountId == 0)
-        {
-            return null;
-        }
-
-        var canSeePost = await CanAccountIdSeePostsOf(activeAccountId, posterAccountId);
-        if (!canSeePost)
-        {
-            return null;
-        }
-
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
+        {
+            return null;
+        }
+
+        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord);
+        if (!canSeePost)
         {
             return null;
         }
@@ -554,13 +542,13 @@ public class PostServices : IPostServices
     public virtual async Task<Dictionary<long, PostCommentReactionViewModel>> TryGetMyCommentReactions(Session session, long postId)
     {
         var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
-        var posterAccountId = await GetAccountIdOfPost(postId);
-        if (posterAccountId == 0)
+        var postRecord = await GetPostRecord(postId);
+        if (postRecord == null)
         {
             return new Dictionary<long, PostCommentReactionViewModel>();
         }
 
-        var canSeePost = await CanAccountIdSeePostsOf(activeAccountId, posterAccountId);
+        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord);
         if (!canSeePost)
         {
             return new Dictionary<long, PostCommentReactionViewModel>();
@@ -590,20 +578,14 @@ public class PostServices : IPostServices
             return false;
         }
 
-        var posterAccountId = await GetAccountIdOfPost(postId);
-        if (posterAccountId == 0)
-        {
-            return false;
-        }
-
-        var canSeePost = await CanAccountIdSeePostsOf(activeAccount.Id, posterAccountId);
-        if (!canSeePost)
-        {
-            return false;
-        }
-
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
+        {
+            return false;
+        }
+
+        var canSeePost = await CanAccountSeePost(activeAccount.Id, postRecord);
+        if (!canSeePost)
         {
             return false;
         }
@@ -613,7 +595,7 @@ public class PostServices : IPostServices
 
         long? accountTagToRemove = newCharacterId > 0 ? null : activeAccount.Id;
         long? characterTagToRemove = previousCharacterId > 0 ? previousCharacterId : null;
-        if (activeAccount.Id == posterAccountId)
+        if (activeAccount.Id == postRecord.AccountId)
         {
             accountTagToRemove = null;
         }
@@ -683,20 +665,14 @@ public class PostServices : IPostServices
             return 0;
         }
 
-        var posterAccountId = await GetAccountIdOfPost(postId);
-        if (posterAccountId == 0)
-        {
-            return 0;
-        }
-
-        var canSeePost = await CanAccountIdSeePostsOf(activeAccount.Id, posterAccountId);
-        if (!canSeePost)
-        {
-            return 0;
-        }
-
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
+        {
+            return 0;
+        }
+
+        var canSeePost = await CanAccountSeePost(activeAccount.Id, postRecord);
+        if (!canSeePost)
         {
             return 0;
         }
@@ -796,20 +772,14 @@ public class PostServices : IPostServices
             return 0;
         }
 
-        var posterAccountId = await GetAccountIdOfPost(postId);
-        if (posterAccountId == 0)
-        {
-            return 0;
-        }
-
-        var canSeePost = await CanAccountIdSeePostsOf(activeAccountId, posterAccountId);
-        if (!canSeePost)
-        {
-            return 0;
-        }
-
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
+        {
+            return 0;
+        }
+
+        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord);
+        if (!canSeePost)
         {
             return 0;
         }

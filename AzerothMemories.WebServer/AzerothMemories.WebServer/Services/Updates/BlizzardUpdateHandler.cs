@@ -41,13 +41,13 @@ internal sealed class BlizzardUpdateHandler
         _validRecordTypes[(int)BlizzardUpdatePriority.Guild] = typeof(GuildRecord);
     }
 
-    public async Task TryUpdate<TRecord>(TRecord record, BlizzardUpdatePriority priority) where TRecord : class, IBlizzardGrainUpdateRecord
+    public async Task TryUpdate<TRecord>(TRecord record, BlizzardUpdatePriority priority) where TRecord : class, IBlizzardUpdateRecord
     {
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
         await TryUpdate(database, record, priority);
     }
 
-    public async Task TryUpdate<TRecord>(DatabaseConnection database, TRecord record, BlizzardUpdatePriority priority) where TRecord : class, IBlizzardGrainUpdateRecord
+    public async Task TryUpdate<TRecord>(DatabaseConnection database, TRecord record, BlizzardUpdatePriority priority) where TRecord : class, IBlizzardUpdateRecord
     {
         if (typeof(TRecord) != _validRecordTypes[(int)priority])
         {
@@ -58,7 +58,7 @@ internal sealed class BlizzardUpdateHandler
         await TryUpdate(database, record, priority, callback);
     }
 
-    private async Task TryUpdate<TRecord>(DatabaseConnection database, TRecord record, BlizzardUpdatePriority priority, Func<long, string> callback) where TRecord : class, IBlizzardGrainUpdateRecord
+    private async Task TryUpdate<TRecord>(DatabaseConnection database, TRecord record, BlizzardUpdatePriority priority, Func<long, string> callback) where TRecord : class, IBlizzardUpdateRecord
     {
         if (!RecordRequiresUpdate(record))
         {
@@ -75,7 +75,7 @@ internal sealed class BlizzardUpdateHandler
         var result = await updateQuery.UpdateAsync();
     }
 
-    private bool RecordRequiresUpdate(IBlizzardGrainUpdateRecord record)
+    private bool RecordRequiresUpdate(IBlizzardUpdateRecord record)
     {
         var now = SystemClock.Instance.GetCurrentInstant();
         //var isAccount = record is AccountRecord;
@@ -107,7 +107,7 @@ internal sealed class BlizzardUpdateHandler
         return false;
     }
 
-    private async Task<bool> OnUpdateStarted<TRecord>(DatabaseConnection database, TRecord record, PerformContext context) where TRecord : class, IBlizzardGrainUpdateRecord
+    private async Task<bool> OnUpdateStarted<TRecord>(DatabaseConnection database, TRecord record, PerformContext context) where TRecord : class, IBlizzardUpdateRecord
     {
         if (record.UpdateJob != context.BackgroundJob.Id)
         {
@@ -125,7 +125,7 @@ internal sealed class BlizzardUpdateHandler
         return result > 0;
     }
 
-    private async Task OnUpdateFinished<TRecord>(DatabaseConnection database, TRecord record, HttpStatusCode updateResult) where TRecord : class, IBlizzardGrainUpdateRecord
+    private async Task OnUpdateFinished<TRecord>(DatabaseConnection database, TRecord record, HttpStatusCode updateResult) where TRecord : class, IBlizzardUpdateRecord
     {
         Exceptions.ThrowIf(record.UpdateJob != string.Empty);
         Exceptions.ThrowIf(record.UpdateJobQueueTime != null);

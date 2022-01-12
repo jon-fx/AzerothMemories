@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebServer.Database.Records;
 
-public class BlizzardDataRecordLocal
+public sealed  class BlizzardDataRecordLocal
 {
     public string En_Us;
     public string Ko_Kr;

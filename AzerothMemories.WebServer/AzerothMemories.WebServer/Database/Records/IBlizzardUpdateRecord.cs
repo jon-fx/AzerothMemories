@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebServer.Database.Records;
 
-public interface IBlizzardGrainUpdateRecord : IDatabaseRecord
+public interface IBlizzardUpdateRecord : IDatabaseRecord
 {
     string UpdateJob { get; set; }
 

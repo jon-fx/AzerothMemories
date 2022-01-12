@@ -1,7 +1,7 @@
 ﻿namespace AzerothMemories.WebServer.Database.Records;
 
 [Table("Accounts_Following")]
-public sealed class AccountFollowingRecord
+public sealed class AccountFollowingRecord : IDatabaseRecord
 {
     [Column(IsPrimaryKey = true, IsIdentity = true)] public long Id { get; set; }
 
