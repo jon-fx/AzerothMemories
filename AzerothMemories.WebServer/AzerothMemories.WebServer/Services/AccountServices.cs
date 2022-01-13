@@ -289,13 +289,13 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<bool> TryReserveUsername(Session session, string username, CancellationToken cancellationToken = default)
+    public virtual async Task<bool> CheckIsValidUsername(Session session, string username, CancellationToken cancellationToken = default)
     {
         return await TryReserveUsername(username);
     }
 
     [ComputeMethod]
-    public virtual async Task<bool> TryReserveUsername(string username)
+    protected virtual async Task<bool> TryReserveUsername(string username)
     {
         if (!DatabaseHelpers.IsValidAccountName(username))
         {

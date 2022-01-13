@@ -30,9 +30,9 @@ public class AccountController : ControllerBase, IAccountServices
     }
 
     [HttpGet("{username}"), Publish]
-    public Task<bool> TryReserveUsername(Session session, [FromRoute] string username, CancellationToken cancellationToken = default)
+    public Task<bool> CheckIsValidUsername(Session session, [FromRoute] string username, CancellationToken cancellationToken = default)
     {
-        return _commonServices.AccountServices.TryReserveUsername(session, username, cancellationToken);
+        return _commonServices.AccountServices.CheckIsValidUsername(session, username, cancellationToken);
     }
 
     [HttpPost("{newUsername}")]

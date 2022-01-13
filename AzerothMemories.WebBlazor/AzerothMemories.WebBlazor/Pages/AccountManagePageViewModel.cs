@@ -38,15 +38,21 @@ public sealed class AccountManagePageViewModel : ViewModelBase
         }
         else
         {
-            NewUsername ??= AccountViewModel.Username;
+            if (NewUsername == null)
+            {
+                NewUsername = AccountViewModel.Username;
 
-            NewUsernameTextBoxAdornmentColor = Color.Success;
-            NewUsernameTextBoxAdornmentIcon = Icons.Filled.Check;
+                NewUsernameTextBoxAdornmentColor = Color.Success;
+                NewUsernameTextBoxAdornmentIcon = Icons.Filled.CheckCircleOutline;
+            }
 
-            SocialLinks ??= AccountViewModel.SocialLinks;
+            if (SocialLinks == null)
+            {
+                SocialLinks = AccountViewModel.SocialLinks;
 
-            SocialLinksAdornmentIcons = new string[SocialLinks.Length];
-            SocialLinksAdornmentColors = new Color[SocialLinks.Length];
+                SocialLinksAdornmentIcons = new string[SocialLinks.Length];
+                SocialLinksAdornmentColors = new Color[SocialLinks.Length];
+            }
 
             ResetAvatars();
         }
@@ -112,8 +118,8 @@ public sealed class AccountManagePageViewModel : ViewModelBase
         }
         else if (DatabaseHelpers.IsValidAccountName(username))
         {
-            isValid = await Services.AccountServices.TryReserveUsername(null, username);
-            isVisible = isValid;
+            isValid = await Services.AccountServices.CheckIsValidUsername(null, username);
+            isVisible = true;
         }
 
         if (NewUsernameValid == isValid && ChangeUsernameButtonVisible == isVisible)
@@ -168,6 +174,14 @@ public sealed class AccountManagePageViewModel : ViewModelBase
         if (result)
         {
             AccountViewModel.Username = NewUsername;
+
+            NewUsernameTextBoxAdornmentColor = Color.Success;
+            NewUsernameTextBoxAdornmentIcon = Icons.Filled.CheckCircleOutline;
+        }
+        else
+        {
+            NewUsernameTextBoxAdornmentColor = Color.Error;
+            NewUsernameTextBoxAdornmentIcon = Icons.Filled.Warning;
         }
 
         ChangeUsernameButtonVisible = false;

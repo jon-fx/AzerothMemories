@@ -16,8 +16,8 @@ public interface IAccountServices
     Task<AccountViewModel> TryGetAccountByUsername(Session session, [Path] string username, CancellationToken cancellationToken = default);
 
     [ComputeMethod]
-    [Get(nameof(TryReserveUsername) + "/{username}")]
-    Task<bool> TryReserveUsername(Session session, [Path] string username, CancellationToken cancellationToken = default);
+    [Get(nameof(CheckIsValidUsername) + "/{username}")]
+    Task<bool> CheckIsValidUsername(Session session, [Path] string username, CancellationToken cancellationToken = default);
 
     [Post(nameof(TryChangeUsername) + "/{newUsername}")]
     Task<bool> TryChangeUsername(Session session, [Path] string newUsername, CancellationToken cancellationToken = default);
