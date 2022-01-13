@@ -46,6 +46,25 @@ public sealed class ActiveAccountServices
 
     public Dictionary<long, string> GetUserTagList()
     {
-        return new Dictionary<long, string>();
+        var tagSet = new Dictionary<long, string>();
+
+        if (AccountViewModel == null)
+        {
+            return tagSet;
+        }
+
+        foreach (var kvp in AccountViewModel.FollowersViewModels)
+        {
+            tagSet.TryAdd(kvp.Value.FollowerId, kvp.Value.FollowerUsername);
+        }
+
+        //foreach (var kvp in _accountViewModel.FollowingViewModels)
+        //{
+        //    if (!tagSet.Add(kvp.Value.FollowerId)) continue;
+
+        //    tagList.Add(new UserTag(kvp.Value.FollowerId, kvp.Value.FollowerUsername));
+        //}
+
+        return tagSet;
     }
 }

@@ -49,6 +49,8 @@
 
     [Parameter] public EventCallback<string> OnSingleLineSubmit { get; init; }
 
+    [Inject] public IJSRuntime JsRuntime { get; init; }
+
     public string CommentText => _currentTextFieldText;
 
     public Dictionary<long, string> ExtraTags { get; } = new();
@@ -67,17 +69,15 @@
         }
     }
 
-    //protected override async Task<bool> OnAfterFirstRender()
-    //{
-    //    await base.OnAfterFirstRender();
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
 
-    //    var jsArray = (from userTag in FullTagsList
-    //                   select new { key = userTag.Value }).ToArray();
+        var jsArray = (from userTag in FullTagsList
+            select new { key = userTag.Value }).ToArray();
 
-    //    await JsRuntime.InvokeVoidAsync("SetUpTagTextBox", CancellationToken, "mudTextField", jsArray);
-
-    //    return false;
-    //}
+        await JsRuntime.InvokeVoidAsync("SetUpTagTextBox", "mudTextField", jsArray);
+    }
 
     public void SetText(string text)
     {
