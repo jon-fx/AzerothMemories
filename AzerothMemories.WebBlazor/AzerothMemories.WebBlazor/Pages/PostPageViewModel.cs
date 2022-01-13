@@ -126,6 +126,13 @@ public sealed class PostPageViewModel : ViewModelBase
 
         if (currentPage == 0 && _focusedNode != null)
         {
+            var parentId = _focusedNode.ParentId;
+            while (parentId != 0 && _allCommentTreeNodes.TryGetValue(parentId, out var parentNode))
+            {
+                parentNode.ShowChildren = true;
+                parentId = parentNode.ParentId;
+            }
+
             _scrollToFocus = true;
         }
 
