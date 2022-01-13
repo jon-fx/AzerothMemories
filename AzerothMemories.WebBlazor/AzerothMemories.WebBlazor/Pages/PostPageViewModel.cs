@@ -4,6 +4,9 @@ public sealed class PostPageViewModel : ViewModelBase
 {
     private readonly Dictionary<long, PostCommentTreeNode> _allCommentTreeNodes;
 
+    private bool _scrollToFocus;
+    private PostCommentTreeNode _focusedNode;
+
     public PostPageViewModel()
     {
         _allCommentTreeNodes = new Dictionary<long, PostCommentTreeNode>();
@@ -16,10 +19,6 @@ public sealed class PostPageViewModel : ViewModelBase
     public PostViewModel PostViewModel { get; private set; }
 
     public PostCommentPageViewModel PostCommentPageViewModel { get; private set; }
-
-    //public int CurrentPage { get; private set; }
-
-    //public long FocusedCommentId { get; private set; }
 
     public async Task ComputeState(long accountId, string username, long postId, string pageString, string focusedCommentIdString)
     {
@@ -48,7 +47,7 @@ public sealed class PostPageViewModel : ViewModelBase
 
         if (!int.TryParse(pageString, out var currentPage))
         {
-            currentPage = 1;
+            currentPage = 0;
         }
 
         if (!long.TryParse(focusedCommentIdString, out var focusedCommentId))
@@ -112,8 +111,34 @@ public sealed class PostPageViewModel : ViewModelBase
             {
                 await treeNode.TryLoadReactions(Services);
             }
+
+            if (treeNode.Id == focusedCommentId)
+            {
+                if (_focusedNode != null && _focusedNode != treeNode)
+                {
+                    _focusedNode.IsFocused = false;
+                }
+
+                _focusedNode = treeNode;
+                _focusedNode.IsFocused = true;
+            }
+        }
+
+        if (currentPage == 0 && _focusedNode != null)
+        {
+            _scrollToFocus = true;
         }
 
         PostCommentPageViewModel = pageViewModel;
+    }
+
+    public async Task OnAfterRenderAsync(IScrollManager scrollManager, bool firstRender)
+    {
+        if (!firstRender && _scrollToFocus)
+        {
+            _scrollToFocus = false;
+
+            await scrollManager.ScrollToFragmentAsync($"moa-top-comment-{_focusedNode.Id}", ScrollBehavior.Smooth);
+        }
     }
 }

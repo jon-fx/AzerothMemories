@@ -29,8 +29,16 @@ else
 
     [Parameter, SupplyParameterFromQuery(Name = "comment")] public string FocusedCommentId { get; init; }
     
+    [Inject] IScrollManager ScrollManager { get; init; }
+
     protected override async Task InternalComputeState()
     {
         await ViewModel.ComputeState(Id, Name, PostId, CurrentPage, FocusedCommentId);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        await ViewModel.OnAfterRenderAsync(ScrollManager, firstRender);
     }
 }

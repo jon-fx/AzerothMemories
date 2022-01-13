@@ -458,7 +458,7 @@ public class PostServices : IPostServices
             return null;
         }
 
-        return await TryGetPostCommentsByPage(postId, page);
+        return await TryGetPostCommentsByPage(postId, page, focusedCommentId);
     }
 
     [ComputeMethod]
@@ -489,7 +489,7 @@ public class PostServices : IPostServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<PostCommentPageViewModel> TryGetPostCommentsByPage(long postId, int page)
+    protected virtual async Task<PostCommentPageViewModel> TryGetPostCommentsByPage(long postId, int page, long focusedCommentId)
     {
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
@@ -501,6 +501,11 @@ public class PostServices : IPostServices
                 Page = 1,
                 TotalPages = 1
             };
+        }
+
+        if (page == 0 && focusedCommentId > 0 && allCommentPages[0].AllComments.TryGetValue(focusedCommentId, out var focusedComment))
+        {
+            page = focusedComment.CommentPage;
         }
 
         page = Math.Clamp(page, 1, allCommentPages.Length);
