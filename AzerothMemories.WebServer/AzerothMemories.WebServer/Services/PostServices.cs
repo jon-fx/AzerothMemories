@@ -126,6 +126,28 @@ public class PostServices : IPostServices
 
         await database.PostTags.BulkCopyAsync(tagRecords);
 
+        await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+        {
+            AccountId = accountViewModel.Id,
+            CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            Type = AccountHistoryType.MemoryRestored,
+            TargetId = postRecord.AccountId,
+            TargetPostId = postRecord.Id
+        });
+
+        foreach (var userTag in accountsTaggedInComment)
+        {
+            await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+            {
+                AccountId = userTag,
+                OtherAccountId = accountViewModel.Id,
+                Type = AccountHistoryType.TaggedPost,
+                CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+                TargetId = postRecord.AccountId,
+                TargetPostId = postRecord.Id
+            });
+        }
+
         return new AddMemoryResult(AddMemoryResultCode.Success, postRecord.AccountId, postRecord.Id);
     }
 
@@ -382,6 +404,29 @@ public class PostServices : IPostServices
 
         await postQuery.UpdateAsync();
 
+        if (newReaction != PostReaction.None)
+        {
+            await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+            {
+                AccountId = activeAccountId,
+                OtherAccountId = postRecord.AccountId,
+                CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+                Type = AccountHistoryType.ReactedToPost1,
+                TargetId = postRecord.AccountId,
+                TargetPostId = postRecord.Id
+            });
+
+            await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+            {
+                AccountId = postRecord.AccountId,
+                OtherAccountId = activeAccountId,
+                CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+                Type = AccountHistoryType.ReactedToPost2,
+                TargetId = postRecord.AccountId,
+                TargetPostId = postRecord.Id
+            });
+        }
+
         using var computed = Computed.Invalidate();
         _ = GetPostRecord(postId);
         _ = TryGetPostReactions(postId);
@@ -621,6 +666,26 @@ public class PostServices : IPostServices
         await TryRestoreMemoryUpdate(database, postId, PostTagType.Account, accountTagToRemove, newAccountTag);
         await TryRestoreMemoryUpdate(database, postId, PostTagType.Character, characterTagToRemove, newCharacterTag);
 
+        await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+        {
+            AccountId = activeAccount.Id,
+            OtherAccountId = postRecord.AccountId,
+            CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            Type = AccountHistoryType.MemoryRestoredExternal1,
+            TargetId = postRecord.AccountId,
+            TargetPostId = postRecord.Id
+        });
+
+        await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+        {
+            AccountId = postRecord.AccountId,
+            OtherAccountId = activeAccount.Id,
+            CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            Type = AccountHistoryType.MemoryRestoredExternal2,
+            TargetId = postRecord.AccountId,
+            TargetPostId = postRecord.Id
+        });
+
         using var computed = Computed.Invalidate();
         _ = GetPostRecord(postId);
         _ = GetAllPostTags(postId);
@@ -763,6 +828,42 @@ public class PostServices : IPostServices
 
         await database.PostTags.BulkCopyAsync(tagRecords);
 
+        await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+        {
+            AccountId = activeAccount.Id,
+            OtherAccountId = commentRecord.AccountId,
+            CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            Type = AccountHistoryType.Commented1,
+            TargetId = postRecord.AccountId,
+            TargetPostId = postId,
+            TargetCommentId = commentRecord.Id
+        });
+
+        await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+        {
+            AccountId = commentRecord.AccountId,
+            OtherAccountId = activeAccount.Id,
+            CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            Type = AccountHistoryType.Commented2,
+            TargetId = postRecord.AccountId,
+            TargetPostId = postId,
+            TargetCommentId = commentRecord.Id
+        });
+
+        foreach (var userTag in accountsTaggedInComment)
+        {
+            await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+            {
+                AccountId = userTag,
+                OtherAccountId = activeAccount.Id,
+                Type = AccountHistoryType.TaggedComment,
+                CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+                TargetId = postRecord.AccountId,
+                TargetPostId = postRecord.Id,
+                TargetCommentId = commentRecord.Id
+            });
+        }
+
         using var computed = Computed.Invalidate();
         _ = GetPostRecord(postId);
         _ = TryGetAllPostComments(postId);
@@ -844,6 +945,31 @@ public class PostServices : IPostServices
         }
 
         await postQuery.UpdateAsync();
+
+        if (newReaction != PostReaction.None)
+        {
+            await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+            {
+                AccountId = activeAccountId,
+                OtherAccountId = commentViewModel.AccountId,
+                CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+                Type = AccountHistoryType.ReactedToComment1,
+                TargetId = postRecord.AccountId,
+                TargetPostId = postRecord.Id,
+                TargetCommentId = commentId
+            });
+
+            await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+            {
+                AccountId = commentViewModel.AccountId,
+                OtherAccountId = activeAccountId,
+                CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+                Type = AccountHistoryType.ReactedToComment2,
+                TargetId = postRecord.AccountId,
+                TargetPostId = postRecord.Id,
+                TargetCommentId = commentId
+            });
+        }
 
         using var computed = Computed.Invalidate();
         _ = TryGetAllPostComments(postId);

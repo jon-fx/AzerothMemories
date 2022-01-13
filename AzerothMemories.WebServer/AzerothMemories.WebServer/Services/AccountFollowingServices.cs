@@ -131,21 +131,21 @@ public class AccountFollowingServices : IAccountFollowingServices
         //await PublishViewModelChanged();
         //await otherAccountGrain.OnFollowerStatusChanged(viewModel.Id);
 
-        //await  TestingHistory(Services, db, new AccountHistoryRecord
-        //{
-        //    AccountId = Record.Id,
-        //    OtherAccountId = otherAccountId,
-        //    CreatedTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset(),
-        //    Type = viewModel.Status == AccountFollowingStatus.Active ? AccountHistoryType.StartedFollowing : AccountHistoryType.FollowingRequestSent
-        //});
+        await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+        {
+            AccountId = activeAccountId,
+            OtherAccountId = otherAccountId,
+            CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            Type = viewModel.Status == AccountFollowingStatus.Active ? AccountHistoryType.StartedFollowing : AccountHistoryType.FollowingRequestSent
+        });
 
-        //await TestingHistory(Services, db, new AccountHistoryRecord
-        //{
-        //    AccountId = otherAccountId,
-        //    OtherAccountId = Record.Id,
-        //    CreatedTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset(),
-        //    Type = viewModel.Status == AccountFollowingStatus.Active ? AccountHistoryType.StartedFollowing : AccountHistoryType.FollowingRequestReceived
-        //});
+        await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+        {
+            AccountId = otherAccountId,
+            OtherAccountId = activeAccountId,
+            CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            Type = viewModel.Status == AccountFollowingStatus.Active ? AccountHistoryType.StartedFollowing : AccountHistoryType.FollowingRequestReceived
+        });
 
         using var computed = Computed.Invalidate();
         _ = TryGetAccountFollowing(activeAccountId);
@@ -191,13 +191,13 @@ public class AccountFollowingServices : IAccountFollowingServices
         //var otherAccountGrain = GrainFactory.GetGrain<IAccountGrain>(viewModel.FollowerRef);
         //await otherAccountGrain.OnFollowerStatusChanged(viewModel.Id);
 
-        //await TestingHistory(Services, db, new AccountHistoryRecord
-        //{
-        //    AccountId = Record.Id,
-        //    OtherAccountId = otherAccountId,
-        //    CreatedTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset(),
-        //    Type = AccountHistoryType.StoppedFollowing
-        //});
+        await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+        {
+            AccountId = activeAccountId,
+            OtherAccountId = otherAccountId,
+            CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            Type = AccountHistoryType.StoppedFollowing
+        });
 
         using var computed = Computed.Invalidate();
         _ = TryGetAccountFollowing(activeAccountId);
@@ -243,21 +243,21 @@ public class AccountFollowingServices : IAccountFollowingServices
         //var otherAccountGrain = GrainFactory.GetGrain<IAccountGrain>(viewModel.FollowerRef);
         //await otherAccountGrain.OnFollowerStatusChanged(viewModel.Id);
 
-        //await TestingHistory(Services, db, new AccountHistoryRecord
-        //{
-        //    AccountId = Record.Id,
-        //    OtherAccountId = otherAccountId,
-        //    CreatedTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset(),
-        //    Type = AccountHistoryType.FollowingRequestAccepted1
-        //});
+        await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+        {
+            AccountId = activeAccountId,
+            OtherAccountId = otherAccountId,
+            CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            Type = AccountHistoryType.FollowingRequestAccepted1
+        });
 
-        //await TestingHistory(Services, db, new AccountHistoryRecord
-        //{
-        //    AccountId = otherAccountId,
-        //    OtherAccountId = Record.Id,
-        //    CreatedTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset(),
-        //    Type = AccountHistoryType.FollowingRequestAccepted2
-        //});
+        await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+        {
+            AccountId = otherAccountId,
+            OtherAccountId = activeAccountId,
+            CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            Type = AccountHistoryType.FollowingRequestAccepted2
+        });
 
         using var computed = Computed.Invalidate();
         _ = TryGetAccountFollowing(activeAccountId);
@@ -303,13 +303,13 @@ public class AccountFollowingServices : IAccountFollowingServices
         //var otherAccountGrain = GrainFactory.GetGrain<IAccountGrain>(viewModel.FollowerRef);
         //await otherAccountGrain.OnFollowerStatusChanged(viewModel.Id);
 
-        //await TestingHistory(Services, db, new AccountHistoryRecord
-        //{
-        //    AccountId = Record.Id,
-        //    OtherAccountId = otherAccountId,
-        //    CreatedTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset(),
-        //    Type = AccountHistoryType.FollowerRemoved
-        //});
+        await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+        {
+            AccountId = activeAccountId,
+            OtherAccountId = otherAccountId,
+            CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            Type = AccountHistoryType.FollowerRemoved
+        });
 
         using var computed = Computed.Invalidate();
         _ = TryGetAccountFollowing(activeAccountId);

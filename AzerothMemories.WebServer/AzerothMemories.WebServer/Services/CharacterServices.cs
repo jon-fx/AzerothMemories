@@ -180,8 +180,19 @@ public class CharacterServices : ICharacterServices
         return results;
     }
 
-    public void OnCharacterUpdate(CharacterRecord characterRecord)
+    public async Task OnCharacterUpdate(DatabaseConnection database, CharacterRecord characterRecord)
     {
+        if (characterRecord.AccountId.HasValue)
+        {
+            await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+            {
+                AccountId = characterRecord.AccountId.Value,
+                CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+                Type = AccountHistoryType.CharacterUpdated,
+                TargetId = characterRecord.Id
+            });
+        }
+
         OnCharacterUpdate(characterRecord.Id, characterRecord.AccountId.GetValueOrDefault());
     }
 

@@ -10,6 +10,8 @@ public sealed class DatabaseConnection : DataConnection
 
     public ITable<AccountFollowingRecord> AccountFollowing => GetTable<AccountFollowingRecord>();
 
+    public ITable<AccountHistoryRecord> AccountHistory => GetTable<AccountHistoryRecord>();
+
     public ITable<CharacterRecord> Characters => GetTable<CharacterRecord>();
 
     public ITable<CharacterAchievementRecord> CharacterAchievements => GetTable<CharacterAchievementRecord>();
@@ -33,8 +35,6 @@ public sealed class DatabaseConnection : DataConnection
     //public ITable<PostTagReportRecord> PostTagReports => GetTable<PostTagReportRecord>();
 
     //public ITable<PostCommentReportRecord> PostCommentReports => GetTable<PostCommentReportRecord>();
-
-    //public ITable<AccountHistoryRecord> AccountHistory => GetTable<AccountHistoryRecord>();
 
     public ITable<BlizzardDataRecord> BlizzardData => GetTable<BlizzardDataRecord>();
 

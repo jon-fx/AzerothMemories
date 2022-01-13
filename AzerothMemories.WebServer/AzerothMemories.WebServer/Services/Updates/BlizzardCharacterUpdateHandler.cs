@@ -13,7 +13,7 @@ internal sealed class BlizzardCharacterUpdateHandler
     {
         var result = await TryUpdateInternal(id, database, record);
 
-        _commonServices.CharacterServices.OnCharacterUpdate(record);
+        await _commonServices.CharacterServices.OnCharacterUpdate(database, record);
 
         return result;
     }

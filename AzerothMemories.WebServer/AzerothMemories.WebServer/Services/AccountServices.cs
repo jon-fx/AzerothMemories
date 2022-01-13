@@ -134,7 +134,7 @@ public class AccountServices : IAccountServices
         await _commonServices.BlizzardUpdateHandler.TryUpdate(database, accountRecord, BlizzardUpdatePriority.Account);
     }
 
-    private async Task<AccountRecord> GetOrCreateAccount(IDataContext database, string userId)
+    private async Task<AccountRecord> GetOrCreateAccount(DatabaseConnection database, string userId)
     {
         var accountRecord = await TryGetAccountRecordFusionId(userId);
         if (accountRecord == null)
@@ -156,6 +156,13 @@ public class AccountServices : IAccountServices
             }
 
             using var computed = Computed.Invalidate();
+
+            await TestingHistory(database, new AccountHistoryRecord
+            {
+                AccountId = accountRecord.Id,
+                CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+                Type = AccountHistoryType.AccountCreated
+            });
 
             _ = TryGetAccountRecord(accountRecord.Id);
             _ = TryGetAccountRecordFusionId(accountRecord.FusionId);
@@ -335,6 +342,13 @@ public class AccountServices : IAccountServices
             return false;
         }
 
+        await TestingHistory(database, new AccountHistoryRecord
+        {
+            AccountId = accountRecord.Id,
+            CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            Type = AccountHistoryType.UsernameChanged
+        });
+
         using var computed = Computed.Invalidate();
 
         _ = TryGetAccountRecord(accountRecord.Id);
@@ -344,6 +358,34 @@ public class AccountServices : IAccountServices
         _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Account, accountRecord.Id);
 
         return true;
+    }
+
+    public async Task TestingHistory(DatabaseConnection database, AccountHistoryRecord historyRecord)
+    {
+        if (historyRecord.AccountId == 0)
+        {
+            throw new NotImplementedException();
+        }
+
+        var query = from r in database.AccountHistory
+                    where r.AccountId == historyRecord.AccountId &&
+                          r.OtherAccountId == historyRecord.OtherAccountId &&
+                          r.Type == historyRecord.Type &&
+                          r.TargetId == historyRecord.TargetId &&
+                          r.TargetPostId == historyRecord.TargetPostId &&
+                          r.TargetCommentId == historyRecord.TargetCommentId
+                    select r.Id;
+
+        historyRecord.Id = await query.FirstOrDefaultAsync();
+
+        if (historyRecord.Id > 0)
+        {
+            await database.UpdateAsync(historyRecord);
+        }
+        else
+        {
+            historyRecord.Id = await database.InsertWithInt64IdentityAsync(historyRecord);
+        }
     }
 
     public async Task<bool> TryChangeIsPrivate(Session session, bool newValue, CancellationToken cancellationToken = default)
