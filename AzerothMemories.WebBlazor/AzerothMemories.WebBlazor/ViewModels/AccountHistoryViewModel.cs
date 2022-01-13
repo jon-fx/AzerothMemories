@@ -45,16 +45,16 @@ public sealed class AccountHistoryViewModel
                 Exceptions.ThrowIf(TargetPostId != 0);
                 Exceptions.ThrowIf(TargetCommentId != 0);
 
-                var name = "Unknown";
+                var name = $"<a href='character/{TargetId}'>Unknown</a>";
                 var character = activeAccountViewModel.GetCharactersSafe().FirstOrDefault(x => x.Id == TargetId);
                 if (character != null)
                 {
-                    //var region = character.RegionId.ToInfo();
-                    //var slug = stringLocalizer[$"RealmSlug-{character.RealmId}"];
-                    //var nameLink = $"<a class='wowclass-{character.Class}' href='character/{region.TwoLetters}/{slug}/{character.Name}/'>{character.Name}</a>";
-                    var nameLink = $"<a class='wowclass-{character.Class}' href='character/{character.Id}'>{character.Name}</a>";
-
+                    var region = character.RegionId.ToInfo();
+                    var slug = stringLocalizer[$"RealmSlug-{character.RealmId}"];
+                    var nameLink = $"<a class='wowclass-{character.Class}' href='character/{region.TwoLetters}/{slug}/{character.Name}'>{character.Name}</a>";
                     name = $"{nameLink} ({stringLocalizer[$"Realm-{character.RealmId}"]})";
+
+                    //name = $"<a class='wowclass-{character.Class}' href='character/{character.Id}'>{character.Name}</a> ({stringLocalizer[$"Realm-{character.RealmId}"]})";
                 }
 
                 return $"Character {name} updated.";
