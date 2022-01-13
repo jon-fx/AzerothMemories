@@ -16,18 +16,6 @@ public class PostServices : IPostServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<long> GetAccountIdOfPost(long postId)
-    {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-
-        var query = from p in database.Posts
-                    where p.Id == postId
-                    select p.AccountId;
-
-        return await query.FirstOrDefaultAsync();
-    }
-
-    [ComputeMethod]
     protected virtual async Task<bool> CanAccountSeePost(long activeAccountId, PostRecord postRecord)
     {
         Exceptions.ThrowIf(postRecord == null);

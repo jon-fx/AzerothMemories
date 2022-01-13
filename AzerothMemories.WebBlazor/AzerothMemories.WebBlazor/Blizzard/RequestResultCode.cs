@@ -1,8 +1,8 @@
-﻿namespace AzerothMemories.WebBlazor.Blizzard;
+﻿//namespace AzerothMemories.WebBlazor.Blizzard;
 
-public enum RequestResultCode
-{
-    Success,
-    Failed,
-    Pending
-}
+//public enum RequestResultCode
+//{
+//    Success,
+//    Failed,
+//    Pending
+//}

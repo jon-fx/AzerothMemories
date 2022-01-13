@@ -2,15 +2,15 @@
 
 public static class HttpStatusCodeExt
 {
-    public static RequestResultCode ToResult(this HttpStatusCode statusCode)
-    {
-        if (IsSuccess(statusCode))
-        {
-            return RequestResultCode.Success;
-        }
+    //public static RequestResultCode ToResult(this HttpStatusCode statusCode)
+    //{
+    //    if (IsSuccess(statusCode))
+    //    {
+    //        return RequestResultCode.Success;
+    //    }
 
-        return RequestResultCode.Failed;
-    }
+    //    return RequestResultCode.Failed;
+    //}
 
     public static bool IsSuccess(this HttpStatusCode statusCode)
     {

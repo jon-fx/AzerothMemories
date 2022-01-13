@@ -38,11 +38,11 @@ internal static class CsvHelpers
         return reader;
     }
 
-    public static CsvWriter GetWriter(StreamWriter streamWriter)
-    {
-        var writer = new CsvWriter(streamWriter, _config);
-        writer.Context.Initialize();
+    //public static CsvWriter GetWriter(StreamWriter streamWriter)
+    //{
+    //    var writer = new CsvWriter(streamWriter, _config);
+    //    writer.Context.Initialize();
 
-        return writer;
-    }
+    //    return writer;
+    //}
 }

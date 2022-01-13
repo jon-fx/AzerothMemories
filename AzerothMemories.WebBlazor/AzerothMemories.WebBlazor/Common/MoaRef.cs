@@ -48,18 +48,18 @@ public sealed class MoaRef
 
     public string Full { get; }
 
-    public bool IsValidAccount
-    {
-        get
-        {
-            if (Type != 'a') return false;
-            if (Name != "null") return false;
-            if (Realm != "null") return false;
-            if (IsWildCard) return false;
+    //public bool IsValidAccount
+    //{
+    //    get
+    //    {
+    //        if (Type != 'a') return false;
+    //        if (Name != "null") return false;
+    //        if (Realm != "null") return false;
+    //        if (IsWildCard) return false;
 
-            return true;
-        }
-    }
+    //        return true;
+    //    }
+    //}
 
     public bool IsValidCharacter
     {
@@ -89,10 +89,10 @@ public sealed class MoaRef
 
     public bool IsWildCard => Id <= 0;
 
-    public static MoaRef GetAccountRef(BlizzardRegion region, long id)
-    {
-        return new MoaRef('a', region, "null", "null", id);
-    }
+    //public static MoaRef GetAccountRef(BlizzardRegion region, long id)
+    //{
+    //    return new MoaRef('a', region, "null", "null", id);
+    //}
 
     public static MoaRef GetCharacterRef(BlizzardRegion region, string realm, string name, long id)
     {

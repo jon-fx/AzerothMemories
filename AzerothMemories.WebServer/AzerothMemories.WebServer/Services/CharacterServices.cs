@@ -32,7 +32,7 @@ public class CharacterServices : ICharacterServices
     protected virtual async Task<CharacterRecord> GetOrCreateCharacterRecord(string refFull)
     {
         var moaRef = new MoaRef(refFull);
-        Exceptions.ThrowIf(moaRef.IsValidAccount);
+        //Exceptions.ThrowIf(moaRef.IsValidAccount);
         Exceptions.ThrowIf(moaRef.IsValidGuild);
         Exceptions.ThrowIf(moaRef.IsWildCard);
 

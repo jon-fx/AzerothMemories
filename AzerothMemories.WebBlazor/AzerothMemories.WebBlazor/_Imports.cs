@@ -16,7 +16,6 @@ global using Stl.Fusion;
 global using Stl.Fusion.Authentication;
 global using Stl.Fusion.Blazor;
 global using Stl.Fusion.Client;
-global using System.Collections;
 global using System.Globalization;
 global using System.Net;
 global using System.Text.Json.Serialization;

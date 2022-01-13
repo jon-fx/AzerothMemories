@@ -31,7 +31,7 @@ public class GuildServices : IGuildServices
     public virtual async Task<GuildRecord> GetOrCreate(string refFull)
     {
         var moaRef = new MoaRef(refFull);
-        Exceptions.ThrowIf(moaRef.IsValidAccount);
+        //Exceptions.ThrowIf(moaRef.IsValidAccount);
         Exceptions.ThrowIf(moaRef.IsValidCharacter);
         Exceptions.ThrowIf(moaRef.IsWildCard);
 

@@ -2,7 +2,6 @@
 global using AzerothMemories.Database.Seeder.Seeders;
 global using AzerothMemories.WebBlazor.Blizzard;
 global using AzerothMemories.WebBlazor.Common;
-global using AzerothMemories.WebBlazor.Services;
 global using AzerothMemories.WebServer.Blizzard;
 global using AzerothMemories.WebServer.Blizzard.Models;
 global using AzerothMemories.WebServer.Blizzard.Models.GameDataApi;
