@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed class AccountHistoryPageViewModel
+public sealed class AccountHistoryPageResult
 {
     [JsonInclude] public int TotalPages { get; set; }
     [JsonInclude] public int CurrentPage { get; set; }

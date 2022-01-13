@@ -53,13 +53,13 @@ public sealed class ActiveAccountServices
 
         if (AccountViewModel != null)
         {
-            var newHistory = await _accountServices.TryGetAccountHistory(null, cancellationToken);
+            var newHistory = await _accountServices.TryGetAccountHistory(null);
             var oldHistory = AccountHistoryViewModels;
 
             if (oldHistory != null && oldHistory.Length != 0)
             {
                 var oldSet = oldHistory.Select(x => x.Id).ToHashSet();
-                foreach (var newItem in newHistory)
+                foreach (var newItem in newHistory.ViewModels)
                 {
                     if (oldSet.Contains(newItem.Id))
                     {
@@ -79,7 +79,7 @@ public sealed class ActiveAccountServices
                 }
             }
 
-            AccountHistoryViewModels = newHistory;
+            AccountHistoryViewModels = newHistory.ViewModels;
         }
 
         AccountHistoryViewModels ??= Array.Empty<AccountHistoryViewModel>();

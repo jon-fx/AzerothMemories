@@ -45,8 +45,18 @@ public sealed class AccountHistoryViewModel
                 Exceptions.ThrowIf(TargetPostId != 0);
                 Exceptions.ThrowIf(TargetCommentId != 0);
 
+                var name = "Unknown";
                 var character = activeAccountViewModel.GetCharactersSafe().FirstOrDefault(x => x.Id == TargetId);
-                var name = character == null ? "Unknown" : $"{character.Name} ({stringLocalizer[$"RealmName-{character.RealmId}"]})";
+                if (character != null)
+                {
+                    //var region = character.RegionId.ToInfo();
+                    //var slug = stringLocalizer[$"RealmSlug-{character.RealmId}"];
+                    //var nameLink = $"<a class='wowclass-{character.Class}' href='character/{region.TwoLetters}/{slug}/{character.Name}/'>{character.Name}</a>";
+                    var nameLink = $"<a class='wowclass-{character.Class}' href='character/{character.Id}'>{character.Name}</a>";
+
+                    name = $"{nameLink} ({stringLocalizer[$"Realm-{character.RealmId}"]})";
+                }
+
                 return $"Character {name} updated.";
             }
             case AccountHistoryType.FollowingRequestSent:

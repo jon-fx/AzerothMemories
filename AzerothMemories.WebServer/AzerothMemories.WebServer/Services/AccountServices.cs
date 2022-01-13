@@ -561,22 +561,9 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountHistoryViewModel[]> TryGetAccountHistory(Session session, CancellationToken cancellationToken)
+    public virtual async Task<AccountHistoryPageResult> TryGetAccountHistory(Session session, int currentPage)
     {
-        var activeAccountId = await TryGetActiveAccountId(session, cancellationToken);
-        if (activeAccountId == 0)
-        {
-            return null;
-        }
-
-        var results = await TryGetAccountHistory(activeAccountId, 1);
-        return results?.ViewModels;
-    }
-
-    [ComputeMethod]
-    public virtual async Task<AccountHistoryPageViewModel> TryGetAccountHistory(Session session, int currentPage, CancellationToken cancellationToken)
-    {
-        var activeAccountId = await TryGetActiveAccountId(session, cancellationToken);
+        var activeAccountId = await TryGetActiveAccountId(session);
         if (activeAccountId == 0)
         {
             return null;
@@ -591,7 +578,7 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountHistoryPageViewModel> TryGetAccountHistory(long activeAccountId, int currentPage)
+    public virtual async Task<AccountHistoryPageResult> TryGetAccountHistory(long activeAccountId, int currentPage)
     {
         Exceptions.ThrowIf(activeAccountId == 0);
         Exceptions.ThrowIf(currentPage == 0);
@@ -632,7 +619,7 @@ public class AccountServices : IAccountServices
             recentHistoryViewModels = await historyQuery.Skip((currentPage - 1) * itemsPerPage).Take(itemsPerPage).ToArrayAsync();
         }
 
-        return new AccountHistoryPageViewModel
+        return new AccountHistoryPageResult
         {
             CurrentPage = currentPage,
             TotalPages = totalPages,

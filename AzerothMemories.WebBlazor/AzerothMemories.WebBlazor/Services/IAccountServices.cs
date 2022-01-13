@@ -40,5 +40,5 @@ public interface IAccountServices
 
     [ComputeMethod]
     [Get(nameof(TryGetAccountHistory))]
-    Task<AccountHistoryViewModel[]> TryGetAccountHistory(Session session, CancellationToken cancellationToken);
+    Task<AccountHistoryPageResult> TryGetAccountHistory(Session session, [Query] int currentPage = 0);
 }

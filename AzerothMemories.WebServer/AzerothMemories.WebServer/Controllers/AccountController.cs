@@ -74,8 +74,8 @@ public class AccountController : ControllerBase, IAccountServices
     }
 
     [HttpGet, Publish]
-    public Task<AccountHistoryViewModel[]> TryGetAccountHistory(Session session, CancellationToken cancellationToken)
+    public Task<AccountHistoryPageResult> TryGetAccountHistory(Session session, [FromQuery] int currentPage)
     {
-        return _commonServices.AccountServices.TryGetAccountHistory(session, cancellationToken);
+        return _commonServices.AccountServices.TryGetAccountHistory(session, currentPage);
     }
 }
