@@ -386,6 +386,9 @@ public class AccountServices : IAccountServices
         {
             historyRecord.Id = await database.InsertWithInt64IdentityAsync(historyRecord);
         }
+
+        using var computed = Computed.Invalidate();
+        _ = TryGetAccountHistory(historyRecord.AccountId, 1);
     }
 
     public async Task<bool> TryChangeIsPrivate(Session session, bool newValue, CancellationToken cancellationToken = default)
@@ -555,6 +558,86 @@ public class AccountServices : IAccountServices
         }
 
         return postTagSet.ToArray();
+    }
+
+    [ComputeMethod]
+    public virtual async Task<AccountHistoryViewModel[]> TryGetAccountHistory(Session session, CancellationToken cancellationToken)
+    {
+        var activeAccountId = await TryGetActiveAccountId(session, cancellationToken);
+        if (activeAccountId == 0)
+        {
+            return null;
+        }
+
+        var results = await TryGetAccountHistory(activeAccountId, 1);
+        return results?.ViewModels;
+    }
+
+    [ComputeMethod]
+    public virtual async Task<AccountHistoryPageViewModel> TryGetAccountHistory(Session session, int currentPage, CancellationToken cancellationToken)
+    {
+        var activeAccountId = await TryGetActiveAccountId(session, cancellationToken);
+        if (activeAccountId == 0)
+        {
+            return null;
+        }
+
+        if (currentPage == 0)
+        {
+            currentPage = 1;
+        }
+
+        return await TryGetAccountHistory(activeAccountId, currentPage);
+    }
+
+    [ComputeMethod]
+    public virtual async Task<AccountHistoryPageViewModel> TryGetAccountHistory(long activeAccountId, int currentPage)
+    {
+        Exceptions.ThrowIf(activeAccountId == 0);
+        Exceptions.ThrowIf(currentPage == 0);
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        var historyQuery = from record in database.AccountHistory
+                           where record.AccountId == activeAccountId
+                           from thisAccount in database.Accounts.Where(r => record.AccountId == r.Id)
+                           from otherAccount in database.Accounts.Where(r => record.OtherAccountId == r.Id).DefaultIfEmpty()
+                           orderby record.CreatedTime descending
+                           select new AccountHistoryViewModel
+                           {
+                               Id = record.Id,
+                               Type = record.Type,
+                               AccountId = record.AccountId,
+                               OtherAccountId = record.OtherAccountId.GetValueOrDefault(),
+                               OtherAccountUsername = otherAccount == null ? null : otherAccount.Username,
+                               TargetId = record.TargetId,
+                               TargetPostId = record.TargetPostId.GetValueOrDefault(),
+                               TargetCommentId = record.TargetCommentId.GetValueOrDefault(),
+                               CreatedTime = record.CreatedTime.ToUnixTimeMilliseconds()
+                           };
+
+        const int itemsPerPage = 10;
+
+        var totalHistoryItemsCounts = await historyQuery.CountAsync();
+
+        var totalPages = (int)Math.Ceiling(totalHistoryItemsCounts / (float)itemsPerPage);
+        AccountHistoryViewModel[] recentHistoryViewModels;
+        if (totalPages == 0)
+        {
+            recentHistoryViewModels = Array.Empty<AccountHistoryViewModel>();
+        }
+        else
+        {
+            currentPage = Math.Clamp(currentPage, 1, totalPages);
+            recentHistoryViewModels = await historyQuery.Skip((currentPage - 1) * itemsPerPage).Take(itemsPerPage).ToArrayAsync();
+        }
+
+        return new AccountHistoryPageViewModel
+        {
+            CurrentPage = currentPage,
+            TotalPages = totalPages,
+            ViewModels = recentHistoryViewModels,
+        };
     }
 
     [ComputeMethod]

@@ -72,4 +72,10 @@ public class AccountController : ControllerBase, IAccountServices
     {
         return _commonServices.AccountServices.TryGetAchievementsByTime(session, timeStamp, diffInSeconds, locale, cancellationToken);
     }
+
+    [HttpGet, Publish]
+    public Task<AccountHistoryViewModel[]> TryGetAccountHistory(Session session, CancellationToken cancellationToken)
+    {
+        return _commonServices.AccountServices.TryGetAccountHistory(session, cancellationToken);
+    }
 }

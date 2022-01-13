@@ -8,14 +8,19 @@ public sealed class ActiveAccountViewModel : AccountViewModel
 
     public bool CanChangeUsername => true;
 
-    [JsonIgnore]
-    public Dictionary<long, string> UserTags =>
-        new()
+    public Dictionary<long, string> GetUserTagList()
+    {
+        if (FollowersViewModels == null)
         {
-            { Id, Username },
-            { 200, "Bob" },
-            { 300, "Bill" },
-            { 400, "Ben" },
-            { 500, "Tests" },
-        };
+            return new Dictionary<long, string>();
+        }
+
+        var tagSet = new Dictionary<long, string>();
+        foreach (var kvp in FollowersViewModels)
+        {
+            tagSet.TryAdd(kvp.Value.FollowerId, kvp.Value.FollowerUsername);
+        }
+
+        return tagSet;
+    }
 }

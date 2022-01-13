@@ -4,18 +4,26 @@ public sealed class ActiveAccountServices
 {
     private readonly IAccountServices _accountServices;
     private readonly ICharacterServices _characterServices;
+    private readonly TimeProvider _timeProvider;
+    private readonly ISnackbar _snackbarService;
+    private readonly IStringLocalizer<BlizzardResources> _stringLocalizer;
 
     private IActiveCommentContext _activeCommentContext;
 
-    public ActiveAccountServices(IAccountServices accountServices, ICharacterServices characterServices)
+    public ActiveAccountServices(IAccountServices accountServices, ICharacterServices characterServices, TimeProvider timeProvider, ISnackbar snackbar, IStringLocalizer<BlizzardResources> stringLocalizer)
     {
         _accountServices = accountServices;
         _characterServices = characterServices;
+        _timeProvider = timeProvider;
+        _snackbarService = snackbar;
+        _stringLocalizer = stringLocalizer;
     }
 
     public long ActiveAccountId => AccountViewModel?.Id ?? 0;
 
     public ActiveAccountViewModel AccountViewModel { get; private set; }
+
+    public AccountHistoryViewModel[] AccountHistoryViewModels { get; private set; }
 
     public bool IsAccountActive => AccountViewModel != null && AccountViewModel.Id > 0;
 
@@ -42,29 +50,48 @@ public sealed class ActiveAccountServices
     public async Task ComputeState(CancellationToken cancellationToken)
     {
         AccountViewModel = await _accountServices.TryGetAccount(null, cancellationToken);
+
+        if (AccountViewModel != null)
+        {
+            var newHistory = await _accountServices.TryGetAccountHistory(null, cancellationToken);
+            var oldHistory = AccountHistoryViewModels;
+
+            if (oldHistory != null && oldHistory.Length != 0)
+            {
+                var oldSet = oldHistory.Select(x => x.Id).ToHashSet();
+                foreach (var newItem in newHistory)
+                {
+                    if (oldSet.Contains(newItem.Id))
+                    {
+                    }
+                    else
+                    {
+                        var displayText = newItem.GetDisplayText(AccountViewModel, _stringLocalizer);
+
+                        _snackbarService.Add($"{_timeProvider.GetTimeAsLocalStringAgo(newItem.CreatedTime, true)}<br>{displayText}", Severity.Normal, config =>
+                        {
+                            config.HideIcon = true;
+                            config.VisibleStateDuration = 5000;
+                            config.ShowCloseIcon = true;
+                            config.Onclick = _ => Task.CompletedTask;
+                        });
+                    }
+                }
+            }
+
+            AccountHistoryViewModels = newHistory;
+        }
+
+        AccountHistoryViewModels ??= Array.Empty<AccountHistoryViewModel>();
     }
 
     public Dictionary<long, string> GetUserTagList()
     {
-        var tagSet = new Dictionary<long, string>();
-
         if (AccountViewModel == null)
         {
-            return tagSet;
+            return new Dictionary<long, string>();
         }
 
-        foreach (var kvp in AccountViewModel.FollowersViewModels)
-        {
-            tagSet.TryAdd(kvp.Value.FollowerId, kvp.Value.FollowerUsername);
-        }
-
-        //foreach (var kvp in _accountViewModel.FollowingViewModels)
-        //{
-        //    if (!tagSet.Add(kvp.Value.FollowerId)) continue;
-
-        //    tagList.Add(new UserTag(kvp.Value.FollowerId, kvp.Value.FollowerUsername));
-        //}
-
-        return tagSet;
+        return AccountViewModel.GetUserTagList();
     }
 }

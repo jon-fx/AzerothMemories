@@ -76,7 +76,7 @@ public class PostServices : IPostServices
             return new AddMemoryResult(AddMemoryResultCode.SessionNotFound);
         }
 
-        if (!_commonServices.TagServices.GetCommentText(transferData.Comment, accountViewModel.UserTags, out var commentText, out var accountsTaggedInComment, out var hashTagsTaggedInComment))
+        if (!_commonServices.TagServices.GetCommentText(transferData.Comment, accountViewModel.GetUserTagList(), out var commentText, out var accountsTaggedInComment, out var hashTagsTaggedInComment))
         {
             return new AddMemoryResult(AddMemoryResultCode.ParseCommentFailed);
         }
@@ -767,7 +767,7 @@ public class PostServices : IPostServices
             return 0;
         }
 
-        var usersThatCanBeTagged = new Dictionary<long, string>(activeAccount.UserTags);
+        var usersThatCanBeTagged = new Dictionary<long, string>(activeAccount.GetUserTagList());
         if (parentComment != null)
         {
             usersThatCanBeTagged.TryAdd(parentComment.AccountId, parentComment.AccountUsername);

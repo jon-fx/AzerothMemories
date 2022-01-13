@@ -37,4 +37,8 @@ public interface IAccountServices
     [ComputeMethod]
     [Get(nameof(TryGetAchievementsByTime) + "/{timeStamp}/{diffInSeconds}")]
     Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, [Path] long timeStamp, [Path] int diffInSeconds, [Query] string locale = null, CancellationToken cancellationToken = default);
+
+    [ComputeMethod]
+    [Get(nameof(TryGetAccountHistory))]
+    Task<AccountHistoryViewModel[]> TryGetAccountHistory(Session session, CancellationToken cancellationToken);
 }

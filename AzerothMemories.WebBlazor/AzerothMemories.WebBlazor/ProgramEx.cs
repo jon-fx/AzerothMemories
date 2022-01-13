@@ -9,7 +9,7 @@ public static class ProgramEx
 
         services.AddSingleton<TagHelpers>();
         services.AddSingleton<TimeProvider>();
-        services.AddSingleton<ActiveAccountServices>();
+        services.AddScoped<ActiveAccountServices>();
 
         services.AddScoped<DialogHelperService>();
     }
