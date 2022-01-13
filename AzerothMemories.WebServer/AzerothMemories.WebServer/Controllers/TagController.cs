@@ -12,8 +12,8 @@ public class TagController : ControllerBase, ITagServices
     }
 
     [HttpGet("{searchString}"), Publish]
-    public Task<PostTagInfo[]> Search(Session session, [FromRoute] string searchString, [FromQuery] string locale = null, CancellationToken cancellationToken = default)
+    public Task<PostTagInfo[]> Search(Session session, [FromRoute] string searchString, [FromQuery] string locale = null)
     {
-        return _commonServices.TagServices.Search(session, searchString, locale, cancellationToken);
+        return _commonServices.TagServices.Search(session, searchString, locale);
     }
 }

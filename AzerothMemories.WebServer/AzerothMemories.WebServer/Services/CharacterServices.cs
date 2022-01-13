@@ -205,9 +205,9 @@ public class CharacterServices : ICharacterServices
         _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Character, characterId);
     }
 
-    public async Task<bool> TryChangeCharacterAccountSync(Session session, long characterId, bool newValue, CancellationToken cancellationToken = default)
+    public async Task<bool> TryChangeCharacterAccountSync(Session session, long characterId, bool newValue)
     {
-        var accountId = await _commonServices.AccountServices.TryGetActiveAccountId(session, cancellationToken);
+        var accountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
         if (accountId == 0)
         {
             return false;
@@ -216,7 +216,7 @@ public class CharacterServices : ICharacterServices
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var updateResult = await database.Characters.Where(x => x.Id == characterId && x.AccountId == accountId && x.AccountSync == !newValue).AsUpdatable()
             .Set(x => x.AccountSync, newValue)
-            .UpdateAsync(cancellationToken);
+            .UpdateAsync();
 
         if (updateResult == 0)
         {

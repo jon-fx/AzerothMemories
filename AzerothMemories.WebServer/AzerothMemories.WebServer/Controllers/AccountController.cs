@@ -12,45 +12,45 @@ public class AccountController : ControllerBase, IAccountServices
     }
 
     [HttpGet, Publish]
-    public Task<ActiveAccountViewModel> TryGetAccount(Session session, CancellationToken cancellationToken = default)
+    public Task<ActiveAccountViewModel> TryGetAccount(Session session)
     {
-        return _commonServices.AccountServices.TryGetAccount(session, cancellationToken);
+        return _commonServices.AccountServices.TryGetAccount(session);
     }
 
     [HttpGet("{accountId}"), Publish]
-    public Task<AccountViewModel> TryGetAccountById(Session session, [FromRoute] long accountId, CancellationToken cancellationToken = default)
+    public Task<AccountViewModel> TryGetAccountById(Session session, [FromRoute] long accountId)
     {
-        return _commonServices.AccountServices.TryGetAccountById(session, accountId, cancellationToken);
+        return _commonServices.AccountServices.TryGetAccountById(session, accountId);
     }
 
     [HttpGet("{username}"), Publish]
-    public Task<AccountViewModel> TryGetAccountByUsername(Session session, [FromRoute] string username, CancellationToken cancellationToken = default)
+    public Task<AccountViewModel> TryGetAccountByUsername(Session session, [FromRoute] string username)
     {
-        return _commonServices.AccountServices.TryGetAccountByUsername(session, username, cancellationToken);
+        return _commonServices.AccountServices.TryGetAccountByUsername(session, username);
     }
 
     [HttpGet("{username}"), Publish]
-    public Task<bool> CheckIsValidUsername(Session session, [FromRoute] string username, CancellationToken cancellationToken = default)
+    public Task<bool> CheckIsValidUsername(Session session, [FromRoute] string username)
     {
-        return _commonServices.AccountServices.CheckIsValidUsername(session, username, cancellationToken);
+        return _commonServices.AccountServices.CheckIsValidUsername(session, username);
     }
 
     [HttpPost("{newUsername}")]
-    public Task<bool> TryChangeUsername(Session session, [FromRoute] string newUsername, CancellationToken cancellationToken = default)
+    public Task<bool> TryChangeUsername(Session session, [FromRoute] string newUsername)
     {
-        return _commonServices.AccountServices.TryChangeUsername(session, newUsername, cancellationToken);
+        return _commonServices.AccountServices.TryChangeUsername(session, newUsername);
     }
 
     [HttpPost("{newValue}")]
-    public Task<bool> TryChangeIsPrivate(Session session, [FromRoute] bool newValue, CancellationToken cancellationToken = default)
+    public Task<bool> TryChangeIsPrivate(Session session, [FromRoute] bool newValue)
     {
-        return _commonServices.AccountServices.TryChangeIsPrivate(session, newValue, cancellationToken);
+        return _commonServices.AccountServices.TryChangeIsPrivate(session, newValue);
     }
 
     [HttpPost("{newValue}")]
-    public Task<bool> TryChangeBattleTagVisibility(Session session, [FromRoute] bool newValue, CancellationToken cancellationToken = default)
+    public Task<bool> TryChangeBattleTagVisibility(Session session, [FromRoute] bool newValue)
     {
-        return _commonServices.AccountServices.TryChangeBattleTagVisibility(session, newValue, cancellationToken);
+        return _commonServices.AccountServices.TryChangeBattleTagVisibility(session, newValue);
     }
 
     [HttpPost]
@@ -68,9 +68,9 @@ public class AccountController : ControllerBase, IAccountServices
     }
 
     [HttpGet("{timeStamp}/{diffInSeconds}"), Publish]
-    public Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, [FromRoute] long timeStamp, [FromRoute] int diffInSeconds, [FromQuery] string locale = null, CancellationToken cancellationToken = default)
+    public Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, [FromRoute] long timeStamp, [FromRoute] int diffInSeconds, [FromQuery] string locale = null)
     {
-        return _commonServices.AccountServices.TryGetAchievementsByTime(session, timeStamp, diffInSeconds, locale, cancellationToken);
+        return _commonServices.AccountServices.TryGetAchievementsByTime(session, timeStamp, diffInSeconds, locale);
     }
 
     [HttpGet, Publish]

@@ -214,9 +214,9 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<ActiveAccountViewModel> TryGetAccount(Session session, CancellationToken cancellationToken = default)
+    public virtual async Task<ActiveAccountViewModel> TryGetAccount(Session session)
     {
-        var accountRecord = await GetCurrentSessionAccountRecord(session, cancellationToken);
+        var accountRecord = await GetCurrentSessionAccountRecord(session);
         if (accountRecord == null)
         {
             return null;
@@ -231,9 +231,9 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<long> TryGetActiveAccountId(Session session, CancellationToken cancellationToken = default)
+    public virtual async Task<long> TryGetActiveAccountId(Session session)
     {
-        var accountViewModel = await TryGetAccount(session, cancellationToken);
+        var accountViewModel = await TryGetAccount(session);
         if (accountViewModel == null)
         {
             return 0;
@@ -243,9 +243,9 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountViewModel> TryGetAccountById(Session session, long accountId, CancellationToken cancellationToken = default)
+    public virtual async Task<AccountViewModel> TryGetAccountById(Session session, long accountId)
     {
-        var sessionAccount = await TryGetAccount(session, cancellationToken);
+        var sessionAccount = await TryGetAccount(session);
         if (sessionAccount != null && sessionAccount.Id == accountId)
         {
             return sessionAccount;
@@ -266,9 +266,9 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountViewModel> TryGetAccountByUsername(Session session, string username, CancellationToken cancellationToken = default)
+    public virtual async Task<AccountViewModel> TryGetAccountByUsername(Session session, string username)
     {
-        var sessionAccount = await TryGetAccount(session, cancellationToken);
+        var sessionAccount = await TryGetAccount(session);
         if (sessionAccount != null && sessionAccount.Username == username)
         {
             return sessionAccount;
@@ -289,7 +289,7 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<bool> CheckIsValidUsername(Session session, string username, CancellationToken cancellationToken = default)
+    public virtual async Task<bool> CheckIsValidUsername(Session session, string username)
     {
         return await TryReserveUsername(username);
     }
@@ -312,7 +312,7 @@ public class AccountServices : IAccountServices
         return true;
     }
 
-    public async Task<bool> TryChangeUsername(Session session, string newUsername, CancellationToken cancellationToken = default)
+    public async Task<bool> TryChangeUsername(Session session, string newUsername)
     {
         if (!DatabaseHelpers.IsValidAccountName(newUsername))
         {
@@ -320,13 +320,13 @@ public class AccountServices : IAccountServices
         }
 
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var usernameExists = await database.Accounts.AnyAsync(x => x.Username == newUsername, cancellationToken);
+        var usernameExists = await database.Accounts.AnyAsync(x => x.Username == newUsername);
         if (usernameExists)
         {
             return false;
         }
 
-        var accountRecord = await GetCurrentSessionAccountRecord(session, cancellationToken);
+        var accountRecord = await GetCurrentSessionAccountRecord(session);
         if (accountRecord == null)
         {
             return false;
@@ -335,7 +335,7 @@ public class AccountServices : IAccountServices
         var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.Username == accountRecord.Username).AsUpdatable()
             .Set(x => x.Username, newUsername)
             .Set(x => x.UsernameSearchable, DatabaseHelpers.GetSearchableName(newUsername))
-            .UpdateAsync(cancellationToken);
+            .UpdateAsync();
 
         if (updateResult == 0)
         {
@@ -391,9 +391,9 @@ public class AccountServices : IAccountServices
         _ = TryGetAccountHistory(historyRecord.AccountId, 1);
     }
 
-    public async Task<bool> TryChangeIsPrivate(Session session, bool newValue, CancellationToken cancellationToken = default)
+    public async Task<bool> TryChangeIsPrivate(Session session, bool newValue)
     {
-        var accountRecord = await GetCurrentSessionAccountRecord(session, cancellationToken);
+        var accountRecord = await GetCurrentSessionAccountRecord(session);
         if (accountRecord == null)
         {
             return false;
@@ -402,7 +402,7 @@ public class AccountServices : IAccountServices
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.IsPrivate == !newValue).AsUpdatable()
             .Set(x => x.IsPrivate, newValue)
-            .UpdateAsync(cancellationToken);
+            .UpdateAsync();
 
         if (updateResult == 0)
         {
@@ -418,9 +418,9 @@ public class AccountServices : IAccountServices
         return newValue;
     }
 
-    public async Task<bool> TryChangeBattleTagVisibility(Session session, bool newValue, CancellationToken cancellationToken = default)
+    public async Task<bool> TryChangeBattleTagVisibility(Session session, bool newValue)
     {
-        var accountRecord = await GetCurrentSessionAccountRecord(session, cancellationToken);
+        var accountRecord = await GetCurrentSessionAccountRecord(session);
         if (accountRecord == null)
         {
             return false;
@@ -429,7 +429,7 @@ public class AccountServices : IAccountServices
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.BattleTagIsPublic == !newValue).AsUpdatable()
             .Set(x => x.BattleTagIsPublic, newValue)
-            .UpdateAsync(cancellationToken);
+            .UpdateAsync();
 
         if (updateResult == 0)
         {
@@ -526,9 +526,9 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, long timeStamp, int diffInSeconds, string locale = null, CancellationToken cancellationToken = default)
+    public virtual async Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, long timeStamp, int diffInSeconds, string locale = null)
     {
-        var accountRecord = await GetCurrentSessionAccountRecord(session, cancellationToken);
+        var accountRecord = await GetCurrentSessionAccountRecord(session);
         if (accountRecord == null)
         {
             return Array.Empty<PostTagInfo>();
@@ -544,7 +544,7 @@ public class AccountServices : IAccountServices
                     where a.AccountId == accountRecord.Id && a.AchievementTimeStamp > min && a.AchievementTimeStamp < max
                     select a.AchievementId;
 
-        var results = await query.ToArrayAsync(cancellationToken);
+        var results = await query.ToArrayAsync();
         var hashSet = new HashSet<long>();
         var postTagSet = new HashSet<PostTagInfo>();
 
@@ -628,14 +628,14 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<AccountRecord> GetCurrentSessionAccountRecord(Session session, CancellationToken cancellationToken = default)
+    protected virtual async Task<AccountRecord> GetCurrentSessionAccountRecord(Session session)
     {
         if (session == null)
         {
             return null;
         }
 
-        var user = await _commonServices.Auth.GetUser(session, cancellationToken);
+        var user = await _commonServices.Auth.GetUser(session);
         if (user == null || user.IsAuthenticated == false)
         {
             return null;

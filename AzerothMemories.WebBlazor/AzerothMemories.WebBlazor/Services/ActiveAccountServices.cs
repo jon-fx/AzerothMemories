@@ -47,9 +47,9 @@ public sealed class ActiveAccountServices
         }
     }
 
-    public async Task ComputeState(CancellationToken cancellationToken)
+    public async Task ComputeState()
     {
-        AccountViewModel = await _accountServices.TryGetAccount(null, cancellationToken);
+        AccountViewModel = await _accountServices.TryGetAccount(null);
 
         if (AccountViewModel != null)
         {

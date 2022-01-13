@@ -12,9 +12,9 @@ public class CharacterController : ControllerBase, ICharacterServices
     }
 
     [HttpPost("{characterId}/{newValue}")]
-    public Task<bool> TryChangeCharacterAccountSync(Session session, [FromRoute] long characterId, [FromRoute] bool newValue, CancellationToken cancellationToken = default)
+    public Task<bool> TryChangeCharacterAccountSync(Session session, [FromRoute] long characterId, [FromRoute] bool newValue)
     {
-        return _commonServices.CharacterServices.TryChangeCharacterAccountSync(session, characterId, newValue, cancellationToken);
+        return _commonServices.CharacterServices.TryChangeCharacterAccountSync(session, characterId, newValue);
     }
 
     [HttpGet("{characterId}"), Publish]

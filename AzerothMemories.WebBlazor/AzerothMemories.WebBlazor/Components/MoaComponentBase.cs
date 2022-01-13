@@ -60,7 +60,7 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
 
     protected override sealed async Task<TViewModel> ComputeState(CancellationToken cancellationToken)
     {
-        await ActiveAccountServices.ComputeState(cancellationToken);
+        await ActiveAccountServices.ComputeState();
 
         await InternalComputeState();
 

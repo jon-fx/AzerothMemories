@@ -93,7 +93,7 @@ public class TagServices : ITagServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostTagInfo[]> Search(Session session, string searchString, string locale = null, CancellationToken cancellationToken = default)
+    public virtual async Task<PostTagInfo[]> Search(Session session, string searchString, string locale = null)
     {
         if (string.IsNullOrWhiteSpace(searchString) || searchString.Length < 3)
         {

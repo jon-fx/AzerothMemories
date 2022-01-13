@@ -4,7 +4,7 @@
 public interface ICharacterServices
 {
     [Post(nameof(TryChangeCharacterAccountSync) + "/{characterId}/{newValue}")]
-    Task<bool> TryChangeCharacterAccountSync(Session session, [Path] long characterId, [Path] bool newValue, CancellationToken cancellationToken = default);
+    Task<bool> TryChangeCharacterAccountSync(Session session, [Path] long characterId, [Path] bool newValue);
 
     [ComputeMethod]
     [Get(nameof(TryGetCharacter) + "/{characterId}")]
