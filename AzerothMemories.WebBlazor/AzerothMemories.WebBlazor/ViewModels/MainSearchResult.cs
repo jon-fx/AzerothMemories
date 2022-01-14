@@ -33,7 +33,7 @@ public sealed class MainSearchResult
             RefStr = moaRef,
             RealmId = realmId,
             CharacterClass = characterClass,
-            Type = MainSearchType.Account
+            Type = MainSearchType.Character
         };
     }
 
@@ -46,7 +46,7 @@ public sealed class MainSearchResult
             Avatar = avatar,
             RefStr = moaRef,
             RealmId = realmId,
-            Type = MainSearchType.Account
+            Type = MainSearchType.Guild
         };
     }
 }

@@ -123,15 +123,15 @@ public class AccountServices : IAccountServices
         if (changed)
         {
             await updateQuery.UpdateAsync(cancellationToken);
-
-            using var computed = Computed.Invalidate();
-            _ = TryGetAccountRecord(accountRecord.Id);
-            _ = TryGetAccountRecordFusionId(accountRecord.FusionId);
-            _ = TryGetAccountRecordUsername(accountRecord.Username);
-            _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Account, accountRecord.Id);
         }
 
         await _commonServices.BlizzardUpdateHandler.TryUpdate(database, accountRecord, BlizzardUpdatePriority.Account);
+
+        using var computed = Computed.Invalidate();
+        _ = TryGetAccountRecord(accountRecord.Id);
+        _ = TryGetAccountRecordFusionId(accountRecord.FusionId);
+        _ = TryGetAccountRecordUsername(accountRecord.Username);
+        _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Account, accountRecord.Id);
     }
 
     private async Task<AccountRecord> GetOrCreateAccount(DatabaseConnection database, string userId)

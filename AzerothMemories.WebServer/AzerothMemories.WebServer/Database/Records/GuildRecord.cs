@@ -1,7 +1,7 @@
 ﻿namespace AzerothMemories.WebServer.Database.Records;
 
 [Table("Guilds")]
-public sealed  class GuildRecord : IBlizzardUpdateRecord
+public sealed class GuildRecord : IBlizzardUpdateRecord
 {
     [Column(IsPrimaryKey = true, IsIdentity = true)] public long Id { get; set; }
 
@@ -35,11 +35,11 @@ public sealed  class GuildRecord : IBlizzardUpdateRecord
 
     [Column, Nullable] public string UpdateJob { get; set; }
 
-    [Column, Nullable] public Instant? UpdateJobQueueTime { get; set; }
+    //[Column, Nullable] public Instant? UpdateJobQueueTime { get; set; }
 
-    [Column, Nullable] public Instant? UpdateJobStartTime { get; set; }
+    //[Column, Nullable] public Instant? UpdateJobStartTime { get; set; }
 
-    [Column, Nullable] public Instant? UpdateJobEndTime { get; set; }
+    [Column, Nullable] public Instant UpdateJobEndTime { get; set; }
 
     [Column, Nullable] public HttpStatusCode UpdateJobLastResult { get; set; }
 }
