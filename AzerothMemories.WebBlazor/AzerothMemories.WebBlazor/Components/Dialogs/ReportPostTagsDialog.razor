@@ -1,0 +1,25 @@
+﻿<MudDialog>
+    <DialogContent>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code
+{
+    [Parameter] public PostViewModel Post { get; init; }
+
+    [CascadingParameter] public MudDialogInstance MudDialog { get; init; }
+
+    private async Task Submit()
+    {
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+}

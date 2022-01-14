@@ -63,6 +63,43 @@ public sealed class DialogHelperService
         await ShowDialog<NotificationDialog>("Report Post", parameters, options);
     }
 
+    public async Task<DialogResult> ShowReportPostDialog(string message, long postId, long commentId)
+    {
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true,
+            CloseButton = true
+        };
+
+        var parameters = new DialogParameters
+        {
+            ["postid"] = postId,
+            ["commentid"] = commentId
+        };
+
+        var result = await ShowDialog<ReportPostDialog>(message, parameters, options);
+        return result;
+    }
+
+    public async Task<DialogResult> ShowReportPostTagsDialog(string title, PostViewModel viewModel)
+    {
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true,
+            CloseButton = true
+        };
+
+        var parameters = new DialogParameters
+        {
+            ["post"] = viewModel,
+        };
+
+        var result = await ShowDialog<ReportPostTagsDialog>(title, parameters, options);
+        return result;
+    }
+
     public async Task<bool?> ShowMessageBox(string title, string message = null, string yesText = null, string noText = null, string cancelText = null, DialogOptions options = null)
     {
         var result = await _dialogService.ShowMessageBox(title, message, yesText, noText, cancelText, options);

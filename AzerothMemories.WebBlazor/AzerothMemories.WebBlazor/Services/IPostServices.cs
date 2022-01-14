@@ -46,4 +46,10 @@ public interface IPostServices
 
     [Post(nameof(TryDeleteComment) + "/{postId}/{commentId}")]
     Task<long> TryDeleteComment(Session session, [Path] long postId, [Path] long commentId);
+
+    [Post(nameof(TryReportPost) + "/{postId}")]
+    Task<bool> TryReportPost(Session session, [Path] long postId, [Body] PostReportInfo reportInfo);
+
+    [Post(nameof(TryReportPostComment) + "/{postId}/{commentId}")]
+    Task<bool> TryReportPostComment(Session session, [Path] long postId, [Path] long commentId, [Body] PostReportInfo reportInfo);
 }

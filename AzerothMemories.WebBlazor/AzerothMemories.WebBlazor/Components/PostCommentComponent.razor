@@ -192,7 +192,8 @@
     }
 
     private async Task OnReportComment()
-    {
+    {        
+        await Services.DialogService.ShowReportPostDialog($"Report {Comment.Comment.AccountUsername}'s Comment ({Comment.Comment.Id})", Comment.Comment.PostId, Comment.Comment.Id);
     }
 
     private async Task OnReactionLinkClicked()

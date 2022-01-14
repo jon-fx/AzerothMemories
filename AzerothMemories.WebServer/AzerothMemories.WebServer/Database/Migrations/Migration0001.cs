@@ -30,8 +30,8 @@ public sealed class Migration0001 : Migration
 
         Create.Table("Accounts_Following")
             .WithColumn(nameof(AccountFollowingRecord.Id)).AsInt64().PrimaryKey().Identity()
-            .WithColumn(nameof(AccountFollowingRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade).Nullable()
-            .WithColumn(nameof(AccountFollowingRecord.FollowerId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade).Nullable()
+            .WithColumn(nameof(AccountFollowingRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(AccountFollowingRecord.FollowerId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade)
             .WithColumn(nameof(AccountFollowingRecord.Status)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(AccountFollowingRecord.LastUpdateTime)).AsDateTimeOffset().NotNullable()
             .WithColumn(nameof(AccountFollowingRecord.CreatedTime)).AsDateTimeOffset().NotNullable();
@@ -162,9 +162,31 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(PostCommentReactionRecord.Reaction)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(PostCommentReactionRecord.LastUpdateTime)).AsDateTimeOffset();
 
+        Create.Table("Posts_Reports")
+            .WithColumn(nameof(PostReportRecord.Id)).AsInt64().PrimaryKey().Identity()
+            .WithColumn(nameof(PostReportRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(PostReportRecord.PostId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts", "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(PostReportRecord.Reason)).AsByte().WithDefaultValue(0)
+            .WithColumn(nameof(PostReportRecord.ReasonText)).AsString(200).Nullable()
+            .WithColumn(nameof(PostReportRecord.CreatedTime)).AsDateTimeOffset().NotNullable()
+            .WithColumn(nameof(PostReportRecord.ModifiedTime)).AsDateTimeOffset().NotNullable();
+
+        Create.Table("Posts_Comments_Reports")
+            .WithColumn(nameof(PostCommentReportRecord.Id)).AsInt64().PrimaryKey().Identity()
+            .WithColumn(nameof(PostCommentReportRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(PostCommentReportRecord.CommentId)).AsInt64().ForeignKey("Posts_Comments", "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(PostCommentReportRecord.Reason)).AsByte().WithDefaultValue(0)
+            .WithColumn(nameof(PostCommentReportRecord.ReasonText)).AsString(200).Nullable()
+            .WithColumn(nameof(PostCommentReportRecord.CreatedTime)).AsDateTimeOffset().NotNullable()
+            .WithColumn(nameof(PostCommentReportRecord.ModifiedTime)).AsDateTimeOffset().NotNullable();
+
+        Create.Table("Posts_Reports_Tags")
+            .WithColumn(nameof(PostTagReportRecord.Id)).AsInt64().PrimaryKey().Identity()
+            .WithColumn(nameof(PostTagReportRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade);
+
         Create.Table("Accounts_History")
             .WithColumn(nameof(AccountHistoryRecord.Id)).AsInt64().PrimaryKey().Identity()
-            .WithColumn(nameof(AccountHistoryRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade).Nullable()
+            .WithColumn(nameof(AccountHistoryRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade)
             .WithColumn(nameof(AccountHistoryRecord.Type)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(AccountHistoryRecord.OtherAccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.SetNull).Nullable()
             .WithColumn(nameof(AccountHistoryRecord.TargetId)).AsInt64().WithDefaultValue(0)
@@ -176,6 +198,10 @@ public sealed class Migration0001 : Migration
     public override void Down()
     {
         Delete.Table("Accounts_History");
+
+        Delete.Table("Posts_Reports");
+        Delete.Table("Posts_Comments_Reports");
+        Delete.Table("Posts_Reports_Tags");
 
         Delete.Table("Posts_Tags");
         Delete.Table("Posts_Comments_Reactions");

@@ -1085,6 +1085,197 @@ public class PostServices : IPostServices
         return now;
     }
 
+    public async Task<bool> TryReportPost(Session session, long postId, PostReportInfo reportInfo)
+    {
+        var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
+        if (activeAccountId == 0)
+        {
+            return false;
+        }
+
+        var postRecord = await GetPostRecord(postId);
+        if (postRecord == null)
+        {
+            return false;
+        }
+
+        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord);
+        if (!canSeePost)
+        {
+            return false;
+        }
+
+        var reason = reportInfo.Reason;
+        var reasonText = reportInfo.ReasonText;
+
+        if (!Enum.IsDefined(reason))
+        {
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(reasonText))
+        {
+            return false;
+        }
+
+        const int maxLength = 200;
+        if (reasonText.Length > maxLength)
+        {
+            reasonText = reasonText[..maxLength];
+        }
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        var reportQuery = from r in database.PostReports
+                          where r.PostId == postRecord.Id && r.AccountId == activeAccountId
+                          select r;
+
+        var reportQueryResult = await reportQuery.FirstOrDefaultAsync();
+        if (reportQueryResult == null)
+        {
+            var postUpdateQuery = database.GetUpdateQuery(postRecord, out _);
+
+            await postUpdateQuery.Set(x => x.TotalReportCount, x => x.TotalReportCount + 1).UpdateAsync();
+
+            await database.InsertWithInt64IdentityAsync(new PostReportRecord
+            {
+                AccountId = activeAccountId,
+                PostId = postRecord.Id,
+                Reason = reason,
+                ReasonText = reasonText,
+                CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+                ModifiedTime = SystemClock.Instance.GetCurrentInstant()
+            });
+        }
+        else
+        {
+            var reportUpdateQuery = database.GetUpdateQuery(reportQueryResult, out var reportUpdateQueryChanged);
+
+            if (CheckAndChange.Check(ref reportQueryResult.Reason, reason, ref reportUpdateQueryChanged))
+            {
+                reportUpdateQuery = reportUpdateQuery.Set(x => x.Reason, reportQueryResult.Reason);
+            }
+
+            if (CheckAndChange.Check(ref reportQueryResult.ReasonText, reasonText, ref reportUpdateQueryChanged))
+            {
+                reportUpdateQuery = reportUpdateQuery.Set(x => x.ReasonText, reportQueryResult.ReasonText);
+            }
+
+            if (CheckAndChange.Check(ref reportQueryResult.ModifiedTime, SystemClock.Instance.GetCurrentInstant(), ref reportUpdateQueryChanged))
+            {
+                reportUpdateQuery = reportUpdateQuery.Set(x => x.ModifiedTime, reportQueryResult.ModifiedTime);
+            }
+
+            if (reportUpdateQueryChanged)
+            {
+                await reportUpdateQuery.UpdateAsync();
+            }
+        }
+
+        return true;
+    }
+
+    public async Task<bool> TryReportPostComment(Session session, long postId, long commentId, PostReportInfo reportInfo)
+    {
+        var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
+        if (activeAccountId == 0)
+        {
+            return false;
+        }
+
+        var postRecord = await GetPostRecord(postId);
+        if (postRecord == null)
+        {
+            return false;
+        }
+
+        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord);
+        if (!canSeePost)
+        {
+            return false;
+        }
+
+        var allCommentPages = await TryGetAllPostComments(postId);
+        var allComments = allCommentPages[0].AllComments;
+        if (!allComments.TryGetValue(commentId, out var commentViewModel))
+        {
+            return false;
+        }
+
+        var reason = reportInfo.Reason;
+        var reasonText = reportInfo.ReasonText;
+
+        if (!Enum.IsDefined(reason))
+        {
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(reasonText))
+        {
+            return false;
+        }
+
+        const int maxLength = 200;
+        if (reasonText.Length > maxLength)
+        {
+            reasonText = reasonText[..maxLength];
+        }
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        var reportQuery = from r in database.PostCommentReports
+                          where r.CommentId == commentId && r.AccountId == activeAccountId
+                          select r;
+
+        var reportQueryResult = await reportQuery.FirstOrDefaultAsync();
+        if (reportQueryResult == null)
+        {
+            var commentUpdateQuery = (from c in database.PostComments
+                                      where c.Id == commentId
+                                      select c).AsUpdatable();
+
+            commentUpdateQuery = commentUpdateQuery.Set(x => x.TotalReportCount, x => x.TotalReportCount + 1);
+
+            await commentUpdateQuery.UpdateAsync();
+
+            await database.InsertWithInt64IdentityAsync(new PostCommentReportRecord
+            {
+                AccountId = activeAccountId,
+                CommentId = commentId,
+                Reason = reason,
+                ReasonText = reasonText,
+                CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+                ModifiedTime = SystemClock.Instance.GetCurrentInstant(),
+            });
+        }
+        else
+        {
+            var reportUpdateQuery = database.GetUpdateQuery(reportQueryResult, out var reportUpdateQueryChanged);
+
+            if (CheckAndChange.Check(ref reportQueryResult.Reason, reason, ref reportUpdateQueryChanged))
+            {
+                reportUpdateQuery = reportUpdateQuery.Set(x => x.Reason, reportQueryResult.Reason);
+            }
+
+            if (CheckAndChange.Check(ref reportQueryResult.ReasonText, reasonText, ref reportUpdateQueryChanged))
+            {
+                reportUpdateQuery = reportUpdateQuery.Set(x => x.ReasonText, reportQueryResult.ReasonText);
+            }
+
+            if (CheckAndChange.Check(ref reportQueryResult.ModifiedTime, SystemClock.Instance.GetCurrentInstant(), ref reportUpdateQueryChanged))
+            {
+                reportUpdateQuery = reportUpdateQuery.Set(x => x.ModifiedTime, reportQueryResult.ModifiedTime);
+            }
+
+            if (reportUpdateQueryChanged)
+            {
+                await reportUpdateQuery.UpdateAsync();
+            }
+        }
+
+        return true;
+    }
+
     [ComputeMethod]
     protected virtual async Task<PostRecord> GetPostRecord(long postId)
     {

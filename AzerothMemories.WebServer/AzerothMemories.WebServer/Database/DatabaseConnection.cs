@@ -30,11 +30,11 @@ public sealed class DatabaseConnection : DataConnection
 
     public ITable<PostCommentReactionRecord> PostCommentReactions => GetTable<PostCommentReactionRecord>();
 
-    //public ITable<PostReportRecord> PostReports => GetTable<PostReportRecord>();
+    public ITable<PostReportRecord> PostReports => GetTable<PostReportRecord>();
 
-    //public ITable<PostTagReportRecord> PostTagReports => GetTable<PostTagReportRecord>();
+    public ITable<PostTagReportRecord> PostTagReports => GetTable<PostTagReportRecord>();
 
-    //public ITable<PostCommentReportRecord> PostCommentReports => GetTable<PostCommentReportRecord>();
+    public ITable<PostCommentReportRecord> PostCommentReports => GetTable<PostCommentReportRecord>();
 
     public ITable<BlizzardDataRecord> BlizzardData => GetTable<BlizzardDataRecord>();
 

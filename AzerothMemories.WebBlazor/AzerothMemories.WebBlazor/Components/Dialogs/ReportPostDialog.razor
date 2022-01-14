@@ -1,0 +1,73 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudSelect Label="Select reason" @bind-Value="_reason" AdornmentIcon="@Icons.Material.Filled.Report" AdornmentColor="Color.Primary">
+            @foreach (var reason in _allReasons)
+            {
+                <MudSelectItem Value="@reason">@reason.Humanize()</MudSelectItem>
+            }
+        </MudSelect>
+
+        <MudTextField @bind-Value="@_reasonText" Lines="3" MaxLength="_maxLength" Variant="Variant.Outlined"></MudTextField>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code
+{
+    private static readonly PostReportedReason[] _allReasons = Enum.GetValues<PostReportedReason>();
+    
+    private string _reasonText;
+    private PostReportedReason _reason;
+    private readonly int _maxLength = 200;
+
+    [Parameter] public long PostId { get; init; }
+
+    [Parameter] public long CommentId { get; init; }
+
+    [CascadingParameter] public MudDialogInstance MudDialog { get; init; }
+    
+    [Inject] public IPostServices PostServices { get; init; }
+
+    [Inject] public DialogHelperService DialogService { get; init; }
+
+    private async Task Submit()
+    {
+        MudDialog.Close(DialogResult.Ok(true));
+
+        var reasonText = _reasonText;
+        if (string.IsNullOrWhiteSpace(reasonText))
+        {
+            return;
+        }
+
+        if (reasonText.Length > _maxLength)
+        {
+            reasonText = reasonText[.._maxLength];
+        }
+
+        var info = new PostReportInfo
+        {
+            Reason = _reason,
+            ReasonText = reasonText,
+        };
+
+        if (CommentId == 0)
+        {
+            var result = await PostServices.TryReportPost(null, PostId, info);
+            await DialogService.ShowNotificationDialog(result, "Post reported.");
+        }
+        else
+        {
+            var result = await PostServices.TryReportPostComment(null, PostId,  CommentId, info);
+            await DialogService.ShowNotificationDialog(result, "Comment reported.");
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+}
