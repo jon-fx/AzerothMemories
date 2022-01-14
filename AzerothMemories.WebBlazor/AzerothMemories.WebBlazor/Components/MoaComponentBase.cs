@@ -23,7 +23,7 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
 
     [Inject] public IPostServices PostServices { get; init; }
 
-    [Inject] public ISearchPostsServices SearchPostsServices { get; set; }
+    [Inject] public ISearchServices SearchServices { get; set; }
 
     [Inject] public ActiveAccountServices ActiveAccountServices { get; init; }
 

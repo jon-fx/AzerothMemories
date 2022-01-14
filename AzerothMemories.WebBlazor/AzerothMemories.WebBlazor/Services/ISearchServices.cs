@@ -1,7 +1,7 @@
 ﻿namespace AzerothMemories.WebBlazor.Services;
 
-[BasePath("searchposts")]
-public interface ISearchPostsServices
+[BasePath("search")]
+public interface ISearchServices
 {
     [ComputeMethod]
     [Get(nameof(TryGetRecentPosts))]

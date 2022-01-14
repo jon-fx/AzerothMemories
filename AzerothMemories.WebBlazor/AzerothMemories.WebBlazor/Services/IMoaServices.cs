@@ -12,7 +12,7 @@ public interface IMoaServices
 
     IPostServices PostServices { get; init; }
 
-    ISearchPostsServices SearchPostsServices { get; set; }
+    ISearchServices SearchServices { get; set; }
 
     ActiveAccountServices ActiveAccountServices { get; init; }
 

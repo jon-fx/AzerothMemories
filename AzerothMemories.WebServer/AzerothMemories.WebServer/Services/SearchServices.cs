@@ -3,12 +3,12 @@
 namespace AzerothMemories.WebServer.Services;
 
 [RegisterComputeService]
-[RegisterAlias(typeof(ISearchPostsServices))]
-public class SearchPostsServices : ISearchPostsServices
+[RegisterAlias(typeof(ISearchServices))]
+public class SearchServices : ISearchServices
 {
     private readonly CommonServices _commonServices;
 
-    public SearchPostsServices(CommonServices commonServices)
+    public SearchServices(CommonServices commonServices)
     {
         _commonServices = commonServices;
     }
