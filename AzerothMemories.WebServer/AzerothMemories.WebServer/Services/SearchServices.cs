@@ -14,6 +14,87 @@ public class SearchServices : ISearchServices
     }
 
     [ComputeMethod]
+    public virtual async Task<MainSearchResult[]> TrySearch(Session session, MainSearchType searchType, string searchString)
+    {
+        return await TrySearch(searchType, searchString);
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<MainSearchResult[]> TrySearch(MainSearchType searchType, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString) || searchString.Length < 1)
+        {
+            return Array.Empty<MainSearchResult>();
+        }
+
+        searchString = DatabaseHelpers.GetSearchableName(searchString);
+        if (searchString.Length < 1)
+        {
+            return Array.Empty<MainSearchResult>();
+        }
+
+        var allResults = new List<MainSearchResult>();
+        if ((searchType & MainSearchType.Account) == MainSearchType.Account)
+        {
+            var results = await TrySearchAccounts(searchString);
+            allResults.AddRange(results);
+        }
+
+        if ((searchType & MainSearchType.Character) == MainSearchType.Character)
+        {
+            var results = await TrySearchCharacters(searchString);
+            allResults.AddRange(results);
+        }
+
+        if ((searchType & MainSearchType.Guild) == MainSearchType.Guild)
+        {
+            var results = await TrySearchGuilds(searchString);
+            allResults.AddRange(results);
+        }
+
+        return allResults.ToArray();
+    }
+
+    [ComputeMethod(AutoInvalidateTime = 60)]
+    protected virtual async Task<MainSearchResult[]> TrySearchAccounts(string searchString)
+    {
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        var query = from r in database.Accounts
+                    where r.UsernameSearchable.StartsWith(searchString)
+                    orderby Sql.Length(r.UsernameSearchable)
+                    select MainSearchResult.CreateAccount(r.Id, r.Username, r.Avatar);
+
+        var results = await query.Take(50).ToArrayAsync();
+        return results;
+    }
+
+    [ComputeMethod(AutoInvalidateTime = 60)]
+    protected virtual async Task<MainSearchResult[]> TrySearchCharacters(string searchString)
+    {
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        var query = from r in database.Characters
+                    where r.NameSearchable.StartsWith(searchString)
+                    orderby Sql.Length(r.NameSearchable)
+                    select MainSearchResult.CreateCharacter(r.Id, r.MoaRef, r.Name, r.AvatarLink, r.RealmId, r.Class);
+
+        var results = await query.Take(50).ToArrayAsync();
+        return results;
+    }
+
+    [ComputeMethod(AutoInvalidateTime = 60)]
+    protected virtual async Task<MainSearchResult[]> TrySearchGuilds(string searchString)
+    {
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        var query = from r in database.Guilds
+                    where r.NameSearchable.StartsWith(searchString)
+                    orderby Sql.Length(r.NameSearchable)
+                    select MainSearchResult.CreateGuild(r.Id, r.MoaRef, r.Name, null, r.RealmId);
+
+        var results = await query.Take(50).ToArrayAsync();
+        return results;
+    }
+
+    [ComputeMethod]
     public virtual async Task<RecentPostsResults> TryGetRecentPosts(Session session, RecentPostsType postsType, PostSortMode sortMode, int currentPage, string locale)
     {
         var account = await _commonServices.AccountServices.TryGetAccount(session);

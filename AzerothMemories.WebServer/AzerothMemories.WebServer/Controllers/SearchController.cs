@@ -12,6 +12,12 @@ public class SearchController : ControllerBase, ISearchServices
     }
 
     [HttpGet, Publish]
+    public Task<MainSearchResult[]> TrySearch(Session session, [FromQuery] MainSearchType searchType, [FromQuery] string searchString)
+    {
+        return _commonServices.SearchServices.TrySearch(session, searchType, searchString);
+    }
+
+    [HttpGet, Publish]
     public Task<RecentPostsResults> TryGetRecentPosts(Session session, [FromQuery] RecentPostsType postsType, [FromQuery] PostSortMode sortMode, [FromQuery] int currentPage, [FromQuery] string locale)
     {
         return _commonServices.SearchServices.TryGetRecentPosts(session, postsType, sortMode, currentPage, locale);

@@ -4,6 +4,10 @@
 public interface ISearchServices
 {
     [ComputeMethod]
+    [Get(nameof(TrySearch))]
+    Task<MainSearchResult[]> TrySearch(Session session, [Query] MainSearchType searchType, [Query] string searchString);
+
+    [ComputeMethod]
     [Get(nameof(TryGetRecentPosts))]
     Task<RecentPostsResults> TryGetRecentPosts(Session session, [Query] RecentPostsType postsType, [Query] PostSortMode sortMode, [Query] int currentPage, [Query] string locale);
 

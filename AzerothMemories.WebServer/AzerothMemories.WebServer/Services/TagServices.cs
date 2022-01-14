@@ -99,10 +99,7 @@ public class TagServices : ITagServices
             return Array.Empty<PostTagInfo>();
         }
 
-        //locale ??= CultureInfo.CurrentCulture.Name;
-        var tempBytes = Encoding.GetEncoding("ISO-8859-8").GetBytes(searchString);
-        searchString = Encoding.UTF8.GetString(tempBytes);
-        searchString = searchString.Trim().ToLower();
+        searchString = DatabaseHelpers.GetSearchableName(searchString);
         if (searchString.Length < 3)
         {
             return Array.Empty<PostTagInfo>();
