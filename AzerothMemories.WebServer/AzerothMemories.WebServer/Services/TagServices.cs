@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Text;
+﻿using System.Text;
 using System.Web;
 
 namespace AzerothMemories.WebServer.Services;
@@ -43,7 +42,7 @@ public class TagServices : ITagServices
             return new PostTagInfo(tagType, tagId, PostTagInfo.GetTagString(tagType, tagId), null);
         }
 
-        return CreatePostTagInfo(record);
+        return CreatePostTagInfo(record, locale);
     }
 
     [ComputeMethod]
@@ -93,14 +92,14 @@ public class TagServices : ITagServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostTagInfo[]> Search(Session session, string searchString, string locale = null)
+    public virtual async Task<PostTagInfo[]> Search(Session session, string searchString, string locale)
     {
         if (string.IsNullOrWhiteSpace(searchString) || searchString.Length < 3)
         {
             return Array.Empty<PostTagInfo>();
         }
 
-        locale ??= CultureInfo.CurrentCulture.Name;
+        //locale ??= CultureInfo.CurrentCulture.Name;
         var tempBytes = Encoding.GetEncoding("ISO-8859-8").GetBytes(searchString);
         searchString = Encoding.UTF8.GetString(tempBytes);
         searchString = searchString.Trim().ToLower();
@@ -122,7 +121,7 @@ public class TagServices : ITagServices
         var postTags = new List<PostTagInfo>();
         foreach (var record in records)
         {
-            var postTag = CreatePostTagInfo(record);
+            var postTag = CreatePostTagInfo(record, locale);
             postTags.Add(postTag);
         }
 
@@ -134,14 +133,20 @@ public class TagServices : ITagServices
         return database.BlizzardData.Where(r => Sql.Lower(r.Name.En_Gb).StartsWith(searchString)).OrderBy(r => r.TagType).ThenBy(r => Sql.Length(r.Name.En_Gb)).Take(50);
     }
 
-    private PostTagInfo CreatePostTagInfo(BlizzardDataRecord record)
+    private PostTagInfo CreatePostTagInfo(BlizzardDataRecord record, string locale)
     {
         if (record.TagType == PostTagType.Realm)
         {
             record.Media = null;
         }
 
-        return new PostTagInfo(record.TagType, record.TagId, record.Name.En_Gb, record.Media);
+        var name = record.Name.En_Gb;
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            name = PostTagInfo.GetTagString(record.TagType, record.TagId);
+        }
+
+        return new PostTagInfo(record.TagType, record.TagId, name, record.Media);
     }
 
     public async Task<PostTagRecord> TryCreateTagRecord(string systemTag, ActiveAccountViewModel accountViewModel, PostTagKind tagKind)

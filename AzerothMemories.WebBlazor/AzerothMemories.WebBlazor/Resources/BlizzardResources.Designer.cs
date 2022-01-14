@@ -61,6 +61,96 @@ namespace AzerothMemories.WebBlazor.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        public static string Main_0 {
+            get {
+                return ResourceManager.GetString("Main-0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dungeons.
+        /// </summary>
+        public static string Main_1 {
+            get {
+                return ResourceManager.GetString("Main-1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Raids.
+        /// </summary>
+        public static string Main_2 {
+            get {
+                return ResourceManager.GetString("Main-2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Arena.
+        /// </summary>
+        public static string Main_3 {
+            get {
+                return ResourceManager.GetString("Main-3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Battlegrounds.
+        /// </summary>
+        public static string Main_4 {
+            get {
+                return ResourceManager.GetString("Main-4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PvP.
+        /// </summary>
+        public static string Main_5 {
+            get {
+                return ResourceManager.GetString("Main-5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Achievements.
+        /// </summary>
+        public static string Main_6 {
+            get {
+                return ResourceManager.GetString("Main-6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Collections.
+        /// </summary>
+        public static string Main_7 {
+            get {
+                return ResourceManager.GetString("Main-7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mounts.
+        /// </summary>
+        public static string Main_8 {
+            get {
+                return ResourceManager.GetString("Main-8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pets.
+        /// </summary>
+        public static string Main_9 {
+            get {
+                return ResourceManager.GetString("Main-9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to lightbringer.
         /// </summary>
         public static string RealmSlug_1 {
@@ -5061,6 +5151,15 @@ namespace AzerothMemories.WebBlazor.Resources {
         public static string RealmSlug_999 {
             get {
                 return ResourceManager.GetString("RealmSlug-999", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string String1 {
+            get {
+                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
     }

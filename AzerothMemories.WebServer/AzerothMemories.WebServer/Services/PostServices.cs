@@ -271,7 +271,7 @@ public class PostServices : IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postAccountId, long postId, string locale = null)
+    public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postAccountId, long postId, string locale)
     {
         var result = await TryGetPostViewModel(session, postId, locale);
         if (result.AccountId != postAccountId)
@@ -1125,7 +1125,7 @@ public class PostServices : IPostServices
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         var allTags = from tag in database.PostTags
-                      where tag.PostId == postId /*&& tag.TagKind == PostTagKind.Post*/ && tag.TagKind != PostTagKind.Deleted
+                      where tag.PostId == postId && (tag.TagKind == PostTagKind.Post || tag.TagKind == PostTagKind.PostComment || tag.TagKind == PostTagKind.PostRestored)
                       select tag;
 
         return await allTags.ToArrayAsync();

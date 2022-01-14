@@ -18,7 +18,7 @@ public class PostController : ControllerBase, IPostServices
     }
 
     [HttpGet("{accountId}/{postId}"), Publish]
-    public Task<PostViewModel> TryGetPostViewModel(Session session, [FromRoute] long accountId, [FromRoute] long postId, [FromQuery] string locale = null)
+    public Task<PostViewModel> TryGetPostViewModel(Session session, [FromRoute] long accountId, [FromRoute] long postId, [FromQuery] string locale)
     {
         return _commonServices.PostServices.TryGetPostViewModel(session, accountId, postId, locale);
     }

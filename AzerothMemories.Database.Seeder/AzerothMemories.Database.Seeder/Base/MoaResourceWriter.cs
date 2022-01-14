@@ -114,11 +114,15 @@ internal sealed class MoaResourceWriter
         foreach (var record in typeTags)
         {
             SetExtensions.Update(record.Key, record.Name, clientSideDataDict);
+
+            noneDict.Add(record.Key, record.Key);
         }
 
         foreach (var record in mainTags)
         {
             SetExtensions.Update(record.Key, record.Name, clientSideDataDict);
+
+            noneDict.Add(record.Key, record.Key);
         }
 
         foreach (var record in characterRaceData)

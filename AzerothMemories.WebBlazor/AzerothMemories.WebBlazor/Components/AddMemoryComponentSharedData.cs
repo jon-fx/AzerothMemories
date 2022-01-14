@@ -83,7 +83,7 @@ public sealed class AddMemoryComponentSharedData
         var timeStamp = PostTimeStamp.ToUnixTimeMilliseconds();
         if (timeStamp > 0 && PostTimeStamp < SystemClock.Instance.GetCurrentInstant())
         {
-            var achievements = await _viewModel.Services.AccountServices.TryGetAchievementsByTime(null, timeStamp, 120);
+            var achievements = await _viewModel.Services.AccountServices.TryGetAchievementsByTime(null, timeStamp, 120, CultureInfo.CurrentCulture.Name);
 
             if (_selectedAchievementTags.Count > 0)
             {
