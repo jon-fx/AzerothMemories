@@ -12,6 +12,34 @@ public sealed class MainSearchResult
 
     [JsonInclude] public MainSearchType Type { get; init; }
 
+    public string GetLink()
+    {
+        if (Type == MainSearchType.Account)
+        {
+            return $@"account\{Id}";
+        }
+
+        if (Type == MainSearchType.Character)
+        {
+            var moaRef = new MoaRef(RefStr);
+            var region = moaRef.Region.ToInfo();
+            var realmSlug = moaRef.Realm;
+
+            return $@"character\{region.TwoLetters}\{realmSlug}\{moaRef.Name}";
+        }
+
+        if (Type == MainSearchType.Guild)
+        {
+            var moaRef = new MoaRef(RefStr);
+            var region = moaRef.Region.ToInfo();
+            var realmSlug = moaRef.Realm;
+
+            return $@"guild\{region.TwoLetters}\{realmSlug}\{moaRef.Name}";
+        }
+
+        throw new NotImplementedException();
+    }
+
     public static MainSearchResult CreateAccount(long id, string name, string avatar)
     {
         return new MainSearchResult

@@ -47,11 +47,11 @@ public sealed class AccountHistoryViewModel
 
                 var name = $"<a href='character/{TargetId}'>Unknown</a>";
                 var character = activeAccountViewModel.GetCharactersSafe().FirstOrDefault(x => x.Id == TargetId);
-                if (character != null)
+                if (character != null && character.Ref != null)
                 {
-                    var region = character.RegionId.ToInfo();
-                    var slug = stringLocalizer[$"RealmSlug-{character.RealmId}"];
-                    var nameLink = $"<a class='wowclass-{character.Class}' href='character/{region.TwoLetters}/{slug}/{character.Name}'>{character.Name}</a>";
+                    var moaRef = new MoaRef(character.Ref);
+                    var region = moaRef.Region.ToInfo();
+                    var nameLink = $"<a class='wowclass-{character.Class}' href='character/{region.TwoLetters}/{moaRef.Realm}/{character.Name}'>{character.Name}</a>";
                     name = $"{nameLink} ({stringLocalizer[$"Realm-{character.RealmId}"]})";
 
                     //name = $"<a class='wowclass-{character.Class}' href='character/{character.Id}'>{character.Name}</a> ({stringLocalizer[$"Realm-{character.RealmId}"]})";

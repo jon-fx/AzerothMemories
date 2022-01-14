@@ -1,1 +1,95 @@
-﻿
+﻿<AutoCompleteComponent @bind-text="@_autoCompleteText"
+                       @bind-value="@SelectedValue"
+                       Placeholder="Search..."
+                       T="MainSearchResult"
+                       SearchFunc="SearchFunc"
+                       ToStringFunc="ToStringFunc">
+    <ItemTemplate Context="e">
+        <a href="@e.GetLink()">
+            <MudCardHeader Class="pa-0">
+                <CardHeaderAvatar>
+                    <MudAvatar Size="Size.Small" Image="@e.Avatar" Square="true">@e.Name[0]</MudAvatar>
+                </CardHeaderAvatar>
+                <CardHeaderContent>
+                    @if (e.Type == MainSearchType.Account)
+                    {
+                        <MudText>@e.Name</MudText>
+                    }
+                    else if (e.Type == MainSearchType.Character)
+                    {
+                        <MudText Class=@($"wowclass-{e.CharacterClass}")>@e.Name</MudText>
+
+                        <RealmLinkComponent Typo="Typo.caption"
+                                            BlizzardRealmId="@e.RealmId"
+                                            LinkDisabled="true"/>
+                    }
+                    else if (e.Type == MainSearchType.Guild)
+                    {
+                        <MudText>@e.Name</MudText>
+
+                        <RealmLinkComponent Typo="Typo.caption"
+                                            BlizzardRealmId="@e.RealmId"
+                                            LinkDisabled="true"/>
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
+                </CardHeaderContent>
+            </MudCardHeader>
+        </a>
+    </ItemTemplate>
+</AutoCompleteComponent>
+
+@code
+{
+    private string _autoCompleteText;
+    private MainSearchResult _lastSelectedValue;
+
+    public MainSearchResult SelectedValue
+    {
+        get => null;
+        set
+        {
+            if (_lastSelectedValue == value)
+            {
+                return;
+            }
+            
+            
+            _lastSelectedValue = value;
+
+            if (_lastSelectedValue != null)
+            {
+                NavigationManager.NavigateTo(_lastSelectedValue.GetLink());
+            }
+
+            _autoCompleteText = null;
+        }
+    }
+
+    [Inject] public ISearchServices SearchServices { get; init; }
+
+    [Inject] public NavigationManager NavigationManager { get; init; }
+
+    private async Task<IEnumerable<MainSearchResult>> SearchFunc(string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString) || searchString.Length < 3)
+        {
+            return Enumerable.Empty<MainSearchResult>();
+        }
+        
+        var results = await SearchServices.TrySearch(null, MainSearchType.Account | MainSearchType.Character | MainSearchType.Guild, searchString);
+        return results;
+    }
+
+    private string ToStringFunc(MainSearchResult arg)
+    {
+        if (arg == null)
+        {
+            return string.Empty;
+        }
+
+        return arg.Name;
+    }
+}
