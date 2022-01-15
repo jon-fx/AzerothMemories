@@ -48,7 +48,7 @@
             }
         </MudPaper>
 
-        var characters = Services.ActiveAccountServices?.AccountViewModel?.GetCharactersSafe();
+        var characters = SharedData.TryGetAccountViewModel?.GetCharactersSafe();
         if (characters != null && characters.Length > 0)
         {
             <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">

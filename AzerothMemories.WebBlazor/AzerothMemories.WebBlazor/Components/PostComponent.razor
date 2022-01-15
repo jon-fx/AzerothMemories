@@ -420,7 +420,7 @@ else
 
     private void OnEditPostTags()
     {
-        Services.NavigationManager.NavigateTo($"/edittags/{Post.Id}");
+        Services.NavigationManager.NavigateTo($"/edittags/{Post.AccountId}/{Post.Id}");
     }
 
     private async Task OnTogglePostVisibility()

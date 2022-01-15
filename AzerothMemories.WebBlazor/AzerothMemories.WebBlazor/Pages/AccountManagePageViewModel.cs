@@ -17,7 +17,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
 
     public string NewUsernameTextBoxAdornmentIcon { get; private set; }
 
-    public ActiveAccountViewModel AccountViewModel { get; private set; }
+    public AccountViewModel AccountViewModel { get; private set; }
 
     public string[] SocialLinks { get; set; }
 

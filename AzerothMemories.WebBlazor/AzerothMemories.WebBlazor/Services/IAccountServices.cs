@@ -5,7 +5,7 @@ public interface IAccountServices
 {
     [ComputeMethod]
     [Get(nameof(TryGetAccount))]
-    Task<ActiveAccountViewModel> TryGetAccount(Session session);
+    Task<AccountViewModel> TryGetAccount(Session session);
 
     [ComputeMethod]
     [Get(nameof(TryGetAccountById) + "/{accountId}")]

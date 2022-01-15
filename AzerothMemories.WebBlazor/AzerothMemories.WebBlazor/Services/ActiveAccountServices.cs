@@ -21,7 +21,7 @@ public sealed class ActiveAccountServices
 
     public long ActiveAccountId => AccountViewModel?.Id ?? 0;
 
-    public ActiveAccountViewModel AccountViewModel { get; private set; }
+    public AccountViewModel AccountViewModel { get; private set; }
 
     public AccountHistoryViewModel[] AccountHistoryViewModels { get; private set; }
 

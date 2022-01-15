@@ -4,26 +4,6 @@ public static class RecordToViewModels
 {
     public static void PopulateViewModel(AccountViewModel accountViewModel, AccountRecord accountRecord, Dictionary<long, AccountFollowingViewModel> followingViewModels, Dictionary<long, AccountFollowingViewModel> followersViewModels)
     {
-        accountViewModel.Id = accountRecord.Id;
-        accountViewModel.Avatar = accountRecord.Avatar;
-        accountViewModel.Username = accountRecord.Username;
-        accountViewModel.AccountType = accountRecord.AccountType;
-        accountViewModel.RegionId = accountRecord.BlizzardRegionId;
-        accountViewModel.BattleTag = accountRecord.BattleTag;
-        accountViewModel.BattleTagIsPublic = accountRecord.BattleTagIsPublic;
-        accountViewModel.CreatedDateTime = accountRecord.CreatedDateTime.ToUnixTimeMilliseconds();
-        accountViewModel.IsPrivate = accountRecord.IsPrivate;
-
-        accountViewModel.SocialLinks = new[]
-        {
-            accountRecord.SocialDiscord,
-            accountRecord.SocialTwitter,
-            accountRecord.SocialTwitch,
-            accountRecord.SocialYouTube,
-        };
-
-        accountViewModel.FollowingViewModels = RemoveNoneStatus(followingViewModels);
-        accountViewModel.FollowersViewModels = RemoveNoneStatus(followersViewModels);
     }
 
     private static Dictionary<long, AccountFollowingViewModel> RemoveNoneStatus(Dictionary<long, AccountFollowingViewModel> viewModels)
@@ -42,13 +22,31 @@ public static class RecordToViewModels
         return results;
     }
 
-    public static AccountViewModel CreateAccountViewModel(this AccountRecord accountRecord, Dictionary<long, CharacterViewModel> characters, Dictionary<long, AccountFollowingViewModel> followingViewModels, Dictionary<long, AccountFollowingViewModel> followersViewModels)
+    public static AccountViewModel CreateAccountViewModel(this AccountRecord accountRecord, bool activeOrAdmin, Dictionary<long, CharacterViewModel> characters, Dictionary<long, AccountFollowingViewModel> followingViewModels, Dictionary<long, AccountFollowingViewModel> followersViewModels)
     {
-        var viewModel = new ActiveAccountViewModel();
+        var viewModel = new AccountViewModel
+        {
+            Id = accountRecord.Id,
+            Avatar = accountRecord.Avatar,
+            Username = accountRecord.Username,
+            AccountType = accountRecord.AccountType,
+            RegionId = accountRecord.BlizzardRegionId,
+            BattleTag = accountRecord.BattleTag,
+            BattleTagIsPublic = accountRecord.BattleTagIsPublic,
+            CreatedDateTime = accountRecord.CreatedDateTime.ToUnixTimeMilliseconds(),
+            IsPrivate = accountRecord.IsPrivate,
+            SocialLinks = new[]
+            {
+                accountRecord.SocialDiscord,
+                accountRecord.SocialTwitter,
+                accountRecord.SocialTwitch,
+                accountRecord.SocialYouTube,
+            },
+            FollowingViewModels = RemoveNoneStatus(followingViewModels),
+            FollowersViewModels = RemoveNoneStatus(followersViewModels)
+        };
 
-        PopulateViewModel(viewModel, accountRecord, followingViewModels, followersViewModels);
-
-        if (viewModel.BattleTagIsPublic)
+        if (viewModel.BattleTagIsPublic || activeOrAdmin)
         {
         }
         else
@@ -56,18 +54,14 @@ public static class RecordToViewModels
             viewModel.BattleTag = null;
         }
 
-        viewModel.CharactersArray = characters.Values.Where(x => x.AccountSync).ToArray();
-
-        return viewModel;
-    }
-
-    public static ActiveAccountViewModel CreateActiveAccountViewModel(this AccountRecord accountRecord, Dictionary<long, CharacterViewModel> characters, Dictionary<long, AccountFollowingViewModel> followingViewModels, Dictionary<long, AccountFollowingViewModel> followersViewModels)
-    {
-        var viewModel = new ActiveAccountViewModel();
-
-        PopulateViewModel(viewModel, accountRecord, followingViewModels, followersViewModels);
-
-        viewModel.CharactersArray = characters.Values.ToArray();
+        if (activeOrAdmin)
+        {
+            viewModel.CharactersArray = characters.Values.ToArray();
+        }
+        else
+        {
+            viewModel.CharactersArray = characters.Values.Where(x => x.AccountSync).ToArray();
+        }
 
         return viewModel;
     }

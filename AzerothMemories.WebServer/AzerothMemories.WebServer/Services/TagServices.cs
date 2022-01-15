@@ -146,7 +146,7 @@ public class TagServices : ITagServices
         return new PostTagInfo(record.TagType, record.TagId, name, record.Media);
     }
 
-    public async Task<PostTagRecord> TryCreateTagRecord(string systemTag, ActiveAccountViewModel accountViewModel, PostTagKind tagKind)
+    public async Task<PostTagRecord> TryCreateTagRecord(string systemTag, AccountViewModel accountViewModel, PostTagKind tagKind)
     {
         if (!ZExtensions.ParseTagInfoFrom(systemTag, out var postTagInfo))
         {

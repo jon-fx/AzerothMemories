@@ -13,6 +13,8 @@ public sealed class AddMemoryComponentSharedData
     //private AccountViewModel _accountViewModel;
     private CharacterViewModel _selectedCharacter;
 
+    private Func<AccountViewModel> _accountViewModelProvider;
+
     public AddMemoryComponentSharedData(ViewModelBase viewModel)
     {
         _viewModel = viewModel;
@@ -59,11 +61,16 @@ public sealed class AddMemoryComponentSharedData
 
     public Action OnTagsChanged { get; set; }
 
-    public Task InitializeAccount(ActiveAccountViewModel accountViewModel)
-    {
-        Exceptions.ThrowIf(accountViewModel == null);
+    public AccountViewModel TryGetAccountViewModel => _accountViewModelProvider();
 
-        //_accountViewModel = accountViewModel;
+    public Task InitializeAccount(Func<AccountViewModel> accountViewModelFunc)
+    {
+        Exceptions.ThrowIf(accountViewModelFunc == null);
+
+        _accountViewModelProvider = accountViewModelFunc;
+
+        var accountViewModel = _accountViewModelProvider();
+
         _selectedExtraTags = new HashSet<PostTagInfo>(PostTagInfo.EqualityComparer2);
 
         PostAvatarImages.Add((null, accountViewModel.Avatar, accountViewModel.GetAvatarText(), "Default"));
@@ -102,74 +109,79 @@ public sealed class AddMemoryComponentSharedData
         await InitializeAchievements();
     }
 
-    //public async Task OnEditingPost(PostViewModel currentPost)
-    //{
-    //    if (currentPost.SystemTagsArray == null)
-    //    {
-    //        await currentPost.UpdateSystemTags(currentPost.SystemTags, _services);
-    //    }
+    public async Task OnEditingPost(PostViewModel currentPost)
+    {
+        //if (currentPost.SystemTagsArray == null)
+        //{
+        //    await currentPost.UpdateSystemTags(currentPost.SystemTags, _services);
+        //}
 
-    //    foreach (var tagInfo in currentPost.SystemTagsArray)
-    //    {
-    //        var mainTag = MainTags.FirstOrDefault(x => TagHelpers.AreEqual(x, tagInfo));
-    //        if (mainTag != null)
-    //        {
-    //            _selectedMainTags.Add(mainTag);
+        foreach (var tagInfo in currentPost.SystemTags)
+        {
+            var mainTag = MainTags.FirstOrDefault(x => PostTagInfo.EqualityComparer1.Equals(x, tagInfo));
+            if (mainTag != null)
+            {
+                _selectedMainTags.Add(mainTag);
 
-    //            continue;
-    //        }
+                continue;
+            }
 
-    //        var commonTag = CommonTags.FirstOrDefault(x => TagHelpers.AreEqual(x, tagInfo));
-    //        if (commonTag != null)
-    //        {
-    //            _selectedCommonTags.Add(commonTag);
+            var commonTag = CommonTags.FirstOrDefault(x => PostTagInfo.EqualityComparer1.Equals(x, tagInfo));
+            if (commonTag != null)
+            {
+                _selectedCommonTags.Add(commonTag);
 
-    //            continue;
-    //        }
+                continue;
+            }
 
-    //        var achievementTag = _achievementTags.FirstOrDefault(x => TagHelpers.AreEqual(x, tagInfo));
-    //        if (achievementTag != null)
-    //        {
-    //            if (_selectedAchievementTags.Add(achievementTag))
-    //            {
-    //                AddImageToSelection(achievementTag);
-    //            }
+            var achievementTag = _achievementTags.FirstOrDefault(x => PostTagInfo.EqualityComparer1.Equals(x, tagInfo));
+            if (achievementTag != null)
+            {
+                if (_selectedAchievementTags.Add(achievementTag))
+                {
+                    AddImageToSelection(achievementTag);
+                }
 
-    //            continue;
-    //        }
+                continue;
+            }
 
-    //        var selectedExtraTags = _selectedExtraTags.FirstOrDefault(x => TagHelpers.AreEqual(x, tagInfo));
-    //        if (selectedExtraTags != null)
-    //        {
-    //            continue;
-    //        }
+            var selectedExtraTags = _selectedExtraTags.FirstOrDefault(x => PostTagInfo.EqualityComparer1.Equals(x, tagInfo));
+            if (selectedExtraTags != null)
+            {
+                continue;
+            }
 
-    //        if (tagInfo.Type == PostTagType.Character && _accountViewModel.CharactersDict.TryGetValue(tagInfo.Id, out var character))
-    //        {
-    //            await ChangeSelectedCharacter(character.Id);
-    //        }
+            var accountViewModel = _accountViewModelProvider();
+            if (tagInfo.Type == PostTagType.Character)
+            {
+                var character = accountViewModel.GetCharactersSafe().FirstOrDefault(x => x.Id == tagInfo.Id);
+                if (character != null)
+                {
+                    await ChangeSelectedCharacter(character.Id);
+                }
+            }
 
-    //        if (_selectedExtraTags.Add(tagInfo))
-    //        {
-    //            AddImageToSelection(tagInfo);
-    //        }
-    //    }
+            if (_selectedExtraTags.Add(tagInfo))
+            {
+                AddImageToSelection(tagInfo);
+            }
+        }
 
-    //    if (!string.IsNullOrWhiteSpace(currentPost.PostAvatar))
-    //    {
-    //        for (var i = 0; i < PostAvatarImages.Count; i++)
-    //        {
-    //            var postAvatarImage = PostAvatarImages[i];
-    //            if (postAvatarImage.ImageLink == currentPost.PostAvatar)
-    //            {
-    //                SelectedPostAvatarImage = i;
-    //                break;
-    //            }
-    //        }
-    //    }
+        if (!string.IsNullOrWhiteSpace(currentPost.PostAvatar))
+        {
+            for (var i = 0; i < PostAvatarImages.Count; i++)
+            {
+                var postAvatarImage = PostAvatarImages[i];
+                if (postAvatarImage.ImageLink == currentPost.PostAvatar)
+                {
+                    SelectedPostAvatarImage = i;
+                    break;
+                }
+            }
+        }
 
-    //    OnModelChanged?.Invoke();
-    //}
+        _viewModel.OnViewModelChanged?.Invoke();
+    }
 
     public async Task<AddMemoryResult> Submit(PublishCommentComponent commentComponent, List<AddMemoryUploadResult> uploadResults)
     {
@@ -317,7 +329,9 @@ public sealed class AddMemoryComponentSharedData
 
         TryRemoveSelectedCharacterInfo();
 
-        _selectedCharacter = _viewModel.Services.ActiveAccountServices.AccountViewModel.CharactersArray.FirstOrDefault(x => x.Id == newSelectedCharacter);
+        var accountViewModel = _accountViewModelProvider();
+
+        _selectedCharacter = accountViewModel.GetCharactersSafe().FirstOrDefault(x => x.Id == newSelectedCharacter);
         if (_selectedCharacter != null)
         {
             var stringLocalizer = _viewModel.Services.StringLocalizer;

@@ -2,19 +2,23 @@
 @page "/post/{Name}/{PostId:long}"
 @inherits MoaComponentBase<PostPageViewModel>
 
-@if (!string.IsNullOrWhiteSpace(ViewModel.ErrorMessage))
+@if (ViewModel.Helper == null)
 {
-    <CardErrorComponent ErrorMessage="@ViewModel.ErrorMessage" />
+    <CardLoadingComponent />
 }
-else if ( ViewModel.AccountViewModel == null || ViewModel.PostViewModel == null )
+else if (!string.IsNullOrWhiteSpace(ViewModel.Helper.ErrorMessage))
+{
+    <CardErrorComponent ErrorMessage="@ViewModel.Helper.ErrorMessage" />
+}
+else if ( ViewModel.Helper.AccountViewModel == null || ViewModel.Helper.PostViewModel == null )
 {
     <CardLoadingComponent />
 }
 else
 {
-    <PageTitle>@ViewModel.AccountViewModel.GetDisplayName()'s Memory of Azeroth</PageTitle>
-    <AccountHeaderCardComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" />
-    <PostViewComponent Services="@this" Post="@ViewModel.PostViewModel" PostComments="@ViewModel.PostCommentPageViewModel"/>
+    <PageTitle>@ViewModel.Helper.AccountViewModel.GetDisplayName()'s Memory of Azeroth</PageTitle>
+    <AccountHeaderCardComponent Services="@this" AccountViewModel="@ViewModel.Helper.AccountViewModel" />
+    <PostViewComponent Services="@this" Post="@ViewModel.Helper.PostViewModel" PostComments="@ViewModel.Helper.PostCommentPageViewModel"/>
 }
 
 @code 
@@ -33,12 +37,12 @@ else
 
     protected override async Task InternalComputeState()
     {
-        await ViewModel.ComputeState(Id, Name, PostId, CurrentPage, FocusedCommentId);
+        await ViewModel.Helper.ComputeState(Id, Name, PostId, CurrentPage, FocusedCommentId);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
-        await ViewModel.OnAfterRenderAsync(ScrollManager, firstRender);
+        await ViewModel.Helper.OnAfterRenderAsync(ScrollManager, firstRender);
     }
 }

@@ -214,7 +214,7 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<ActiveAccountViewModel> TryGetAccount(Session session)
+    public virtual async Task<AccountViewModel> TryGetAccount(Session session)
     {
         var accountRecord = await GetCurrentSessionAccountRecord(session);
         if (accountRecord == null)
@@ -225,7 +225,7 @@ public class AccountServices : IAccountServices
         var characters = await _commonServices.CharacterServices.TryGetAllAccountCharacters(accountRecord.Id);
         var following = await _commonServices.AccountFollowingServices.TryGetAccountFollowing(accountRecord.Id);
         var followers = await _commonServices.AccountFollowingServices.TryGetAccountFollowers(accountRecord.Id);
-        var viewModel = accountRecord.CreateActiveAccountViewModel(characters, following, followers);
+        var viewModel = accountRecord.CreateAccountViewModel(true, characters, following, followers);
 
         return viewModel;
     }
@@ -257,10 +257,11 @@ public class AccountServices : IAccountServices
             return null;
         }
 
+        var isAdmin = sessionAccount != null && sessionAccount.AccountType >= AccountType.Admin;
         var characters = await _commonServices.CharacterServices.TryGetAllAccountCharacters(accountRecord.Id);
         var following = await _commonServices.AccountFollowingServices.TryGetAccountFollowing(accountRecord.Id);
         var followers = await _commonServices.AccountFollowingServices.TryGetAccountFollowers(accountRecord.Id);
-        var viewModel = accountRecord.CreateAccountViewModel(characters, following, followers);
+        var viewModel = accountRecord.CreateAccountViewModel(isAdmin, characters, following, followers);
 
         return viewModel;
     }
@@ -280,10 +281,11 @@ public class AccountServices : IAccountServices
             return null;
         }
 
+        var isAdmin = sessionAccount != null && sessionAccount.AccountType >= AccountType.Admin;
         var characters = await _commonServices.CharacterServices.TryGetAllAccountCharacters(accountRecord.Id);
         var following = await _commonServices.AccountFollowingServices.TryGetAccountFollowing(accountRecord.Id);
         var followers = await _commonServices.AccountFollowingServices.TryGetAccountFollowers(accountRecord.Id);
-        var viewModel = accountRecord.CreateAccountViewModel(characters, following, followers);
+        var viewModel = accountRecord.CreateAccountViewModel(isAdmin, characters, following, followers);
 
         return viewModel;
     }

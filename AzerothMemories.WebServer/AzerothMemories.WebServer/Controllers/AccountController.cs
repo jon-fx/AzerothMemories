@@ -12,7 +12,7 @@ public class AccountController : ControllerBase, IAccountServices
     }
 
     [HttpGet, Publish]
-    public Task<ActiveAccountViewModel> TryGetAccount(Session session)
+    public Task<AccountViewModel> TryGetAccount(Session session)
     {
         return _commonServices.AccountServices.TryGetAccount(session);
     }

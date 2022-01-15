@@ -139,7 +139,7 @@ public class PostServices : IPostServices
         return new AddMemoryResult(AddMemoryResultCode.Success, postRecord.AccountId, postRecord.Id);
     }
 
-    private async Task<AddMemoryResultCode> CreateSystemTags(PostRecord postRecord, ActiveAccountViewModel accountViewModel, HashSet<string> systemTags, HashSet<PostTagRecord> tagRecords)
+    private async Task<AddMemoryResultCode> CreateSystemTags(PostRecord postRecord, AccountViewModel accountViewModel, HashSet<string> systemTags, HashSet<PostTagRecord> tagRecords)
     {
         if (!string.IsNullOrWhiteSpace(postRecord.PostAvatar) && !systemTags.Contains(postRecord.PostAvatar))
         {

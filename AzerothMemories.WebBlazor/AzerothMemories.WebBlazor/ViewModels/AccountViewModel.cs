@@ -28,6 +28,8 @@ public class AccountViewModel
 
     [JsonInclude] public Dictionary<long, AccountFollowingViewModel> FollowersViewModels = new();
 
+    public bool CanChangeUsername => true;
+
     public string GetDisplayName()
     {
         if (!string.IsNullOrWhiteSpace(Username))
@@ -66,5 +68,21 @@ public class AccountViewModel
         }
 
         return CharactersArray.OrderByDescending(x => x.Level).ThenBy(x => x.Name).ToArray();
+    }
+
+    public Dictionary<long, string> GetUserTagList()
+    {
+        if (FollowersViewModels == null)
+        {
+            return new Dictionary<long, string>();
+        }
+
+        var tagSet = new Dictionary<long, string>();
+        foreach (var kvp in FollowersViewModels)
+        {
+            tagSet.TryAdd(kvp.Value.FollowerId, kvp.Value.FollowerUsername);
+        }
+
+        return tagSet;
     }
 }

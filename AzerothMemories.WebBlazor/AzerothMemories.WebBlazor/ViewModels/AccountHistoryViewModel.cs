@@ -15,7 +15,7 @@ public sealed class AccountHistoryViewModel
 
     [JsonInclude] public long CreatedTime;
 
-    public string GetDisplayText(ActiveAccountViewModel activeAccountViewModel, IStringLocalizer<BlizzardResources> stringLocalizer)
+    public string GetDisplayText(AccountViewModel activeAccountViewModel, IStringLocalizer<BlizzardResources> stringLocalizer)
     {
         switch (Type)
         {

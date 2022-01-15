@@ -22,7 +22,7 @@ public sealed class AddMemoryPageViewModel : ViewModelBase
     {
         await Reset();
 
-        await SharedData.InitializeAccount(Services.ActiveAccountServices.AccountViewModel);
+        await SharedData.InitializeAccount(() => Services.ActiveAccountServices.AccountViewModel);
 
         foreach (var file in arg.GetMultipleFiles())
         {

@@ -4,7 +4,7 @@ namespace AzerothMemories.WebBlazor.Pages;
 
 public sealed class IndexPageViewModel : ViewModelBase
 {
-    public ActiveAccountViewModel AccountViewModel { get; private set; }
+    public AccountViewModel AccountViewModel { get; private set; }
 
     public RecentPostsHelper RecentPostsHelper { get; private set; }
 
