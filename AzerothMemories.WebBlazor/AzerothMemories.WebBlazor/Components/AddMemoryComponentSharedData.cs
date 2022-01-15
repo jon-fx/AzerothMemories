@@ -111,11 +111,6 @@ public sealed class AddMemoryComponentSharedData
 
     public async Task OnEditingPost(PostViewModel currentPost)
     {
-        //if (currentPost.SystemTagsArray == null)
-        //{
-        //    await currentPost.UpdateSystemTags(currentPost.SystemTags, _services);
-        //}
-
         foreach (var tagInfo in currentPost.SystemTags)
         {
             var mainTag = MainTags.FirstOrDefault(x => PostTagInfo.EqualityComparer1.Equals(x, tagInfo));
@@ -203,35 +198,24 @@ public sealed class AddMemoryComponentSharedData
         return result;
     }
 
-    //public async Task<(bool Result, string SystemTags)> SubmitOnEditingPost(PostViewModel currentPost)
-    //{
-    //    var newTags = GetSystemHashTags();
-    //    var currentTags = currentPost.SystemTagsArray.Select(x => x.TagString).ToHashSet();
+    public async Task<bool> SubmitOnEditingPost(PostViewModel currentPost)
+    {
+        var newTags = GetSystemHashTags();
 
-    //    var addedSet = new HashSet<string>(newTags);
-    //    addedSet.ExceptWith(currentTags);
+        string avatarTag = null;
+        if (SelectedPostAvatarImage > 0 && SelectedPostAvatarImage < PostAvatarImages.Count)
+        {
+            avatarTag = PostAvatarImages[SelectedPostAvatarImage].Tag.TagString;
+        }
 
-    //    var removedSet = new HashSet<string>(currentTags);
-    //    removedSet.ExceptWith(newTags);
+        var result = await _viewModel.Services.PostServices.TryUpdateSystemTags(null, currentPost.Id, new TryUpdateSystemTagsInfo
+        {
+            AvatarText = avatarTag,
+            NewTags = newTags
+        });
 
-    //    if (addedSet.Count == 0 && removedSet.Count == 0)
-    //    {
-    //        return (false, null);
-    //    }
-
-    //    var avatarImage = currentPost.PostAvatar;
-    //    if (SelectedPostAvatarImage > 0 && SelectedPostAvatarImage < PostAvatarImages.Count)
-    //    {
-    //        avatarImage = PostAvatarImages[SelectedPostAvatarImage].ImageLink;
-    //    }
-
-    //    var postProvider = _services.CommonServices.ClusterClient.GetGrain<IPostGrain>(currentPost.Id);
-    //    var result = await postProvider.OnEditMemory(avatarImage, currentPost.SystemTags, addedSet, removedSet);
-
-    //    await currentPost.UpdateSystemTags(result.SystemTags, _services);
-
-    //    return result;
-    //}
+        return result;
+    }
 
     private HashSet<string> GetSystemHashTags()
     {

@@ -27,7 +27,7 @@ public sealed class ActiveAccountServices
 
     public bool IsAccountActive => AccountViewModel != null && AccountViewModel.Id > 0;
 
-    public bool IsAdmin => IsAccountActive && AccountViewModel.AccountType == AccountType.Admin;
+    public bool IsAdmin => IsAccountActive && AccountViewModel.AccountType >= AccountType.Admin;
 
     public IActiveCommentContext ActiveCommentContext
     {

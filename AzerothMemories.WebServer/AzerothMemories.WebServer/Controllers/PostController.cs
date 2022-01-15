@@ -106,4 +106,10 @@ public class PostController : ControllerBase, IPostServices
     {
         return _commonServices.PostServices.TryReportPostTags(session, postId, tagStrings);
     }
+
+    [HttpPost("{postId}")]
+    public Task<bool> TryUpdateSystemTags(Session session, [FromRoute] long postId, [FromBody] TryUpdateSystemTagsInfo info)
+    {
+        return _commonServices.PostServices.TryUpdateSystemTags(session, postId, info);
+    }
 }

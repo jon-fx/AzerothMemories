@@ -55,4 +55,7 @@ public interface IPostServices
 
     [Post(nameof(TryReportPostTags) + "/{postId}")]
     Task<bool> TryReportPostTags(Session session, [Path] long postId, [Body] HashSet<string> tagStrings);
+
+    [Post(nameof(TryUpdateSystemTags) + "/{postId}")]
+    Task<bool> TryUpdateSystemTags(Session session, [Path] long postId, [Body] TryUpdateSystemTagsInfo newTags);
 }

@@ -30,6 +30,24 @@ public class PostServices : IPostServices
             return true;
         }
 
+        if (activeAccountId > 0)
+        {
+            var accountRecord = await _commonServices.AccountServices.TryGetAccountRecord(activeAccountId);
+            if (accountRecord == null)
+            {
+                return false;
+            }
+
+            if (accountRecord.AccountType >= AccountType.Admin)
+            {
+                return true;
+            }
+        }
+        else
+        {
+            return false;
+        }
+
         var following = await _commonServices.AccountFollowingServices.TryGetAccountFollowing(activeAccountId);
         if (following == null || following.Count == 0)
         {
@@ -989,7 +1007,7 @@ public class PostServices : IPostServices
         if (activeAccount.Id == postRecord.AccountId)
         {
         }
-        else if (activeAccount.AccountType == AccountType.Admin)
+        else if (activeAccount.AccountType >= AccountType.Admin)
         {
         }
         else
@@ -1026,7 +1044,7 @@ public class PostServices : IPostServices
         if (activeAccount.Id == postRecord.AccountId)
         {
         }
-        else if (activeAccount.AccountType == AccountType.Admin)
+        else if (activeAccount.AccountType >= AccountType.Admin)
         {
             now = -now;
         }
@@ -1063,7 +1081,7 @@ public class PostServices : IPostServices
         if (activeAccount.Id == commentViewModel.AccountId)
         {
         }
-        else if (activeAccount.AccountType == AccountType.Admin)
+        else if (activeAccount.AccountType >= AccountType.Admin)
         {
             now = -now;
         }
@@ -1351,6 +1369,126 @@ public class PostServices : IPostServices
         //_ = GetAllPostTags(postId);
 
         return true;
+    }
+
+    public async Task<bool> TryUpdateSystemTags(Session session, long postId, TryUpdateSystemTagsInfo info)
+    {
+        var activeAccount = await _commonServices.AccountServices.TryGetAccount(session);
+        if (activeAccount == null)
+        {
+            return false;
+        }
+
+        var postRecord = await GetPostRecord(postId);
+        if (postRecord == null)
+        {
+            return false;
+        }
+
+        var accountViewModel = activeAccount;
+        if (activeAccount.AccountType >= AccountType.Admin)
+        {
+            accountViewModel = await _commonServices.AccountServices.TryGetAccountById(session, postRecord.AccountId);
+        }
+        else if (activeAccount.Id != postRecord.AccountId)
+        {
+            return false;
+        }
+
+        var allTagRecords = await GetAllPostTags(postId);
+        var allCurrentTags = allTagRecords.ToDictionary(x => x.TagString, x => x);
+
+        var addedSet = new HashSet<string>(info.NewTags);
+        addedSet.ExceptWith(allCurrentTags.Keys);
+
+        var removedSet = new HashSet<string>(allCurrentTags.Keys);
+        removedSet.ExceptWith(info.NewTags);
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        if (addedSet.Count > 64)
+        {
+            return false;
+        }
+
+        if (addedSet.Count > 0 || removedSet.Count > 0)
+        {
+            var recordsToInsert = new HashSet<PostTagRecord>();
+            var recordsToUpdate = new HashSet<PostTagRecord>();
+
+            foreach (var systemTag in addedSet)
+            {
+                var newRecord = await _commonServices.TagServices.TryCreateTagRecord(systemTag, accountViewModel, PostTagKind.Post);
+                if (newRecord == null)
+                {
+                    return false;
+                }
+
+                var currentTag = await database.PostTags.Where(x => x.PostId == postId && x.TagType == newRecord.TagType && x.TagId == newRecord.TagId).FirstOrDefaultAsync();
+                if (currentTag == null)
+                {
+                    newRecord.PostId = postRecord.Id;
+                    newRecord.TagKind = PostTagKind.Post;
+
+                    recordsToInsert.Add(newRecord);
+                    allCurrentTags.Add(newRecord.TagString, newRecord);
+                }
+                else
+                {
+                    currentTag.TagKind = PostTagKind.Post;
+
+                    recordsToUpdate.Add(currentTag);
+                    allCurrentTags.Add(currentTag.TagString, currentTag);
+                }
+            }
+
+            foreach (var systemTag in removedSet)
+            {
+                if (allCurrentTags.TryGetValue(systemTag, out var tagRecord))
+                {
+                    tagRecord.TagKind = PostTagKind.Deleted;
+                    recordsToUpdate.Add(tagRecord);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            if (allCurrentTags.Count > 128)
+            {
+                return false;
+            }
+
+            if (recordsToInsert.Count > 0)
+            {
+                await database.PostTags.BulkCopyAsync(recordsToInsert);
+            }
+
+            foreach (var tagRecord in recordsToUpdate)
+            {
+                await database.GetUpdateQuery(tagRecord, out _).Set(x => x.TagKind, tagRecord.TagKind).UpdateAsync();
+            }
+        }
+
+        var avatar = info.AvatarText;
+        if (!string.IsNullOrWhiteSpace(avatar) && !allCurrentTags.ContainsKey(avatar))
+        {
+            avatar = postRecord.PostAvatar;
+        }
+
+        if (!string.IsNullOrWhiteSpace(avatar) && !allCurrentTags.ContainsKey(avatar))
+        {
+            avatar = null;
+        }
+
+        await database.GetUpdateQuery(postRecord, out _).Set(x => x.PostAvatar, avatar).UpdateAsync();
+
+        using var computed = Computed.Invalidate();
+        _ = GetPostRecord(postId);
+        _ = GetAllPostTags(postId);
+
+        return false;
     }
 
     [ComputeMethod]
