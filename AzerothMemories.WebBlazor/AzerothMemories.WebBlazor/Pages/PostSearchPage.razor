@@ -39,8 +39,6 @@ else
 
 @code
 {
-    @*[Inject] IScrollManager ScrollManager { get; init; }*@
-
     [Parameter, SupplyParameterFromQuery(Name = "tag")] public string[] Tags { get; init; }
 
     [Parameter, SupplyParameterFromQuery(Name = "sort")] public string SortMode { get; init; }
@@ -50,11 +48,14 @@ else
     [Parameter, SupplyParameterFromQuery(Name = "ptmin")] public string PostMinTime { get; init; }
 
     [Parameter, SupplyParameterFromQuery(Name = "ptmax")] public string PostMaxTime { get; init; }
+    
+    [Inject] public IJSRuntime JsRuntime { get; init; }
 
     protected override async Task InternalComputeState()
     {
         await base.InternalComputeState();
 
         await ViewModel.ComputeState(Tags, SortMode, CurrentPage, PostMinTime, PostMaxTime);
+        await JsRuntime.InvokeVoidAsync("HideWowheadToolTips");
     }
 }

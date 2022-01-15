@@ -2,6 +2,10 @@
     $WowheadPower.refreshLinks();
 }
 
+function HideWowheadToolTips() {
+    $WowheadPower.hideTooltip();
+}
+
 function BlazorGetTimeZone() {
     return Intl.DateTimeFormat().resolvedOptions().timeZone;
 }

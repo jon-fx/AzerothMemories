@@ -19,6 +19,8 @@
 
     [Parameter, EditorRequired] public EventCallback<PostTagInfo> OnSelectedItemChanged { get; init; }
     
+    [Inject] public IJSRuntime JsRuntime { get; init; }
+
     public PostTagInfo SelectedValue
     {
         get => null;
@@ -29,12 +31,13 @@
                 return;
             }
             
-            
             _lastSelectedValue = value;
 
             if (_lastSelectedValue != null)
             {
                 OnSelectedItemChanged.InvokeAsync(_lastSelectedValue).AndForget();
+                
+                JsRuntime.InvokeVoidAsync("HideWowheadToolTips").AndForget();
             }
 
             _autoCompleteText = null;
