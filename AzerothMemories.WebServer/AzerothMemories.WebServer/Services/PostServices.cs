@@ -1276,6 +1276,83 @@ public class PostServices : IPostServices
         return true;
     }
 
+    public async Task<bool> TryReportPostTags(Session session, long postId, HashSet<string> tagStrings)
+    {
+        var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
+        if (activeAccountId == 0)
+        {
+            return false;
+        }
+
+        var postRecord = await GetPostRecord(postId);
+        if (postRecord == null)
+        {
+            return false;
+        }
+
+        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord);
+        if (!canSeePost)
+        {
+            return false;
+        }
+
+        var allTagRecords = await GetAllPostTags(postId);
+        if (allTagRecords == null || allTagRecords.Length == 0)
+        {
+            return false;
+        }
+
+        var tagRecords = new List<PostTagRecord>();
+        foreach (var tagString in tagStrings)
+        {
+            var tagRecord = allTagRecords.FirstOrDefault(x => x.TagString == tagString);
+            if (tagRecord == null)
+            {
+                return false;
+            }
+
+            tagRecords.Add(tagRecord);
+        }
+
+        if (tagRecords.Count == 0)
+        {
+            return false;
+        }
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        foreach (var tagRecord in tagRecords)
+        {
+            var reportQuery = from r in database.PostTagReports
+                              where r.PostId == postRecord.Id && r.AccountId == activeAccountId && r.TagId == tagRecord.Id
+                              select r;
+
+            var alreadyReported = await reportQuery.CountAsync() > 0;
+            if (alreadyReported)
+            {
+            }
+            else
+            {
+                var postTagQuery = database.GetUpdateQuery(tagRecord, out _);
+                await postTagQuery.Set(x => x.TotalReportCount, x => x.TotalReportCount + 1).UpdateAsync();
+
+                await database.InsertAsync(new PostTagReportRecord
+                {
+                    AccountId = activeAccountId,
+                    PostId = postRecord.Id,
+                    TagId = tagRecord.Id,
+                    CreatedTime = SystemClock.Instance.GetCurrentInstant()
+                });
+            }
+        }
+
+        //using var computed = Computed.Invalidate();
+        //_ = GetPostRecord(postId);
+        //_ = GetAllPostTags(postId);
+
+        return true;
+    }
+
     [ComputeMethod]
     protected virtual async Task<PostRecord> GetPostRecord(long postId)
     {

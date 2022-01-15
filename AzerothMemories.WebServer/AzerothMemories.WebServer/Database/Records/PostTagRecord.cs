@@ -17,5 +17,7 @@ public sealed class PostTagRecord : IDatabaseRecord
 
     [Column, NotNull] public string TagString;
 
+    [Column, NotNull] public int TotalReportCount;
+
     [Column, NotNull] public Instant CreatedTime;
 }

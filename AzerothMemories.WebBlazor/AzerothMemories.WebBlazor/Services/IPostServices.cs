@@ -52,4 +52,7 @@ public interface IPostServices
 
     [Post(nameof(TryReportPostComment) + "/{postId}/{commentId}")]
     Task<bool> TryReportPostComment(Session session, [Path] long postId, [Path] long commentId, [Body] PostReportInfo reportInfo);
+
+    [Post(nameof(TryReportPostTags) + "/{postId}")]
+    Task<bool> TryReportPostTags(Session session, [Path] long postId, [Body] HashSet<string> tagStrings);
 }

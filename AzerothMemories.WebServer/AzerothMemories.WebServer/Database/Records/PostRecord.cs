@@ -21,8 +21,6 @@ public sealed class PostRecord : IDatabaseRecord
 
     [Column, NotNull] public Instant PostCreatedTime;
 
-    //[Column, NotNull] public string SystemTags;
-
     [Column, NotNull] public string BlobNames;
 
     [Column, NotNull] public int ReactionCount1;
@@ -50,18 +48,4 @@ public sealed class PostRecord : IDatabaseRecord
     [Column, NotNull] public int TotalReportCount;
 
     [Column, NotNull] public long DeletedTimeStamp;
-
-    //internal Dictionary<string, int> GetSystemTags()
-    //{
-    //    var results = new Dictionary<string, int>();
-    //    foreach (var tag in SystemTags.Split('|'))
-    //    {
-    //        var split = tag.Split('~');
-    //        var key = split[0];
-    //        int.TryParse(split[1], out var count);
-
-    //        results.TryAdd(key, count);
-    //    }
-    //    return results;
-    //}
 }

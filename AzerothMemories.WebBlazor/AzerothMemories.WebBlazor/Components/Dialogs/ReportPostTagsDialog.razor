@@ -1,5 +1,22 @@
 ﻿<MudDialog>
     <DialogContent>
+        @{
+            var systemTags = Post?.SystemTags;
+            if (systemTags != null)
+            {
+                <MudChipSet @bind-SelectedValues="@_selectedChips" MultiSelection="true" Filter="true">
+                    @foreach (var tagInfo in systemTags)
+                    {
+                        if (!tagInfo.Type.CanBeReported())
+                        {
+                            continue;
+                        }
+
+                        <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo " />
+                    }
+                </MudChipSet>
+            }
+        }
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -9,13 +26,27 @@
 
 @code
 {
+    private ICollection<object> _selectedChips;
+
     [Parameter] public PostViewModel Post { get; init; }
 
     [CascadingParameter] public MudDialogInstance MudDialog { get; init; }
+    
+    [Inject] public IPostServices PostServices { get; init; }
+
+    [Inject] public DialogHelperService DialogService { get; init; }
 
     private async Task Submit()
     {
         MudDialog.Close(DialogResult.Ok(true));
+
+        if (Post != null && _selectedChips != null && _selectedChips.Count > 0)
+        {
+            var tagStrings = _selectedChips.Select(x => ((PostTagInfo)x).TagString).ToHashSet();
+            var result = await PostServices.TryReportPostTags(null, Post.Id, tagStrings);
+
+            await DialogService.ShowNotificationDialog(result, "Tags reported.");
+        }
     }
 
     private void Cancel()

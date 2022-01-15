@@ -100,4 +100,10 @@ public class PostController : ControllerBase, IPostServices
     {
         return _commonServices.PostServices.TryReportPostComment(session, postId, commentId, reportInfo);
     }
+
+    [HttpPost("{postId}")]
+    public Task<bool> TryReportPostTags(Session session, [FromRoute] long postId, [FromBody] HashSet<string> tagStrings)
+    {
+        return _commonServices.PostServices.TryReportPostTags(session, postId, tagStrings);
+    }
 }

@@ -123,8 +123,8 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(PostRecord.PostEditedTime)).AsDateTimeOffset()
             .WithColumn(nameof(PostRecord.PostCreatedTime)).AsDateTimeOffset()
             .WithReactionInfo()
-            .WithColumn(nameof(PostRecord.TotalCommentCount)).AsInt64().WithDefaultValue(0)
-            .WithColumn(nameof(PostRecord.TotalReportCount)).AsInt64().WithDefaultValue(0)
+            .WithColumn(nameof(PostRecord.TotalCommentCount)).AsInt32().WithDefaultValue(0)
+            .WithColumn(nameof(PostRecord.TotalReportCount)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(PostRecord.DeletedTimeStamp)).AsInt64().WithDefaultValue(0);
 
         Create.Table("Posts_Comments")
@@ -135,7 +135,7 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(PostCommentRecord.PostComment)).AsString(2048).NotNullable()
             .WithReactionInfo()
             .WithColumn(nameof(PostCommentRecord.CreatedTime)).AsDateTimeOffset()
-            .WithColumn(nameof(PostCommentRecord.TotalReportCount)).AsInt64().WithDefaultValue(0)
+            .WithColumn(nameof(PostCommentRecord.TotalReportCount)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(PostCommentRecord.DeletedTimeStamp)).AsInt64().WithDefaultValue(0);
 
         Create.Table("Posts_Tags")
@@ -146,6 +146,7 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(PostTagRecord.CommentId)).AsInt64().WithDefaultValue(null).ForeignKey("Posts_Comments", "Id").OnDelete(Rule.Cascade).Nullable()
             .WithColumn(nameof(PostTagRecord.TagId)).AsInt64().WithDefaultValue(0)
             .WithColumn(nameof(PostTagRecord.TagString)).AsString(128)
+            .WithColumn(nameof(PostTagRecord.TotalReportCount)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(PostTagRecord.CreatedTime)).AsDateTimeOffset();
 
         Create.Table("Posts_Reactions")
@@ -182,7 +183,12 @@ public sealed class Migration0001 : Migration
 
         Create.Table("Posts_Reports_Tags")
             .WithColumn(nameof(PostTagReportRecord.Id)).AsInt64().PrimaryKey().Identity()
-            .WithColumn(nameof(PostTagReportRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade);
+            .WithColumn(nameof(PostTagReportRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(PostTagReportRecord.PostId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts", "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(PostTagReportRecord.TagId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts_Tags", "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(PostTagReportRecord.CreatedTime)).AsDateTimeOffset().NotNullable()
+
+            ;
 
         Create.Table("Accounts_History")
             .WithColumn(nameof(AccountHistoryRecord.Id)).AsInt64().PrimaryKey().Identity()
