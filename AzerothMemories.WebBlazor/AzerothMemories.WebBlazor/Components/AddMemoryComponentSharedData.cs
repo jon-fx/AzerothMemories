@@ -434,12 +434,10 @@ public sealed class AddMemoryComponentSharedData
         }
     }
 
-    //public async Task AddSearchDataToTags(AccountSearchResult searchResult)
-    //{
-    //    var postTag = await TagHelpers.CreatePostTag(_services, searchResult);
-
-    //    AddSearchDataToTags(postTag);
-    //}
+    public void AddSearchDataToTags(MainSearchResult searchResult)
+    {
+        AddSearchDataToTags(searchResult.ToTagInfo());
+    }
 
     public void OnSelectedMainTagChipClose(MudChip mudChip)
     {

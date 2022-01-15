@@ -1,43 +1,20 @@
 ﻿<AutoCompleteComponent @bind-text="@_autoCompleteText"
                        @bind-value="@SelectedValue"
-                       Placeholder="Search..."
+                       Placeholder="@Placeholder"
                        T="MainSearchResult"
                        SearchFunc="SearchFunc"
                        ToStringFunc="ToStringFunc">
     <ItemTemplate Context="e">
-        <a href="@e.GetLink()">
-            <MudCardHeader Class="pa-0">
-                <CardHeaderAvatar>
-                    <MudAvatar Size="Size.Small" Image="@e.Avatar" Square="true">@e.Name[0]</MudAvatar>
-                </CardHeaderAvatar>
-                <CardHeaderContent>
-                    @if (e.Type == MainSearchType.Account)
-                    {
-                        <MudText>@e.Name</MudText>
-                    }
-                    else if (e.Type == MainSearchType.Character)
-                    {
-                        <MudText Class=@($"wowclass-{e.CharacterClass}")>@e.Name</MudText>
-
-                        <RealmLinkComponent Typo="Typo.caption"
-                                            BlizzardRealmId="@e.RealmId"
-                                            LinkDisabled="true"/>
-                    }
-                    else if (e.Type == MainSearchType.Guild)
-                    {
-                        <MudText>@e.Name</MudText>
-
-                        <RealmLinkComponent Typo="Typo.caption"
-                                            BlizzardRealmId="@e.RealmId"
-                                            LinkDisabled="true"/>
-                    }
-                    else
-                    {
-                        throw new NotImplementedException();
-                    }
-                </CardHeaderContent>
-            </MudCardHeader>
-        </a>
+        @if (UseCallback)
+        {
+            <MainSearchBoxItemComponent Result="@e"/>
+        }
+        else
+        {
+            <a href="@e.GetLink()">
+                <MainSearchBoxItemComponent Result="@e"/>
+            </a>
+        }
     </ItemTemplate>
 </AutoCompleteComponent>
 
@@ -61,13 +38,28 @@
 
             if (_lastSelectedValue != null)
             {
-                NavigationManager.NavigateTo(_lastSelectedValue.GetLink());
+                if (UseCallback)
+                {
+                    OnSelectedItemChanged.InvokeAsync(_lastSelectedValue).AndForget();
+                }
+                else
+                {
+                    NavigationManager.NavigateTo(_lastSelectedValue.GetLink());
+                }
             }
 
             _autoCompleteText = null;
         }
     }
 
+    [Parameter] public string Placeholder { get; init; } = "Search...";
+    
+    [Parameter] public bool UseCallback { get; init; }
+
+    [Parameter] public MainSearchType SearchType { get; init; } = MainSearchType.Account | MainSearchType.Character | MainSearchType.Guild;
+
+    [Parameter] public EventCallback<MainSearchResult> OnSelectedItemChanged { get; init; }
+    
     [Inject] public ISearchServices SearchServices { get; init; }
 
     [Inject] public NavigationManager NavigationManager { get; init; }
@@ -79,7 +71,7 @@
             return Enumerable.Empty<MainSearchResult>();
         }
         
-        var results = await SearchServices.TrySearch(null, MainSearchType.Account | MainSearchType.Character | MainSearchType.Guild, searchString);
+        var results = await SearchServices.TrySearch(null, SearchType, searchString);
         return results;
     }
 

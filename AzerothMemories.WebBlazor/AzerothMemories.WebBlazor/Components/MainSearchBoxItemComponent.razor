@@ -1,0 +1,35 @@
+﻿<MudCardHeader Class="pa-0">
+    <CardHeaderAvatar>
+        <MudAvatar Size="Size.Small" Image="@Result.Avatar" Square="true">@Result.Name[0]</MudAvatar>
+    </CardHeaderAvatar>
+    <CardHeaderContent>
+        @if (Result.Type == MainSearchType.Account)
+        {
+            <MudText>@Result.Name</MudText>
+        }
+        else if (Result.Type == MainSearchType.Character)
+        {
+            <MudText Class=@($"wowclass-{Result.CharacterClass}")>@Result.Name</MudText>
+
+            <RealmLinkComponent Typo="Typo.caption"
+                                BlizzardRealmId="@Result.RealmId"
+                                LinkDisabled="true"/>
+        }
+        else if (Result.Type == MainSearchType.Guild)
+        {
+            <MudText>@Result.Name</MudText>
+
+            <RealmLinkComponent Typo="Typo.caption"
+                                BlizzardRealmId="@Result.RealmId"
+                                LinkDisabled="true"/>
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+    </CardHeaderContent>
+</MudCardHeader>
+
+@code {
+    [Parameter, EditorRequired] public MainSearchResult Result { get; init; }
+}

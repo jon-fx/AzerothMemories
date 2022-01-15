@@ -40,6 +40,26 @@ public sealed class MainSearchResult
         throw new NotImplementedException();
     }
 
+    public PostTagInfo ToTagInfo()
+    {
+        if (Type == MainSearchType.Account)
+        {
+            return new PostTagInfo(PostTagType.Account, Id, Name, Avatar);
+        }
+
+        if (Type == MainSearchType.Character)
+        {
+            return new PostTagInfo(PostTagType.Character, Id, Name, Avatar);
+        }
+
+        if (Type == MainSearchType.Guild)
+        {
+            return new PostTagInfo(PostTagType.Guild, Id, Name, Avatar);
+        }
+
+        throw new NotImplementedException();
+    }
+
     public static MainSearchResult CreateAccount(long id, string name, string avatar)
     {
         return new MainSearchResult

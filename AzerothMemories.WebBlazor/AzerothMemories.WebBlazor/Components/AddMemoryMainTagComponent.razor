@@ -101,6 +101,7 @@
     </MudPaper>
     
     <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+        <MainSearchBoxComponent UseCallback="true" Placeholder="Search guilds..." SearchType="MainSearchType.Guild" OnSelectedItemChanged="@SharedData.AddSearchDataToTags" />
     </MudPaper>
 }
 
