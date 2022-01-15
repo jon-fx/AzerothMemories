@@ -3,6 +3,8 @@ using AzerothMemories.WebServer.Database.Migrations;
 using FluentMigrator.Runner;
 using Hangfire.PostgreSql;
 using Microsoft.EntityFrameworkCore;
+using Stl.Fusion.Server.Authentication;
+using Stl.Fusion.Server.Controllers;
 using System.Net.Http.Headers;
 using System.Text;
 using CommonServices = AzerothMemories.WebServer.Services.CommonServices;
@@ -78,9 +80,17 @@ var fusion = builder.Services.AddFusion();
 var fusionServer = fusion.AddWebServer();
 //var fusionClient = fusion.AddRestEaseClient();
 var fusionAuth = fusion.AddAuthentication().AddServer(
-    signInControllerOptionsBuilder: (_, options) =>
+    signInControllerSettingsFactory: _ => SignInController.DefaultSettings with
     {
-        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme,
+        SignInPropertiesBuilder = (_, properties) =>
+        {
+            properties.IsPersistent = true;
+        }
+    },
+    serverAuthHelperSettingsFactory: _ => ServerAuthHelper.DefaultSettings with
+    {
+        NameClaimKeys = Array.Empty<string>(),
     });
 
 var authenticationBuilder = builder.Services.AddAuthentication(options =>
@@ -104,6 +114,16 @@ authenticationBuilder.AddCookie(options =>
     //{
     //    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
     //}
+
+    // This controls the expiration time stored in the cookie itself
+    options.ExpireTimeSpan = TimeSpan.FromDays(7);
+    options.SlidingExpiration = true;
+    // And this controls when the browser forgets the cookie
+    options.Events.OnSigningIn = ctx =>
+    {
+        ctx.CookieOptions.Expires = DateTimeOffset.UtcNow.AddDays(28);
+        return Task.CompletedTask;
+    };
 });
 
 builder.Services.AddServerSideBlazor(o => o.DetailedErrors = true);

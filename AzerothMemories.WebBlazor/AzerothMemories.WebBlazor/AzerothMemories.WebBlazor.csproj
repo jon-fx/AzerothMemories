@@ -33,10 +33,10 @@
         <PackageReference Include="MudBlazor" Version="6.0.4" />
         <PackageReference Include="NodaTime" Version="3.0.9" />
         <PackageReference Include="Npgsql.NodaTime" Version="6.0.2" />
-        <PackageReference Include="Stl.Fusion" Version="2.2.44" />
-        <PackageReference Include="Stl.CommandR" Version="2.2.44" />
-        <PackageReference Include="Stl.Fusion.Blazor" Version="2.2.44" />
-        <PackageReference Include="Stl.Fusion.Client" Version="2.2.44" />
+        <PackageReference Include="Stl.Fusion" Version="2.3.1" />
+        <PackageReference Include="Stl.CommandR" Version="2.3.1" />
+        <PackageReference Include="Stl.Fusion.Blazor" Version="2.3.1" />
+        <PackageReference Include="Stl.Fusion.Client" Version="2.3.1" />
     </ItemGroup>
 
     <ItemGroup>
