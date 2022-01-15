@@ -1,0 +1,56 @@
+﻿@page "/edittags/{Id:long}/{PostId:long}"
+@inherits MoaComponentBase<EditMemoryTagsPageeViewModel>
+
+@if (ViewModel.Helper == null)
+{
+    <CardLoadingComponent />
+}
+else if (!string.IsNullOrWhiteSpace(ViewModel.Helper.ErrorMessage))
+{
+    <CardErrorComponent ErrorMessage="@ViewModel.Helper.ErrorMessage" />
+}
+else if (ViewModel.Helper.AccountViewModel == null || ViewModel.Helper.PostViewModel == null )
+{
+    <CardLoadingComponent />
+}
+else 
+{
+    <PageTitle>@ViewModel.Helper.AccountViewModel.GetDisplayName()'s Memory of Azeroth</PageTitle>
+
+    if (ActiveAccountServices.IsAccountActive && (ActiveAccountServices.ActiveAccountId == ViewModel.Helper.AccountViewModel.Id || ActiveAccountServices.IsAdmin))
+    {
+        <AddMemoryMainTagComponent Services="@this" SharedData="@ViewModel.SharedData" />
+        <AddMemoryPostAvatarComponent SharedData="@ViewModel.SharedData" />
+        <AddMemoryAllTagChipsComponent SharedData="@ViewModel.SharedData" />
+
+        <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+            <MudGrid>
+                <MudItem xs="6">
+                    <MudButton Variant="Variant.Filled" FullWidth="true" EndIcon="@Icons.Material.Filled.Delete" IconColor="Color.Secondary" OnClick="ViewModel.UserCancel">Cancel</MudButton>
+                </MudItem>
+
+                <MudItem xs="6">
+                    <MudButton Variant="Variant.Filled" FullWidth="true" EndIcon="@Icons.Material.Filled.Save" IconColor="Color.Secondary" Color="Color.Primary" OnClick="ViewModel.Submit">Ok</MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+    }
+
+    <PostViewComponent Services="@this" Post="@ViewModel.Helper.PostViewModel" PostComments="@ViewModel.Helper.PostCommentPageViewModel"/>
+}
+
+
+@code {
+    
+    [Parameter, EditorRequired] public long Id { get; set; }
+    
+    [Parameter, EditorRequired] public long PostId { get; set; }
+
+    [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }
+
+    protected override async Task InternalComputeState()
+    {
+        await ViewModel.Helper.ComputeState(Id, null, PostId, CurrentPage, null);
+        await ViewModel.ComputeState();
+    }
+}
