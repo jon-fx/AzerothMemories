@@ -10,6 +10,12 @@ function BlazorGetTimeZone() {
     return Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
 
+function SetImage(id, type, data) {
+    document.getElementById(id).src = URL.createObjectURL(
+        new Blob([data], { type: type })
+    );
+}
+
 function SetUpTagTextBox(textBoxName, userTags) {
     if (window.hasOwnProperty('mainTribute') && window.hasOwnProperty('mainTributeAttached')) {
         window.mainTribute.detach(window.mainTributeAttached);

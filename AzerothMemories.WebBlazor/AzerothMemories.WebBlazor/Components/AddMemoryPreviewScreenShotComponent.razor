@@ -24,17 +24,30 @@ else
         </MudCardHeader>
         <MudCardContent>
             @{
-                var imageSource = $"data:{UploadedImage.ContentType};base64,{UploadedImage.ContentBase64}";
-                <img src="@imageSource" style="width: 100%; height: auto; object-fit: cover;" />
+                var id = $"imageBox-{Index}";
+                <img id="@id" style="width: 100%; height: auto; object-fit: cover;" />
             }
         </MudCardContent>
     </MudCard>
 }
 
 @code {
+
     [Parameter, EditorRequired] public int Index { get; init; }
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
     [Parameter, EditorRequired] public AddMemoryUploadResult UploadedImage { get; init; }
+    
+    [Inject] public IJSRuntime JsRuntime { get; init; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender)
+        {
+            await JsRuntime.InvokeVoidAsync("SetImage", $"imageBox-{Index}", UploadedImage.ContentType, UploadedImage.FileContent);
+        }
+    }
 
     protected override bool ShouldRender()
     {

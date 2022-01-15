@@ -90,13 +90,6 @@ public sealed class AddMemoryPageViewModel : ViewModelBase
         await stream.CopyToAsync(memoryStream);
 
         var buffer = memoryStream.ToArray();
-        var contentBase64 = Convert.ToBase64String(buffer);
-        previous = UploadedImages.FirstOrDefault(x => x.ContentBase64 == contentBase64);
-        if (previous != null)
-        {
-            return;
-        }
-
         if (!Services.TimeProvider.TryGetTimeFromFileName(file.Name, out var screenShotUnixTime))
         {
             screenShotUnixTime = file.LastModified.ToUnixTimeMilliseconds();
@@ -108,7 +101,6 @@ public sealed class AddMemoryPageViewModel : ViewModelBase
             FileTimeStamp = screenShotUnixTime,
             FileContent = buffer,
             ContentType = file.ContentType,
-            ContentBase64 = contentBase64
         };
 
         UploadedImages.Add(uploadResult);

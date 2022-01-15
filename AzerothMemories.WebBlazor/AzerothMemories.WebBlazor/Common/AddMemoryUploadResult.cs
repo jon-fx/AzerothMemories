@@ -7,5 +7,4 @@ public sealed class AddMemoryUploadResult
     [JsonInclude] public byte[] FileContent { get; init; }
 
     [JsonIgnore] public string ContentType { get; init; }
-    [JsonIgnore] public string ContentBase64 { get; init; }
 }
