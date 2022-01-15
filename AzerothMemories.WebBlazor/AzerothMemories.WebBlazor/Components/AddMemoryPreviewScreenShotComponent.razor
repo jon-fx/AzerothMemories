@@ -24,8 +24,7 @@ else
         </MudCardHeader>
         <MudCardContent>
             @{
-                var id = $"imageBox-{Index}";
-                <img id="@id" style="width: 100%; height: auto; object-fit: cover;" />
+                <img id="@GetImageId" style="width: 100%; height: auto; object-fit: cover;" />
             }
         </MudCardContent>
     </MudCard>
@@ -39,13 +38,15 @@ else
     
     [Inject] public IJSRuntime JsRuntime { get; init; }
 
+    private string GetImageId => $"imageBox-{Index}";
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
 
         if (firstRender)
         {
-            await JsRuntime.InvokeVoidAsync("SetImage", $"imageBox-{Index}", UploadedImage.ContentType, UploadedImage.FileContent);
+            await JsRuntime.InvokeVoidAsync("SetImage", GetImageId, UploadedImage.ContentType, UploadedImage.FileContent);
         }
     }
 
