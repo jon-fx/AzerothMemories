@@ -547,12 +547,11 @@ public class PostServices : IPostServices
         var allPages = new PostCommentPageViewModel[1];
         allPages[0] = new PostCommentPageViewModel();
 
-        const int commentsPerPage = 5;
         foreach (var kvp in allCommentNodes)
         {
             if (kvp.Value.ParentId == 0)
             {
-                kvp.Value.CommentPage = rootCommentNodes.Count / commentsPerPage + 1;
+                kvp.Value.CommentPage = rootCommentNodes.Count / CommonConfig.CommentsPerPage + 1;
 
                 rootCommentNodes.Add(kvp.Value);
 

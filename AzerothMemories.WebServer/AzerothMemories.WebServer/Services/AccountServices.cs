@@ -605,11 +605,9 @@ public class AccountServices : IAccountServices
                                CreatedTime = record.CreatedTime.ToUnixTimeMilliseconds()
                            };
 
-        const int itemsPerPage = 10;
-
         var totalHistoryItemsCounts = await historyQuery.CountAsync();
 
-        var totalPages = (int)Math.Ceiling(totalHistoryItemsCounts / (float)itemsPerPage);
+        var totalPages = (int)Math.Ceiling(totalHistoryItemsCounts / (float)CommonConfig.HistoryItemsPerPage);
         AccountHistoryViewModel[] recentHistoryViewModels;
         if (totalPages == 0)
         {
@@ -618,7 +616,7 @@ public class AccountServices : IAccountServices
         else
         {
             currentPage = Math.Clamp(currentPage, 1, totalPages);
-            recentHistoryViewModels = await historyQuery.Skip((currentPage - 1) * itemsPerPage).Take(itemsPerPage).ToArrayAsync();
+            recentHistoryViewModels = await historyQuery.Skip((currentPage - 1) * CommonConfig.HistoryItemsPerPage).Take(CommonConfig.HistoryItemsPerPage).ToArrayAsync();
         }
 
         return new AccountHistoryPageResult

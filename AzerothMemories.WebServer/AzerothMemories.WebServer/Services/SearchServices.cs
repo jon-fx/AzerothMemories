@@ -109,13 +109,12 @@ public class SearchServices : ISearchServices
             allSearchResult = await TryGetRecentPosts();
         }
 
-        var postsPerPage = 5;
         var allPostViewModels = Array.Empty<PostViewModel>();
-        var totalPages = (int)Math.Ceiling(allSearchResult.Length / (float)postsPerPage);
+        var totalPages = (int)Math.Ceiling(allSearchResult.Length / (float)CommonConfig.PostsPerPage);
         if (allSearchResult.Length > 0)
         {
             currentPage = Math.Clamp(currentPage, 1, totalPages);
-            allPostViewModels = await GetPostViewModelsForPage(session, allSearchResult, currentPage, postsPerPage, locale);
+            allPostViewModels = await GetPostViewModelsForPage(session, allSearchResult, currentPage, CommonConfig.PostsPerPage, locale);
         }
 
         return new RecentPostsResults
@@ -187,14 +186,13 @@ public class SearchServices : ISearchServices
             serverSideTagStrings = result.Strings;
         }
 
-        var postsPerPage = 5;
         var allSearchResult = await TrySearchPosts(serverSideTagStrings, sortMode, postMinTime, postMaxTime);
         var allPostViewModels = Array.Empty<PostViewModel>();
-        var totalPages = (int)Math.Ceiling(allSearchResult.Length / (float)postsPerPage);
+        var totalPages = (int)Math.Ceiling(allSearchResult.Length / (float)CommonConfig.PostsPerPage);
         if (allSearchResult.Length > 0)
         {
             currentPage = Math.Clamp(currentPage, 1, totalPages);
-            allPostViewModels = await GetPostViewModelsForPage(session, allSearchResult, currentPage, postsPerPage, locale);
+            allPostViewModels = await GetPostViewModelsForPage(session, allSearchResult, currentPage, CommonConfig.PostsPerPage, locale);
         }
 
         return new SearchPostsResults
