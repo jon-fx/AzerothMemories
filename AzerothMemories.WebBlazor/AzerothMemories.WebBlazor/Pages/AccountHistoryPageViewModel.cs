@@ -13,7 +13,7 @@ public sealed class AccountHistoryPageViewModel : ViewModelBase
 
     public int TotalPages => _searchResults.TotalPages;
 
-    public AccountHistoryViewModel[] HistoryViewModels => _searchResults.ViewModels;
+    public AccountHistoryViewModel[] HistoryViewModels => _searchResults?.ViewModels;
 
     public bool NoResults => _searchResults.ViewModels.Length == 0;
 
