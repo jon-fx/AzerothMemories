@@ -2,10 +2,6 @@
 
 public sealed class PostSearchPageViewModel : ViewModelBase
 {
-    public PostSearchPageViewModel()
-    {
-    }
-
     public PostSearchHelper PostSearchHelper { get; private set; }
 
     public override async Task OnInitialized()

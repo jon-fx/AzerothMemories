@@ -54,14 +54,7 @@ public static class RecordToViewModels
             viewModel.BattleTag = null;
         }
 
-        if (activeOrAdmin)
-        {
-            viewModel.CharactersArray = characters.Values.ToArray();
-        }
-        else
-        {
-            viewModel.CharactersArray = characters.Values.Where(x => x.AccountSync).ToArray();
-        }
+        viewModel.CharactersArray = activeOrAdmin ? characters.Values.ToArray() : characters.Values.Where(x => x.AccountSync).ToArray();
 
         return viewModel;
     }

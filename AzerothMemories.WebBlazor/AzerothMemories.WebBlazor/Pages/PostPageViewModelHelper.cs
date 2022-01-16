@@ -3,7 +3,6 @@
 public sealed class PostPageViewModelHelper
 {
     private readonly IMoaServices _services;
-    private readonly Dictionary<long, PostCommentTreeNode> _allCommentTreeNodes;
 
     private bool _scrollToFocus;
     private PostCommentTreeNode _focusedNode;
@@ -11,7 +10,6 @@ public sealed class PostPageViewModelHelper
     public PostPageViewModelHelper(IMoaServices services)
     {
         _services = services;
-        _allCommentTreeNodes = new Dictionary<long, PostCommentTreeNode>();
     }
 
     public string ErrorMessage { get; private set; }
@@ -68,9 +66,9 @@ public sealed class PostPageViewModelHelper
 
         foreach (var comment in pageViewModel.AllComments)
         {
-            if (!_allCommentTreeNodes.TryGetValue(comment.Key, out var treeNode))
+            if (!pageViewModel.AllCommentTreeNodes.TryGetValue(comment.Key, out var treeNode))
             {
-                _allCommentTreeNodes.Add(comment.Key, treeNode = new PostCommentTreeNode(PostViewModel.AccountId, postId, comment.Key));
+                pageViewModel.AllCommentTreeNodes.Add(comment.Key, treeNode = new PostCommentTreeNode(PostViewModel.AccountId, postId, comment.Key));
             }
 
             treeNode.Comment = comment.Value;
@@ -87,7 +85,7 @@ public sealed class PostPageViewModelHelper
             }
             else
             {
-                if (_allCommentTreeNodes.TryGetValue(comment.Value.ParentId, out var parentNode))
+                if (pageViewModel.AllCommentTreeNodes.TryGetValue(comment.Value.ParentId, out var parentNode))
                 {
                     if (parentNode.Children.Contains(treeNode))
                     {
@@ -129,7 +127,7 @@ public sealed class PostPageViewModelHelper
         if (currentPage == 0 && _focusedNode != null)
         {
             var parentId = _focusedNode.ParentId;
-            while (parentId != 0 && _allCommentTreeNodes.TryGetValue(parentId, out var parentNode))
+            while (parentId != 0 && pageViewModel.AllCommentTreeNodes.TryGetValue(parentId, out var parentNode))
             {
                 parentNode.ShowChildren = true;
                 parentId = parentNode.ParentId;

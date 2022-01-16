@@ -7,4 +7,5 @@ public sealed class PostCommentPageViewModel
     [JsonInclude] public Dictionary<long, PostCommentViewModel> AllComments = new();
 
     [JsonIgnore] public List<PostCommentTreeNode> RootComments = new();
+    [JsonIgnore] public Dictionary<long, PostCommentTreeNode> AllCommentTreeNodes = new();
 }

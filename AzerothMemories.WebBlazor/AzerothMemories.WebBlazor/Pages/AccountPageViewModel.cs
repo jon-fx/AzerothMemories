@@ -2,10 +2,6 @@
 
 public sealed class AccountPageViewModel : ViewModelBase
 {
-    public AccountPageViewModel()
-    {
-    }
-
     public string ErrorMessage { get; private set; }
 
     public AccountViewModel AccountViewModel { get; private set; }
