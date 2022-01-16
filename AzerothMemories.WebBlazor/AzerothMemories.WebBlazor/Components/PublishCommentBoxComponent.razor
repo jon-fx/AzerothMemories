@@ -80,6 +80,15 @@
             _commentComponent.Reset();
 
             Services.ActiveAccountServices.ActiveCommentContext = null;
+            
+            var dictionary = new Dictionary<string, object>
+            {
+                { "page",null},
+                { "comment",result }
+            };
+
+            var newPath = Services.NavigationManager.GetUriWithQueryParameters(dictionary);
+            Services.NavigationManager.NavigateTo(newPath);
         }
 
         _isCommentBoxDisabled = false;
