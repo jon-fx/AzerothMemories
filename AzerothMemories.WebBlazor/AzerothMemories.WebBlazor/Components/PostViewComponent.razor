@@ -1,84 +1,77 @@
 ﻿@using Microsoft.Extensions.Primitives
 @implements IActiveCommentContext
 
-<PostComponent Services="@Services" Post="@Post" InDialog="true" />
+<PostComponent Services="@Services" Post="@Helper.PostViewModel" InDialog="true" />
 
-@if (Post == null)
+@if (Helper.PostViewModel == null)
 {
 }
-else if (Post.DeletedTimeStamp != 0)
+else if (Helper.PostViewModel.DeletedTimeStamp != 0)
 {
     <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
         <MudCardHeader>
             <CardHeaderContent>
-                <MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Center">Deleted by @(Post.DeletedTimeStamp > 0 ? "user" : "admin").</MudAlert>
+                <MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Center">Deleted by @(Helper.PostViewModel.DeletedTimeStamp > 0 ? "user" : "admin").</MudAlert>
             </CardHeaderContent>
         </MudCardHeader>
     </MudCard>
 }
-else if (PostComments == null)
+else if (Helper == null)
 {
     <CardLoadingComponent />
 }
-else
+else if (Helper.RootComments == null || Helper.RootComments.Count == 0)
 {
-    if (PostComments == null || PostComments.RootComments.Count == 0)
+    if (Services.ActiveAccountServices.ActiveCommentContext == this)
     {
-        if (Services.ActiveAccountServices.ActiveCommentContext == this)
-        {
-            <PublishCommentBoxComponent Services="@Services" PostId="@Post.Id" />
-        }
-        else
-        {
-            <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
-                <MudCardContent Class="pt-2 pb-2">
-                    <MudText Class="pa-2 ma-2" Align="Align.Center" Typo="Typo.body2">No comments</MudText>
-                    <MudButton Class="pa-2 ma-2" FullWidth="true" Variant="Variant.Filled" Disabled="@IsDisabled" OnClick="AddComment">Add comment</MudButton>
-                </MudCardContent>
-            </MudCard>
-        }
+        <PublishCommentBoxComponent Services="@Services" PostId="@Helper.PostViewModel.Id" />
     }
     else
     {
-        <div id="moa-top-header-comments"></div>
+        <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
+            <MudCardContent Class="pt-2 pb-2">
+                <MudText Class="pa-2 ma-2" Align="Align.Center" Typo="Typo.body2">No comments</MudText>
+                <MudButton Class="pa-2 ma-2" FullWidth="true" Variant="Variant.Filled" Disabled="@IsDisabled" OnClick="AddComment">Add comment</MudButton>
+            </MudCardContent>
+        </MudCard>
+    }
+}
+else
+{
+    <div id="moa-top-header-comments"></div>
 
-        for (var i = 0; i < PostComments.RootComments.Count; i++)
-        {
-            var comment = PostComments.RootComments[i];
+    foreach (var comment in Helper.RootComments)
+    {
+        <PostCommentComponent @key="@comment" Services="@Services" Comment="@comment" />
+    }
 
-            <PostCommentComponent @key="@comment" Services="@Services" Comment="@comment" />
-        }
+    var showAdd = Services.ActiveAccountServices.ActiveCommentContext != this && Helper.Page == Helper.TotalPages;
+    if (Services.ActiveAccountServices.ActiveCommentContext == this)
+    {
+        <PublishCommentBoxComponent Services="@Services" PostId="@Helper.PostViewModel.Id" />
+    }
 
-        var showAdd = Services.ActiveAccountServices.ActiveCommentContext != this && PostComments.Page == PostComments.TotalPages;
-        if (Services.ActiveAccountServices.ActiveCommentContext == this)
-        {
-            <PublishCommentBoxComponent Services="@Services" PostId="@Post.Id" />
-        }
-
-        if (showAdd)
-        {
-            <div class="postIndent">
-                <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
-                    <MudCardContent Class="pt-2 pb-2">
-                        <MudButton Class="pa-2 ma-2" FullWidth="true" Variant="Variant.Filled" Disabled="@IsDisabled" OnClick="AddComment">Add comment</MudButton>
-                    </MudCardContent>
-                </MudCard>
-            </div>
-        }
-
-        <div class="d-flex justify-center">
-            <MudPagination Selected="@PostComments.Page" SelectedChanged="OnPageChanged" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@PostComments.TotalPages" />
+    if (showAdd)
+    {
+        <div class="postIndent">
+            <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
+                <MudCardContent Class="pt-2 pb-2">
+                    <MudButton Class="pa-2 ma-2" FullWidth="true" Variant="Variant.Filled" Disabled="@IsDisabled" OnClick="AddComment">Add comment</MudButton>
+                </MudCardContent>
+            </MudCard>
         </div>
     }
+
+    <div class="d-flex justify-center">
+        <MudPagination Selected="@Helper.Page" SelectedChanged="OnPageChanged" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@Helper.TotalPages" />
+    </div>
 }
 
 @code
 {
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
 
-    [Parameter, EditorRequired] public PostViewModel Post { get; init; }
-
-    [Parameter, EditorRequired] public PostCommentPageViewModel PostComments { get; init; }
+    [Parameter, EditorRequired] public PostPageViewModelHelper Helper { get; init; }
 
     [Inject] IScrollManager ScrollManager { get; init; }
 
@@ -96,7 +89,7 @@ else
 
     private void OnPageChanged(int currentPage)
     {
-        if (currentPage == PostComments.Page)
+        if (currentPage == Helper.Page)
         {
             return;
         }

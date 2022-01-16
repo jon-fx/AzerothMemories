@@ -96,10 +96,8 @@
 
     @if (item.ShowChildren || item.Children.Count < 10)
     {
-        for (var i = 0; i < item.Children.Count; i++)
+        foreach (var child in item.Children)
         {
-            var child = item.Children[i];
-
             <PostCommentComponent @key="@child" Services="@Services" Comment="@child" />
         }
     }

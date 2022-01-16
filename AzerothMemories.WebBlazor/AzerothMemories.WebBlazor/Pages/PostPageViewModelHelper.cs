@@ -7,6 +7,8 @@ public sealed class PostPageViewModelHelper
     private bool _scrollToFocus;
     private PostCommentTreeNode _focusedNode;
 
+    private Dictionary<long, PostCommentTreeNode> _allCommentTreeNodes = new();
+
     public PostPageViewModelHelper(IMoaServices services)
     {
         _services = services;
@@ -18,7 +20,11 @@ public sealed class PostPageViewModelHelper
 
     public PostViewModel PostViewModel { get; private set; }
 
-    public PostCommentPageViewModel PostCommentPageViewModel { get; private set; }
+    public int Page { get; private set; }
+
+    public int TotalPages { get; private set; }
+
+    public List<PostCommentTreeNode> RootComments { get; private set; }
 
     public async Task ComputeState(long accountId, string username, long postId, string pageString, string focusedCommentIdString)
     {
@@ -64,28 +70,29 @@ public sealed class PostPageViewModelHelper
         var commentReactions = await _services.PostServices.TryGetMyCommentReactions(null, postId);
         var pageViewModel = await _services.PostServices.TryGetCommentsPage(null, postId, currentPage, focusedCommentId);
 
+        var rootComments = new List<PostCommentTreeNode>();
         foreach (var comment in pageViewModel.AllComments)
         {
-            if (!pageViewModel.AllCommentTreeNodes.TryGetValue(comment.Key, out var treeNode))
+            if (!_allCommentTreeNodes.TryGetValue(comment.Key, out var treeNode))
             {
-                pageViewModel.AllCommentTreeNodes.Add(comment.Key, treeNode = new PostCommentTreeNode(PostViewModel.AccountId, postId, comment.Key));
+                _allCommentTreeNodes.Add(comment.Key, treeNode = new PostCommentTreeNode(PostViewModel.AccountId, postId, comment.Key));
             }
 
             treeNode.Comment = comment.Value;
 
             if (comment.Value.ParentId == 0)
             {
-                if (pageViewModel.RootComments.Contains(treeNode))
+                if (rootComments.Contains(treeNode))
                 {
                 }
                 else
                 {
-                    pageViewModel.RootComments.Add(treeNode);
+                    rootComments.Add(treeNode);
                 }
             }
             else
             {
-                if (pageViewModel.AllCommentTreeNodes.TryGetValue(comment.Value.ParentId, out var parentNode))
+                if (_allCommentTreeNodes.TryGetValue(comment.Value.ParentId, out var parentNode))
                 {
                     if (parentNode.Children.Contains(treeNode))
                     {
@@ -127,7 +134,7 @@ public sealed class PostPageViewModelHelper
         if (currentPage == 0 && _focusedNode != null)
         {
             var parentId = _focusedNode.ParentId;
-            while (parentId != 0 && pageViewModel.AllCommentTreeNodes.TryGetValue(parentId, out var parentNode))
+            while (parentId != 0 && _allCommentTreeNodes.TryGetValue(parentId, out var parentNode))
             {
                 parentNode.ShowChildren = true;
                 parentId = parentNode.ParentId;
@@ -136,7 +143,9 @@ public sealed class PostPageViewModelHelper
             _scrollToFocus = true;
         }
 
-        PostCommentPageViewModel = pageViewModel;
+        Page = pageViewModel.Page;
+        TotalPages = pageViewModel.TotalPages;
+        RootComments = rootComments;
     }
 
     public async Task OnAfterRenderAsync(IScrollManager scrollManager, bool firstRender)
