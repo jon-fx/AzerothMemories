@@ -38,4 +38,37 @@ public sealed class PostCommentRecord : IDatabaseRecord
     [Column, NotNull] public Instant CreatedTime;
 
     [Column, NotNull] public long DeletedTimeStamp;
+
+    public PostCommentViewModel CreateCommentViewModel(string username, string avatar)
+    {
+        var viewModel = new PostCommentViewModel
+        {
+            Id = Id,
+            AccountId = AccountId,
+            PostId = PostId,
+            ParentId = ParentId.GetValueOrDefault(),
+            AccountUsername = username,
+            AccountAvatar = avatar,
+            PostComment = PostComment,
+            CreatedTime = CreatedTime.ToUnixTimeMilliseconds(),
+            DeletedTimeStamp = DeletedTimeStamp,
+            //ReactionId = reaction?.Id ?? 0,
+            //Reaction = reaction?.Reaction ?? PostReaction.None,
+            TotalReactionCount = TotalReactionCount,
+            ReactionCounters = new[]
+            {
+                ReactionCount1,
+                ReactionCount2,
+                ReactionCount3,
+                ReactionCount4,
+                ReactionCount5,
+                ReactionCount6,
+                ReactionCount7,
+                ReactionCount8,
+                ReactionCount9
+            }
+        };
+
+        return viewModel;
+    }
 }

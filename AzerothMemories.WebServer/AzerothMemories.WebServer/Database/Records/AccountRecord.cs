@@ -48,4 +48,57 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
     [Column, Nullable] public Instant UpdateJobEndTime { get; set; }
 
     [Column, NotNull] public HttpStatusCode UpdateJobLastResult { get; set; }
+
+    public AccountViewModel CreateAccountViewModel(bool activeOrAdmin, Dictionary<long, CharacterViewModel> characters, Dictionary<long, AccountFollowingViewModel> followingViewModels, Dictionary<long, AccountFollowingViewModel> followersViewModels)
+    {
+        var viewModel = new AccountViewModel
+        {
+            Id = Id,
+            Avatar = Avatar,
+            Username = Username,
+            AccountType = AccountType,
+            RegionId = BlizzardRegionId,
+            BattleTag = BattleTag,
+            BattleTagIsPublic = BattleTagIsPublic,
+            CreatedDateTime = CreatedDateTime.ToUnixTimeMilliseconds(),
+            IsPrivate = IsPrivate,
+            SocialLinks = new[]
+            {
+                SocialDiscord,
+                SocialTwitter,
+                SocialTwitch,
+                SocialYouTube,
+            },
+            FollowingViewModels = RemoveNoneStatus(followingViewModels),
+            FollowersViewModels = RemoveNoneStatus(followersViewModels)
+        };
+
+        if (viewModel.BattleTagIsPublic || activeOrAdmin)
+        {
+        }
+        else
+        {
+            viewModel.BattleTag = null;
+        }
+
+        viewModel.CharactersArray = activeOrAdmin ? characters.Values.ToArray() : characters.Values.Where(x => x.AccountSync).ToArray();
+
+        return viewModel;
+    }
+
+    private static Dictionary<long, AccountFollowingViewModel> RemoveNoneStatus(Dictionary<long, AccountFollowingViewModel> viewModels)
+    {
+        var results = new Dictionary<long, AccountFollowingViewModel>();
+        foreach (var kvp in viewModels)
+        {
+            if (kvp.Value.Status == AccountFollowingStatus.None)
+            {
+                continue;
+            }
+
+            results.Add(kvp.Key, kvp.Value);
+        }
+
+        return results;
+    }
 }

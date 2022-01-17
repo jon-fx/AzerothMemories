@@ -76,16 +76,14 @@ public class TagServices : ITagServices
 
         if (tagType == PostTagType.Guild)
         {
-            //var data = await (from r in database.G
-            //                  where r.Id == tagId
-            //                  select new { r.Username, r.Avatar }).FirstOrDefaultAsync();
+            var data = await (from r in database.Guilds
+                              where r.Id == tagId
+                              select new { r.Name }).FirstOrDefaultAsync();
 
-            //if (data != null)
-            //{
-            //    return new PostTagInfo(PostTagType.Account, tagId, data.Username, data.Avatar);
-            //}
-
-            throw new NotImplementedException();
+            if (data != null)
+            {
+                return new PostTagInfo(PostTagType.Guild, tagId, data.Name, null);
+            }
         }
 
         return new PostTagInfo(tagType, tagId, PostTagInfo.GetTagString(tagType, tagId), null);

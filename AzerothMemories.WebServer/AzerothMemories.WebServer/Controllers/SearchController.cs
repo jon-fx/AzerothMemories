@@ -2,7 +2,7 @@ namespace AzerothMemories.WebServer.Controllers;
 
 [ApiController, JsonifyErrors]
 [Route("api/[controller]/[action]")]
-public class SearchController : ControllerBase, ISearchServices
+public sealed class SearchController : ControllerBase, ISearchServices
 {
     private readonly CommonServices _commonServices;
 

@@ -35,11 +35,24 @@ public sealed class GuildRecord : IBlizzardUpdateRecord
 
     [Column, Nullable] public string UpdateJob { get; set; }
 
-    //[Column, Nullable] public Instant? UpdateJobQueueTime { get; set; }
-
-    //[Column, Nullable] public Instant? UpdateJobStartTime { get; set; }
-
     [Column, Nullable] public Instant UpdateJobEndTime { get; set; }
 
     [Column, Nullable] public HttpStatusCode UpdateJobLastResult { get; set; }
+
+    public GuildViewModel CreateViewModel(HashSet<CharacterViewModel> characterViewModels)
+    {
+        return new GuildViewModel
+        {
+            Id = Id,
+            Name = Name,
+            RealmId = RealmId,
+            RegionId = BlizzardRegionId,
+            MemberCount = MemberCount,
+            AchievementPoints = AchievementPoints,
+            CreatedDateTime = CreatedDateTime.ToUnixTimeMilliseconds(),
+            BlizzardCreatedTimestamp = BlizzardCreatedTimestamp,
+
+            Characters = characterViewModels.ToArray()
+        };
+    }
 }

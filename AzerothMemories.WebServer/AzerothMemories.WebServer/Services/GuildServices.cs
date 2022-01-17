@@ -81,4 +81,85 @@ public class GuildServices : IGuildServices
         _ = TryGetGuildRecord(guildId);
         _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Guild, guildId);
     }
+
+    [ComputeMethod]
+    public virtual async Task<GuildViewModel> TryGetGuild(Session session, long guildId)
+    {
+        //var results = new CharacterAccountViewModel();
+        var guildRecord = await TryGetGuildRecord(guildId);
+        if (guildRecord == null)
+        {
+            return null;
+        }
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        var characterQuery = from characterRecord in database.Characters
+                             where characterRecord.GuildId == guildId
+                             orderby characterRecord.BlizzardGuildRank
+                             select characterRecord.Id;
+
+        var characters = new HashSet<CharacterViewModel>();
+        var characterIds = await characterQuery.ToArrayAsync();
+        foreach (var id in characterIds)
+        {
+            var character = await _commonServices.CharacterServices.TryGetCharacterRecord(id);
+            if (character != null)
+            {
+                characters.Add(character.CreateViewModel());
+            }
+        }
+
+        return guildRecord.CreateViewModel(characters);
+    }
+
+    [ComputeMethod]
+    public virtual async Task<GuildViewModel> TryGetGuild(Session session, BlizzardRegion region, string realmSlug, string guildName)
+    {
+        if (region is <= 0 or >= BlizzardRegion.Count || string.IsNullOrWhiteSpace(realmSlug) || string.IsNullOrWhiteSpace(guildName))
+        {
+            return null;
+        }
+
+        var realmId = await _commonServices.TagServices.TryGetRealmId(realmSlug);
+        if (realmId == 0)
+        {
+            return null;
+        }
+
+        if (guildName.Length > 50)
+        {
+            return null;
+        }
+
+        var guildRef = await GetFullGuildRef(region, realmSlug, guildName);
+        if (guildRef == null)
+        {
+            return null;
+        }
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        var guildRecord = await GetOrCreate(guildRef.Full);
+
+        return await TryGetGuild(session, guildRecord.Id);
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<MoaRef> GetFullGuildRef(BlizzardRegion region, string realmSlug, string guildName)
+    {
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        var moaRef = MoaRef.GetGuildRef(region, realmSlug, guildName, -1);
+        var query = from r in database.Guilds
+                    where Sql.Like(r.MoaRef, moaRef.GetLikeQuery())
+                    select new { r.Id, r.MoaRef };
+
+        var result = await query.FirstOrDefaultAsync();
+        if (result != null)
+        {
+            return new MoaRef(result.MoaRef);
+        }
+
+        return null;
+    }
 }

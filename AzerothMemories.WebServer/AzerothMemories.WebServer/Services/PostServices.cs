@@ -285,7 +285,7 @@ public class PostServices : IPostServices
 
         reactionRecords.TryGetValue(activeAccountId, out var reactionViewModel);
 
-        return RecordToViewModels.CreatePostViewModel(postRecord, posterAccount, canSeePost, reactionViewModel, postTagInfos);
+        return postRecord.CreatePostViewModel(posterAccount, canSeePost, reactionViewModel, postTagInfos);
     }
 
     [ComputeMethod]
@@ -539,7 +539,7 @@ public class PostServices : IPostServices
                     from a in database.Accounts.Where(r => r.Id == c.AccountId)
                     where c.PostId == postId
                     orderby c.CreatedTime
-                    select RecordToViewModels.CreateCommentViewModel(c, a.Username, a.Avatar);
+                    select c.CreateCommentViewModel(a.Username, a.Avatar);
 
         var rootCommentNodes = new List<PostCommentViewModel>();
         var allCommentNodes = await query.ToDictionaryAsync(x => x.Id, x => x);
@@ -626,7 +626,7 @@ public class PostServices : IPostServices
         var query = from reaction in database.PostCommentReactions
                     from comment in database.PostComments.Where(pr => pr.Id == reaction.CommentId)
                     where reaction.AccountId == activeAccountId && comment.PostId == postId
-                    select RecordToViewModels.CreatePostCommentReactionViewModel(reaction, null);
+                    select reaction.CreatePostCommentReactionViewModel(null);
 
         return await query.ToDictionaryAsync(x => x.CommentId, x => x);
     }

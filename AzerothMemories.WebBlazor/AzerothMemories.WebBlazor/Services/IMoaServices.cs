@@ -2,27 +2,29 @@
 
 public interface IMoaServices
 {
-    IAccountServices AccountServices { get; init; }
+    IAccountServices AccountServices { get; }
 
-    IAccountFollowingServices AccountFollowingServices { get; init; }
+    IAccountFollowingServices AccountFollowingServices { get; }
 
-    ICharacterServices CharacterServices { get; init; }
+    ICharacterServices CharacterServices { get; }
 
-    ITagServices TagServices { get; init; }
+    IGuildServices GuildServices { get; }
 
-    IPostServices PostServices { get; init; }
+    ITagServices TagServices { get; }
 
-    ISearchServices SearchServices { get; set; }
+    IPostServices PostServices { get; }
 
-    ActiveAccountServices ActiveAccountServices { get; init; }
+    ISearchServices SearchServices { get; }
 
-    TagHelpers TagHelpers { get; init; }
+    ActiveAccountServices ActiveAccountServices { get; }
 
-    TimeProvider TimeProvider { get; init; }
+    TagHelpers TagHelpers { get; }
 
-    DialogHelperService DialogService { get; init; }
+    TimeProvider TimeProvider { get; }
 
-    IStringLocalizer<BlizzardResources> StringLocalizer { get; init; }
+    DialogHelperService DialogService { get; }
 
-    NavigationManager NavigationManager { get; init; }
+    IStringLocalizer<BlizzardResources> StringLocalizer { get; }
+
+    NavigationManager NavigationManager { get; }
 }

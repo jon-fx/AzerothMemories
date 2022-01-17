@@ -268,7 +268,7 @@ public class CharacterServices : ICharacterServices
             return null;
         }
 
-        var characterRef = await GetFullCharacterRef(region, realmSlug, characterName, realmId);
+        var characterRef = await GetFullCharacterRef(region, realmSlug, characterName);
         if (characterRef == null)
         {
             return null;
@@ -281,7 +281,7 @@ public class CharacterServices : ICharacterServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<MoaRef> GetFullCharacterRef(BlizzardRegion region, string realmSlug, string characterName, int realmId)
+    protected virtual async Task<MoaRef> GetFullCharacterRef(BlizzardRegion region, string realmSlug, string characterName)
     {
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 

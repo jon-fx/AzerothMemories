@@ -2,7 +2,7 @@ namespace AzerothMemories.WebServer.Controllers;
 
 [ApiController, JsonifyErrors]
 [Route("api/[controller]/[action]")]
-public class AccountController : ControllerBase, IAccountServices
+public sealed class AccountController : ControllerBase, IAccountServices
 {
     private readonly CommonServices _commonServices;
 

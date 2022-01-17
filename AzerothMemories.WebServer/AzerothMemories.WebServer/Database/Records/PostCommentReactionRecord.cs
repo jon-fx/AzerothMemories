@@ -12,4 +12,19 @@ public sealed class PostCommentReactionRecord : IDatabaseRecord
     [Column, NotNull] public PostReaction Reaction;
 
     [Column, NotNull] public Instant LastUpdateTime;
+
+    public PostCommentReactionViewModel CreatePostCommentReactionViewModel(string username)
+    {
+        var viewModel = new PostCommentReactionViewModel
+        {
+            Id = Id,
+            CommentId = CommentId,
+            AccountId = AccountId,
+            AccountUsername = username,
+            Reaction = Reaction,
+            LastUpdateTime = LastUpdateTime.ToUnixTimeMilliseconds(),
+        };
+
+        return viewModel;
+    }
 }

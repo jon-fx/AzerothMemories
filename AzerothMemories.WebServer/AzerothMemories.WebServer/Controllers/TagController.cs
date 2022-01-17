@@ -2,7 +2,7 @@ namespace AzerothMemories.WebServer.Controllers;
 
 [ApiController, JsonifyErrors]
 [Route("api/[controller]/[action]")]
-public class TagController : ControllerBase, ITagServices
+public sealed class TagController : ControllerBase, ITagServices
 {
     private readonly CommonServices _commonServices;
 

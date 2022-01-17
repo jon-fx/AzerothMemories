@@ -48,4 +48,57 @@ public sealed class PostRecord : IDatabaseRecord
     [Column, NotNull] public int TotalReportCount;
 
     [Column, NotNull] public long DeletedTimeStamp;
+
+    public PostViewModel CreatePostViewModel(AccountViewModel accountViewModel, bool canSeePost, PostReactionViewModel reactionRecord, PostTagInfo[] postTagRecords)
+    {
+        var viewModel = new PostViewModel
+        {
+            Id = Id,
+            AccountId = AccountId,
+            AccountUsername = accountViewModel.Username,
+            AccountAvatar = accountViewModel.Avatar,
+            PostComment = PostComment,
+            PostVisibility = PostVisibility,
+            PostTime = PostTime.ToUnixTimeMilliseconds(),
+            PostCreatedTime = PostCreatedTime.ToUnixTimeMilliseconds(),
+            PostEditedTime = PostEditedTime.ToUnixTimeMilliseconds(),
+            ImageBlobNames = BlobNames.Split('|'),
+            ReactionId = reactionRecord?.Id ?? 0,
+            Reaction = reactionRecord?.Reaction ?? 0,
+            ReactionCounters = new[]
+            {
+                ReactionCount1,
+                ReactionCount2,
+                ReactionCount3,
+                ReactionCount4,
+                ReactionCount5,
+                ReactionCount6,
+                ReactionCount7,
+                ReactionCount8,
+                ReactionCount9
+            },
+            TotalReactionCount = TotalReactionCount,
+            TotalCommentCount = TotalCommentCount,
+            DeletedTimeStamp = DeletedTimeStamp,
+            SystemTags = postTagRecords,
+        };
+
+        if (PostAvatar != null)
+        {
+            viewModel.PostAvatar = viewModel.SystemTags.First(x => x.TagString == PostAvatar).Image;
+        }
+
+        if (!canSeePost)
+        {
+            viewModel.PostComment = null;
+            viewModel.PostVisibility = 255;
+            viewModel.ImageBlobNames = Array.Empty<string>();
+            viewModel.TotalReactionCount = 0;
+            viewModel.TotalCommentCount = 0;
+
+            Array.Fill(viewModel.ReactionCounters, 0);
+        }
+
+        return viewModel;
+    }
 }

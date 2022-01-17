@@ -20,6 +20,12 @@ public sealed class CharacterViewModel
 
     [JsonInclude] public byte Level;
 
+    [JsonInclude] public CharacterFaction Faction;
+
+    [JsonInclude] public int AchievementTotalPoints;
+
+    [JsonInclude] public int AchievementTotalQuantity;
+
     [JsonInclude] public bool AccountSync;
 
     [JsonInclude] public string AvatarLink;
@@ -27,6 +33,8 @@ public sealed class CharacterViewModel
     [JsonInclude] public long GuildId;
 
     [JsonInclude] public string GuildName;
+
+    [JsonInclude] public byte GuildRank;
 
     [JsonInclude] public HttpStatusCode LastUpdateHttpResult;
 

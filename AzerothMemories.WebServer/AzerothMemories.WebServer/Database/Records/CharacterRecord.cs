@@ -51,10 +51,6 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord
 
     [Column, Nullable] public string UpdateJob { get; set; }
 
-    //[Column, Nullable] public Instant? UpdateJobQueueTime { get; set; }
-
-    //[Column, Nullable] public Instant? UpdateJobStartTime { get; set; }
-
     [Column, Nullable] public Instant UpdateJobEndTime { get; set; }
 
     [Column, Nullable] public HttpStatusCode UpdateJobLastResult { get; set; }
@@ -64,4 +60,30 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord
     [Column, NotNull] public long BlizzardRendersLastModified;
 
     [Column, NotNull] public long BlizzardAchievementsLastModified;
+
+    public CharacterViewModel CreateViewModel()
+    {
+        return new CharacterViewModel
+        {
+            Id = Id,
+            Ref = MoaRef,
+            Race = Race,
+            Class = Class,
+            Level = Level,
+            Gender = Gender,
+            Faction = Faction,
+            AvatarLink = AvatarLink,
+            AccountSync = AccountSync,
+            Name = Name,
+            RealmId = RealmId,
+            RegionId = BlizzardRegionId,
+            GuildId = BlizzardGuildId,
+            GuildName = BlizzardGuildName,
+            GuildRank = BlizzardGuildRank,
+            AchievementTotalPoints = AchievementTotalPoints,
+            AchievementTotalQuantity = AchievementTotalQuantity,
+
+            LastUpdateHttpResult = UpdateJobLastResult
+        };
+    }
 }
