@@ -1,9 +1,11 @@
-﻿<AutoCompleteComponent @bind-text="@_autoCompleteText"
-                       @bind-value="@SelectedValue"
+﻿<AutoCompleteComponent @ref="_autoComplete"
+                       Text="@_nullText"
+                       Value="@_nullValue"
                        Placeholder="@Placeholder"
                        T="MainSearchResult"
                        SearchFunc="SearchFunc"
-                       ToStringFunc="ToStringFunc">
+                       ToStringFunc="ToStringFunc"
+                       ValueChanged="OnValueChanged">
     <ItemTemplate Context="e">
         @if (UseCallback)
         {
@@ -20,37 +22,10 @@
 
 @code
 {
-    private string _autoCompleteText;
+    private string _nullText = null;
+    private MainSearchResult _nullValue = null;
     private MainSearchResult _lastSelectedValue;
-
-    public MainSearchResult SelectedValue
-    {
-        get => null;
-        set
-        {
-            if (_lastSelectedValue == value)
-            {
-                return;
-            }
-            
-            
-            _lastSelectedValue = value;
-
-            if (_lastSelectedValue != null)
-            {
-                if (UseCallback)
-                {
-                    OnSelectedItemChanged.InvokeAsync(_lastSelectedValue).AndForget();
-                }
-                else
-                {
-                    NavigationManager.NavigateTo(_lastSelectedValue.GetLink());
-                }
-            }
-
-            _autoCompleteText = null;
-        }
-    }
+    private AutoCompleteComponent<MainSearchResult> _autoComplete;
 
     [Parameter] public string Placeholder { get; init; } = "Search...";
     
@@ -63,6 +38,30 @@
     [Inject] public ISearchServices SearchServices { get; init; }
 
     [Inject] public NavigationManager NavigationManager { get; init; }
+    
+    private async Task OnValueChanged(MainSearchResult value)
+    {
+        if (_lastSelectedValue == value)
+        {
+            return;
+        }
+            
+        _lastSelectedValue = value;
+        
+        if (_lastSelectedValue != null)
+        {
+            if (UseCallback)
+            {
+                await OnSelectedItemChanged.InvokeAsync(_lastSelectedValue);
+            }
+            else
+            {
+                NavigationManager.NavigateTo(_lastSelectedValue.GetLink());
+            }
+
+            await _autoComplete.Clear();
+        }
+    }
 
     private async Task<IEnumerable<MainSearchResult>> SearchFunc(string searchString)
     {
@@ -84,4 +83,5 @@
 
         return arg.Name;
     }
+
 }

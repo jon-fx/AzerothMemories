@@ -1,9 +1,11 @@
-﻿<AutoCompleteComponent @bind-text="@_autoCompleteText"
-                        @bind-value="@SelectedValue"
-                        Placeholder="Search tags..."
-                        T="PostTagInfo"
-                        SearchFunc="SearchMemoryItems"
-                        ToStringFunc="ToStringFunc">
+﻿<AutoCompleteComponent @ref="_autoComplete"
+                       Text="@_nullText"
+                       Value="@_nullValue"
+                       Placeholder="Search tags..."
+                       T="PostTagInfo"
+                       SearchFunc="SearchMemoryItems"
+                       ToStringFunc="ToStringFunc"
+                       ValueChanged="OnValueChanged">
 
     <ItemTemplate Context="e">
         <SearchBlizzardDataChildComponent TagInfo="@e" />
@@ -12,35 +14,33 @@
 
 @code
 {
-    private string _autoCompleteText;
+    private string _nullText = null;
+    private PostTagInfo _nullValue = null;
     private PostTagInfo _lastSelectedValue;
+    private AutoCompleteComponent<PostTagInfo> _autoComplete;
 
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired] public EventCallback<PostTagInfo> OnSelectedItemChanged { get; init; }
-    
+
     [Inject] public IJSRuntime JsRuntime { get; init; }
 
-    public PostTagInfo SelectedValue
+    private async Task OnValueChanged(PostTagInfo value)
     {
-        get => null;
-        set
+        if (_lastSelectedValue == value)
         {
-            if (_lastSelectedValue == value)
-            {
-                return;
-            }
-            
-            _lastSelectedValue = value;
+            return;
+        }
 
-            if (_lastSelectedValue != null)
-            {
-                OnSelectedItemChanged.InvokeAsync(_lastSelectedValue).AndForget();
-                
-                JsRuntime.InvokeVoidAsync("HideWowheadToolTips").AndForget();
-            }
+        _lastSelectedValue = value;
 
-            _autoCompleteText = null;
+        if (_lastSelectedValue != null)
+        {
+            await OnSelectedItemChanged.InvokeAsync(_lastSelectedValue);
+
+            await _autoComplete.Clear();
+
+            JsRuntime.InvokeVoidAsync("HideWowheadToolTips").AndForget();
         }
     }
 
