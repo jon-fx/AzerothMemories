@@ -10,9 +10,7 @@ public sealed class AddMemoryComponentSharedData
     private HashSet<object> _selectedAchievementTags;
     private HashSet<PostTagInfo> _selectedExtraTags;
 
-    //private AccountViewModel _accountViewModel;
     private CharacterViewModel _selectedCharacter;
-
     private Func<AccountViewModel> _accountViewModelProvider;
 
     public AddMemoryComponentSharedData(ViewModelBase viewModel)
@@ -30,9 +28,6 @@ public sealed class AddMemoryComponentSharedData
         _selectedCommonTags = new HashSet<object>(PostTagInfo.EqualityComparer2);
         _selectedAchievementTags = new HashSet<object>(PostTagInfo.EqualityComparer2);
         _selectedExtraTags = new HashSet<PostTagInfo>(PostTagInfo.EqualityComparer2);
-
-        //UploadResults = new List<AddMemoryUploadResult>();
-        //ErrorStrings = new List<(Severity, string)>();
     }
 
     public bool PrivatePost { get; set; }
@@ -184,11 +179,9 @@ public sealed class AddMemoryComponentSharedData
         var finalText = commentComponent.GetCommentText();
         var systemTags = GetSystemHashTags();
 
-        //string avatarImage = null;
         string avatarTag = null;
         if (SelectedPostAvatarImage > 0 && SelectedPostAvatarImage < PostAvatarImages.Count)
         {
-            //avatarImage = PostAvatarImages[SelectedPostAvatarImage].ImageLink;
             avatarTag = PostAvatarImages[SelectedPostAvatarImage].Tag.TagString;
         }
 
@@ -299,7 +292,6 @@ public sealed class AddMemoryComponentSharedData
         }
 
         _selectedAchievementTags = collection.ToHashSet();
-        //_viewModel.OnViewModelChanged?.Invoke();
 
         OnTagsChanged?.Invoke();
     }
@@ -323,19 +315,14 @@ public sealed class AddMemoryComponentSharedData
             var characterNameTag = new PostTagInfo(PostTagType.Character, _selectedCharacter.Id, characterName, _selectedCharacter.AvatarLinkWithFallBack);
             var characterRealmTag = new PostTagInfo(PostTagType.Realm, _selectedCharacter.RealmId, stringLocalizer[$"Realm-{_selectedCharacter.RealmId}"], null);
 
-            AddImageToSelection(characterNameTag);
-
             _selectedExtraTags.Add(characterNameTag);
             _selectedExtraTags.Add(characterRealmTag);
 
-            if (_selectedCharacter.GuildId > 0)
-            {
-                //SelectedExtraTags.Add(await TagHelpers.CreatePostTag(_services, PostTagType.Guild, _selectedCharacter.GuildId));
-            }
+            AddImageToSelection(characterNameTag);
+            AddImageToSelection(characterRealmTag);
         }
 
         OnTagsChanged?.Invoke();
-        //_viewModel.OnViewModelChanged?.Invoke();
 
         return Task.CompletedTask;
     }
@@ -352,8 +339,13 @@ public sealed class AddMemoryComponentSharedData
                 RemoveImageFromSelection(characterNameTag);
             }
 
-            _selectedExtraTags.RemoveWhere(x => x.Type == PostTagType.Realm && x.Id == _selectedCharacter.RealmId);
-            _selectedExtraTags.RemoveWhere(x => x.Type == PostTagType.Guild && x.Id == _selectedCharacter.GuildId);
+            var characterRealmTag = _selectedExtraTags.FirstOrDefault(x => x.Type == PostTagType.Realm && x.Id == _selectedCharacter.RealmId);
+            if (characterRealmTag != null)
+            {
+                _selectedExtraTags.Remove(characterRealmTag);
+
+                RemoveImageFromSelection(characterRealmTag);
+            }
         }
     }
 
