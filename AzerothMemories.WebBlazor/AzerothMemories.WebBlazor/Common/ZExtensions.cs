@@ -16,7 +16,7 @@ public static class ZExtensions
         TagCountsPerPost = new (int Min, int Max)[(int)PostTagType.CountExcludingHashTag];
 
         TagCountsPerPost[(int)PostTagType.Type] = (1, 1);
-        TagCountsPerPost[(int)PostTagType.Main] = (0, 10);
+        TagCountsPerPost[(int)PostTagType.Main] = (0, 5);
 
         TagCountsPerPost[(int)PostTagType.Region] = (1, 1);
         TagCountsPerPost[(int)PostTagType.Realm] = (0, 5);
