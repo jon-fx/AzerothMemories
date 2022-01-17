@@ -1,0 +1,38 @@
+﻿<MudButtonGroup Variant="Variant.Filled">
+    @for (var i = 0; i < _sortModes.Length; i++)
+    {
+        var reason = _sortModes[i];
+        var icon = _allIcons[i];
+
+        <MudTooltip key="@reason" Text="@reason.Humanize()" Arrow="true" Placement="Placement.Bottom">
+            <MudIconButton Icon="@icon" Disabled="SortMode == reason" OnClick="@(_ => OnSortChanged(reason))"  />
+        </MudTooltip>
+    }
+</MudButtonGroup>
+
+@code
+{
+    private static readonly PostSortMode[] _sortModes =
+    {
+        PostSortMode.PostTimeStampDescending,
+        PostSortMode.PostTimeStampAscending,
+        PostSortMode.PostCreatedTimeStampDescending,
+        PostSortMode.PostCreatedTimeStampAscending,
+    };
+
+    private static readonly string[] _allIcons =
+    {
+        Icons.Filled.ArrowDownward,
+        Icons.Filled.ArrowUpward,
+        Icons.Filled.ArrowDropDown,
+        Icons.Filled.ArrowDropUp,
+    };
+
+    [Parameter] public PostSortMode SortMode { get; init; }
+    [Parameter] public EventCallback<PostSortMode> OnSortModeChanged { get; init; }
+
+    private Task OnSortChanged(PostSortMode reason)
+    {
+        return OnSortModeChanged.InvokeAsync(reason);
+    }
+}

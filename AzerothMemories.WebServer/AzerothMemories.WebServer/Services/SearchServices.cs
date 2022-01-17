@@ -300,17 +300,31 @@ public class SearchServices : ISearchServices
 
         switch (sortMode)
         {
-            case PostSortMode.PostTimeStampDesc:
+            case PostSortMode.PostTimeStampDescending:
             {
                 query = from p in query
                         orderby p.PostTime descending
                         select p;
                 break;
             }
-            case PostSortMode.PostCreatedTimeStamp:
+            case PostSortMode.PostTimeStampAscending:
+            {
+                query = from p in query
+                        orderby p.PostTime
+                        select p;
+                break;
+            }
+            case PostSortMode.PostCreatedTimeStampDescending:
             {
                 query = from p in query
                         orderby p.PostCreatedTime descending
+                        select p;
+                break;
+            }
+            case PostSortMode.PostCreatedTimeStampAscending:
+            {
+                query = from p in query
+                        orderby p.PostCreatedTime
                         select p;
                 break;
             }

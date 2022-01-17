@@ -49,7 +49,7 @@ public sealed class RecentPostsHelper
             _recentPostType = (RecentPostsType)typeInt;
         }
 
-        _sortMode = PostSortMode.PostTimeStampDesc;
+        _sortMode = PostSortMode.PostTimeStampDescending;
         if (int.TryParse(sortModeString, out var sortModeInt) && Enum.IsDefined(typeof(PostSortMode), sortModeInt))
         {
             _sortMode = (PostSortMode)sortModeInt;

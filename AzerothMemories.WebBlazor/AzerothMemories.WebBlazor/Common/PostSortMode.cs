@@ -2,7 +2,9 @@
 
 public enum PostSortMode
 {
-    PostTimeStampDesc,
-    PostCreatedTimeStamp,
+    PostTimeStampDescending,
+    PostTimeStampAscending,
+    PostCreatedTimeStampDescending,
+    PostCreatedTimeStampAscending,
     Count
 }
