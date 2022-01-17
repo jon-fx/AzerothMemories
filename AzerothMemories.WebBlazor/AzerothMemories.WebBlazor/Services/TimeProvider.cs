@@ -1,32 +1,7 @@
 ﻿namespace AzerothMemories.WebBlazor.Services;
 
-public class TimeProvider
+public sealed class TimeProvider
 {
-    //private readonly IJSRuntime _jsRuntime;
-
-    //private DateTimeZone _dateTimeZone;
-    //private int _currentUpdateThreadId;
-
-    //public TimeProvider(IJSRuntime jsRuntime)
-    //{
-    //    _jsRuntime = jsRuntime;
-    //}
-
-    //public async Task<bool> EnsureInitialized(CancellationToken cancellationToken)
-    //{
-    //    if (_dateTimeZone == null && Interlocked.CompareExchange(ref _currentUpdateThreadId, Environment.CurrentManagedThreadId, 0) == 0)
-    //    {
-    //        var timeZone = await _jsRuntime.InvokeAsync<string>("BlazorGetTimeZone", cancellationToken);
-    //        _dateTimeZone = DateTimeZoneProviders.Tzdb[timeZone];
-
-    //        Interlocked.Exchange(ref _currentUpdateThreadId, 0);
-
-    //        return true;
-    //    }
-
-    //    return false;
-    //}
-
     public DateTimeZone GetCurrentTimeZone()
     {
         return DateTimeZoneProviders.Tzdb.GetSystemDefault();
@@ -38,10 +13,18 @@ public class TimeProvider
         return instant.InZone(timeZone);
     }
 
-    //public static string GetTimeAsLocalString(long postTime)
-    //{
-    //    return GetTimeAsLocalString(Instant.FromUnixTimeMilliseconds(postTime));
-    //}
+    public string GetTimeAsLocalString(Instant instant)
+    {
+        var culture = CultureInfo.CurrentCulture;
+        var timeZone = GetCurrentTimeZone();
+        var zoned = instant.InZone(timeZone);
+
+        var dateFormat = zoned.LocalDateTime.ToString(culture.DateTimeFormat.ShortDatePattern, culture);
+        var timeFormat = zoned.LocalDateTime.ToString(culture.DateTimeFormat.LongTimePattern, culture);
+
+        var timeString = $"{dateFormat} {timeFormat} ({timeZone.Id})";
+        return timeString;
+    }
 
     public string GetTimeAsLocalStringAgo(long unixTimeStamp, bool shortDate)
     {
@@ -63,54 +46,6 @@ public class TimeProvider
         var timeString = $"{dateFormat} {timeFormat} ({humanized}) ({timeZone.Id})";
         return timeString;
     }
-
-    //public static string GetTimeAsLocalString(Instant instant)
-    //{
-    //    var culture = CultureInfo.CurrentCulture;
-    //    var timeZone = DateTimeZoneProviders.Tzdb[TimeZoneInfo.Local.Id];
-    //    var zonedDateTime = instant.InZone(timeZone);
-    //    var dateFormat = zonedDateTime.LocalDateTime.ToString(culture.DateTimeFormat.ShortDatePattern, culture);
-    //    var timeFormat = zonedDateTime.LocalDateTime.ToString(culture.DateTimeFormat.ShortTimePattern, culture);
-
-    //    var timeSince = zonedDateTime - SystemClock.Instance.GetCurrentInstant().InZone(timeZone);
-    //    return $"{timeFormat} {dateFormat} ({timeSince.ToTimeSpan().Humanize(minUnit: TimeUnit.Minute, maxUnit: TimeUnit.Year)}) ({timeZone.Id})";
-    //}
-
-    //public DateTimeOffset GetTimeAsLocalDateTime(Instant postTimeStamp)
-    //{
-    //    return GetTimeAsLocalDateTime(postTimeStamp.ToUnixTimeMilliseconds());
-    //}
-
-    //public DateTimeOffset GetTimeAsLocalDateTime(long timeStamp)
-    //{
-    //    if (timeStamp < 0)
-    //    {
-    //        return default;
-    //    }
-
-    //    var dateTimeZone = _dateTimeZone ?? DateTimeZone.Utc;
-    //    var instant = Instant.FromUnixTimeMilliseconds(timeStamp).InZone(dateTimeZone);
-
-    //    return instant.ToDateTimeOffset();
-    //}
-
-    //public long GetInstantFrom(LocalDateTime screenShotLocalTime)
-    //{
-    //    var dateTimeZone = _dateTimeZone ?? DateTimeZone.Utc;
-
-    //    var screenShotZoned = screenShotLocalTime.InZoneStrictly(dateTimeZone);
-    //    var screenShotInstant = screenShotZoned.ToInstant();
-    //    return screenShotInstant.ToUnixTimeMilliseconds();
-    //}
-
-    //public long GetTimeFromLastModified(DateTimeOffset dateTimeOffset)
-    //{
-    //    var dateTimeZone = _dateTimeZone ?? DateTimeZone.Utc;
-    //    var screenShotZoned = dateTimeOffset.ToOffsetDateTime().InZone(dateTimeZone);
-    //    var screenShotInstant = screenShotZoned.ToInstant();
-
-    //    return screenShotInstant.ToUnixTimeMilliseconds();
-    //}
 
     public string GetJoinedDate(long timeStamp)
     {

@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public class AccountViewModel
+public sealed class AccountViewModel
 {
     [JsonInclude] public long Id;
 

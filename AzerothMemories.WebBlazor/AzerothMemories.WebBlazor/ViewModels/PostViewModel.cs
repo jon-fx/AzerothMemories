@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public class PostViewModel
+public sealed class PostViewModel
 {
     [JsonInclude] public long Id;
 

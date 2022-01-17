@@ -474,6 +474,15 @@ public sealed class AddMemoryComponentSharedData
         var errorStrings = new List<string>();
         var allTagCounters = new int[ZExtensions.TagCountsPerPost.Length];
 
+        var timeNow = SystemClock.Instance.GetCurrentInstant();
+        if (PostTimeStamp <= ZExtensions.MinPostTime || PostTimeStamp >= timeNow)
+        {
+            var minTime = _viewModel.Services.TimeProvider.GetTimeAsLocalString(ZExtensions.MinPostTime);
+            var maxTime = _viewModel.Services.TimeProvider.GetTimeAsLocalString(timeNow);
+
+            errorStrings.Add($"Time muse be between {minTime} and {maxTime}.");
+        }
+
         foreach (var chip in SelectedMainTags)
         {
             var tagInfo = (PostTagInfo)chip;
@@ -508,7 +517,7 @@ public sealed class AddMemoryComponentSharedData
             }
             else
             {
-                errorStrings.Add($"{(PostTagType)i} count must be between {minMax.Min} and {minMax.Max}.");
+                errorStrings.Add($"{(PostTagType)i} tag count must be between {minMax.Min} and {minMax.Max}.");
             }
         }
 

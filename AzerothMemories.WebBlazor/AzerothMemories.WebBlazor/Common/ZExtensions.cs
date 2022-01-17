@@ -9,7 +9,7 @@ public static class ZExtensions
     public static int ReportPostCommentMaxLength = 200;
 
     public static readonly (int Min, int Max)[] TagCountsPerPost;
-    public static readonly Instant MinPostTime = Instant.FromUnixTimeMilliseconds(946684800);
+    public static readonly Instant MinPostTime = Instant.FromUnixTimeMilliseconds(946684800000);
 
     static ZExtensions()
     {
@@ -21,7 +21,7 @@ public static class ZExtensions
         TagCountsPerPost[(int)PostTagType.Region] = (1, 1);
         TagCountsPerPost[(int)PostTagType.Realm] = (0, 5);
 
-        TagCountsPerPost[(int)PostTagType.Account] = (0, 50);
+        TagCountsPerPost[(int)PostTagType.Account] = (1, 50);
         TagCountsPerPost[(int)PostTagType.Character] = (0, 50);
         TagCountsPerPost[(int)PostTagType.Guild] = (0, 10);
 
