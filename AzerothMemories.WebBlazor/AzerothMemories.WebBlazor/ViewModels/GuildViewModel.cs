@@ -4,6 +4,8 @@ public sealed class GuildViewModel
 {
     [JsonInclude] public long Id;
 
+    [JsonInclude] public string Avatar;
+
     [JsonInclude] public BlizzardRegion RegionId;
 
     [JsonInclude] public int RealmId;
@@ -18,7 +20,25 @@ public sealed class GuildViewModel
 
     [JsonInclude] public long BlizzardCreatedTimestamp;
 
-    [JsonIgnore] public string AvatarLinkWithFallBack;
+    [JsonInclude] public CharacterViewModel[] CharactersArray;
 
-    [JsonInclude] public CharacterViewModel[] Characters;
+    public string GetAvatarText()
+    {
+        if (!string.IsNullOrWhiteSpace(Name))
+        {
+            return Name[0].ToString();
+        }
+
+        return "?";
+    }
+
+    public CharacterViewModel[] GetCharactersSafe()
+    {
+        if (CharactersArray == null || CharactersArray.Length == 0)
+        {
+            return Array.Empty<CharacterViewModel>();
+        }
+
+        return CharactersArray;
+    }
 }

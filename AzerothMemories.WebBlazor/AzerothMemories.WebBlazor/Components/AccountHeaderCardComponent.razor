@@ -91,36 +91,15 @@ else
     {
         <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
             <MudCardContent>
-                @for (var i = 0; i < characters.Length; i++)
+                @foreach (var character in characters)
                 {
-                    var index = i;
-                    var character = characters[index];
                     if (string.IsNullOrWhiteSpace(character.AvatarLink))
                     {
                         continue;
                     }
 
-                    <a href="character\@character.RegionId.ToInfo().TwoLetters\@Services.StringLocalizer[$"RealmSlug-{character.RealmId}"]\@character.Name">
-                        <MudTooltip Placement="Placement.Bottom" Color="Color.Dark">
-                            <ChildContent>
-                                <MudButton Id="@index" Variant="Variant.Filled">
-                                    <MudAvatar Size="Size.Medium" Image="@character.AvatarLink" />
-                                </MudButton>
-                            </ChildContent>
-                            <TooltipContent>
+                    <CharacterLinkButton @key="character" StringLocalizer="@Services.StringLocalizer" CharacterViewModel="@character"/>
 
-                                <CharacterNameLinkComponent CharacterName="@character.Name"
-                                                CharacterClass="@character.Class"
-                                                CharacterRealmId="@character.RealmId"
-                                                CharacterRegionInfo="@character.RegionId.ToInfo()" />
-
-                                <RealmLinkComponent BlizzardRealmId="@character.RealmId" />
-
-                                <MudText Class="d-inline">@character.Level @Services.StringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
-                                <MudText Class=@($"d-inline wowclass-{character.Class}")>@Services.StringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
-                            </TooltipContent>
-                        </MudTooltip>
-                    </a>
                 }
             </MudCardContent>
         </MudCard>

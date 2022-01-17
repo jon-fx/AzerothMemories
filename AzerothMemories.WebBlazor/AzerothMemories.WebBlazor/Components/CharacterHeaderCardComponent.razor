@@ -10,7 +10,8 @@ else
                 <MudAvatar Size="Size.Large" Image="@CharacterViewModel.AvatarLinkWithFallBack">@CharacterViewModel.Name[0]</MudAvatar>
             </CardHeaderAvatar>
             <CardHeaderContent>
-                <CharacterNameLinkComponent CharacterName="@CharacterViewModel.Name"
+                <CharacterNameLinkComponent Typo="Typo.h6"
+                                            CharacterName="@CharacterViewModel.Name"
                                             CharacterClass="@CharacterViewModel.Class"
                                             CharacterRealmId="@CharacterViewModel.RealmId"
                                             CharacterRegionInfo="@CharacterViewModel.RegionId.ToInfo()"/>
@@ -34,6 +35,7 @@ else
             </MudButtonGroup>
         </MudCardActions>
     </MudCard>
+
 }
 
 @code {

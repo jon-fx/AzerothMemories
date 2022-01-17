@@ -1,0 +1,28 @@
+﻿<a href="character\@CharacterViewModel.RegionId.ToInfo().TwoLetters\@StringLocalizer[$"RealmSlug-{CharacterViewModel.RealmId}"]\@CharacterViewModel.Name">
+    <MudTooltip Placement="Placement.Bottom" Color="Color.Dark">
+        <ChildContent>
+            <MudButton Variant="Variant.Filled">
+                <MudAvatar Size="Size.Medium" Image="@CharacterViewModel.AvatarLink" />
+            </MudButton>
+        </ChildContent>
+        <TooltipContent>
+
+            <CharacterNameLinkComponent CharacterName="@CharacterViewModel.Name"
+                                        CharacterClass="@CharacterViewModel.Class"
+                                        CharacterRealmId="@CharacterViewModel.RealmId"
+                                        CharacterRegionInfo="@CharacterViewModel.RegionId.ToInfo()" />
+
+            <RealmLinkComponent BlizzardRealmId="@CharacterViewModel.RealmId" />
+
+            <MudText Class="d-inline">@CharacterViewModel.Level @StringLocalizer[$"CharacterRace-{CharacterViewModel.Race}"]</MudText>
+            <MudText Class=@($"d-inline wowclass-{CharacterViewModel.Class}")>@StringLocalizer[$"CharacterClass-{CharacterViewModel.Class}"]</MudText>
+        </TooltipContent>
+    </MudTooltip>
+</a>
+
+@code {
+
+    [Parameter, EditorRequired] public IStringLocalizer<BlizzardResources> StringLocalizer { get; init; }
+
+    [Parameter, EditorRequired] public CharacterViewModel CharacterViewModel { get; init; }
+}

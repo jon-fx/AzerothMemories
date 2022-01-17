@@ -52,7 +52,7 @@ public sealed class GuildRecord : IBlizzardUpdateRecord
             CreatedDateTime = CreatedDateTime.ToUnixTimeMilliseconds(),
             BlizzardCreatedTimestamp = BlizzardCreatedTimestamp,
 
-            Characters = characterViewModels.ToArray()
+            CharactersArray = characterViewModels.ToArray()
         };
     }
 }
