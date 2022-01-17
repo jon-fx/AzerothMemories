@@ -125,7 +125,7 @@ public class TagServices : ITagServices
 
     private IQueryable<BlizzardDataRecord> GetSearchQuery(DatabaseConnection database, string locale, string searchString)
     {
-        return database.BlizzardData.Where(r => Sql.Lower(r.Name.En_Gb).StartsWith(searchString)).OrderBy(r => r.TagType).ThenBy(r => Sql.Length(r.Name.En_Gb)).Take(50);
+        return database.BlizzardData.Where(r => Sql.Lower(r.Name.En_Gb).StartsWith(searchString)).OrderBy(r => r.TagType).ThenBy(r => Sql.Length(r.Name.En_Gb)).ThenBy(r => r.TagId).Take(50);
     }
 
     private PostTagInfo CreatePostTagInfo(BlizzardDataRecord record, string locale)

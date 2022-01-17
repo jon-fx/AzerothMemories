@@ -211,9 +211,19 @@ public class PostServices : IPostServices
         var data = new List<(byte[] Buffer, string Hash, string Name, long TimeStamp, string ImageBlobName)>();
         foreach (var uploadResult in uploadResults)
         {
+            if (uploadResult == null)
+            {
+                return AddMemoryResultCode.UploadFailed;
+            }
+
+            if (uploadResult.FileContent == null)
+            {
+                return AddMemoryResultCode.UploadFailed;
+            }
+
             if (uploadResult.FileContent.Length > 1024 * 1024 * 10)
             {
-                return AddMemoryResultCode.Failed;
+                return AddMemoryResultCode.UploadFailed;
             }
 
             try
@@ -236,7 +246,7 @@ public class PostServices : IPostServices
             }
             catch (Exception)
             {
-                return AddMemoryResultCode.Failed;
+                return AddMemoryResultCode.UploadFailed;
             }
         }
 

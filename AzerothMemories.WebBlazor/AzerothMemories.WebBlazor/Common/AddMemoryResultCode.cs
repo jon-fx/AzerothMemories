@@ -6,6 +6,7 @@ public enum AddMemoryResultCode
     Success,
     Canceled,
     Failed,
+    UploadFailed,
     CommentTooLong,
     ParseCommentFailed,
     SessionNotFound,
