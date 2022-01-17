@@ -45,27 +45,8 @@
 
     <AddMemoryAllTagChipsComponent SharedData="@ViewModel.SharedData" />
 
-    <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-        <MudGrid>
-            @*            @if (ViewModel.SharedData.ErrorStrings.Count > 0)
-                {
-                foreach (var errorString in ViewModel.SharedData.ErrorStrings)
-                {
-                <MudItem xs="12">
-                <MudAlert Severity="@errorString.Item1">@errorString.Item2</MudAlert>
-                </MudItem>
-                }
-                }*@
+    <AddMemorySubmitCancelComponent SharedData="@ViewModel.SharedData" OnSubmit="@Submit" OnCancel="@UserCancel" />
 
-            <MudItem xs="6">
-                <MudButton Variant="Variant.Filled" FullWidth="true" EndIcon="@Icons.Material.Filled.Delete" IconColor="Color.Secondary" OnClick="UserCancel">Cancel</MudButton>
-            </MudItem>
-
-            <MudItem xs="6">
-                <MudButton Variant="Variant.Filled" FullWidth="true" EndIcon="@Icons.Material.Filled.Save" IconColor="Color.Secondary" Color="Color.Primary" OnClick="Submit">Ok</MudButton>
-            </MudItem>
-        </MudGrid>
-    </MudPaper>
 }
 
 @code {

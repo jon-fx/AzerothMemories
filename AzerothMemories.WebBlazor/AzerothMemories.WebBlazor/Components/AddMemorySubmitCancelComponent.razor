@@ -1,0 +1,54 @@
+﻿<MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+    <MudGrid>
+        @{
+            var errorStrings = SharedData.GetErrorStrings();
+            if (errorStrings.Length > 0)
+            {
+                foreach (var errorString in errorStrings)
+                {
+                    <MudItem xs="12">
+                        <MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Center">@errorString</MudAlert>
+                    </MudItem>
+                }
+            }
+
+            <MudItem xs="6">
+                <MudButton Variant="Variant.Filled" FullWidth="true" EndIcon="@Icons.Material.Filled.Delete" IconColor="Color.Secondary" OnClick="OnCancel">Cancel</MudButton>
+            </MudItem>
+
+            <MudItem xs="6">
+                <MudButton Variant="Variant.Filled" FullWidth="true" EndIcon="@Icons.Material.Filled.Save" IconColor="Color.Secondary" Color="Color.Primary" OnClick="OnSubmit" Disabled="@(errorStrings.Length > 0)">Ok</MudButton>
+            </MudItem>
+        }
+    </MudGrid>
+</MudPaper>
+
+@code {
+    private bool _sharedDataChanged;
+    private readonly AddMemoryComponentSharedData _sharedData;
+
+    [Parameter, EditorRequired]
+    public AddMemoryComponentSharedData SharedData
+    {
+        get => _sharedData;
+        init
+        {
+            _sharedDataChanged = value != null && value != _sharedData;
+            _sharedData = value;
+        }
+    }
+
+    [Parameter, EditorRequired] public EventCallback OnSubmit { get; init; }
+
+    [Parameter, EditorRequired] public EventCallback OnCancel { get; init; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if (_sharedDataChanged)
+        {
+            SharedData.OnTagsChanged += StateHasChanged;
+        }
+    }
+}

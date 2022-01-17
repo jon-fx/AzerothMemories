@@ -22,18 +22,8 @@ else
         <AddMemoryMainTagComponent Services="@this" SharedData="@ViewModel.SharedData" />
         <AddMemoryPostAvatarComponent SharedData="@ViewModel.SharedData" />
         <AddMemoryAllTagChipsComponent SharedData="@ViewModel.SharedData" />
-
-        <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-            <MudGrid>
-                <MudItem xs="6">
-                    <MudButton Variant="Variant.Filled" FullWidth="true" EndIcon="@Icons.Material.Filled.Delete" IconColor="Color.Secondary" OnClick="ViewModel.UserCancel">Cancel</MudButton>
-                </MudItem>
-
-                <MudItem xs="6">
-                    <MudButton Variant="Variant.Filled" FullWidth="true" EndIcon="@Icons.Material.Filled.Save" IconColor="Color.Secondary" Color="Color.Primary" OnClick="ViewModel.Submit">Ok</MudButton>
-                </MudItem>
-            </MudGrid>
-        </MudPaper>
+        
+        <AddMemorySubmitCancelComponent SharedData="@ViewModel.SharedData" OnSubmit="@ViewModel.Submit" OnCancel="@ViewModel.UserCancel" />
     }
 
     <PostViewComponent Services="@this" Helper="@ViewModel.Helper"/>

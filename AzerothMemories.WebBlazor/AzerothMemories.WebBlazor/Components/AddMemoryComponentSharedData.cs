@@ -468,4 +468,50 @@ public sealed class AddMemoryComponentSharedData
 
         OnTagsChanged?.Invoke();
     }
+
+    public string[] GetErrorStrings()
+    {
+        var errorStrings = new List<string>();
+        var allTagCounters = new int[ZExtensions.TagCountsPerPost.Length];
+
+        foreach (var chip in SelectedMainTags)
+        {
+            var tagInfo = (PostTagInfo)chip;
+            allTagCounters[(int)tagInfo.Type]++;
+        }
+
+        foreach (var chip in SelectedCommonTags)
+        {
+            var tagInfo = (PostTagInfo)chip;
+            allTagCounters[(int)tagInfo.Type]++;
+        }
+
+        foreach (var tagInfo in SelectedExtraTags)
+        {
+            allTagCounters[(int)tagInfo.Type]++;
+        }
+
+        foreach (var chip in SelectedAchievementTags)
+        {
+            if (chip is PostTagInfo tagInfo)
+            {
+                allTagCounters[(int)tagInfo.Type]++;
+            }
+        }
+
+        for (var i = 0; i < allTagCounters.Length; i++)
+        {
+            var count = allTagCounters[i];
+            var minMax = ZExtensions.TagCountsPerPost[i];
+            if (count >= minMax.Min && count <= minMax.Max)
+            {
+            }
+            else
+            {
+                errorStrings.Add($"{(PostTagType)i} count must be between {minMax.Min} and {minMax.Max}.");
+            }
+        }
+
+        return errorStrings.ToArray();
+    }
 }

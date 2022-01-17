@@ -9,7 +9,7 @@ public static class ZExtensions
     static ZExtensions()
     {
         TagCountsPerPost = new (int Min, int Max)[(int)PostTagType.CountExcludingHashTag];
-        TagCountsPerPost[(int)PostTagType.None] = (0, 0);
+        //TagCountsPerPost[(int)PostTagType.None] = (0, 0);
 
         TagCountsPerPost[(int)PostTagType.Type] = (1, 1);
         TagCountsPerPost[(int)PostTagType.Main] = (0, 10);
