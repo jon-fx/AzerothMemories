@@ -16,7 +16,6 @@ public sealed class AddMemoryTransferData
     public AddMemoryTransferData(long timeStamp, string avatarTag, bool privatePost, string comment, HashSet<string> systemTags, List<AddMemoryUploadResult> uploadResults)
     {
         TimeStamp = timeStamp;
-        //Avatar = avatar;
         AvatarTag = avatarTag;
         IsPrivate = privatePost;
         Comment = comment;

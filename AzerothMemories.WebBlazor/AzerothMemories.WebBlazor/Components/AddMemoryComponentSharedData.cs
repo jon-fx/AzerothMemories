@@ -171,7 +171,7 @@ public sealed class AddMemoryComponentSharedData
         _viewModel.OnViewModelChanged?.Invoke();
     }
 
-    public async Task<AddMemoryResult> Submit(PublishCommentComponent commentComponent, List<AddMemoryUploadResult> uploadResults)
+    public Task<AddMemoryResult> Submit(PublishCommentComponent commentComponent, List<AddMemoryUploadResult> uploadResults)
     {
         var timeStamp = PostTimeStamp;
         var finalText = commentComponent.GetCommentText();
@@ -184,9 +184,7 @@ public sealed class AddMemoryComponentSharedData
         }
 
         var transferData = new AddMemoryTransferData(timeStamp.ToUnixTimeMilliseconds(), avatarTag, PrivatePost, finalText, systemTags, uploadResults);
-        var result = await _viewModel.Services.PostServices.TryPostMemory(null, transferData);
-
-        return result;
+        return _viewModel.Services.PostServices.TryPostMemory(null, transferData);
     }
 
     public async Task<AddMemoryResultCode> SubmitOnEditingPost(PostViewModel currentPost)

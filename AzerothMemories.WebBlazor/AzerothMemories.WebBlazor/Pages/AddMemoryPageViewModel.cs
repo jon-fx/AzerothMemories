@@ -46,8 +46,6 @@ public sealed class AddMemoryPageViewModel : ViewModelBase
             return;
         }
 
-        //await TimeProvider.EnsureInitialized(CancellationToken);
-
         Services.DialogService.ShowLoadingDialog();
 
         foreach (var file in arg.GetMultipleFiles())
