@@ -64,14 +64,13 @@ public class PostServices : IPostServices
 
     public async Task<AddMemoryResult> TryPostMemory(Session session, AddMemoryTransferData transferData)
     {
-        const int maxLength = 2048;
-        if (transferData.Comment.Length >= maxLength)
+        if (transferData.Comment.Length >= ZExtensions.MaxPostCommentLength)
         {
             return new AddMemoryResult(AddMemoryResultCode.CommentTooLong);
         }
 
         var dateTime = Instant.FromUnixTimeMilliseconds(transferData.TimeStamp);
-        if (dateTime < Instant.FromUnixTimeMilliseconds(946684800) || dateTime > SystemClock.Instance.GetCurrentInstant())
+        if (dateTime < ZExtensions.MinPostTime || dateTime > SystemClock.Instance.GetCurrentInstant())
         {
             return new AddMemoryResult(AddMemoryResultCode.InvalidTime);
         }
@@ -1145,10 +1144,9 @@ public class PostServices : IPostServices
             return false;
         }
 
-        const int maxLength = 200;
-        if (reasonText.Length > maxLength)
+        if (reasonText.Length > ZExtensions.ReportPostCommentMaxLength)
         {
-            reasonText = reasonText[..maxLength];
+            reasonText = reasonText[..ZExtensions.ReportPostCommentMaxLength];
         }
 
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
@@ -1242,10 +1240,9 @@ public class PostServices : IPostServices
             return false;
         }
 
-        const int maxLength = 200;
-        if (reasonText.Length > maxLength)
+        if (reasonText.Length > ZExtensions.MaxPostCommentLength)
         {
-            reasonText = reasonText[..maxLength];
+            reasonText = reasonText[..ZExtensions.MaxPostCommentLength];
         }
 
         await using var database = _commonServices.DatabaseProvider.GetDatabase();

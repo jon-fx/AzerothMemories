@@ -4,12 +4,16 @@ namespace AzerothMemories.WebBlazor.Common;
 
 public static class ZExtensions
 {
+    public static int MaxPostCommentLength = 2048;
+    public static int MaxCommentLength = 2048;
+    public static int ReportPostCommentMaxLength = 200;
+
     public static readonly (int Min, int Max)[] TagCountsPerPost;
+    public static readonly Instant MinPostTime = Instant.FromUnixTimeMilliseconds(946684800);
 
     static ZExtensions()
     {
         TagCountsPerPost = new (int Min, int Max)[(int)PostTagType.CountExcludingHashTag];
-        //TagCountsPerPost[(int)PostTagType.None] = (0, 0);
 
         TagCountsPerPost[(int)PostTagType.Type] = (1, 1);
         TagCountsPerPost[(int)PostTagType.Main] = (0, 10);

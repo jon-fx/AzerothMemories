@@ -17,7 +17,7 @@
 
 @code {
 
-    private static readonly DateTime _minDateTime = new(2000, 1, 1);
+    private static readonly DateTime _minDateTime = DateTimeOffset.FromUnixTimeMilliseconds(ZExtensions.MinPostTime.ToUnixTimeMilliseconds()).DateTime;
 
     private DateTime? _postDate;
     private TimeSpan? _postTime;

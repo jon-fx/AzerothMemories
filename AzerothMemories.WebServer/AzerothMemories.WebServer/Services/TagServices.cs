@@ -264,8 +264,6 @@ public class TagServices : ITagServices
 
     public bool GetCommentText(string commentText, Dictionary<long, string> userThatCanBeTagged, out string newCommentText, out HashSet<long> userTags, out HashSet<string> hashTags)
     {
-        const int maxLength = 2048;
-
         userTags = new HashSet<long>();
         hashTags = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         newCommentText = string.Empty;
@@ -275,7 +273,7 @@ public class TagServices : ITagServices
             return true;
         }
 
-        if (commentText.Length > maxLength)
+        if (commentText.Length > ZExtensions.MaxCommentLength)
         {
             return false;
         }
@@ -286,7 +284,7 @@ public class TagServices : ITagServices
             return false;
         }
 
-        if (commentText.Length > maxLength)
+        if (commentText.Length > ZExtensions.MaxCommentLength)
         {
             return false;
         }
@@ -308,7 +306,7 @@ public class TagServices : ITagServices
                 commentTextBuilder.Remove(offset, str.Length + 1);
                 commentTextBuilder.Insert(offset, $"<a href='account/{tagInfo.Key}'>@{tagInfo.Value}</a>");
 
-                if (commentTextBuilder.Length > maxLength)
+                if (commentTextBuilder.Length > ZExtensions.MaxCommentLength)
                 {
                     return false;
                 }
@@ -327,7 +325,7 @@ public class TagServices : ITagServices
             commentTextBuilder.Remove(offset, str.Length + 1);
             commentTextBuilder.Insert(offset, $"<a href='postsearch?tag=128-{str}'>#{str}</a>");
 
-            if (commentTextBuilder.Length > maxLength)
+            if (commentTextBuilder.Length > ZExtensions.MaxCommentLength)
             {
                 return false;
             }

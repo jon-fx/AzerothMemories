@@ -39,7 +39,7 @@
 
     [Parameter] public int Lines { get; init; } = 1;
 
-    [Parameter] public int MaxLength { get; init; } = 500;
+    [Parameter] public int MaxLength { get; init; } = ZExtensions.MaxCommentLength / 2;
 
     [Parameter] public bool Disabled { get; init; }
 
