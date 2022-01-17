@@ -112,7 +112,6 @@ public sealed class AddMemoryComponentSharedData
             if (mainTag != null)
             {
                 _selectedMainTags.Add(mainTag);
-
                 continue;
             }
 
@@ -120,7 +119,6 @@ public sealed class AddMemoryComponentSharedData
             if (commonTag != null)
             {
                 _selectedCommonTags.Add(commonTag);
-
                 continue;
             }
 

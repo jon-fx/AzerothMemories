@@ -23,7 +23,7 @@ public sealed class PostTagRecord : IDatabaseRecord
 
     public static bool ValidateTagCounts(HashSet<PostTagRecord> tagRecords)
     {
-        var array = new int[CommonConfig.TagCountsPerPost.Length];
+        var array = new int[ZExtensions.TagCountsPerPost.Length];
 
         foreach (var tagRecord in tagRecords)
         {
@@ -39,7 +39,7 @@ public sealed class PostTagRecord : IDatabaseRecord
         for (var i = 0; i < array.Length; i++)
         {
             var count = array[i];
-            var minMax = CommonConfig.TagCountsPerPost[i];
+            var minMax = ZExtensions.TagCountsPerPost[i];
             if (count >= minMax.Min && count <= minMax.Max)
             {
             }

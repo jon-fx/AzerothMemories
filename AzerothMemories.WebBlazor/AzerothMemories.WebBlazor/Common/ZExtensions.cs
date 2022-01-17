@@ -4,6 +4,41 @@ namespace AzerothMemories.WebBlazor.Common;
 
 public static class ZExtensions
 {
+    public static readonly (int Min, int Max)[] TagCountsPerPost;
+
+    static ZExtensions()
+    {
+        TagCountsPerPost = new (int Min, int Max)[(int)PostTagType.CountExcludingHashTag];
+        TagCountsPerPost[(int)PostTagType.None] = (0, 0);
+
+        TagCountsPerPost[(int)PostTagType.Type] = (1, 1);
+        TagCountsPerPost[(int)PostTagType.Main] = (0, 10);
+
+        TagCountsPerPost[(int)PostTagType.Region] = (1, 1);
+        TagCountsPerPost[(int)PostTagType.Realm] = (0, 5);
+
+        TagCountsPerPost[(int)PostTagType.Account] = (0, 50);
+        TagCountsPerPost[(int)PostTagType.Character] = (0, 50);
+        TagCountsPerPost[(int)PostTagType.Guild] = (0, 10);
+
+        TagCountsPerPost[(int)PostTagType.Achievement] = (0, 10);
+        TagCountsPerPost[(int)PostTagType.Item] = (0, 5);
+        TagCountsPerPost[(int)PostTagType.Mount] = (0, 5);
+        TagCountsPerPost[(int)PostTagType.Pet] = (0, 5);
+        TagCountsPerPost[(int)PostTagType.Zone] = (0, 5);
+        TagCountsPerPost[(int)PostTagType.Npc] = (0, 5);
+        TagCountsPerPost[(int)PostTagType.Spell] = (0, 5);
+        TagCountsPerPost[(int)PostTagType.Object] = (0, 5);
+        TagCountsPerPost[(int)PostTagType.Quest] = (0, 5);
+        TagCountsPerPost[(int)PostTagType.ItemSet] = (0, 5);
+        TagCountsPerPost[(int)PostTagType.Toy] = (0, 5);
+        TagCountsPerPost[(int)PostTagType.Title] = (0, 5);
+
+        TagCountsPerPost[(int)PostTagType.CharacterRace] = (0, 5);
+        TagCountsPerPost[(int)PostTagType.CharacterClass] = (0, 5);
+        TagCountsPerPost[(int)PostTagType.CharacterClassSpecialization] = (0, 5);
+    }
+
     public static bool IsRetailOnlyTag(this PostTagType tagType)
     {
         switch (tagType)
@@ -307,7 +342,8 @@ public static class ZExtensions
         return commentStr.ToString();
     }
 
-    public static void AddToDictOrNull<TValue>(Dictionary<string, object> dictionary, string key, TValue value, bool addNull)
+    public static void AddToDictOrNull<TValue>(Dictionary<string, object> dictionary, string key, TValue value,
+        bool addNull)
     {
         if (addNull)
         {
