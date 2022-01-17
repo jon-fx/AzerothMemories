@@ -198,7 +198,7 @@ public sealed class AddMemoryComponentSharedData
         return result;
     }
 
-    public async Task<bool> SubmitOnEditingPost(PostViewModel currentPost)
+    public async Task<AddMemoryResultCode> SubmitOnEditingPost(PostViewModel currentPost)
     {
         var newTags = GetSystemHashTags();
 

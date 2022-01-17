@@ -108,7 +108,7 @@ public sealed class PostController : ControllerBase, IPostServices
     }
 
     [HttpPost("{postId}")]
-    public Task<bool> TryUpdateSystemTags(Session session, [FromRoute] long postId, [FromBody] TryUpdateSystemTagsInfo info)
+    public Task<AddMemoryResultCode> TryUpdateSystemTags(Session session, [FromRoute] long postId, [FromBody] TryUpdateSystemTagsInfo info)
     {
         return _commonServices.PostServices.TryUpdateSystemTags(session, postId, info);
     }

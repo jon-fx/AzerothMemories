@@ -22,16 +22,12 @@
 {
     private async Task OnPostMemoryCallback(AddMemoryResult result)
     {
-        //_addMemoryResult = result.Result;
-        //_isMemoryVisible = false;
-
         if (result.Result == AddMemoryResultCode.Success)
         {                                                                                                                   
             NavigationManager.NavigateTo($"post/{result.AccountId}/{result.PostId}");
         }
         else if (result.Result == AddMemoryResultCode.Canceled)
         {
-            //_uploadResults = null;
         }
         else
         {

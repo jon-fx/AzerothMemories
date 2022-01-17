@@ -71,12 +71,30 @@ public sealed class EditMemoryTagsPageeViewModel : ViewModelBase
 
         if (postViewModel.AccountId == Services.ActiveAccountServices.ActiveAccountId || Services.ActiveAccountServices.IsAdmin)
         {
-            await SharedData.SubmitOnEditingPost(Helper.PostViewModel);
+            var result = await SharedData.SubmitOnEditingPost(Helper.PostViewModel);
+            if (result == AddMemoryResultCode.Success)
+            {
+                Services.NavigationManager.NavigateTo($"post/{postViewModel.AccountId}/{postViewModel.Id}");
+            }
+            else if (result == AddMemoryResultCode.Canceled)
+            {
+                UserCancel();
+            }
+            else
+            {
+                await Services.DialogService.ShowNotificationDialog(false, $"{result}");
+            }
         }
     }
 
-    public Task UserCancel()
+    public void UserCancel()
     {
-        return Task.CompletedTask;
+        var postViewModel = Helper.PostViewModel;
+        if (postViewModel == null)
+        {
+            return;
+        }
+
+        Services.NavigationManager.NavigateTo($"post/{postViewModel.AccountId}/{postViewModel.Id}");
     }
 }

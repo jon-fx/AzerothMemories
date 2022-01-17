@@ -1370,18 +1370,18 @@ public class PostServices : IPostServices
         return true;
     }
 
-    public async Task<bool> TryUpdateSystemTags(Session session, long postId, TryUpdateSystemTagsInfo info)
+    public async Task<AddMemoryResultCode> TryUpdateSystemTags(Session session, long postId, TryUpdateSystemTagsInfo info)
     {
         var activeAccount = await _commonServices.AccountServices.TryGetAccount(session);
         if (activeAccount == null)
         {
-            return false;
+            return AddMemoryResultCode.SessionNotFound;
         }
 
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
         {
-            return false;
+            return AddMemoryResultCode.Failed;
         }
 
         var accountViewModel = activeAccount;
@@ -1391,7 +1391,7 @@ public class PostServices : IPostServices
         }
         else if (activeAccount.Id != postRecord.AccountId)
         {
-            return false;
+            return AddMemoryResultCode.SessionNotFound;
         }
 
         var allTagRecords = await GetAllPostTags(postId);
@@ -1407,7 +1407,7 @@ public class PostServices : IPostServices
 
         if (addedSet.Count > 64)
         {
-            return false;
+            return AddMemoryResultCode.TooManyTags;
         }
 
         if (addedSet.Count > 0 || removedSet.Count > 0)
@@ -1420,7 +1420,7 @@ public class PostServices : IPostServices
                 var newRecord = await _commonServices.TagServices.TryCreateTagRecord(systemTag, accountViewModel, PostTagKind.Post);
                 if (newRecord == null)
                 {
-                    return false;
+                    return AddMemoryResultCode.InvalidTags;
                 }
 
                 var currentTag = await database.PostTags.Where(x => x.PostId == postId && x.TagType == newRecord.TagType && x.TagId == newRecord.TagId).FirstOrDefaultAsync();
@@ -1450,13 +1450,13 @@ public class PostServices : IPostServices
                 }
                 else
                 {
-                    return false;
+                    return AddMemoryResultCode.InvalidTags;
                 }
             }
 
             if (!PostTagRecord.ValidateTagCounts(allCurrentTags.Values.ToHashSet()))
             {
-                return false;
+                return AddMemoryResultCode.TooManyTags;
             }
 
             if (recordsToInsert.Count > 0)
@@ -1487,7 +1487,7 @@ public class PostServices : IPostServices
         _ = GetPostRecord(postId);
         _ = GetAllPostTags(postId);
 
-        return false;
+        return AddMemoryResultCode.Success;
     }
 
     [ComputeMethod]
