@@ -1,0 +1,40 @@
+﻿@page "/guild/{Id:long}"
+@page "/guild/{Region}/{Realm}/{Name}"
+@inherits MoaComponentBase<GuildPageViewModel>
+
+@{
+    if (!string.IsNullOrWhiteSpace(ViewModel.ErrorMessage))
+    {
+        <CardErrorComponent ErrorMessage="@ViewModel.ErrorMessage" />
+    }
+    else if (ViewModel.IsLoading)
+    {
+        <CardLoadingComponent />
+    }
+    else
+    {
+        <PageTitle>@ViewModel.GuildViewModel.Name's Memories of Azeroth</PageTitle>
+        <GuildHeaderCardComponent Services="@this" GuildViewModel="@ViewModel.GuildViewModel" />
+        <SearchPostViewComponent PostSearchHelper="@ViewModel.PostSearchHelper" />
+    }
+}
+
+@code {
+    [Parameter, EditorRequired] public long Id { get; set; }
+
+    [Parameter, EditorRequired] public string Region { get; set; }
+
+    [Parameter, EditorRequired] public string Realm { get; set; }
+
+    [Parameter, EditorRequired] public string Name { get; set; }
+
+    [Parameter, SupplyParameterFromQuery(Name = "sort")] public string SortMode { get; init; }
+
+    [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }
+
+    protected override async Task InternalComputeState()
+    {
+        await ViewModel.ComputeState(Id, Region, Realm, Name, SortMode, CurrentPage);
+    }
+
+}

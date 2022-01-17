@@ -1,0 +1,23 @@
+﻿@using AzerothMemories.WebBlazor.Blizzard
+@inject IStringLocalizer<BlizzardResources> _stringLocalizer
+
+@if (GuildRealmId > 0)
+{
+    <a href="guild\@GuildRegionInfo.TwoLetters\@_stringLocalizer[$"RealmSlug-{GuildRealmId}"]\@GuildName">
+        <MudText Typo="@Typo" Class=@("d-inline")>@GuildName</MudText>
+    </a>
+}
+else if (!string.IsNullOrWhiteSpace(GuildRealmSlug))
+{
+    <a href="guild\@GuildRegionInfo.TwoLetters\@GuildRealmSlug\@GuildName">
+        <MudText Typo="@Typo" Class=@("d-inline")>@GuildName</MudText>
+    </a>
+}
+
+@code {
+    [Parameter] public Typo Typo { get; set; } = Typo.body1;
+    [Parameter] public int GuildRealmId { get; set; }
+    [Parameter] public string GuildRealmSlug { get; set; }
+    [Parameter, EditorRequired] public string GuildName { get; set; }
+    [Parameter, EditorRequired] public BlizzardRegionInfo GuildRegionInfo { get; set; }
+}

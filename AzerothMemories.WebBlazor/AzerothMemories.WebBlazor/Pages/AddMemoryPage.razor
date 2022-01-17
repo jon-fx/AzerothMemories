@@ -20,7 +20,7 @@
 
 @code
 {
-    private Task OnPostMemoryCallback(AddMemoryResult result)
+    private async Task OnPostMemoryCallback(AddMemoryResult result)
     {
         //_addMemoryResult = result.Result;
         //_isMemoryVisible = false;
@@ -33,9 +33,11 @@
         {
             //_uploadResults = null;
         }
+        else
+        {
+            await DialogService.ShowNotificationDialog(false, $"{result.Result}");
+        }
 
         StateHasChanged();
-
-        return Task.CompletedTask;
     }
 }

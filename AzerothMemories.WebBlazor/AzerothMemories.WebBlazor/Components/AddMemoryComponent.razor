@@ -70,9 +70,11 @@
 
 @code {
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
+
     [Parameter, EditorRequired] public AddMemoryPageViewModel ViewModel { get; init; }
 
     [Parameter, EditorRequired] public EventCallback<AddMemoryResult> OnPostMemoryResult { get; init; }
+
     private async Task Submit()
     {
         Services.DialogService.ShowLoadingDialog();

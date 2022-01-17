@@ -303,7 +303,7 @@ public class SearchServices : ISearchServices
             case PostSortMode.PostTimeStampDesc:
             {
                 query = from p in query
-                        orderby p.PostTime descending, p.PostCreatedTime descending
+                        orderby p.PostTime descending
                         select p;
                 break;
             }

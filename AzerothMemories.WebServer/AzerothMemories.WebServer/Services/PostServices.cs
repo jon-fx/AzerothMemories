@@ -111,7 +111,7 @@ public class PostServices : IPostServices
             return new AddMemoryResult(addCommentTagResult);
         }
 
-        if (tagRecords.Count > 64)
+        if (!PostTagRecord.ValidateTagCounts(tagRecords))
         {
             return new AddMemoryResult(AddMemoryResultCode.TooManyTags);
         }
@@ -1454,7 +1454,7 @@ public class PostServices : IPostServices
                 }
             }
 
-            if (allCurrentTags.Count > 128)
+            if (!PostTagRecord.ValidateTagCounts(allCurrentTags.Values.ToHashSet()))
             {
                 return false;
             }

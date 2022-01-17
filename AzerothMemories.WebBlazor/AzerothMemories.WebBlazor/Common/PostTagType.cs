@@ -30,6 +30,7 @@ public enum PostTagType
     CharacterRace = 50,
     CharacterClass,
     CharacterClassSpecialization,
+    CountExcludingHashTag,
 
-    HashTag = 128
+    HashTag = 128,
 }
