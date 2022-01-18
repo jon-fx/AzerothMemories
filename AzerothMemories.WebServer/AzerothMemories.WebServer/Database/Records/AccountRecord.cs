@@ -41,10 +41,6 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
 
     [Column, Nullable] public string UpdateJob { get; set; }
 
-    //[Column, Nullable] public Instant? UpdateJobQueueTime { get; set; }
-
-    //[Column, Nullable] public Instant? UpdateJobStartTime { get; set; }
-
     [Column, Nullable] public Instant UpdateJobEndTime { get; set; }
 
     [Column, NotNull] public HttpStatusCode UpdateJobLastResult { get; set; }
