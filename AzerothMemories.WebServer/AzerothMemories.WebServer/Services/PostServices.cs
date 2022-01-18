@@ -153,6 +153,9 @@ public class PostServices : IPostServices
             });
         }
 
+        using var computed = Computed.Invalidate();
+        _ = _commonServices.AccountServices.GetPostCount(accountViewModel.Id);
+
         return new AddMemoryResult(AddMemoryResultCode.Success, postRecord.AccountId, postRecord.Id);
     }
 
@@ -445,6 +448,7 @@ public class PostServices : IPostServices
         using var computed = Computed.Invalidate();
         _ = GetPostRecord(postId);
         _ = TryGetPostReactions(postId);
+        _ = _commonServices.AccountServices.GetReactionCount(activeAccountId);
 
         return reactionRecord.Id;
     }
@@ -708,6 +712,7 @@ public class PostServices : IPostServices
         using var computed = Computed.Invalidate();
         _ = GetPostRecord(postId);
         _ = GetAllPostTags(postId);
+        _ = _commonServices.AccountServices.GetMemoryCount(activeAccount.Id);
 
         return true;
     }
@@ -886,6 +891,7 @@ public class PostServices : IPostServices
         using var computed = Computed.Invalidate();
         _ = GetPostRecord(postId);
         _ = TryGetAllPostComments(postId);
+        _ = _commonServices.AccountServices.GetCommentCount(activeAccount.Id);
 
         return commentRecord.Id;
     }
@@ -994,6 +1000,7 @@ public class PostServices : IPostServices
         _ = TryGetAllPostComments(postId);
         _ = TryGetPostCommentReactions(commentId);
         _ = TryGetMyCommentReactions(activeAccountId, postId);
+        _ = _commonServices.AccountServices.GetReactionCount(activeAccountId);
 
         return reactionRecord.Id;
     }

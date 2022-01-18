@@ -22,6 +22,14 @@ public sealed class AccountViewModel
 
     [JsonInclude] public string[] SocialLinks;
 
+    [JsonInclude] public int TotalPostCount;
+
+    [JsonInclude] public int TotalMemoriesCount;
+
+    [JsonInclude] public int TotalCommentCount;
+
+    [JsonInclude] public int TotalReactionsCount;
+
     [JsonInclude] public CharacterViewModel[] CharactersArray = Array.Empty<CharacterViewModel>();
 
     [JsonInclude] public Dictionary<long, AccountFollowingViewModel> FollowingViewModels = new();

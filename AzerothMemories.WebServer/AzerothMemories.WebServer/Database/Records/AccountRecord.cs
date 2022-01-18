@@ -45,7 +45,7 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
 
     [Column, NotNull] public HttpStatusCode UpdateJobLastResult { get; set; }
 
-    public AccountViewModel CreateAccountViewModel(bool activeOrAdmin, Dictionary<long, CharacterViewModel> characters, Dictionary<long, AccountFollowingViewModel> followingViewModels, Dictionary<long, AccountFollowingViewModel> followersViewModels)
+    public AccountViewModel CreateViewModel(bool activeOrAdmin, Dictionary<long, AccountFollowingViewModel> followingViewModels, Dictionary<long, AccountFollowingViewModel> followersViewModels)
     {
         var viewModel = new AccountViewModel
         {
@@ -60,13 +60,13 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
             IsPrivate = IsPrivate,
             SocialLinks = new[]
             {
-                SocialDiscord,
-                SocialTwitter,
-                SocialTwitch,
-                SocialYouTube,
+               SocialDiscord,
+               SocialTwitter,
+               SocialTwitch,
+               SocialYouTube,
             },
             FollowingViewModels = RemoveNoneStatus(followingViewModels),
-            FollowersViewModels = RemoveNoneStatus(followersViewModels)
+            FollowersViewModels = RemoveNoneStatus(followersViewModels),
         };
 
         if (viewModel.BattleTagIsPublic || activeOrAdmin)
@@ -76,8 +76,6 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
         {
             viewModel.BattleTag = null;
         }
-
-        viewModel.CharactersArray = activeOrAdmin ? characters.Values.ToArray() : characters.Values.Where(x => x.AccountSync).ToArray();
 
         return viewModel;
     }

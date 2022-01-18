@@ -225,12 +225,7 @@ public class AccountServices : IAccountServices
             return null;
         }
 
-        var characters = await _commonServices.CharacterServices.TryGetAllAccountCharacters(accountRecord.Id);
-        var following = await _commonServices.AccountFollowingServices.TryGetAccountFollowing(accountRecord.Id);
-        var followers = await _commonServices.AccountFollowingServices.TryGetAccountFollowers(accountRecord.Id);
-        var viewModel = accountRecord.CreateAccountViewModel(true, characters, following, followers);
-
-        return viewModel;
+        return await CreateAccountViewModel(accountRecord, true);
     }
 
     [ComputeMethod]
@@ -260,13 +255,7 @@ public class AccountServices : IAccountServices
             return null;
         }
 
-        var isAdmin = sessionAccount != null && sessionAccount.AccountType >= AccountType.Admin;
-        var characters = await _commonServices.CharacterServices.TryGetAllAccountCharacters(accountRecord.Id);
-        var following = await _commonServices.AccountFollowingServices.TryGetAccountFollowing(accountRecord.Id);
-        var followers = await _commonServices.AccountFollowingServices.TryGetAccountFollowers(accountRecord.Id);
-        var viewModel = accountRecord.CreateAccountViewModel(isAdmin, characters, following, followers);
-
-        return viewModel;
+        return await CreateAccountViewModel(accountRecord, sessionAccount != null && sessionAccount.AccountType >= AccountType.Admin);
     }
 
     [ComputeMethod]
@@ -284,13 +273,61 @@ public class AccountServices : IAccountServices
             return null;
         }
 
-        var isAdmin = sessionAccount != null && sessionAccount.AccountType >= AccountType.Admin;
+        return await CreateAccountViewModel(accountRecord, sessionAccount != null && sessionAccount.AccountType >= AccountType.Admin);
+    }
+
+    [ComputeMethod]
+    public virtual async Task<AccountViewModel> CreateAccountViewModel(AccountRecord accountRecord, bool activeOrAdmin)
+    {
         var characters = await _commonServices.CharacterServices.TryGetAllAccountCharacters(accountRecord.Id);
-        var following = await _commonServices.AccountFollowingServices.TryGetAccountFollowing(accountRecord.Id);
-        var followers = await _commonServices.AccountFollowingServices.TryGetAccountFollowers(accountRecord.Id);
-        var viewModel = accountRecord.CreateAccountViewModel(isAdmin, characters, following, followers);
+        var followingViewModels = await _commonServices.AccountFollowingServices.TryGetAccountFollowing(accountRecord.Id);
+        var followersViewModels = await _commonServices.AccountFollowingServices.TryGetAccountFollowers(accountRecord.Id);
+        var postCount = await GetPostCount(accountRecord.Id);
+        var memoryCount = await GetMemoryCount(accountRecord.Id);
+        var commentCount = await GetCommentCount(accountRecord.Id);
+        var reactionCount = await GetReactionCount(accountRecord.Id);
+
+        var viewModel = accountRecord.CreateViewModel(activeOrAdmin, followingViewModels, followersViewModels);
+
+        viewModel.TotalPostCount = postCount;
+        viewModel.TotalCommentCount = commentCount;
+        viewModel.TotalMemoriesCount = memoryCount;
+        viewModel.TotalReactionsCount = reactionCount;
+
+        viewModel.CharactersArray = activeOrAdmin ? characters.Values.ToArray() : characters.Values.Where(x => x.AccountSync).ToArray();
 
         return viewModel;
+    }
+
+    [ComputeMethod]
+    public virtual async Task<int> GetPostCount(long accountId)
+    {
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        return await database.Posts.Where(x => x.AccountId == accountId).CountAsync();
+    }
+
+    [ComputeMethod]
+    public virtual async Task<int> GetMemoryCount(long accountId)
+    {
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        return await database.PostTags.Where(x => x.TagType == PostTagType.Account && x.TagId == accountId && x.TagKind == PostTagKind.PostRestored).CountAsync();
+    }
+
+    [ComputeMethod]
+    public virtual async Task<int> GetCommentCount(long accountId)
+    {
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        return await database.PostComments.Where(x => x.AccountId == accountId).CountAsync();
+    }
+
+    [ComputeMethod]
+    public virtual async Task<int> GetReactionCount(long accountId)
+    {
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        var postCount = await database.PostReactions.Where(x => x.AccountId == accountId).CountAsync();
+        var commentCount = await database.PostCommentReactions.Where(x => x.AccountId == accountId).CountAsync();
+
+        return postCount + commentCount;
     }
 
     [ComputeMethod]

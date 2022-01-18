@@ -122,14 +122,9 @@ public class AccountFollowingServices : IAccountFollowingServices
             status = AccountFollowingStatus.Pending;
         }
 
-        //var otherAccountGrain = GrainFactory.GetGrain<IAccountGrain>(viewModel.FollowerRef);
-        //var otherStatus = await otherAccountGrain.OnTryingToFollow(viewModel.Id);
         viewModel.Status = status;
 
         await database.AccountFollowing.Where(x => x.Id == viewModel.Id).Set(x => x.Status, viewModel.Status).Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync();
-
-        //await PublishViewModelChanged();
-        //await otherAccountGrain.OnFollowerStatusChanged(viewModel.Id);
 
         await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
         {
@@ -182,11 +177,6 @@ public class AccountFollowingServices : IAccountFollowingServices
 
         await database.AccountFollowing.Where(x => x.Id == viewModel.Id).Set(x => x.Status, viewModel.Status).Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync();
 
-        //await PublishViewModelChanged();
-
-        //var otherAccountGrain = GrainFactory.GetGrain<IAccountGrain>(viewModel.FollowerRef);
-        //await otherAccountGrain.OnFollowerStatusChanged(viewModel.Id);
-
         await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
         {
             AccountId = activeAccountId,
@@ -229,11 +219,6 @@ public class AccountFollowingServices : IAccountFollowingServices
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         await database.AccountFollowing.Where(x => x.Id == viewModel.Id).Set(x => x.Status, viewModel.Status).Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync();
-
-        //await PublishViewModelChanged();
-
-        //var otherAccountGrain = GrainFactory.GetGrain<IAccountGrain>(viewModel.FollowerRef);
-        //await otherAccountGrain.OnFollowerStatusChanged(viewModel.Id);
 
         await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
         {
@@ -285,11 +270,6 @@ public class AccountFollowingServices : IAccountFollowingServices
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         await database.AccountFollowing.Where(x => x.Id == viewModel.Id).Set(x => x.Status, viewModel.Status).Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync();
-
-        //await PublishViewModelChanged();
-
-        //var otherAccountGrain = GrainFactory.GetGrain<IAccountGrain>(viewModel.FollowerRef);
-        //await otherAccountGrain.OnFollowerStatusChanged(viewModel.Id);
 
         await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
         {
