@@ -66,13 +66,13 @@ else
                     {
                         <MudMenuItem OnClick="@OnReportPostTags">
                             <MudTooltip Text="Report Tags" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
-                                <MudIcon Icon="@Icons.Material.Filled.RepeatOneOn" Size="Size.Small"/>
+                                <MudIcon Icon="@Icons.Material.Filled.RepeatOneOn" Size="Size.Small" />
                             </MudTooltip>
                         </MudMenuItem>
 
                         <MudMenuItem OnClick="@OnReportPost">
                             <MudTooltip Text="Report" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
-                                <MudIcon Icon="@Icons.Material.Filled.Report" Size="Size.Small"/>
+                                <MudIcon Icon="@Icons.Material.Filled.Report" Size="Size.Small" />
                             </MudTooltip>
                         </MudMenuItem>
                     }
@@ -228,10 +228,12 @@ else
                                             CharacterRealmId="@character.RealmId"
                                             CharacterRegionInfo="@character.RegionId.ToInfo()" />
 
-                                            <RealmLinkComponent BlizzardRealmId="@character.RealmId" />
+                                            <div>
+                                                <MudText Typo="Typo.body2" Class="d-inline">@character.Level @Services.StringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
+                                                <MudText Typo="Typo.body2" Class=@($"d-inline wowclass-{character.Class}")>@Services.StringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
+                                            </div>
 
-                                            <MudText Class="d-inline">@character.Level @Services.StringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
-                                            <MudText Class=@($"d-inline wowclass-{character.Class}")>@Services.StringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
+                                            <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@character.RealmId" />
                                         </TooltipContent>
                                     </MudTooltip>
                                 }
@@ -405,7 +407,7 @@ else
         {
             return;
         }
-        
+
         var confirmationResult = await Services.DialogService.ShowMessageBox("Warning", "Deleting can not be undone!", "Delete!", "Cancel");
         if (confirmationResult.HasValue && confirmationResult.Value)
         {

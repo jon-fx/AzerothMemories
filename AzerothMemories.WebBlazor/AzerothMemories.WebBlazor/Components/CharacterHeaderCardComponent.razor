@@ -14,28 +14,28 @@ else
                                             CharacterName="@CharacterViewModel.Name"
                                             CharacterClass="@CharacterViewModel.Class"
                                             CharacterRealmId="@CharacterViewModel.RealmId"
-                                            CharacterRegionInfo="@CharacterViewModel.RegionId.ToInfo()"/>
+                                            CharacterRegionInfo="@CharacterViewModel.RegionId.ToInfo()" />
+                <div>
+                    <MudText Typo="Typo.body2" Class="d-inline">@CharacterViewModel.Level</MudText>
+                    <CharacterRaceComponent Typo="Typo.body2" Class="d-inline" CharacterRace="@CharacterViewModel.Race" />
+                    <CharacterClassComponent Typo="Typo.body2" Class="d-inline" CharacterClass="@CharacterViewModel.Class" />
+                </div>
 
-                <RealmLinkComponent BlizzardRealmId="@CharacterViewModel.RealmId"/>
-                
-                <MudText Class="d-inline">@CharacterViewModel.Level</MudText>
-                <CharacterRaceComponent Class="d-inline" CharacterRace="@CharacterViewModel.Race"/>
-                <CharacterClassComponent Class="d-inline" CharacterClass="@CharacterViewModel.Class"/>
+                @if (CharacterViewModel.GuildRef != null)
+                {
+                    var moaRef = new MoaRef(CharacterViewModel.GuildRef);
+                    <GuildNameLinkComponent Class="d-block"
+                                    Typo="Typo.body2"
+                                    GuildName="@CharacterViewModel.GuildName"
+                                    GuildRealmId="0"
+                                    GuildRealmSlug="@moaRef.Realm"
+                                    GuildRegionInfo="@CharacterViewModel.RegionId.ToInfo()" />
+                }
+
+                <RealmLinkComponent Class="d-block" Typo="Typo.caption" BlizzardRealmId="@CharacterViewModel.RealmId" />
             </CardHeaderContent>
-            <CardHeaderActions>
-                <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
-            </CardHeaderActions>
         </MudCardHeader>
-        <MudCardContent>
-
-        </MudCardContent>
-        <MudCardActions>
-            <MudButtonGroup OverrideStyles="true" Class="pa-0 ma-2" Variant="Variant.Filled">
-
-            </MudButtonGroup>
-        </MudCardActions>
     </MudCard>
-
 }
 
 @code {

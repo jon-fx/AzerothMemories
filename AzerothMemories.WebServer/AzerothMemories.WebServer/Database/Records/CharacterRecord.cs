@@ -77,7 +77,7 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord
             Name = Name,
             RealmId = RealmId,
             RegionId = BlizzardRegionId,
-            GuildId = BlizzardGuildId,
+            GuildRef = GuildRef,
             GuildName = BlizzardGuildName,
             GuildRank = BlizzardGuildRank,
             AchievementTotalPoints = AchievementTotalPoints,

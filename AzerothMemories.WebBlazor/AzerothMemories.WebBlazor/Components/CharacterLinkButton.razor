@@ -6,16 +6,17 @@
             </MudButton>
         </ChildContent>
         <TooltipContent>
-
             <CharacterNameLinkComponent CharacterName="@CharacterViewModel.Name"
                                         CharacterClass="@CharacterViewModel.Class"
                                         CharacterRealmId="@CharacterViewModel.RealmId"
                                         CharacterRegionInfo="@CharacterViewModel.RegionId.ToInfo()" />
 
-            <RealmLinkComponent BlizzardRealmId="@CharacterViewModel.RealmId" />
+            <div>
+                <MudText Typo="Typo.body2" Class="d-inline">@CharacterViewModel.Level @StringLocalizer[$"CharacterRace-{CharacterViewModel.Race}"]</MudText>
+                <MudText Typo="Typo.body2" Class=@($"d-inline wowclass-{CharacterViewModel.Class}")>@StringLocalizer[$"CharacterClass-{CharacterViewModel.Class}"]</MudText>
+            </div>
 
-            <MudText Class="d-inline">@CharacterViewModel.Level @StringLocalizer[$"CharacterRace-{CharacterViewModel.Race}"]</MudText>
-            <MudText Class=@($"d-inline wowclass-{CharacterViewModel.Class}")>@StringLocalizer[$"CharacterClass-{CharacterViewModel.Class}"]</MudText>
+            <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@CharacterViewModel.RealmId" />
         </TooltipContent>
     </MudTooltip>
 </a>

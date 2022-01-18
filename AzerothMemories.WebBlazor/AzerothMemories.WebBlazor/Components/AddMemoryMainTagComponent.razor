@@ -85,10 +85,12 @@
                                         CharacterRealmId="@character.RealmId"
                                         CharacterRegionInfo="@character.RegionId.ToInfo()" />
 
-                            <RealmLinkComponent BlizzardRealmId="@character.RealmId" />
+                            <div>
+                                <MudText Typo="Typo.body2" Class="d-inline">@character.Level @Services.StringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
+                                <MudText Typo="Typo.body2" Class=@($"d-inline wowclass-{character.Class}")>@Services.StringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
+                            </div>
 
-                            <MudText Class="d-inline">@character.Level @Services.StringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
-                            <MudText Class=@($"d-inline wowclass-{character.Class}")>@Services.StringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
+                            <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@character.RealmId" />
                         </TooltipContent>
                     </MudTooltip>
                 }

@@ -4,18 +4,19 @@
 @if (GuildRealmId > 0)
 {
     <a href="guild\@GuildRegionInfo.TwoLetters\@_stringLocalizer[$"RealmSlug-{GuildRealmId}"]\@GuildName">
-        <MudText Typo="@Typo" Class=@("d-inline")>@GuildName</MudText>
+        <MudText Class="@Class" Typo="@Typo">@GuildName</MudText>
     </a>
 }
 else if (!string.IsNullOrWhiteSpace(GuildRealmSlug))
 {
     <a href="guild\@GuildRegionInfo.TwoLetters\@GuildRealmSlug\@GuildName">
-        <MudText Typo="@Typo" Class=@("d-inline")>@GuildName</MudText>
+        <MudText Class="@Class" Typo="@Typo">@GuildName</MudText>
     </a>
 }
 
 @code {
     [Parameter] public Typo Typo { get; set; } = Typo.body1;
+    [Parameter] public string Class { get; init; } = string.Empty;
     [Parameter] public int GuildRealmId { get; set; }
     [Parameter] public string GuildRealmSlug { get; set; }
     [Parameter, EditorRequired] public string GuildName { get; set; }

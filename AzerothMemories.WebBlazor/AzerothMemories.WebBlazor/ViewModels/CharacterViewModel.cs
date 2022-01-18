@@ -30,7 +30,7 @@ public sealed class CharacterViewModel
 
     [JsonInclude] public string AvatarLink;
 
-    [JsonInclude] public long GuildId;
+    [JsonInclude] public string GuildRef;
 
     [JsonInclude] public string GuildName;
 
