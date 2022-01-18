@@ -51,6 +51,7 @@ public sealed class GuildRecord : IBlizzardUpdateRecord
             AchievementPoints = AchievementPoints,
             CreatedDateTime = CreatedDateTime.ToUnixTimeMilliseconds(),
             BlizzardCreatedTimestamp = BlizzardCreatedTimestamp,
+            LastUpdateJobEndTime = UpdateJobEndTime.ToUnixTimeMilliseconds(),
 
             CharactersArray = characterViewModels.ToArray()
         };

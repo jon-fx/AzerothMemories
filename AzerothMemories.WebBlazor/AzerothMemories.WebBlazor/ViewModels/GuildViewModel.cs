@@ -20,6 +20,8 @@ public sealed class GuildViewModel
 
     [JsonInclude] public long BlizzardCreatedTimestamp;
 
+    [JsonInclude] public long LastUpdateJobEndTime;
+
     [JsonInclude] public CharacterViewModel[] CharactersArray;
 
     public string GetAvatarText()

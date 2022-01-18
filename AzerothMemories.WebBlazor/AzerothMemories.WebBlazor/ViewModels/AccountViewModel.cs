@@ -30,6 +30,8 @@ public sealed class AccountViewModel
 
     [JsonInclude] public int TotalReactionsCount;
 
+    [JsonInclude] public long LastUpdateJobEndTime;
+
     [JsonInclude] public CharacterViewModel[] CharactersArray = Array.Empty<CharacterViewModel>();
 
     [JsonInclude] public Dictionary<long, AccountFollowingViewModel> FollowingViewModels = new();

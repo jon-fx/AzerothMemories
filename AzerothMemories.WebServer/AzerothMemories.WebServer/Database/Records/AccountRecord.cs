@@ -67,6 +67,7 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
             },
             FollowingViewModels = RemoveNoneStatus(followingViewModels),
             FollowersViewModels = RemoveNoneStatus(followersViewModels),
+            LastUpdateJobEndTime = UpdateJobEndTime.ToUnixTimeMilliseconds(),
         };
 
         if (viewModel.BattleTagIsPublic || activeOrAdmin)

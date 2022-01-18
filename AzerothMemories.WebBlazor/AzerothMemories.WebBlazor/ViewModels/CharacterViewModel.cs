@@ -36,6 +36,8 @@ public sealed class CharacterViewModel
 
     [JsonInclude] public byte GuildRank;
 
+    [JsonInclude] public long LastUpdateJobEndTime;
+
     [JsonInclude] public HttpStatusCode LastUpdateHttpResult;
 
     [JsonIgnore]
