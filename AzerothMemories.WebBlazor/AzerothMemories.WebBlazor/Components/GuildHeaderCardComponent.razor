@@ -11,9 +11,9 @@ else
             </CardHeaderAvatar>
             <CardHeaderContent>
                 <GuildNameLinkComponent Typo="Typo.h6"
-                                        GuildName="@GuildViewModel.Name"
-                                        GuildRealmId="@GuildViewModel.RealmId"
-                                        GuildRegionInfo="@GuildViewModel.RegionId.ToInfo()" />
+                                    GuildName="@GuildViewModel.Name"
+                                    GuildRealmId="@GuildViewModel.RealmId"
+                                    GuildRegionInfo="@GuildViewModel.RegionId.ToInfo()" />
 
                 <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@GuildViewModel.RealmId" />
             </CardHeaderContent>
@@ -21,33 +21,51 @@ else
                 <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
             </CardHeaderActions>
         </MudCardHeader>
-        <MudCardContent>
-        </MudCardContent>
-        <MudCardActions>
-        </MudCardActions>
     </MudCard>
-    
+
     var characters = GuildViewModel.GetCharactersSafe();
     if (characters.Length > 0)
     {
         <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
             <MudCardContent>
-                @foreach (var character in characters)
-                {
-                    if (string.IsNullOrWhiteSpace(character.AvatarLink))
+                @{
+                    var counter = 0;
+                    var remainingCharacters = characters.Length;
+                    foreach (var character in characters)
                     {
-                        continue;
+                        if (counter > _maxCharacterCount )
+                        {
+                            break;
+                        }
+
+                        counter++;
+                        remainingCharacters--;
+                        <CharacterLinkButton @key="character" StringLocalizer="@Services.StringLocalizer" CharacterViewModel="@character"/>
                     }
 
-                    <CharacterLinkButton @key="character" StringLocalizer="@Services.StringLocalizer" CharacterViewModel="@character"/>
+                    if (remainingCharacters > 0)
+                    {
+                        <MudTooltip Placement="Placement.Bottom" Color="Color.Dark">
+                            <ChildContent>
+                                <MudButton Variant="Variant.Filled" OnClick="() => _maxCharacterCount += 25">
+                                    <MudAvatar Size="Size.Medium" >...</MudAvatar>
+                                </MudButton>
+                            </ChildContent>
+                            <TooltipContent>
+                                <MudText Typo="Typo.body1">Show more... (@remainingCharacters)</MudText>
+                            </TooltipContent>
+                        </MudTooltip>
+                    }
                 }
             </MudCardContent>
         </MudCard>
     }
 }
 
-@code 
+@code
 {
+    private int _maxCharacterCount = 25;
+
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired] public GuildViewModel GuildViewModel { get; init; }

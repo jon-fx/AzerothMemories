@@ -211,15 +211,11 @@ else
                                 {
                                     var index = i;
                                     var character = characters[index];
-                                    if (string.IsNullOrWhiteSpace(character.AvatarLink))
-                                    {
-                                        continue;
-                                    }
-
+                 
                                     <MudTooltip @key="@character.Id" Placement="Placement.Bottom" Color="Color.Dark">
                                         <ChildContent>
                                             <MudButton Id="@index" Variant="Variant.Filled" Disabled="taggedCharacter != null && taggedCharacter.Id == character.Id" OnClick="() => OnRestoreButtonClicked(taggedCharacter, character)">
-                                                <MudAvatar Size="Size.Medium" Image="@character.AvatarLink" />
+                                                <MudAvatar Size="Size.Medium" Image="@character.AvatarLinkWithFallBack" />
                                             </MudButton>
                                         </ChildContent>
                                         <TooltipContent>

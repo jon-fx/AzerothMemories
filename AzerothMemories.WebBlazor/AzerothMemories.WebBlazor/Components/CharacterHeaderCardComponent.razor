@@ -25,11 +25,11 @@ else
                 {
                     var moaRef = new MoaRef(CharacterViewModel.GuildRef);
                     <GuildNameLinkComponent Class="d-block"
-                                    Typo="Typo.body2"
-                                    GuildName="@CharacterViewModel.GuildName"
-                                    GuildRealmId="0"
-                                    GuildRealmSlug="@moaRef.Realm"
-                                    GuildRegionInfo="@CharacterViewModel.RegionId.ToInfo()" />
+                                            Typo="Typo.body2"
+                                            GuildName="@CharacterViewModel.GuildName"
+                                            GuildRealmId="0"
+                                            GuildRealmSlug="@moaRef.Realm"
+                                            GuildRegionInfo="@CharacterViewModel.RegionId.ToInfo()" />
                 }
 
                 <RealmLinkComponent Class="d-block" Typo="Typo.caption" BlizzardRealmId="@CharacterViewModel.RealmId" />

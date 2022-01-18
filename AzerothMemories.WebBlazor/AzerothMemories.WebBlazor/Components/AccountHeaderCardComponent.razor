@@ -93,11 +93,6 @@ else
             <MudCardContent>
                 @foreach (var character in characters)
                 {
-                    if (string.IsNullOrWhiteSpace(character.AvatarLink))
-                    {
-                        continue;
-                    }
-
                     <CharacterLinkButton @key="character" StringLocalizer="@Services.StringLocalizer" CharacterViewModel="@character"/>
 
                 }

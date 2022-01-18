@@ -71,7 +71,7 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord
             Class = Class,
             Level = Level,
             Gender = Gender,
-            Faction = Faction,
+            //Faction = Faction,
             AvatarLink = AvatarLink,
             AccountSync = AccountSync,
             Name = Name,
@@ -79,11 +79,11 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord
             RegionId = BlizzardRegionId,
             GuildRef = GuildRef,
             GuildName = BlizzardGuildName,
-            GuildRank = BlizzardGuildRank,
-            AchievementTotalPoints = AchievementTotalPoints,
-            AchievementTotalQuantity = AchievementTotalQuantity,
+            //GuildRank = BlizzardGuildRank,
+            //AchievementTotalPoints = AchievementTotalPoints,
+            //AchievementTotalQuantity = AchievementTotalQuantity,
 
-            LastUpdateJobEndTime = UpdateJobEndTime.ToUnixTimeMilliseconds(),
+            //LastUpdateJobEndTime = UpdateJobEndTime.ToUnixTimeMilliseconds(),
             LastUpdateHttpResult = UpdateJobLastResult
         };
     }
