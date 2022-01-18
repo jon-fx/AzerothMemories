@@ -146,11 +146,7 @@ public class CharacterServices : ICharacterServices
 
         await _commonServices.BlizzardUpdateHandler.TryUpdate(database, characterRecord, BlizzardUpdatePriority.CharacterHigh);
 
-        using var computed = Computed.Invalidate();
-        _ = TryGetCharacterRecord(characterRecord.Id);
-        _ = TryGetAllAccountCharacters(characterRecord.AccountId.GetValueOrDefault());
-        _ = TryGetAllAccountCharacterIds(characterRecord.AccountId.GetValueOrDefault());
-        _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Character, characterRecord.Id);
+        OnCharacterUpdate(characterRecord.Id, characterRecord.AccountId.GetValueOrDefault());
     }
 
     public Task OnCharacterDeleted(long accountId, long characterId, string characterRef)

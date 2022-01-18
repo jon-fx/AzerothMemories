@@ -147,11 +147,7 @@ public class AccountFollowingServices : IAccountFollowingServices
             Type = viewModel.Status == AccountFollowingStatus.Active ? AccountHistoryType.StartedFollowing : AccountHistoryType.FollowingRequestReceived
         });
 
-        using var computed = Computed.Invalidate();
-        _ = TryGetAccountFollowing(activeAccountId);
-        _ = TryGetAccountFollowers(activeAccountId);
-        _ = TryGetAccountFollowing(otherAccountId);
-        _ = TryGetAccountFollowers(otherAccountId);
+        InvalidateFollowing(activeAccountId, otherAccountId);
 
         return viewModel.Status;
     }
@@ -199,11 +195,7 @@ public class AccountFollowingServices : IAccountFollowingServices
             Type = AccountHistoryType.StoppedFollowing
         });
 
-        using var computed = Computed.Invalidate();
-        _ = TryGetAccountFollowing(activeAccountId);
-        _ = TryGetAccountFollowers(activeAccountId);
-        _ = TryGetAccountFollowing(otherAccountId);
-        _ = TryGetAccountFollowers(otherAccountId);
+        InvalidateFollowing(activeAccountId, otherAccountId);
 
         return viewModel.Status;
     }
@@ -259,11 +251,7 @@ public class AccountFollowingServices : IAccountFollowingServices
             Type = AccountHistoryType.FollowingRequestAccepted2
         });
 
-        using var computed = Computed.Invalidate();
-        _ = TryGetAccountFollowing(activeAccountId);
-        _ = TryGetAccountFollowers(activeAccountId);
-        _ = TryGetAccountFollowing(otherAccountId);
-        _ = TryGetAccountFollowers(otherAccountId);
+        InvalidateFollowing(activeAccountId, otherAccountId);
 
         return viewModel.Status;
     }
@@ -311,12 +299,17 @@ public class AccountFollowingServices : IAccountFollowingServices
             Type = AccountHistoryType.FollowerRemoved
         });
 
+        InvalidateFollowing(activeAccountId, otherAccountId);
+
+        return viewModel.Status;
+    }
+
+    private void InvalidateFollowing(long activeAccountId, long otherAccountId)
+    {
         using var computed = Computed.Invalidate();
         _ = TryGetAccountFollowing(activeAccountId);
         _ = TryGetAccountFollowers(activeAccountId);
         _ = TryGetAccountFollowing(otherAccountId);
         _ = TryGetAccountFollowers(otherAccountId);
-
-        return viewModel.Status;
     }
 }

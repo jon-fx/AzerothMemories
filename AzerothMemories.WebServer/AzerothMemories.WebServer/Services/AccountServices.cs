@@ -15,7 +15,19 @@ public class AccountServices : IAccountServices
 
     public void OnAccountUpdate(AccountRecord accountRecord)
     {
+        InvalidateAccountRecord(accountRecord);
+    }
+
+    public async Task InvalidateAccountRecord(long accountId)
+    {
+        var record = await TryGetAccountRecord(accountId);
+        InvalidateAccountRecord(record);
+    }
+
+    public void InvalidateAccountRecord(AccountRecord accountRecord)
+    {
         using var computed = Computed.Invalidate();
+
         _ = TryGetAccountRecord(accountRecord.Id);
         _ = TryGetAccountRecordFusionId(accountRecord.FusionId);
         _ = TryGetAccountRecordUsername(accountRecord.Username);
@@ -127,11 +139,7 @@ public class AccountServices : IAccountServices
 
         await _commonServices.BlizzardUpdateHandler.TryUpdate(database, accountRecord, BlizzardUpdatePriority.Account);
 
-        using var computed = Computed.Invalidate();
-        _ = TryGetAccountRecord(accountRecord.Id);
-        _ = TryGetAccountRecordFusionId(accountRecord.FusionId);
-        _ = TryGetAccountRecordUsername(accountRecord.Username);
-        _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Account, accountRecord.Id);
+        InvalidateAccountRecord(accountRecord);
     }
 
     private async Task<AccountRecord> GetOrCreateAccount(DatabaseConnection database, string userId)
@@ -155,8 +163,6 @@ public class AccountServices : IAccountServices
                 throw new NotImplementedException();
             }
 
-            using var computed = Computed.Invalidate();
-
             await TestingHistory(database, new AccountHistoryRecord
             {
                 AccountId = accountRecord.Id,
@@ -164,10 +170,7 @@ public class AccountServices : IAccountServices
                 Type = AccountHistoryType.AccountCreated
             });
 
-            _ = TryGetAccountRecord(accountRecord.Id);
-            _ = TryGetAccountRecordFusionId(accountRecord.FusionId);
-            _ = TryGetAccountRecordUsername(accountRecord.Username);
-            _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Account, accountRecord.Id);
+            InvalidateAccountRecord(accountRecord);
         }
 
         return accountRecord;
@@ -334,6 +337,7 @@ public class AccountServices : IAccountServices
             return false;
         }
 
+        var previousUsername = accountRecord.Username;
         var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.Username == accountRecord.Username).AsUpdatable()
             .Set(x => x.Username, newUsername)
             .Set(x => x.UsernameSearchable, DatabaseHelpers.GetSearchableName(newUsername))
@@ -351,13 +355,10 @@ public class AccountServices : IAccountServices
             Type = AccountHistoryType.UsernameChanged
         });
 
-        using var computed = Computed.Invalidate();
+        InvalidateAccountRecord(accountRecord);
 
-        _ = TryGetAccountRecord(accountRecord.Id);
-        _ = TryGetAccountRecordFusionId(accountRecord.FusionId);
-        _ = TryGetAccountRecordUsername(accountRecord.Username);
-        _ = TryReserveUsername(accountRecord.Username);
-        _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Account, accountRecord.Id);
+        using var computed = Computed.Invalidate();
+        _ = TryGetAccountRecordUsername(previousUsername);
 
         return true;
     }
@@ -411,11 +412,7 @@ public class AccountServices : IAccountServices
             return !newValue;
         }
 
-        using var computed = Computed.Invalidate();
-
-        _ = TryGetAccountRecord(accountRecord.Id);
-        _ = TryGetAccountRecordFusionId(accountRecord.FusionId);
-        _ = TryGetAccountRecordUsername(accountRecord.Username);
+        InvalidateAccountRecord(accountRecord);
 
         return newValue;
     }
@@ -438,11 +435,7 @@ public class AccountServices : IAccountServices
             return !newValue;
         }
 
-        using var computed = Computed.Invalidate();
-
-        _ = TryGetAccountRecord(accountRecord.Id);
-        _ = TryGetAccountRecordFusionId(accountRecord.FusionId);
-        _ = TryGetAccountRecordUsername(accountRecord.Username);
+        InvalidateAccountRecord(accountRecord);
 
         return newValue;
     }
@@ -477,12 +470,7 @@ public class AccountServices : IAccountServices
             return accountRecord.Avatar;
         }
 
-        using var computed = Computed.Invalidate();
-
-        _ = TryGetAccountRecord(accountRecord.Id);
-        _ = TryGetAccountRecordFusionId(accountRecord.FusionId);
-        _ = TryGetAccountRecordUsername(accountRecord.Username);
-        _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Account, accountRecord.Id);
+        InvalidateAccountRecord(accountRecord);
 
         return accountRecord.Avatar;
     }
@@ -518,11 +506,7 @@ public class AccountServices : IAccountServices
             return previous;
         }
 
-        using var computed = Computed.Invalidate();
-
-        _ = TryGetAccountRecord(accountRecord.Id);
-        _ = TryGetAccountRecordFusionId(accountRecord.FusionId);
-        _ = TryGetAccountRecordUsername(accountRecord.Username);
+        InvalidateAccountRecord(accountRecord);
 
         return newValue;
     }
