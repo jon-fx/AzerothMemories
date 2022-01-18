@@ -9,8 +9,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-	    <PackageReference Include="FluentMigrator" Version="3.3.2" />
-	    <PackageReference Include="FluentMigrator.Runner" Version="3.3.2" />
 	    <PackageReference Include="Hangfire" Version="1.8.0-beta4" />
 	    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.0-beta4" />
 	    <PackageReference Include="Hangfire.PostgreSql" Version="1.9.5" />

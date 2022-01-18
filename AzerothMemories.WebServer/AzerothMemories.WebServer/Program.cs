@@ -1,13 +1,10 @@
 using AzerothMemories.WebBlazor;
-using AzerothMemories.WebServer.Database.Migrations;
-using FluentMigrator.Runner;
 using Hangfire.PostgreSql;
 using Microsoft.EntityFrameworkCore;
 using Stl.Fusion.Server.Authentication;
 using Stl.Fusion.Server.Controllers;
 using System.Net.Http.Headers;
 using System.Text;
-using CommonServices = AzerothMemories.WebServer.Services.CommonServices;
 
 var config = new CommonConfig();
 var builder = WebApplication.CreateBuilder(args);
@@ -15,9 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 ProgramEx.Initialize(builder.Services);
-
-//builder.Services.AddMudServices();
-//builder.Services.AddLocalization();
 
 builder.Services.AddRazorPages();
 
@@ -30,11 +24,6 @@ var dbPath = appTempDir & "App.db";
 builder.Services.AddDbContextFactory<AppDbContext>(optionsBuilder =>
 {
     optionsBuilder.UseNpgsql(config.DatabaseConnectionString);
-
-    //if (builder.Environment.IsDevelopment())
-    //{
-    //    optionsBuilder.EnableSensitiveDataLogging();
-    //}
 });
 builder.Services.AddTransient(c => new DbOperationScope<AppDbContext>(c)
 {
@@ -59,12 +48,6 @@ builder.Services.AddDbContextServices<AppDbContext>(dbContext =>
     //dbContext.AddKeyValueStore();
 });
 
-builder.Services.AddFluentMigratorCore()
-    .ConfigureRunner(rb => rb
-        .AddPostgres()
-        .WithGlobalConnectionString(config.DatabaseConnectionString)
-        .ScanIn(typeof(Migration0001).Assembly).For.Migrations());
-
 builder.Services.AddHangfire(options =>
 {
     options.UsePostgreSqlStorage(config.HangfireConnectionString);
@@ -78,7 +61,6 @@ builder.Services.AddSingleton(new Publisher.Options { Id = "p-67567567" });
 
 var fusion = builder.Services.AddFusion();
 var fusionServer = fusion.AddWebServer();
-//var fusionClient = fusion.AddRestEaseClient();
 var fusionAuth = fusion.AddAuthentication().AddServer(
     signInControllerSettingsFactory: _ => SignInController.DefaultSettings with
     {
@@ -140,23 +122,12 @@ builder.Services.AddHttpClient("Blizzard", x =>
     x.DefaultRequestHeaders.Accept.Clear();
     x.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 });
-//CommonSetup.SetUpCommon(builder.Services, new CommonConfig());
 
-//builder.Services.AddSingleton<PrintCommandHandler>();
 var commanderBuilder = builder.Services.AddCommander();
-//commanderBuilder.AddHandlers<PrintCommandHandler>();
 
 builder.Services.UseRegisterAttributeScanner().RegisterFrom(typeof(CommonServices).Assembly);
 
 var app = builder.Build();
-
-using (var scope = app.Services.CreateScope())
-{
-    var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
-    //runner.MigrateDown(0);
-    runner.MigrateUp();
-}
-
 app.Services.GetRequiredService<CommonServices>().Initialize();
 
 if (app.Environment.IsDevelopment())
