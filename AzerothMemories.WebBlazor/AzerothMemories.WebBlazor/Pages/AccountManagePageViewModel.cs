@@ -290,7 +290,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
 
         if (shouldChange)
         {
-            AccountViewModel.SocialLinks[link.LinkId] = await Services.AccountServices.TryChangeSocialLink(null, link.LinkId, newValue);
+            AccountViewModel.SocialLinks[link.LinkId] = await Services.AccountServices.TryChangeSocialLink(null, link.LinkId, new StringBody(newValue));
             SocialLinksAdornmentIcons[link.LinkId] = string.Empty;
         }
 

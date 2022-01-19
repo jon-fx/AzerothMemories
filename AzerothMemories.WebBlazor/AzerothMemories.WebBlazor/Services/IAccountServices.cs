@@ -31,8 +31,8 @@ public interface IAccountServices
     [Post(nameof(TryChangeAvatar) + "/{newValue}")]
     Task<string> TryChangeAvatar(Session session, [Path] string newValue);
 
-    [Post(nameof(TryChangeSocialLink) + "/{linkId}/{newValue}")]
-    Task<string> TryChangeSocialLink(Session session, [Path] int linkId, [Path] string newValue);
+    [Post(nameof(TryChangeSocialLink) + "/{linkId}")]
+    Task<string> TryChangeSocialLink(Session session, [Path] int linkId, [Body] StringBody stringBody);
 
     [ComputeMethod]
     [Get(nameof(TryGetAchievementsByTime) + "/{timeStamp}/{diffInSeconds}")]

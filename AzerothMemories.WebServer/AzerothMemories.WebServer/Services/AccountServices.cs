@@ -18,12 +18,6 @@ public class AccountServices : IAccountServices
         InvalidateAccountRecord(accountRecord);
     }
 
-    public async Task InvalidateAccountRecord(long accountId)
-    {
-        var record = await TryGetAccountRecord(accountId);
-        InvalidateAccountRecord(record);
-    }
-
     public void InvalidateAccountRecord(AccountRecord accountRecord)
     {
         using var computed = Computed.Invalidate();
@@ -31,6 +25,8 @@ public class AccountServices : IAccountServices
         _ = TryGetAccountRecord(accountRecord.Id);
         _ = TryGetAccountRecordFusionId(accountRecord.FusionId);
         _ = TryGetAccountRecordUsername(accountRecord.Username);
+        _ = CreateAccountViewModel(accountRecord, true);
+        _ = CreateAccountViewModel(accountRecord, false);
         _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Account, accountRecord.Id);
     }
 
@@ -179,10 +175,10 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<AccountRecord> TryGetAccountRecord(long id)
     {
-        if (Computed.IsInvalidating())
-        {
-            //return null;
-        }
+        //if (Computed.IsInvalidating())
+        //{
+        //    //return null;
+        //}
 
         await using var dbContext = _commonServices.DatabaseProvider.GetDatabase();
         var user = await dbContext.Accounts.Where(a => a.Id == id).FirstOrDefaultAsync();
@@ -193,10 +189,10 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<AccountRecord> TryGetAccountRecordFusionId(string fusionId)
     {
-        if (Computed.IsInvalidating())
-        {
-            //return null;
-        }
+        //if (Computed.IsInvalidating())
+        //{
+        //    //return null;
+        //}
 
         await using var dbContext = _commonServices.DatabaseProvider.GetDatabase();
         var user = await dbContext.Accounts.Where(a => a.FusionId == fusionId).FirstOrDefaultAsync();
@@ -206,10 +202,10 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<AccountRecord> TryGetAccountRecordUsername(string username)
     {
-        if (Computed.IsInvalidating())
-        {
-            //return null;
-        }
+        //if (Computed.IsInvalidating())
+        //{
+        //    //return null;
+        //}
 
         await using var dbContext = _commonServices.DatabaseProvider.GetDatabase();
         var user = await dbContext.Accounts.Where(a => a.Username == username).FirstOrDefaultAsync();
@@ -277,7 +273,7 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountViewModel> CreateAccountViewModel(AccountRecord accountRecord, bool activeOrAdmin)
+    protected virtual async Task<AccountViewModel> CreateAccountViewModel(AccountRecord accountRecord, bool activeOrAdmin)
     {
         var characters = await _commonServices.CharacterServices.TryGetAllAccountCharacters(accountRecord.Id);
         var followingViewModels = await _commonServices.AccountFollowingServices.TryGetAccountFollowing(accountRecord.Id);
@@ -512,7 +508,7 @@ public class AccountServices : IAccountServices
         return accountRecord.Avatar;
     }
 
-    public async Task<string> TryChangeSocialLink(Session session, int linkId, string newValue)
+    public async Task<string> TryChangeSocialLink(Session session, int linkId, StringBody stringBody)
     {
         var accountRecord = await GetCurrentSessionAccountRecord(session);
         if (accountRecord == null)
@@ -520,8 +516,7 @@ public class AccountServices : IAccountServices
             return null;
         }
 
-        newValue = HttpUtility.UrlDecode(newValue);
-
+        var newValue = stringBody.Value;
         var helper = SocialHelpers.All[linkId];
         var previous = ServerSocialHelpers.GetterFunc[helper.LinkId](accountRecord);
         if (!string.IsNullOrWhiteSpace(newValue) && !helper.ValidatorFunc(newValue))

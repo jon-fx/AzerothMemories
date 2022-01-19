@@ -61,10 +61,9 @@ public sealed class AccountController : ControllerBase, IAccountServices
     }
 
     [HttpPost("{linkId}")]
-    [HttpPost("{linkId}/{newValue}")]
-    public Task<string> TryChangeSocialLink(Session session, [FromRoute] int linkId, [FromRoute] string newValue)
+    public Task<string> TryChangeSocialLink(Session session, [FromRoute] int linkId, [FromBody] StringBody stringBody)
     {
-        return _commonServices.AccountServices.TryChangeSocialLink(session, linkId, newValue);
+        return _commonServices.AccountServices.TryChangeSocialLink(session, linkId, stringBody);
     }
 
     [HttpGet("{timeStamp}/{diffInSeconds}"), Publish]

@@ -29,6 +29,7 @@ else
                     <MudText Class="my-auto">@AccountViewModel.BattleTag</MudText>
                 </div>
             }
+
             @foreach (var socialHelper in SocialHelpers.All)
             {
                 var suffix = AccountViewModel.SocialLinks[socialHelper.LinkId];
