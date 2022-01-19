@@ -6,34 +6,75 @@ else
 {
     <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
         <MudCardHeader Class="@ClassPresets.CardHeader">
-            <CardHeaderAvatar >
+            <CardHeaderAvatar>
                 <MudAvatar Size="Size.Large" Image="@AccountViewModel.Avatar">@AccountViewModel.GetAvatarText()</MudAvatar>
             </CardHeaderAvatar>
             <CardHeaderContent>
                 <a href="@($"/account/{AccountViewModel.Id}")" tabindex="-1">
                     <MudText Typo="Typo.h6">@AccountViewModel.GetDisplayName()</MudText>
                 </a>
-                
-                @if (string.IsNullOrWhiteSpace(AccountViewModel.BattleTag))
-                {
-                }
-                else
-                {
-                    <MudText Typo="Typo.body2" Inline="true" Class="my-auto">@AccountViewModel.BattleTag</MudText>
+                @{
+                    if (string.IsNullOrWhiteSpace(AccountViewModel.BattleTag))
+                    {
+                    }
+                    else
+                    {
+                        <div class="d-flex align-center">
+                            <MudAvatar Class="mr-1" Style="background-color: transparent" Size="Size.Small" Square="true" Image="@SocialHelpers.BlizzardIconLink" />
+                            <MudText Typo="Typo.body2" Inline="true">@AccountViewModel.BattleTag</MudText>
+                        </div>
+                    }
+
+                    var discord = AccountViewModel.SocialLinks[(int)SocialLinks.Discord];
+                    if (string.IsNullOrWhiteSpace(discord))
+                    {
+
+                    }
+                    else
+                    {
+                        var socialHelper = SocialHelpers.All[(int)SocialLinks.Discord];
+                        <div class="d-flex align-center">
+                            <MudAvatar Class="mr-1" Style="background-color: transparent" Size="Size.Small" Square="true" Image="@socialHelper.SocialIconLink" />
+                            <MudText Typo="Typo.body2" Inline="true">@discord</MudText>
+                        </div>
+                    }
                 }
             </CardHeaderContent>
+            <CardHeaderActions>
+                @foreach (var socialHelper in SocialHelpers.All)
+                {
+                    var suffix = AccountViewModel.SocialLinks[socialHelper.LinkId];
+                    if (string.IsNullOrWhiteSpace(suffix))
+                    {
+                        continue;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(socialHelper.LinkPrefix))
+                    {
+                        continue;
+                    }
+
+                    var fullLink = $"{socialHelper.LinkPrefix}{suffix}";
+  
+                    <a href="@fullLink">
+                        <MudAvatar Class="ma-1" Style="background-color: transparent" Size="Size.Small" Square="true" Image="@socialHelper.SocialIconLink" />
+                    </a>
+                }
+            </CardHeaderActions>
         </MudCardHeader>
 
         <MudDivider />
 
         <MudCardContent Class="@ClassPresets.CardContent">
+            <MudText Typo="Typo.body1"><b>@AccountViewModel.TotalPostCount.ToMetric()</b> Posts</MudText>
+            <MudText Typo="Typo.body1"><b>@((AccountViewModel.TotalPostCount + AccountViewModel.TotalMemoriesCount).ToMetric())</b> Memories</MudText>
         </MudCardContent>
 
         <MudDivider />
 
         <MudCardActions Class="@ClassPresets.CardActions">
             <MudButtonGroup OverrideStyles="true" Class="pa-0 ma-2" Variant="Variant.Filled">
-                
+
                 <a href="@($"/follow/{AccountViewModel.Id}")">
                     <MudButton>
                         <MudText Inline="true"><b>@_followingCount</b> Following</MudText>
@@ -41,7 +82,7 @@ else
                 </a>
                 <a href="@($"/follow/{AccountViewModel.Id}")">
                     <MudButton>
-                        <MudText Inline="true" ><b>@_followerCount</b> Followers</MudText>
+                        <MudText Inline="true"><b>@_followerCount</b> Followers</MudText>
                     </MudButton>
                 </a>
 
@@ -52,7 +93,7 @@ else
                         accountViewModel.FollowingViewModels.TryGetValue(AccountViewModel.Id, out var followingViewModel);
                         accountViewModel.FollowersViewModels.TryGetValue(AccountViewModel.Id, out var followerViewModel);
 
-                        <AccountFollowingComponent Services="@Services" ActiveAccountViewModel="@accountViewModel" OtherAccountId="@AccountViewModel.Id" FollowingViewModel="@followingViewModel" FollowerViewModel="@followerViewModel"/>
+                        <AccountFollowingComponent Services="@Services" ActiveAccountViewModel="@accountViewModel" OtherAccountId="@AccountViewModel.Id" FollowingViewModel="@followingViewModel" FollowerViewModel="@followerViewModel" />
                     }
                 }
             </MudButtonGroup>

@@ -320,8 +320,8 @@ public class AccountServices : IAccountServices
     public virtual async Task<int> GetReactionCount(long accountId)
     {
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var postCount = await database.PostReactions.Where(x => x.AccountId == accountId).CountAsync();
-        var commentCount = await database.PostCommentReactions.Where(x => x.AccountId == accountId).CountAsync();
+        var postCount = await database.PostReactions.Where(x => x.AccountId == accountId && x.Reaction > PostReaction.None).CountAsync();
+        var commentCount = await database.PostCommentReactions.Where(x => x.AccountId == accountId && x.Reaction > PostReaction.None).CountAsync();
 
         return postCount + commentCount;
     }
