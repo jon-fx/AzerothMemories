@@ -1,7 +1,7 @@
 ﻿@if (AccountViewModel != null && RecentPostsHelper != null)
 {
     <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
-        <MudCardContent Class="@ClassPresets.CardContent">
+        <MudCardContent Class="@ClassPresets.CardContentNone">
             <MudSwitch T="bool" Checked="@(RecentPostsHelper.CurrentType != RecentPostsType.Default)" Color="Color.Primary" Class="d-flex justify-end" Label="" CheckedChanged="RecentPostsHelper.OnShowAllChanged" />
         </MudCardContent>
     </MudCard>
