@@ -16,9 +16,9 @@ else
                                             CharacterRealmId="@CharacterViewModel.RealmId"
                                             CharacterRegionInfo="@CharacterViewModel.RegionId.ToInfo()" />
                 <div>
-                    <MudText Typo="Typo.body2" Class="d-inline">@CharacterViewModel.Level</MudText>
-                    <CharacterRaceComponent Typo="Typo.body2" Class="d-inline" CharacterRace="@CharacterViewModel.Race" />
-                    <CharacterClassComponent Typo="Typo.body2" Class="d-inline" CharacterClass="@CharacterViewModel.Class" />
+                    <MudText Inline="true"  Typo="Typo.body2" >@CharacterViewModel.Level</MudText>
+                    <CharacterRaceComponent Typo="Typo.body2" Inline="true" CharacterRace="@CharacterViewModel.Race" />
+                    <CharacterClassComponent Typo="Typo.body2" Inline="true" CharacterClass="@CharacterViewModel.Class" />
                 </div>
 
                 @if (CharacterViewModel.GuildRef != null)

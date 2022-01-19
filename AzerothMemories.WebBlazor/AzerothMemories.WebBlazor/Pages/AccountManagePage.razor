@@ -157,9 +157,9 @@
                                                                     CharacterRegionInfo="@row.RegionId.ToInfo()"/>
                                                                     
                                         <div>
-                                            <MudText Class="d-inline">@row.Level</MudText>
-                                            <CharacterRaceComponent Class="d-inline" CharacterRace="@row.Race"/>
-                                            <CharacterClassComponent Class="d-inline" CharacterClass="@row.Class"/>
+                                            <MudText Inline="true">@row.Level</MudText>
+                                            <CharacterRaceComponent Inline="true" CharacterRace="@row.Race"/>
+                                            <CharacterClassComponent Inline="true" CharacterClass="@row.Class"/>
                                         </div>
 
                                         <RealmLinkComponent BlizzardRealmId="@row.RealmId"/>

@@ -12,8 +12,8 @@
                                         CharacterRegionInfo="@CharacterViewModel.RegionId.ToInfo()" />
 
             <div>
-                <MudText Typo="Typo.body2" Class="d-inline">@CharacterViewModel.Level @StringLocalizer[$"CharacterRace-{CharacterViewModel.Race}"]</MudText>
-                <MudText Typo="Typo.body2" Class=@($"d-inline wowclass-{CharacterViewModel.Class}")>@StringLocalizer[$"CharacterClass-{CharacterViewModel.Class}"]</MudText>
+                <MudText Typo="Typo.body2" Inline="true">@CharacterViewModel.Level @StringLocalizer[$"CharacterRace-{CharacterViewModel.Race}"]</MudText>
+                <MudText Typo="Typo.body2" Inline="true" Class=@($"wowclass-{CharacterViewModel.Class}")>@StringLocalizer[$"CharacterClass-{CharacterViewModel.Class}"]</MudText>
             </div>
 
             <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@CharacterViewModel.RealmId" />

@@ -225,8 +225,8 @@ else
                                             CharacterRegionInfo="@character.RegionId.ToInfo()" />
 
                                             <div>
-                                                <MudText Typo="Typo.body2" Class="d-inline">@character.Level @Services.StringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
-                                                <MudText Typo="Typo.body2" Class=@($"d-inline wowclass-{character.Class}")>@Services.StringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
+                                                <MudText Inline="true" Typo="Typo.body2">@character.Level @Services.StringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
+                                                <MudText Inline="true" Typo="Typo.body2" Class=@($"wowclass-{character.Class}")>@Services.StringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
                                             </div>
 
                                             <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@character.RealmId" />

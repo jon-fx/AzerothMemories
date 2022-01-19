@@ -4,13 +4,13 @@
 @if (CharacterRealmId > 0)
 {
     <a href="character\@CharacterRegionInfo.TwoLetters\@_stringLocalizer[$"RealmSlug-{CharacterRealmId}"]\@CharacterName">
-        <CharacterNameComponent Typo="@Typo" CharacterName="@CharacterName" CharacterClass="@CharacterClass" />
+        <CharacterNameComponent Inline="true" Typo="@Typo" CharacterName="@CharacterName" CharacterClass="@CharacterClass" />
     </a>
 }
 else if (!string.IsNullOrWhiteSpace(CharacterRealmSlug))
 {
     <a href="character\@CharacterRegionInfo.TwoLetters\@CharacterRealmSlug\@CharacterName">
-        <CharacterNameComponent Typo="@Typo" CharacterName="@CharacterName" CharacterClass="@CharacterClass" />
+        <CharacterNameComponent Inline="true" Typo="@Typo" CharacterName="@CharacterName" CharacterClass="@CharacterClass" />
     </a>
 }
 
