@@ -1,7 +1,7 @@
 ﻿@if (AccountViewModel != null && RecentPostsHelper != null)
 {
-    <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-        <MudCardContent Class="pa-0 ma-0">
+    <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+        <MudCardContent Class="@ClassPresets.CardContent">
             <MudSwitch T="bool" Checked="@(RecentPostsHelper.CurrentType != RecentPostsType.Default)" Color="Color.Primary" Class="d-flex justify-end" Label="" CheckedChanged="RecentPostsHelper.OnShowAllChanged" />
         </MudCardContent>
     </MudCard>
@@ -13,8 +13,8 @@
 }
 else if (RecentPostsHelper.NoResults)
 {
-    <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-        <MudCardContent>
+    <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+        <MudCardContent Class="@ClassPresets.CardContent">
             <MudText Align="Align.Center">None</MudText>
         </MudCardContent>
     </MudCard>

@@ -9,9 +9,9 @@
 }
 
 <div id="@headerId" class="postIndent">
-    <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
+    <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
         <MudCardHeader Class="@(item.IsFocused ? "pt-2 pb-2 mud-theme-primary" : "pt-2 pb-2")">
-            <CardHeaderAvatar>
+            <CardHeaderAvatar >
                 <a href="@accountLink">
                     <MudAvatar Class="cardLinkText" Size="Size.Small" Image="@comment.AccountAvatar">@username[0]</MudAvatar>
                 </a>
@@ -53,12 +53,12 @@
 
         @if (comment.DeletedTimeStamp == 0)
         {
-            <MudCardContent Class="pt-2 pb-2">
+            <MudCardContent Class="@ClassPresets.CardContent">
                 <MudText Typo="Typo.body2" Style="overflow-wrap: anywhere;">@(new MarkupString(comment.PostComment))</MudText>
                 <MudText Class="cardLinkText" Typo="Typo.body2" @onclick="OnReactionLinkClicked">@ZExtensions.BuildReactionString(comment.TotalReactionCount, comment.ReactionCounters)</MudText>
             </MudCardContent>
 
-            <MudCardActions Class="pt-2 pb-2">
+            <MudCardActions Class="@ClassPresets.CardActions">
                 <MudButtonGroup OverrideStyles="true" Variant="Variant.Text" Size="Size.Small">
                     <MudButton StartIcon="@Icons.Material.Filled.Favorite" IconColor="@(item.Reaction == PostReaction.None ? Color.Default : Color.Secondary)" Disabled="@(IsDisabled || _userReacting)" OnClick="() => OnReactButtonClicked(item.Reaction)">@item.Reaction.Humanize()</MudButton>
                     <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Disabled="@(IsDisabled || _userReacting)" Direction="Direction.Bottom" OffsetY="true">
@@ -75,7 +75,7 @@
         }
         else
         {
-            <MudCardContent Class="pt-2 pb-2">
+            <MudCardContent Class="@ClassPresets.CardContent">
                 <MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Center">Deleted by @(comment.DeletedTimeStamp > 0 ? "user" : "admin").</MudAlert>
             </MudCardContent>
         }
@@ -104,8 +104,8 @@
     else if (item.HasChild)
     {
         <div class="postIndent">
-            <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
-                <MudCardContent Class="pt-2 pb-2">
+            <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
+                <MudCardContent Class="@ClassPresets.CardContent">
                     <MudButton Class="pa-2 ma-2" FullWidth="true" Variant="Variant.Filled" OnClick="() => item.ShowChildren = true">Show @item.Children.Count comments</MudButton>
                 </MudCardContent>
             </MudCard>

@@ -6,16 +6,16 @@
 <AuthorizeView>
     @if (ViewModel != null && ViewModel.AccountViewModel != null)
     {
-        <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-            <MudCardHeader>
-                <CardHeaderAvatar>
+        <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+            <MudCardHeader Class="@ClassPresets.CardHeader">
+                <CardHeaderAvatar >
                     <MudAvatar Size="Size.Large" Image="@ViewModel.AccountViewModel.Avatar">@ViewModel.AccountViewModel.GetAvatarText()</MudAvatar>
                 </CardHeaderAvatar>
                 <CardHeaderContent>
                     <MudText Typo="Typo.h6">Manage Account</MudText>
                 </CardHeaderContent>
             </MudCardHeader>
-            <MudCardContent>
+            <MudCardContent Class="@ClassPresets.CardContent">
                 <MudGrid>
                     <MudItem xs="6">
                         <MudTextField T="string"
@@ -87,15 +87,15 @@
 
             </MudCardContent>
         </MudCard>
-        <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-            <MudCardHeader>
-                <CardHeaderAvatar>
+        <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+            <MudCardHeader Class="@ClassPresets.CardHeader">
+                <CardHeaderAvatar >
                 </CardHeaderAvatar>
                 <CardHeaderContent>
                     <MudText Typo="Typo.h6">Manage Characters</MudText>
                 </CardHeaderContent>
             </MudCardHeader>
-            <MudCardContent>
+            <MudCardContent Class="@ClassPresets.CardContent">
                 <MudSimpleTable Hover="true" Dense="true" Striped="true" Breakpoint="Breakpoint.None">
                     <thead>
                     <tr>

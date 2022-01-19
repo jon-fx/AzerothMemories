@@ -4,24 +4,24 @@
 
 @if (reactionData == null)
 {
-    <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-        <MudCardContent>
+    <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+        <MudCardContent Class="@ClassPresets.CardContent">
             <MudText Align="Align.Center">Failed</MudText>
         </MudCardContent>
     </MudCard>
 }
 else if (reactionData.Length == 0)
 {
-    <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-        <MudCardContent>
+    <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+        <MudCardContent Class="@ClassPresets.CardContent">
             <MudText Align="Align.Center">None</MudText>
         </MudCardContent>
     </MudCard>
 }
 else if (reactionData.Length > 0)
 {
-    <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-        <MudCardContent>
+    <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+        <MudCardContent Class="@ClassPresets.CardContent">
             @foreach (var reaction in reactionData)
             {
                 var text = $"{reaction.Reaction.Humanize()} {reaction.AccountUsername}";

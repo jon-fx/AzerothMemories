@@ -10,8 +10,8 @@ else
     var viewModels = ViewModel.HistoryViewModels;
     @if (viewModels== null || viewModels.Length == 0)
     {
-        <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-            <MudCardContent>
+        <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+            <MudCardContent Class="@ClassPresets.CardContent">
                 <MudText Align="Align.Center">None</MudText>
             </MudCardContent>
         </MudCard>
@@ -24,8 +24,8 @@ else
                 var str = (MarkupString) viewModel.GetDisplayText(ActiveAccountServices.AccountViewModel, StringLocalizer);
 
                 <MudTimelineItem Color="Color.Info">
-                    <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="25">
-                        <MudCardContent>
+                    <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="25">
+                        <MudCardContent Class="@ClassPresets.CardContent">
                             <MudText Typo="Typo.button">@str</MudText>
                             <MudText Typo="Typo.body2" Class="mud-text-secondary">@TimeProvider.GetTimeAsLocalStringAgo(viewModel.CreatedTime, true)}</MudText>
                         </MudCardContent>

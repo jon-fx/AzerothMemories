@@ -4,83 +4,55 @@
 }
 else
 {
-    <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-        <MudCardHeader>
-            <CardHeaderAvatar>
+    <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+        <MudCardHeader Class="@ClassPresets.CardHeader">
+            <CardHeaderAvatar >
                 <MudAvatar Size="Size.Large" Image="@AccountViewModel.Avatar">@AccountViewModel.GetAvatarText()</MudAvatar>
             </CardHeaderAvatar>
             <CardHeaderContent>
                 <a href="@($"/account/{AccountViewModel.Id}")" tabindex="-1">
                     <MudText Typo="Typo.h6">@AccountViewModel.GetDisplayName()</MudText>
                 </a>
-            </CardHeaderContent>
-            <CardHeaderActions>
-                <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
-            </CardHeaderActions>
-        </MudCardHeader>
-        <MudCardContent>
-            @if (string.IsNullOrWhiteSpace(AccountViewModel.BattleTag))
-            {
-            }
-            else
-            {
-                <div class="d-flex align-baseline">
-                    <img class="mr-1" src="@SocialHelpers.BlizzardIconLink" width="18" height="18" />
-                    <MudText Class="my-auto">@AccountViewModel.BattleTag</MudText>
-                </div>
-            }
-
-            @foreach (var socialHelper in SocialHelpers.All)
-            {
-                var suffix = AccountViewModel.SocialLinks[socialHelper.LinkId];
-                if (string.IsNullOrWhiteSpace(suffix))
+                
+                @if (string.IsNullOrWhiteSpace(AccountViewModel.BattleTag))
                 {
-                    continue;
                 }
+                else
+                {
+                    <MudText Typo="Typo.body2" Inline="true" Class="my-auto">@AccountViewModel.BattleTag</MudText>
+                }
+            </CardHeaderContent>
+        </MudCardHeader>
 
-                <div class="d-flex align-baseline">
-                    <img class="mr-1" src="@socialHelper.SocialIconLink" width="18" height="18" />
+        <MudDivider />
 
-                    @if (string.IsNullOrWhiteSpace(socialHelper.LinkPrefix))
-                    {
-                        <MudText Class="my-auto">@suffix</MudText>
-                    }
-                    else
-                    {
-                        var fullLink = $"{socialHelper.LinkPrefix}{suffix}";
-                        <a href="@fullLink">
-                            <MudText Class="my-auto">@suffix</MudText>
-                        </a>
-                    }
-                </div>
-            }
-            <div class="d-flex align-baseline">
-                <MudIcon Class="mr-1" Icon="@Icons.Filled.CalendarToday" Size="Size.Small" />
-                <MudText Class="my-auto">@Services.TimeProvider.GetJoinedDate(AccountViewModel.CreatedDateTime)</MudText>
-            </div>
-
-            <a href="@($"/follow/{AccountViewModel.Id}")">
-                <MudText><b>@_followingCount</b> Following</MudText>
-            </a>
-            <a href="@($"/follow/{AccountViewModel.Id}")">
-                <MudText><b>@_followerCount</b> Followers</MudText>
-            </a>
+        <MudCardContent Class="@ClassPresets.CardContent">
         </MudCardContent>
-        <MudCardActions>
+
+        <MudDivider />
+
+        <MudCardActions Class="@ClassPresets.CardActions">
             <MudButtonGroup OverrideStyles="true" Class="pa-0 ma-2" Variant="Variant.Filled">
+                
+                <a href="@($"/follow/{AccountViewModel.Id}")">
+                    <MudButton>
+                        <MudText Inline="true"><b>@_followingCount</b> Following</MudText>
+                    </MudButton>
+                </a>
+                <a href="@($"/follow/{AccountViewModel.Id}")">
+                    <MudButton>
+                        <MudText Inline="true" ><b>@_followerCount</b> Followers</MudText>
+                    </MudButton>
+                </a>
+
                 @{
                     var accountViewModel = Services.ActiveAccountServices.AccountViewModel;
                     if (accountViewModel != null)
                     {
-                        if (IsActiveAccount)
-                        {
-                            <MudButton Link="AddMemory">Restore Memory</MudButton>
-                        }
-
                         accountViewModel.FollowingViewModels.TryGetValue(AccountViewModel.Id, out var followingViewModel);
                         accountViewModel.FollowersViewModels.TryGetValue(AccountViewModel.Id, out var followerViewModel);
 
-                        <AccountFollowingComponent Services="@Services" ActiveAccountViewModel="@accountViewModel" OtherAccountId="@AccountViewModel.Id" FollowingViewModel="@followingViewModel" FollowerViewModel="@followerViewModel" />
+                        <AccountFollowingComponent Services="@Services" ActiveAccountViewModel="@accountViewModel" OtherAccountId="@AccountViewModel.Id" FollowingViewModel="@followingViewModel" FollowerViewModel="@followerViewModel"/>
                     }
                 }
             </MudButtonGroup>
@@ -90,11 +62,11 @@ else
     var characters = AccountViewModel.GetCharactersSafe();
     if (characters.Length > 0)
     {
-        <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-            <MudCardContent>
+        <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+            <MudCardContent Class="@ClassPresets.CardContent">
                 @foreach (var character in characters)
                 {
-                    <CharacterLinkButton @key="character" StringLocalizer="@Services.StringLocalizer" CharacterViewModel="@character"/>
+                    <CharacterLinkButton @key="character" StringLocalizer="@Services.StringLocalizer" CharacterViewModel="@character" />
 
                 }
             </MudCardContent>

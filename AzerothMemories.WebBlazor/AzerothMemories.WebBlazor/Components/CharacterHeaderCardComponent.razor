@@ -4,9 +4,9 @@
 }
 else
 {
-    <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-        <MudCardHeader>
-            <CardHeaderAvatar>
+    <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+        <MudCardHeader Class="@ClassPresets.CardHeader">
+            <CardHeaderAvatar >
                 <MudAvatar Size="Size.Large" Image="@CharacterViewModel.AvatarLinkWithFallBack">@CharacterViewModel.Name[0]</MudAvatar>
             </CardHeaderAvatar>
             <CardHeaderContent>

@@ -4,8 +4,8 @@
 }
 else if (Post.DeletedTimeStamp != 0)
 {
-    <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
-        <MudCardHeader>
+    <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
+        <MudCardHeader Class="@ClassPresets.CardHeader">
             <CardHeaderContent>
                 <MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Center">Deleted by @(Post.DeletedTimeStamp > 0 ? "user" : "admin").</MudAlert>
             </CardHeaderContent>
@@ -14,9 +14,9 @@ else if (Post.DeletedTimeStamp != 0)
 }
 else
 {
-    <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
-        <MudCardHeader>
-            <CardHeaderAvatar>
+    <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
+        <MudCardHeader Class="@ClassPresets.CardHeader">
+            <CardHeaderAvatar >
                 <MudAvatar Size="Size.Medium" Image="@Post.AccountAvatar">@Post.AccountUsername[0]</MudAvatar>
                 @if (!string.IsNullOrWhiteSpace(Post.PostAvatar))
                 {
@@ -81,8 +81,8 @@ else
         </MudCardHeader>
 
         <MudDivider />
-
-        <MudCardContent Class="pa-0 ma-2">
+        
+        <MudCardContent Class="@ClassPresets.CardContent">
             @if (DoseNotHavePermission)
             {
                 <MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Center">You do not have permission to view this post.</MudAlert>
@@ -131,8 +131,8 @@ else
                 }
             }
         </MudCardContent>
-
-        <MudCardActions>
+        
+        <MudCardActions Class="@ClassPresets.CardActions">
             <MudButtonGroup OverrideStyles="true" Class="pa-2 ma-2" Variant="Variant.Filled" Size="Size.Small">
                 <MudButton StartIcon="@Icons.Material.Filled.Favorite" IconColor="@(Post.Reaction == PostReaction.None ? Color.Default : Color.Secondary)" Disabled="@(IsDisabled || _userReacting)" OnClick="() => OnReactButtonClicked(Post.Reaction)">@Post.Reaction.Humanize()</MudButton>
                 <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Disabled="@(IsDisabled || _userReacting)" Direction="Direction.Bottom" OffsetY="true">
@@ -194,8 +194,8 @@ else
                             taggedCharacter = moaCharacterViewModel;
                         }
 
-                        <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-                            <MudCardContent>
+                        <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+                            <MudCardContent Class="@ClassPresets.CardContent">
                                 <MudTooltip Placement="Placement.End" Color="Color.Dark">
                                     <ChildContent>
                                         <MudButton Variant="Variant.Filled" Disabled="taggedCharacter == null" OnClick="() => OnRestoreButtonClicked(taggedCharacter, null)">
@@ -238,8 +238,8 @@ else
                     }
                     else
                     {
-                        <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-                            <MudCardContent>
+                        <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+                            <MudCardContent Class="@ClassPresets.CardContent">
                                 <MudText Align="Align.Center">No Characters</MudText>
                             </MudCardContent>
                         </MudCard>

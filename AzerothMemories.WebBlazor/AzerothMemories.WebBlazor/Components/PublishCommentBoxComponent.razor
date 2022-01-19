@@ -1,8 +1,8 @@
 ﻿<div class="postIndent">
     @if (!Services.ActiveAccountServices.IsAccountActive)
     {
-        <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
-            <MudCardHeader>
+        <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
+            <MudCardHeader Class="@ClassPresets.CardHeader">
                 <CardHeaderContent>
                     <MudText Typo="Typo.body1">NOT LOGGED IN</MudText>
                 </CardHeaderContent>
@@ -11,9 +11,9 @@
     }
     else
     {
-        <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
-            <MudCardHeader>
-                <CardHeaderAvatar>
+        <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
+            <MudCardHeader Class="@ClassPresets.CardHeader">
+                <CardHeaderAvatar >
                     <MudAvatar Size="Size.Small" Image="@Services.ActiveAccountServices.AccountViewModel.Avatar">@Services.ActiveAccountServices.AccountViewModel.GetAvatarText()</MudAvatar>
                 </CardHeaderAvatar>
                 <CardHeaderContent>
@@ -22,12 +22,12 @@
                 <CardHeaderActions>
                 </CardHeaderActions>
             </MudCardHeader>
-
-            <MudCardContent Class="pa-0 ma-1">
+            
+            <MudCardContent Class="@ClassPresets.CardContent">
                 <PublishCommentComponent @ref="_commentComponent" Lines="1" TagsList="@Services.ActiveAccountServices.GetUserTagList()" OnSingleLineSubmit="@OnSubmitComment" Disabled="@_isCommentBoxDisabled" AutoFocus="true" />
             </MudCardContent>
-
-            <MudCardActions Class="pa-0 ma-2">
+            
+            <MudCardActions Class="@ClassPresets.CardActions">
             </MudCardActions>
         </MudCard>
     }

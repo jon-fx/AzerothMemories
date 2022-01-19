@@ -7,8 +7,8 @@
             foreach (var viewModel in _pendingViewModels)
             {
                 <MudCard @key="viewModel.Id" Class="pa-0 ma-10 postCard" Outlined="true" Elevation="10">
-                    <MudCardHeader>
-                        <CardHeaderAvatar>
+                    <MudCardHeader Class="@ClassPresets.CardHeader">
+                        <CardHeaderAvatar >
                             <MudAvatar Size="Size.Medium" Image="@viewModel.FollowerAvatarLink">@viewModel.FollowerUsername[0]</MudAvatar>
                         </CardHeaderAvatar>
                         <CardHeaderContent>
@@ -43,8 +43,8 @@
             foreach (var viewModel in _activeViewModels)
             {
                 <MudCard @key="viewModel.Id" Class="pa-0 ma-10 postCard" Outlined="true" Elevation="10">
-                    <MudCardHeader>
-                        <CardHeaderAvatar>
+                    <MudCardHeader Class="@ClassPresets.CardHeader">
+                        <CardHeaderAvatar >
                             <MudAvatar Size="Size.Medium" Image="@viewModel.FollowerAvatarLink">@viewModel.FollowerUsername[0]</MudAvatar>
                         </CardHeaderAvatar>
                         <CardHeaderContent>
@@ -71,8 +71,8 @@
 
         @if (!showPending && !showActive)
         {
-            <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-                <MudCardContent>
+            <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+                <MudCardContent Class="@ClassPresets.CardContent">
                     <MudText Align="Align.Center">None</MudText>
                 </MudCardContent>
             </MudCard>

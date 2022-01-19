@@ -1,6 +1,6 @@
 ﻿@if (ViewModel.SharedData != null && ViewModel.UploadedImages.Count > 0)
 {
-    <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+    <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
         <MudGrid>
             <MudItem xs="12">
                 @{
@@ -20,7 +20,7 @@
         </MudGrid>
     </MudPaper>
 
-    <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+    <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
         @for (var i = 0; i < ViewModel.UploadedImages.Count; i++)
         {
             var index = i;
@@ -30,14 +30,14 @@
         }
     </MudPaper>
 
-    <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+    <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
         <InputFile id="fileInput2" OnChange="ViewModel.UploadMoreImages" hidden multiple accept=".jpg, .jpeg, .png" />
         <MudButton HtmlTag="label" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Filled.CloudUpload" Disabled="@ViewModel.MaxUploadReached" for="fileInput2">Upload Images</MudButton>
     </MudPaper>
 
     <AddMemoryMainTagComponent Services="Services" SharedData="@ViewModel.SharedData" />
 
-    <MudPaper Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
+    <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
         <PublishCommentComponent @ref="ViewModel.PublishCommentComponent" Lines="10" TagsList="@Services.ActiveAccountServices.GetUserTagList()" />
     </MudPaper>
 

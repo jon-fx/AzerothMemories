@@ -10,8 +10,8 @@ else
         timeStr = Services.TimeProvider.GetTimeAsLocalStringAgo(UploadedImage.FileTimeStamp, false);
     }
 
-    <MudCard Class="pa-2 ma-2 card" Outlined="true" Elevation="10">
-        <MudCardHeader>
+    <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+        <MudCardHeader Class="@ClassPresets.CardHeader">
             <CardHeaderContent>
                 <MudText Typo="Typo.h6">@UploadedImage.FileName</MudText>
                 <MudText Typo="Typo.body1">@timeStr</MudText>
@@ -22,7 +22,7 @@ else
                 </MudTooltip>
             </CardHeaderActions>
         </MudCardHeader>
-        <MudCardContent>
+        <MudCardContent Class="@ClassPresets.CardContent">
             @{
                 <img id="@GetImageId" style="width: 100%; height: auto; object-fit: cover;" />
             }

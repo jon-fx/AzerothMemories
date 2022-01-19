@@ -8,8 +8,8 @@
 }
 else if (Helper.PostViewModel.DeletedTimeStamp != 0)
 {
-    <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
-        <MudCardHeader>
+    <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
+        <MudCardHeader Class="@ClassPresets.CardHeader">
             <CardHeaderContent>
                 <MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Center">Deleted by @(Helper.PostViewModel.DeletedTimeStamp > 0 ? "user" : "admin").</MudAlert>
             </CardHeaderContent>
@@ -28,8 +28,8 @@ else if (Helper.RootComments == null || Helper.RootComments.Count == 0)
     }
     else
     {
-        <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
-            <MudCardContent Class="pt-2 pb-2">
+        <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
+            <MudCardContent Class="@ClassPresets.CardContent">
                 <MudText Class="pa-2 ma-2" Align="Align.Center" Typo="Typo.body2">No comments</MudText>
                 <MudButton Class="pa-2 ma-2" FullWidth="true" Variant="Variant.Filled" Disabled="@IsDisabled" OnClick="AddComment">Add comment</MudButton>
             </MudCardContent>
@@ -54,8 +54,8 @@ else
     if (showAdd)
     {
         <div class="postIndent">
-            <MudCard Class="pa-2 ma-2 card postCard" Outlined="true" Elevation="10">
-                <MudCardContent Class="pt-2 pb-2">
+            <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
+                <MudCardContent Class="@ClassPresets.CardContent">
                     <MudButton Class="pa-2 ma-2" FullWidth="true" Variant="Variant.Filled" Disabled="@IsDisabled" OnClick="AddComment">Add comment</MudButton>
                 </MudCardContent>
             </MudCard>
