@@ -17,6 +17,8 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord
 
     [Column, NotNull] public Instant CreatedDateTime;
 
+    [Column, NotNull] public CharacterStatus2 CharacterStatus;
+
     [Column, NotNull] public long? AccountId;
 
     [Column, NotNull] public bool AccountSync;
@@ -72,6 +74,7 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord
             Level = Level,
             Gender = Gender,
             //Faction = Faction,
+            CharacterStatus = CharacterStatus,
             AvatarLink = AvatarLink,
             AccountSync = AccountSync,
             Name = Name,

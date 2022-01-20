@@ -149,10 +149,10 @@ public class CharacterServices : ICharacterServices
         OnCharacterUpdate(characterRecord.Id, characterRecord.AccountId.GetValueOrDefault());
     }
 
-    public Task OnCharacterDeleted(long accountId, long characterId, string characterRef)
-    {
-        throw new NotImplementedException();
-    }
+    //public Task OnCharacterDeleted(long accountId, long characterId, string characterRef)
+    //{
+    //    throw new NotImplementedException();
+    //}
 
     [ComputeMethod]
     public virtual async Task<Dictionary<long, string>> TryGetAllAccountCharacterIds(long accountId)
@@ -274,6 +274,84 @@ public class CharacterServices : ICharacterServices
         var characterRecord = await GetOrCreateCharacterRecord(characterRef.Full, BlizzardUpdatePriority.CharacterMed);
 
         return await TryGetCharacter(session, characterRecord.Id);
+    }
+
+    public async Task<bool> TrySetCharacterDeleted(Session session, long characterId)
+    {
+        var accountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
+        if (accountId == 0)
+        {
+            return false;
+        }
+
+        var characterRecord = await TryGetCharacterRecord(characterId);
+        if (characterRecord == null)
+        {
+            return false;
+        }
+
+        if (characterRecord.AccountId != accountId)
+        {
+            return false;
+        }
+
+        if (characterRecord.CharacterStatus != CharacterStatus2.MaybeDeleted)
+        {
+            return false;
+        }
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await database.GetUpdateQuery(characterRecord, out _).Set(x => x.CharacterStatus, CharacterStatus2.DeletePending).UpdateAsync();
+
+        OnCharacterUpdate(characterRecord.Id, characterRecord.AccountId.GetValueOrDefault());
+
+        return true;
+    }
+
+    public async Task<bool> TrySetCharacterRenamedOrTransferred(Session session, long oldCharacterId, long newCharacterId)
+    {
+        var accountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
+        if (accountId == 0)
+        {
+            return false;
+        }
+
+        var oldCharacterRecord = await TryGetCharacterRecord(oldCharacterId);
+        if (oldCharacterRecord == null || oldCharacterRecord.AccountId != accountId)
+        {
+            return false;
+        }
+
+        var newCharacterRecord = await TryGetCharacterRecord(newCharacterId);
+        if (newCharacterRecord == null || newCharacterRecord.AccountId != accountId)
+        {
+            return false;
+        }
+
+        if (oldCharacterRecord.AccountId != newCharacterRecord.AccountId)
+        {
+            return false;
+        }
+
+        if (oldCharacterRecord.Class != newCharacterRecord.Class)
+        {
+            return false;
+        }
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        await database.GetUpdateQuery(oldCharacterRecord, out _).Set(x => x.CharacterStatus, CharacterStatus2.RenamedOrTransferred).UpdateAsync();
+
+        var oldTag = PostTagInfo.GetTagString(PostTagType.Character, oldCharacterRecord.Id);
+        var newTag = PostTagInfo.GetTagString(PostTagType.Character, newCharacterRecord.Id);
+
+        await database.Posts.Where(x => x.PostAvatar == oldTag).Set(x => x.PostAvatar, newTag).UpdateAsync();
+        await database.PostTags.Where(x => x.TagString == oldTag).Set(x => x.TagString, newTag).Set(x => x.TagId, newCharacterRecord.Id).UpdateAsync();
+
+        OnCharacterUpdate(oldCharacterRecord.Id, oldCharacterRecord.AccountId.GetValueOrDefault());
+        OnCharacterUpdate(newCharacterRecord.Id, newCharacterRecord.AccountId.GetValueOrDefault());
+
+        return true;
     }
 
     [ComputeMethod]

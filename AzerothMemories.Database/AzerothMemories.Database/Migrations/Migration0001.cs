@@ -64,6 +64,7 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(CharacterRecord.Name)).AsString(60).Nullable()
             .WithColumn(nameof(CharacterRecord.NameSearchable)).AsString(60).Nullable()
             .WithColumn(nameof(CharacterRecord.CreatedDateTime)).AsDateTimeOffset().NotNullable()
+            .WithColumn(nameof(CharacterRecord.CharacterStatus)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(CharacterRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.SetNull).Nullable()
             .WithColumn(nameof(CharacterRecord.AccountSync)).AsBoolean().WithDefaultValue(false)
             .WithColumn(nameof(CharacterRecord.RealmId)).AsInt32().WithDefaultValue(0)

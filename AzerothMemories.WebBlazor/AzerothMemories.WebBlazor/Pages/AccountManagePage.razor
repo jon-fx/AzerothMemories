@@ -1,6 +1,7 @@
 ﻿@page "/accountmanage"
 @inherits MoaComponentBase<AccountManagePageViewModel>
 
+
 <PageTitle>Manage Account - Memories of Azeroth</PageTitle>
 
 <AuthorizeView>
@@ -87,10 +88,80 @@
 
             </MudCardContent>
         </MudCard>
+        
+        var characters = ViewModel.AccountViewModel.GetCharactersSafe();
+        var otherCharacters = new List<CharacterViewModel>();
+
+        foreach (var character in characters)
+        {
+            if (character.CharacterStatus == CharacterStatus2.None)
+            {
+                otherCharacters.Add(character);
+            }
+            else if (character.CharacterStatus == CharacterStatus2.MaybeDeleted)
+            {
+                var possibleCharacters = characters.Where(x => x.Class == character.Class && x.Level >= character.Level).ToArray();
+
+                <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+                    <MudCardHeader Class="@ClassPresets.CardHeader">
+                        <CardHeaderAvatar >
+                            <MudAvatar Size="Size.Large" Image="@character.AvatarLinkWithFallBack">@character.Name[0]</MudAvatar>
+                        </CardHeaderAvatar>
+                        <CardHeaderContent>
+                            <CharacterNameLinkComponent Typo="Typo.h6"
+                                                        CharacterName="@character.Name"
+                                                        CharacterClass="@character.Class"
+                                                        CharacterRealmId="@character.RealmId"
+                                                        CharacterRegionInfo="@character.RegionId.ToInfo()" />
+                            <div>
+                                <MudText Inline="true"  Typo="Typo.body2" >@character.Level</MudText>
+                                <CharacterRaceComponent Typo="Typo.body2" Inline="true" CharacterRace="@character.Race" />
+                                <CharacterClassComponent Typo="Typo.body2" Inline="true" CharacterClass="@character.Class" />
+                            </div>
+
+
+                            <RealmLinkComponent Class="d-block" Typo="Typo.caption" BlizzardRealmId="@character.RealmId" />
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardActions Class="@ClassPresets.CardActions">
+                        <MudButtonGroup OverrideStyles="true" Class="pa-2 ma-2" Variant="Variant.Filled" Size="Size.Small">
+                            <MudButton StartIcon="@Icons.Material.Filled.DeleteForever" OnClick="() => ViewModel.OnCharacterDeletedClicked(character)">Deleted</MudButton>
+                            <MudButton StartIcon="@Icons.Material.Filled.Favorite" Disabled="@(possibleCharacters.Length == 0)" >Transferred / Renamed</MudButton>
+                            <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Direction="Direction.Bottom" OffsetY="true">
+                                @foreach (var otherCharacter in possibleCharacters)
+                                {
+                                    if (otherCharacter.CharacterStatus == CharacterStatus2.MaybeDeleted)
+                                    {
+                                        continue;
+                                    }
+
+                                    <MudMenuItem OnClick="() => ViewModel.OnCharacterRenamedOrTransferred(character, otherCharacter)">
+                                        
+                                        <CharacterNameLinkComponent Typo="Typo.h6"
+                                                                    CharacterName="@otherCharacter.Name"
+                                                                    CharacterClass="@otherCharacter.Class"
+                                                                    CharacterRealmId="@otherCharacter.RealmId"
+                                                                    CharacterRegionInfo="@otherCharacter.RegionId.ToInfo()"
+                                                                    LinkDisabled="true"/>
+                                        <div>
+                                            <MudText Inline="true"  Typo="Typo.body2" >@otherCharacter.Level</MudText>
+                                            <CharacterRaceComponent Typo="Typo.body2" Inline="true" CharacterRace="@otherCharacter.Race"  LinkDisabled="true"/>
+                                            <CharacterClassComponent Typo="Typo.body2" Inline="true" CharacterClass="@otherCharacter.Class" LinkDisabled="true" />
+                                        </div>
+
+
+                                        <RealmLinkComponent Class="d-block" Typo="Typo.caption" BlizzardRealmId="@otherCharacter.RealmId" LinkDisabled="true"/>
+                                    </MudMenuItem>
+                                }
+                            </MudMenu>
+                        </MudButtonGroup>
+                    </MudCardActions>
+                </MudCard>
+            }
+        }
+
         <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
             <MudCardHeader Class="@ClassPresets.CardHeader">
-                <CardHeaderAvatar >
-                </CardHeaderAvatar>
                 <CardHeaderContent>
                     <MudText Typo="Typo.h6">Manage Characters</MudText>
                 </CardHeaderContent>
@@ -119,8 +190,7 @@
                     </thead>
                     <tbody>
                     @{
-                        var characters = ViewModel.AccountViewModel.CharactersArray.OrderByDescending(x => x.Level).ThenBy(x => x.Name).ToArray();
-                        @foreach (var row in characters)
+                        foreach (var row in otherCharacters)
                         {
                             <tr @key="row.Id">
                                 <MudTd>

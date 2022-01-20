@@ -1,21 +1,28 @@
 ﻿@using AzerothMemories.WebBlazor.Blizzard
 @inject IStringLocalizer<BlizzardResources> _stringLocalizer
 
-@if (CharacterRealmId > 0)
-{
-    <a href="character\@CharacterRegionInfo.TwoLetters\@_stringLocalizer[$"RealmSlug-{CharacterRealmId}"]\@CharacterName">
+@{
+    if (LinkDisabled)
+    {
         <CharacterNameComponent Inline="true" Typo="@Typo" CharacterName="@CharacterName" CharacterClass="@CharacterClass" />
-    </a>
-}
-else if (!string.IsNullOrWhiteSpace(CharacterRealmSlug))
-{
-    <a href="character\@CharacterRegionInfo.TwoLetters\@CharacterRealmSlug\@CharacterName">
-        <CharacterNameComponent Inline="true" Typo="@Typo" CharacterName="@CharacterName" CharacterClass="@CharacterClass" />
-    </a>
+    }
+    else if (CharacterRealmId > 0)
+    {
+        <a href="character\@CharacterRegionInfo.TwoLetters\@_stringLocalizer[$"RealmSlug-{CharacterRealmId}"]\@CharacterName">
+            <CharacterNameComponent Inline="true" Typo="@Typo" CharacterName="@CharacterName" CharacterClass="@CharacterClass" />
+        </a>
+    }
+    else if (!string.IsNullOrWhiteSpace(CharacterRealmSlug))
+    {
+        <a href="character\@CharacterRegionInfo.TwoLetters\@CharacterRealmSlug\@CharacterName">
+            <CharacterNameComponent Inline="true" Typo="@Typo" CharacterName="@CharacterName" CharacterClass="@CharacterClass" />
+        </a>
+    }
 }
 
 @code {
     [Parameter] public Typo Typo { get; set; } = Typo.body1;
+    [Parameter] public bool LinkDisabled { get; init; }
     [Parameter] public int CharacterRealmId { get; set; }
     [Parameter] public string CharacterRealmSlug { get; set; }
     [Parameter, EditorRequired] public string CharacterName { get; set; }

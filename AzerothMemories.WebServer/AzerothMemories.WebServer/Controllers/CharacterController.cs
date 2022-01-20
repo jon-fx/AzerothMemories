@@ -28,4 +28,16 @@ public sealed class CharacterController : ControllerBase, ICharacterServices
     {
         return _commonServices.CharacterServices.TryGetCharacter(session, region, realmSlug, characterName);
     }
+
+    [HttpPost("{characterId}")]
+    public Task<bool> TrySetCharacterDeleted(Session session, [FromRoute] long characterId)
+    {
+        return _commonServices.CharacterServices.TrySetCharacterDeleted(session, characterId);
+    }
+
+    [HttpPost("{oldCharacterId}/{newCharacterId}")]
+    public Task<bool> TrySetCharacterRenamedOrTransferred(Session session, [FromRoute] long oldCharacterId, [FromRoute] long newCharacterId)
+    {
+        return _commonServices.CharacterServices.TrySetCharacterRenamedOrTransferred(session, oldCharacterId, newCharacterId);
+    }
 }

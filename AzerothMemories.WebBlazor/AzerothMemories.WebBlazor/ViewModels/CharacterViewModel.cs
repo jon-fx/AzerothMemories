@@ -20,6 +20,8 @@ public sealed class CharacterViewModel
 
     [JsonInclude] public byte Level;
 
+    [JsonInclude] public CharacterStatus2 CharacterStatus;
+
     //[JsonInclude] public CharacterFaction Faction;
 
     //[JsonInclude] public int AchievementTotalPoints;

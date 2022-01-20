@@ -29,8 +29,6 @@ internal sealed class BlizzardAccountUpdateHandler
         var accountSummaryResult = await client.GetAccountProfile(record.BattleNetToken, 0 /*record.BlizzardAccountLastModified*/).ConfigureAwait(false);
         if (accountSummaryResult.IsSuccess)
         {
-            //await accountGrain.OnAccountUpdate(accountSummaryResult.ResultLastModified.ToUnixTimeMilliseconds());
-
             foreach (var account in accountSummaryResult.ResultData.WowAccounts)
             {
                 foreach (var accountCharacter in account.Characters)
@@ -42,29 +40,24 @@ internal sealed class BlizzardAccountUpdateHandler
                 }
             }
 
-            dbCharactersSet.ExceptWith(apiCharactersSet);
+            //var newCharacters = new HashSet<string>(apiCharactersSet);
+            //newCharacters.ExceptWith(dbCharactersSet);
 
-            if (dbCharactersSet.Count > 0)
+            var deletedCharacters = new HashSet<string>(dbCharactersSet);
+            deletedCharacters.ExceptWith(apiCharactersSet);
+
+            foreach (var deletedCharacter in deletedCharacters)
             {
-                foreach (var characterRef in dbCharactersSet)
-                {
-                    tasks.Add(_commonServices.CharacterServices.OnCharacterDeleted(id, new MoaRef(characterRef).Id, characterRef));
-                }
+                await database.Characters.Where(x => x.MoaRef == deletedCharacter && x.CharacterStatus == CharacterStatus2.None)
+                                         .Set(x => x.CharacterStatus, CharacterStatus2.MaybeDeleted)
+                                         .UpdateAsync();
             }
         }
         else if (accountSummaryResult.IsNotModified)
         {
         }
 
-        //foreach (var characterRef in dbCharactersSet)
-        //{
-        //    //var characterGrain = commonServices.ClusterClient.GetGrain<ICharacterGrain>(characterRef);
-        //    //tasks.Add(characterGrain.WakeUp());
-        //}
-
         await Task.WhenAll(tasks).ConfigureAwait(false);
-
-        //await accountGrain.OnCharactersChanged();
 
         return accountSummaryResult.ResultCode;
     }

@@ -317,4 +317,24 @@ public sealed class AccountManagePageViewModel : ViewModelBase
             OnViewModelChanged?.Invoke();
         }
     }
+
+    public async Task OnCharacterDeletedClicked(CharacterViewModel character)
+    {
+        if (AccountViewModel == null)
+        {
+            return;
+        }
+
+        var result = await Services.CharacterServices.TrySetCharacterDeleted(null, character.Id);
+    }
+
+    public async Task OnCharacterRenamedOrTransferred(CharacterViewModel oldCharacter, CharacterViewModel newCharacter)
+    {
+        if (AccountViewModel == null)
+        {
+            return;
+        }
+
+        var result = await Services.CharacterServices.TrySetCharacterRenamedOrTransferred(null, oldCharacter.Id, newCharacter.Id);
+    }
 }
