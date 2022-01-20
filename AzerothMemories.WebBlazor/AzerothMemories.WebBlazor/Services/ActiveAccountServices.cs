@@ -51,7 +51,11 @@ public sealed class ActiveAccountServices
     {
         AccountViewModel = await _accountServices.TryGetAccount(null);
 
-        if (AccountViewModel != null)
+        if (AccountViewModel == null)
+        {
+            AccountHistoryViewModels = Array.Empty<AccountHistoryViewModel>();
+        }
+        else
         {
             var newHistory = await _accountServices.TryGetAccountHistory(null);
             var oldHistory = AccountHistoryViewModels;
@@ -68,21 +72,22 @@ public sealed class ActiveAccountServices
                     {
                         var displayText = newItem.GetDisplayText(AccountViewModel, _stringLocalizer);
 
-                        _snackbarService.Add($"{_timeProvider.GetTimeAsLocalStringAgo(newItem.CreatedTime, true)}<br>{displayText}", Severity.Normal, config =>
-                        {
-                            config.HideIcon = true;
-                            config.VisibleStateDuration = 5000;
-                            config.ShowCloseIcon = true;
-                            config.Onclick = _ => Task.CompletedTask;
-                        });
+                        _snackbarService.Add(
+                            $"{_timeProvider.GetTimeAsLocalStringAgo(newItem.CreatedTime, true)}<br>{displayText}",
+                            Severity.Normal, config =>
+                            {
+                                config.HideIcon = true;
+                                config.VisibleStateDuration = 5000;
+                                config.ShowCloseIcon = true;
+                                config.Onclick = _ => Task.CompletedTask;
+                            });
                     }
                 }
             }
 
             AccountHistoryViewModels = newHistory.ViewModels;
+            AccountHistoryViewModels ??= Array.Empty<AccountHistoryViewModel>();
         }
-
-        AccountHistoryViewModels ??= Array.Empty<AccountHistoryViewModel>();
     }
 
     public Dictionary<long, string> GetUserTagList()
