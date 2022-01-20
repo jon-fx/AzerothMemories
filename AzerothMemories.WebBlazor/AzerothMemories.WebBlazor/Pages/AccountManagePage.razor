@@ -89,7 +89,7 @@
             </MudCardContent>
         </MudCard>
         
-        var characters = ViewModel.AccountViewModel.GetCharactersSafe();
+        var characters = ViewModel.AccountViewModel.GetAllCharactersSafe();
         var otherCharacters = new List<CharacterViewModel>();
 
         foreach (var character in characters)

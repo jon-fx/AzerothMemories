@@ -175,13 +175,8 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<AccountRecord> TryGetAccountRecord(long id)
     {
-        //if (Computed.IsInvalidating())
-        //{
-        //    //return null;
-        //}
-
-        await using var dbContext = _commonServices.DatabaseProvider.GetDatabase();
-        var user = await dbContext.Accounts.Where(a => a.Id == id).FirstOrDefaultAsync();
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        var user = await database.Accounts.Where(a => a.Id == id).FirstOrDefaultAsync();
 
         return user;
     }
@@ -189,26 +184,16 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<AccountRecord> TryGetAccountRecordFusionId(string fusionId)
     {
-        //if (Computed.IsInvalidating())
-        //{
-        //    //return null;
-        //}
-
-        await using var dbContext = _commonServices.DatabaseProvider.GetDatabase();
-        var user = await dbContext.Accounts.Where(a => a.FusionId == fusionId).FirstOrDefaultAsync();
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        var user = await database.Accounts.Where(a => a.FusionId == fusionId).FirstOrDefaultAsync();
         return user;
     }
 
     [ComputeMethod]
     public virtual async Task<AccountRecord> TryGetAccountRecordUsername(string username)
     {
-        //if (Computed.IsInvalidating())
-        //{
-        //    //return null;
-        //}
-
-        await using var dbContext = _commonServices.DatabaseProvider.GetDatabase();
-        var user = await dbContext.Accounts.Where(a => a.Username == username).FirstOrDefaultAsync();
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        var user = await database.Accounts.Where(a => a.Username == username).FirstOrDefaultAsync();
         return user;
     }
 
@@ -303,7 +288,7 @@ public class AccountServices : IAccountServices
         viewModel.TotalMemoriesCount = memoryCount;
         viewModel.TotalReactionsCount = reactionCount;
 
-        viewModel.CharactersArray = activeOrAdmin ? characters.Values.ToArray() : characters.Values.Where(x => x.AccountSync).ToArray();
+        viewModel.CharactersArray = activeOrAdmin ? characters.Values.ToArray() : characters.Values.Where(x => x.AccountSync && x.CharacterStatus == CharacterStatus2.None).ToArray();
 
         return viewModel;
     }

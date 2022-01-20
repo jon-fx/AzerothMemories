@@ -346,6 +346,7 @@ public class CharacterServices : ICharacterServices
             return false;
         }
 
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         await database.GetUpdateQuery(oldCharacterRecord, out _).Set(x => x.CharacterStatus, CharacterStatus2.RenamedOrTransferred).UpdateAsync();
@@ -355,6 +356,8 @@ public class CharacterServices : ICharacterServices
 
         await database.Posts.Where(x => x.PostAvatar == oldTag).Set(x => x.PostAvatar, newTag).UpdateAsync();
         await database.PostTags.Where(x => x.TagString == oldTag).Set(x => x.TagString, newTag).Set(x => x.TagId, newCharacterRecord.Id).UpdateAsync();
+
+        transaction.Complete();
 
         OnCharacterUpdate(oldCharacterRecord.Id, oldCharacterRecord.AccountId.GetValueOrDefault());
         OnCharacterUpdate(newCharacterRecord.Id, newCharacterRecord.AccountId.GetValueOrDefault());

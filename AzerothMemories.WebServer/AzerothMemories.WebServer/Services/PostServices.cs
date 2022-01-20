@@ -121,6 +121,7 @@ public class PostServices : IPostServices
             return new AddMemoryResult(uploadAndSortResult);
         }
 
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
         postRecord.Id = await database.InsertWithInt64IdentityAsync(postRecord);
 
@@ -152,6 +153,8 @@ public class PostServices : IPostServices
                 TargetPostId = postRecord.Id
             });
         }
+
+        transaction.Complete();
 
         using var computed = Computed.Invalidate();
         _ = _commonServices.AccountServices.GetPostCount(accountViewModel.Id);
@@ -374,6 +377,7 @@ public class PostServices : IPostServices
             return 0;
         }
 
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         var postQuery = database.GetUpdateQuery(postRecord, out _);
@@ -444,6 +448,8 @@ public class PostServices : IPostServices
                 TargetPostId = postRecord.Id
             });
         }
+
+        transaction.Complete();
 
         using var computed = Computed.Invalidate();
         _ = GetPostRecord(postId);
@@ -684,6 +690,7 @@ public class PostServices : IPostServices
             return false;
         }
 
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         await TryRestoreMemoryUpdate(database, postId, PostTagType.Account, accountTagToRemove, newAccountTag);
@@ -708,6 +715,8 @@ public class PostServices : IPostServices
             TargetId = postRecord.AccountId,
             TargetPostId = postRecord.Id
         });
+
+        transaction.Complete();
 
         using var computed = Computed.Invalidate();
         _ = GetPostRecord(postId);
@@ -830,6 +839,7 @@ public class PostServices : IPostServices
             return 0;
         }
 
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var commentRecord = new PostCommentRecord
         {
@@ -888,6 +898,8 @@ public class PostServices : IPostServices
             });
         }
 
+        transaction.Complete();
+
         using var computed = Computed.Invalidate();
         _ = GetPostRecord(postId);
         _ = TryGetAllPostComments(postId);
@@ -923,6 +935,7 @@ public class PostServices : IPostServices
             return 0;
         }
 
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         var postQuery = database.PostComments.Where(x => x.Id == commentId).AsUpdatable();
@@ -995,6 +1008,8 @@ public class PostServices : IPostServices
                 TargetCommentId = commentId
             });
         }
+
+        transaction.Complete();
 
         using var computed = Computed.Invalidate();
         _ = TryGetAllPostComments(postId);
@@ -1156,6 +1171,7 @@ public class PostServices : IPostServices
             reasonText = reasonText[..ZExtensions.ReportPostCommentMaxLength];
         }
 
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         var reportQuery = from r in database.PostReports
@@ -1203,6 +1219,8 @@ public class PostServices : IPostServices
                 await reportUpdateQuery.UpdateAsync();
             }
         }
+
+        transaction.Complete();
 
         return true;
     }
@@ -1252,6 +1270,7 @@ public class PostServices : IPostServices
             reasonText = reasonText[..ZExtensions.MaxPostCommentLength];
         }
 
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         var reportQuery = from r in database.PostCommentReports
@@ -1304,6 +1323,8 @@ public class PostServices : IPostServices
             }
         }
 
+        transaction.Complete();
+
         return true;
     }
 
@@ -1350,6 +1371,7 @@ public class PostServices : IPostServices
             return false;
         }
 
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         foreach (var tagRecord in tagRecords)
@@ -1376,6 +1398,8 @@ public class PostServices : IPostServices
                 });
             }
         }
+
+        transaction.Complete();
 
         //using var computed = Computed.Invalidate();
         //_ = GetPostRecord(postId);
@@ -1417,6 +1441,7 @@ public class PostServices : IPostServices
         var removedSet = new HashSet<string>(allCurrentTags.Keys);
         removedSet.ExceptWith(info.NewTags);
 
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         if (addedSet.Count > 64)
@@ -1496,6 +1521,8 @@ public class PostServices : IPostServices
         }
 
         await database.GetUpdateQuery(postRecord, out _).Set(x => x.PostAvatar, avatar).UpdateAsync();
+
+        transaction.Complete();
 
         using var computed = Computed.Invalidate();
         _ = GetPostRecord(postId);

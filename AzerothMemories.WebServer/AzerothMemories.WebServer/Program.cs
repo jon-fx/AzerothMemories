@@ -27,7 +27,7 @@ builder.Services.AddDbContextFactory<AppDbContext>(optionsBuilder =>
 });
 builder.Services.AddTransient(c => new DbOperationScope<AppDbContext>(c)
 {
-    IsolationLevel = IsolationLevel.Serializable,
+    IsolationLevel = System.Data.IsolationLevel.Serializable,
 });
 builder.Services.AddDbContextServices<AppDbContext>(dbContext =>
 {

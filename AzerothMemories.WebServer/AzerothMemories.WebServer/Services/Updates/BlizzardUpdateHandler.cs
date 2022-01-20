@@ -181,22 +181,23 @@ internal sealed class BlizzardUpdateHandler
     [Queue(AccountQueue1)]
     public async Task OnAccountUpdate(long id, PerformContext context)
     {
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var record = await database.Accounts.FirstOrDefaultAsync(x => x.Id == id);
         if (record == null || context == null)
         {
+            transaction.Complete();
             return;
         }
 
         var requiresUpdate = await OnUpdateStarted(database, record, context);
-        if (!requiresUpdate)
+        if (requiresUpdate)
         {
-            return;
+            var result = await _accountUpdateHandler.TryUpdate(id, database, record);
+            await OnUpdateFinished(database, context, record, result);
         }
 
-        var result = await _accountUpdateHandler.TryUpdate(id, database, record);
-
-        await OnUpdateFinished(database, context, record, result);
+        transaction.Complete();
     }
 
     [Queue(CharacterQueue1)]
@@ -219,42 +220,44 @@ internal sealed class BlizzardUpdateHandler
 
     private async Task OnCharacterUpdate(long id, PerformContext context)
     {
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var record = await database.Characters.FirstOrDefaultAsync(x => x.Id == id);
         if (record == null || context == null)
         {
+            transaction.Complete();
             return;
         }
 
         var requiresUpdate = await OnUpdateStarted(database, record, context);
-        if (!requiresUpdate)
+        if (requiresUpdate)
         {
-            return;
+            var result = await _characterUpdateHandler.TryUpdate(id, database, record);
+            await OnUpdateFinished(database, context, record, result);
         }
 
-        var result = await _characterUpdateHandler.TryUpdate(id, database, record);
-
-        await OnUpdateFinished(database, context, record, result);
+        transaction.Complete();
     }
 
     [Queue(GuildQueue1)]
     public async Task OnGuildUpdate(long id, PerformContext context)
     {
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var record = await database.Guilds.FirstOrDefaultAsync(x => x.Id == id);
         if (record == null || context == null)
         {
+            transaction.Complete();
             return;
         }
 
         var requiresUpdate = await OnUpdateStarted(database, record, context);
-        if (!requiresUpdate)
+        if (requiresUpdate)
         {
-            return;
+            var result = await _guildUpdateHandler.TryUpdate(id, database, record);
+            await OnUpdateFinished(database, context, record, result);
         }
 
-        var result = await _guildUpdateHandler.TryUpdate(id, database, record);
-
-        await OnUpdateFinished(database, context, record, result);
+        transaction.Complete();
     }
 }

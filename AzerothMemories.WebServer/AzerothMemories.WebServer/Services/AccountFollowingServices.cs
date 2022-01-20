@@ -82,6 +82,7 @@ public class AccountFollowingServices : IAccountFollowingServices
             return null;
         }
 
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         var otherAccountViewModel = await _commonServices.AccountServices.TryGetAccountRecord(otherAccountId);
@@ -142,6 +143,8 @@ public class AccountFollowingServices : IAccountFollowingServices
             Type = viewModel.Status == AccountFollowingStatus.Active ? AccountHistoryType.StartedFollowing : AccountHistoryType.FollowingRequestReceived
         });
 
+        transaction.Complete();
+
         InvalidateFollowing(activeAccountId, otherAccountId);
 
         return viewModel.Status;
@@ -173,6 +176,7 @@ public class AccountFollowingServices : IAccountFollowingServices
 
         viewModel.Status = AccountFollowingStatus.None;
 
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         await database.AccountFollowing.Where(x => x.Id == viewModel.Id).Set(x => x.Status, viewModel.Status).Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync();
@@ -184,6 +188,8 @@ public class AccountFollowingServices : IAccountFollowingServices
             CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = AccountHistoryType.StoppedFollowing
         });
+
+        transaction.Complete();
 
         InvalidateFollowing(activeAccountId, otherAccountId);
 
@@ -216,6 +222,7 @@ public class AccountFollowingServices : IAccountFollowingServices
 
         viewModel.Status = AccountFollowingStatus.Active;
 
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         await database.AccountFollowing.Where(x => x.Id == viewModel.Id).Set(x => x.Status, viewModel.Status).Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync();
@@ -235,6 +242,8 @@ public class AccountFollowingServices : IAccountFollowingServices
             CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = AccountHistoryType.FollowingRequestAccepted2
         });
+
+        transaction.Complete();
 
         InvalidateFollowing(activeAccountId, otherAccountId);
 
@@ -267,6 +276,7 @@ public class AccountFollowingServices : IAccountFollowingServices
 
         viewModel.Status = AccountFollowingStatus.None;
 
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         await database.AccountFollowing.Where(x => x.Id == viewModel.Id).Set(x => x.Status, viewModel.Status).Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync();
@@ -278,6 +288,8 @@ public class AccountFollowingServices : IAccountFollowingServices
             CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = AccountHistoryType.FollowerRemoved
         });
+
+        transaction.Complete();
 
         InvalidateFollowing(activeAccountId, otherAccountId);
 
