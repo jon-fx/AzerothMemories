@@ -36,7 +36,7 @@ internal sealed class BlizzardAccountUpdateHandler
                     var characterRef = MoaRef.GetCharacterRef(record.BlizzardRegionId, accountCharacter.Realm.Slug, accountCharacter.Name, accountCharacter.Id);
 
                     apiCharactersSet.Add(characterRef.Full);
-                    tasks.Add(_commonServices.CharacterServices.OnAccountUpdate(id, characterRef.Full, accountCharacter));
+                    tasks.Add(_commonServices.CharacterServices.OnAccountUpdate(database, id, characterRef.Full, accountCharacter));
                 }
             }
 

@@ -72,8 +72,12 @@ public class AccountServices : IAccountServices
         }
 
         var sessionInfo = context.Operation().Items.Get<SessionInfo>();
-        var userId = sessionInfo.UserId;
+        if (sessionInfo == null)
+        {
+            throw new NotImplementedException();
+        }
 
+        var userId = sessionInfo.UserId;
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var accountRecord = await GetOrCreateAccount(database, userId);
 
@@ -177,7 +181,6 @@ public class AccountServices : IAccountServices
     {
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var user = await database.Accounts.Where(a => a.Id == id).FirstOrDefaultAsync();
-
         return user;
     }
 

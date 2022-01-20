@@ -73,10 +73,8 @@ public class CharacterServices : ICharacterServices
         return characterRecord;
     }
 
-    public async Task OnAccountUpdate(long accountId, string characterRef, AccountCharacter accountCharacter)
+    public async Task OnAccountUpdate(DatabaseConnection database, long accountId, string characterRef, AccountCharacter accountCharacter)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-
         var characterRecord = await GetOrCreateCharacterRecord(characterRef, BlizzardUpdatePriority.CharacterHigh);
         var updateQuery = database.GetUpdateQuery(characterRecord, out var changed);
         if (CheckAndChange.Check(ref characterRecord.AccountId, accountId, ref changed))

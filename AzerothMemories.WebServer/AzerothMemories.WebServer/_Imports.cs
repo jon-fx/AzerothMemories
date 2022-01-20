@@ -36,7 +36,6 @@ global using Stl.Fusion.Operations;
 global using Stl.Fusion.Server;
 global using Stl.IO;
 global using Stl.RegisterAttributes;
-global using System.Data;
 global using System.Net;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
