@@ -27,11 +27,21 @@ public class TagServices : ITagServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostTagInfo> GetTagInfo(PostTagType tagType, long tagId, string locale)
+    public virtual async Task<PostTagInfo> GetTagInfo(PostTagType tagType, long tagId, string hashTagText, string locale)
     {
         if (tagType == PostTagType.Account || tagType == PostTagType.Character || tagType == PostTagType.Guild)
         {
             return await TryGetUserTagInfo(tagType, tagId);
+        }
+
+        if (tagType == PostTagType.HashTag)
+        {
+            if (string.IsNullOrWhiteSpace(hashTagText))
+            {
+                throw new NotImplementedException();
+            }
+
+            return new PostTagInfo(tagType, tagId, hashTagText, null);
         }
 
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
@@ -278,7 +288,7 @@ public class TagServices : ITagServices
             return false;
         }
 
-        var encodedCommentText = HttpUtility.HtmlEncode(commentText);
+        var encodedCommentText = HttpUtility.HtmlAttributeEncode(commentText);
         if (string.IsNullOrWhiteSpace(encodedCommentText))
         {
             return false;
@@ -290,10 +300,15 @@ public class TagServices : ITagServices
         }
 
         var commentTextBuilder = new StringBuilder(encodedCommentText.Replace("\n", "<br>").Replace("\r", "<br>"));
-        var commentUserTags = ParseTagsFrom(commentTextBuilder, '@');
-        for (var i = commentUserTags.Count - 1; i >= 0; i--)
+        var commentUserTagsResult = ParseTagsFrom2(commentTextBuilder, '@');
+        if (!commentUserTagsResult.Success)
         {
-            var (offset, str) = commentUserTags[i];
+            return false;
+        }
+
+        for (var i = commentUserTagsResult.Tags.Count - 1; i >= 0; i--)
+        {
+            var (offset, str) = commentUserTagsResult.Tags[i];
             if (str.Length > 64)
             {
                 return false;
@@ -313,10 +328,15 @@ public class TagServices : ITagServices
             }
         }
 
-        var commentHashTags = ParseTagsFrom(commentTextBuilder, '#');
-        for (var i = commentHashTags.Count - 1; i >= 0; i--)
+        var commentHashTagsResult = ParseTagsFrom2(commentTextBuilder, '#');
+        if (!commentHashTagsResult.Success)
         {
-            var (offset, str) = commentHashTags[i];
+            return false;
+        }
+
+        for (var i = commentHashTagsResult.Tags.Count - 1; i >= 0; i--)
+        {
+            var (offset, str) = commentHashTagsResult.Tags[i];
             if (str.Length > 64)
             {
                 return false;
@@ -338,34 +358,34 @@ public class TagServices : ITagServices
         return true;
     }
 
-    private static List<(int, string)> ParseTagsFrom(StringBuilder commentText, char tagPrefix)
+    private static (bool Success, List<(int Index, string Text)> Tags) ParseTagsFrom2(StringBuilder commentText, char tagPrefix)
     {
         var results = new List<(int, string)>();
         if (commentText.Length == 0)
         {
-            return results;
+            return (false, results);
         }
 
         char? blockStart = null;
         var blockStartIndex = 0;
         var blockText = string.Empty;
 
-        void TryAddToList()
+        bool TryAddToList()
         {
             if (blockStart == null)
             {
-                return;
+                return true;
             }
 
             if (blockText.Contains(new string(tagPrefix, 2)))
             {
-                throw new NotImplementedException();
+                return false;
             }
 
-            //if (blockText.Length > 75)
-            //{
-            //    throw new NotImplementedException();
-            //}
+            if (blockText.Length > 75)
+            {
+                return false;
+            }
 
             if (blockText.Length > 1)
             {
@@ -375,20 +395,25 @@ public class TagServices : ITagServices
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    return false;
                 }
             }
 
             blockStart = null;
             blockStartIndex = 0;
             blockText = string.Empty;
+
+            return true;
         }
 
         for (var i = 0; i < commentText.Length; i++)
         {
             if (commentText[i] == tagPrefix)
             {
-                TryAddToList();
+                if (!TryAddToList())
+                {
+                    return (false, results);
+                }
 
                 blockStartIndex = i;
                 blockStart = commentText[i];
@@ -396,11 +421,17 @@ public class TagServices : ITagServices
             }
             else if (commentText[i] == '<')
             {
-                TryAddToList();
+                if (!TryAddToList())
+                {
+                    return (false, results);
+                }
             }
             else if (char.IsWhiteSpace(commentText[i]))
             {
-                TryAddToList();
+                if (!TryAddToList())
+                {
+                    return (false, results);
+                }
             }
             else if (blockStart != null && char.IsLetterOrDigit(commentText[i]))
             {
@@ -408,8 +439,11 @@ public class TagServices : ITagServices
             }
         }
 
-        TryAddToList();
+        if (!TryAddToList())
+        {
+            return (false, results);
+        }
 
-        return results;
+        return (true, results);
     }
 }

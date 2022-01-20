@@ -234,7 +234,7 @@ public class SearchServices : ISearchServices
                 continue;
             }
 
-            var tagInfo = await _commonServices.TagServices.GetTagInfo(postTagInfo.Type, postTagInfo.Id, locale);
+            var tagInfo = await _commonServices.TagServices.GetTagInfo(postTagInfo.Type, postTagInfo.Id, postTagInfo.Text, locale);
             if (tagInfo != null && serverSideTagStrings.Add(tagInfo.TagString))
             {
                 searchPostTags.Add(tagInfo);

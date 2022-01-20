@@ -571,7 +571,7 @@ public class AccountServices : IAccountServices
         {
             if (hashSet.Add(tagId))
             {
-                var postTag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, tagId, locale);
+                var postTag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, tagId, null, locale);
                 postTagSet.Add(postTag);
             }
         }

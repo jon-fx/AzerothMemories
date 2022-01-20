@@ -1551,7 +1551,13 @@ public class PostServices : IPostServices
 
         foreach (var tagRecord in allTagRecords)
         {
-            var tagInfo = await _commonServices.TagServices.GetTagInfo(tagRecord.TagType, tagRecord.TagId, locale);
+            string hashTagString = null;
+            if (tagRecord.TagType == PostTagType.HashTag)
+            {
+                hashTagString = tagRecord.TagString.Split('-')[1];
+            }
+
+            var tagInfo = await _commonServices.TagServices.GetTagInfo(tagRecord.TagType, tagRecord.TagId, hashTagString, locale);
             if (tagInfo == null)
             {
                 throw new NotImplementedException();
