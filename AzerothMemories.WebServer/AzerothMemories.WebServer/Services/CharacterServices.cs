@@ -149,11 +149,6 @@ public class CharacterServices : ICharacterServices
         OnCharacterUpdate(characterRecord.Id, characterRecord.AccountId.GetValueOrDefault());
     }
 
-    //public Task OnCharacterDeleted(long accountId, long characterId, string characterRef)
-    //{
-    //    throw new NotImplementedException();
-    //}
-
     [ComputeMethod]
     public virtual async Task<Dictionary<long, string>> TryGetAllAccountCharacterIds(long accountId)
     {
@@ -270,10 +265,23 @@ public class CharacterServices : ICharacterServices
             return null;
         }
 
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        //await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var characterRecord = await GetOrCreateCharacterRecord(characterRef.Full, BlizzardUpdatePriority.CharacterMed);
 
         return await TryGetCharacter(session, characterRecord.Id);
+    }
+
+    public async Task<bool> TryEnqueueUpdate(Session session, BlizzardRegion region, string realmSlug, string characterName)
+    {
+        var characterRef = await GetFullCharacterRef(region, realmSlug, characterName);
+        if (characterRef == null)
+        {
+            return false;
+        }
+
+        await GetOrCreateCharacterRecord(characterRef.Full, BlizzardUpdatePriority.CharacterMed);
+
+        return true;
     }
 
     public async Task<bool> TrySetCharacterDeleted(Session session, long characterId)

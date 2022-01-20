@@ -28,6 +28,7 @@ public class GuildServices : IGuildServices
         return record;
     }
 
+    [ComputeMethod]
     public virtual async Task<GuildRecord> GetOrCreate(string refFull)
     {
         var moaRef = new MoaRef(refFull);
@@ -138,10 +139,22 @@ public class GuildServices : IGuildServices
             return null;
         }
 
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
         var guildRecord = await GetOrCreate(guildRef.Full);
 
         return await TryGetGuild(session, guildRecord.Id);
+    }
+
+    public async Task<bool> TryEnqueueUpdate(Session session, BlizzardRegion region, string realmSlug, string guildName)
+    {
+        var guildRef = await GetFullGuildRef(region, realmSlug, guildName);
+        if (guildRef == null)
+        {
+            return false;
+        }
+
+        await GetOrCreate(guildRef.Full);
+
+        return true;
     }
 
     [ComputeMethod]

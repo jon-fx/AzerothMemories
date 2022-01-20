@@ -126,7 +126,7 @@
                     <MudCardActions Class="@ClassPresets.CardActions">
                         <MudButtonGroup OverrideStyles="true" Class="pa-2 ma-2" Variant="Variant.Filled" Size="Size.Small">
                             <MudButton StartIcon="@Icons.Material.Filled.DeleteForever" OnClick="() => ViewModel.OnCharacterDeletedClicked(character)">Deleted</MudButton>
-                            <MudButton StartIcon="@Icons.Material.Filled.Favorite" Disabled="@(possibleCharacters.Length == 0)" >Transferred / Renamed</MudButton>
+                            <MudButton StartIcon="@Icons.Material.Filled.Transform" Disabled="@(possibleCharacters.Length == 0)" >Transferred / Renamed</MudButton>
                             <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Direction="Direction.Bottom" OffsetY="true">
                                 @foreach (var otherCharacter in possibleCharacters)
                                 {

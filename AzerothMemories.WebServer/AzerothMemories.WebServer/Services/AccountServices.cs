@@ -272,6 +272,19 @@ public class AccountServices : IAccountServices
         return await CreateAccountViewModel(accountRecord, sessionAccount != null && sessionAccount.AccountType >= AccountType.Admin);
     }
 
+    public async Task<bool> TryEnqueueUpdate(Session session)
+    {
+        var accountRecord = await GetCurrentSessionAccountRecord(session);
+        if (accountRecord == null)
+        {
+            return false;
+        }
+
+        await _commonServices.BlizzardUpdateHandler.TryUpdate(accountRecord, BlizzardUpdatePriority.Account);
+
+        return true;
+    }
+
     [ComputeMethod]
     protected virtual async Task<AccountViewModel> CreateAccountViewModel(AccountRecord accountRecord, bool activeOrAdmin)
     {

@@ -29,6 +29,12 @@ public sealed class CharacterController : ControllerBase, ICharacterServices
         return _commonServices.CharacterServices.TryGetCharacter(session, region, realmSlug, characterName);
     }
 
+    [HttpPost("{region}/{realmSlug}/{characterName}")]
+    public Task<bool> TryEnqueueUpdate(Session session, [FromRoute] BlizzardRegion region, [FromRoute] string realmSlug, [FromRoute] string characterName)
+    {
+        return _commonServices.CharacterServices.TryEnqueueUpdate(session, region, realmSlug, characterName);
+    }
+
     [HttpPost("{characterId}")]
     public Task<bool> TrySetCharacterDeleted(Session session, [FromRoute] long characterId)
     {
