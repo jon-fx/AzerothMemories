@@ -1524,11 +1524,16 @@ public class PostServices : IPostServices
 
         transaction.Complete();
 
+        InvalidatePostRecordAndTags(postId);
+
+        return AddMemoryResultCode.Success;
+    }
+
+    public void InvalidatePostRecordAndTags(long postId)
+    {
         using var computed = Computed.Invalidate();
         _ = GetPostRecord(postId);
         _ = GetAllPostTags(postId);
-
-        return AddMemoryResultCode.Success;
     }
 
     [ComputeMethod]

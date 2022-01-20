@@ -352,6 +352,9 @@ public class CharacterServices : ICharacterServices
         var oldTag = PostTagInfo.GetTagString(PostTagType.Character, oldCharacterRecord.Id);
         var newTag = PostTagInfo.GetTagString(PostTagType.Character, newCharacterRecord.Id);
 
+        var allPostIds = await database.Posts.Where(x => x.PostAvatar == oldTag).Select(x => x.Id).ToArrayAsync();
+        var allTagsPostIds = await database.PostTags.Where(x => x.TagString == oldTag).Select(x => x.PostId).ToArrayAsync();
+
         await database.Posts.Where(x => x.PostAvatar == oldTag).Set(x => x.PostAvatar, newTag).UpdateAsync();
         await database.PostTags.Where(x => x.TagString == oldTag).Set(x => x.TagString, newTag).Set(x => x.TagId, newCharacterRecord.Id).UpdateAsync();
 
@@ -359,6 +362,14 @@ public class CharacterServices : ICharacterServices
 
         OnCharacterUpdate(oldCharacterRecord.Id, oldCharacterRecord.AccountId.GetValueOrDefault());
         OnCharacterUpdate(newCharacterRecord.Id, newCharacterRecord.AccountId.GetValueOrDefault());
+
+        var hashSet = new HashSet<long>(allPostIds);
+        hashSet.UnionWith(allTagsPostIds);
+
+        foreach (var postId in hashSet)
+        {
+            _commonServices.PostServices.InvalidatePostRecordAndTags(postId);
+        }
 
         return true;
     }
