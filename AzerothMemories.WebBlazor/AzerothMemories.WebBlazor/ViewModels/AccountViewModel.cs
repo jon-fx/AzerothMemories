@@ -32,6 +32,10 @@ public sealed class AccountViewModel
 
     [JsonInclude] public long LastUpdateJobEndTime;
 
+    [JsonInclude] public string BanReason;
+
+    [JsonInclude] public long BanExpireTime;
+
     [JsonInclude] public CharacterViewModel[] CharactersArray = Array.Empty<CharacterViewModel>();
 
     [JsonInclude] public Dictionary<long, AccountFollowingViewModel> FollowingViewModels = new();

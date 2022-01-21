@@ -39,6 +39,10 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
 
     [Column, Nullable] public string SocialYouTube;
 
+    [Column, Nullable] public string BanReason;
+
+    [Column, Nullable] public Instant BanExpireTime;
+
     [Column, Nullable] public string UpdateJob { get; set; }
 
     [Column, Nullable] public Instant UpdateJobEndTime { get; set; }
@@ -65,6 +69,8 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
                SocialTwitch,
                SocialYouTube,
             },
+            BanReason = BanReason,
+            BanExpireTime = BanExpireTime.ToUnixTimeMilliseconds(),
             FollowingViewModels = RemoveNoneStatus(followingViewModels),
             FollowersViewModels = RemoveNoneStatus(followersViewModels),
             LastUpdateJobEndTime = UpdateJobEndTime.ToUnixTimeMilliseconds(),

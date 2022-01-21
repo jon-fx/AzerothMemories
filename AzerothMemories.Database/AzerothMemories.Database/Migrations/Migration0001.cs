@@ -27,7 +27,9 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(AccountRecord.SocialTwitter)).AsString(50).Nullable()
             .WithColumn(nameof(AccountRecord.SocialTwitch)).AsString(50).Nullable()
             .WithColumn(nameof(AccountRecord.SocialYouTube)).AsString(50).Nullable()
-            .WithColumn(nameof(AccountRecord.CreatedDateTime)).AsDateTimeOffset().NotNullable()
+            .WithColumn(nameof(AccountRecord.CreatedDateTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
+            .WithColumn(nameof(AccountRecord.BanReason)).AsString(200).Nullable()
+            .WithColumn(nameof(AccountRecord.BanExpireTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
             .WithUpdateJobInfo();
 
         Create.Table("Accounts_Following")
@@ -35,8 +37,8 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(AccountFollowingRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade)
             .WithColumn(nameof(AccountFollowingRecord.FollowerId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade)
             .WithColumn(nameof(AccountFollowingRecord.Status)).AsByte().WithDefaultValue(0)
-            .WithColumn(nameof(AccountFollowingRecord.LastUpdateTime)).AsDateTimeOffset().NotNullable()
-            .WithColumn(nameof(AccountFollowingRecord.CreatedTime)).AsDateTimeOffset().NotNullable();
+            .WithColumn(nameof(AccountFollowingRecord.LastUpdateTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
+            .WithColumn(nameof(AccountFollowingRecord.CreatedTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
 
         Create.Table("Guilds")
             .WithColumn(nameof(GuildRecord.Id)).AsInt64().PrimaryKey().Identity()
@@ -49,7 +51,7 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(GuildRecord.Faction)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(GuildRecord.MemberCount)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(GuildRecord.AchievementPoints)).AsInt32().WithDefaultValue(0)
-            .WithColumn(nameof(GuildRecord.CreatedDateTime)).AsDateTimeOffset().NotNullable()
+            .WithColumn(nameof(GuildRecord.CreatedDateTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
             .WithColumn(nameof(GuildRecord.BlizzardCreatedTimestamp)).AsInt64().WithDefaultValue(0)
             .WithColumn(nameof(GuildRecord.BlizzardProfileLastModified)).AsInt64().WithDefaultValue(0)
             .WithColumn(nameof(GuildRecord.BlizzardAchievementsLastModified)).AsInt64().WithDefaultValue(0)
@@ -63,7 +65,7 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(CharacterRecord.BlizzardRegionId)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(CharacterRecord.Name)).AsString(60).Nullable()
             .WithColumn(nameof(CharacterRecord.NameSearchable)).AsString(60).Nullable()
-            .WithColumn(nameof(CharacterRecord.CreatedDateTime)).AsDateTimeOffset().NotNullable()
+            .WithColumn(nameof(CharacterRecord.CreatedDateTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
             .WithColumn(nameof(CharacterRecord.CharacterStatus)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(CharacterRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.SetNull).Nullable()
             .WithColumn(nameof(CharacterRecord.AccountSync)).AsBoolean().WithDefaultValue(false)
@@ -172,8 +174,8 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(PostReportRecord.PostId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts", "Id").OnDelete(Rule.Cascade)
             .WithColumn(nameof(PostReportRecord.Reason)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(PostReportRecord.ReasonText)).AsString(200).Nullable()
-            .WithColumn(nameof(PostReportRecord.CreatedTime)).AsDateTimeOffset().NotNullable()
-            .WithColumn(nameof(PostReportRecord.ModifiedTime)).AsDateTimeOffset().NotNullable();
+            .WithColumn(nameof(PostReportRecord.CreatedTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
+            .WithColumn(nameof(PostReportRecord.ModifiedTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
 
         Create.Table("Posts_Comments_Reports")
             .WithColumn(nameof(PostCommentReportRecord.Id)).AsInt64().PrimaryKey().Identity()
@@ -181,17 +183,15 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(PostCommentReportRecord.CommentId)).AsInt64().ForeignKey("Posts_Comments", "Id").OnDelete(Rule.Cascade)
             .WithColumn(nameof(PostCommentReportRecord.Reason)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(PostCommentReportRecord.ReasonText)).AsString(200).Nullable()
-            .WithColumn(nameof(PostCommentReportRecord.CreatedTime)).AsDateTimeOffset().NotNullable()
-            .WithColumn(nameof(PostCommentReportRecord.ModifiedTime)).AsDateTimeOffset().NotNullable();
+            .WithColumn(nameof(PostCommentReportRecord.CreatedTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
+            .WithColumn(nameof(PostCommentReportRecord.ModifiedTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
 
         Create.Table("Posts_Reports_Tags")
             .WithColumn(nameof(PostTagReportRecord.Id)).AsInt64().PrimaryKey().Identity()
             .WithColumn(nameof(PostTagReportRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade)
             .WithColumn(nameof(PostTagReportRecord.PostId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts", "Id").OnDelete(Rule.Cascade)
             .WithColumn(nameof(PostTagReportRecord.TagId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts_Tags", "Id").OnDelete(Rule.Cascade)
-            .WithColumn(nameof(PostTagReportRecord.CreatedTime)).AsDateTimeOffset().NotNullable()
-
-            ;
+            .WithColumn(nameof(PostTagReportRecord.CreatedTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
 
         Create.Table("Accounts_History")
             .WithColumn(nameof(AccountHistoryRecord.Id)).AsInt64().PrimaryKey().Identity()
@@ -201,7 +201,7 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(AccountHistoryRecord.TargetId)).AsInt64().WithDefaultValue(0)
             .WithColumn(nameof(AccountHistoryRecord.TargetPostId)).AsInt64().ForeignKey("Posts", "Id").OnDelete(Rule.SetNull).Nullable()
             .WithColumn(nameof(AccountHistoryRecord.TargetCommentId)).AsInt64().ForeignKey("Posts_Comments", "Id").OnDelete(Rule.SetNull).Nullable()
-            .WithColumn(nameof(AccountHistoryRecord.CreatedTime)).AsDateTimeOffset().NotNullable();
+            .WithColumn(nameof(AccountHistoryRecord.CreatedTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
     }
 
     public override void Down()
