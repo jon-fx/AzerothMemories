@@ -82,11 +82,11 @@ else
         AccountFollowingStatus? result;
         if (newStatus == AccountFollowingStatus.None)
         {
-            result = await Services.AccountFollowingServices.TryStopFollowing(null, OtherAccountId);
+            result = await Services.FollowingServices.TryStopFollowing(null, OtherAccountId);
         }
         else
         {
-            result = await Services.AccountFollowingServices.TryStartFollowing(null, OtherAccountId);
+            result = await Services.FollowingServices.TryStartFollowing(null, OtherAccountId);
         }
 
         if (result != null)
@@ -109,7 +109,7 @@ else
 
         Exceptions.ThrowIf(viewModel.FollowerId != OtherAccountId);
 
-        var result = await Services.AccountFollowingServices.TryAcceptFollower(null, viewModel.FollowerId);
+        var result = await Services.FollowingServices.TryAcceptFollower(null, viewModel.FollowerId);
         if (result != null)
         {
             viewModel.Status = _followerStatus = result.Value;
@@ -123,7 +123,7 @@ else
             return;
         }
 
-        var result = await Services.AccountFollowingServices.TryRemoveFollower(null, viewModel.FollowerId);
+        var result = await Services.FollowingServices.TryRemoveFollower(null, viewModel.FollowerId);
         if (result != null)
         {
             viewModel.Status = _followerStatus = result.Value;

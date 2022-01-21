@@ -1,12 +1,12 @@
 ﻿namespace AzerothMemories.WebServer.Services;
 
 [RegisterComputeService]
-[RegisterAlias(typeof(IAccountFollowingServices))]
-public class AccountFollowingServices : IAccountFollowingServices
+[RegisterAlias(typeof(IFollowingServices))]
+public class FollowingServices : IFollowingServices
 {
     private readonly CommonServices _commonServices;
 
-    public AccountFollowingServices(CommonServices commonServices)
+    public FollowingServices(CommonServices commonServices)
     {
         _commonServices = commonServices;
     }

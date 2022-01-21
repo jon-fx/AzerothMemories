@@ -1,7 +1,7 @@
 ﻿namespace AzerothMemories.WebBlazor.Services;
 
-[BasePath("accountfollowing")]
-public interface IAccountFollowingServices
+[BasePath("following")]
+public interface IFollowingServices
 {
     [Post(nameof(TryStartFollowing) + "/{otherAccountId}")]
     Task<AccountFollowingStatus?> TryStartFollowing(Session session, [Path] long otherAccountId);

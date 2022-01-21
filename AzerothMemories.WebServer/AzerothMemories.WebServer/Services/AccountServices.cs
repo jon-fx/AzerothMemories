@@ -265,8 +265,8 @@ public class AccountServices : IAccountServices
     protected virtual async Task<AccountViewModel> CreateAccountViewModel(AccountRecord accountRecord, bool activeOrAdmin)
     {
         var characters = await _commonServices.CharacterServices.TryGetAllAccountCharacters(accountRecord.Id);
-        var followingViewModels = await _commonServices.AccountFollowingServices.TryGetAccountFollowing(accountRecord.Id);
-        var followersViewModels = await _commonServices.AccountFollowingServices.TryGetAccountFollowers(accountRecord.Id);
+        var followingViewModels = await _commonServices.FollowingServices.TryGetAccountFollowing(accountRecord.Id);
+        var followersViewModels = await _commonServices.FollowingServices.TryGetAccountFollowers(accountRecord.Id);
         var postCount = await GetPostCount(accountRecord.Id);
         var memoryCount = await GetMemoryCount(accountRecord.Id);
         var commentCount = await GetCommentCount(accountRecord.Id);

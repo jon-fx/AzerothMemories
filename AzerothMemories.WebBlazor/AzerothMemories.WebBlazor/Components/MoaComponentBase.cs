@@ -15,7 +15,7 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
 
     [Inject] public IAccountServices AccountServices { get; init; }
 
-    [Inject] public IAccountFollowingServices AccountFollowingServices { get; init; }
+    [Inject] public IFollowingServices FollowingServices { get; init; }
 
     [Inject] public ICharacterServices CharacterServices { get; init; }
 

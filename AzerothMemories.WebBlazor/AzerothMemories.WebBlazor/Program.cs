@@ -30,7 +30,7 @@ fusionClient.ConfigureHttpClientFactory((c, name, o) =>
 });
 
 fusionClient.AddReplicaService<IAccountServices>();
-fusionClient.AddReplicaService<IAccountFollowingServices>();
+fusionClient.AddReplicaService<IFollowingServices>();
 fusionClient.AddReplicaService<ICharacterServices>();
 fusionClient.AddReplicaService<IGuildServices>();
 fusionClient.AddReplicaService<ITagServices>();

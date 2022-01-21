@@ -4,7 +4,7 @@ public interface IMoaServices
 {
     IAccountServices AccountServices { get; }
 
-    IAccountFollowingServices AccountFollowingServices { get; }
+    IFollowingServices FollowingServices { get; }
 
     ICharacterServices CharacterServices { get; }
 

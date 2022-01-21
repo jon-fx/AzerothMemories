@@ -145,7 +145,7 @@ public class SearchServices : ISearchServices
     {
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
-        var following = await _commonServices.AccountFollowingServices.TryGetAccountFollowing(accountId);
+        var following = await _commonServices.FollowingServices.TryGetAccountFollowing(accountId);
         if (following == null || following.Count == 0)
         {
             return Array.Empty<long>();

@@ -48,7 +48,7 @@ public class PostServices : IPostServices
             return false;
         }
 
-        var following = await _commonServices.AccountFollowingServices.TryGetAccountFollowing(activeAccountId);
+        var following = await _commonServices.FollowingServices.TryGetAccountFollowing(activeAccountId);
         if (following == null || following.Count == 0)
         {
             return false;
