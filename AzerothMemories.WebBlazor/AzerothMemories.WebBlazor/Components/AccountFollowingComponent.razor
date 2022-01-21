@@ -52,7 +52,7 @@ else
 
     [Parameter, EditorRequired] public AccountFollowingViewModel FollowerViewModel { get; init; }
 
-    public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActive;
+    public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActiveAndCanInteract;
 
     public bool IsActiveAccount => ActiveAccountViewModel != null && ActiveAccountViewModel.Id == OtherAccountId;
 

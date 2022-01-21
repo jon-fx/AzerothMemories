@@ -75,7 +75,7 @@ else
 
     [Inject] IScrollManager ScrollManager { get; init; }
 
-    public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActive;
+    public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActiveAndCanInteract;
 
     private void AddComment()
     {

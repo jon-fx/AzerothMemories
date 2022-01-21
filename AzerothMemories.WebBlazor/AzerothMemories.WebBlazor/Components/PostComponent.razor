@@ -62,7 +62,7 @@ else
                         </MudMenuItem>
                     }
 
-                    @if (Services.ActiveAccountServices.IsAccountActive && !Services.ActiveAccountServices.IsActiveAccount(Post.AccountId))
+                    @if (Services.ActiveAccountServices.IsAccountActiveAndCanInteract && !Services.ActiveAccountServices.IsActiveAccount(Post.AccountId))
                     {
                         <MudMenuItem OnClick="@OnReportPostTags">
                             <MudTooltip Text="Report Tags" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
@@ -284,7 +284,7 @@ else
 
     public bool DoseNotHavePermission => Post.PostVisibility == 255;
 
-    public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActive || DoseNotHavePermission;
+    public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActiveAndCanInteract || DoseNotHavePermission;
 
     protected override async Task OnParametersSetAsync()
     {

@@ -39,7 +39,7 @@
                         </MudMenuItem>
                     }
 
-                    @if (Services.ActiveAccountServices.IsAccountActive && !Services.ActiveAccountServices.IsActiveAccount(comment.AccountId))
+                    @if (Services.ActiveAccountServices.IsAccountActiveAndCanInteract && !Services.ActiveAccountServices.IsActiveAccount(comment.AccountId))
                     {
                         <MudMenuItem OnClick="@OnReportComment">
                             <MudTooltip Text="Report" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
@@ -122,7 +122,7 @@
 {
     private bool _userReacting;
 
-    public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActive || Comment.Comment.DeletedTimeStamp != 0;
+    public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActiveAndCanInteract || Comment.Comment.DeletedTimeStamp != 0;
 
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
 

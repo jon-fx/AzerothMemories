@@ -58,7 +58,7 @@ public sealed class EditMemoryTagsPageeViewModel : ViewModelBase
 
     public async Task Submit()
     {
-        if (!Services.ActiveAccountServices.IsAccountActive)
+        if (!Services.ActiveAccountServices.IsAccountActiveAndCanInteract)
         {
             return;
         }

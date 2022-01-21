@@ -1,10 +1,10 @@
 ﻿<div class="postIndent">
-    @if (!Services.ActiveAccountServices.IsAccountActive)
+    @if (!Services.ActiveAccountServices.IsAccountActiveAndCanInteract)
     {
         <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
             <MudCardHeader Class="@ClassPresets.CardHeader">
                 <CardHeaderContent>
-                    <MudText Typo="Typo.body1">NOT LOGGED IN</MudText>
+                    <MudText Typo="Typo.body1" Align="Align.Center">Insufficient permissions.</MudText>
                 </CardHeaderContent>
             </MudCardHeader>
         </MudCard>

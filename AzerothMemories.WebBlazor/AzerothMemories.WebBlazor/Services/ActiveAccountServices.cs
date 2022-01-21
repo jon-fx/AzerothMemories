@@ -19,15 +19,15 @@ public sealed class ActiveAccountServices
         _stringLocalizer = stringLocalizer;
     }
 
-    //public long ActiveAccountId => AccountViewModel?.Id ?? 0;
-
     public AccountViewModel AccountViewModel { get; private set; }
 
     public AccountHistoryViewModel[] AccountHistoryViewModels { get; private set; }
 
-    public bool IsAccountActive => AccountViewModel != null && AccountViewModel.Id > 0;
+    //public bool IsAccountActive => AccountViewModel != null && AccountViewModel.Id > 0;
 
-    public bool IsAdmin => IsAccountActive && AccountViewModel.AccountType >= AccountType.Admin;
+    public bool IsAccountActiveAndCanInteract => AccountViewModel != null && AccountViewModel.Id > 0 && AccountViewModel.CanInteract;
+
+    public bool IsAdmin => AccountViewModel != null && AccountViewModel.Id > 0 && AccountViewModel.AccountType >= AccountType.Admin;
 
     public IActiveCommentContext ActiveCommentContext
     {
