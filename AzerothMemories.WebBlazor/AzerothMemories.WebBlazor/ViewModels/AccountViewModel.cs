@@ -42,7 +42,7 @@ public sealed class AccountViewModel
 
     [JsonInclude] public Dictionary<long, AccountFollowingViewModel> FollowersViewModels = new();
 
-    [JsonIgnore] public bool CanInteract => true;
+    [JsonIgnore] public bool CanInteract => SystemClock.Instance.GetCurrentInstant() > Instant.FromUnixTimeMilliseconds(BanExpireTime);
 
     [JsonIgnore] public bool CanChangeUsername => true;
 
