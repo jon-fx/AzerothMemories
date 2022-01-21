@@ -19,7 +19,7 @@ public sealed class ActiveAccountServices
         _stringLocalizer = stringLocalizer;
     }
 
-    public long ActiveAccountId => AccountViewModel?.Id ?? 0;
+    //public long ActiveAccountId => AccountViewModel?.Id ?? 0;
 
     public AccountViewModel AccountViewModel { get; private set; }
 
@@ -45,6 +45,16 @@ public sealed class ActiveAccountServices
 
             previous?.InvokeStateHasChanged();
         }
+    }
+
+    public bool IsActiveAccount(long accountId)
+    {
+        if (AccountViewModel == null)
+        {
+            return false;
+        }
+
+        return AccountViewModel.Id == accountId;
     }
 
     public async Task ComputeState()

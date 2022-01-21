@@ -30,7 +30,7 @@
                         </MudTooltip>
                     </MudMenuItem>
 
-                    @if (comment.AccountId == Services.ActiveAccountServices.ActiveAccountId)
+                    @if (Services.ActiveAccountServices.IsActiveAccount(comment.AccountId))
                     {
                         <MudMenuItem OnClick="@OnDeleteComment" Disabled="@(comment.DeletedTimeStamp != 0)">
                             <MudTooltip Text="Delete" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
@@ -39,7 +39,7 @@
                         </MudMenuItem>
                     }
 
-                    @if (Services.ActiveAccountServices.IsAccountActive && comment.AccountId != Services.ActiveAccountServices.ActiveAccountId)
+                    @if (Services.ActiveAccountServices.IsAccountActive && !Services.ActiveAccountServices.IsActiveAccount(comment.AccountId))
                     {
                         <MudMenuItem OnClick="@OnReportComment">
                             <MudTooltip Text="Report" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
@@ -123,6 +123,7 @@
     private bool _userReacting;
 
     public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActive || Comment.Comment.DeletedTimeStamp != 0;
+
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired] public PostCommentTreeNode Comment { get; init; }

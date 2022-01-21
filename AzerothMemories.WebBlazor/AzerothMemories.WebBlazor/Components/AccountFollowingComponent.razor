@@ -53,6 +53,7 @@ else
     [Parameter, EditorRequired] public AccountFollowingViewModel FollowerViewModel { get; init; }
 
     public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActive;
+
     public bool IsActiveAccount => ActiveAccountViewModel != null && ActiveAccountViewModel.Id == OtherAccountId;
 
     protected override void OnParametersSet()

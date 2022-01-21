@@ -41,7 +41,7 @@ else
                         </MudTooltip>
                     </MudMenuItem>
 
-                    @if (Post.AccountId == Services.ActiveAccountServices.ActiveAccountId || Services.ActiveAccountServices.IsAdmin)
+                    @if (Services.ActiveAccountServices.IsActiveAccount(Post.AccountId ) || Services.ActiveAccountServices.IsAdmin)
                     {
                         <MudMenuItem OnClick="@OnTogglePostVisibility">
                             <MudTooltip Text="Toggle Visibility" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
@@ -62,7 +62,7 @@ else
                         </MudMenuItem>
                     }
 
-                    @if (Services.ActiveAccountServices.IsAccountActive && Post.AccountId != Services.ActiveAccountServices.ActiveAccountId)
+                    @if (Services.ActiveAccountServices.IsAccountActive && !Services.ActiveAccountServices.IsActiveAccount(Post.AccountId))
                     {
                         <MudMenuItem OnClick="@OnReportPostTags">
                             <MudTooltip Text="Report Tags" Arrow="true" Placement="Placement.Left" Color="Color.Dark">

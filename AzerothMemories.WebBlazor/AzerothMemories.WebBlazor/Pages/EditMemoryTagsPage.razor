@@ -17,7 +17,7 @@ else
 {
     <PageTitle>@ViewModel.Helper.AccountViewModel.GetDisplayName()'s Memory of Azeroth</PageTitle>
 
-    if (ActiveAccountServices.IsAccountActive && (ActiveAccountServices.ActiveAccountId == ViewModel.Helper.AccountViewModel.Id || ActiveAccountServices.IsAdmin))
+    if (ActiveAccountServices.IsAccountActive && (ActiveAccountServices.IsActiveAccount( ViewModel.Helper.AccountViewModel.Id) || ActiveAccountServices.IsAdmin))
     {
         <AddMemoryMainTagComponent Services="@this" SharedData="@ViewModel.SharedData" />
         <AddMemoryPostAvatarComponent SharedData="@ViewModel.SharedData" />

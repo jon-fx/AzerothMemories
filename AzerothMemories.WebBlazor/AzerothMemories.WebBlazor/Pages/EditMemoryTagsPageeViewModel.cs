@@ -69,7 +69,7 @@ public sealed class EditMemoryTagsPageeViewModel : ViewModelBase
             return;
         }
 
-        if (postViewModel.AccountId == Services.ActiveAccountServices.ActiveAccountId || Services.ActiveAccountServices.IsAdmin)
+        if (Services.ActiveAccountServices.IsActiveAccount(postViewModel.AccountId) || Services.ActiveAccountServices.IsAdmin)
         {
             var result = await SharedData.SubmitOnEditingPost(Helper.PostViewModel);
             if (result == AddMemoryResultCode.Success)
