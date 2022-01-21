@@ -31,7 +31,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
 
     public override async Task ComputeState()
     {
-        AccountViewModel = await Services.AccountServices.TryGetAccount(null);
+        AccountViewModel = await Services.AccountServices.TryGetActiveAccount(null);
 
         if (AccountViewModel == null)
         {

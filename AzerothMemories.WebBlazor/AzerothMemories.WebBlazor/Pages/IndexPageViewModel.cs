@@ -17,7 +17,7 @@ public sealed class IndexPageViewModel : ViewModelBase
 
     public async Task ComputeState(string currentPageString, string sortModeString, string postTypeString)
     {
-        AccountViewModel = await Services.AccountServices.TryGetAccount(null);
+        AccountViewModel = await Services.AccountServices.TryGetActiveAccount(null);
 
         await RecentPostsHelper.ComputeState(currentPageString, sortModeString, postTypeString);
     }

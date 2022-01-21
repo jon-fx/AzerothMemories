@@ -196,14 +196,14 @@ public class CharacterServices : ICharacterServices
 
     public async Task<bool> TryChangeCharacterAccountSync(Session session, long characterId, bool newValue)
     {
-        var accountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
-        if (accountId == 0)
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        if (activeAccount == null)
         {
             return false;
         }
 
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var updateResult = await database.Characters.Where(x => x.Id == characterId && x.AccountId == accountId && x.AccountSync == !newValue).AsUpdatable()
+        var updateResult = await database.Characters.Where(x => x.Id == characterId && x.AccountId == activeAccount.Id && x.AccountSync == !newValue).AsUpdatable()
             .Set(x => x.AccountSync, newValue)
             .UpdateAsync();
 
@@ -212,7 +212,7 @@ public class CharacterServices : ICharacterServices
             return !newValue;
         }
 
-        OnCharacterUpdate(characterId, accountId);
+        OnCharacterUpdate(characterId, activeAccount.Id);
 
         return newValue;
     }
@@ -284,8 +284,8 @@ public class CharacterServices : ICharacterServices
 
     public async Task<bool> TrySetCharacterDeleted(Session session, long characterId)
     {
-        var accountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
-        if (accountId == 0)
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        if (activeAccount == null)
         {
             return false;
         }
@@ -296,7 +296,7 @@ public class CharacterServices : ICharacterServices
             return false;
         }
 
-        if (characterRecord.AccountId != accountId)
+        if (characterRecord.AccountId != activeAccount.Id)
         {
             return false;
         }
@@ -316,20 +316,20 @@ public class CharacterServices : ICharacterServices
 
     public async Task<bool> TrySetCharacterRenamedOrTransferred(Session session, long oldCharacterId, long newCharacterId)
     {
-        var accountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
-        if (accountId == 0)
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        if (activeAccount == null)
         {
             return false;
         }
 
         var oldCharacterRecord = await TryGetCharacterRecord(oldCharacterId);
-        if (oldCharacterRecord == null || oldCharacterRecord.AccountId != accountId)
+        if (oldCharacterRecord == null || oldCharacterRecord.AccountId != activeAccount.Id)
         {
             return false;
         }
 
         var newCharacterRecord = await TryGetCharacterRecord(newCharacterId);
-        if (newCharacterRecord == null || newCharacterRecord.AccountId != accountId)
+        if (newCharacterRecord == null || newCharacterRecord.AccountId != activeAccount.Id)
         {
             return false;
         }

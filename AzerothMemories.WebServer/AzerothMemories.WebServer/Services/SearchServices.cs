@@ -97,7 +97,7 @@ public class SearchServices : ISearchServices
     [ComputeMethod]
     public virtual async Task<RecentPostsResults> TryGetRecentPosts(Session session, RecentPostsType postsType, PostSortMode sortMode, int currentPage, string locale)
     {
-        var account = await _commonServices.AccountServices.TryGetAccount(session);
+        var account = await _commonServices.AccountServices.TryGetActiveAccount(session);
         var allSearchResult = Array.Empty<long>();
         if (account != null && postsType == RecentPostsType.Default)
         {

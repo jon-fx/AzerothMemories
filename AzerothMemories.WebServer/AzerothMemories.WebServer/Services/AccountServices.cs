@@ -201,9 +201,9 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountViewModel> TryGetAccount(Session session)
+    public virtual async Task<AccountViewModel> TryGetActiveAccount(Session session)
     {
-        var accountRecord = await GetCurrentSessionAccountRecord(session);
+        var accountRecord = await TryGetCurrentSessionAccountRecord(session);
         if (accountRecord == null)
         {
             return null;
@@ -212,22 +212,22 @@ public class AccountServices : IAccountServices
         return await CreateAccountViewModel(accountRecord, true);
     }
 
-    [ComputeMethod]
-    public virtual async Task<long> TryGetActiveAccountId(Session session)
-    {
-        var accountViewModel = await TryGetAccount(session);
-        if (accountViewModel == null)
-        {
-            return 0;
-        }
+    //[ComputeMethod]
+    //public virtual async Task<long> TryGetActiveAccountId(Session session)
+    //{
+    //    var accountViewModel = await TryGetActiveAccount(session);
+    //    if (accountViewModel == null)
+    //    {
+    //        return 0;
+    //    }
 
-        return accountViewModel.Id;
-    }
+    //    return accountViewModel.Id;
+    //}
 
     [ComputeMethod]
     public virtual async Task<AccountViewModel> TryGetAccountById(Session session, long accountId)
     {
-        var sessionAccount = await TryGetAccount(session);
+        var sessionAccount = await TryGetActiveAccount(session);
         if (sessionAccount != null && sessionAccount.Id == accountId)
         {
             return sessionAccount;
@@ -245,7 +245,7 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<AccountViewModel> TryGetAccountByUsername(Session session, string username)
     {
-        var sessionAccount = await TryGetAccount(session);
+        var sessionAccount = await TryGetActiveAccount(session);
         if (sessionAccount != null && sessionAccount.Username == username)
         {
             return sessionAccount;
@@ -262,7 +262,7 @@ public class AccountServices : IAccountServices
 
     public async Task<bool> TryEnqueueUpdate(Session session)
     {
-        var accountRecord = await GetCurrentSessionAccountRecord(session);
+        var accountRecord = await TryGetCurrentSessionAccountRecord(session);
         if (accountRecord == null)
         {
             return false;
@@ -365,7 +365,7 @@ public class AccountServices : IAccountServices
             return false;
         }
 
-        var accountRecord = await GetCurrentSessionAccountRecord(session);
+        var accountRecord = await TryGetCurrentSessionAccountRecord(session);
         if (accountRecord == null)
         {
             return false;
@@ -430,7 +430,7 @@ public class AccountServices : IAccountServices
 
     public async Task<bool> TryChangeIsPrivate(Session session, bool newValue)
     {
-        var accountRecord = await GetCurrentSessionAccountRecord(session);
+        var accountRecord = await TryGetCurrentSessionAccountRecord(session);
         if (accountRecord == null)
         {
             return false;
@@ -453,7 +453,7 @@ public class AccountServices : IAccountServices
 
     public async Task<bool> TryChangeBattleTagVisibility(Session session, bool newValue)
     {
-        var accountRecord = await GetCurrentSessionAccountRecord(session);
+        var accountRecord = await TryGetCurrentSessionAccountRecord(session);
         if (accountRecord == null)
         {
             return false;
@@ -476,7 +476,7 @@ public class AccountServices : IAccountServices
 
     public async Task<string> TryChangeAvatar(Session session, string newAvatar)
     {
-        var accountRecord = await GetCurrentSessionAccountRecord(session);
+        var accountRecord = await TryGetCurrentSessionAccountRecord(session);
         if (accountRecord == null)
         {
             return null;
@@ -511,7 +511,7 @@ public class AccountServices : IAccountServices
 
     public async Task<string> TryChangeSocialLink(Session session, int linkId, StringBody stringBody)
     {
-        var accountRecord = await GetCurrentSessionAccountRecord(session);
+        var accountRecord = await TryGetCurrentSessionAccountRecord(session);
         if (accountRecord == null)
         {
             return null;
@@ -547,7 +547,7 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, long timeStamp, int diffInSeconds, string locale)
     {
-        var accountRecord = await GetCurrentSessionAccountRecord(session);
+        var accountRecord = await TryGetCurrentSessionAccountRecord(session);
         if (accountRecord == null)
         {
             return Array.Empty<PostTagInfo>();
@@ -582,8 +582,8 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<AccountHistoryPageResult> TryGetAccountHistory(Session session, int currentPage)
     {
-        var activeAccountId = await TryGetActiveAccountId(session);
-        if (activeAccountId == 0)
+        var activeAccount = await TryGetActiveAccount(session);
+        if (activeAccount == null)
         {
             return null;
         }
@@ -593,7 +593,7 @@ public class AccountServices : IAccountServices
             currentPage = 1;
         }
 
-        return await TryGetAccountHistory(activeAccountId, currentPage);
+        return await TryGetAccountHistory(activeAccount.Id, currentPage);
     }
 
     [ComputeMethod]
@@ -645,7 +645,7 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<AccountRecord> GetCurrentSessionAccountRecord(Session session)
+    protected virtual async Task<AccountRecord> TryGetCurrentSessionAccountRecord(Session session)
     {
         if (session == null)
         {

@@ -49,7 +49,7 @@ public sealed class ActiveAccountServices
 
     public async Task ComputeState()
     {
-        AccountViewModel = await _accountServices.TryGetAccount(null);
+        AccountViewModel = await _accountServices.TryGetActiveAccount(null);
 
         if (AccountViewModel == null)
         {

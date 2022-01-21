@@ -12,9 +12,9 @@ public sealed class AccountController : ControllerBase, IAccountServices
     }
 
     [HttpGet, Publish]
-    public Task<AccountViewModel> TryGetAccount(Session session)
+    public Task<AccountViewModel> TryGetActiveAccount(Session session)
     {
-        return _commonServices.AccountServices.TryGetAccount(session);
+        return _commonServices.AccountServices.TryGetActiveAccount(session);
     }
 
     [HttpGet("{accountId}"), Publish]

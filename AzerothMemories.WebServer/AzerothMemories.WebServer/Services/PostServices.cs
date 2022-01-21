@@ -75,7 +75,7 @@ public class PostServices : IPostServices
             return new AddMemoryResult(AddMemoryResultCode.InvalidTime);
         }
 
-        var accountViewModel = await _commonServices.AccountServices.TryGetAccount(session);
+        var accountViewModel = await _commonServices.AccountServices.TryGetActiveAccount(session);
         if (accountViewModel == null)
         {
             return new AddMemoryResult(AddMemoryResultCode.SessionNotFound);
@@ -281,7 +281,8 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postId, string locale)
     {
-        var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var activeAccountId = activeAccount?.Id ?? 0;
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
         {
@@ -359,8 +360,8 @@ public class PostServices : IPostServices
 
     public async Task<long> TryReactToPost(Session session, long postId, PostReaction newReaction)
     {
-        var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
-        if (activeAccountId == 0)
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        if (activeAccount == null)
         {
             return 0;
         }
@@ -371,7 +372,7 @@ public class PostServices : IPostServices
             return 0;
         }
 
-        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord);
+        var canSeePost = await CanAccountSeePost(activeAccount.Id, postRecord);
         if (!canSeePost)
         {
             return 0;
@@ -381,7 +382,7 @@ public class PostServices : IPostServices
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         var postQuery = database.GetUpdateQuery(postRecord, out _);
-        var reactionRecord = await database.PostReactions.FirstOrDefaultAsync(x => x.AccountId == activeAccountId && x.PostId == postId);
+        var reactionRecord = await database.PostReactions.FirstOrDefaultAsync(x => x.AccountId == activeAccount.Id && x.PostId == postId);
         if (reactionRecord == null)
         {
             if (newReaction == PostReaction.None)
@@ -391,7 +392,7 @@ public class PostServices : IPostServices
 
             reactionRecord = new PostReactionRecord
             {
-                AccountId = activeAccountId,
+                AccountId = activeAccount.Id,
                 PostId = postId,
                 Reaction = newReaction,
                 LastUpdateTime = SystemClock.Instance.GetCurrentInstant()
@@ -430,7 +431,7 @@ public class PostServices : IPostServices
         {
             await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
             {
-                AccountId = activeAccountId,
+                AccountId = activeAccount.Id,
                 OtherAccountId = postRecord.AccountId,
                 CreatedTime = SystemClock.Instance.GetCurrentInstant(),
                 Type = AccountHistoryType.ReactedToPost1,
@@ -441,7 +442,7 @@ public class PostServices : IPostServices
             await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
             {
                 AccountId = postRecord.AccountId,
-                OtherAccountId = activeAccountId,
+                OtherAccountId = activeAccount.Id,
                 CreatedTime = SystemClock.Instance.GetCurrentInstant(),
                 Type = AccountHistoryType.ReactedToPost2,
                 TargetId = postRecord.AccountId,
@@ -454,7 +455,7 @@ public class PostServices : IPostServices
         using var computed = Computed.Invalidate();
         _ = GetPostRecord(postId);
         _ = TryGetPostReactions(postId);
-        _ = _commonServices.AccountServices.GetReactionCount(activeAccountId);
+        _ = _commonServices.AccountServices.GetReactionCount(activeAccount.Id);
 
         return reactionRecord.Id;
     }
@@ -462,7 +463,8 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<PostReactionViewModel[]> TryGetReactions(Session session, long postId)
     {
-        var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var activeAccountId = activeAccount?.Id ?? 0;
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
         {
@@ -482,7 +484,8 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<PostCommentPageViewModel> TryGetCommentsPage(Session session, long postId, int page, long focusedCommentId)
     {
-        var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var activeAccountId = activeAccount?.Id ?? 0;
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
         {
@@ -501,7 +504,8 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<PostReactionViewModel[]> TryGetCommentReactionData(Session session, long postId, long commentId)
     {
-        var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var activeAccountId = activeAccount?.Id ?? 0;
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
         {
@@ -621,7 +625,8 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<Dictionary<long, PostCommentReactionViewModel>> TryGetMyCommentReactions(Session session, long postId)
     {
-        var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var activeAccountId = activeAccount?.Id ?? 0;
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
         {
@@ -652,7 +657,7 @@ public class PostServices : IPostServices
 
     public async Task<bool> TryRestoreMemory(Session session, long postId, long previousCharacterId, long newCharacterId)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetAccount(session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
         if (activeAccount == null)
         {
             return false;
@@ -763,7 +768,7 @@ public class PostServices : IPostServices
 
     public async Task<long> TryPublishComment(Session session, long postId, long parentCommentId, AddCommentTransferData transferData)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetAccount(session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
         if (activeAccount == null)
         {
             return 0;
@@ -910,8 +915,8 @@ public class PostServices : IPostServices
 
     public async Task<long> TryReactToPostComment(Session session, long postId, long commentId, PostReaction newReaction)
     {
-        var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
-        if (activeAccountId == 0)
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        if (activeAccount == null)
         {
             return 0;
         }
@@ -922,7 +927,7 @@ public class PostServices : IPostServices
             return 0;
         }
 
-        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord);
+        var canSeePost = await CanAccountSeePost(activeAccount.Id, postRecord);
         if (!canSeePost)
         {
             return 0;
@@ -939,7 +944,7 @@ public class PostServices : IPostServices
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         var postQuery = database.PostComments.Where(x => x.Id == commentId).AsUpdatable();
-        var reactionRecord = await database.PostCommentReactions.FirstOrDefaultAsync(x => x.AccountId == activeAccountId && x.CommentId == commentId);
+        var reactionRecord = await database.PostCommentReactions.FirstOrDefaultAsync(x => x.AccountId == activeAccount.Id && x.CommentId == commentId);
         if (reactionRecord == null)
         {
             if (newReaction == PostReaction.None)
@@ -949,7 +954,7 @@ public class PostServices : IPostServices
 
             reactionRecord = new PostCommentReactionRecord
             {
-                AccountId = activeAccountId,
+                AccountId = activeAccount.Id,
                 CommentId = commentId,
                 Reaction = newReaction,
                 LastUpdateTime = SystemClock.Instance.GetCurrentInstant()
@@ -988,7 +993,7 @@ public class PostServices : IPostServices
         {
             await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
             {
-                AccountId = activeAccountId,
+                AccountId = activeAccount.Id,
                 OtherAccountId = commentViewModel.AccountId,
                 CreatedTime = SystemClock.Instance.GetCurrentInstant(),
                 Type = AccountHistoryType.ReactedToComment1,
@@ -1000,7 +1005,7 @@ public class PostServices : IPostServices
             await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
             {
                 AccountId = commentViewModel.AccountId,
-                OtherAccountId = activeAccountId,
+                OtherAccountId = activeAccount.Id,
                 CreatedTime = SystemClock.Instance.GetCurrentInstant(),
                 Type = AccountHistoryType.ReactedToComment2,
                 TargetId = postRecord.AccountId,
@@ -1014,15 +1019,15 @@ public class PostServices : IPostServices
         using var computed = Computed.Invalidate();
         _ = TryGetAllPostComments(postId);
         _ = TryGetPostCommentReactions(commentId);
-        _ = TryGetMyCommentReactions(activeAccountId, postId);
-        _ = _commonServices.AccountServices.GetReactionCount(activeAccountId);
+        _ = TryGetMyCommentReactions(activeAccount.Id, postId);
+        _ = _commonServices.AccountServices.GetReactionCount(activeAccount.Id);
 
         return reactionRecord.Id;
     }
 
     public async Task<byte?> TrySetPostVisibility(Session session, long postId, byte newVisibility)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetAccount(session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
         if (activeAccount == null)
         {
             return null;
@@ -1058,7 +1063,7 @@ public class PostServices : IPostServices
 
     public async Task<long> TryDeletePost(Session session, long postId)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetAccount(session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
         if (activeAccount == null)
         {
             return 0;
@@ -1094,7 +1099,7 @@ public class PostServices : IPostServices
 
     public async Task<long> TryDeleteComment(Session session, long postId, long commentId)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetAccount(session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
         if (activeAccount == null)
         {
             return 0;
@@ -1135,8 +1140,8 @@ public class PostServices : IPostServices
 
     public async Task<bool> TryReportPost(Session session, long postId, PostReportInfo reportInfo)
     {
-        var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
-        if (activeAccountId == 0)
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        if (activeAccount == null)
         {
             return false;
         }
@@ -1147,7 +1152,7 @@ public class PostServices : IPostServices
             return false;
         }
 
-        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord);
+        var canSeePost = await CanAccountSeePost(activeAccount.Id, postRecord);
         if (!canSeePost)
         {
             return false;
@@ -1175,7 +1180,7 @@ public class PostServices : IPostServices
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         var reportQuery = from r in database.PostReports
-                          where r.PostId == postRecord.Id && r.AccountId == activeAccountId
+                          where r.PostId == postRecord.Id && r.AccountId == activeAccount.Id
                           select r;
 
         var reportQueryResult = await reportQuery.FirstOrDefaultAsync();
@@ -1187,7 +1192,7 @@ public class PostServices : IPostServices
 
             await database.InsertWithInt64IdentityAsync(new PostReportRecord
             {
-                AccountId = activeAccountId,
+                AccountId = activeAccount.Id,
                 PostId = postRecord.Id,
                 Reason = reason,
                 ReasonText = reasonText,
@@ -1227,8 +1232,8 @@ public class PostServices : IPostServices
 
     public async Task<bool> TryReportPostComment(Session session, long postId, long commentId, PostReportInfo reportInfo)
     {
-        var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
-        if (activeAccountId == 0)
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        if (activeAccount == null)
         {
             return false;
         }
@@ -1239,7 +1244,7 @@ public class PostServices : IPostServices
             return false;
         }
 
-        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord);
+        var canSeePost = await CanAccountSeePost(activeAccount.Id, postRecord);
         if (!canSeePost)
         {
             return false;
@@ -1274,7 +1279,7 @@ public class PostServices : IPostServices
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
         var reportQuery = from r in database.PostCommentReports
-                          where r.CommentId == commentId && r.AccountId == activeAccountId
+                          where r.CommentId == commentId && r.AccountId == activeAccount.Id
                           select r;
 
         var reportQueryResult = await reportQuery.FirstOrDefaultAsync();
@@ -1290,7 +1295,7 @@ public class PostServices : IPostServices
 
             await database.InsertWithInt64IdentityAsync(new PostCommentReportRecord
             {
-                AccountId = activeAccountId,
+                AccountId = activeAccount.Id,
                 CommentId = commentId,
                 Reason = reason,
                 ReasonText = reasonText,
@@ -1330,8 +1335,8 @@ public class PostServices : IPostServices
 
     public async Task<bool> TryReportPostTags(Session session, long postId, HashSet<string> tagStrings)
     {
-        var activeAccountId = await _commonServices.AccountServices.TryGetActiveAccountId(session);
-        if (activeAccountId == 0)
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        if (activeAccount == null)
         {
             return false;
         }
@@ -1342,7 +1347,7 @@ public class PostServices : IPostServices
             return false;
         }
 
-        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord);
+        var canSeePost = await CanAccountSeePost(activeAccount.Id, postRecord);
         if (!canSeePost)
         {
             return false;
@@ -1377,7 +1382,7 @@ public class PostServices : IPostServices
         foreach (var tagRecord in tagRecords)
         {
             var reportQuery = from r in database.PostTagReports
-                              where r.PostId == postRecord.Id && r.AccountId == activeAccountId && r.TagId == tagRecord.Id
+                              where r.PostId == postRecord.Id && r.AccountId == activeAccount.Id && r.TagId == tagRecord.Id
                               select r;
 
             var alreadyReported = await reportQuery.CountAsync() > 0;
@@ -1391,7 +1396,7 @@ public class PostServices : IPostServices
 
                 await database.InsertAsync(new PostTagReportRecord
                 {
-                    AccountId = activeAccountId,
+                    AccountId = activeAccount.Id,
                     PostId = postRecord.Id,
                     TagId = tagRecord.Id,
                     CreatedTime = SystemClock.Instance.GetCurrentInstant()
@@ -1410,7 +1415,7 @@ public class PostServices : IPostServices
 
     public async Task<AddMemoryResultCode> TryUpdateSystemTags(Session session, long postId, TryUpdateSystemTagsInfo info)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetAccount(session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
         if (activeAccount == null)
         {
             return AddMemoryResultCode.SessionNotFound;
