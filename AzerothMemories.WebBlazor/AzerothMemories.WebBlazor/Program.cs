@@ -5,12 +5,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 ProgramEx.Initialize(builder.Services);
 
-//builder.Services.AddMudServices();
-//builder.Services.AddLocalization();
-
-//builder.Services.AddSingleton<TimeProvider>();
-//builder.Services.AddSingleton<AccountManagePageViewModel>();
-
 var baseUri = new Uri(builder.HostEnvironment.BaseAddress);
 var apiBaseUri = new Uri($"{baseUri}api/");
 
@@ -38,6 +32,8 @@ fusionClient.AddReplicaService<IPostServices>();
 fusionClient.AddReplicaService<ISearchServices>();
 fusion.AddAuthentication().AddRestEaseClient().AddBlazor();
 
-//builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+var app = builder.Build();
+//app.Services.GetRequiredService<CommonServices>().Initialize();
+app.Services.GetRequiredService<ComputeServices>().Initialize();
 
-await builder.Build().RunAsync();
+await app.RunAsync();

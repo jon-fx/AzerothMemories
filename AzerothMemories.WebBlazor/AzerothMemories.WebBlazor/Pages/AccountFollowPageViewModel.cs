@@ -13,7 +13,7 @@ public sealed class AccountFollowPageViewModel : ViewModelBase
         var accountViewModel = AccountViewModel;
         if (accountId > 0)
         {
-            accountViewModel = await Services.AccountServices.TryGetAccountById(null, accountId);
+            accountViewModel = await Services.ComputeServices.AccountServices.TryGetAccountById(null, accountId);
         }
 
         if (accountViewModel == null)

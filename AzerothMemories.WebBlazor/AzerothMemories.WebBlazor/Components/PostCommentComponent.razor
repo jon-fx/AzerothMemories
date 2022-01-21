@@ -150,7 +150,7 @@
 
         _userReacting = true;
 
-        node.ReactionId = await Services.PostServices.TryReactToPostComment(null, postId, commentId, newReaction);
+        node.ReactionId = await Services.ComputeServices.PostServices.TryReactToPostComment(null, postId, commentId, newReaction);
         node.Reaction = newReaction;
 
         _userReacting = false;
@@ -182,7 +182,7 @@
             var postId = comment.PostId;
             var commentId = comment.Id;
 
-            comment.DeletedTimeStamp = await Services.PostServices.TryDeleteComment(null, postId, commentId);
+            comment.DeletedTimeStamp = await Services.ComputeServices.PostServices.TryDeleteComment(null, postId, commentId);
 
             var message = comment.DeletedTimeStamp == 0 ? "Comment delete failed." : "Comment deleted.";
             await Services.DialogService.ShowNotificationDialog(true, message);

@@ -325,7 +325,7 @@ else
 
         var postId = Post.Id;
 
-        Post.ReactionId = await Services.PostServices.TryReactToPost(null, postId, newReaction);
+        Post.ReactionId = await Services.ComputeServices.PostServices.TryReactToPost(null, postId, newReaction);
         Post.Reaction = newReaction;
 
         _userReacting = false;
@@ -358,7 +358,7 @@ else
         _reactionAreLoading = true;
 
         var postId = Post.Id;
-        var reactionData = await Services.PostServices.TryGetReactions(null, postId);
+        var reactionData = await Services.ComputeServices.PostServices.TryGetReactions(null, postId);
         if (reactionData == null)
         {
             _postReactions = null;
@@ -390,7 +390,7 @@ else
         _isChangingTags = true;
 
         var postId = Post.Id;
-        var result = await Services.PostServices.TryRestoreMemory(null, postId, previousCharacter?.Id ?? -1, character?.Id ?? -1);
+        var result = await Services.ComputeServices.PostServices.TryRestoreMemory(null, postId, previousCharacter?.Id ?? -1, character?.Id ?? -1);
         if (result)
         {
             _showTagMenu = false;
@@ -411,7 +411,7 @@ else
         {
             var postId = Post.Id;
 
-            Post.DeletedTimeStamp = await Services.PostServices.TryDeletePost(null, postId);
+            Post.DeletedTimeStamp = await Services.ComputeServices.PostServices.TryDeletePost(null, postId);
 
             var message = Post.DeletedTimeStamp == 0 ? "Post delete failed." : "Post deleted.";
             await Services.DialogService.ShowNotificationDialog(true, message);
@@ -427,7 +427,7 @@ else
     {
         var postId = Post.Id;
         var newVisibility = Post.PostVisibility == 1 ? (byte)0 : (byte)1;
-        var result = await Services.PostServices.TrySetPostVisibility(null, postId, newVisibility);
+        var result = await Services.ComputeServices.PostServices.TrySetPostVisibility(null, postId, newVisibility);
         if (result == null)
         {
             await Services.DialogService.ShowNotificationDialog(false, "Post visibility change failed.");

@@ -22,7 +22,7 @@ public sealed class GuildPageViewModel : ViewModelBase
         GuildViewModel guildViewModel;
         if (id > 0)
         {
-            guildViewModel = await Services.GuildServices.TryGetGuild(null, id);
+            guildViewModel = await Services.ComputeServices.GuildServices.TryGetGuild(null, id);
         }
         else
         {
@@ -57,7 +57,7 @@ public sealed class GuildPageViewModel : ViewModelBase
                 return;
             }
 
-            guildViewModel = await Services.GuildServices.TryGetGuild(null, regionInfo.Region, realm, name);
+            guildViewModel = await Services.ComputeServices.GuildServices.TryGetGuild(null, regionInfo.Region, realm, name);
         }
 
         if (guildViewModel == null)

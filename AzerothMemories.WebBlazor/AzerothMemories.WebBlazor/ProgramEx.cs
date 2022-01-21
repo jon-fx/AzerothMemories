@@ -7,6 +7,8 @@ public static class ProgramEx
         services.AddMudServices();
         services.AddLocalization();
 
+        services.AddSingleton<ComputeServices>();
+
         services.AddSingleton<TagHelpers>();
         services.AddSingleton<TimeProvider>();
         services.AddScoped<ActiveAccountServices>();

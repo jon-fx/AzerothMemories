@@ -85,7 +85,7 @@ public sealed class AddMemoryComponentSharedData
         var timeStamp = PostTimeStamp.ToUnixTimeMilliseconds();
         if (timeStamp > 0 && PostTimeStamp < SystemClock.Instance.GetCurrentInstant())
         {
-            var achievements = await _viewModel.Services.AccountServices.TryGetAchievementsByTime(null, timeStamp, 120, CultureInfo.CurrentCulture.Name);
+            var achievements = await _viewModel.Services.ComputeServices.AccountServices.TryGetAchievementsByTime(null, timeStamp, 120, CultureInfo.CurrentCulture.Name);
 
             if (_selectedAchievementTags.Count > 0)
             {
@@ -184,7 +184,7 @@ public sealed class AddMemoryComponentSharedData
         }
 
         var transferData = new AddMemoryTransferData(timeStamp.ToUnixTimeMilliseconds(), avatarTag, PrivatePost, finalText, systemTags, uploadResults);
-        return _viewModel.Services.PostServices.TryPostMemory(null, transferData);
+        return _viewModel.Services.ComputeServices.PostServices.TryPostMemory(null, transferData);
     }
 
     public async Task<AddMemoryResultCode> SubmitOnEditingPost(PostViewModel currentPost)
@@ -197,7 +197,7 @@ public sealed class AddMemoryComponentSharedData
             avatarTag = PostAvatarImages[SelectedPostAvatarImage].Tag.TagString;
         }
 
-        var result = await _viewModel.Services.PostServices.TryUpdateSystemTags(null, currentPost.Id, new TryUpdateSystemTagsInfo
+        var result = await _viewModel.Services.ComputeServices.PostServices.TryUpdateSystemTags(null, currentPost.Id, new TryUpdateSystemTagsInfo
         {
             AvatarText = avatarTag,
             NewTags = newTags

@@ -31,11 +31,11 @@ public sealed class PostPageViewModelHelper
         var accountViewModel = AccountViewModel;
         if (accountId > 0)
         {
-            accountViewModel = await _services.AccountServices.TryGetAccountById(null, accountId);
+            accountViewModel = await _services.ComputeServices.AccountServices.TryGetAccountById(null, accountId);
         }
         else if (!string.IsNullOrWhiteSpace(username))
         {
-            accountViewModel = await _services.AccountServices.TryGetAccountByUsername(null, username);
+            accountViewModel = await _services.ComputeServices.AccountServices.TryGetAccountByUsername(null, username);
         }
 
         if (accountViewModel == null)
@@ -44,7 +44,7 @@ public sealed class PostPageViewModelHelper
             return;
         }
 
-        var postViewModel = await _services.PostServices.TryGetPostViewModel(null, accountViewModel.Id, postId, CultureInfo.CurrentCulture.Name);
+        var postViewModel = await _services.ComputeServices.PostServices.TryGetPostViewModel(null, accountViewModel.Id, postId, CultureInfo.CurrentCulture.Name);
         if (postViewModel == null)
         {
             ErrorMessage = "Post Not Found";
@@ -67,8 +67,8 @@ public sealed class PostPageViewModelHelper
         AccountViewModel = accountViewModel;
         PostViewModel = postViewModel;
 
-        var commentReactions = await _services.PostServices.TryGetMyCommentReactions(null, postId);
-        var pageViewModel = await _services.PostServices.TryGetCommentsPage(null, postId, currentPage, focusedCommentId);
+        var commentReactions = await _services.ComputeServices.PostServices.TryGetMyCommentReactions(null, postId);
+        var pageViewModel = await _services.ComputeServices.PostServices.TryGetCommentsPage(null, postId, currentPage, focusedCommentId);
 
         var rootComments = new List<PostCommentTreeNode>();
         foreach (var comment in pageViewModel.AllComments)

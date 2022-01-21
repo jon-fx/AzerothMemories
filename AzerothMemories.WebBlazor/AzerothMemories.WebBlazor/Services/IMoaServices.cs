@@ -2,19 +2,7 @@
 
 public interface IMoaServices
 {
-    IAccountServices AccountServices { get; }
-
-    IFollowingServices FollowingServices { get; }
-
-    ICharacterServices CharacterServices { get; }
-
-    IGuildServices GuildServices { get; }
-
-    ITagServices TagServices { get; }
-
-    IPostServices PostServices { get; }
-
-    ISearchServices SearchServices { get; }
+    ComputeServices ComputeServices { get; }
 
     ActiveAccountServices ActiveAccountServices { get; }
 

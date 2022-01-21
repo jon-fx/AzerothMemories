@@ -25,7 +25,7 @@ public sealed class CharacterPagePageViewModel : ViewModelBase
         CharacterViewModel characterViewModel;
         if (id > 0)
         {
-            var result = await Services.CharacterServices.TryGetCharacter(null, id);
+            var result = await Services.ComputeServices.CharacterServices.TryGetCharacter(null, id);
             accountViewModel = result.AccountViewModel;
             characterViewModel = result.CharacterViewModel;
         }
@@ -62,7 +62,7 @@ public sealed class CharacterPagePageViewModel : ViewModelBase
                 return;
             }
 
-            var result = await Services.CharacterServices.TryGetCharacter(null, regionInfo.Region, realm, name);
+            var result = await Services.ComputeServices.CharacterServices.TryGetCharacter(null, regionInfo.Region, realm, name);
 
             accountViewModel = result.AccountViewModel;
             characterViewModel = result.CharacterViewModel;

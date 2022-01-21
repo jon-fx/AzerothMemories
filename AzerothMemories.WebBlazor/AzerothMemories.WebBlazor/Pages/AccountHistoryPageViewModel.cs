@@ -30,7 +30,7 @@ public sealed class AccountHistoryPageViewModel : ViewModelBase
             }
         }
 
-        var searchResults = await Services.AccountServices.TryGetAccountHistory(null, currentPage);
+        var searchResults = await Services.ComputeServices.AccountServices.TryGetAccountHistory(null, currentPage);
 
         _searchResults = searchResults;
     }

@@ -22,11 +22,11 @@ public sealed class AccountPageViewModel : ViewModelBase
         var accountViewModel = AccountViewModel;
         if (accountId > 0)
         {
-            accountViewModel = await Services.AccountServices.TryGetAccountById(null, accountId);
+            accountViewModel = await Services.ComputeServices.AccountServices.TryGetAccountById(null, accountId);
         }
         else if (!string.IsNullOrWhiteSpace(accountUsername))
         {
-            accountViewModel = await Services.AccountServices.TryGetAccountByUsername(null, accountUsername);
+            accountViewModel = await Services.ComputeServices.AccountServices.TryGetAccountByUsername(null, accountUsername);
         }
 
         if (accountViewModel == null)

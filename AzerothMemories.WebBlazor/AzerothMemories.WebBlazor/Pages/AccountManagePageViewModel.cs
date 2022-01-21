@@ -31,7 +31,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
 
     public override async Task ComputeState()
     {
-        AccountViewModel = await Services.AccountServices.TryGetActiveAccount(null);
+        AccountViewModel = await Services.ComputeServices.AccountServices.TryGetActiveAccount(null);
 
         if (AccountViewModel == null)
         {
@@ -118,7 +118,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
         }
         else if (DatabaseHelpers.IsValidAccountName(username))
         {
-            isValid = await Services.AccountServices.CheckIsValidUsername(null, username);
+            isValid = await Services.ComputeServices.AccountServices.CheckIsValidUsername(null, username);
             isVisible = true;
         }
 
@@ -170,7 +170,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
             return;
         }
 
-        var result = await Services.AccountServices.TryChangeUsername(null, NewUsername);
+        var result = await Services.ComputeServices.AccountServices.TryChangeUsername(null, NewUsername);
         if (result)
         {
             AccountViewModel.Username = NewUsername;
@@ -196,7 +196,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
             return;
         }
 
-        var result = await Services.AccountServices.TryChangeIsPrivate(null, newValue);
+        var result = await Services.ComputeServices.AccountServices.TryChangeIsPrivate(null, newValue);
         if (AccountViewModel.IsPrivate == result)
         {
             return;
@@ -214,7 +214,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
             return;
         }
 
-        var result = await Services.AccountServices.TryChangeBattleTagVisibility(null, newValue);
+        var result = await Services.ComputeServices.AccountServices.TryChangeBattleTagVisibility(null, newValue);
         if (AccountViewModel.BattleTagIsPublic == result)
         {
             return;
@@ -238,7 +238,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
             return;
         }
 
-        AccountViewModel.Avatar = await Services.AccountServices.TryChangeAvatar(null, avatarLink);
+        AccountViewModel.Avatar = await Services.ComputeServices.AccountServices.TryChangeAvatar(null, avatarLink);
         //OnViewModelChanged?.Invoke();
     }
 
@@ -290,7 +290,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
 
         if (shouldChange)
         {
-            AccountViewModel.SocialLinks[link.LinkId] = await Services.AccountServices.TryChangeSocialLink(null, link.LinkId, new StringBody(newValue));
+            AccountViewModel.SocialLinks[link.LinkId] = await Services.ComputeServices.AccountServices.TryChangeSocialLink(null, link.LinkId, new StringBody(newValue));
             SocialLinksAdornmentIcons[link.LinkId] = string.Empty;
         }
 
@@ -306,7 +306,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
 
         if (character.AccountSync != newValue)
         {
-            var result = await Services.CharacterServices.TryChangeCharacterAccountSync(null, character.Id, newValue);
+            var result = await Services.ComputeServices.CharacterServices.TryChangeCharacterAccountSync(null, character.Id, newValue);
             if (character.AccountSync == result)
             {
                 return;
@@ -325,7 +325,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
             return;
         }
 
-        var result = await Services.CharacterServices.TrySetCharacterDeleted(null, character.Id);
+        var result = await Services.ComputeServices.CharacterServices.TrySetCharacterDeleted(null, character.Id);
     }
 
     public async Task OnCharacterRenamedOrTransferred(CharacterViewModel oldCharacter, CharacterViewModel newCharacter)
@@ -335,6 +335,6 @@ public sealed class AccountManagePageViewModel : ViewModelBase
             return;
         }
 
-        var result = await Services.CharacterServices.TrySetCharacterRenamedOrTransferred(null, oldCharacter.Id, newCharacter.Id);
+        var result = await Services.ComputeServices.CharacterServices.TrySetCharacterRenamedOrTransferred(null, oldCharacter.Id, newCharacter.Id);
     }
 }

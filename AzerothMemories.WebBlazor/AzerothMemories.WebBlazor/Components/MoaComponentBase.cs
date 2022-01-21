@@ -13,19 +13,7 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
 
     protected TViewModel ViewModel { get; }
 
-    [Inject] public IAccountServices AccountServices { get; init; }
-
-    [Inject] public IFollowingServices FollowingServices { get; init; }
-
-    [Inject] public ICharacterServices CharacterServices { get; init; }
-
-    [Inject] public IGuildServices GuildServices { get; init; }
-
-    [Inject] public ITagServices TagServices { get; init; }
-
-    [Inject] public IPostServices PostServices { get; init; }
-
-    [Inject] public ISearchServices SearchServices { get; init; }
+    [Inject] public ComputeServices ComputeServices { get; init; }
 
     [Inject] public ActiveAccountServices ActiveAccountServices { get; init; }
 

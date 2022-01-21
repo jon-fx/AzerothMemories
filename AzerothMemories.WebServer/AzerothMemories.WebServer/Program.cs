@@ -129,6 +129,7 @@ builder.Services.UseRegisterAttributeScanner().RegisterFrom(typeof(CommonService
 
 var app = builder.Build();
 app.Services.GetRequiredService<CommonServices>().Initialize();
+app.Services.GetRequiredService<ComputeServices>().Initialize();
 
 if (app.Environment.IsDevelopment())
 {
