@@ -212,18 +212,6 @@ public class AccountServices : IAccountServices
         return await CreateAccountViewModel(accountRecord, true);
     }
 
-    //[ComputeMethod]
-    //public virtual async Task<long> TryGetActiveAccountId(Session session)
-    //{
-    //    var accountViewModel = await TryGetActiveAccount(session);
-    //    if (accountViewModel == null)
-    //    {
-    //        return 0;
-    //    }
-
-    //    return accountViewModel.Id;
-    //}
-
     [ComputeMethod]
     public virtual async Task<AccountViewModel> TryGetAccountById(Session session, long accountId)
     {

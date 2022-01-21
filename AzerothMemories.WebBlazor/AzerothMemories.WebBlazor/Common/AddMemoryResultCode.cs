@@ -10,7 +10,8 @@ public enum AddMemoryResultCode
     CommentTooLong,
     ParseCommentFailed,
     SessionNotFound,
+    SessionCanNotInteract,
     InvalidTime,
     InvalidTags,
-    TooManyTags
+    TooManyTags,
 }

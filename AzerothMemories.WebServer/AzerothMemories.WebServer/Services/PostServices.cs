@@ -75,13 +75,18 @@ public class PostServices : IPostServices
             return new AddMemoryResult(AddMemoryResultCode.InvalidTime);
         }
 
-        var accountViewModel = await _commonServices.AccountServices.TryGetActiveAccount(session);
-        if (accountViewModel == null)
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        if (activeAccount == null)
         {
             return new AddMemoryResult(AddMemoryResultCode.SessionNotFound);
         }
 
-        if (!_commonServices.TagServices.GetCommentText(transferData.Comment, accountViewModel.GetUserTagList(), out var commentText, out var accountsTaggedInComment, out var hashTagsTaggedInComment))
+        if (!activeAccount.CanInteract)
+        {
+            return new AddMemoryResult(AddMemoryResultCode.SessionCanNotInteract);
+        }
+
+        if (!_commonServices.TagServices.GetCommentText(transferData.Comment, activeAccount.GetUserTagList(), out var commentText, out var accountsTaggedInComment, out var hashTagsTaggedInComment))
         {
             return new AddMemoryResult(AddMemoryResultCode.ParseCommentFailed);
         }
@@ -89,7 +94,7 @@ public class PostServices : IPostServices
         var tagRecords = new HashSet<PostTagRecord>();
         var postRecord = new PostRecord
         {
-            AccountId = accountViewModel.Id,
+            AccountId = activeAccount.Id,
             PostAvatar = transferData.AvatarTag,
             PostComment = commentText,
             PostTime = dateTime,
@@ -98,7 +103,7 @@ public class PostServices : IPostServices
             PostVisibility = transferData.IsPrivate ? (byte)1 : (byte)0,
         };
 
-        var buildSystemTagsResult = await CreateSystemTags(postRecord, accountViewModel, transferData.SystemTags, tagRecords);
+        var buildSystemTagsResult = await CreateSystemTags(postRecord, activeAccount, transferData.SystemTags, tagRecords);
         if (buildSystemTagsResult != AddMemoryResultCode.Success)
         {
             return new AddMemoryResult(buildSystemTagsResult);
@@ -134,7 +139,7 @@ public class PostServices : IPostServices
 
         await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
         {
-            AccountId = accountViewModel.Id,
+            AccountId = activeAccount.Id,
             CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = AccountHistoryType.MemoryRestored,
             TargetId = postRecord.AccountId,
@@ -146,7 +151,7 @@ public class PostServices : IPostServices
             await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
             {
                 AccountId = userTag,
-                OtherAccountId = accountViewModel.Id,
+                OtherAccountId = activeAccount.Id,
                 Type = AccountHistoryType.TaggedPost,
                 CreatedTime = SystemClock.Instance.GetCurrentInstant(),
                 TargetId = postRecord.AccountId,
@@ -157,7 +162,7 @@ public class PostServices : IPostServices
         transaction.Complete();
 
         using var computed = Computed.Invalidate();
-        _ = _commonServices.AccountServices.GetPostCount(accountViewModel.Id);
+        _ = _commonServices.AccountServices.GetPostCount(activeAccount.Id);
 
         return new AddMemoryResult(AddMemoryResultCode.Success, postRecord.AccountId, postRecord.Id);
     }
@@ -362,6 +367,11 @@ public class PostServices : IPostServices
     {
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
         if (activeAccount == null)
+        {
+            return 0;
+        }
+
+        if (!activeAccount.CanInteract)
         {
             return 0;
         }
@@ -663,6 +673,11 @@ public class PostServices : IPostServices
             return false;
         }
 
+        if (!activeAccount.CanInteract)
+        {
+            return false;
+        }
+
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
         {
@@ -770,6 +785,11 @@ public class PostServices : IPostServices
     {
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
         if (activeAccount == null)
+        {
+            return 0;
+        }
+
+        if (!activeAccount.CanInteract)
         {
             return 0;
         }
@@ -917,6 +937,11 @@ public class PostServices : IPostServices
     {
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
         if (activeAccount == null)
+        {
+            return 0;
+        }
+
+        if (!activeAccount.CanInteract)
         {
             return 0;
         }
@@ -1419,6 +1444,11 @@ public class PostServices : IPostServices
         if (activeAccount == null)
         {
             return AddMemoryResultCode.SessionNotFound;
+        }
+
+        if (!activeAccount.CanInteract)
+        {
+            return AddMemoryResultCode.SessionCanNotInteract;
         }
 
         var postRecord = await GetPostRecord(postId);

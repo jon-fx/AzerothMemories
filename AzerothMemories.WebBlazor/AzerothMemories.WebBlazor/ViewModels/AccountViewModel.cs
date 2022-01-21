@@ -38,7 +38,9 @@ public sealed class AccountViewModel
 
     [JsonInclude] public Dictionary<long, AccountFollowingViewModel> FollowersViewModels = new();
 
-    public bool CanChangeUsername => true;
+    [JsonIgnore] public bool CanInteract => true;
+
+    [JsonIgnore] public bool CanChangeUsername => true;
 
     public string GetDisplayName()
     {

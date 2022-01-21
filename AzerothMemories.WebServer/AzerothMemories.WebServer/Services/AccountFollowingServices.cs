@@ -71,6 +71,11 @@ public class AccountFollowingServices : IAccountFollowingServices
             return null;
         }
 
+        if (!activeAccount.CanInteract)
+        {
+            return null;
+        }
+
         if (activeAccount.Id == otherAccountId)
         {
             return null;
@@ -158,6 +163,11 @@ public class AccountFollowingServices : IAccountFollowingServices
             return null;
         }
 
+        if (!activeAccount.CanInteract)
+        {
+            return null;
+        }
+
         if (activeAccount.Id == otherAccountId)
         {
             return null;
@@ -200,6 +210,11 @@ public class AccountFollowingServices : IAccountFollowingServices
     {
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
         if (activeAccount == null)
+        {
+            return null;
+        }
+
+        if (!activeAccount.CanInteract)
         {
             return null;
         }
@@ -254,6 +269,11 @@ public class AccountFollowingServices : IAccountFollowingServices
     {
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
         if (activeAccount == null)
+        {
+            return null;
+        }
+
+        if (!activeAccount.CanInteract)
         {
             return null;
         }
