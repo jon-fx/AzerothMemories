@@ -18,8 +18,6 @@ public sealed class AccountViewModel
 
     [JsonInclude] public string Avatar;
 
-    [JsonInclude] public string AvatarTag;
-
     [JsonInclude] public long CreatedDateTime;
 
     [JsonInclude] public string[] SocialLinks;

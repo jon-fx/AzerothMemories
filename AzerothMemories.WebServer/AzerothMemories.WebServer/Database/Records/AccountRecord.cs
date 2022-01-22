@@ -55,7 +55,6 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
         {
             Id = Id,
             Avatar = Avatar,
-            AvatarTag = Avatar,
             Username = Username,
             AccountType = AccountType,
             RegionId = BlizzardRegionId,

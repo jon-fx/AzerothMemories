@@ -20,7 +20,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
 
     public Color[] SocialLinksAdornmentColors { get; private set; }
 
-    public string AvatarTag { get; private set; }
+    public string AvatarLink { get; private set; }
 
     public override async Task ComputeState()
     {
@@ -47,9 +47,9 @@ public sealed class AccountManagePageViewModel : ViewModelBase
                 SocialLinksAdornmentColors = new Color[SocialLinks.Length];
             }
 
-            if (AvatarTag == null)
+            if (AvatarLink == null)
             {
-                AvatarTag = AccountViewModel.AvatarTag;
+                AvatarLink = AccountViewModel.Avatar;
             }
         }
     }
@@ -197,8 +197,8 @@ public sealed class AccountManagePageViewModel : ViewModelBase
             return;
         }
 
-        AvatarTag = character.TagString;
-        AccountViewModel.Avatar = await Services.ComputeServices.AccountServices.TryChangeAvatar(null, new StringBody(AvatarTag));
+        AvatarLink = character.AvatarLink;
+        AccountViewModel.Avatar = await Services.ComputeServices.AccountServices.TryChangeAvatar(null, new StringBody(AvatarLink));
         OnViewModelChanged?.Invoke();
     }
 

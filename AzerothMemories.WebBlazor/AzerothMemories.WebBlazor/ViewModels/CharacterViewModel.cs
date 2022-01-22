@@ -57,5 +57,5 @@ public sealed class CharacterViewModel
         }
     }
 
-    [JsonIgnore] public string TagString => PostTagInfo.GetTagString(PostTagType.Character, Id);
+    //[JsonIgnore] public string TagString => PostTagInfo.GetTagString(PostTagType.Character, Id);
 }

@@ -272,13 +272,6 @@ public class AccountServices : IAccountServices
 
         var viewModel = accountRecord.CreateViewModel(activeOrAdmin, followingViewModels, followersViewModels);
 
-        var avatar = accountRecord.Avatar;
-        if (ZExtensions.ParseTagInfoFrom(avatar, out var result))
-        {
-            var postTagInfo = await _commonServices.TagServices.TryGetUserTagInfo(result.Type, result.Id);
-            viewModel.Avatar = postTagInfo.Image;
-        }
-
         viewModel.TotalPostCount = postCount;
         viewModel.TotalCommentCount = commentCount;
         viewModel.TotalMemoriesCount = memoryCount;
@@ -475,32 +468,32 @@ public class AccountServices : IAccountServices
             return null;
         }
 
-        var newTagOrLink = stringBody.Value;
-        if (accountViewModel.AvatarTag == newTagOrLink)
+        var newAvatar = stringBody.Value;
+        if (accountViewModel.Avatar == newAvatar)
         {
             return accountViewModel.Avatar;
         }
 
-        string avatarLink;
-        if (string.IsNullOrWhiteSpace(newTagOrLink))
+        if (string.IsNullOrWhiteSpace(newAvatar))
         {
-            avatarLink = null;
-            newTagOrLink = null;
+            newAvatar = null;
         }
-        else
+        else if (newAvatar.StartsWith("https://render") && newAvatar.Contains(".worldofwarcraft.com"))
         {
-            var character = accountViewModel.GetAllCharactersSafe().FirstOrDefault(x => x.TagString == newTagOrLink);
+            var character = accountViewModel.GetAllCharactersSafe().FirstOrDefault(x => x.AvatarLink == newAvatar);
             if (character == null)
             {
                 return null;
             }
-
-            avatarLink = character.AvatarLink;
+        }
+        else
+        {
+            throw new NotImplementedException();
         }
 
         var accountRecord = await TryGetActiveAccountRecord(session);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var updateResult = await database.GetUpdateQuery(accountRecord, out _).Set(x => x.Avatar, newTagOrLink).UpdateAsync();
+        var updateResult = await database.GetUpdateQuery(accountRecord, out _).Set(x => x.Avatar, newAvatar).UpdateAsync();
         if (updateResult == 0)
         {
             return accountViewModel.Avatar;
@@ -508,7 +501,7 @@ public class AccountServices : IAccountServices
 
         InvalidateAccountRecord(accountRecord);
 
-        return avatarLink;
+        return newAvatar;
     }
 
     public async Task<string> TryChangeSocialLink(Session session, int linkId, StringBody stringBody)

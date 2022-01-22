@@ -90,8 +90,8 @@
 
                         <MudTooltip @key="@character.Id" Placement="Placement.Bottom" Color="Color.Dark">
                             <ChildContent>
-                                <MudButton Id="@index" Variant="Variant.Filled" Disabled="ViewModel.AvatarTag == character.TagString" OnClick="() => ViewModel.OnChangeAvatarButtonClicked(character)">
-                                    <MudAvatar Size="Size.Medium" Image="@character.AvatarLinkWithFallBack" />
+                                <MudButton Id="@index" Variant="Variant.Filled" Disabled="ViewModel.AvatarLink == character.AvatarLink" OnClick="() => ViewModel.OnChangeAvatarButtonClicked(character)">
+                                    <MudAvatar Size="Size.Medium" Image="@character.AvatarLink" />
                                 </MudButton>
                             </ChildContent>
                             <TooltipContent>
