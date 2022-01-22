@@ -18,6 +18,8 @@ public sealed class AccountViewModel
 
     [JsonInclude] public string Avatar;
 
+    [JsonInclude] public string AvatarTag;
+
     [JsonInclude] public long CreatedDateTime;
 
     [JsonInclude] public string[] SocialLinks;
@@ -45,6 +47,10 @@ public sealed class AccountViewModel
     [JsonIgnore] public bool CanInteract => SystemClock.Instance.GetCurrentInstant() > Instant.FromUnixTimeMilliseconds(BanExpireTime);
 
     [JsonIgnore] public bool CanChangeUsername => true;
+
+    public AccountViewModel()
+    {
+    }
 
     public string GetDisplayName()
     {

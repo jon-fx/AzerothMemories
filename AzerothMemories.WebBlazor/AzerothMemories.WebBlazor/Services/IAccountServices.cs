@@ -31,8 +31,8 @@ public interface IAccountServices
     [Post(nameof(TryChangeBattleTagVisibility) + "/{newValue}")]
     Task<bool> TryChangeBattleTagVisibility(Session session, [Path] bool newValue);
 
-    [Post(nameof(TryChangeAvatar) + "/{newValue}")]
-    Task<string> TryChangeAvatar(Session session, [Path] string newValue);
+    [Post(nameof(TryChangeAvatar))]
+    Task<string> TryChangeAvatar(Session session, [Body] StringBody stringBody);
 
     [Post(nameof(TryChangeSocialLink) + "/{linkId}")]
     Task<string> TryChangeSocialLink(Session session, [Path] int linkId, [Body] StringBody stringBody);

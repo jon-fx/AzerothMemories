@@ -2,11 +2,6 @@
 
 public sealed class AccountManagePageViewModel : ViewModelBase
 {
-    public AccountManagePageViewModel()
-    {
-        AllAvatars = new Dictionary<long, (string Link, string Name, long Id)>();
-    }
-
     public string NewUsername { get; set; }
 
     public bool NewUsernameValid { get; private set; }
@@ -25,9 +20,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
 
     public Color[] SocialLinksAdornmentColors { get; private set; }
 
-    public (string Link, string Name, long Id) Avatar { get; set; }
-
-    public Dictionary<long, (string Link, string Name, long Id)> AllAvatars { get; init; }
+    public string AvatarTag { get; private set; }
 
     public override async Task ComputeState()
     {
@@ -54,44 +47,11 @@ public sealed class AccountManagePageViewModel : ViewModelBase
                 SocialLinksAdornmentColors = new Color[SocialLinks.Length];
             }
 
-            ResetAvatars();
-        }
-    }
-
-    private void ResetAvatars()
-    {
-        var noneKey = 0;
-        var currentKey = -1;
-        var isDefault = Avatar == default;
-
-        if (!AllAvatars.ContainsKey(noneKey))
-        {
-            AllAvatars.Add(noneKey, (null, "None", noneKey));
-
-            if (isDefault) Avatar = AllAvatars[noneKey];
-        }
-
-        if (!string.IsNullOrWhiteSpace(AccountViewModel.Avatar))
-        {
-            AllAvatars[currentKey] = (AccountViewModel.Avatar, "Current", currentKey);
-
-            if (isDefault) Avatar = AllAvatars[currentKey];
-        }
-
-        foreach (var character in AccountViewModel.GetCharactersSafe())
-        {
-            AllAvatars[character.Id] = (character.AvatarLinkWithFallBack, character.Name, character.Id);
-        }
-
-        if (!isDefault && AllAvatars.TryGetValue(currentKey, out var current) && AllAvatars.TryGetValue(Avatar.Id, out var selected))
-        {
-            if (current.Link == selected.Link)
+            if (AvatarTag == null)
             {
-                Avatar = current;
+                AvatarTag = AccountViewModel.AvatarTag;
             }
         }
-
-        OnViewModelChanged?.Invoke();
     }
 
     public Task OnNewUsernameTextChanged(string username)
@@ -225,21 +185,21 @@ public sealed class AccountManagePageViewModel : ViewModelBase
         OnViewModelChanged?.Invoke();
     }
 
-    public async Task OnChangeAvatarClicked()
+    public async Task OnChangeAvatarButtonClicked(CharacterViewModel character)
     {
         if (AccountViewModel == null)
         {
             return;
         }
 
-        var avatarLink = Avatar.Link;
-        if (AccountViewModel.Avatar == avatarLink)
+        if (character == null)
         {
             return;
         }
 
-        AccountViewModel.Avatar = await Services.ComputeServices.AccountServices.TryChangeAvatar(null, avatarLink);
-        //OnViewModelChanged?.Invoke();
+        AvatarTag = character.TagString;
+        AccountViewModel.Avatar = await Services.ComputeServices.AccountServices.TryChangeAvatar(null, new StringBody(AvatarTag));
+        OnViewModelChanged?.Invoke();
     }
 
     public async Task OnSocialLinkChanged(SocialHelpers link, string newValue)

@@ -9,7 +9,7 @@
     {
         <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
             <MudCardHeader Class="@ClassPresets.CardHeader">
-                <CardHeaderAvatar >
+                <CardHeaderAvatar>
                     <MudAvatar Size="Size.Large" Image="@ViewModel.AccountViewModel.Avatar">@ViewModel.AccountViewModel.GetAvatarText()</MudAvatar>
                 </CardHeaderAvatar>
                 <CardHeaderContent>
@@ -20,15 +20,15 @@
                 <MudGrid>
                     <MudItem xs="6">
                         <MudTextField T="string"
-                                      Label="Username"
-                                      @bind-Value="ViewModel.NewUsername"
-                                      Disabled="!ViewModel.AccountViewModel.CanChangeUsername"
-                                      Adornment="Adornment.End"
-                                      AdornmentIcon=@ViewModel.NewUsernameTextBoxAdornmentIcon
-                                      AdornmentColor=@ViewModel.NewUsernameTextBoxAdornmentColor
-                                      DebounceInterval="500"
-                                      OnDebounceIntervalElapsed="ViewModel.OnNewUsernameTextChanged"
-                                      MaxLength="49"/>
+                                  Label="Username"
+                                  @bind-Value="ViewModel.NewUsername"
+                                  Disabled="!ViewModel.AccountViewModel.CanChangeUsername"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon=@ViewModel.NewUsernameTextBoxAdornmentIcon
+                                  AdornmentColor=@ViewModel.NewUsernameTextBoxAdornmentColor
+                                  DebounceInterval="500"
+                                  OnDebounceIntervalElapsed="ViewModel.OnNewUsernameTextChanged"
+                                  MaxLength="49" />
                     </MudItem>
                     <MudItem xs="6" Class="my-auto">
                         @if (ViewModel.ChangeUsernameButtonVisible)
@@ -37,34 +37,13 @@
                         }
                     </MudItem>
                     <MudItem xs="6">
-                        <MudTextField T="string" Label="Battle Tag" @bind-Value="ViewModel.AccountViewModel.BattleTag" Disabled="true" MaxLength="49"/>
+                        <MudTextField T="string" Label="Battle Tag" @bind-Value="ViewModel.AccountViewModel.BattleTag" Disabled="true" MaxLength="49" />
                     </MudItem>
                     <MudItem xs="6" Class="my-auto">
-                        <MudSwitch T="bool" Checked="@ViewModel.AccountViewModel.BattleTagIsPublic" Color="Color.Primary" Label="Public" CheckedChanged="ViewModel.OnBattleTagVisibilityChanged"/>
-                    </MudItem>
-                    <MudItem xs="6">
-                        <MudSelect T="(string Link, string Name, long Id)" @bind-Value="@ViewModel.Avatar" Label="Avatar" Dense="true" OffsetY="true">
-                            @{
-                                foreach (var av in ViewModel.AllAvatars)
-                                {
-                                    var id = $"avatar-{av.Key}";
-                                    <MudSelectItem @key="@id" Value="@av.Value">
-                                        <div class="d-flex justify-start align-center">
-                                            <MudAvatar Class="mr-3" Size="Size.Small" Image="@av.Value.Link">@av.Value.Name[0]</MudAvatar><MudText Inline="true">@av.Value.Name</MudText>
-                                        </div>
-                                    </MudSelectItem>
-                                }
-                            }
-                        </MudSelect>
-                    </MudItem>
-                    <MudItem xs="3" Class="my-auto">
-                        <MudButton Variant="Variant.Filled" FullWidth="true">TODO UPLOAD</MudButton>
-                    </MudItem>
-                    <MudItem xs="3" Class="my-auto">
-                        <MudButton Variant="Variant.Filled" FullWidth="true" OnClick="ViewModel.OnChangeAvatarClicked">Change</MudButton>
+                        <MudSwitch T="bool" Checked="@ViewModel.AccountViewModel.BattleTagIsPublic" Color="Color.Primary" Label="Public" CheckedChanged="ViewModel.OnBattleTagVisibilityChanged" />
                     </MudItem>
                     <MudItem xs="12">
-                        <MudSwitch T="bool" Checked="@ViewModel.AccountViewModel.IsPrivate" Color="Color.Primary" Label="Private" CheckedChanged="ViewModel.OnIsPrivateChanged"/>
+                        <MudSwitch T="bool" Checked="@ViewModel.AccountViewModel.IsPrivate" Color="Color.Primary" Label="Private" CheckedChanged="ViewModel.OnIsPrivateChanged" />
                     </MudItem>
 
                     @foreach (var link in SocialHelpers.All)
@@ -72,14 +51,14 @@
                         <MudItem xs="6" Class="d-flex align-baseline">
                             <img src="@link.SocialIconLink" width="18" height="18" />
                             <MudTextField T="string"
-                                          Class="px-2"
-                                          Value="@ViewModel.SocialLinks[link.LinkId]"
-                                          Label="@link.Name"
-                                          Adornment="Adornment.End"
-                                          AdornmentIcon=@ViewModel.SocialLinksAdornmentIcons[link.LinkId]
-                                          AdornmentColor=@ViewModel.SocialLinksAdornmentColors[link.LinkId]
-                                          ValueChanged="x => ViewModel.OnSocialLinkChanged(link, x)"
-                                          MaxLength="49" />
+                                  Class="px-2"
+                                  Value="@ViewModel.SocialLinks[link.LinkId]"
+                                  Label="@link.Name"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon=@ViewModel.SocialLinksAdornmentIcons[link.LinkId]
+                                  AdornmentColor=@ViewModel.SocialLinksAdornmentColors[link.LinkId]
+                                  ValueChanged="x => ViewModel.OnSocialLinkChanged(link, x)"
+                                  MaxLength="49" />
                         </MudItem>
                         <MudItem xs="6">
                         </MudItem>
@@ -88,8 +67,53 @@
 
             </MudCardContent>
         </MudCard>
-        
+
         var characters = ViewModel.AccountViewModel.GetAllCharactersSafe();
+        if (characters.Length > 0)
+        {
+            <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+                <MudCardHeader Class="@ClassPresets.CardHeader">
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">Manage Avatar</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent Class="@ClassPresets.CardContent">
+                    @for (var i = 0; i < characters.Length; i++)
+                    {
+                        var index = i;
+                        var character = characters[index];
+
+                        if (string.IsNullOrWhiteSpace(character.AvatarLink))
+                        {
+                            continue;
+                        }
+
+                        <MudTooltip @key="@character.Id" Placement="Placement.Bottom" Color="Color.Dark">
+                            <ChildContent>
+                                <MudButton Id="@index" Variant="Variant.Filled" Disabled="ViewModel.AvatarTag == character.TagString" OnClick="() => ViewModel.OnChangeAvatarButtonClicked(character)">
+                                    <MudAvatar Size="Size.Medium" Image="@character.AvatarLinkWithFallBack" />
+                                </MudButton>
+                            </ChildContent>
+                            <TooltipContent>
+                                <CharacterNameLinkComponent CharacterName="@character.Name"
+                                                CharacterClass="@character.Class"
+                                                CharacterRealmId="@character.RealmId"
+                                                CharacterRegionInfo="@character.RegionId.ToInfo()" />
+
+                                <div>
+                                    <MudText Inline="true" Typo="Typo.body2">@character.Level @StringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
+                                    <MudText Inline="true" Typo="Typo.body2" Class=@($"wowclass-{character.Class}")>@StringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
+                                </div>
+
+                                <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@character.RealmId" />
+                            </TooltipContent>
+                        </MudTooltip>
+                    }
+                </MudCardContent>
+            </MudCard>
+        }
+
+
         var otherCharacters = new List<CharacterViewModel>();
 
         foreach (var character in characters)
@@ -104,17 +128,17 @@
 
                 <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
                     <MudCardHeader Class="@ClassPresets.CardHeader">
-                        <CardHeaderAvatar >
+                        <CardHeaderAvatar>
                             <MudAvatar Size="Size.Large" Image="@character.AvatarLinkWithFallBack">@character.Name[0]</MudAvatar>
                         </CardHeaderAvatar>
                         <CardHeaderContent>
                             <CharacterNameLinkComponent Typo="Typo.h6"
-                                                        CharacterName="@character.Name"
-                                                        CharacterClass="@character.Class"
-                                                        CharacterRealmId="@character.RealmId"
-                                                        CharacterRegionInfo="@character.RegionId.ToInfo()" />
+                                            CharacterName="@character.Name"
+                                            CharacterClass="@character.Class"
+                                            CharacterRealmId="@character.RealmId"
+                                            CharacterRegionInfo="@character.RegionId.ToInfo()" />
                             <div>
-                                <MudText Inline="true"  Typo="Typo.body2" >@character.Level</MudText>
+                                <MudText Inline="true" Typo="Typo.body2">@character.Level</MudText>
                                 <CharacterRaceComponent Typo="Typo.body2" Inline="true" CharacterRace="@character.Race" />
                                 <CharacterClassComponent Typo="Typo.body2" Inline="true" CharacterClass="@character.Class" />
                             </div>
@@ -126,7 +150,7 @@
                     <MudCardActions Class="@ClassPresets.CardActions">
                         <MudButtonGroup OverrideStyles="true" Class="pa-2 ma-2" Variant="Variant.Filled" Size="Size.Small">
                             <MudButton StartIcon="@Icons.Material.Filled.DeleteForever" OnClick="() => ViewModel.OnCharacterDeletedClicked(character)">Deleted</MudButton>
-                            <MudButton StartIcon="@Icons.Material.Filled.Transform" Disabled="@(possibleCharacters.Length == 0)" >Transferred / Renamed</MudButton>
+                            <MudButton StartIcon="@Icons.Material.Filled.Transform" Disabled="@(possibleCharacters.Length == 0)">Transferred / Renamed</MudButton>
                             <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Direction="Direction.Bottom" OffsetY="true">
                                 @foreach (var otherCharacter in possibleCharacters)
                                 {
@@ -136,21 +160,21 @@
                                     }
 
                                     <MudMenuItem OnClick="() => ViewModel.OnCharacterRenamedOrTransferred(character, otherCharacter)">
-                                        
+
                                         <CharacterNameLinkComponent Typo="Typo.h6"
-                                                                    CharacterName="@otherCharacter.Name"
-                                                                    CharacterClass="@otherCharacter.Class"
-                                                                    CharacterRealmId="@otherCharacter.RealmId"
-                                                                    CharacterRegionInfo="@otherCharacter.RegionId.ToInfo()"
-                                                                    LinkDisabled="true"/>
+                                                    CharacterName="@otherCharacter.Name"
+                                                    CharacterClass="@otherCharacter.Class"
+                                                    CharacterRealmId="@otherCharacter.RealmId"
+                                                    CharacterRegionInfo="@otherCharacter.RegionId.ToInfo()"
+                                                    LinkDisabled="true" />
                                         <div>
-                                            <MudText Inline="true"  Typo="Typo.body2" >@otherCharacter.Level</MudText>
-                                            <CharacterRaceComponent Typo="Typo.body2" Inline="true" CharacterRace="@otherCharacter.Race"  LinkDisabled="true"/>
+                                            <MudText Inline="true" Typo="Typo.body2">@otherCharacter.Level</MudText>
+                                            <CharacterRaceComponent Typo="Typo.body2" Inline="true" CharacterRace="@otherCharacter.Race" LinkDisabled="true" />
                                             <CharacterClassComponent Typo="Typo.body2" Inline="true" CharacterClass="@otherCharacter.Class" LinkDisabled="true" />
                                         </div>
 
 
-                                        <RealmLinkComponent Class="d-block" Typo="Typo.caption" BlizzardRealmId="@otherCharacter.RealmId" LinkDisabled="true"/>
+                                        <RealmLinkComponent Class="d-block" Typo="Typo.caption" BlizzardRealmId="@otherCharacter.RealmId" LinkDisabled="true" />
                                     </MudMenuItem>
                                 }
                             </MudMenu>
@@ -169,86 +193,86 @@
             <MudCardContent Class="@ClassPresets.CardContent">
                 <MudSimpleTable Hover="true" Dense="true" Striped="true" Breakpoint="Breakpoint.None">
                     <thead>
-                    <tr>
-                        <MudTh></MudTh>
+                        <tr>
+                            <MudTh></MudTh>
 
-                        <MudHidden Breakpoint="Breakpoint.SmAndDown">
-                            <MudTh>Name</MudTh>
-                            <MudTh>Realm</MudTh>
-                            <MudTh>Race</MudTh>
-                            <MudTh>Class</MudTh>
-                            <MudTh>Level</MudTh>
-                        </MudHidden>
+                            <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                                <MudTh>Name</MudTh>
+                                <MudTh>Realm</MudTh>
+                                <MudTh>Race</MudTh>
+                                <MudTh>Class</MudTh>
+                                <MudTh>Level</MudTh>
+                            </MudHidden>
 
-                        <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
-                            <MudTh>Name</MudTh>
-                        </MudHidden>
+                            <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
+                                <MudTh>Name</MudTh>
+                            </MudHidden>
 
-                        <MudTh>Sync</MudTh>
-                        <MudTh>Result</MudTh>
-                    </tr>
+                            <MudTh>Sync</MudTh>
+                            <MudTh>Result</MudTh>
+                        </tr>
                     </thead>
                     <tbody>
-                    @{
-                        foreach (var row in otherCharacters)
-                        {
-                            <tr @key="row.Id">
-                                <MudTd>
-                                    <MudAvatar Size="Size.Medium" Image="@row.AvatarLinkWithFallBack"/>
-                                </MudTd>
-                                <MudHidden Breakpoint="Breakpoint.SmAndDown">
-                                    <MudTd DataLabel="Name">
-                                        <CharacterNameLinkComponent CharacterName="@row.Name"
-                                                                    CharacterClass="@row.Class"
-                                                                    CharacterRealmId="@row.RealmId"
-                                                                    CharacterRegionInfo="@row.RegionId.ToInfo()"/>
+                        @{
+                            foreach (var row in otherCharacters)
+                            {
+                                <tr @key="row.Id">
+                                    <MudTd>
+                                        <MudAvatar Size="Size.Medium" Image="@row.AvatarLinkWithFallBack" />
                                     </MudTd>
-                                    <MudTd DataLabel="Realm">
-                                        <RealmLinkComponent BlizzardRealmId="@row.RealmId"/>
+                                    <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                                        <MudTd DataLabel="Name">
+                                            <CharacterNameLinkComponent CharacterName="@row.Name"
+                                                            CharacterClass="@row.Class"
+                                                            CharacterRealmId="@row.RealmId"
+                                                            CharacterRegionInfo="@row.RegionId.ToInfo()" />
+                                        </MudTd>
+                                        <MudTd DataLabel="Realm">
+                                            <RealmLinkComponent BlizzardRealmId="@row.RealmId" />
+                                        </MudTd>
+
+                                        <MudTd DataLabel="Race">
+                                            <CharacterRaceComponent CharacterRace="@row.Race" />
+                                        </MudTd>
+
+                                        <MudTd DataLabel="Class">
+                                            <CharacterClassComponent CharacterClass="@row.Class" />
+                                        </MudTd>
+
+                                        <MudTd DataLabel="Level">
+                                            @row.Level
+                                        </MudTd>
+                                    </MudHidden>
+                                    <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
+                                        <MudTd DataLabel="Name">
+                                            <CharacterNameLinkComponent CharacterName="@row.Name"
+                                                            CharacterClass="@row.Class"
+                                                            CharacterRealmId="@row.RealmId"
+                                                            CharacterRegionInfo="@row.RegionId.ToInfo()" />
+
+                                            <div>
+                                                <MudText Inline="true">@row.Level</MudText>
+                                                <CharacterRaceComponent Inline="true" CharacterRace="@row.Race" />
+                                                <CharacterClassComponent Inline="true" CharacterClass="@row.Class" />
+                                            </div>
+
+                                            <RealmLinkComponent BlizzardRealmId="@row.RealmId" />
+                                        </MudTd>
+                                    </MudHidden>
+
+                                    <MudTd DataLabel="Sync">
+                                        <MudToggleIconButton Toggled="@row.AccountSync"
+                                                 Icon="@Icons.Material.Filled.HourglassDisabled" Color="@Color.Error"
+                                                 ToggledIcon="@Icons.Material.Filled.HourglassBottom" ToggledColor="@Color.Success"
+                                                 ToggledChanged=@(x => ViewModel.OnAccountSyncToggleChanged(row, x)) />
                                     </MudTd>
 
-                                    <MudTd DataLabel="Race">
-                                        <CharacterRaceComponent CharacterRace="@row.Race"/>
+                                    <MudTd DataLabel="Result">
+                                        @row.LastUpdateHttpResult
                                     </MudTd>
-
-                                    <MudTd DataLabel="Class">
-                                        <CharacterClassComponent CharacterClass="@row.Class"/>
-                                    </MudTd>
-
-                                    <MudTd DataLabel="Level">
-                                        @row.Level
-                                    </MudTd>
-                                </MudHidden>
-                                <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
-                                    <MudTd DataLabel="Name">
-                                        <CharacterNameLinkComponent CharacterName="@row.Name"
-                                                                    CharacterClass="@row.Class"
-                                                                    CharacterRealmId="@row.RealmId"
-                                                                    CharacterRegionInfo="@row.RegionId.ToInfo()"/>
-                                                                    
-                                        <div>
-                                            <MudText Inline="true">@row.Level</MudText>
-                                            <CharacterRaceComponent Inline="true" CharacterRace="@row.Race"/>
-                                            <CharacterClassComponent Inline="true" CharacterClass="@row.Class"/>
-                                        </div>
-
-                                        <RealmLinkComponent BlizzardRealmId="@row.RealmId"/>
-                                    </MudTd>
-                                </MudHidden>
-
-                                <MudTd DataLabel="Sync">
-                                    <MudToggleIconButton Toggled="@row.AccountSync"
-                                                         Icon="@Icons.Material.Filled.HourglassDisabled" Color="@Color.Error"
-                                                         ToggledIcon="@Icons.Material.Filled.HourglassBottom" ToggledColor="@Color.Success"
-                                                         ToggledChanged=@(x => ViewModel.OnAccountSyncToggleChanged(row, x))/>
-                                </MudTd>
-
-                                <MudTd DataLabel="Result">
-                                    @row.LastUpdateHttpResult
-                                </MudTd>
-                            </tr>
+                                </tr>
+                            }
                         }
-                    }
                     </tbody>
                 </MudSimpleTable>
             </MudCardContent>

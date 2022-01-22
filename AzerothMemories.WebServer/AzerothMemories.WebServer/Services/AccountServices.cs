@@ -1,6 +1,4 @@
-﻿using System.Web;
-
-namespace AzerothMemories.WebServer.Services;
+﻿namespace AzerothMemories.WebServer.Services;
 
 [RegisterComputeService]
 [RegisterAlias(typeof(IAccountServices))]
@@ -203,7 +201,7 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<AccountViewModel> TryGetActiveAccount(Session session)
     {
-        var accountRecord = await TryGetCurrentSessionAccountRecord(session);
+        var accountRecord = await TryGetActiveAccountRecord(session);
         if (accountRecord == null)
         {
             return null;
@@ -250,7 +248,7 @@ public class AccountServices : IAccountServices
 
     public async Task<bool> TryEnqueueUpdate(Session session)
     {
-        var accountRecord = await TryGetCurrentSessionAccountRecord(session);
+        var accountRecord = await TryGetActiveAccountRecord(session);
         if (accountRecord == null)
         {
             return false;
@@ -273,6 +271,13 @@ public class AccountServices : IAccountServices
         var reactionCount = await GetReactionCount(accountRecord.Id);
 
         var viewModel = accountRecord.CreateViewModel(activeOrAdmin, followingViewModels, followersViewModels);
+
+        var avatar = accountRecord.Avatar;
+        if (ZExtensions.ParseTagInfoFrom(avatar, out var result))
+        {
+            var postTagInfo = await _commonServices.TagServices.TryGetUserTagInfo(result.Type, result.Id);
+            viewModel.Avatar = postTagInfo.Image;
+        }
 
         viewModel.TotalPostCount = postCount;
         viewModel.TotalCommentCount = commentCount;
@@ -353,7 +358,7 @@ public class AccountServices : IAccountServices
             return false;
         }
 
-        var accountRecord = await TryGetCurrentSessionAccountRecord(session);
+        var accountRecord = await TryGetActiveAccountRecord(session);
         if (accountRecord == null)
         {
             return false;
@@ -418,7 +423,7 @@ public class AccountServices : IAccountServices
 
     public async Task<bool> TryChangeIsPrivate(Session session, bool newValue)
     {
-        var accountRecord = await TryGetCurrentSessionAccountRecord(session);
+        var accountRecord = await TryGetActiveAccountRecord(session);
         if (accountRecord == null)
         {
             return false;
@@ -441,7 +446,7 @@ public class AccountServices : IAccountServices
 
     public async Task<bool> TryChangeBattleTagVisibility(Session session, bool newValue)
     {
-        var accountRecord = await TryGetCurrentSessionAccountRecord(session);
+        var accountRecord = await TryGetActiveAccountRecord(session);
         if (accountRecord == null)
         {
             return false;
@@ -462,44 +467,53 @@ public class AccountServices : IAccountServices
         return newValue;
     }
 
-    public async Task<string> TryChangeAvatar(Session session, string newAvatar)
+    public async Task<string> TryChangeAvatar(Session session, StringBody stringBody)
     {
-        var accountRecord = await TryGetCurrentSessionAccountRecord(session);
-        if (accountRecord == null)
+        var accountViewModel = await TryGetActiveAccount(session);
+        if (accountViewModel == null)
         {
             return null;
         }
 
-        newAvatar = HttpUtility.UrlDecode(newAvatar);
-
-        if (accountRecord.Avatar == newAvatar)
+        var newTagOrLink = stringBody.Value;
+        if (accountViewModel.AvatarTag == newTagOrLink)
         {
-            return accountRecord.Avatar;
+            return accountViewModel.Avatar;
         }
 
-        if (string.IsNullOrWhiteSpace(newAvatar))
+        string avatarLink;
+        if (string.IsNullOrWhiteSpace(newTagOrLink))
         {
+            avatarLink = null;
+            newTagOrLink = null;
         }
-        else if (newAvatar.Length > 200)
+        else
         {
-            return accountRecord.Avatar;
+            var character = accountViewModel.GetAllCharactersSafe().FirstOrDefault(x => x.TagString == newTagOrLink);
+            if (character == null)
+            {
+                return null;
+            }
+
+            avatarLink = character.AvatarLink;
         }
 
+        var accountRecord = await TryGetActiveAccountRecord(session);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var updateResult = await database.GetUpdateQuery(accountRecord, out _).Set(x => x.Avatar, newAvatar).UpdateAsync();
+        var updateResult = await database.GetUpdateQuery(accountRecord, out _).Set(x => x.Avatar, newTagOrLink).UpdateAsync();
         if (updateResult == 0)
         {
-            return accountRecord.Avatar;
+            return accountViewModel.Avatar;
         }
 
         InvalidateAccountRecord(accountRecord);
 
-        return accountRecord.Avatar;
+        return avatarLink;
     }
 
     public async Task<string> TryChangeSocialLink(Session session, int linkId, StringBody stringBody)
     {
-        var accountRecord = await TryGetCurrentSessionAccountRecord(session);
+        var accountRecord = await TryGetActiveAccountRecord(session);
         if (accountRecord == null)
         {
             return null;
@@ -535,7 +549,7 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, long timeStamp, int diffInSeconds, string locale)
     {
-        var accountRecord = await TryGetCurrentSessionAccountRecord(session);
+        var accountRecord = await TryGetActiveAccountRecord(session);
         if (accountRecord == null)
         {
             return Array.Empty<PostTagInfo>();
@@ -633,7 +647,7 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<AccountRecord> TryGetCurrentSessionAccountRecord(Session session)
+    protected virtual async Task<AccountRecord> TryGetActiveAccountRecord(Session session)
     {
         if (session == null)
         {

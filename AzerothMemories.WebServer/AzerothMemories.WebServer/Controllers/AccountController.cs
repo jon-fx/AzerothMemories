@@ -60,10 +60,9 @@ public sealed class AccountController : ControllerBase, IAccountServices
     }
 
     [HttpPost]
-    [HttpPost("{newValue}")]
-    public Task<string> TryChangeAvatar(Session session, [FromRoute] string newValue)
+    public Task<string> TryChangeAvatar(Session session, [FromBody] StringBody stringBody)
     {
-        return _commonServices.AccountServices.TryChangeAvatar(session, newValue);
+        return _commonServices.AccountServices.TryChangeAvatar(session, stringBody);
     }
 
     [HttpPost("{linkId}")]

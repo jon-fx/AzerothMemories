@@ -56,4 +56,6 @@ public sealed class CharacterViewModel
             return $"{str}?alt=/shadow/avatar/{Race}-{Gender}.jpg";
         }
     }
+
+    [JsonIgnore] public string TagString => PostTagInfo.GetTagString(PostTagType.Character, Id);
 }
