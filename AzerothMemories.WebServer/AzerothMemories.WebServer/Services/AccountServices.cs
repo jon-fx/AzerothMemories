@@ -614,8 +614,18 @@ public class AccountServices : IAccountServices
             historyRecord.Id = await database.InsertWithInt64IdentityAsync(historyRecord);
         }
 
-        using var computed = Computed.Invalidate();
-        _ = TryGetAccountHistory(historyRecord.AccountId, 1);
+        await _commonServices.Commander.Call(new Account_InvalidateFollowing(historyRecord.AccountId, 1));
+    }
+
+    [CommandHandler]
+    protected virtual Task InvalidateFollowing(Account_InvalidateFollowing command, CancellationToken cancellationToken)
+    {
+        if (Computed.IsInvalidating())
+        {
+            _ = TryGetAccountHistory(command.AccountId, command.Page);
+        }
+
+        return Task.CompletedTask;
     }
 
     [ComputeMethod]
