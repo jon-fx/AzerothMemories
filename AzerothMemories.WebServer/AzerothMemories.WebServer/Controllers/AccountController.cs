@@ -29,11 +29,11 @@ public sealed class AccountController : ControllerBase, IAccountServices
         return _commonServices.AccountServices.TryGetAccountByUsername(session, username);
     }
 
-    [HttpPost]
-    public Task<bool> TryEnqueueUpdate(Session session)
-    {
-        return _commonServices.AccountServices.TryEnqueueUpdate(session);
-    }
+    //[HttpPost]
+    //public Task<bool> TryEnqueueUpdate(Session session)
+    //{
+    //    return _commonServices.AccountServices.TryEnqueueUpdate(session);
+    //}
 
     [HttpGet("{username}"), Publish]
     public Task<bool> CheckIsValidUsername(Session session, [FromRoute] string username)
@@ -41,34 +41,34 @@ public sealed class AccountController : ControllerBase, IAccountServices
         return _commonServices.AccountServices.CheckIsValidUsername(session, username);
     }
 
-    [HttpPost("{newUsername}")]
-    public Task<bool> TryChangeUsername(Session session, [FromRoute] string newUsername)
+    [HttpPost]
+    public Task<bool> TryChangeUsername([FromBody] Account_TryChangeUsername command, CancellationToken cancellationToken)
     {
-        return _commonServices.AccountServices.TryChangeUsername(session, newUsername);
-    }
-
-    [HttpPost("{newValue}")]
-    public Task<bool> TryChangeIsPrivate(Session session, [FromRoute] bool newValue)
-    {
-        return _commonServices.AccountServices.TryChangeIsPrivate(session, newValue);
-    }
-
-    [HttpPost("{newValue}")]
-    public Task<bool> TryChangeBattleTagVisibility(Session session, [FromRoute] bool newValue)
-    {
-        return _commonServices.AccountServices.TryChangeBattleTagVisibility(session, newValue);
+        return _commonServices.AccountServices.TryChangeUsername(command, cancellationToken);
     }
 
     [HttpPost]
-    public Task<string> TryChangeAvatar(Session session, [FromBody] StringBody stringBody)
+    public Task<bool> TryChangeIsPrivate([FromBody] Account_TryChangeIsPrivate command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.AccountServices.TryChangeAvatar(session, stringBody);
+        return _commonServices.AccountServices.TryChangeIsPrivate(command, cancellationToken);
     }
 
-    [HttpPost("{linkId}")]
-    public Task<string> TryChangeSocialLink(Session session, [FromRoute] int linkId, [FromBody] StringBody stringBody)
+    [HttpPost]
+    public Task<bool> TryChangeBattleTagVisibility([FromBody] Account_TryChangeBattleTagVisibility command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.AccountServices.TryChangeSocialLink(session, linkId, stringBody);
+        return _commonServices.AccountServices.TryChangeBattleTagVisibility(command, cancellationToken);
+    }
+
+    [HttpPost]
+    public Task<string> TryChangeAvatar([FromBody] Account_TryChangeAvatar command, CancellationToken cancellationToken = default)
+    {
+        return _commonServices.AccountServices.TryChangeAvatar(command, cancellationToken);
+    }
+
+    [HttpPost]
+    public Task<string> TryChangeSocialLink([FromBody] Account_TryChangeSocialLink command, CancellationToken cancellationToken = default)
+    {
+        return _commonServices.AccountServices.TryChangeSocialLink(command, cancellationToken);
     }
 
     [HttpGet("{timeStamp}/{diffInSeconds}"), Publish]

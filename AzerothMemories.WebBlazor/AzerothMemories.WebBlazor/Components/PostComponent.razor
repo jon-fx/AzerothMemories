@@ -324,9 +324,13 @@ else
         _userReacting = true;
 
         var postId = Post.Id;
-
-        Post.ReactionId = await Services.ComputeServices.PostServices.TryReactToPost(null, postId, newReaction);
-        Post.Reaction = newReaction;
+        
+        var result = await Services.CommandRunner.Run(new Post_TryReactToPost(Services.Session, postId, newReaction));
+        if (result.Result > 0)
+        {
+            Post.ReactionId = result.Result;
+            Post.Reaction = newReaction;
+        }
 
         _userReacting = false;
 
@@ -390,8 +394,8 @@ else
         _isChangingTags = true;
 
         var postId = Post.Id;
-        var result = await Services.ComputeServices.PostServices.TryRestoreMemory(null, postId, previousCharacter?.Id ?? -1, character?.Id ?? -1);
-        if (result)
+        var result = await Services.CommandRunner.Run(new Post_TryRestoreMemory(Services.Session, postId, previousCharacter?.Id ?? -1, character?.Id ?? -1));
+        if (result.Result)
         {
             _showTagMenu = false;
         }
@@ -410,8 +414,8 @@ else
         if (confirmationResult.HasValue && confirmationResult.Value)
         {
             var postId = Post.Id;
-
-            Post.DeletedTimeStamp = await Services.ComputeServices.PostServices.TryDeletePost(null, postId);
+            var result = await Services.CommandRunner.Run(new Post_TryDeletePost(Services.Session, postId));
+            Post.DeletedTimeStamp = result.Result;
 
             var message = Post.DeletedTimeStamp == 0 ? "Post delete failed." : "Post deleted.";
             await Services.DialogService.ShowNotificationDialog(true, message);
@@ -427,14 +431,14 @@ else
     {
         var postId = Post.Id;
         var newVisibility = Post.PostVisibility == 1 ? (byte)0 : (byte)1;
-        var result = await Services.ComputeServices.PostServices.TrySetPostVisibility(null, postId, newVisibility);
-        if (result == null)
+        var result = await Services.CommandRunner.Run(new Post_TrySetPostVisibility(Services.Session, postId, newVisibility));
+        if (result.Result == null)
         {
             await Services.DialogService.ShowNotificationDialog(false, "Post visibility change failed.");
         }
         else
         {
-            Post.PostVisibility = result.Value;
+            Post.PostVisibility = result.Result.Value;
 
             await Services.DialogService.ShowNotificationDialog(true, "Post visibility changed.");
         }

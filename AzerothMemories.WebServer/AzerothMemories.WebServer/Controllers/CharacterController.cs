@@ -11,10 +11,10 @@ public sealed class CharacterController : ControllerBase, ICharacterServices
         _commonServices = commonServices;
     }
 
-    [HttpPost("{characterId}/{newValue}")]
-    public Task<bool> TryChangeCharacterAccountSync(Session session, [FromRoute] long characterId, [FromRoute] bool newValue)
+    [HttpPost]
+    public Task<bool> TryChangeCharacterAccountSync(Character_TryChangeCharacterAccountSync command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.CharacterServices.TryChangeCharacterAccountSync(session, characterId, newValue);
+        return _commonServices.CharacterServices.TryChangeCharacterAccountSync(command, cancellationToken);
     }
 
     [HttpGet("{characterId}"), Publish]
@@ -29,21 +29,21 @@ public sealed class CharacterController : ControllerBase, ICharacterServices
         return _commonServices.CharacterServices.TryGetCharacter(session, region, realmSlug, characterName);
     }
 
-    [HttpPost("{region}/{realmSlug}/{characterName}")]
-    public Task<bool> TryEnqueueUpdate(Session session, [FromRoute] BlizzardRegion region, [FromRoute] string realmSlug, [FromRoute] string characterName)
+    //[HttpPost]
+    //public Task<bool> TryEnqueueUpdate(Character_TryEnqueueUpdate command, CancellationToken cancellationToken = default)
+    //{
+    //    return _commonServices.CharacterServices.TryEnqueueUpdate(command, cancellationToken);
+    //}
+
+    [HttpPost]
+    public Task<bool> TrySetCharacterDeleted(Character_TrySetCharacterDeleted command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.CharacterServices.TryEnqueueUpdate(session, region, realmSlug, characterName);
+        return _commonServices.CharacterServices.TrySetCharacterDeleted(command, cancellationToken);
     }
 
-    [HttpPost("{characterId}")]
-    public Task<bool> TrySetCharacterDeleted(Session session, [FromRoute] long characterId)
+    [HttpPost]
+    public Task<bool> TrySetCharacterRenamedOrTransferred(Character_TrySetCharacterRenamedOrTransferred command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.CharacterServices.TrySetCharacterDeleted(session, characterId);
-    }
-
-    [HttpPost("{oldCharacterId}/{newCharacterId}")]
-    public Task<bool> TrySetCharacterRenamedOrTransferred(Session session, [FromRoute] long oldCharacterId, [FromRoute] long newCharacterId)
-    {
-        return _commonServices.CharacterServices.TrySetCharacterRenamedOrTransferred(session, oldCharacterId, newCharacterId);
+        return _commonServices.CharacterServices.TrySetCharacterRenamedOrTransferred(command, cancellationToken);
     }
 }

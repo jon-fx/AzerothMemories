@@ -12,7 +12,7 @@ public sealed class ComputeServices
     public void Initialize()
     {
         AccountServices = _serviceProvider.GetRequiredService<IAccountServices>();
-        FollowingServices = _serviceProvider.GetRequiredService<IFollowingServices>();
+        //FollowingServices = _serviceProvider.GetRequiredService<IFollowingServices>();
         CharacterServices = _serviceProvider.GetRequiredService<ICharacterServices>();
         GuildServices = _serviceProvider.GetRequiredService<IGuildServices>();
         TagServices = _serviceProvider.GetRequiredService<ITagServices>();
@@ -22,7 +22,7 @@ public sealed class ComputeServices
 
     public IAccountServices AccountServices { get; private set; }
 
-    public IFollowingServices FollowingServices { get; private set; }
+    //public IFollowingServices FollowingServices { get; private set; }
 
     public ICharacterServices CharacterServices { get; private set; }
 

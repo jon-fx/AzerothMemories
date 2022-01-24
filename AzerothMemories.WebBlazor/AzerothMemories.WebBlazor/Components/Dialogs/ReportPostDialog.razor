@@ -29,7 +29,9 @@
 
     [CascadingParameter] public MudDialogInstance MudDialog { get; init; }
     
-    [Inject] public IPostServices PostServices { get; init; }
+    [Inject] public Session Session { get; init; }
+
+    [Inject] public UICommandRunner CommandRunner { get; init; }
 
     [Inject] public DialogHelperService DialogService { get; init; }
 
@@ -48,21 +50,21 @@
             reasonText = reasonText[.._maxLength];
         }
 
-        var info = new PostReportInfo
-        {
-            Reason = _reason,
-            ReasonText = reasonText,
-        };
+        //var info = new PostReportInfo
+        //{
+        //    Reason = _reason,
+        //    ReasonText = reasonText,
+        //};
 
         if (CommentId == 0)
         {
-            var result = await PostServices.TryReportPost(null, PostId, info);
-            await DialogService.ShowNotificationDialog(result, "Post reported.");
+            var result = await CommandRunner.Run(new Post_TryReportPost(Session, PostId, _reason, reasonText));
+            await DialogService.ShowNotificationDialog(result.Result, "Post reported.");
         }
         else
         {
-            var result = await PostServices.TryReportPostComment(null, PostId,  CommentId, info);
-            await DialogService.ShowNotificationDialog(result, "Comment reported.");
+            var result = await CommandRunner.Run(new Post_TryReportPostComment(Session, PostId, CommentId, _reason, reasonText));
+            await DialogService.ShowNotificationDialog(result.Result, "Comment reported.");
         }
     }
 

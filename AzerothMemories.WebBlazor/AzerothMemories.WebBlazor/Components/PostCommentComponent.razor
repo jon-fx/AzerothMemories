@@ -150,9 +150,13 @@
         }
 
         _userReacting = true;
-
-        node.ReactionId = await Services.ComputeServices.PostServices.TryReactToPostComment(null, postId, commentId, newReaction);
-        node.Reaction = newReaction;
+        
+        var result = await Services.CommandRunner.Run(new Post_TryReactToPostComment(Services.Session, postId, commentId, newReaction));
+        if (result.Result > 0)
+        {
+            node.ReactionId = result.Result;
+            node.Reaction = newReaction;
+        }
 
         _userReacting = false;
 
@@ -182,8 +186,10 @@
         {
             var postId = comment.PostId;
             var commentId = comment.Id;
+            
+            var result = await Services.CommandRunner.Run(new Post_TryDeleteComment(Services.Session, postId, commentId));
 
-            comment.DeletedTimeStamp = await Services.ComputeServices.PostServices.TryDeleteComment(null, postId, commentId);
+            comment.DeletedTimeStamp = result.Result;
 
             var message = comment.DeletedTimeStamp == 0 ? "Comment delete failed." : "Comment deleted.";
             await Services.DialogService.ShowNotificationDialog(true, message);

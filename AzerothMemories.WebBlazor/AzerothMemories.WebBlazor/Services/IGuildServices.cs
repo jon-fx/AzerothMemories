@@ -11,6 +11,6 @@ public interface IGuildServices
     [Get(nameof(TryGetGuild) + "/{region}/{realmSlug}/{guildName}")]
     Task<GuildViewModel> TryGetGuild(Session session, [Path] BlizzardRegion region, [Path] string realmSlug, [Path] string guildName);
 
-    [Post(nameof(TryEnqueueUpdate) + "/{region}/{realmSlug}/{guildName}")]
-    Task<bool> TryEnqueueUpdate(Session session, [Path] BlizzardRegion region, [Path] string realmSlug, [Path] string guildName);
+    //[Post(nameof(TryEnqueueUpdate) + "/{region}/{realmSlug}/{guildName}")]
+    //Task<bool> TryEnqueueUpdate(Session session, [Path] BlizzardRegion region, [Path] string realmSlug, [Path] string guildName);
 }

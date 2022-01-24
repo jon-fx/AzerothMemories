@@ -13,6 +13,8 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
 
     protected TViewModel ViewModel { get; }
 
+    [Inject] public Session Session { get; init; }
+
     [Inject] public ComputeServices ComputeServices { get; init; }
 
     [Inject] public ActiveAccountServices ActiveAccountServices { get; init; }
@@ -20,6 +22,8 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
     [Inject] public TagHelpers TagHelpers { get; init; }
 
     [Inject] public TimeProvider TimeProvider { get; init; }
+
+    [Inject] public UICommandRunner CommandRunner { get; init; }
 
     [Inject] public NavigationManager NavigationManager { get; init; }
 

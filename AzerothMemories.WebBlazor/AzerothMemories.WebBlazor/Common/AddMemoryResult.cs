@@ -5,7 +5,7 @@ public sealed class AddMemoryResult
     [JsonInclude] public readonly long AccountId;
     [JsonInclude] public readonly long PostId;
     [JsonInclude] public readonly AddMemoryResultCode Result;
-    [JsonInclude] public readonly AddMemoryTransferData Data;
+    //[JsonInclude] public readonly AddMemoryTransferData Data;
 
     public AddMemoryResult(AddMemoryResultCode result, long accountId = 0, long postId = 0)
     {

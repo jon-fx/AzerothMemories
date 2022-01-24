@@ -144,18 +144,18 @@ public class GuildServices : IGuildServices
         return await TryGetGuild(session, guildRecord.Id);
     }
 
-    public async Task<bool> TryEnqueueUpdate(Session session, BlizzardRegion region, string realmSlug, string guildName)
-    {
-        var guildRef = await GetFullGuildRef(region, realmSlug, guildName);
-        if (guildRef == null)
-        {
-            return false;
-        }
+    //public async Task<bool> TryEnqueueUpdate(Session session, BlizzardRegion region, string realmSlug, string guildName)
+    //{
+    //    var guildRef = await GetFullGuildRef(region, realmSlug, guildName);
+    //    if (guildRef == null)
+    //    {
+    //        return false;
+    //    }
 
-        await GetOrCreate(guildRef.Full);
+    //    await GetOrCreate(guildRef.Full);
 
-        return true;
-    }
+    //    return true;
+    //}
 
     [ComputeMethod]
     protected virtual async Task<MoaRef> GetFullGuildRef(BlizzardRegion region, string realmSlug, string guildName)

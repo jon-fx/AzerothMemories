@@ -81,7 +81,12 @@ public sealed class AccountHistoryViewModel
             }
             case AccountHistoryType.StartedFollowing:
             {
-                return $"You started following <a href='account/{OtherAccountId}'>{OtherAccountUsername}</a>.";
+                if (TargetId == 0)
+                {
+                    return $"You started following <a href='account/{OtherAccountId}'>{OtherAccountUsername}</a>.";
+                }
+
+                return $"<a href='account/{OtherAccountId}'>{OtherAccountUsername}</a> started following you.";
             }
             case AccountHistoryType.StoppedFollowing:
             {

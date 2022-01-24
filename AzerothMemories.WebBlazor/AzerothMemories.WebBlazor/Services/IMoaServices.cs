@@ -2,6 +2,8 @@
 
 public interface IMoaServices
 {
+    Session Session { get; }
+
     ComputeServices ComputeServices { get; }
 
     ActiveAccountServices ActiveAccountServices { get; }
@@ -13,6 +15,8 @@ public interface IMoaServices
     DialogHelperService DialogService { get; }
 
     IStringLocalizer<BlizzardResources> StringLocalizer { get; }
+
+    UICommandRunner CommandRunner { get; }
 
     NavigationManager NavigationManager { get; }
 }

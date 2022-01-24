@@ -63,9 +63,18 @@ public class FollowingServices : IFollowingServices
         return await followersQuery.ToDictionaryAsync(x => x.FollowerId, x => x);
     }
 
-    public async Task<AccountFollowingStatus?> TryStartFollowing(Session session, long otherAccountId)
+    public virtual async Task<AccountFollowingStatus?> TryStartFollowing(Following_TryStartFollowing command, CancellationToken cancellationToken = default)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invRecord = context.Operation().Items.Get<Following_InvalidateRecord>();
+            InvalidateFollowing(invRecord);
+
+            return default;
+        }
+
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
         if (activeAccount == null)
         {
             return null;
@@ -76,6 +85,7 @@ public class FollowingServices : IFollowingServices
             return null;
         }
 
+        var otherAccountId = command.OtherAccountId;
         if (activeAccount.Id == otherAccountId)
         {
             return null;
@@ -104,7 +114,7 @@ public class FollowingServices : IFollowingServices
                 FollowerId = otherAccountId,
                 LastUpdateTime = SystemClock.Instance.GetCurrentInstant(),
                 CreatedTime = SystemClock.Instance.GetCurrentInstant()
-            });
+            }, token: cancellationToken);
 
             var followingViewModelQuery = from record in database.AccountFollowing
                                           where record.Id == recordId
@@ -119,7 +129,7 @@ public class FollowingServices : IFollowingServices
                                               Status = record.Status
                                           };
 
-            followingViewModels[otherAccountId] = viewModel = await followingViewModelQuery.FirstAsync();
+            followingViewModels[otherAccountId] = viewModel = await followingViewModelQuery.FirstAsync(cancellationToken);
         }
 
         var status = AccountFollowingStatus.Active;
@@ -130,7 +140,7 @@ public class FollowingServices : IFollowingServices
 
         viewModel.Status = status;
 
-        await database.AccountFollowing.Where(x => x.Id == viewModel.Id).Set(x => x.Status, viewModel.Status).Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync();
+        await database.AccountFollowing.Where(x => x.Id == viewModel.Id).Set(x => x.Status, viewModel.Status).Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync(cancellationToken);
 
         await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
         {
@@ -143,6 +153,7 @@ public class FollowingServices : IFollowingServices
         await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
         {
             AccountId = otherAccountId,
+            TargetId = 1,
             OtherAccountId = activeAccount.Id,
             CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = viewModel.Status == AccountFollowingStatus.Active ? AccountHistoryType.StartedFollowing : AccountHistoryType.FollowingRequestReceived
@@ -150,14 +161,23 @@ public class FollowingServices : IFollowingServices
 
         transaction.Complete();
 
-        InvalidateFollowing(activeAccount.Id, otherAccountId);
+        context.Operation().Items.Set(new Following_InvalidateRecord(activeAccount.Id, otherAccountId));
 
         return viewModel.Status;
     }
 
-    public async Task<AccountFollowingStatus?> TryStopFollowing(Session session, long otherAccountId)
+    public virtual async Task<AccountFollowingStatus?> TryStopFollowing(Following_TryStopFollowing command, CancellationToken cancellationToken = default)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invRecord = context.Operation().Items.Get<Following_InvalidateRecord>();
+            InvalidateFollowing(invRecord);
+
+            return default;
+        }
+
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
         if (activeAccount == null)
         {
             return null;
@@ -168,6 +188,7 @@ public class FollowingServices : IFollowingServices
             return null;
         }
 
+        var otherAccountId = command.OtherAccountId;
         if (activeAccount.Id == otherAccountId)
         {
             return null;
@@ -189,7 +210,7 @@ public class FollowingServices : IFollowingServices
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
-        await database.AccountFollowing.Where(x => x.Id == viewModel.Id).Set(x => x.Status, viewModel.Status).Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync();
+        await database.AccountFollowing.Where(x => x.Id == viewModel.Id).Set(x => x.Status, viewModel.Status).Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync(cancellationToken);
 
         await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
         {
@@ -201,14 +222,23 @@ public class FollowingServices : IFollowingServices
 
         transaction.Complete();
 
-        InvalidateFollowing(activeAccount.Id, otherAccountId);
+        context.Operation().Items.Set(new Following_InvalidateRecord(activeAccount.Id, otherAccountId));
 
         return viewModel.Status;
     }
 
-    public async Task<AccountFollowingStatus?> TryAcceptFollower(Session session, long otherAccountId)
+    public virtual async Task<AccountFollowingStatus?> TryAcceptFollower(Following_TryAcceptFollower command, CancellationToken cancellationToken = default)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invRecord = context.Operation().Items.Get<Following_InvalidateRecord>();
+            InvalidateFollowing(invRecord);
+
+            return default;
+        }
+
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
         if (activeAccount == null)
         {
             return null;
@@ -219,6 +249,7 @@ public class FollowingServices : IFollowingServices
             return null;
         }
 
+        var otherAccountId = command.OtherAccountId;
         if (activeAccount.Id == otherAccountId)
         {
             return null;
@@ -240,7 +271,7 @@ public class FollowingServices : IFollowingServices
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
-        await database.AccountFollowing.Where(x => x.Id == viewModel.Id).Set(x => x.Status, viewModel.Status).Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync();
+        await database.AccountFollowing.Where(x => x.Id == viewModel.Id).Set(x => x.Status, viewModel.Status).Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync(cancellationToken);
 
         await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
         {
@@ -260,14 +291,23 @@ public class FollowingServices : IFollowingServices
 
         transaction.Complete();
 
-        InvalidateFollowing(activeAccount.Id, otherAccountId);
+        context.Operation().Items.Set(new Following_InvalidateRecord(activeAccount.Id, otherAccountId));
 
         return viewModel.Status;
     }
 
-    public async Task<AccountFollowingStatus?> TryRemoveFollower(Session session, long otherAccountId)
+    public virtual async Task<AccountFollowingStatus?> TryRemoveFollower(Following_TryRemoveFollower command, CancellationToken cancellationToken = default)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invRecord = context.Operation().Items.Get<Following_InvalidateRecord>();
+            InvalidateFollowing(invRecord);
+
+            return default;
+        }
+
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
         if (activeAccount == null)
         {
             return null;
@@ -278,6 +318,7 @@ public class FollowingServices : IFollowingServices
             return null;
         }
 
+        var otherAccountId = command.OtherAccountId;
         if (activeAccount.Id == otherAccountId)
         {
             return null;
@@ -299,7 +340,7 @@ public class FollowingServices : IFollowingServices
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
-        await database.AccountFollowing.Where(x => x.Id == viewModel.Id).Set(x => x.Status, viewModel.Status).Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync();
+        await database.AccountFollowing.Where(x => x.Id == viewModel.Id).Set(x => x.Status, viewModel.Status).Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync(cancellationToken);
 
         await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
         {
@@ -311,17 +352,28 @@ public class FollowingServices : IFollowingServices
 
         transaction.Complete();
 
-        InvalidateFollowing(activeAccount.Id, otherAccountId);
+        context.Operation().Items.Set(new Following_InvalidateRecord(activeAccount.Id, otherAccountId));
 
         return viewModel.Status;
     }
 
-    private void InvalidateFollowing(long activeAccountId, long otherAccountId)
+    private void InvalidateFollowing(Following_InvalidateRecord record)
     {
-        using var computed = Computed.Invalidate();
-        _ = TryGetAccountFollowing(activeAccountId);
-        _ = TryGetAccountFollowers(activeAccountId);
-        _ = TryGetAccountFollowing(otherAccountId);
-        _ = TryGetAccountFollowers(otherAccountId);
+        if (record == null)
+        {
+            return;
+        }
+
+        if (record.AccountId > 0)
+        {
+            _ = TryGetAccountFollowing(record.AccountId);
+            _ = TryGetAccountFollowers(record.AccountId);
+        }
+
+        if (record.OtherAccountId > 0)
+        {
+            _ = TryGetAccountFollowing(record.OtherAccountId);
+            _ = TryGetAccountFollowers(record.OtherAccountId);
+        }
     }
 }

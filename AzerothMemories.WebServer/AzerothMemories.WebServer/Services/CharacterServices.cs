@@ -194,27 +194,49 @@ public class CharacterServices : ICharacterServices
         _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Character, characterId);
     }
 
-    public async Task<bool> TryChangeCharacterAccountSync(Session session, long characterId, bool newValue)
+    public void InvalidateRecord(Character_InvalidateCharacterRecord invRecord)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        _ = TryGetCharacterRecord(invRecord.CharacterId);
+
+        if (invRecord.AccountId > 0)
+        {
+            _ = TryGetAllAccountCharacters(invRecord.AccountId);
+            _ = TryGetAllAccountCharacterIds(invRecord.AccountId);
+        }
+
+        _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Character, invRecord.CharacterId);
+    }
+
+    public virtual async Task<bool> TryChangeCharacterAccountSync(Character_TryChangeCharacterAccountSync command, CancellationToken cancellationToken = default)
+    {
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invRecord = context.Operation().Items.Get<Character_InvalidateCharacterRecord>();
+            InvalidateRecord(invRecord);
+
+            return default;
+        }
+
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
         if (activeAccount == null)
         {
             return false;
         }
 
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var updateResult = await database.Characters.Where(x => x.Id == characterId && x.AccountId == activeAccount.Id && x.AccountSync == !newValue).AsUpdatable()
-            .Set(x => x.AccountSync, newValue)
-            .UpdateAsync();
+        var updateResult = await database.Characters.Where(x => x.Id == command.CharacterId && x.AccountId == activeAccount.Id && x.AccountSync == !command.NewValue).AsUpdatable()
+                                                .Set(x => x.AccountSync, command.NewValue)
+                                                .UpdateAsync(cancellationToken);
 
         if (updateResult == 0)
         {
-            return !newValue;
+            return !command.NewValue;
         }
 
-        OnCharacterUpdate(characterId, activeAccount.Id);
+        context.Operation().Items.Set(new Character_InvalidateCharacterRecord(command.CharacterId, activeAccount.Id));
 
-        return newValue;
+        return command.NewValue;
     }
 
     [ComputeMethod]
@@ -269,28 +291,38 @@ public class CharacterServices : ICharacterServices
         return await TryGetCharacter(session, characterRecord.Id);
     }
 
-    public async Task<bool> TryEnqueueUpdate(Session session, BlizzardRegion region, string realmSlug, string characterName)
+    //public virtual async Task<bool> TryEnqueueUpdate(Character_TryEnqueueUpdate command, CancellationToken cancellationToken = default)
+    //{
+    //    //    var characterRef = await GetFullCharacterRef(region, realmSlug, characterName);
+    //    //    if (characterRef == null)
+    //    //    {
+    //    //        return false;
+    //    //    }
+
+    //    //    await GetOrCreateCharacterRecord(characterRef.Full, BlizzardUpdatePriority.CharacterMed);
+
+    //    //    return true;
+    //    throw new NotImplementedException();
+    //}
+
+    public virtual async Task<bool> TrySetCharacterDeleted(Character_TrySetCharacterDeleted command, CancellationToken cancellationToken = default)
     {
-        var characterRef = await GetFullCharacterRef(region, realmSlug, characterName);
-        if (characterRef == null)
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
         {
-            return false;
+            var invRecord = context.Operation().Items.Get<Character_InvalidateCharacterRecord>();
+            InvalidateRecord(invRecord);
+
+            return default;
         }
 
-        await GetOrCreateCharacterRecord(characterRef.Full, BlizzardUpdatePriority.CharacterMed);
-
-        return true;
-    }
-
-    public async Task<bool> TrySetCharacterDeleted(Session session, long characterId)
-    {
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
         if (activeAccount == null)
         {
             return false;
         }
 
-        var characterRecord = await TryGetCharacterRecord(characterId);
+        var characterRecord = await TryGetCharacterRecord(command.CharacterId);
         if (characterRecord == null)
         {
             return false;
@@ -307,28 +339,49 @@ public class CharacterServices : ICharacterServices
         }
 
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        await database.GetUpdateQuery(characterRecord, out _).Set(x => x.CharacterStatus, CharacterStatus2.DeletePending).UpdateAsync();
+        await database.GetUpdateQuery(characterRecord, out _).Set(x => x.CharacterStatus, CharacterStatus2.DeletePending).UpdateAsync(cancellationToken);
 
-        OnCharacterUpdate(characterRecord.Id, characterRecord.AccountId.GetValueOrDefault());
+        context.Operation().Items.Set(new Character_InvalidateCharacterRecord(command.CharacterId, characterRecord.AccountId.GetValueOrDefault()));
 
         return true;
     }
 
-    public async Task<bool> TrySetCharacterRenamedOrTransferred(Session session, long oldCharacterId, long newCharacterId)
+    public virtual async Task<bool> TrySetCharacterRenamedOrTransferred(Character_TrySetCharacterRenamedOrTransferred command, CancellationToken cancellationToken = default)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invRecord = context.Operation().Items.Get<Character_TrySetCharacterRenamedOrTransferredInvalidate>();
+            if (invRecord != null)
+            {
+                InvalidateRecord(new Character_InvalidateCharacterRecord(invRecord.OldCharacterId, invRecord.OldAccountId));
+                InvalidateRecord(new Character_InvalidateCharacterRecord(invRecord.NewCharacterId, invRecord.NewAccountId));
+
+                if (invRecord.PostIds != null)
+                {
+                    foreach (var postId in invRecord.PostIds)
+                    {
+                        _commonServices.PostServices.InvalidatePostRecordAndTags(postId);
+                    }
+                }
+            }
+
+            return default;
+        }
+
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
         if (activeAccount == null)
         {
             return false;
         }
 
-        var oldCharacterRecord = await TryGetCharacterRecord(oldCharacterId);
+        var oldCharacterRecord = await TryGetCharacterRecord(command.OldCharacterId);
         if (oldCharacterRecord == null || oldCharacterRecord.AccountId != activeAccount.Id)
         {
             return false;
         }
 
-        var newCharacterRecord = await TryGetCharacterRecord(newCharacterId);
+        var newCharacterRecord = await TryGetCharacterRecord(command.NewCharacterId);
         if (newCharacterRecord == null || newCharacterRecord.AccountId != activeAccount.Id)
         {
             return false;
@@ -347,29 +400,24 @@ public class CharacterServices : ICharacterServices
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
-        await database.GetUpdateQuery(oldCharacterRecord, out _).Set(x => x.CharacterStatus, CharacterStatus2.RenamedOrTransferred).UpdateAsync();
+        await database.GetUpdateQuery(oldCharacterRecord, out _).Set(x => x.CharacterStatus, CharacterStatus2.RenamedOrTransferred).UpdateAsync(cancellationToken);
 
         var oldTag = PostTagInfo.GetTagString(PostTagType.Character, oldCharacterRecord.Id);
         var newTag = PostTagInfo.GetTagString(PostTagType.Character, newCharacterRecord.Id);
 
-        var allPostIds = await database.Posts.Where(x => x.PostAvatar == oldTag).Select(x => x.Id).ToArrayAsync();
-        var allTagsPostIds = await database.PostTags.Where(x => x.TagString == oldTag).Select(x => x.PostId).ToArrayAsync();
+        var allPostIds = await database.Posts.Where(x => x.PostAvatar == oldTag).Select(x => x.Id).ToArrayAsync(cancellationToken);
+        var allTagsPostIds = await database.PostTags.Where(x => x.TagString == oldTag).Select(x => x.PostId).ToArrayAsync(cancellationToken);
 
-        await database.Posts.Where(x => x.PostAvatar == oldTag).Set(x => x.PostAvatar, newTag).UpdateAsync();
-        await database.PostTags.Where(x => x.TagString == oldTag).Set(x => x.TagString, newTag).Set(x => x.TagId, newCharacterRecord.Id).UpdateAsync();
+        await database.Posts.Where(x => x.PostAvatar == oldTag).Set(x => x.PostAvatar, newTag).UpdateAsync(cancellationToken);
+        await database.PostTags.Where(x => x.TagString == oldTag).Set(x => x.TagString, newTag).Set(x => x.TagId, newCharacterRecord.Id).UpdateAsync(cancellationToken);
 
         transaction.Complete();
-
-        OnCharacterUpdate(oldCharacterRecord.Id, oldCharacterRecord.AccountId.GetValueOrDefault());
-        OnCharacterUpdate(newCharacterRecord.Id, newCharacterRecord.AccountId.GetValueOrDefault());
 
         var hashSet = new HashSet<long>(allPostIds);
         hashSet.UnionWith(allTagsPostIds);
 
-        foreach (var postId in hashSet)
-        {
-            _commonServices.PostServices.InvalidatePostRecordAndTags(postId);
-        }
+        var item = new Character_TrySetCharacterRenamedOrTransferredInvalidate(oldCharacterRecord.AccountId.GetValueOrDefault(), oldCharacterRecord.Id, newCharacterRecord.AccountId.GetValueOrDefault(), newCharacterRecord.Id, hashSet);
+        context.Operation().Items.Set(item);
 
         return true;
     }

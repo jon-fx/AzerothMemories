@@ -15,27 +15,32 @@ public interface IAccountServices
     [Get(nameof(TryGetAccountByUsername) + "/{username}")]
     Task<AccountViewModel> TryGetAccountByUsername(Session session, [Path] string username);
 
-    [Post(nameof(TryEnqueueUpdate))]
-    Task<bool> TryEnqueueUpdate(Session session);
+    //[Post(nameof(TryEnqueueUpdate))]
+    //Task<bool> TryEnqueueUpdate(Session session);
 
     [ComputeMethod]
     [Get(nameof(CheckIsValidUsername) + "/{username}")]
     Task<bool> CheckIsValidUsername(Session session, [Path] string username);
 
-    [Post(nameof(TryChangeUsername) + "/{newUsername}")]
-    Task<bool> TryChangeUsername(Session session, [Path] string newUsername);
+    [CommandHandler]
+    [Post(nameof(TryChangeUsername))]
+    Task<bool> TryChangeUsername([Body] Account_TryChangeUsername command, CancellationToken cancellationToken = default);
 
-    [Post(nameof(TryChangeIsPrivate) + "/{newValue}")]
-    Task<bool> TryChangeIsPrivate(Session session, [Path] bool newValue);
+    [CommandHandler]
+    [Post(nameof(TryChangeIsPrivate))]
+    Task<bool> TryChangeIsPrivate([Body] Account_TryChangeIsPrivate command, CancellationToken cancellationToken = default);
 
-    [Post(nameof(TryChangeBattleTagVisibility) + "/{newValue}")]
-    Task<bool> TryChangeBattleTagVisibility(Session session, [Path] bool newValue);
+    [CommandHandler]
+    [Post(nameof(TryChangeBattleTagVisibility))]
+    Task<bool> TryChangeBattleTagVisibility([Body] Account_TryChangeBattleTagVisibility command, CancellationToken cancellationToken = default);
 
+    [CommandHandler]
     [Post(nameof(TryChangeAvatar))]
-    Task<string> TryChangeAvatar(Session session, [Body] StringBody stringBody);
+    Task<string> TryChangeAvatar([Body] Account_TryChangeAvatar command, CancellationToken cancellationToken = default);
 
-    [Post(nameof(TryChangeSocialLink) + "/{linkId}")]
-    Task<string> TryChangeSocialLink(Session session, [Path] int linkId, [Body] StringBody stringBody);
+    [CommandHandler]
+    [Post(nameof(TryChangeSocialLink))]
+    Task<string> TryChangeSocialLink([Body] Account_TryChangeSocialLink command, CancellationToken cancellationToken = default);
 
     [ComputeMethod]
     [Get(nameof(TryGetAchievementsByTime) + "/{timeStamp}/{diffInSeconds}")]

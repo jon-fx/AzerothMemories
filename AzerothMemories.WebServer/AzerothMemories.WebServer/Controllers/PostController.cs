@@ -12,9 +12,9 @@ public sealed class PostController : ControllerBase, IPostServices
     }
 
     [HttpPost]
-    public Task<AddMemoryResult> TryPostMemory(Session session, [FromBody] AddMemoryTransferData transferData)
+    public Task<AddMemoryResult> TryPostMemory([FromBody] Post_TryPostMemory command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TryPostMemory(session, transferData);
+        return _commonServices.PostServices.TryPostMemory(command, cancellationToken);
     }
 
     [HttpGet("{accountId}/{postId}"), Publish]
@@ -23,10 +23,10 @@ public sealed class PostController : ControllerBase, IPostServices
         return _commonServices.PostServices.TryGetPostViewModel(session, accountId, postId, locale);
     }
 
-    [HttpPost("{postId}/{newReaction}")]
-    public Task<long> TryReactToPost(Session session, [FromRoute] long postId, [FromRoute] PostReaction newReaction)
+    [HttpPost]
+    public Task<long> TryReactToPost([FromBody] Post_TryReactToPost command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TryReactToPost(session, postId, newReaction);
+        return _commonServices.PostServices.TryReactToPost(command, cancellationToken);
     }
 
     [HttpGet("{postId}"), Publish]
@@ -53,63 +53,63 @@ public sealed class PostController : ControllerBase, IPostServices
         return _commonServices.PostServices.TryGetMyCommentReactions(session, postId);
     }
 
-    [HttpPost("{postId}/{previousCharacterId}/{newCharacterId}")]
-    public Task<bool> TryRestoreMemory(Session session, [FromRoute] long postId, [FromRoute] long previousCharacterId, [FromRoute] long newCharacterId)
+    [HttpPost]
+    public Task<bool> TryRestoreMemory([FromBody] Post_TryRestoreMemory command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TryRestoreMemory(session, postId, previousCharacterId, newCharacterId);
+        return _commonServices.PostServices.TryRestoreMemory(command, cancellationToken);
     }
 
-    [HttpPost("{postId}/{parentCommentId}")]
-    public Task<long> TryPublishComment(Session session, [FromRoute] long postId, [FromRoute] long parentCommentId, [FromBody] AddCommentTransferData transferData)
+    [HttpPost]
+    public Task<long> TryPublishComment([FromBody] Post_TryPublishComment command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TryPublishComment(session, postId, parentCommentId, transferData);
+        return _commonServices.PostServices.TryPublishComment(command, cancellationToken);
     }
 
-    [HttpPost("{postId}/{commentId}/{newReaction}")]
-    public Task<long> TryReactToPostComment(Session session, [FromRoute] long postId, [FromRoute] long commentId, [FromRoute] PostReaction newReaction)
+    [HttpPost]
+    public Task<long> TryReactToPostComment([FromBody] Post_TryReactToPostComment command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TryReactToPostComment(session, postId, commentId, newReaction);
+        return _commonServices.PostServices.TryReactToPostComment(command, cancellationToken);
     }
 
-    [HttpPost("{postId}/{newVisibility}")]
-    public Task<byte?> TrySetPostVisibility(Session session, [FromRoute] long postId, [FromRoute] byte newVisibility)
+    [HttpPost]
+    public Task<byte?> TrySetPostVisibility([FromBody] Post_TrySetPostVisibility command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TrySetPostVisibility(session, postId, newVisibility);
+        return _commonServices.PostServices.TrySetPostVisibility(command, cancellationToken);
     }
 
-    [HttpPost("{postId}")]
-    public Task<long> TryDeletePost(Session session, [FromRoute] long postId)
+    [HttpPost]
+    public Task<long> TryDeletePost([FromBody] Post_TryDeletePost command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TryDeletePost(session, postId);
+        return _commonServices.PostServices.TryDeletePost(command, cancellationToken);
     }
 
-    [HttpPost("{postId}/{commentId}")]
-    public Task<long> TryDeleteComment(Session session, [FromRoute] long postId, [FromRoute] long commentId)
+    [HttpPost]
+    public Task<long> TryDeleteComment([FromBody] Post_TryDeleteComment command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TryDeleteComment(session, postId, commentId);
+        return _commonServices.PostServices.TryDeleteComment(command, cancellationToken);
     }
 
-    [HttpPost("{postId}")]
-    public Task<bool> TryReportPost(Session session, [FromRoute] long postId, [FromBody] PostReportInfo reportInfo)
+    [HttpPost]
+    public Task<bool> TryReportPost([FromBody] Post_TryReportPost command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TryReportPost(session, postId, reportInfo);
+        return _commonServices.PostServices.TryReportPost(command, cancellationToken);
     }
 
-    [HttpPost("{postId}/{commentId}")]
-    public Task<bool> TryReportPostComment(Session session, [FromRoute] long postId, [FromRoute] long commentId, [FromBody] PostReportInfo reportInfo)
+    [HttpPost]
+    public Task<bool> TryReportPostComment([FromBody] Post_TryReportPostComment command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TryReportPostComment(session, postId, commentId, reportInfo);
+        return _commonServices.PostServices.TryReportPostComment(command, cancellationToken);
     }
 
-    [HttpPost("{postId}")]
-    public Task<bool> TryReportPostTags(Session session, [FromRoute] long postId, [FromBody] HashSet<string> tagStrings)
+    [HttpPost]
+    public Task<bool> TryReportPostTags([FromBody] Post_TryReportPostTags command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TryReportPostTags(session, postId, tagStrings);
+        return _commonServices.PostServices.TryReportPostTags(command, cancellationToken);
     }
 
-    [HttpPost("{postId}")]
-    public Task<AddMemoryResultCode> TryUpdateSystemTags(Session session, [FromRoute] long postId, [FromBody] TryUpdateSystemTagsInfo info)
+    [HttpPost]
+    public Task<AddMemoryResultCode> TryUpdateSystemTags([FromBody] Post_TryUpdateSystemTags command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TryUpdateSystemTags(session, postId, info);
+        return _commonServices.PostServices.TryUpdateSystemTags(command, cancellationToken);
     }
 }

@@ -171,7 +171,7 @@ public sealed class AddMemoryComponentSharedData
         _viewModel.OnViewModelChanged?.Invoke();
     }
 
-    public Task<AddMemoryResult> Submit(PublishCommentComponent commentComponent, List<AddMemoryUploadResult> uploadResults)
+    public async Task<AddMemoryResult> Submit(PublishCommentComponent commentComponent, List<AddMemoryUploadResult> uploadResults)
     {
         var timeStamp = PostTimeStamp;
         var finalText = commentComponent.GetCommentText();
@@ -183,8 +183,8 @@ public sealed class AddMemoryComponentSharedData
             avatarTag = PostAvatarImages[SelectedPostAvatarImage].Tag.TagString;
         }
 
-        var transferData = new AddMemoryTransferData(timeStamp.ToUnixTimeMilliseconds(), avatarTag, PrivatePost, finalText, systemTags, uploadResults);
-        return _viewModel.Services.ComputeServices.PostServices.TryPostMemory(null, transferData);
+        var result = await _viewModel.Services.CommandRunner.Run(new Post_TryPostMemory(_viewModel.Services.Session, timeStamp.ToUnixTimeMilliseconds(), avatarTag, PrivatePost, finalText, systemTags, uploadResults));
+        return result.Result;
     }
 
     public async Task<AddMemoryResultCode> SubmitOnEditingPost(PostViewModel currentPost)
@@ -197,13 +197,8 @@ public sealed class AddMemoryComponentSharedData
             avatarTag = PostAvatarImages[SelectedPostAvatarImage].Tag.TagString;
         }
 
-        var result = await _viewModel.Services.ComputeServices.PostServices.TryUpdateSystemTags(null, currentPost.Id, new TryUpdateSystemTagsInfo
-        {
-            AvatarText = avatarTag,
-            NewTags = newTags
-        });
-
-        return result;
+        var result = await _viewModel.Services.CommandRunner.Run(new Post_TryUpdateSystemTags(_viewModel.Services.Session, currentPost.Id, avatarTag, newTags));
+        return result.Result;
     }
 
     private HashSet<string> GetSystemHashTags()

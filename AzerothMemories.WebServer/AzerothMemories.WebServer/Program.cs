@@ -1,6 +1,7 @@
 using AzerothMemories.WebBlazor;
 using Hangfire.PostgreSql;
 using Microsoft.EntityFrameworkCore;
+using Stl.Fusion.EntityFramework.Npgsql;
 using Stl.Fusion.Server.Authentication;
 using Stl.Fusion.Server.Controllers;
 using System.Net.Http.Headers;
@@ -36,18 +37,9 @@ builder.Services.AddDbContextServices<AppDbContext>(dbContext =>
         o.UnconditionalWakeUpPeriod = TimeSpan.FromSeconds(builder.Environment.IsDevelopment() ? 60 : 5);
     });
 
-    var operationLogChangeAlertPath = dbPath + "_changed";
-    dbContext.AddFileBasedOperationLogChangeTracking(operationLogChangeAlertPath);
-
+    dbContext.AddNpgsqlOperationLogChangeTracking();
     dbContext.AddAuthentication<string>();
-    //dbContext.AddAuthentication((_, options) =>
-    //{
-    //    options.MinUpdatePresencePeriod = TimeSpan.FromSeconds(55);
-    //});
-
-    //dbContext.AddKeyValueStore();
 });
-
 builder.Services.AddHangfire(options =>
 {
     options.UsePostgreSqlStorage(config.HangfireConnectionString);

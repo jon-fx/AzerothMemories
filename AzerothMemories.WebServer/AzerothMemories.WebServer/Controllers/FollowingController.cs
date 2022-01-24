@@ -11,27 +11,27 @@ public sealed class FollowingController : ControllerBase, IFollowingServices
         _commonServices = commonServices;
     }
 
-    [HttpPost("{otherAccountId}")]
-    public Task<AccountFollowingStatus?> TryStartFollowing(Session session, [FromRoute] long otherAccountId)
+    [HttpPost]
+    public Task<AccountFollowingStatus?> TryStartFollowing([FromBody] Following_TryStartFollowing command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.FollowingServices.TryStartFollowing(session, otherAccountId);
+        return _commonServices.FollowingServices.TryStartFollowing(command, cancellationToken);
     }
 
-    [HttpPost("{otherAccountId}")]
-    public Task<AccountFollowingStatus?> TryStopFollowing(Session session, [FromRoute] long otherAccountId)
+    [HttpPost]
+    public Task<AccountFollowingStatus?> TryStopFollowing([FromBody] Following_TryStopFollowing command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.FollowingServices.TryStopFollowing(session, otherAccountId);
+        return _commonServices.FollowingServices.TryStopFollowing(command, cancellationToken);
     }
 
-    [HttpPost("{otherAccountId}")]
-    public Task<AccountFollowingStatus?> TryAcceptFollower(Session session, [FromRoute] long otherAccountId)
+    [HttpPost]
+    public Task<AccountFollowingStatus?> TryAcceptFollower([FromBody] Following_TryAcceptFollower command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.FollowingServices.TryAcceptFollower(session, otherAccountId);
+        return _commonServices.FollowingServices.TryAcceptFollower(command, cancellationToken);
     }
 
-    [HttpPost("{otherAccountId}")]
-    public Task<AccountFollowingStatus?> TryRemoveFollower(Session session, [FromRoute] long otherAccountId)
+    [HttpPost]
+    public Task<AccountFollowingStatus?> TryRemoveFollower([FromBody] Following_TryRemoveFollower command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.FollowingServices.TryRemoveFollower(session, otherAccountId);
+        return _commonServices.FollowingServices.TryRemoveFollower(command, cancellationToken);
     }
 }

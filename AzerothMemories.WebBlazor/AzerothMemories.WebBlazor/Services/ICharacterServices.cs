@@ -3,8 +3,11 @@
 [BasePath("character")]
 public interface ICharacterServices
 {
-    [Post(nameof(TryChangeCharacterAccountSync) + "/{characterId}/{newValue}")]
-    Task<bool> TryChangeCharacterAccountSync(Session session, [Path] long characterId, [Path] bool newValue);
+    //Task<bool> TryChangeUsername([Body] Account_TryChangeUsername command, CancellationToken cancellationToken = default);
+
+    [CommandHandler]
+    [Post(nameof(TryChangeCharacterAccountSync))]
+    Task<bool> TryChangeCharacterAccountSync([Body] Character_TryChangeCharacterAccountSync command, CancellationToken cancellationToken = default);
 
     [ComputeMethod]
     [Get(nameof(TryGetCharacter) + "/{characterId}")]
@@ -14,12 +17,15 @@ public interface ICharacterServices
     [Get(nameof(TryGetCharacter) + "/{region}/{realmSlug}/{characterName}")]
     Task<CharacterAccountViewModel> TryGetCharacter(Session session, [Path] BlizzardRegion region, [Path] string realmSlug, [Path] string characterName);
 
-    [Post(nameof(TryEnqueueUpdate) + "/{region}/{realmSlug}/{characterName}")]
-    Task<bool> TryEnqueueUpdate(Session session, [Path] BlizzardRegion region, [Path] string realmSlug, [Path] string characterName);
+    //[CommandHandler]
+    //[Post(nameof(TryEnqueueUpdate))]
+    //Task<bool> TryEnqueueUpdate([Body] Character_TryEnqueueUpdate command, CancellationToken cancellationToken = default);
 
-    [Post(nameof(TrySetCharacterDeleted) + "/{characterId}")]
-    Task<bool> TrySetCharacterDeleted(Session session, [Path] long characterId);
+    [CommandHandler]
+    [Post(nameof(TrySetCharacterDeleted))]
+    Task<bool> TrySetCharacterDeleted([Body] Character_TrySetCharacterDeleted command, CancellationToken cancellationToken = default);
 
-    [Post(nameof(TrySetCharacterRenamedOrTransferred) + "/{oldCharacterId}/{newCharacterId}")]
-    Task<bool> TrySetCharacterRenamedOrTransferred(Session session, [Path] long oldCharacterId, [Path] long newCharacterId);
+    [CommandHandler]
+    [Post(nameof(TrySetCharacterRenamedOrTransferred))]
+    Task<bool> TrySetCharacterRenamedOrTransferred([Body] Character_TrySetCharacterRenamedOrTransferred command, CancellationToken cancellationToken = default);
 }

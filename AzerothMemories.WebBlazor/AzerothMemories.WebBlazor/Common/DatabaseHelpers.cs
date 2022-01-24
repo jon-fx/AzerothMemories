@@ -6,6 +6,11 @@ public static class DatabaseHelpers
 {
     public static bool IsValidAccountName(string username)
     {
+        if (string.IsNullOrWhiteSpace(username))
+        {
+            return false;
+        }
+
         if (username.Length < 3)
         {
             return false;

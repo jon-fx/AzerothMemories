@@ -74,8 +74,8 @@
 
         var postId = PostId;
         var parentId = CommentId;
-        var result = await Services.ComputeServices.PostServices.TryPublishComment(null, postId, parentId, new AddCommentTransferData { Comment = commentText });
-        if (result > 0)
+        var result = await Services.CommandRunner.Run(new Post_TryPublishComment(Services.Session, postId, parentId, commentText));
+        if (result.Result > 0)
         {
             _commentComponent.Reset();
 
@@ -84,7 +84,7 @@
             var dictionary = new Dictionary<string, object>
             {
                 { "page",null},
-                { "comment",result }
+                { "comment", result.Result }
             };
 
             var newPath = Services.NavigationManager.GetUriWithQueryParameters(dictionary);

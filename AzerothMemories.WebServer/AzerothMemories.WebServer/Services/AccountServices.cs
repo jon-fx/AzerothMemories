@@ -246,22 +246,23 @@ public class AccountServices : IAccountServices
         return await CreateAccountViewModel(accountRecord, sessionAccount != null && sessionAccount.AccountType >= AccountType.Admin);
     }
 
-    public async Task<bool> TryEnqueueUpdate(Session session)
-    {
-        var accountRecord = await TryGetActiveAccountRecord(session);
-        if (accountRecord == null)
-        {
-            return false;
-        }
+    //public async Task<bool> TryEnqueueUpdate(Session session)
+    //{
+    //    var accountRecord = await TryGetActiveAccountRecord(session);
+    //    if (accountRecord == null)
+    //    {
+    //        return false;
+    //    }
 
-        await _commonServices.BlizzardUpdateHandler.TryUpdate(accountRecord, BlizzardUpdatePriority.Account);
+    //    await _commonServices.BlizzardUpdateHandler.TryUpdate(accountRecord, BlizzardUpdatePriority.Account);
 
-        return true;
-    }
+    //    return true;
+    //}
 
     [ComputeMethod]
-    protected virtual async Task<AccountViewModel> CreateAccountViewModel(AccountRecord accountRecord, bool activeOrAdmin)
+    protected virtual async Task<AccountViewModel> CreateAccountViewModel(long accountId, bool activeOrAdmin)
     {
+        var accountRecord = await TryGetAccountRecord(accountId);
         var characters = await _commonServices.CharacterServices.TryGetAllAccountCharacters(accountRecord.Id);
         var followingViewModels = await _commonServices.FollowingServices.TryGetAccountFollowing(accountRecord.Id);
         var followersViewModels = await _commonServices.FollowingServices.TryGetAccountFollowers(accountRecord.Id);
@@ -280,6 +281,12 @@ public class AccountServices : IAccountServices
         viewModel.CharactersArray = activeOrAdmin ? characters.Values.ToArray() : characters.Values.Where(x => x.AccountSync && x.CharacterStatus == CharacterStatus2.None).ToArray();
 
         return viewModel;
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<AccountViewModel> CreateAccountViewModel(AccountRecord accountRecord, bool activeOrAdmin)
+    {
+        return await CreateAccountViewModel(accountRecord.Id, activeOrAdmin);
     }
 
     [ComputeMethod]
@@ -316,11 +323,11 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<bool> CheckIsValidUsername(Session session, string username)
     {
-        return await TryReserveUsername(username);
+        return await CheckIsValidUsername(username);
     }
 
     [ComputeMethod]
-    protected virtual async Task<bool> TryReserveUsername(string username)
+    protected virtual async Task<bool> CheckIsValidUsername(string username)
     {
         if (!DatabaseHelpers.IsValidAccountName(username))
         {
@@ -337,31 +344,68 @@ public class AccountServices : IAccountServices
         return true;
     }
 
-    public async Task<bool> TryChangeUsername(Session session, string newUsername)
+    private void InvalidateAccountRecord(Account_InvalidateAccountRecord invRecord)
     {
-        if (!DatabaseHelpers.IsValidAccountName(newUsername))
+        if (invRecord == null)
+        {
+            return;
+        }
+
+        _ = TryGetAccountRecord(invRecord.Id);
+        _ = TryGetAccountRecordFusionId(invRecord.FusionId);
+        _ = TryGetAccountRecordUsername(invRecord.Username);
+        _ = CreateAccountViewModel(invRecord.Id, true);
+        _ = CreateAccountViewModel(invRecord.Id, false);
+        _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Account, invRecord.Id);
+    }
+
+    [CommandHandler]
+    public virtual async Task<bool> TryChangeUsername(Account_TryChangeUsername command, CancellationToken cancellationToken)
+    {
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
+            InvalidateAccountRecord(invRecord);
+
+            var username = invRecord?.Username;
+            if (!string.IsNullOrWhiteSpace(username))
+            {
+                _ = CheckIsValidUsername(username);
+            }
+
+            var invPreviousUsername = context.Operation().Items.Get<string>();
+            if (invPreviousUsername != null)
+            {
+                _ = TryGetAccountRecordUsername(invPreviousUsername);
+            }
+
+            return default;
+        }
+
+        if (!DatabaseHelpers.IsValidAccountName(command.NewUsername))
+        {
+            return false;
+        }
+
+        var accountRecord = await TryGetActiveAccountRecord(command.Session);
+        if (accountRecord == null)
         {
             return false;
         }
 
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var usernameExists = await database.Accounts.AnyAsync(x => x.Username == newUsername);
+        var usernameExists = await database.Accounts.AnyAsync(x => x.Username == command.NewUsername, cancellationToken);
         if (usernameExists)
-        {
-            return false;
-        }
-
-        var accountRecord = await TryGetActiveAccountRecord(session);
-        if (accountRecord == null)
         {
             return false;
         }
 
         var previousUsername = accountRecord.Username;
         var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.Username == accountRecord.Username).AsUpdatable()
-            .Set(x => x.Username, newUsername)
-            .Set(x => x.UsernameSearchable, DatabaseHelpers.GetSearchableName(newUsername))
-            .UpdateAsync();
+            .Set(x => x.Username, command.NewUsername)
+            .Set(x => x.UsernameSearchable, DatabaseHelpers.GetSearchableName(command.NewUsername))
+            .UpdateAsync(cancellationToken);
 
         if (updateResult == 0)
         {
@@ -375,12 +419,175 @@ public class AccountServices : IAccountServices
             Type = AccountHistoryType.UsernameChanged
         });
 
-        InvalidateAccountRecord(accountRecord);
-
-        using var computed = Computed.Invalidate();
-        _ = TryGetAccountRecordUsername(previousUsername);
+        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+        context.Operation().Items.Set(previousUsername);
 
         return true;
+    }
+
+    [CommandHandler]
+    public virtual async Task<bool> TryChangeIsPrivate(Account_TryChangeIsPrivate command, CancellationToken cancellationToken = default)
+    {
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
+            InvalidateAccountRecord(invRecord);
+
+            return default;
+        }
+
+        var accountRecord = await TryGetActiveAccountRecord(command.Session);
+        if (accountRecord == null)
+        {
+            return false;
+        }
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.IsPrivate == !command.NewValue).AsUpdatable()
+            .Set(x => x.IsPrivate, command.NewValue)
+            .UpdateAsync(cancellationToken);
+
+        if (updateResult == 0)
+        {
+            return !command.NewValue;
+        }
+
+        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+
+        return command.NewValue;
+    }
+
+    [CommandHandler]
+    public virtual async Task<bool> TryChangeBattleTagVisibility(Account_TryChangeBattleTagVisibility command, CancellationToken cancellationToken = default)
+    {
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
+            InvalidateAccountRecord(invRecord);
+
+            return default;
+        }
+
+        var accountRecord = await TryGetActiveAccountRecord(command.Session);
+        if (accountRecord == null)
+        {
+            return false;
+        }
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.BattleTagIsPublic == !command.NewValue).AsUpdatable()
+            .Set(x => x.BattleTagIsPublic, command.NewValue)
+            .UpdateAsync(cancellationToken);
+
+        if (updateResult == 0)
+        {
+            return !command.NewValue;
+        }
+
+        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+
+        return command.NewValue;
+    }
+
+    [CommandHandler]
+    public virtual async Task<string> TryChangeAvatar(Account_TryChangeAvatar command, CancellationToken cancellationToken = default)
+    {
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
+            InvalidateAccountRecord(invRecord);
+
+            return default;
+        }
+
+        var accountViewModel = await TryGetActiveAccount(command.Session);
+        if (accountViewModel == null)
+        {
+            return null;
+        }
+
+        var newAvatar = command.NewAvatar;
+        if (accountViewModel.Avatar == newAvatar)
+        {
+            return accountViewModel.Avatar;
+        }
+
+        if (string.IsNullOrWhiteSpace(newAvatar))
+        {
+            newAvatar = null;
+        }
+        else if (newAvatar.StartsWith("https://render") && newAvatar.Contains(".worldofwarcraft.com"))
+        {
+            var character = accountViewModel.GetAllCharactersSafe().FirstOrDefault(x => x.AvatarLink == newAvatar);
+            if (character == null)
+            {
+                return null;
+            }
+        }
+        else
+        {
+            return null;
+        }
+
+        var accountRecord = await TryGetActiveAccountRecord(command.Session);
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        var updateResult = await database.GetUpdateQuery(accountRecord, out _).Set(x => x.Avatar, newAvatar).UpdateAsync(cancellationToken);
+        if (updateResult == 0)
+        {
+            return accountViewModel.Avatar;
+        }
+
+        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+
+        return newAvatar;
+    }
+
+    [CommandHandler]
+    public virtual async Task<string> TryChangeSocialLink(Account_TryChangeSocialLink command, CancellationToken cancellationToken = default)
+    {
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
+            InvalidateAccountRecord(invRecord);
+
+            return default;
+        }
+
+        var accountRecord = await TryGetActiveAccountRecord(command.Session);
+        if (accountRecord == null)
+        {
+            return null;
+        }
+
+        var newValue = command.NewValue;
+        var helper = SocialHelpers.All[command.LinkId];
+        var previous = ServerSocialHelpers.GetterFunc[helper.LinkId](accountRecord);
+        if (!string.IsNullOrWhiteSpace(newValue) && !helper.ValidatorFunc(newValue))
+        {
+            return previous;
+        }
+
+        if (previous == newValue)
+        {
+            return previous;
+        }
+
+        ServerSocialHelpers.SetterFunc[helper.LinkId](accountRecord, newValue);
+
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        var updateResult = await database.GetUpdateQuery(accountRecord, out _).Set(ServerSocialHelpers.QuerySetter[helper.LinkId], newValue).UpdateAsync(cancellationToken);
+        if (updateResult == 0)
+        {
+            return previous;
+        }
+
+        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+
+        return newValue;
     }
 
     public async Task TestingHistory(DatabaseConnection database, AccountHistoryRecord historyRecord)
@@ -412,131 +619,6 @@ public class AccountServices : IAccountServices
 
         using var computed = Computed.Invalidate();
         _ = TryGetAccountHistory(historyRecord.AccountId, 1);
-    }
-
-    public async Task<bool> TryChangeIsPrivate(Session session, bool newValue)
-    {
-        var accountRecord = await TryGetActiveAccountRecord(session);
-        if (accountRecord == null)
-        {
-            return false;
-        }
-
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.IsPrivate == !newValue).AsUpdatable()
-            .Set(x => x.IsPrivate, newValue)
-            .UpdateAsync();
-
-        if (updateResult == 0)
-        {
-            return !newValue;
-        }
-
-        InvalidateAccountRecord(accountRecord);
-
-        return newValue;
-    }
-
-    public async Task<bool> TryChangeBattleTagVisibility(Session session, bool newValue)
-    {
-        var accountRecord = await TryGetActiveAccountRecord(session);
-        if (accountRecord == null)
-        {
-            return false;
-        }
-
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.BattleTagIsPublic == !newValue).AsUpdatable()
-            .Set(x => x.BattleTagIsPublic, newValue)
-            .UpdateAsync();
-
-        if (updateResult == 0)
-        {
-            return !newValue;
-        }
-
-        InvalidateAccountRecord(accountRecord);
-
-        return newValue;
-    }
-
-    public async Task<string> TryChangeAvatar(Session session, StringBody stringBody)
-    {
-        var accountViewModel = await TryGetActiveAccount(session);
-        if (accountViewModel == null)
-        {
-            return null;
-        }
-
-        var newAvatar = stringBody.Value;
-        if (accountViewModel.Avatar == newAvatar)
-        {
-            return accountViewModel.Avatar;
-        }
-
-        if (string.IsNullOrWhiteSpace(newAvatar))
-        {
-            newAvatar = null;
-        }
-        else if (newAvatar.StartsWith("https://render") && newAvatar.Contains(".worldofwarcraft.com"))
-        {
-            var character = accountViewModel.GetAllCharactersSafe().FirstOrDefault(x => x.AvatarLink == newAvatar);
-            if (character == null)
-            {
-                return null;
-            }
-        }
-        else
-        {
-            throw new NotImplementedException();
-        }
-
-        var accountRecord = await TryGetActiveAccountRecord(session);
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var updateResult = await database.GetUpdateQuery(accountRecord, out _).Set(x => x.Avatar, newAvatar).UpdateAsync();
-        if (updateResult == 0)
-        {
-            return accountViewModel.Avatar;
-        }
-
-        InvalidateAccountRecord(accountRecord);
-
-        return newAvatar;
-    }
-
-    public async Task<string> TryChangeSocialLink(Session session, int linkId, StringBody stringBody)
-    {
-        var accountRecord = await TryGetActiveAccountRecord(session);
-        if (accountRecord == null)
-        {
-            return null;
-        }
-
-        var newValue = stringBody.Value;
-        var helper = SocialHelpers.All[linkId];
-        var previous = ServerSocialHelpers.GetterFunc[helper.LinkId](accountRecord);
-        if (!string.IsNullOrWhiteSpace(newValue) && !helper.ValidatorFunc(newValue))
-        {
-            return previous;
-        }
-
-        if (previous == newValue)
-        {
-            return previous;
-        }
-
-        ServerSocialHelpers.SetterFunc[helper.LinkId](accountRecord, newValue);
-
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var updateResult = await database.GetUpdateQuery(accountRecord, out _).Set(ServerSocialHelpers.QuerySetter[helper.LinkId], newValue).UpdateAsync();
-        if (updateResult == 0)
-        {
-            return previous;
-        }
-
-        InvalidateAccountRecord(accountRecord);
-
-        return newValue;
     }
 
     [ComputeMethod]

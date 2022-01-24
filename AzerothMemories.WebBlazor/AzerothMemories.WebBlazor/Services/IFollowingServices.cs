@@ -3,15 +3,19 @@
 [BasePath("following")]
 public interface IFollowingServices
 {
-    [Post(nameof(TryStartFollowing) + "/{otherAccountId}")]
-    Task<AccountFollowingStatus?> TryStartFollowing(Session session, [Path] long otherAccountId);
+    [CommandHandler]
+    [Post(nameof(TryStartFollowing))]
+    Task<AccountFollowingStatus?> TryStartFollowing([Body] Following_TryStartFollowing command, CancellationToken cancellationToken = default);
 
-    [Post(nameof(TryStopFollowing) + "/{otherAccountId}")]
-    Task<AccountFollowingStatus?> TryStopFollowing(Session session, [Path] long otherAccountId);
+    [CommandHandler]
+    [Post(nameof(TryStopFollowing))]
+    Task<AccountFollowingStatus?> TryStopFollowing([Body] Following_TryStopFollowing command, CancellationToken cancellationToken = default);
 
-    [Post(nameof(TryAcceptFollower) + "/{otherAccountId}")]
-    Task<AccountFollowingStatus?> TryAcceptFollower(Session session, [Path] long otherAccountId);
+    [CommandHandler]
+    [Post(nameof(TryAcceptFollower))]
+    Task<AccountFollowingStatus?> TryAcceptFollower([Body] Following_TryAcceptFollower command, CancellationToken cancellationToken = default);
 
-    [Post(nameof(TryRemoveFollower) + "/{otherAccountId}")]
-    Task<AccountFollowingStatus?> TryRemoveFollower(Session session, [Path] long otherAccountId);
+    [CommandHandler]
+    [Post(nameof(TryRemoveFollower))]
+    Task<AccountFollowingStatus?> TryRemoveFollower([Body] Following_TryRemoveFollower command, CancellationToken cancellationToken = default);
 }

@@ -62,20 +62,65 @@ public class PostServices : IPostServices
         return viewModel.Status == AccountFollowingStatus.Active;
     }
 
-    public async Task<AddMemoryResult> TryPostMemory(Session session, AddMemoryTransferData transferData)
+    [ComputeMethod]
+    public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postId, string locale)
     {
-        if (transferData.Comment.Length >= ZExtensions.MaxPostCommentLength)
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var activeAccountId = activeAccount?.Id ?? 0;
+        var postRecord = await GetPostRecord(postId);
+        if (postRecord == null)
+        {
+            return null;
+        }
+
+        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord);
+        var posterAccount = await _commonServices.AccountServices.TryGetAccountById(session, postRecord.AccountId);
+        if (posterAccount == null)
+        {
+            return null;
+        }
+
+        var postTagInfos = await GetAllPostTagRecord(postId, locale);
+        var reactionRecords = await TryGetPostReactions(postId);
+
+        reactionRecords.TryGetValue(activeAccountId, out var reactionViewModel);
+
+        return postRecord.CreatePostViewModel(posterAccount, canSeePost, reactionViewModel, postTagInfos);
+    }
+
+    [CommandHandler]
+    public virtual async Task<AddMemoryResult> TryPostMemory(Post_TryPostMemory command, CancellationToken cancellationToken = default)
+    {
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
+            if (invPost != null && invPost.Id > 0)
+            {
+                _ = _commonServices.AccountServices.GetPostCount(invPost.Id);
+            }
+
+            var invAccount = context.Operation().Items.Get<Post_InvalidatePost>();
+            if (invAccount != null && invAccount.Id > 0)
+            {
+                _ = _commonServices.AccountServices.GetPostCount(invAccount.Id);
+            }
+
+            return default;
+        }
+
+        if (command.Comment.Length >= ZExtensions.MaxPostCommentLength)
         {
             return new AddMemoryResult(AddMemoryResultCode.CommentTooLong);
         }
 
-        var dateTime = Instant.FromUnixTimeMilliseconds(transferData.TimeStamp);
+        var dateTime = Instant.FromUnixTimeMilliseconds(command.TimeStamp);
         if (dateTime < ZExtensions.MinPostTime || dateTime > SystemClock.Instance.GetCurrentInstant())
         {
             return new AddMemoryResult(AddMemoryResultCode.InvalidTime);
         }
 
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
         if (activeAccount == null)
         {
             return new AddMemoryResult(AddMemoryResultCode.SessionNotFound);
@@ -86,7 +131,7 @@ public class PostServices : IPostServices
             return new AddMemoryResult(AddMemoryResultCode.SessionCanNotInteract);
         }
 
-        if (!_commonServices.TagServices.GetCommentText(transferData.Comment, activeAccount.GetUserTagList(), out var commentText, out var accountsTaggedInComment, out var hashTagsTaggedInComment))
+        if (!_commonServices.TagServices.GetCommentText(command.Comment, activeAccount.GetUserTagList(), out var commentText, out var accountsTaggedInComment, out var hashTagsTaggedInComment))
         {
             return new AddMemoryResult(AddMemoryResultCode.ParseCommentFailed);
         }
@@ -95,15 +140,15 @@ public class PostServices : IPostServices
         var postRecord = new PostRecord
         {
             AccountId = activeAccount.Id,
-            PostAvatar = transferData.AvatarTag,
+            PostAvatar = command.AvatarTag,
             PostComment = commentText,
             PostTime = dateTime,
             PostCreatedTime = SystemClock.Instance.GetCurrentInstant(),
             PostEditedTime = SystemClock.Instance.GetCurrentInstant(),
-            PostVisibility = transferData.IsPrivate ? (byte)1 : (byte)0,
+            PostVisibility = command.IsPrivate ? (byte)1 : (byte)0,
         };
 
-        var buildSystemTagsResult = await CreateSystemTags(postRecord, activeAccount, transferData.SystemTags, tagRecords);
+        var buildSystemTagsResult = await CreateSystemTags(postRecord, activeAccount, command.SystemTags, tagRecords);
         if (buildSystemTagsResult != AddMemoryResultCode.Success)
         {
             return new AddMemoryResult(buildSystemTagsResult);
@@ -120,7 +165,7 @@ public class PostServices : IPostServices
             return new AddMemoryResult(AddMemoryResultCode.TooManyTags);
         }
 
-        var uploadAndSortResult = await UploadAndSortImages(postRecord, transferData.UploadResults);
+        var uploadAndSortResult = await UploadAndSortImages(postRecord, command.UploadResults);
         if (uploadAndSortResult != AddMemoryResultCode.Success)
         {
             return new AddMemoryResult(uploadAndSortResult);
@@ -128,14 +173,14 @@ public class PostServices : IPostServices
 
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        postRecord.Id = await database.InsertWithInt64IdentityAsync(postRecord);
+        postRecord.Id = await database.InsertWithInt64IdentityAsync(postRecord, token: cancellationToken);
 
         foreach (var tagRecord in tagRecords)
         {
             tagRecord.PostId = postRecord.Id;
         }
 
-        await database.PostTags.BulkCopyAsync(tagRecords);
+        await database.PostTags.BulkCopyAsync(tagRecords, cancellationToken);
 
         await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
         {
@@ -161,8 +206,7 @@ public class PostServices : IPostServices
 
         transaction.Complete();
 
-        using var computed = Computed.Invalidate();
-        _ = _commonServices.AccountServices.GetPostCount(activeAccount.Id);
+        context.Operation().Items.Set(new Post_InvalidateAccount(activeAccount.Id));
 
         return new AddMemoryResult(AddMemoryResultCode.Success, postRecord.AccountId, postRecord.Id);
     }
@@ -284,32 +328,6 @@ public class PostServices : IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postId, string locale)
-    {
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
-        var activeAccountId = activeAccount?.Id ?? 0;
-        var postRecord = await GetPostRecord(postId);
-        if (postRecord == null)
-        {
-            return null;
-        }
-
-        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord);
-        var posterAccount = await _commonServices.AccountServices.TryGetAccountById(session, postRecord.AccountId);
-        if (posterAccount == null)
-        {
-            return null;
-        }
-
-        var postTagInfos = await GetAllPostTagRecord(postId, locale);
-        var reactionRecords = await TryGetPostReactions(postId);
-
-        reactionRecords.TryGetValue(activeAccountId, out var reactionViewModel);
-
-        return postRecord.CreatePostViewModel(posterAccount, canSeePost, reactionViewModel, postTagInfos);
-    }
-
-    [ComputeMethod]
     public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postAccountId, long postId, string locale)
     {
         var result = await TryGetPostViewModel(session, postId, locale);
@@ -319,6 +337,133 @@ public class PostServices : IPostServices
         }
 
         return result;
+    }
+
+    [CommandHandler]
+    public virtual async Task<long> TryReactToPost(Post_TryReactToPost command, CancellationToken cancellationToken = default)
+    {
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
+            if (invPost != null && invPost.Id > 0)
+            {
+                _ = GetPostRecord(invPost.Id);
+                _ = TryGetPostReactions(invPost.Id);
+            }
+
+            var invAccount = context.Operation().Items.Get<Post_InvalidatePost>();
+            if (invAccount != null && invAccount.Id > 0)
+            {
+                _ = _commonServices.AccountServices.GetReactionCount(invAccount.Id);
+            }
+
+            return default;
+        }
+
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
+        if (activeAccount == null)
+        {
+            return 0;
+        }
+
+        if (!activeAccount.CanInteract)
+        {
+            return 0;
+        }
+
+        var postId = command.PostId;
+        var postRecord = await GetPostRecord(postId);
+        if (postRecord == null)
+        {
+            return 0;
+        }
+
+        var canSeePost = await CanAccountSeePost(activeAccount.Id, postRecord);
+        if (!canSeePost)
+        {
+            return 0;
+        }
+
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        var newReaction = command.NewReaction;
+        var postQuery = database.GetUpdateQuery(postRecord, out _);
+        var reactionRecord = await database.PostReactions.FirstOrDefaultAsync(x => x.AccountId == activeAccount.Id && x.PostId == postId, cancellationToken);
+        if (reactionRecord == null)
+        {
+            if (newReaction == PostReaction.None)
+            {
+                return 0;
+            }
+
+            reactionRecord = new PostReactionRecord
+            {
+                AccountId = activeAccount.Id,
+                PostId = postId,
+                Reaction = newReaction,
+                LastUpdateTime = SystemClock.Instance.GetCurrentInstant()
+            };
+
+            reactionRecord.Id = await database.InsertWithInt64IdentityAsync(reactionRecord, token: cancellationToken);
+            postQuery = ModifyPostQueryWithReaction(postQuery, newReaction, +1, true);
+        }
+        else
+        {
+            if (newReaction == reactionRecord.Reaction)
+            {
+                return reactionRecord.Id;
+            }
+
+            var reactionQuery = database.GetUpdateQuery(reactionRecord, out _);
+            var previousReaction = reactionRecord.Reaction;
+            if (previousReaction != PostReaction.None)
+            {
+                reactionQuery = reactionQuery.Set(x => x.Reaction, PostReaction.None);
+                postQuery = ModifyPostQueryWithReaction(postQuery, previousReaction, -1, newReaction == PostReaction.None);
+            }
+
+            if (newReaction != PostReaction.None)
+            {
+                reactionQuery = reactionQuery.Set(x => x.Reaction, newReaction);
+                postQuery = ModifyPostQueryWithReaction(postQuery, newReaction, +1, previousReaction == PostReaction.None);
+            }
+
+            await reactionQuery.Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync(cancellationToken);
+        }
+
+        await postQuery.UpdateAsync(cancellationToken);
+
+        if (newReaction != PostReaction.None)
+        {
+            await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+            {
+                AccountId = activeAccount.Id,
+                OtherAccountId = postRecord.AccountId,
+                CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+                Type = AccountHistoryType.ReactedToPost1,
+                TargetId = postRecord.AccountId,
+                TargetPostId = postRecord.Id
+            });
+
+            await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+            {
+                AccountId = postRecord.AccountId,
+                OtherAccountId = activeAccount.Id,
+                CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+                Type = AccountHistoryType.ReactedToPost2,
+                TargetId = postRecord.AccountId,
+                TargetPostId = postRecord.Id
+            });
+        }
+
+        transaction.Complete();
+
+        context.Operation().Items.Set(new Post_InvalidatePost(postId));
+        context.Operation().Items.Set(new Post_InvalidateAccount(activeAccount.Id));
+
+        return reactionRecord.Id;
     }
 
     [ComputeMethod]
@@ -361,113 +506,6 @@ public class PostServices : IPostServices
                     };
 
         return await query.ToDictionaryAsync(x => x.AccountId, x => x);
-    }
-
-    public async Task<long> TryReactToPost(Session session, long postId, PostReaction newReaction)
-    {
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
-        if (activeAccount == null)
-        {
-            return 0;
-        }
-
-        if (!activeAccount.CanInteract)
-        {
-            return 0;
-        }
-
-        var postRecord = await GetPostRecord(postId);
-        if (postRecord == null)
-        {
-            return 0;
-        }
-
-        var canSeePost = await CanAccountSeePost(activeAccount.Id, postRecord);
-        if (!canSeePost)
-        {
-            return 0;
-        }
-
-        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-
-        var postQuery = database.GetUpdateQuery(postRecord, out _);
-        var reactionRecord = await database.PostReactions.FirstOrDefaultAsync(x => x.AccountId == activeAccount.Id && x.PostId == postId);
-        if (reactionRecord == null)
-        {
-            if (newReaction == PostReaction.None)
-            {
-                return 0;
-            }
-
-            reactionRecord = new PostReactionRecord
-            {
-                AccountId = activeAccount.Id,
-                PostId = postId,
-                Reaction = newReaction,
-                LastUpdateTime = SystemClock.Instance.GetCurrentInstant()
-            };
-
-            reactionRecord.Id = await database.InsertWithInt64IdentityAsync(reactionRecord);
-            postQuery = ModifyPostQueryWithReaction(postQuery, newReaction, +1, true);
-        }
-        else
-        {
-            if (newReaction == reactionRecord.Reaction)
-            {
-                return reactionRecord.Id;
-            }
-
-            var reactionQuery = database.GetUpdateQuery(reactionRecord, out _);
-            var previousReaction = reactionRecord.Reaction;
-            if (previousReaction != PostReaction.None)
-            {
-                reactionQuery = reactionQuery.Set(x => x.Reaction, PostReaction.None);
-                postQuery = ModifyPostQueryWithReaction(postQuery, previousReaction, -1, newReaction == PostReaction.None);
-            }
-
-            if (newReaction != PostReaction.None)
-            {
-                reactionQuery = reactionQuery.Set(x => x.Reaction, newReaction);
-                postQuery = ModifyPostQueryWithReaction(postQuery, newReaction, +1, previousReaction == PostReaction.None);
-            }
-
-            await reactionQuery.Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync();
-        }
-
-        await postQuery.UpdateAsync();
-
-        if (newReaction != PostReaction.None)
-        {
-            await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
-            {
-                AccountId = activeAccount.Id,
-                OtherAccountId = postRecord.AccountId,
-                CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-                Type = AccountHistoryType.ReactedToPost1,
-                TargetId = postRecord.AccountId,
-                TargetPostId = postRecord.Id
-            });
-
-            await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
-            {
-                AccountId = postRecord.AccountId,
-                OtherAccountId = activeAccount.Id,
-                CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-                Type = AccountHistoryType.ReactedToPost2,
-                TargetId = postRecord.AccountId,
-                TargetPostId = postRecord.Id
-            });
-        }
-
-        transaction.Complete();
-
-        using var computed = Computed.Invalidate();
-        _ = GetPostRecord(postId);
-        _ = TryGetPostReactions(postId);
-        _ = _commonServices.AccountServices.GetReactionCount(activeAccount.Id);
-
-        return reactionRecord.Id;
     }
 
     [ComputeMethod]
@@ -652,22 +690,28 @@ public class PostServices : IPostServices
         return await TryGetMyCommentReactions(activeAccountId, postId);
     }
 
-    [ComputeMethod]
-    protected virtual async Task<Dictionary<long, PostCommentReactionViewModel>> TryGetMyCommentReactions(long activeAccountId, long postId)
+    [CommandHandler]
+    public virtual async Task<bool> TryRestoreMemory(Post_TryRestoreMemory command, CancellationToken cancellationToken = default)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
+            if (invPost != null && invPost.Id > 0)
+            {
+                _ = GetAllPostTags(invPost.Id);
+            }
 
-        var query = from reaction in database.PostCommentReactions
-                    from comment in database.PostComments.Where(pr => pr.Id == reaction.CommentId)
-                    where reaction.AccountId == activeAccountId && comment.PostId == postId
-                    select reaction.CreatePostCommentReactionViewModel(null);
+            var invAccount = context.Operation().Items.Get<Post_InvalidatePost>();
+            if (invAccount != null && invAccount.Id > 0)
+            {
+                _ = _commonServices.AccountServices.GetMemoryCount(invAccount.Id);
+            }
 
-        return await query.ToDictionaryAsync(x => x.CommentId, x => x);
-    }
+            return default;
+        }
 
-    public async Task<bool> TryRestoreMemory(Session session, long postId, long previousCharacterId, long newCharacterId)
-    {
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
         if (activeAccount == null)
         {
             return false;
@@ -678,6 +722,7 @@ public class PostServices : IPostServices
             return false;
         }
 
+        var postId = command.PostId;
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
         {
@@ -690,11 +735,11 @@ public class PostServices : IPostServices
             return false;
         }
 
-        long? newAccountTag = newCharacterId > 0 ? activeAccount.Id : null;
-        long? newCharacterTag = newCharacterId > 0 ? newCharacterId : null;
+        long? newAccountTag = command.NewCharacterId > 0 ? activeAccount.Id : null;
+        long? newCharacterTag = command.NewCharacterId > 0 ? command.NewCharacterId : null;
 
-        long? accountTagToRemove = newCharacterId > 0 ? null : activeAccount.Id;
-        long? characterTagToRemove = previousCharacterId > 0 ? previousCharacterId : null;
+        long? accountTagToRemove = command.NewCharacterId > 0 ? null : activeAccount.Id;
+        long? characterTagToRemove = command.PreviousCharacterId > 0 ? command.PreviousCharacterId : null;
         if (activeAccount.Id == postRecord.AccountId)
         {
             accountTagToRemove = null;
@@ -738,10 +783,8 @@ public class PostServices : IPostServices
 
         transaction.Complete();
 
-        using var computed = Computed.Invalidate();
-        _ = GetPostRecord(postId);
-        _ = GetAllPostTags(postId);
-        _ = _commonServices.AccountServices.GetMemoryCount(activeAccount.Id);
+        context.Operation().Items.Set(new Post_InvalidatePost(postId));
+        context.Operation().Items.Set(new Post_InvalidateAccount(activeAccount.Id));
 
         return true;
     }
@@ -781,9 +824,29 @@ public class PostServices : IPostServices
         }
     }
 
-    public async Task<long> TryPublishComment(Session session, long postId, long parentCommentId, AddCommentTransferData transferData)
+    [CommandHandler]
+    public virtual async Task<long> TryPublishComment(Post_TryPublishComment command, CancellationToken cancellationToken = default)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
+            if (invPost != null && invPost.Id > 0)
+            {
+                _ = GetPostRecord(invPost.Id);
+                _ = TryGetAllPostComments(invPost.Id);
+            }
+
+            var invAccount = context.Operation().Items.Get<Post_InvalidatePost>();
+            if (invAccount != null && invAccount.Id > 0)
+            {
+                _ = _commonServices.AccountServices.GetCommentCount(invAccount.Id);
+            }
+
+            return default;
+        }
+
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
         if (activeAccount == null)
         {
             return 0;
@@ -794,6 +857,7 @@ public class PostServices : IPostServices
             return 0;
         }
 
+        var postId = command.PostId;
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
         {
@@ -806,7 +870,7 @@ public class PostServices : IPostServices
             return 0;
         }
 
-        var commentText = transferData.Comment;
+        var commentText = command.CommentText;
         if (string.IsNullOrWhiteSpace(commentText))
         {
             return 0;
@@ -818,6 +882,7 @@ public class PostServices : IPostServices
         }
 
         PostCommentViewModel parentComment = null;
+        var parentCommentId = command.ParentCommentId;
         var allCommentPages = await TryGetAllPostComments(postId);
         var allComments = allCommentPages[0].AllComments;
         if (parentCommentId > 0 && !allComments.TryGetValue(parentCommentId, out parentComment))
@@ -875,9 +940,9 @@ public class PostServices : IPostServices
             CreatedTime = SystemClock.Instance.GetCurrentInstant()
         };
 
-        commentRecord.Id = await database.InsertWithInt64IdentityAsync(commentRecord);
+        commentRecord.Id = await database.InsertWithInt64IdentityAsync(commentRecord, token: cancellationToken);
 
-        await database.GetUpdateQuery(postRecord, out _).Set(x => x.TotalCommentCount, x => x.TotalCommentCount + 1).UpdateAsync();
+        await database.GetUpdateQuery(postRecord, out _).Set(x => x.TotalCommentCount, x => x.TotalCommentCount + 1).UpdateAsync(cancellationToken);
 
         foreach (var tagRecord in tagRecords)
         {
@@ -885,7 +950,7 @@ public class PostServices : IPostServices
             tagRecord.CommentId = commentRecord.Id;
         }
 
-        await database.PostTags.BulkCopyAsync(tagRecords);
+        await database.PostTags.BulkCopyAsync(tagRecords, cancellationToken);
 
         await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
         {
@@ -925,17 +990,36 @@ public class PostServices : IPostServices
 
         transaction.Complete();
 
-        using var computed = Computed.Invalidate();
-        _ = GetPostRecord(postId);
-        _ = TryGetAllPostComments(postId);
-        _ = _commonServices.AccountServices.GetCommentCount(activeAccount.Id);
+        context.Operation().Items.Set(new Post_InvalidatePost(postId));
+        context.Operation().Items.Set(new Post_InvalidateAccount(activeAccount.Id));
 
         return commentRecord.Id;
     }
 
-    public async Task<long> TryReactToPostComment(Session session, long postId, long commentId, PostReaction newReaction)
+    [CommandHandler]
+    public virtual async Task<long> TryReactToPostComment(Post_TryReactToPostComment command, CancellationToken cancellationToken = default)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
+            if (invPost != null && invPost.Id > 0)
+            {
+                _ = TryGetAllPostComments(invPost.Id);
+                _ = TryGetPostCommentReactions(invPost.Id);
+            }
+
+            var invAccount = context.Operation().Items.Get<Post_InvalidatePost>();
+            if (invAccount != null && invAccount.Id > 0)
+            {
+                _ = TryGetMyCommentReactions(invAccount.Id, invPost?.Id ?? 0);
+                _ = _commonServices.AccountServices.GetReactionCount(invAccount.Id);
+            }
+
+            return default;
+        }
+
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
         if (activeAccount == null)
         {
             return 0;
@@ -946,6 +1030,7 @@ public class PostServices : IPostServices
             return 0;
         }
 
+        var postId = command.PostId;
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
         {
@@ -958,6 +1043,7 @@ public class PostServices : IPostServices
             return 0;
         }
 
+        var commentId = command.CommentId;
         var allCommentPages = await TryGetAllPostComments(postId);
         var allComments = allCommentPages[0].AllComments;
         if (!allComments.TryGetValue(commentId, out var commentViewModel))
@@ -968,8 +1054,9 @@ public class PostServices : IPostServices
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
 
+        var newReaction = command.NewReaction;
         var postQuery = database.PostComments.Where(x => x.Id == commentId).AsUpdatable();
-        var reactionRecord = await database.PostCommentReactions.FirstOrDefaultAsync(x => x.AccountId == activeAccount.Id && x.CommentId == commentId);
+        var reactionRecord = await database.PostCommentReactions.FirstOrDefaultAsync(x => x.AccountId == activeAccount.Id && x.CommentId == commentId, cancellationToken);
         if (reactionRecord == null)
         {
             if (newReaction == PostReaction.None)
@@ -985,7 +1072,7 @@ public class PostServices : IPostServices
                 LastUpdateTime = SystemClock.Instance.GetCurrentInstant()
             };
 
-            reactionRecord.Id = await database.InsertWithInt64IdentityAsync(reactionRecord);
+            reactionRecord.Id = await database.InsertWithInt64IdentityAsync(reactionRecord, token: cancellationToken);
             postQuery = ModifyPostQueryWithReaction(postQuery, newReaction, +1, true);
         }
         else
@@ -1009,10 +1096,10 @@ public class PostServices : IPostServices
                 postQuery = ModifyPostQueryWithReaction(postQuery, newReaction, +1, previousReaction == PostReaction.None);
             }
 
-            await reactionQuery.Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync();
+            await reactionQuery.Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync(cancellationToken);
         }
 
-        await postQuery.UpdateAsync();
+        await postQuery.UpdateAsync(cancellationToken);
 
         if (newReaction != PostReaction.None)
         {
@@ -1041,23 +1128,34 @@ public class PostServices : IPostServices
 
         transaction.Complete();
 
-        using var computed = Computed.Invalidate();
-        _ = TryGetAllPostComments(postId);
-        _ = TryGetPostCommentReactions(commentId);
-        _ = TryGetMyCommentReactions(activeAccount.Id, postId);
-        _ = _commonServices.AccountServices.GetReactionCount(activeAccount.Id);
+        context.Operation().Items.Set(new Post_InvalidatePost(postId));
+        context.Operation().Items.Set(new Post_InvalidateAccount(activeAccount.Id));
 
         return reactionRecord.Id;
     }
 
-    public async Task<byte?> TrySetPostVisibility(Session session, long postId, byte newVisibility)
+    [CommandHandler]
+    public virtual async Task<byte?> TrySetPostVisibility(Post_TrySetPostVisibility command, CancellationToken cancellationToken = default)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
+            if (invPost != null && invPost.Id > 0)
+            {
+                _ = GetPostRecord(invPost.Id);
+            }
+
+            return default;
+        }
+
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
         if (activeAccount == null)
         {
             return null;
         }
 
+        var postId = command.PostId;
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
         {
@@ -1075,25 +1173,38 @@ public class PostServices : IPostServices
             return null;
         }
 
-        newVisibility = Math.Clamp(newVisibility, (byte)0, (byte)1);
+        var newVisibility = Math.Clamp(command.NewVisibility, (byte)0, (byte)1);
 
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        await database.GetUpdateQuery(postRecord, out _).Set(x => x.PostVisibility, newVisibility).UpdateAsync();
+        await database.GetUpdateQuery(postRecord, out _).Set(x => x.PostVisibility, newVisibility).UpdateAsync(cancellationToken);
 
-        using var computed = Computed.Invalidate();
-        _ = GetPostRecord(postId);
+        context.Operation().Items.Set(new Post_InvalidatePost(postId));
 
         return newVisibility;
     }
 
-    public async Task<long> TryDeletePost(Session session, long postId)
+    [CommandHandler]
+    public virtual async Task<long> TryDeletePost(Post_TryDeletePost command, CancellationToken cancellationToken = default)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
+            if (invPost != null && invPost.Id > 0)
+            {
+                _ = GetPostRecord(invPost.Id);
+            }
+
+            return default;
+        }
+
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
         if (activeAccount == null)
         {
             return 0;
         }
 
+        var postId = command.PostId;
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
         {
@@ -1114,22 +1225,36 @@ public class PostServices : IPostServices
         }
 
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        await database.GetUpdateQuery(postRecord, out _).Set(x => x.DeletedTimeStamp, now).UpdateAsync();
+        await database.GetUpdateQuery(postRecord, out _).Set(x => x.DeletedTimeStamp, now).UpdateAsync(cancellationToken);
 
-        using var computed = Computed.Invalidate();
-        _ = GetPostRecord(postId);
+        context.Operation().Items.Set(new Post_InvalidatePost(postId));
 
         return now;
     }
 
-    public async Task<long> TryDeleteComment(Session session, long postId, long commentId)
+    [CommandHandler]
+    public virtual async Task<long> TryDeleteComment(Post_TryDeleteComment command, CancellationToken cancellationToken = default)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
+            if (invPost != null && invPost.Id > 0)
+            {
+                _ = TryGetAllPostComments(invPost.Id);
+            }
+
+            return default;
+        }
+
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
         if (activeAccount == null)
         {
             return 0;
         }
 
+        var postId = command.PostId;
+        var commentId = command.CommentId;
         var allCommentPages = await TryGetAllPostComments(postId);
         var allComments = allCommentPages[0].AllComments;
         if (!allComments.TryGetValue(commentId, out var commentViewModel))
@@ -1155,22 +1280,29 @@ public class PostServices : IPostServices
                     where comment.Id == commentId
                     select comment;
 
-        await query.Set(x => x.DeletedTimeStamp, now).UpdateAsync();
+        await query.Set(x => x.DeletedTimeStamp, now).UpdateAsync(cancellationToken);
 
-        using var computed = Computed.Invalidate();
-        _ = TryGetAllPostComments(postId);
+        context.Operation().Items.Set(new Post_InvalidatePost(postId));
 
         return now;
     }
 
-    public async Task<bool> TryReportPost(Session session, long postId, PostReportInfo reportInfo)
+    [CommandHandler]
+    public virtual async Task<bool> TryReportPost(Post_TryReportPost command, CancellationToken cancellationToken = default)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            return default;
+        }
+
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
         if (activeAccount == null)
         {
             return false;
         }
 
+        var postId = command.PostId;
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
         {
@@ -1183,8 +1315,8 @@ public class PostServices : IPostServices
             return false;
         }
 
-        var reason = reportInfo.Reason;
-        var reasonText = reportInfo.ReasonText;
+        var reason = command.Reason;
+        var reasonText = command.ReasonText;
 
         if (!Enum.IsDefined(reason))
         {
@@ -1208,12 +1340,12 @@ public class PostServices : IPostServices
                           where r.PostId == postRecord.Id && r.AccountId == activeAccount.Id
                           select r;
 
-        var reportQueryResult = await reportQuery.FirstOrDefaultAsync();
+        var reportQueryResult = await reportQuery.FirstOrDefaultAsync(cancellationToken);
         if (reportQueryResult == null)
         {
             var postUpdateQuery = database.GetUpdateQuery(postRecord, out _);
 
-            await postUpdateQuery.Set(x => x.TotalReportCount, x => x.TotalReportCount + 1).UpdateAsync();
+            await postUpdateQuery.Set(x => x.TotalReportCount, x => x.TotalReportCount + 1).UpdateAsync(cancellationToken);
 
             await database.InsertWithInt64IdentityAsync(new PostReportRecord
             {
@@ -1223,7 +1355,7 @@ public class PostServices : IPostServices
                 ReasonText = reasonText,
                 CreatedTime = SystemClock.Instance.GetCurrentInstant(),
                 ModifiedTime = SystemClock.Instance.GetCurrentInstant()
-            });
+            }, token: cancellationToken);
         }
         else
         {
@@ -1246,7 +1378,7 @@ public class PostServices : IPostServices
 
             if (reportUpdateQueryChanged)
             {
-                await reportUpdateQuery.UpdateAsync();
+                await reportUpdateQuery.UpdateAsync(cancellationToken);
             }
         }
 
@@ -1255,14 +1387,22 @@ public class PostServices : IPostServices
         return true;
     }
 
-    public async Task<bool> TryReportPostComment(Session session, long postId, long commentId, PostReportInfo reportInfo)
+    [CommandHandler]
+    public virtual async Task<bool> TryReportPostComment(Post_TryReportPostComment command, CancellationToken cancellationToken = default)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            return default;
+        }
+
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
         if (activeAccount == null)
         {
             return false;
         }
 
+        var postId = command.PostId;
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
         {
@@ -1275,6 +1415,7 @@ public class PostServices : IPostServices
             return false;
         }
 
+        var commentId = command.CommentId;
         var allCommentPages = await TryGetAllPostComments(postId);
         var allComments = allCommentPages[0].AllComments;
         if (!allComments.TryGetValue(commentId, out var commentViewModel))
@@ -1282,8 +1423,8 @@ public class PostServices : IPostServices
             return false;
         }
 
-        var reason = reportInfo.Reason;
-        var reasonText = reportInfo.ReasonText;
+        var reason = command.Reason;
+        var reasonText = command.ReasonText;
 
         if (!Enum.IsDefined(reason))
         {
@@ -1307,7 +1448,7 @@ public class PostServices : IPostServices
                           where r.CommentId == commentId && r.AccountId == activeAccount.Id
                           select r;
 
-        var reportQueryResult = await reportQuery.FirstOrDefaultAsync();
+        var reportQueryResult = await reportQuery.FirstOrDefaultAsync(cancellationToken);
         if (reportQueryResult == null)
         {
             var commentUpdateQuery = (from c in database.PostComments
@@ -1316,7 +1457,7 @@ public class PostServices : IPostServices
 
             commentUpdateQuery = commentUpdateQuery.Set(x => x.TotalReportCount, x => x.TotalReportCount + 1);
 
-            await commentUpdateQuery.UpdateAsync();
+            await commentUpdateQuery.UpdateAsync(cancellationToken);
 
             await database.InsertWithInt64IdentityAsync(new PostCommentReportRecord
             {
@@ -1326,7 +1467,7 @@ public class PostServices : IPostServices
                 ReasonText = reasonText,
                 CreatedTime = SystemClock.Instance.GetCurrentInstant(),
                 ModifiedTime = SystemClock.Instance.GetCurrentInstant(),
-            });
+            }, token: cancellationToken);
         }
         else
         {
@@ -1349,7 +1490,7 @@ public class PostServices : IPostServices
 
             if (reportUpdateQueryChanged)
             {
-                await reportUpdateQuery.UpdateAsync();
+                await reportUpdateQuery.UpdateAsync(cancellationToken);
             }
         }
 
@@ -1358,14 +1499,22 @@ public class PostServices : IPostServices
         return true;
     }
 
-    public async Task<bool> TryReportPostTags(Session session, long postId, HashSet<string> tagStrings)
+    [CommandHandler]
+    public virtual async Task<bool> TryReportPostTags(Post_TryReportPostTags command, CancellationToken cancellationToken = default)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            return default;
+        }
+
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
         if (activeAccount == null)
         {
             return false;
         }
 
+        var postId = command.PostId;
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
         {
@@ -1385,7 +1534,7 @@ public class PostServices : IPostServices
         }
 
         var tagRecords = new List<PostTagRecord>();
-        foreach (var tagString in tagStrings)
+        foreach (var tagString in command.TagStrings)
         {
             var tagRecord = allTagRecords.FirstOrDefault(x => x.TagString == tagString);
             if (tagRecord == null)
@@ -1410,14 +1559,14 @@ public class PostServices : IPostServices
                               where r.PostId == postRecord.Id && r.AccountId == activeAccount.Id && r.TagId == tagRecord.Id
                               select r;
 
-            var alreadyReported = await reportQuery.CountAsync() > 0;
+            var alreadyReported = await reportQuery.CountAsync(cancellationToken) > 0;
             if (alreadyReported)
             {
             }
             else
             {
                 var postTagQuery = database.GetUpdateQuery(tagRecord, out _);
-                await postTagQuery.Set(x => x.TotalReportCount, x => x.TotalReportCount + 1).UpdateAsync();
+                await postTagQuery.Set(x => x.TotalReportCount, x => x.TotalReportCount + 1).UpdateAsync(cancellationToken);
 
                 await database.InsertAsync(new PostTagReportRecord
                 {
@@ -1425,22 +1574,32 @@ public class PostServices : IPostServices
                     PostId = postRecord.Id,
                     TagId = tagRecord.Id,
                     CreatedTime = SystemClock.Instance.GetCurrentInstant()
-                });
+                }, token: cancellationToken);
             }
         }
 
         transaction.Complete();
 
-        //using var computed = Computed.Invalidate();
-        //_ = GetPostRecord(postId);
-        //_ = GetAllPostTags(postId);
-
         return true;
     }
 
-    public async Task<AddMemoryResultCode> TryUpdateSystemTags(Session session, long postId, TryUpdateSystemTagsInfo info)
+    [CommandHandler]
+    public virtual async Task<AddMemoryResultCode> TryUpdateSystemTags(Post_TryUpdateSystemTags command, CancellationToken cancellationToken = default)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
+            if (invPost != null && invPost.Id > 0)
+            {
+                _ = GetPostRecord(invPost.Id);
+                _ = GetAllPostTags(invPost.Id);
+            }
+
+            return default;
+        }
+
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
         if (activeAccount == null)
         {
             return AddMemoryResultCode.SessionNotFound;
@@ -1451,6 +1610,7 @@ public class PostServices : IPostServices
             return AddMemoryResultCode.SessionCanNotInteract;
         }
 
+        var postId = command.PostId;
         var postRecord = await GetPostRecord(postId);
         if (postRecord == null)
         {
@@ -1460,7 +1620,7 @@ public class PostServices : IPostServices
         var accountViewModel = activeAccount;
         if (activeAccount.AccountType >= AccountType.Admin)
         {
-            accountViewModel = await _commonServices.AccountServices.TryGetAccountById(session, postRecord.AccountId);
+            accountViewModel = await _commonServices.AccountServices.TryGetAccountById(command.Session, postRecord.AccountId);
         }
         else if (activeAccount.Id != postRecord.AccountId)
         {
@@ -1470,11 +1630,11 @@ public class PostServices : IPostServices
         var allTagRecords = await GetAllPostTags(postId);
         var allCurrentTags = allTagRecords.ToDictionary(x => x.TagString, x => x);
 
-        var addedSet = new HashSet<string>(info.NewTags);
+        var addedSet = new HashSet<string>(command.NewTags);
         addedSet.ExceptWith(allCurrentTags.Keys);
 
         var removedSet = new HashSet<string>(allCurrentTags.Keys);
-        removedSet.ExceptWith(info.NewTags);
+        removedSet.ExceptWith(command.NewTags);
 
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = _commonServices.DatabaseProvider.GetDatabase();
@@ -1497,7 +1657,7 @@ public class PostServices : IPostServices
                     return AddMemoryResultCode.InvalidTags;
                 }
 
-                var currentTag = await database.PostTags.Where(x => x.PostId == postId && x.TagType == newRecord.TagType && x.TagId == newRecord.TagId).FirstOrDefaultAsync();
+                var currentTag = await database.PostTags.Where(x => x.PostId == postId && x.TagType == newRecord.TagType && x.TagId == newRecord.TagId).FirstOrDefaultAsync(cancellationToken);
                 if (currentTag == null)
                 {
                     newRecord.PostId = postRecord.Id;
@@ -1535,16 +1695,16 @@ public class PostServices : IPostServices
 
             if (recordsToInsert.Count > 0)
             {
-                await database.PostTags.BulkCopyAsync(recordsToInsert);
+                await database.PostTags.BulkCopyAsync(recordsToInsert, cancellationToken);
             }
 
             foreach (var tagRecord in recordsToUpdate)
             {
-                await database.GetUpdateQuery(tagRecord, out _).Set(x => x.TagKind, tagRecord.TagKind).UpdateAsync();
+                await database.GetUpdateQuery(tagRecord, out _).Set(x => x.TagKind, tagRecord.TagKind).UpdateAsync(cancellationToken);
             }
         }
 
-        var avatar = info.AvatarText;
+        var avatar = command.Avatar;
         if (!string.IsNullOrWhiteSpace(avatar) && !allCurrentTags.ContainsKey(avatar))
         {
             avatar = postRecord.PostAvatar;
@@ -1555,13 +1715,26 @@ public class PostServices : IPostServices
             avatar = null;
         }
 
-        await database.GetUpdateQuery(postRecord, out _).Set(x => x.PostAvatar, avatar).UpdateAsync();
+        await database.GetUpdateQuery(postRecord, out _).Set(x => x.PostAvatar, avatar).UpdateAsync(cancellationToken);
 
         transaction.Complete();
 
-        InvalidatePostRecordAndTags(postId);
+        context.Operation().Items.Set(new Post_InvalidatePost(postId));
 
         return AddMemoryResultCode.Success;
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<Dictionary<long, PostCommentReactionViewModel>> TryGetMyCommentReactions(long activeAccountId, long postId)
+    {
+        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+
+        var query = from reaction in database.PostCommentReactions
+                    from comment in database.PostComments.Where(pr => pr.Id == reaction.CommentId)
+                    where reaction.AccountId == activeAccountId && comment.PostId == postId
+                    select reaction.CreatePostCommentReactionViewModel(null);
+
+        return await query.ToDictionaryAsync(x => x.CommentId, x => x);
     }
 
     public void InvalidatePostRecordAndTags(long postId)

@@ -3,15 +3,17 @@
 [BasePath("post")]
 public interface IPostServices
 {
+    [CommandHandler]
     [Post(nameof(TryPostMemory))]
-    Task<AddMemoryResult> TryPostMemory(Session session, [Body] AddMemoryTransferData transferData);
+    Task<AddMemoryResult> TryPostMemory([Body] Post_TryPostMemory command, CancellationToken cancellationToken = default);
 
     [ComputeMethod]
     [Get(nameof(TryGetPostViewModel) + "/{accountId}/{postId}")]
     Task<PostViewModel> TryGetPostViewModel(Session session, [Path] long accountId, [Path] long postId, [Query] string locale);
 
-    [Post(nameof(TryReactToPost) + "/{postId}/{newReaction}")]
-    Task<long> TryReactToPost(Session session, [Path] long postId, [Path] PostReaction newReaction);
+    [CommandHandler]
+    [Post(nameof(TryReactToPost))]
+    Task<long> TryReactToPost([Body] Post_TryReactToPost command, CancellationToken cancellationToken = default);
 
     [ComputeMethod]
     [Get(nameof(TryGetReactions) + "/{postId}")]
@@ -29,33 +31,43 @@ public interface IPostServices
     [Get(nameof(TryGetMyCommentReactions) + "/{postId}")]
     Task<Dictionary<long, PostCommentReactionViewModel>> TryGetMyCommentReactions(Session session, [Path] long postId);
 
-    [Post(nameof(TryRestoreMemory) + "/{postId}/{previousCharacterId}/{newCharacterId}")]
-    Task<bool> TryRestoreMemory(Session session, [Path] long postId, [Path] long previousCharacterId, [Path] long newCharacterId);
+    [CommandHandler]
+    [Post(nameof(TryRestoreMemory))]
+    Task<bool> TryRestoreMemory([Body] Post_TryRestoreMemory command, CancellationToken cancellationToken = default);
 
-    [Post(nameof(TryPublishComment) + "/{postId}/{parentCommentId}")]
-    Task<long> TryPublishComment(Session session, [Path] long postId, [Path] long parentCommentId, [Body] AddCommentTransferData transferData);
+    [CommandHandler]
+    [Post(nameof(TryPublishComment))]
+    Task<long> TryPublishComment([Body] Post_TryPublishComment command, CancellationToken cancellationToken = default);
 
-    [Post(nameof(TryReactToPostComment) + "/{postId}/{commentId}/{newReaction}")]
-    Task<long> TryReactToPostComment(Session session, [Path] long postId, [Path] long commentId, [Path] PostReaction newReaction);
+    [CommandHandler]
+    [Post(nameof(TryReactToPostComment))]
+    Task<long> TryReactToPostComment([Body] Post_TryReactToPostComment command, CancellationToken cancellationToken = default);
 
-    [Post(nameof(TrySetPostVisibility) + "/{postId}/{newVisibility}")]
-    Task<byte?> TrySetPostVisibility(Session session, [Path] long postId, [Path] byte newVisibility);
+    [CommandHandler]
+    [Post(nameof(TrySetPostVisibility))]
+    Task<byte?> TrySetPostVisibility([Body] Post_TrySetPostVisibility command, CancellationToken cancellationToken = default);
 
-    [Post(nameof(TryDeletePost) + "/{postId}")]
-    Task<long> TryDeletePost(Session session, [Path] long postId);
+    [CommandHandler]
+    [Post(nameof(TryDeletePost))]
+    Task<long> TryDeletePost([Body] Post_TryDeletePost command, CancellationToken cancellationToken = default);
 
-    [Post(nameof(TryDeleteComment) + "/{postId}/{commentId}")]
-    Task<long> TryDeleteComment(Session session, [Path] long postId, [Path] long commentId);
+    [CommandHandler]
+    [Post(nameof(TryDeleteComment))]
+    Task<long> TryDeleteComment([Body] Post_TryDeleteComment command, CancellationToken cancellationToken = default);
 
-    [Post(nameof(TryReportPost) + "/{postId}")]
-    Task<bool> TryReportPost(Session session, [Path] long postId, [Body] PostReportInfo reportInfo);
+    [CommandHandler]
+    [Post(nameof(TryReportPost))]
+    Task<bool> TryReportPost([Body] Post_TryReportPost command, CancellationToken cancellationToken = default);
 
-    [Post(nameof(TryReportPostComment) + "/{postId}/{commentId}")]
-    Task<bool> TryReportPostComment(Session session, [Path] long postId, [Path] long commentId, [Body] PostReportInfo reportInfo);
+    [CommandHandler]
+    [Post(nameof(TryReportPostComment))]
+    Task<bool> TryReportPostComment([Body] Post_TryReportPostComment command, CancellationToken cancellationToken = default);
 
-    [Post(nameof(TryReportPostTags) + "/{postId}")]
-    Task<bool> TryReportPostTags(Session session, [Path] long postId, [Body] HashSet<string> tagStrings);
+    [CommandHandler]
+    [Post(nameof(TryReportPostTags))]
+    Task<bool> TryReportPostTags([Body] Post_TryReportPostTags command, CancellationToken cancellationToken = default);
 
-    [Post(nameof(TryUpdateSystemTags) + "/{postId}")]
-    Task<AddMemoryResultCode> TryUpdateSystemTags(Session session, [Path] long postId, [Body] TryUpdateSystemTagsInfo newTags);
+    [CommandHandler]
+    [Post(nameof(TryUpdateSystemTags))]
+    Task<AddMemoryResultCode> TryUpdateSystemTags([Body] Post_TryUpdateSystemTags command, CancellationToken cancellationToken = default);
 }
