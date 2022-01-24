@@ -95,15 +95,15 @@ public class PostServices : IPostServices
         if (Computed.IsInvalidating())
         {
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
-            if (invPost != null && invPost.Id > 0)
+            if (invPost != null && invPost.PostId > 0)
             {
-                _ = _commonServices.AccountServices.GetPostCount(invPost.Id);
+                _ = _commonServices.AccountServices.GetPostCount(invPost.PostId);
             }
 
-            var invAccount = context.Operation().Items.Get<Post_InvalidatePost>();
-            if (invAccount != null && invAccount.Id > 0)
+            var invAccount = context.Operation().Items.Get<Post_InvalidateAccount>();
+            if (invAccount != null && invAccount.AccountId > 0)
             {
-                _ = _commonServices.AccountServices.GetPostCount(invAccount.Id);
+                _ = _commonServices.AccountServices.GetPostCount(invAccount.AccountId);
             }
 
             return default;
@@ -346,16 +346,16 @@ public class PostServices : IPostServices
         if (Computed.IsInvalidating())
         {
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
-            if (invPost != null && invPost.Id > 0)
+            if (invPost != null && invPost.PostId > 0)
             {
-                _ = GetPostRecord(invPost.Id);
-                _ = TryGetPostReactions(invPost.Id);
+                _ = GetPostRecord(invPost.PostId);
+                _ = TryGetPostReactions(invPost.PostId);
             }
 
-            var invAccount = context.Operation().Items.Get<Post_InvalidatePost>();
-            if (invAccount != null && invAccount.Id > 0)
+            var invAccount = context.Operation().Items.Get<Post_InvalidateAccount>();
+            if (invAccount != null && invAccount.AccountId > 0)
             {
-                _ = _commonServices.AccountServices.GetReactionCount(invAccount.Id);
+                _ = _commonServices.AccountServices.GetReactionCount(invAccount.AccountId);
             }
 
             return default;
@@ -697,15 +697,15 @@ public class PostServices : IPostServices
         if (Computed.IsInvalidating())
         {
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
-            if (invPost != null && invPost.Id > 0)
+            if (invPost != null && invPost.PostId > 0)
             {
-                _ = GetAllPostTags(invPost.Id);
+                _ = GetAllPostTags(invPost.PostId);
             }
 
-            var invAccount = context.Operation().Items.Get<Post_InvalidatePost>();
-            if (invAccount != null && invAccount.Id > 0)
+            var invAccount = context.Operation().Items.Get<Post_InvalidateAccount>();
+            if (invAccount != null && invAccount.AccountId > 0)
             {
-                _ = _commonServices.AccountServices.GetMemoryCount(invAccount.Id);
+                _ = _commonServices.AccountServices.GetMemoryCount(invAccount.AccountId);
             }
 
             return default;
@@ -831,16 +831,16 @@ public class PostServices : IPostServices
         if (Computed.IsInvalidating())
         {
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
-            if (invPost != null && invPost.Id > 0)
+            if (invPost != null && invPost.PostId > 0)
             {
-                _ = GetPostRecord(invPost.Id);
-                _ = TryGetAllPostComments(invPost.Id);
+                _ = GetPostRecord(invPost.PostId);
+                _ = TryGetAllPostComments(invPost.PostId);
             }
 
-            var invAccount = context.Operation().Items.Get<Post_InvalidatePost>();
-            if (invAccount != null && invAccount.Id > 0)
+            var invAccount = context.Operation().Items.Get<Post_InvalidateAccount>();
+            if (invAccount != null && invAccount.AccountId > 0)
             {
-                _ = _commonServices.AccountServices.GetCommentCount(invAccount.Id);
+                _ = _commonServices.AccountServices.GetCommentCount(invAccount.AccountId);
             }
 
             return default;
@@ -1003,17 +1003,17 @@ public class PostServices : IPostServices
         if (Computed.IsInvalidating())
         {
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
-            if (invPost != null && invPost.Id > 0)
+            if (invPost != null && invPost.PostId > 0)
             {
-                _ = TryGetAllPostComments(invPost.Id);
-                _ = TryGetPostCommentReactions(invPost.Id);
+                _ = TryGetAllPostComments(invPost.PostId);
+                _ = TryGetPostCommentReactions(invPost.PostId);
             }
 
-            var invAccount = context.Operation().Items.Get<Post_InvalidatePost>();
-            if (invAccount != null && invAccount.Id > 0)
+            var invAccount = context.Operation().Items.Get<Post_InvalidateAccount>();
+            if (invAccount != null && invAccount.AccountId > 0)
             {
-                _ = TryGetMyCommentReactions(invAccount.Id, invPost?.Id ?? 0);
-                _ = _commonServices.AccountServices.GetReactionCount(invAccount.Id);
+                _ = TryGetMyCommentReactions(invAccount.AccountId, invPost?.PostId ?? 0);
+                _ = _commonServices.AccountServices.GetReactionCount(invAccount.AccountId);
             }
 
             return default;
@@ -1141,9 +1141,9 @@ public class PostServices : IPostServices
         if (Computed.IsInvalidating())
         {
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
-            if (invPost != null && invPost.Id > 0)
+            if (invPost != null && invPost.PostId > 0)
             {
-                _ = GetPostRecord(invPost.Id);
+                _ = GetPostRecord(invPost.PostId);
             }
 
             return default;
@@ -1190,9 +1190,9 @@ public class PostServices : IPostServices
         if (Computed.IsInvalidating())
         {
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
-            if (invPost != null && invPost.Id > 0)
+            if (invPost != null && invPost.PostId > 0)
             {
-                _ = GetPostRecord(invPost.Id);
+                _ = GetPostRecord(invPost.PostId);
             }
 
             return default;
@@ -1239,9 +1239,9 @@ public class PostServices : IPostServices
         if (Computed.IsInvalidating())
         {
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
-            if (invPost != null && invPost.Id > 0)
+            if (invPost != null && invPost.PostId > 0)
             {
-                _ = TryGetAllPostComments(invPost.Id);
+                _ = TryGetAllPostComments(invPost.PostId);
             }
 
             return default;
@@ -1590,10 +1590,10 @@ public class PostServices : IPostServices
         if (Computed.IsInvalidating())
         {
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
-            if (invPost != null && invPost.Id > 0)
+            if (invPost != null && invPost.PostId > 0)
             {
-                _ = GetPostRecord(invPost.Id);
-                _ = GetAllPostTags(invPost.Id);
+                _ = GetPostRecord(invPost.PostId);
+                _ = GetAllPostTags(invPost.PostId);
             }
 
             return default;
