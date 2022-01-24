@@ -23,8 +23,8 @@ public class AccountServices : IAccountServices
         _ = TryGetAccountRecord(accountRecord.Id);
         _ = TryGetAccountRecordFusionId(accountRecord.FusionId);
         _ = TryGetAccountRecordUsername(accountRecord.Username);
-        _ = CreateAccountViewModel(accountRecord, true);
-        _ = CreateAccountViewModel(accountRecord, false);
+        _ = CreateAccountViewModel(accountRecord.Id, true);
+        _ = CreateAccountViewModel(accountRecord.Id, false);
         _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Account, accountRecord.Id);
     }
 
@@ -36,6 +36,9 @@ public class AccountServices : IAccountServices
 
         if (Computed.IsInvalidating())
         {
+            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
+            InvalidateAccountRecord(invRecord);
+
             return;
         }
 
@@ -137,7 +140,7 @@ public class AccountServices : IAccountServices
 
         await _commonServices.BlizzardUpdateHandler.TryUpdate(database, accountRecord, BlizzardUpdatePriority.Account);
 
-        InvalidateAccountRecord(accountRecord);
+        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
     }
 
     private async Task<AccountRecord> GetOrCreateAccount(DatabaseConnection database, string userId)
@@ -207,7 +210,7 @@ public class AccountServices : IAccountServices
             return null;
         }
 
-        return await CreateAccountViewModel(accountRecord, true);
+        return await CreateAccountViewModel(accountRecord.Id, true);
     }
 
     [ComputeMethod]
@@ -225,7 +228,7 @@ public class AccountServices : IAccountServices
             return null;
         }
 
-        return await CreateAccountViewModel(accountRecord, sessionAccount != null && sessionAccount.AccountType >= AccountType.Admin);
+        return await CreateAccountViewModel(accountRecord.Id, sessionAccount != null && sessionAccount.AccountType >= AccountType.Admin);
     }
 
     [ComputeMethod]
@@ -243,7 +246,7 @@ public class AccountServices : IAccountServices
             return null;
         }
 
-        return await CreateAccountViewModel(accountRecord, sessionAccount != null && sessionAccount.AccountType >= AccountType.Admin);
+        return await CreateAccountViewModel(accountRecord.Id, sessionAccount != null && sessionAccount.AccountType >= AccountType.Admin);
     }
 
     //public async Task<bool> TryEnqueueUpdate(Session session)
@@ -281,12 +284,6 @@ public class AccountServices : IAccountServices
         viewModel.CharactersArray = activeOrAdmin ? characters.Values.ToArray() : characters.Values.Where(x => x.AccountSync && x.CharacterStatus == CharacterStatus2.None).ToArray();
 
         return viewModel;
-    }
-
-    [ComputeMethod]
-    protected virtual async Task<AccountViewModel> CreateAccountViewModel(AccountRecord accountRecord, bool activeOrAdmin)
-    {
-        return await CreateAccountViewModel(accountRecord.Id, activeOrAdmin);
     }
 
     [ComputeMethod]
