@@ -2,7 +2,7 @@
 
 namespace AzerothMemories.WebServer.Services;
 
-public sealed class ServerSocialHelpers
+public static class ServerSocialHelpers
 {
     public static readonly Func<AccountRecord, string>[] GetterFunc;
     public static readonly Action<AccountRecord, string>[] SetterFunc;

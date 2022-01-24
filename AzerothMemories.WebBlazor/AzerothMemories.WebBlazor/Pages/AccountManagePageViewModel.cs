@@ -47,10 +47,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
                 SocialLinksAdornmentColors = new Color[SocialLinks.Length];
             }
 
-            if (AvatarLink == null)
-            {
-                AvatarLink = AccountViewModel.Avatar;
-            }
+            AvatarLink ??= AccountViewModel.Avatar;
         }
     }
 
