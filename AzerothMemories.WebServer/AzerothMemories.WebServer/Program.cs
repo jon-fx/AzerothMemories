@@ -34,7 +34,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContextFactory<AppDbContext>(optionsBuilder =>
 {
-    optionsBuilder.UseNpgsql(config.DatabaseConnectionString);
+    optionsBuilder.UseNpgsql(config.DatabaseConnectionString, o => o.UseNodaTime());
 });
 builder.Services.AddTransient(c => new DbOperationScope<AppDbContext>(c)
 {
