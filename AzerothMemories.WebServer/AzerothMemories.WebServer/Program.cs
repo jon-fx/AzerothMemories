@@ -10,6 +10,18 @@ using System.Text;
 var config = new CommonConfig();
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddLogging(logging =>
+{
+    logging.ClearProviders();
+    logging.AddConsole();
+    logging.SetMinimumLevel(LogLevel.Information);
+    //if (Env.IsDevelopment()) {
+    logging.AddFilter("Microsoft", LogLevel.Warning);
+    logging.AddFilter("Microsoft.AspNetCore.Hosting", LogLevel.Information);
+    //logging.AddFilter("Stl.Fusion.Operations", LogLevel.Information);
+    //}
+});
+
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 ProgramEx.Initialize(builder.Services);
@@ -20,8 +32,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var appTempDir = FilePath.GetApplicationTempDirectory("", true);
-var dbPath = appTempDir & "App.db";
 builder.Services.AddDbContextFactory<AppDbContext>(optionsBuilder =>
 {
     optionsBuilder.UseNpgsql(config.DatabaseConnectionString);
@@ -34,7 +44,7 @@ builder.Services.AddDbContextServices<AppDbContext>(dbContext =>
 {
     dbContext.AddOperations((_, o) =>
     {
-        o.UnconditionalWakeUpPeriod = TimeSpan.FromSeconds(builder.Environment.IsDevelopment() ? 60 : 5);
+        o.UnconditionalWakeUpPeriod = TimeSpan.FromSeconds(5);
     });
 
     dbContext.AddNpgsqlOperationLogChangeTracking();
@@ -114,8 +124,6 @@ builder.Services.AddHttpClient("Blizzard", x =>
     x.DefaultRequestHeaders.Accept.Clear();
     x.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 });
-
-var commanderBuilder = builder.Services.AddCommander();
 
 builder.Services.UseRegisterAttributeScanner().RegisterFrom(typeof(CommonServices).Assembly);
 
