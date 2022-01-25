@@ -207,6 +207,7 @@ public class CharacterServices : ICharacterServices
         _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Character, invRecord.CharacterId);
     }
 
+    [CommandHandler]
     public virtual async Task<bool> TryChangeCharacterAccountSync(Character_TryChangeCharacterAccountSync command, CancellationToken cancellationToken = default)
     {
         var context = CommandContext.GetCurrent();
@@ -305,6 +306,7 @@ public class CharacterServices : ICharacterServices
     //    throw new NotImplementedException();
     //}
 
+    [CommandHandler]
     public virtual async Task<bool> TrySetCharacterDeleted(Character_TrySetCharacterDeleted command, CancellationToken cancellationToken = default)
     {
         var context = CommandContext.GetCurrent();
@@ -346,6 +348,7 @@ public class CharacterServices : ICharacterServices
         return true;
     }
 
+    [CommandHandler]
     public virtual async Task<bool> TrySetCharacterRenamedOrTransferred(Character_TrySetCharacterRenamedOrTransferred command, CancellationToken cancellationToken = default)
     {
         var context = CommandContext.GetCurrent();

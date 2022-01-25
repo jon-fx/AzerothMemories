@@ -63,6 +63,7 @@ public class FollowingServices : IFollowingServices
         return await followersQuery.ToDictionaryAsync(x => x.FollowerId, x => x);
     }
 
+    [CommandHandler]
     public virtual async Task<AccountFollowingStatus?> TryStartFollowing(Following_TryStartFollowing command, CancellationToken cancellationToken = default)
     {
         var context = CommandContext.GetCurrent();
@@ -166,6 +167,7 @@ public class FollowingServices : IFollowingServices
         return viewModel.Status;
     }
 
+    [CommandHandler]
     public virtual async Task<AccountFollowingStatus?> TryStopFollowing(Following_TryStopFollowing command, CancellationToken cancellationToken = default)
     {
         var context = CommandContext.GetCurrent();
@@ -227,6 +229,7 @@ public class FollowingServices : IFollowingServices
         return viewModel.Status;
     }
 
+    [CommandHandler]
     public virtual async Task<AccountFollowingStatus?> TryAcceptFollower(Following_TryAcceptFollower command, CancellationToken cancellationToken = default)
     {
         var context = CommandContext.GetCurrent();
@@ -296,6 +299,7 @@ public class FollowingServices : IFollowingServices
         return viewModel.Status;
     }
 
+    [CommandHandler]
     public virtual async Task<AccountFollowingStatus?> TryRemoveFollower(Following_TryRemoveFollower command, CancellationToken cancellationToken = default)
     {
         var context = CommandContext.GetCurrent();
