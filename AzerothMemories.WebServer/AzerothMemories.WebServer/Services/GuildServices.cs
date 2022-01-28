@@ -34,7 +34,6 @@ public class GuildServices : DbServiceBase<AppDbContext>, IGuildServices
     public virtual async Task<GuildRecord> GetOrCreate(string refFull)
     {
         var moaRef = new MoaRef(refFull);
-        //Exceptions.ThrowIf(moaRef.IsValidAccount);
         Exceptions.ThrowIf(moaRef.IsValidCharacter);
         Exceptions.ThrowIf(moaRef.IsWildCard);
 
@@ -74,9 +73,6 @@ public class GuildServices : DbServiceBase<AppDbContext>, IGuildServices
         }
 
         var guildRecord = await TryGetGuildRecord(guildId);
-
-        //await _commonServices.BlizzardUpdateHandler.TryUpdate(guildRecord, BlizzardUpdatePriority.Guild);
-
         return guildRecord;
     }
 

@@ -68,26 +68,10 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
 
         var characterRecord = await GetOrCreateCharacterRecord(refFull);
 
-        if (CommandContext.Current == null)
-        {
-            throw new NotImplementedException();
-        }
-
         await _commonServices.BlizzardUpdateHandler.TryUpdate(characterRecord, priority);
 
         return characterRecord;
     }
-
-    //[ComputeMethod]
-    //public virtual async Task<Dictionary<long, string>> TryGetAllAccountCharacterIds(long accountId)
-    //{
-    //    await using var database = CreateDbContext();
-
-    //    var query = database.Characters.Where(x => x.AccountId == accountId).Select(x => new { x.Id, x.MoaRef });
-    //    var results = await query.ToDictionaryAsync(x => x.Id, x => x.MoaRef);
-
-    //    return results;
-    //}
 
     [ComputeMethod]
     public virtual async Task<Dictionary<long, CharacterViewModel>> TryGetAllAccountCharacters(long accountId)

@@ -135,7 +135,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
 
     private IQueryable<BlizzardDataRecord> GetSearchQuery(AppDbContext database, string locale, string searchString)
     {
-        return database.BlizzardData.Where(r => r.Name_EnGb.ToLower().StartsWith(searchString)).OrderBy(r => r.TagType).ThenBy(r => r.Name_EnGb.Length).ThenBy(r => r.TagId).Take(50);
+        return database.BlizzardData.Where(r => r.Name.EnGb.ToLower().StartsWith(searchString)).OrderBy(r => r.TagType).ThenBy(r => r.Name.EnGb.Length).ThenBy(r => r.TagId).Take(50);
     }
 
     private PostTagInfo CreatePostTagInfo(BlizzardDataRecord record, string locale)
@@ -145,7 +145,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
             record.Media = null;
         }
 
-        var name = record.Name_EnGb;
+        var name = record.Name.EnGb;
         if (string.IsNullOrWhiteSpace(name))
         {
             name = PostTagInfo.GetTagString(record.TagType, record.TagId);
@@ -183,27 +183,27 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
         switch (tagType)
         {
             case PostTagType.None:
-            {
-                return null;
-            }
+                {
+                    return null;
+                }
             case PostTagType.Type:
             case PostTagType.Main:
             case PostTagType.Region:
             case PostTagType.Realm:
-            {
-                if (await IsValidTagIdWithBlizzardDataSanityChecks(tagType, tagId))
                 {
-                    break;
-                }
+                    if (await IsValidTagIdWithBlizzardDataSanityChecks(tagType, tagId))
+                    {
+                        break;
+                    }
 
-                return null;
-            }
+                    return null;
+                }
             case PostTagType.Account:
             case PostTagType.Character:
             case PostTagType.Guild:
-            {
-                break;
-            }
+                {
+                    break;
+                }
             case PostTagType.Achievement:
             case PostTagType.Item:
             case PostTagType.Mount:
@@ -219,22 +219,22 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
             case PostTagType.CharacterRace:
             case PostTagType.CharacterClass:
             case PostTagType.CharacterClassSpecialization:
-            {
-                if (await IsValidTagIdWithBlizzardDataSanityChecks(tagType, tagId))
                 {
-                    break;
-                }
+                    if (await IsValidTagIdWithBlizzardDataSanityChecks(tagType, tagId))
+                    {
+                        break;
+                    }
 
-                return null;
-            }
+                    return null;
+                }
             case PostTagType.HashTag:
-            {
-                return null;
-            }
+                {
+                    return null;
+                }
             default:
-            {
-                return null;
-            }
+                {
+                    return null;
+                }
         }
 
         return new PostTagRecord

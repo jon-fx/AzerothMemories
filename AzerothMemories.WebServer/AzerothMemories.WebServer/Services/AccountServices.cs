@@ -505,11 +505,11 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
     //    throw new NotImplementedException();
     //}
 
-    [CommandHandler]
-    protected virtual Task InvalidateFollowing(Account_InvalidateFollowing command, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
+    //[CommandHandler]
+    //protected virtual Task InvalidateFollowing(Account_InvalidateFollowing command, CancellationToken cancellationToken)
+    //{
+    //    throw new NotImplementedException();
+    //}
 
     [ComputeMethod]
     public virtual async Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, long timeStamp, int diffInSeconds, string locale)

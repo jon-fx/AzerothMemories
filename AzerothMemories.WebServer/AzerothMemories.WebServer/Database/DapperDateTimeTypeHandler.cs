@@ -11,7 +11,8 @@ public class DapperDateTimeTypeHandler : SqlMapper.TypeHandler<DateTime>
         {
             return dateTime;
         }
-        else if (value is NodaTime.Instant i)
+
+        if (value is Instant i)
         {
             return i.ToDateTimeUtc();
         }

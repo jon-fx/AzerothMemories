@@ -211,8 +211,6 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         //    });
         //}
 
-        //transaction.Complete();
-
         context.Operation().Items.Set(new Post_InvalidateAccount(activeAccount.Id));
 
         return new AddMemoryResult(AddMemoryResultCode.Success, postRecord.AccountId, postRecord.Id);
@@ -757,7 +755,6 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             return false;
         }
 
-        //using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = await CreateCommandDbContext(cancellationToken);
 
         await TryRestoreMemoryUpdate(database, postId, PostTagType.Account, accountTagToRemove, newAccountTag);
@@ -783,7 +780,6 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         //    TargetPostId = postRecord.Id
         //});
 
-        //transaction.Complete();
         await database.SaveChangesAsync(cancellationToken);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
@@ -990,8 +986,6 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         //    });
         //}
 
-        //transaction.Complete();
-
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
         context.Operation().Items.Set(new Post_InvalidateAccount(activeAccount.Id));
 
@@ -1053,7 +1047,6 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             return 0;
         }
 
-        //using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = await CreateCommandDbContext(cancellationToken);
 
         var newReaction = command.NewReaction;
@@ -1127,8 +1120,6 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             //});
         }
 
-        //transaction.Complete();
-
         await database.SaveChangesAsync(cancellationToken);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
@@ -1180,7 +1171,6 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
 
         await using var database = await CreateCommandDbContext(cancellationToken);
         await database.Posts.Where(x => x.Id == postRecord.Id).UpdateAsync(r => new PostRecord { PostVisibility = newVisibility }, cancellationToken);
-        //await database.SaveChangesAsync(cancellationToken);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
 
@@ -1230,7 +1220,6 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
 
         await using var database = await CreateCommandDbContext(cancellationToken);
         await database.Posts.Where(x => x.Id == postRecord.Id).UpdateAsync(r => new PostRecord { DeletedTimeStamp = now }, cancellationToken);
-        //await database.SaveChangesAsync(cancellationToken);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
 
@@ -1282,7 +1271,6 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
 
         await using var database = await CreateCommandDbContext(cancellationToken);
         await database.PostComments.Where(x => x.Id == commentId).UpdateAsync(r => new PostCommentRecord { DeletedTimeStamp = now }, cancellationToken);
-        //await database.SaveChangesAsync(cancellationToken);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
 
@@ -1335,7 +1323,6 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             reasonText = reasonText[..ZExtensions.ReportPostCommentMaxLength];
         }
 
-        //using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var database = await CreateCommandDbContext(cancellationToken);
         var reportQueryResult = await database.PostReports.FirstOrDefaultAsync(r => r.PostId == postRecord.Id && r.AccountId == activeAccount.Id, cancellationToken);
         if (reportQueryResult == null)

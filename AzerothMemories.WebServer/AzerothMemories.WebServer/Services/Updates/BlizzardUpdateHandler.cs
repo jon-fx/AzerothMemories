@@ -49,8 +49,6 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
 
     public async Task TryUpdate<TRecord>(TRecord record, BlizzardUpdatePriority updatePriority) where TRecord : class, IBlizzardUpdateRecord, new()
     {
-        //Exceptions.ThrowIf(CommandContext.Current != null);
-
         if (!RecordRequiresUpdate(record, updatePriority))
         {
             return;

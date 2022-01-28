@@ -1,7 +1,6 @@
 using AzerothMemories.WebBlazor;
 using Hangfire;
 using Hangfire.PostgreSql;
-using Npgsql;
 using Stl.Fusion.EntityFramework.Npgsql;
 using Stl.Fusion.Server.Authentication;
 using Stl.Fusion.Server.Controllers;
@@ -117,7 +116,6 @@ fusionAuth.AddBlazor(o => { }); // Must follow services.AddServerSideBlazor()!
 
 builder.Services.AddSingleton(config);
 builder.Services.AddSingleton<CommonServices>();
-//builder.Services.AddSingleton<DatabaseProvider>();
 builder.Services.AddSingleton<BlizzardUpdateHandler>();
 builder.Services.AddSingleton<WarcraftClientProvider>();
 
@@ -174,10 +172,10 @@ app.UseEndpoints(endpoints =>
 var dbContextFactory = app.Services.GetRequiredService<IDbContextFactory<AppDbContext>>();
 await using var dbContext = dbContextFactory.CreateDbContext();
 
-await dbContext.Accounts.DeleteAsync();
-await dbContext.Characters.DeleteAsync();
-await dbContext.CharacterAchievements.DeleteAsync();
-await dbContext.Guilds.DeleteAsync();
+//await dbContext.Accounts.DeleteAsync();
+//await dbContext.Characters.DeleteAsync();
+//await dbContext.CharacterAchievements.DeleteAsync();
+//await dbContext.Guilds.DeleteAsync();
 
 //await dbContext.Characters.UpdateAsync(x => new CharacterRecord { BlizzardAchievementsLastModified = 0, BlizzardProfileLastModified = 0, BlizzardRendersLastModified = 0 });
 //await dbContext.Guilds.UpdateAsync(x => new GuildRecord { BlizzardAchievementsLastModified = 0, BlizzardRosterLastModified = 0 });

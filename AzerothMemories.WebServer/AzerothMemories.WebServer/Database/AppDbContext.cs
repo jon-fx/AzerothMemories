@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace AzerothMemories.WebServer.Database;
+﻿namespace AzerothMemories.WebServer.Database;
 
 public class AppDbContext : DbContextBase
 {

@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace AzerothMemories.WebServer.Services;
+﻿namespace AzerothMemories.WebServer.Services;
 
 [RegisterComputeService]
 [RegisterAlias(typeof(ISearchServices))]
@@ -301,37 +299,37 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         switch (sortMode)
         {
             case PostSortMode.PostTimeStampDescending:
-            {
-                query = from p in query
-                        orderby p.PostTime descending
-                        select p;
-                break;
-            }
+                {
+                    query = from p in query
+                            orderby p.PostTime descending
+                            select p;
+                    break;
+                }
             case PostSortMode.PostTimeStampAscending:
-            {
-                query = from p in query
-                        orderby p.PostTime
-                        select p;
-                break;
-            }
+                {
+                    query = from p in query
+                            orderby p.PostTime
+                            select p;
+                    break;
+                }
             case PostSortMode.PostCreatedTimeStampDescending:
-            {
-                query = from p in query
-                        orderby p.PostCreatedTime descending
-                        select p;
-                break;
-            }
+                {
+                    query = from p in query
+                            orderby p.PostCreatedTime descending
+                            select p;
+                    break;
+                }
             case PostSortMode.PostCreatedTimeStampAscending:
-            {
-                query = from p in query
-                        orderby p.PostCreatedTime
-                        select p;
-                break;
-            }
+                {
+                    query = from p in query
+                            orderby p.PostCreatedTime
+                            select p;
+                    break;
+                }
             default:
-            {
-                throw new ArgumentOutOfRangeException(nameof(sortMode), sortMode, null);
-            }
+                {
+                    throw new ArgumentOutOfRangeException(nameof(sortMode), sortMode, null);
+                }
         }
 
         return query;

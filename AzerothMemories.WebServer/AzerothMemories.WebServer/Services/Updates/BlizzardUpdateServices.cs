@@ -28,7 +28,6 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
                 }
 
                 _ = _commonServices.CharacterServices.TryGetAllAccountCharacters(invRecord.AccountId);
-                //_ = _commonServices.CharacterServices.TryGetAllAccountCharacterIds(invRecord.AccountId);
             }
 
             return default;
@@ -233,12 +232,10 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
     {
         Exceptions.ThrowIf(record.Id == 0);
 
-        //var changed = false;
         var achievementData = achievementsSummary.ResultData;
         var currentAchievements = await database.CharacterAchievements.Where(x => x.CharacterId == record.Id).ToDictionaryAsync(x => x.AchievementId, x => x).ConfigureAwait(false);
 
         var accountId = record.AccountId;
-        //var newAchievementRecords = new HashSet<CharacterAchievementRecord>();
         foreach (var achievement in achievementData.Achievements)
         {
             var timeStamp = achievement.CompletedTimestamp.GetValueOrDefault(0);
@@ -256,23 +253,12 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
                     AchievementId = achievement.Id,
                 };
 
-                //newAchievementRecords.Add(achievementRecord);
-
                 database.CharacterAchievements.Add(achievementRecord);
             }
 
             achievementRecord.AchievementTimeStamp = timeStamp;
             achievementRecord.CompletedByCharacter = achievement.Criteria == null || achievement.Criteria != null && achievement.Criteria.IsCompleted;
         }
-
-        //if (newAchievementRecords.Count > 0)
-        //{
-        //    await database.CharacterAchievements.BulkInsertAsync(newAchievementRecords).ConfigureAwait(false);
-        //}
-
-        //#if DEBUG
-        //        currentAchievements = await database.CharacterAchievements.Where(x => x.CharacterId == record.Id).ToDictionaryAsync(x => x.AchievementId, x => x).ConfigureAwait(false);
-        //#endif
 
         record.AchievementTotalPoints = achievementData.TotalPoints;
         record.AchievementTotalQuantity = achievementData.TotalQuantity;
