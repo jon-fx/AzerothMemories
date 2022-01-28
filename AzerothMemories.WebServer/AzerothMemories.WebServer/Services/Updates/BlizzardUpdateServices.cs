@@ -124,6 +124,16 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
 
         await database.SaveChangesAsync(cancellationToken);
 
+        if (record.AccountId.HasValue)
+        {
+            await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+            {
+                AccountId = record.AccountId.Value,
+                Type = AccountHistoryType.CharacterUpdated,
+                TargetId = record.Id
+            }, cancellationToken);
+        }
+
         context.Operation().Items.Set(new Character_InvalidateCharacterRecord(record.Id, record.AccountId.GetValueOrDefault()));
 
         return updateResult;

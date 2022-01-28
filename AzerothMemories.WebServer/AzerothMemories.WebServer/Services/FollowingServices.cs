@@ -145,22 +145,22 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
 
         await database.AccountFollowing.Where(x => x.Id == viewModel.Id).UpdateAsync(r => new AccountFollowingRecord { Status = viewModel.Status, LastUpdateTime = SystemClock.Instance.GetCurrentInstant() }, cancellationToken);
 
-        //await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
-        //{
-        //    AccountId = activeAccount.Id,
-        //    OtherAccountId = otherAccountId,
-        //    CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-        //    Type = viewModel.Status == AccountFollowingStatus.Active ? AccountHistoryType.StartedFollowing : AccountHistoryType.FollowingRequestSent
-        //});
+        await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        {
+            AccountId = activeAccount.Id,
+            OtherAccountId = otherAccountId,
+            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            Type = viewModel.Status == AccountFollowingStatus.Active ? AccountHistoryType.StartedFollowing : AccountHistoryType.FollowingRequestSent
+        }, cancellationToken);
 
-        //await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
-        //{
-        //    AccountId = otherAccountId,
-        //    TargetId = 1,
-        //    OtherAccountId = activeAccount.Id,
-        //    CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-        //    Type = viewModel.Status == AccountFollowingStatus.Active ? AccountHistoryType.StartedFollowing : AccountHistoryType.FollowingRequestReceived
-        //});
+        await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        {
+            AccountId = otherAccountId,
+            TargetId = 1,
+            OtherAccountId = activeAccount.Id,
+            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            Type = viewModel.Status == AccountFollowingStatus.Active ? AccountHistoryType.StartedFollowing : AccountHistoryType.FollowingRequestReceived
+        }, cancellationToken);
 
         context.Operation().Items.Set(new Following_InvalidateRecord(activeAccount.Id, otherAccountId));
 
@@ -213,13 +213,13 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
 
         await database.AccountFollowing.Where(x => x.Id == viewModel.Id).UpdateAsync(r => new AccountFollowingRecord { Status = viewModel.Status, LastUpdateTime = SystemClock.Instance.GetCurrentInstant() }, cancellationToken);
 
-        //await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
-        //{
-        //    AccountId = activeAccount.Id,
-        //    OtherAccountId = otherAccountId,
-        //    CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-        //    Type = AccountHistoryType.StoppedFollowing
-        //});
+        await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        {
+            AccountId = activeAccount.Id,
+            OtherAccountId = otherAccountId,
+            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            Type = AccountHistoryType.StoppedFollowing
+        }, cancellationToken);
 
         context.Operation().Items.Set(new Following_InvalidateRecord(activeAccount.Id, otherAccountId));
 
@@ -272,21 +272,21 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
 
         await database.AccountFollowing.Where(x => x.Id == viewModel.Id).UpdateAsync(r => new AccountFollowingRecord { Status = viewModel.Status, LastUpdateTime = SystemClock.Instance.GetCurrentInstant() }, cancellationToken);
 
-        //await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
-        //{
-        //    AccountId = activeAccount.Id,
-        //    OtherAccountId = otherAccountId,
-        //    CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-        //    Type = AccountHistoryType.FollowingRequestAccepted1
-        //});
+        await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        {
+            AccountId = activeAccount.Id,
+            OtherAccountId = otherAccountId,
+            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            Type = AccountHistoryType.FollowingRequestAccepted1
+        }, cancellationToken);
 
-        //await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
-        //{
-        //    AccountId = otherAccountId,
-        //    OtherAccountId = activeAccount.Id,
-        //    CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-        //    Type = AccountHistoryType.FollowingRequestAccepted2
-        //});
+        await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        {
+            AccountId = otherAccountId,
+            OtherAccountId = activeAccount.Id,
+            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            Type = AccountHistoryType.FollowingRequestAccepted2
+        }, cancellationToken);
 
         context.Operation().Items.Set(new Following_InvalidateRecord(activeAccount.Id, otherAccountId));
 
@@ -339,13 +339,13 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
 
         await database.AccountFollowing.Where(x => x.Id == viewModel.Id).UpdateAsync(r => new AccountFollowingRecord { Status = viewModel.Status, LastUpdateTime = SystemClock.Instance.GetCurrentInstant() }, cancellationToken);
 
-        //await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
-        //{
-        //    AccountId = activeAccount.Id,
-        //    OtherAccountId = otherAccountId,
-        //    CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-        //    Type = AccountHistoryType.FollowerRemoved
-        //});
+        await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        {
+            AccountId = activeAccount.Id,
+            OtherAccountId = otherAccountId,
+            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            Type = AccountHistoryType.FollowerRemoved
+        }, cancellationToken);
 
         context.Operation().Items.Set(new Following_InvalidateRecord(activeAccount.Id, otherAccountId));
 

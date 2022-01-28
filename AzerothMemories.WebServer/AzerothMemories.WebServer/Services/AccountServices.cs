@@ -62,24 +62,32 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         }
 
         var userId = sessionInfo.UserId;
-        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        var accountRecord = await TryGetAccountRecordFusionId(userId);
-        if (accountRecord == null)
-        {
-            accountRecord = new AccountRecord
-            {
-                FusionId = userId,
-                CreatedDateTime = SystemClock.Instance.GetCurrentInstant()
-            };
-
-            await database.Accounts.AddAsync(accountRecord, cancellationToken);
-        }
-        else
-        {
-            database.Attach(accountRecord);
-        }
-
         var blizzardRegion = BlizzardRegionExt.FromName(battleNetRegion);
+
+        var accountRecord = await GetOrCreateAccount(userId);
+        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        database.Attach(accountRecord);
+
+        //var accountRecord = await TryGetAccountRecordFusionId(userId);
+        //if (accountRecord == null)
+        //{
+        //    accountRecord = new AccountRecord
+        //    {
+        //        FusionId = userId,
+        //        CreatedDateTime = SystemClock.Instance.GetCurrentInstant()
+        //    };
+
+        //    await database.Accounts.AddAsync(accountRecord, cancellationToken);
+
+        //    await AddNewHistoryItem(new Account_AddNewHistoryItem
+        //    {
+        //        AccountId = accountRecord.Id,
+        //        Type = AccountHistoryType.AccountCreated
+        //    }, cancellationToken);
+        //}
+        //else
+        //{
+        //}
 
         accountRecord.BlizzardId = blizzardId;
         accountRecord.BlizzardRegionId = blizzardRegion;
@@ -106,6 +114,41 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         await database.SaveChangesAsync(cancellationToken);
 
         context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+    }
+
+    private async Task<AccountRecord> GetOrCreateAccount(string userId)
+    {
+        var accountRecord = await TryGetAccountRecordFusionId(userId);
+        if (accountRecord == null)
+        {
+            accountRecord = new AccountRecord
+            {
+                FusionId = userId,
+                //MoaRef = moaRef.Full,
+                //BlizzardId = moaRef.Id,
+                CreatedDateTime = SystemClock.Instance.GetCurrentInstant()
+                //LastLoginDateTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset(),
+            };
+
+            await using var database = CreateDbContext(true);
+            await database.Accounts.AddAsync(accountRecord);
+            await database.SaveChangesAsync();
+
+            if (accountRecord.Id == 0)
+            {
+                throw new NotImplementedException();
+            }
+
+            await AddNewHistoryItem(new Account_AddNewHistoryItem
+            {
+                AccountId = accountRecord.Id,
+                Type = AccountHistoryType.AccountCreated
+            });
+
+            //InvalidateAccountRecord(accountRecord);
+        }
+
+        return accountRecord;
     }
 
     [ComputeMethod]
@@ -326,12 +369,12 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             return false;
         }
 
-        //await TestingHistory(database, new AccountHistoryRecord
-        //{
-        //    AccountId = accountRecord.Id,
-        //    CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-        //    Type = AccountHistoryType.UsernameChanged
-        //});
+        await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        {
+            AccountId = accountRecord.Id,
+            Type = AccountHistoryType.UsernameChanged
+            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+        }, cancellationToken);
 
         context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
         context.Operation().Items.Set(previousUsername);
@@ -500,16 +543,58 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         return newValue;
     }
 
-    //public async Task TestingHistory(DatabaseConnection database, AccountHistoryRecord historyRecord)
-    //{
-    //    throw new NotImplementedException();
-    //}
+    [CommandHandler]
+    public virtual async Task<bool> AddNewHistoryItem(Account_AddNewHistoryItem command, CancellationToken cancellationToken = default)
+    {
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invRecord = context.Operation().Items.Get<Account_InvalidateFollowing>();
+            if (invRecord != null)
+            {
+                _ = TryGetAccountHistory(invRecord.AccountId, invRecord.Page);
+            }
 
-    //[CommandHandler]
-    //protected virtual Task InvalidateFollowing(Account_InvalidateFollowing command, CancellationToken cancellationToken)
-    //{
-    //    throw new NotImplementedException();
-    //}
+            return default;
+        }
+
+        if (command.AccountId == 0)
+        {
+            throw new NotImplementedException();
+        }
+
+        await using var database = await CreateCommandDbContext(cancellationToken);
+        var query = from r in database.AccountHistory
+                    where r.AccountId == command.AccountId &&
+                          r.OtherAccountId == command.OtherAccountId &&
+                          r.Type == command.Type &&
+                          r.TargetId == command.TargetId &&
+                          r.TargetPostId == command.TargetPostId &&
+                          r.TargetCommentId == command.TargetCommentId
+                    select r;
+
+        var record = await query.FirstOrDefaultAsync(cancellationToken);
+        if (record == null)
+        {
+            record = new AccountHistoryRecord();
+
+            database.AccountHistory.Add(record);
+        }
+
+        record.Type = command.Type;
+        record.AccountId = command.AccountId;
+        record.OtherAccountId = command.OtherAccountId;
+        record.TargetId = command.TargetId;
+        record.TargetPostId = command.TargetPostId;
+        record.TargetCommentId = command.TargetCommentId;
+        record.CreatedTime = SystemClock.Instance.GetCurrentInstant();
+
+        await database.SaveChangesAsync(cancellationToken);
+
+        context.Operation().Items.Set(new Account_InvalidateFollowing(record.AccountId, 1));
+
+        return true;
+    }
 
     [ComputeMethod]
     public virtual async Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, long timeStamp, int diffInSeconds, string locale)
