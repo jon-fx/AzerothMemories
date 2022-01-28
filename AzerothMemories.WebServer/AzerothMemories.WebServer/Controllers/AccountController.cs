@@ -29,11 +29,11 @@ public sealed class AccountController : ControllerBase, IAccountServices
         return _commonServices.AccountServices.TryGetAccountByUsername(session, username);
     }
 
-    //[HttpPost]
-    //public Task<bool> TryEnqueueUpdate(Session session)
-    //{
-    //    return _commonServices.AccountServices.TryEnqueueUpdate(session);
-    //}
+    [HttpPost]
+    public Task<bool> TryEnqueueUpdate(Session session)
+    {
+        return _commonServices.AccountServices.TryEnqueueUpdate(session);
+    }
 
     [HttpGet("{username}"), Publish]
     public Task<bool> CheckIsValidUsername(Session session, [FromRoute] string username)

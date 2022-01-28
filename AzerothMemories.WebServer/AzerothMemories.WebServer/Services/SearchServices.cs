@@ -1,14 +1,14 @@
-﻿using LinqToDB.Tools;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace AzerothMemories.WebServer.Services;
 
 [RegisterComputeService]
 [RegisterAlias(typeof(ISearchServices))]
-public class SearchServices : ISearchServices
+public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
 {
     private readonly CommonServices _commonServices;
 
-    public SearchServices(CommonServices commonServices)
+    public SearchServices(IServiceProvider services, CommonServices commonServices) : base(services)
     {
         _commonServices = commonServices;
     }
@@ -58,10 +58,10 @@ public class SearchServices : ISearchServices
     [ComputeMethod(AutoInvalidateTime = 60)]
     protected virtual async Task<MainSearchResult[]> TrySearchAccounts(string searchString)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
         var query = from r in database.Accounts
                     where r.UsernameSearchable.StartsWith(searchString)
-                    orderby Sql.Length(r.UsernameSearchable)
+                    orderby r.UsernameSearchable.Length
                     select MainSearchResult.CreateAccount(r.Id, r.Username, r.Avatar);
 
         var results = await query.Take(50).ToArrayAsync();
@@ -71,10 +71,10 @@ public class SearchServices : ISearchServices
     [ComputeMethod(AutoInvalidateTime = 60)]
     protected virtual async Task<MainSearchResult[]> TrySearchCharacters(string searchString)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
         var query = from r in database.Characters
                     where r.NameSearchable.StartsWith(searchString)
-                    orderby Sql.Length(r.NameSearchable)
+                    orderby r.NameSearchable.Length
                     select MainSearchResult.CreateCharacter(r.Id, r.MoaRef, r.Name, r.AvatarLink, r.RealmId, r.Class);
 
         var results = await query.Take(50).ToArrayAsync();
@@ -84,10 +84,10 @@ public class SearchServices : ISearchServices
     [ComputeMethod(AutoInvalidateTime = 60)]
     protected virtual async Task<MainSearchResult[]> TrySearchGuilds(string searchString)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
         var query = from r in database.Guilds
                     where r.NameSearchable.StartsWith(searchString)
-                    orderby Sql.Length(r.NameSearchable)
+                    orderby r.NameSearchable.Length
                     select MainSearchResult.CreateGuild(r.Id, r.MoaRef, r.Name, null, r.RealmId);
 
         var results = await query.Take(50).ToArrayAsync();
@@ -130,7 +130,7 @@ public class SearchServices : ISearchServices
     [ComputeMethod(AutoInvalidateTime = 60)]
     protected virtual async Task<long[]> TryGetRecentPosts()
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
 
         var query = from p in database.Posts
                     where p.DeletedTimeStamp == 0 && p.PostVisibility == 0
@@ -143,7 +143,7 @@ public class SearchServices : ISearchServices
     [ComputeMethod(AutoInvalidateTime = 60)]
     protected virtual async Task<long[]> TryGetRecentPosts(long accountId)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
 
         var following = await _commonServices.FollowingServices.TryGetAccountFollowing(accountId);
         if (following == null || following.Count == 0)
@@ -163,7 +163,7 @@ public class SearchServices : ISearchServices
         }
 
         var query = from p in database.Posts
-                    where p.DeletedTimeStamp == 0 && p.AccountId.In(allFollowingIds)
+                    where p.DeletedTimeStamp == 0 && allFollowingIds.Contains(p.AccountId)
                     orderby p.PostCreatedTime descending
                     select p.Id;
 
@@ -247,7 +247,7 @@ public class SearchServices : ISearchServices
     [ComputeMethod(AutoInvalidateTime = 60)]
     protected virtual async Task<long[]> TrySearchPosts(HashSet<string> tagStrings, PostSortMode sortMode, long minTime, long maxTime)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
 
         var query = from p in GetPostSearchQuery(database, tagStrings, sortMode, minTime, maxTime)
                     select p.Id;
@@ -255,12 +255,12 @@ public class SearchServices : ISearchServices
         return await query.ToArrayAsync();
     }
 
-    private IQueryable<PostRecord> GetPostSearchQuery(DatabaseConnection database, HashSet<string> serverSideTagStrings, PostSortMode sortMode, long minTimeStamp, long maxTimeStamp)
+    private IQueryable<PostRecord> GetPostSearchQuery(AppDbContext database, HashSet<string> serverSideTagStrings, PostSortMode sortMode, long minTimeStamp, long maxTimeStamp)
     {
         IQueryable<PostRecord> query;
         if (serverSideTagStrings.Count > 0)
         {
-            var groupQuery = from tag in database.PostTags.Where(x => x.TagString.In(serverSideTagStrings) && (x.TagKind == PostTagKind.Post || x.TagKind == PostTagKind.PostComment || x.TagKind == PostTagKind.PostRestored))
+            var groupQuery = from tag in database.PostTags.Where(x => serverSideTagStrings.Contains(x.TagString) && (x.TagKind == PostTagKind.Post || x.TagKind == PostTagKind.PostComment || x.TagKind == PostTagKind.PostRestored))
                              group tag by tag.PostId into grp
                              where grp.Count() >= serverSideTagStrings.Count
                              select grp.Key;

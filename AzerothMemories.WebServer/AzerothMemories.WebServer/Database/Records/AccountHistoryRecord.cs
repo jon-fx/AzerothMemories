@@ -1,21 +1,24 @@
-﻿namespace AzerothMemories.WebServer.Database.Records;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace AzerothMemories.WebServer.Database.Records;
 
 [Table("Accounts_History")]
 public sealed class AccountHistoryRecord
 {
-    [Column(IsPrimaryKey = true, IsIdentity = true)] public long Id { get; set; }
+    [Key] public long Id { get; set; }
 
-    [Column, NotNull] public long AccountId;
+    [Column] public long AccountId { get; set; }
 
-    [Column, NotNull] public AccountHistoryType Type;
+    [Column] public AccountHistoryType Type { get; set; }
 
-    [Column, NotNull] public long? OtherAccountId;
+    [Column] public long? OtherAccountId { get; set; }
 
-    [Column, NotNull] public long TargetId;
+    [Column] public long TargetId { get; set; }
 
-    [Column, NotNull] public long? TargetPostId;
+    [Column] public long? TargetPostId { get; set; }
 
-    [Column, NotNull] public long? TargetCommentId;
+    [Column] public long? TargetCommentId { get; set; }
 
-    [Column, NotNull] public Instant CreatedTime;
+    [Column] public Instant CreatedTime { get; set; }
 }

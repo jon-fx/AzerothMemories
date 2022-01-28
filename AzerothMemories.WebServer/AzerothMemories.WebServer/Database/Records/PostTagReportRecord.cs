@@ -1,15 +1,18 @@
-﻿namespace AzerothMemories.WebServer.Database.Records;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace AzerothMemories.WebServer.Database.Records;
 
 [Table("Posts_Reports_Tags")]
 public sealed class PostTagReportRecord : IDatabaseRecord
 {
-    [Column(IsPrimaryKey = true, IsIdentity = true)] public long Id { get; set; }
+    [Key] public long Id { get; set; }
 
-    [Column, NotNull] public long AccountId;
+    [Column] public long AccountId { get; set; }
 
-    [Column, NotNull] public long PostId;
+    [Column] public long PostId { get; set; }
 
-    [Column, NotNull] public long TagId;
+    [Column] public long TagId { get; set; }
 
-    [Column, NotNull] public Instant CreatedTime;
+    [Column] public Instant CreatedTime { get; set; }
 }

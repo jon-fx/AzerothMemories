@@ -1,10 +1,12 @@
-﻿using Hangfire.Server;
+﻿using Hangfire;
+using Hangfire.Server;
 
 namespace AzerothMemories.WebServer.Services.Updates;
 
-internal sealed class BlizzardUpdateHandler
+internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
 {
     private const string Progress = "P-";
+    private const string Queued = "Q-IN_QUEUE";
 
     public const string AccountQueue1 = "a-account";
     public const string CharacterQueue1 = "b-character";
@@ -14,20 +16,14 @@ internal sealed class BlizzardUpdateHandler
     public static readonly string[] AllQueues = { AccountQueue1, CharacterQueue1, CharacterQueue2, CharacterQueue3, GuildQueue1 };
 
     private readonly CommonServices _commonServices;
-    private readonly BlizzardAccountUpdateHandler _accountUpdateHandler;
-    private readonly BlizzardCharacterUpdateHandler _characterUpdateHandler;
-    private readonly BlizzardGuildUpdateHandler _guildUpdateHandler;
 
     private readonly Type[] _validRecordTypes;
     private readonly Func<long, string>[] _callbacks;
     private readonly Duration[] _durationsBetweenUpdates;
 
-    public BlizzardUpdateHandler(CommonServices commonServices)
+    public BlizzardUpdateHandler(IServiceProvider services, CommonServices commonServices) : base(services)
     {
         _commonServices = commonServices;
-        _accountUpdateHandler = new BlizzardAccountUpdateHandler(commonServices);
-        _characterUpdateHandler = new BlizzardCharacterUpdateHandler(commonServices);
-        _guildUpdateHandler = new BlizzardGuildUpdateHandler(commonServices);
 
         _callbacks = new Func<long, string>[(int)BlizzardUpdatePriority.Count];
         _callbacks[(int)BlizzardUpdatePriority.Account] = id => BackgroundJob.Enqueue(() => OnAccountUpdate(id, null));
@@ -44,56 +40,44 @@ internal sealed class BlizzardUpdateHandler
         _validRecordTypes[(int)BlizzardUpdatePriority.Guild] = typeof(GuildRecord);
 
         _durationsBetweenUpdates = new Duration[(int)BlizzardUpdatePriority.Count];
-        _durationsBetweenUpdates[(int)BlizzardUpdatePriority.Account] = Duration.FromMinutes(10);
+        _durationsBetweenUpdates[(int)BlizzardUpdatePriority.Account] = Duration.FromHours(1);
         _durationsBetweenUpdates[(int)BlizzardUpdatePriority.CharacterHigh] = Duration.FromHours(1);
         _durationsBetweenUpdates[(int)BlizzardUpdatePriority.CharacterMed] = Duration.FromHours(5);
         _durationsBetweenUpdates[(int)BlizzardUpdatePriority.CharacterLow] = Duration.FromHours(10);
         _durationsBetweenUpdates[(int)BlizzardUpdatePriority.Guild] = Duration.FromDays(1);
     }
 
-    public async Task TryUpdate<TRecord>(TRecord record, BlizzardUpdatePriority priority) where TRecord : class, IBlizzardUpdateRecord
+    public async Task TryUpdate<TRecord>(TRecord record, BlizzardUpdatePriority updatePriority) where TRecord : class, IBlizzardUpdateRecord, new()
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        await TryUpdate(database, record, priority);
-    }
+        //Exceptions.ThrowIf(CommandContext.Current != null);
 
-    public async Task TryUpdate<TRecord>(DatabaseConnection database, TRecord record, BlizzardUpdatePriority priority) where TRecord : class, IBlizzardUpdateRecord
-    {
-        if (typeof(TRecord) != _validRecordTypes[(int)priority])
+        if (!RecordRequiresUpdate(record, updatePriority))
+        {
+            return;
+        }
+
+        if (typeof(TRecord) != _validRecordTypes[(int)updatePriority])
         {
             throw new NotImplementedException();
         }
 
-        var callback = _callbacks[(int)priority];
-        await TryUpdate(database, record, priority, callback);
+        await using var database = CreateDbContext(true);
+
+        var updateResult = await database.Set<TRecord>().Where(x => x.Id == record.Id && x.UpdateJob == record.UpdateJob).UpdateAsync(x => new TRecord { UpdateJob = Queued });
+        if (updateResult > 0)
+        {
+            _callbacks[(int)updatePriority](record.Id);
+        }
     }
 
-    private async Task TryUpdate<TRecord>(DatabaseConnection database, TRecord record, BlizzardUpdatePriority priority, Func<long, string> callback) where TRecord : class, IBlizzardUpdateRecord
-    {
-        if (!RecordRequiresUpdate<TRecord>(database, record.Id, priority))
-        {
-            return;
-        }
-
-        var jobId = callback(record.Id);
-        var updateQuery = database.GetTable<TRecord>().Where(x => x.Id == record.Id && x.UpdateJob == null).Set(x => x.UpdateJob, jobId);
-        var result = await updateQuery.UpdateAsync();
-        if (result == 0)
-        {
-            return;
-        }
-
-        record.UpdateJob = jobId;
-    }
-
-    private bool RecordRequiresUpdate<TRecord>(DatabaseConnection database, long id, BlizzardUpdatePriority blizzardUpdatePriority) where TRecord : class, IBlizzardUpdateRecord
+    private bool RecordRequiresUpdate<TRecord>(TRecord record, BlizzardUpdatePriority blizzardUpdatePriority) where TRecord : class, IBlizzardUpdateRecord, new()
     {
         var now = SystemClock.Instance.GetCurrentInstant();
         var duration = _durationsBetweenUpdates[(int)blizzardUpdatePriority];
-
-        var record = (from r in database.GetTable<TRecord>()
-                      where r.Id == id
-                      select new { r.Id, r.UpdateJob, r.UpdateJobEndTime, r.UpdateJobLastResult }).First();
+        if (record == null)
+        {
+            return false;
+        }
 
         if (record.UpdateJob == null)
         {
@@ -110,6 +94,10 @@ internal sealed class BlizzardUpdateHandler
         else if (record.UpdateJob.StartsWith(Progress) && now > record.UpdateJobEndTime + duration / 2)
         {
             return ShouldRequeue(record.UpdateJob.Replace(Progress, ""));
+        }
+        else if (record.UpdateJob == Queued && now > record.UpdateJobEndTime + duration * 2)
+        {
+            return true;
         }
         else if (now > record.UpdateJobEndTime + duration * 2)
         {
@@ -147,52 +135,27 @@ internal sealed class BlizzardUpdateHandler
         return false;
     }
 
-    private async Task<bool> OnUpdateStarted<TRecord>(DatabaseConnection database, TRecord record, PerformContext context) where TRecord : class, IBlizzardUpdateRecord
+    private async Task<bool> OnUpdateStarted<TRecord>(DbSet<TRecord> dbSet, long id, PerformContext context) where TRecord : class, IBlizzardUpdateRecord, new()
     {
         var jobId = context.BackgroundJob.Id;
-        if (record.UpdateJob != jobId)
+        var result = await dbSet.Where(x => x.Id == id && x.UpdateJob == Queued).UpdateAsync(x => new TRecord { UpdateJob = $"{Progress}{jobId}" });
+        if (result > 0)
         {
-            return false;
+            return true;
         }
 
-        var updateQuery = database.GetTable<TRecord>().Where(x => x.Id == record.Id && x.UpdateJob == jobId).Set(x => x.UpdateJob, $"{Progress}{jobId}");
-        var result = await updateQuery.UpdateAsync();
-        if (result == 0)
-        {
-            return false;
-        }
-
-        record.UpdateJob = $"{Progress}{jobId}";
-        return true;
-    }
-
-    private async Task OnUpdateFinished<TRecord>(DatabaseConnection database, PerformContext context, TRecord record, HttpStatusCode updateResult) where TRecord : class, IBlizzardUpdateRecord
-    {
-        Exceptions.ThrowIf(record.UpdateJob != $"{Progress}{context.BackgroundJob.Id}");
-
-        var updateQuery = database.GetUpdateQuery(record, out _);
-        updateQuery = updateQuery.Set(x => x.UpdateJob, record.UpdateJob = null);
-        updateQuery = updateQuery.Set(x => x.UpdateJobEndTime, record.UpdateJobEndTime = SystemClock.Instance.GetCurrentInstant());
-        updateQuery = updateQuery.Set(x => x.UpdateJobLastResult, record.UpdateJobLastResult = updateResult);
-
-        var result = await updateQuery.UpdateAsync();
+        return false;
     }
 
     [Queue(AccountQueue1)]
     public async Task OnAccountUpdate(long id, PerformContext context)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var record = await database.Accounts.FirstOrDefaultAsync(x => x.Id == id);
-        if (record == null || context == null)
-        {
-            return;
-        }
+        await using var database = CreateDbContext(true);
 
-        var requiresUpdate = await OnUpdateStarted(database, record, context);
+        var requiresUpdate = await OnUpdateStarted(database.Accounts, id, context);
         if (requiresUpdate)
         {
-            var result = await _accountUpdateHandler.TryUpdate(id, database, record);
-            await OnUpdateFinished(database, context, record, result);
+            await _commonServices.Commander.Call(new Updates_UpdateAccountCommand(id));
         }
     }
 
@@ -216,36 +179,24 @@ internal sealed class BlizzardUpdateHandler
 
     private async Task OnCharacterUpdate(long id, PerformContext context)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var record = await database.Characters.FirstOrDefaultAsync(x => x.Id == id);
-        if (record == null || context == null)
-        {
-            return;
-        }
+        await using var database = CreateDbContext(true);
 
-        var requiresUpdate = await OnUpdateStarted(database, record, context);
+        var requiresUpdate = await OnUpdateStarted(database.Characters, id, context);
         if (requiresUpdate)
         {
-            var result = await _characterUpdateHandler.TryUpdate(id, database, record);
-            await OnUpdateFinished(database, context, record, result);
+            await _commonServices.Commander.Call(new Updates_UpdateCharacterCommand(id));
         }
     }
 
     [Queue(GuildQueue1)]
     public async Task OnGuildUpdate(long id, PerformContext context)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var record = await database.Guilds.FirstOrDefaultAsync(x => x.Id == id);
-        if (record == null || context == null)
-        {
-            return;
-        }
+        await using var database = CreateDbContext(true);
 
-        var requiresUpdate = await OnUpdateStarted(database, record, context);
+        var requiresUpdate = await OnUpdateStarted(database.Guilds, id, context);
         if (requiresUpdate)
         {
-            var result = await _guildUpdateHandler.TryUpdate(id, database, record);
-            await OnUpdateFinished(database, context, record, result);
+            await _commonServices.Commander.Call(new Updates_UpdateGuildCommand(id));
         }
     }
 }

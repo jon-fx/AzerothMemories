@@ -1,17 +1,20 @@
-﻿namespace AzerothMemories.WebServer.Database.Records;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace AzerothMemories.WebServer.Database.Records;
 
 [Table("Accounts_Following")]
 public sealed class AccountFollowingRecord : IDatabaseRecord
 {
-    [Column(IsPrimaryKey = true, IsIdentity = true)] public long Id { get; set; }
+    [Key] public long Id { get; set; }
 
-    [Column, NotNull] public long AccountId;
+    [Column] public long AccountId { get; set; }
 
-    [Column, NotNull] public long FollowerId;
+    [Column] public long FollowerId { get; set; }
 
-    [Column, NotNull] public AccountFollowingStatus Status;
+    [Column] public AccountFollowingStatus Status { get; set; }
 
-    [Column, NotNull] public Instant LastUpdateTime;
+    [Column] public Instant LastUpdateTime { get; set; }
 
-    [Column, NotNull] public Instant CreatedTime;
+    [Column] public Instant CreatedTime { get; set; }
 }

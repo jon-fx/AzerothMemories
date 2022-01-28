@@ -1,43 +1,46 @@
-﻿namespace AzerothMemories.WebServer.Database.Records;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace AzerothMemories.WebServer.Database.Records;
 
 [Table("Guilds")]
 public sealed class GuildRecord : IBlizzardUpdateRecord
 {
-    [Column(IsPrimaryKey = true, IsIdentity = true)] public long Id { get; set; }
+    [Key] public long Id { get; set; }
 
-    [Column, NotNull] public string MoaRef;
+    [Column] public string MoaRef { get; set; }
 
-    [Column, NotNull] public long BlizzardId;
+    [Column] public long BlizzardId { get; set; }
 
-    [Column, NotNull] public BlizzardRegion BlizzardRegionId;
+    [Column] public BlizzardRegion BlizzardRegionId { get; set; }
 
-    [Column, NotNull] public string Name;
+    [Column] public string Name { get; set; }
 
-    [Column, NotNull] public string NameSearchable;
+    [Column] public string NameSearchable { get; set; }
 
-    [Column, NotNull] public int RealmId;
+    [Column] public int RealmId { get; set; }
 
-    [Column, NotNull] public CharacterFaction Faction;
+    [Column] public CharacterFaction Faction { get; set; }
 
-    [Column, NotNull] public int MemberCount;
+    [Column] public int MemberCount { get; set; }
 
-    [Column, NotNull] public int AchievementPoints;
+    [Column] public int AchievementPoints { get; set; }
 
-    [Column, NotNull] public Instant CreatedDateTime;
+    [Column] public Instant CreatedDateTime { get; set; }
 
-    [Column, NotNull] public long BlizzardCreatedTimestamp;
+    [Column] public long BlizzardCreatedTimestamp { get; set; }
 
-    [Column, NotNull] public long BlizzardProfileLastModified;
+    [Column] public long BlizzardProfileLastModified { get; set; }
 
-    [Column, NotNull] public long BlizzardAchievementsLastModified;
+    [Column] public long BlizzardAchievementsLastModified { get; set; }
 
-    [Column, NotNull] public long BlizzardRosterLastModified;
+    [Column] public long BlizzardRosterLastModified { get; set; }
 
-    [Column, Nullable] public string UpdateJob { get; set; }
+    [Column] public string UpdateJob { get; set; }
 
-    [Column, Nullable] public Instant UpdateJobEndTime { get; set; }
+    [Column] public Instant UpdateJobEndTime { get; set; }
 
-    [Column, Nullable] public HttpStatusCode UpdateJobLastResult { get; set; }
+    [Column] public HttpStatusCode UpdateJobLastResult { get; set; }
 
     public GuildViewModel CreateViewModel(HashSet<CharacterViewModel> characterViewModels)
     {

@@ -1,6 +1,7 @@
 using AzerothMemories.WebBlazor;
+using Hangfire;
 using Hangfire.PostgreSql;
-using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using Stl.Fusion.EntityFramework.Npgsql;
 using Stl.Fusion.Server.Authentication;
 using Stl.Fusion.Server.Controllers;
@@ -16,14 +17,13 @@ builder.Services.AddLogging(logging =>
     logging.AddConsole();
     logging.SetMinimumLevel(LogLevel.Information);
     //if (Env.IsDevelopment()) {
-    logging.AddFilter("Microsoft", LogLevel.Warning);
-    logging.AddFilter("Microsoft.AspNetCore.Hosting", LogLevel.Information);
+    //logging.AddFilter("Microsoft", LogLevel.Warning);
+    //logging.AddFilter("Microsoft.AspNetCore.Hosting", LogLevel.Information);
     //logging.AddFilter("Stl.Fusion.Operations", LogLevel.Information);
     //}
 });
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
 ProgramEx.Initialize(builder.Services);
 
 builder.Services.AddRazorPages();
@@ -34,11 +34,12 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContextFactory<AppDbContext>(optionsBuilder =>
 {
+    optionsBuilder.EnableSensitiveDataLogging();
     optionsBuilder.UseNpgsql(config.DatabaseConnectionString, o => o.UseNodaTime());
 });
 builder.Services.AddTransient(c => new DbOperationScope<AppDbContext>(c)
 {
-    IsolationLevel = System.Data.IsolationLevel.Serializable,
+    //IsolationLevel = System.Data.IsolationLevel.Serializable,
 });
 builder.Services.AddDbContextServices<AppDbContext>(dbContext =>
 {
@@ -53,6 +54,7 @@ builder.Services.AddDbContextServices<AppDbContext>(dbContext =>
 builder.Services.AddHangfire(options =>
 {
     options.UsePostgreSqlStorage(config.HangfireConnectionString);
+    Dapper.SqlMapper.AddTypeHandler(new DapperDateTimeTypeHandler());
 });
 builder.Services.AddHangfireServer(options =>
 {
@@ -115,7 +117,7 @@ fusionAuth.AddBlazor(o => { }); // Must follow services.AddServerSideBlazor()!
 
 builder.Services.AddSingleton(config);
 builder.Services.AddSingleton<CommonServices>();
-builder.Services.AddSingleton<DatabaseProvider>();
+//builder.Services.AddSingleton<DatabaseProvider>();
 builder.Services.AddSingleton<BlizzardUpdateHandler>();
 builder.Services.AddSingleton<WarcraftClientProvider>();
 
@@ -171,7 +173,13 @@ app.UseEndpoints(endpoints =>
 
 var dbContextFactory = app.Services.GetRequiredService<IDbContextFactory<AppDbContext>>();
 await using var dbContext = dbContextFactory.CreateDbContext();
-// await dbContext.Database.EnsureDeletedAsync();
-await dbContext.Database.EnsureCreatedAsync();
+
+await dbContext.Accounts.DeleteAsync();
+await dbContext.Characters.DeleteAsync();
+await dbContext.CharacterAchievements.DeleteAsync();
+await dbContext.Guilds.DeleteAsync();
+
+//await dbContext.Characters.UpdateAsync(x => new CharacterRecord { BlizzardAchievementsLastModified = 0, BlizzardProfileLastModified = 0, BlizzardRendersLastModified = 0 });
+//await dbContext.Guilds.UpdateAsync(x => new GuildRecord { BlizzardAchievementsLastModified = 0, BlizzardRosterLastModified = 0 });
 
 app.Run();

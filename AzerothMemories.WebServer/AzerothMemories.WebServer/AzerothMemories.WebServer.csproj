@@ -12,7 +12,7 @@
 	    <PackageReference Include="Hangfire" Version="1.8.0-beta4" />
 	    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.0-beta4" />
 	    <PackageReference Include="Hangfire.PostgreSql" Version="1.9.5" />
-	    <PackageReference Include="linq2db.PostgreSQL" Version="4.0.0-preview.10" />
+	    <!--<PackageReference Include="linq2db.PostgreSQL" Version="4.0.0-preview.10" />-->
 	    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.2" />
 	    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="6.0.2" />    
 	    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.1">
@@ -27,6 +27,7 @@
 	    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
 	    <PackageReference Include="AspNet.Security.OAuth.BattleNet" Version="6.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.1" />
+        <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="6.13.7" />
     </ItemGroup>
 
     <ItemGroup>

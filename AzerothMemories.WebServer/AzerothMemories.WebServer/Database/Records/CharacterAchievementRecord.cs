@@ -1,17 +1,20 @@
-﻿namespace AzerothMemories.WebServer.Database.Records;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace AzerothMemories.WebServer.Database.Records;
 
 [Table("Characters_Achievements")]
 public sealed class CharacterAchievementRecord : IDatabaseRecord
 {
-    [Column(IsPrimaryKey = true, IsIdentity = true)] public long Id { get; set; }
+    [Key] public long Id { get; set; }
 
-    [Column, NotNull] public long? AccountId;
+    [Column] public long? AccountId { get; set; }
 
-    [Column, NotNull] public long CharacterId;
+    [Column] public long CharacterId { get; set; }
 
-    [Column, NotNull] public int AchievementId;
+    [Column] public int AchievementId { get; set; }
 
-    [Column, NotNull] public long AchievementTimeStamp;
+    [Column] public long AchievementTimeStamp { get; set; }
 
-    [Column, NotNull] public bool CompletedByCharacter;
+    [Column] public bool CompletedByCharacter { get; set; }
 }

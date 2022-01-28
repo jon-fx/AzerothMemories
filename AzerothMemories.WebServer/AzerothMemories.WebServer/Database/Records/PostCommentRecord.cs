@@ -1,43 +1,48 @@
-﻿namespace AzerothMemories.WebServer.Database.Records;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace AzerothMemories.WebServer.Database.Records;
 
 [Table("Posts_Comments")]
 public sealed class PostCommentRecord : IDatabaseRecord
 {
-    [Column(IsPrimaryKey = true, IsIdentity = true)] public long Id { get; set; }
+    [Key] public long Id { get; set; }
 
-    [Column, NotNull] public long AccountId;
+    [Column] public long AccountId { get; set; }
 
-    [Column, NotNull] public long PostId;
+    [Column] public long PostId { get; set; }
 
-    [Column, NotNull] public long? ParentId;
+    [Column] public long? ParentId { get; set; }
 
-    [Column, NotNull] public string PostComment;
+    [Column] public string PostComment { get; set; }
 
-    [Column, NotNull] public int ReactionCount1;
+    [Column] public int ReactionCount1 { get; set; }
 
-    [Column, NotNull] public int ReactionCount2;
+    [Column] public int ReactionCount2 { get; set; }
 
-    [Column, NotNull] public int ReactionCount3;
+    [Column] public int ReactionCount3 { get; set; }
 
-    [Column, NotNull] public int ReactionCount4;
+    [Column] public int ReactionCount4 { get; set; }
 
-    [Column, NotNull] public int ReactionCount5;
+    [Column] public int ReactionCount5 { get; set; }
 
-    [Column, NotNull] public int ReactionCount6;
+    [Column] public int ReactionCount6 { get; set; }
 
-    [Column, NotNull] public int ReactionCount7;
+    [Column] public int ReactionCount7 { get; set; }
 
-    [Column, NotNull] public int ReactionCount8;
+    [Column] public int ReactionCount8 { get; set; }
 
-    [Column, NotNull] public int ReactionCount9;
+    [Column] public int ReactionCount9 { get; set; }
 
-    [Column, NotNull] public int TotalReactionCount;
+    [Column] public int TotalReactionCount { get; set; }
 
-    [Column, NotNull] public int TotalReportCount;
+    [Column] public int TotalReportCount { get; set; }
 
-    [Column, NotNull] public Instant CreatedTime;
+    [Column] public Instant CreatedTime { get; set; }
 
-    [Column, NotNull] public long DeletedTimeStamp;
+    [Column] public long DeletedTimeStamp { get; set; }
+
+    public ICollection<PostTagRecord> CommentTags { get; set; }
 
     public PostCommentViewModel CreateCommentViewModel(string username, string avatar)
     {

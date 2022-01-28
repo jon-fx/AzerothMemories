@@ -3,8 +3,6 @@
 [BasePath("character")]
 public interface ICharacterServices
 {
-    //Task<bool> TryChangeUsername([Body] Account_TryChangeUsername command, CancellationToken cancellationToken = default);
-
     [CommandHandler]
     [Post(nameof(TryChangeCharacterAccountSync))]
     Task<bool> TryChangeCharacterAccountSync([Body] Character_TryChangeCharacterAccountSync command, CancellationToken cancellationToken = default);
@@ -17,9 +15,8 @@ public interface ICharacterServices
     [Get(nameof(TryGetCharacter) + "/{region}/{realmSlug}/{characterName}")]
     Task<CharacterAccountViewModel> TryGetCharacter(Session session, [Path] BlizzardRegion region, [Path] string realmSlug, [Path] string characterName);
 
-    //[CommandHandler]
-    //[Post(nameof(TryEnqueueUpdate))]
-    //Task<bool> TryEnqueueUpdate([Body] Character_TryEnqueueUpdate command, CancellationToken cancellationToken = default);
+    [Post(nameof(TryEnqueueUpdate) + "/{region}/{realmSlug}/{characterName}")]
+    Task<bool> TryEnqueueUpdate(Session session, [Path] BlizzardRegion region, [Path] string realmSlug, [Path] string characterName);
 
     [CommandHandler]
     [Post(nameof(TrySetCharacterDeleted))]

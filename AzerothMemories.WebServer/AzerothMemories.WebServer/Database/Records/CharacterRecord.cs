@@ -1,67 +1,72 @@
-﻿namespace AzerothMemories.WebServer.Database.Records;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace AzerothMemories.WebServer.Database.Records;
 
 [Table("Characters")]
 public sealed class CharacterRecord : IBlizzardUpdateRecord
 {
-    [Column(IsPrimaryKey = true, IsIdentity = true)] public long Id { get; set; }
+    [Key] public long Id { get; set; }
 
-    [Column, NotNull] public string MoaRef;
+    [Column] public string MoaRef { get; set; }
 
-    [Column, NotNull] public long BlizzardId;
+    [Column] public long BlizzardId { get; set; }
 
-    [Column, NotNull] public BlizzardRegion BlizzardRegionId;
+    [Column] public BlizzardRegion BlizzardRegionId { get; set; }
 
-    [Column, Nullable] public string Name;
+    [Column] public string Name { get; set; }
 
-    [Column, Nullable] public string NameSearchable;
+    [Column] public string NameSearchable { get; set; }
 
-    [Column, NotNull] public Instant CreatedDateTime;
+    [Column] public Instant CreatedDateTime { get; set; }
 
-    [Column, NotNull] public CharacterStatus2 CharacterStatus;
+    [Column] public CharacterStatus2 CharacterStatus { get; set; }
 
-    [Column, NotNull] public long? AccountId;
+    [Column] public long? AccountId { get; set; }
 
-    [Column, NotNull] public bool AccountSync;
+    [Column] public AccountRecord Account { get; set; }
 
-    [Column, NotNull] public int RealmId;
+    [Column] public bool AccountSync { get; set; }
 
-    [Column, NotNull] public byte Class;
+    [Column] public int RealmId { get; set; }
 
-    [Column, NotNull] public byte Race;
+    [Column] public byte Class { get; set; }
 
-    [Column, NotNull] public byte Gender;
+    [Column] public byte Race { get; set; }
 
-    [Column, NotNull] public byte Level;
+    [Column] public byte Gender { get; set; }
 
-    [Column, NotNull] public CharacterFaction Faction;
+    [Column] public byte Level { get; set; }
 
-    [Column, Nullable] public string AvatarLink;
+    [Column] public CharacterFaction Faction { get; set; }
 
-    [Column, NotNull] public int AchievementTotalQuantity;
+    [Column] public string AvatarLink { get; set; }
 
-    [Column, NotNull] public int AchievementTotalPoints;
+    [Column] public int AchievementTotalQuantity { get; set; }
 
-    [Column, Nullable] public long? GuildId;
+    [Column] public int AchievementTotalPoints { get; set; }
 
-    [Column, Nullable] public string GuildRef;
+    [Column] public long? GuildId { get; set; }
 
-    [Column, NotNull] public long BlizzardGuildId;
+    [Column] public string GuildRef { get; set; }
 
-    [Column, NotNull] public byte BlizzardGuildRank;
+    [Column] public long BlizzardGuildId { get; set; }
 
-    [Column, Nullable] public string BlizzardGuildName;
+    [Column] public byte BlizzardGuildRank { get; set; }
 
-    [Column, Nullable] public string UpdateJob { get; set; }
+    [Column] public string BlizzardGuildName { get; set; }
 
-    [Column, Nullable] public Instant UpdateJobEndTime { get; set; }
+    [Column] public string UpdateJob { get; set; }
 
-    [Column, Nullable] public HttpStatusCode UpdateJobLastResult { get; set; }
+    [Column] public Instant UpdateJobEndTime { get; set; }
 
-    [Column, NotNull] public long BlizzardProfileLastModified;
+    [Column] public HttpStatusCode UpdateJobLastResult { get; set; }
 
-    [Column, NotNull] public long BlizzardRendersLastModified;
+    [Column] public long BlizzardProfileLastModified { get; set; }
 
-    [Column, NotNull] public long BlizzardAchievementsLastModified;
+    [Column] public long BlizzardRendersLastModified { get; set; }
+
+    [Column] public long BlizzardAchievementsLastModified { get; set; }
 
     public CharacterViewModel CreateViewModel()
     {

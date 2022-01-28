@@ -1,34 +1,36 @@
-﻿namespace AzerothMemories.WebServer.Database.Records;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace AzerothMemories.WebServer.Database.Records;
 
 [Table("Blizzard_Data")]
-public sealed  class BlizzardDataRecord: IDatabaseRecord
+public sealed class BlizzardDataRecord : IDatabaseRecord
 {
-    [Column(IsPrimaryKey = true, IsIdentity = true)] public long Id { get; set; }
+    [Key] public long Id { get; set; }
 
-    [Column, NotNull] public long TagId;
-    [Column, NotNull] public PostTagType TagType;
-    [Column, NotNull] public string Key;
+    [Column] public long TagId { get; set; }
+    [Column] public PostTagType TagType { get; set; }
+    [Column] public string Key { get; set; }
 
-    [Column, NotNull] public string Media;
+    [Column] public string Media { get; set; }
 
-    [Column("Name_EnUs", MemberName = ".En_Us")]
-    [Column("Name_KoKr", MemberName = ".Ko_Kr")]
-    [Column("Name_FrFr", MemberName = ".Fr_Fr")]
-    [Column("Name_DeDe", MemberName = ".De_De")]
-    [Column("Name_ZhCn", MemberName = ".Zh_Cn")]
-    [Column("Name_EsEs", MemberName = ".Es_Es")]
-    [Column("Name_ZhTw", MemberName = ".Zh_Tw")]
-    [Column("Name_EnGb", MemberName = ".En_Gb")]
-    [Column("Name_EsMx", MemberName = ".Es_Mx")]
-    [Column("Name_RuRu", MemberName = ".Ru_Ru")]
-    [Column("Name_PtBr", MemberName = ".Pt_Br")]
-    [Column("Name_ItIt", MemberName = ".It_It")]
-    [Column("Name_PtPt", MemberName = ".Pt_Pt")]
-    public BlizzardDataRecordLocal Name;
+    [Column] public string Name_EnUs { get; set; }
+    [Column] public string Name_KoKr { get; set; }
+    [Column] public string Name_FrFr { get; set; }
+    [Column] public string Name_DeDe { get; set; }
+    [Column] public string Name_ZhCn { get; set; }
+    [Column] public string Name_EsEs { get; set; }
+    [Column] public string Name_ZhTw { get; set; }
+    [Column] public string Name_EnGb { get; set; }
+    [Column] public string Name_EsMx { get; set; }
+    [Column] public string Name_RuRu { get; set; }
+    [Column] public string Name_PtBr { get; set; }
+    [Column] public string Name_ItIt { get; set; }
+    [Column] public string Name_PtPt { get; set; }
 
     public BlizzardDataRecord()
     {
-        Name = new BlizzardDataRecordLocal();
+        //Name = new BlizzardDataRecordLocal();
     }
 
     public BlizzardDataRecord(PostTagType tagType, long tagId) : this()
@@ -38,12 +40,12 @@ public sealed  class BlizzardDataRecord: IDatabaseRecord
         Key = $"{TagType}-{TagId}";
     }
 
-    public bool UpdateMedia(string media)
-    {
-        var changed = false;
+    //public bool UpdateMedia(string media)
+    //{
+    //    var changed = false;
 
-        CheckAndChange.Check(ref Media, media, ref changed);
+    //    CheckAndChange.Check(ref Media, media, ref changed);
 
-        return changed;
-    }
+    //    return changed;
+    //}
 }

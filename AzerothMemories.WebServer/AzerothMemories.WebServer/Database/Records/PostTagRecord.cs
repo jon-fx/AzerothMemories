@@ -1,25 +1,32 @@
-﻿namespace AzerothMemories.WebServer.Database.Records;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace AzerothMemories.WebServer.Database.Records;
 
 [Table("Posts_Tags")]
 public sealed class PostTagRecord : IDatabaseRecord
 {
-    [Column(IsPrimaryKey = true, IsIdentity = true)] public long Id { get; set; }
+    [Key] public long Id { get; set; }
 
-    [Column, NotNull] public PostTagKind TagKind;
+    [Column] public PostTagKind TagKind { get; set; }
 
-    [Column, NotNull] public PostTagType TagType;
+    [Column] public PostTagType TagType { get; set; }
 
-    [Column, NotNull] public long PostId;
+    [Column] public long PostId { get; set; }
 
-    [Column, NotNull] public long? CommentId;
+    [Column] public PostRecord Post { get; set; }
 
-    [Column, NotNull] public long TagId;
+    [Column] public long? CommentId { get; set; }
 
-    [Column, NotNull] public string TagString;
+    [Column] public PostCommentRecord Comment { get; set; }
 
-    [Column, NotNull] public int TotalReportCount;
+    [Column] public long TagId { get; set; }
 
-    [Column, NotNull] public Instant CreatedTime;
+    [Column] public string TagString { get; set; }
+
+    [Column] public int TotalReportCount { get; set; }
+
+    [Column] public Instant CreatedTime { get; set; }
 
     public static bool ValidateTagCounts(HashSet<PostTagRecord> tagRecords)
     {

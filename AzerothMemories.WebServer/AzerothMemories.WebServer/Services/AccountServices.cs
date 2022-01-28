@@ -2,30 +2,13 @@
 
 [RegisterComputeService]
 [RegisterAlias(typeof(IAccountServices))]
-public class AccountServices : IAccountServices
+public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
 {
     private readonly CommonServices _commonServices;
 
-    public AccountServices(CommonServices commonServices)
+    public AccountServices(IServiceProvider services, CommonServices commonServices) : base(services)
     {
         _commonServices = commonServices;
-    }
-
-    public void OnAccountUpdate(AccountRecord accountRecord)
-    {
-        InvalidateAccountRecord(accountRecord);
-    }
-
-    public void InvalidateAccountRecord(AccountRecord accountRecord)
-    {
-        using var computed = Computed.Invalidate();
-
-        _ = TryGetAccountRecord(accountRecord.Id);
-        _ = TryGetAccountRecordFusionId(accountRecord.FusionId);
-        _ = TryGetAccountRecordUsername(accountRecord.Username);
-        _ = CreateAccountViewModel(accountRecord.Id, true);
-        _ = CreateAccountViewModel(accountRecord.Id, false);
-        _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Account, accountRecord.Id);
     }
 
     [CommandHandler(IsFilter = true, Priority = 1)]
@@ -37,7 +20,7 @@ public class AccountServices : IAccountServices
         if (Computed.IsInvalidating())
         {
             var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
-            InvalidateAccountRecord(invRecord);
+            InvalidateHelpers.InvalidateRecord(_commonServices, invRecord);
 
             return;
         }
@@ -79,31 +62,30 @@ public class AccountServices : IAccountServices
         }
 
         var userId = sessionInfo.UserId;
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var accountRecord = await GetOrCreateAccount(database, userId);
+        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        var accountRecord = await TryGetAccountRecordFusionId(userId);
+        if (accountRecord == null)
+        {
+            accountRecord = new AccountRecord
+            {
+                FusionId = userId,
+                CreatedDateTime = SystemClock.Instance.GetCurrentInstant()
+            };
 
-        var updateQuery = database.GetUpdateQuery(accountRecord, out var changed);
+            await database.Accounts.AddAsync(accountRecord, cancellationToken);
+        }
+        else
+        {
+            database.Attach(accountRecord);
+        }
+
         var blizzardRegion = BlizzardRegionExt.FromName(battleNetRegion);
 
-        if (CheckAndChange.Check(ref accountRecord.BlizzardId, blizzardId, ref changed))
-        {
-            updateQuery = updateQuery.Set(x => x.BlizzardId, accountRecord.BlizzardId);
-        }
-
-        if (CheckAndChange.Check(ref accountRecord.BlizzardRegionId, blizzardRegion, ref changed))
-        {
-            updateQuery = updateQuery.Set(x => x.BlizzardRegionId, accountRecord.BlizzardRegionId);
-        }
-
-        if (CheckAndChange.Check(ref accountRecord.BattleNetToken, battleNetToken, ref changed))
-        {
-            updateQuery = updateQuery.Set(x => x.BattleNetToken, accountRecord.BattleNetToken);
-        }
-
-        if (CheckAndChange.Check(ref accountRecord.BattleNetTokenExpiresAt, Instant.FromUnixTimeMilliseconds(battleNetTokenExpires), ref changed))
-        {
-            updateQuery = updateQuery.Set(x => x.BattleNetTokenExpiresAt, accountRecord.BattleNetTokenExpiresAt);
-        }
+        accountRecord.BlizzardId = blizzardId;
+        accountRecord.BlizzardRegionId = blizzardRegion;
+        accountRecord.BattleTag = battleTag;
+        accountRecord.BattleNetToken = battleNetToken;
+        accountRecord.BattleNetTokenExpiresAt = Instant.FromUnixTimeMilliseconds(battleNetTokenExpires);
 
         string newUsername = null;
         var previousBattleTag = accountRecord.BattleTag ?? string.Empty;
@@ -112,92 +94,41 @@ public class AccountServices : IAccountServices
             newUsername = battleTag.Replace("#", string.Empty);
         }
 
-        if (CheckAndChange.Check(ref accountRecord.BattleTag, battleTag, ref changed))
-        {
-            updateQuery = updateQuery.Set(x => x.BattleTag, accountRecord.BattleTag);
-        }
-
         if (!string.IsNullOrWhiteSpace(newUsername))
         {
-            var result = await database.Accounts.CountAsync(x => x.Username == newUsername, cancellationToken);
-            newUsername = result > 0 ? $"User{accountRecord.Id}" : newUsername;
+            var result = await database.Accounts.AnyAsync(x => x.Username == newUsername, cancellationToken);
+            newUsername = result ? $"User{accountRecord.Id}" : newUsername;
 
-            if (CheckAndChange.Check(ref accountRecord.Username, newUsername, ref changed))
-            {
-                updateQuery = updateQuery.Set(p => p.Username, accountRecord.Username);
-            }
-
-            if (CheckAndChange.Check(ref accountRecord.UsernameSearchable, DatabaseHelpers.GetSearchableName(accountRecord.Username), ref changed))
-            {
-                updateQuery = updateQuery.Set(p => p.UsernameSearchable, accountRecord.UsernameSearchable);
-            }
+            accountRecord.Username = newUsername;
+            accountRecord.UsernameSearchable = DatabaseHelpers.GetSearchableName(newUsername);
         }
 
-        if (changed)
-        {
-            await updateQuery.UpdateAsync(cancellationToken);
-        }
-
-        await _commonServices.BlizzardUpdateHandler.TryUpdate(database, accountRecord, BlizzardUpdatePriority.Account);
+        await database.SaveChangesAsync(cancellationToken);
 
         context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
-    }
-
-    private async Task<AccountRecord> GetOrCreateAccount(DatabaseConnection database, string userId)
-    {
-        var accountRecord = await TryGetAccountRecordFusionId(userId);
-        if (accountRecord == null)
-        {
-            accountRecord = new AccountRecord
-            {
-                FusionId = userId,
-                //MoaRef = moaRef.Full,
-                //BlizzardId = moaRef.Id,
-                CreatedDateTime = SystemClock.Instance.GetCurrentInstant()
-                //LastLoginDateTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset(),
-            };
-
-            accountRecord.Id = await database.InsertWithInt64IdentityAsync(accountRecord);
-
-            if (accountRecord.Id == 0)
-            {
-                throw new NotImplementedException();
-            }
-
-            await TestingHistory(database, new AccountHistoryRecord
-            {
-                AccountId = accountRecord.Id,
-                CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-                Type = AccountHistoryType.AccountCreated
-            });
-
-            InvalidateAccountRecord(accountRecord);
-        }
-
-        return accountRecord;
     }
 
     [ComputeMethod]
     public virtual async Task<AccountRecord> TryGetAccountRecord(long id)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var user = await database.Accounts.Where(a => a.Id == id).FirstOrDefaultAsync();
+        await using var database = CreateDbContext();
+        var user = await database.Accounts.FirstOrDefaultAsync(a => a.Id == id);
         return user;
     }
 
     [ComputeMethod]
     public virtual async Task<AccountRecord> TryGetAccountRecordFusionId(string fusionId)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var user = await database.Accounts.Where(a => a.FusionId == fusionId).FirstOrDefaultAsync();
+        await using var database = CreateDbContext();
+        var user = await database.Accounts.FirstOrDefaultAsync(a => a.FusionId == fusionId);
         return user;
     }
 
     [ComputeMethod]
     public virtual async Task<AccountRecord> TryGetAccountRecordUsername(string username)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var user = await database.Accounts.Where(a => a.Username == username).FirstOrDefaultAsync();
+        await using var database = CreateDbContext();
+        var user = await database.Accounts.FirstOrDefaultAsync(a => a.Username == username);
         return user;
     }
 
@@ -249,23 +180,26 @@ public class AccountServices : IAccountServices
         return await CreateAccountViewModel(accountRecord.Id, sessionAccount != null && sessionAccount.AccountType >= AccountType.Admin);
     }
 
-    //public async Task<bool> TryEnqueueUpdate(Session session)
-    //{
-    //    var accountRecord = await TryGetActiveAccountRecord(session);
-    //    if (accountRecord == null)
-    //    {
-    //        return false;
-    //    }
+    public async Task<bool> TryEnqueueUpdate(Session session)
+    {
+        var accountRecord = await TryGetActiveAccountRecord(session);
+        if (accountRecord == null)
+        {
+            return false;
+        }
 
-    //    await _commonServices.BlizzardUpdateHandler.TryUpdate(accountRecord, BlizzardUpdatePriority.Account);
+        await _commonServices.BlizzardUpdateHandler.TryUpdate(accountRecord, BlizzardUpdatePriority.Account);
 
-    //    return true;
-    //}
+        return true;
+    }
 
     [ComputeMethod]
-    protected virtual async Task<AccountViewModel> CreateAccountViewModel(long accountId, bool activeOrAdmin)
+    public virtual async Task<AccountViewModel> CreateAccountViewModel(long accountId, bool activeOrAdmin)
     {
         var accountRecord = await TryGetAccountRecord(accountId);
+
+        await _commonServices.BlizzardUpdateHandler.TryUpdate(accountRecord, BlizzardUpdatePriority.Account);
+
         var characters = await _commonServices.CharacterServices.TryGetAllAccountCharacters(accountRecord.Id);
         var followingViewModels = await _commonServices.FollowingServices.TryGetAccountFollowing(accountRecord.Id);
         var followersViewModels = await _commonServices.FollowingServices.TryGetAccountFollowers(accountRecord.Id);
@@ -289,28 +223,28 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<int> GetPostCount(long accountId)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
         return await database.Posts.Where(x => x.AccountId == accountId).CountAsync();
     }
 
     [ComputeMethod]
     public virtual async Task<int> GetMemoryCount(long accountId)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
         return await database.PostTags.Where(x => x.TagType == PostTagType.Account && x.TagId == accountId && x.TagKind == PostTagKind.PostRestored).CountAsync();
     }
 
     [ComputeMethod]
     public virtual async Task<int> GetCommentCount(long accountId)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
         return await database.PostComments.Where(x => x.AccountId == accountId).CountAsync();
     }
 
     [ComputeMethod]
     public virtual async Task<int> GetReactionCount(long accountId)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
         var postCount = await database.PostReactions.Where(x => x.AccountId == accountId && x.Reaction > PostReaction.None).CountAsync();
         var commentCount = await database.PostCommentReactions.Where(x => x.AccountId == accountId && x.Reaction > PostReaction.None).CountAsync();
 
@@ -331,7 +265,7 @@ public class AccountServices : IAccountServices
             return false;
         }
 
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
         var usernameExists = await database.Accounts.AnyAsync(x => x.Username == username);
         if (usernameExists)
         {
@@ -341,21 +275,6 @@ public class AccountServices : IAccountServices
         return true;
     }
 
-    private void InvalidateAccountRecord(Account_InvalidateAccountRecord invRecord)
-    {
-        if (invRecord == null)
-        {
-            return;
-        }
-
-        _ = TryGetAccountRecord(invRecord.Id);
-        _ = TryGetAccountRecordFusionId(invRecord.FusionId);
-        _ = TryGetAccountRecordUsername(invRecord.Username);
-        _ = CreateAccountViewModel(invRecord.Id, true);
-        _ = CreateAccountViewModel(invRecord.Id, false);
-        _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Account, invRecord.Id);
-    }
-
     [CommandHandler]
     public virtual async Task<bool> TryChangeUsername(Account_TryChangeUsername command, CancellationToken cancellationToken)
     {
@@ -363,7 +282,7 @@ public class AccountServices : IAccountServices
         if (Computed.IsInvalidating())
         {
             var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
-            InvalidateAccountRecord(invRecord);
+            InvalidateHelpers.InvalidateRecord(_commonServices, invRecord);
 
             var username = invRecord?.Username;
             if (!string.IsNullOrWhiteSpace(username))
@@ -391,7 +310,7 @@ public class AccountServices : IAccountServices
             return false;
         }
 
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = await CreateCommandDbContext(cancellationToken);
         var usernameExists = await database.Accounts.AnyAsync(x => x.Username == command.NewUsername, cancellationToken);
         if (usernameExists)
         {
@@ -399,22 +318,20 @@ public class AccountServices : IAccountServices
         }
 
         var previousUsername = accountRecord.Username;
-        var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.Username == accountRecord.Username).AsUpdatable()
-            .Set(x => x.Username, command.NewUsername)
-            .Set(x => x.UsernameSearchable, DatabaseHelpers.GetSearchableName(command.NewUsername))
-            .UpdateAsync(cancellationToken);
+        var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.Username == accountRecord.Username)
+                                                  .UpdateAsync(r => new AccountRecord { Username = command.NewUsername, UsernameSearchable = DatabaseHelpers.GetSearchableName(command.NewUsername) }, cancellationToken);
 
         if (updateResult == 0)
         {
             return false;
         }
 
-        await TestingHistory(database, new AccountHistoryRecord
-        {
-            AccountId = accountRecord.Id,
-            CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-            Type = AccountHistoryType.UsernameChanged
-        });
+        //await TestingHistory(database, new AccountHistoryRecord
+        //{
+        //    AccountId = accountRecord.Id,
+        //    CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+        //    Type = AccountHistoryType.UsernameChanged
+        //});
 
         context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
         context.Operation().Items.Set(previousUsername);
@@ -429,7 +346,7 @@ public class AccountServices : IAccountServices
         if (Computed.IsInvalidating())
         {
             var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
-            InvalidateAccountRecord(invRecord);
+            InvalidateHelpers.InvalidateRecord(_commonServices, invRecord);
 
             return default;
         }
@@ -440,11 +357,8 @@ public class AccountServices : IAccountServices
             return false;
         }
 
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.IsPrivate == !command.NewValue).AsUpdatable()
-            .Set(x => x.IsPrivate, command.NewValue)
-            .UpdateAsync(cancellationToken);
-
+        await using var database = await CreateCommandDbContext(cancellationToken);
+        var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.IsPrivate == !command.NewValue).UpdateAsync(r => new AccountRecord { IsPrivate = command.NewValue }, cancellationToken);
         if (updateResult == 0)
         {
             return !command.NewValue;
@@ -462,7 +376,7 @@ public class AccountServices : IAccountServices
         if (Computed.IsInvalidating())
         {
             var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
-            InvalidateAccountRecord(invRecord);
+            InvalidateHelpers.InvalidateRecord(_commonServices, invRecord);
 
             return default;
         }
@@ -473,11 +387,8 @@ public class AccountServices : IAccountServices
             return false;
         }
 
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.BattleTagIsPublic == !command.NewValue).AsUpdatable()
-            .Set(x => x.BattleTagIsPublic, command.NewValue)
-            .UpdateAsync(cancellationToken);
-
+        await using var database = await CreateCommandDbContext(cancellationToken);
+        var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.BattleTagIsPublic == !command.NewValue).UpdateAsync(r => new AccountRecord { BattleTagIsPublic = command.NewValue }, cancellationToken);
         if (updateResult == 0)
         {
             return !command.NewValue;
@@ -495,7 +406,7 @@ public class AccountServices : IAccountServices
         if (Computed.IsInvalidating())
         {
             var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
-            InvalidateAccountRecord(invRecord);
+            InvalidateHelpers.InvalidateRecord(_commonServices, invRecord);
 
             return default;
         }
@@ -530,8 +441,9 @@ public class AccountServices : IAccountServices
         }
 
         var accountRecord = await TryGetActiveAccountRecord(command.Session);
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var updateResult = await database.GetUpdateQuery(accountRecord, out _).Set(x => x.Avatar, newAvatar).UpdateAsync(cancellationToken);
+        await using var database = await CreateCommandDbContext(cancellationToken);
+
+        var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id).UpdateAsync(r => new AccountRecord { Avatar = newAvatar }, cancellationToken);
         if (updateResult == 0)
         {
             return accountViewModel.Avatar;
@@ -549,7 +461,7 @@ public class AccountServices : IAccountServices
         if (Computed.IsInvalidating())
         {
             var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
-            InvalidateAccountRecord(invRecord);
+            InvalidateHelpers.InvalidateRecord(_commonServices, invRecord);
 
             return default;
         }
@@ -575,8 +487,9 @@ public class AccountServices : IAccountServices
 
         ServerSocialHelpers.SetterFunc[helper.LinkId](accountRecord, newValue);
 
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var updateResult = await database.GetUpdateQuery(accountRecord, out _).Set(ServerSocialHelpers.QuerySetter[helper.LinkId], newValue).UpdateAsync(cancellationToken);
+        await using var database = await CreateCommandDbContext(cancellationToken);
+
+        var updateResult = await ServerSocialHelpers.QuerySetter[helper.LinkId](database, accountRecord.Id, newValue);
         if (updateResult == 0)
         {
             return previous;
@@ -587,45 +500,15 @@ public class AccountServices : IAccountServices
         return newValue;
     }
 
-    public async Task TestingHistory(DatabaseConnection database, AccountHistoryRecord historyRecord)
-    {
-        if (historyRecord.AccountId == 0)
-        {
-            throw new NotImplementedException();
-        }
-
-        var query = from r in database.AccountHistory
-                    where r.AccountId == historyRecord.AccountId &&
-                          r.OtherAccountId == historyRecord.OtherAccountId &&
-                          r.Type == historyRecord.Type &&
-                          r.TargetId == historyRecord.TargetId &&
-                          r.TargetPostId == historyRecord.TargetPostId &&
-                          r.TargetCommentId == historyRecord.TargetCommentId
-                    select r.Id;
-
-        historyRecord.Id = await query.FirstOrDefaultAsync();
-
-        if (historyRecord.Id > 0)
-        {
-            await database.UpdateAsync(historyRecord);
-        }
-        else
-        {
-            historyRecord.Id = await database.InsertWithInt64IdentityAsync(historyRecord);
-        }
-
-        await _commonServices.Commander.Call(new Account_InvalidateFollowing(historyRecord.AccountId, 1));
-    }
+    //public async Task TestingHistory(DatabaseConnection database, AccountHistoryRecord historyRecord)
+    //{
+    //    throw new NotImplementedException();
+    //}
 
     [CommandHandler]
     protected virtual Task InvalidateFollowing(Account_InvalidateFollowing command, CancellationToken cancellationToken)
     {
-        if (Computed.IsInvalidating())
-        {
-            _ = TryGetAccountHistory(command.AccountId, command.Page);
-        }
-
-        return Task.CompletedTask;
+        throw new NotImplementedException();
     }
 
     [ComputeMethod]
@@ -642,7 +525,7 @@ public class AccountServices : IAccountServices
         var min = Instant.FromUnixTimeMilliseconds(timeStamp).Minus(Duration.FromSeconds(diffInSeconds)).ToUnixTimeMilliseconds();
         var max = Instant.FromUnixTimeMilliseconds(timeStamp).Plus(Duration.FromSeconds(diffInSeconds)).ToUnixTimeMilliseconds();
 
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
         var query = from a in database.CharacterAchievements
                     where a.AccountId == accountRecord.Id && a.AchievementTimeStamp > min && a.AchievementTimeStamp < max
                     select a.AchievementId;
@@ -686,7 +569,7 @@ public class AccountServices : IAccountServices
         Exceptions.ThrowIf(activeAccountId == 0);
         Exceptions.ThrowIf(currentPage == 0);
 
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
 
         var historyQuery = from record in database.AccountHistory
                            where record.AccountId == activeAccountId

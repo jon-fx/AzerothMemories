@@ -15,8 +15,8 @@ public interface IAccountServices
     [Get(nameof(TryGetAccountByUsername) + "/{username}")]
     Task<AccountViewModel> TryGetAccountByUsername(Session session, [Path] string username);
 
-    //[Post(nameof(TryEnqueueUpdate))]
-    //Task<bool> TryEnqueueUpdate(Session session);
+    [Post(nameof(TryEnqueueUpdate))]
+    Task<bool> TryEnqueueUpdate(Session session);
 
     [ComputeMethod]
     [Get(nameof(CheckIsValidUsername) + "/{username}")]

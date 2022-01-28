@@ -1,17 +1,20 @@
-﻿namespace AzerothMemories.WebServer.Database.Records;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace AzerothMemories.WebServer.Database.Records;
 
 [Table("Posts_Comments_Reactions")]
 public sealed class PostCommentReactionRecord : IDatabaseRecord
 {
-    [Column(IsPrimaryKey = true, IsIdentity = true)] public long Id { get; set; }
+    [Key] public long Id { get; set; }
 
-    [Column, NotNull] public long AccountId;
+    [Column] public long AccountId { get; set; }
 
-    [Column, NotNull] public long CommentId;
+    [Column] public long CommentId { get; set; }
 
-    [Column, NotNull] public PostReaction Reaction;
+    [Column] public PostReaction Reaction { get; set; }
 
-    [Column, NotNull] public Instant LastUpdateTime;
+    [Column] public Instant LastUpdateTime { get; set; }
 
     public PostCommentReactionViewModel CreatePostCommentReactionViewModel(string username)
     {

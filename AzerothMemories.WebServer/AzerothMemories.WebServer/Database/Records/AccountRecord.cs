@@ -1,53 +1,58 @@
-﻿namespace AzerothMemories.WebServer.Database.Records;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace AzerothMemories.WebServer.Database.Records;
 
 [Table("Accounts")]
 public sealed class AccountRecord : IBlizzardUpdateRecord
 {
-    [Column(IsPrimaryKey = true, IsIdentity = true)] public long Id { get; set; }
+    [Key] public long Id { get; set; }
 
-    [Column, NotNull] public string FusionId { get; set; }
+    [Column] public string FusionId { get; set; }
 
-    [Column, NotNull] public AccountType AccountType;
+    [Column] public AccountType AccountType { get; set; }
 
-    [Column, NotNull] public Instant CreatedDateTime;
+    [Column] public Instant CreatedDateTime { get; set; }
 
-    [Column, NotNull] public long BlizzardId;
+    [Column] public long BlizzardId { get; set; }
 
-    [Column, NotNull] public BlizzardRegion BlizzardRegionId;
+    [Column] public BlizzardRegion BlizzardRegionId { get; set; }
 
-    [Column, Nullable] public string BattleTag;
+    [Column] public string BattleTag { get; set; }
 
-    [Column, Nullable] public bool BattleTagIsPublic;
+    [Column] public bool BattleTagIsPublic { get; set; }
 
-    [Column, Nullable] public string BattleNetToken;
+    [Column] public string BattleNetToken { get; set; }
 
-    [Column, Nullable] public Instant? BattleNetTokenExpiresAt;
+    [Column] public Instant? BattleNetTokenExpiresAt { get; set; }
 
-    [Column, Nullable] public string Username;
+    [Column] public string Username { get; set; }
 
-    [Column, Nullable] public string UsernameSearchable;
+    [Column] public string UsernameSearchable { get; set; }
 
-    [Column, Nullable] public bool IsPrivate;
+    [Column] public bool IsPrivate { get; set; }
 
-    [Column, Nullable] public string Avatar;
+    [Column] public string Avatar { get; set; }
 
-    [Column, Nullable] public string SocialDiscord;
+    [Column] public string SocialDiscord { get; set; }
 
-    [Column, Nullable] public string SocialTwitter;
+    [Column] public string SocialTwitter { get; set; }
 
-    [Column, Nullable] public string SocialTwitch;
+    [Column] public string SocialTwitch { get; set; }
 
-    [Column, Nullable] public string SocialYouTube;
+    [Column] public string SocialYouTube { get; set; }
 
-    [Column, Nullable] public string BanReason;
+    [Column] public string BanReason { get; set; }
 
-    [Column, Nullable] public Instant BanExpireTime;
+    [Column] public Instant BanExpireTime { get; set; }
 
-    [Column, Nullable] public string UpdateJob { get; set; }
+    [Column] public string UpdateJob { get; set; }
 
-    [Column, Nullable] public Instant UpdateJobEndTime { get; set; }
+    [Column] public Instant UpdateJobEndTime { get; set; }
 
-    [Column, NotNull] public HttpStatusCode UpdateJobLastResult { get; set; }
+    [Column] public HttpStatusCode UpdateJobLastResult { get; set; }
+
+    public ICollection<CharacterRecord> Characters { get; set; }
 
     public AccountViewModel CreateViewModel(bool activeOrAdmin, Dictionary<long, AccountFollowingViewModel> followingViewModels, Dictionary<long, AccountFollowingViewModel> followersViewModels)
     {

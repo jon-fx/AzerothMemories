@@ -5,11 +5,11 @@ namespace AzerothMemories.WebServer.Services;
 
 [RegisterComputeService]
 [RegisterAlias(typeof(ITagServices))]
-public class TagServices : ITagServices
+public class TagServices : DbServiceBase<AppDbContext>, ITagServices
 {
     private readonly CommonServices _commonServices;
 
-    public TagServices(CommonServices commonServices)
+    public TagServices(IServiceProvider services, CommonServices commonServices) : base(services)
     {
         _commonServices = commonServices;
     }
@@ -17,7 +17,7 @@ public class TagServices : ITagServices
     [ComputeMethod]
     public virtual async Task<int> TryGetRealmId(string realmSlug)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
 
         var query = from r in database.BlizzardData
                     where r.TagType == PostTagType.Realm && r.Media == realmSlug
@@ -44,9 +44,9 @@ public class TagServices : ITagServices
             return new PostTagInfo(tagType, tagId, hashTagText, null);
         }
 
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
 
-        var record = await database.BlizzardData.Where(r => r.TagType == tagType && r.TagId == tagId).FirstOrDefaultAsync();
+        var record = await database.BlizzardData.FirstOrDefaultAsync(r => r.TagType == tagType && r.TagId == tagId);
         if (record == null)
         {
             return new PostTagInfo(tagType, tagId, PostTagInfo.GetTagString(tagType, tagId), null);
@@ -58,7 +58,7 @@ public class TagServices : ITagServices
     [ComputeMethod]
     public virtual async Task<PostTagInfo> TryGetUserTagInfo(PostTagType tagType, long tagId)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
 
         if (tagType == PostTagType.Account)
         {
@@ -119,7 +119,7 @@ public class TagServices : ITagServices
     [ComputeMethod]
     protected virtual async Task<PostTagInfo[]> Search(string searchString, string locale)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
 
         var query = GetSearchQuery(database, locale, searchString);
         var records = await query.ToArrayAsync();
@@ -133,9 +133,9 @@ public class TagServices : ITagServices
         return postTags.ToArray();
     }
 
-    private IQueryable<BlizzardDataRecord> GetSearchQuery(DatabaseConnection database, string locale, string searchString)
+    private IQueryable<BlizzardDataRecord> GetSearchQuery(AppDbContext database, string locale, string searchString)
     {
-        return database.BlizzardData.Where(r => Sql.Lower(r.Name.En_Gb).StartsWith(searchString)).OrderBy(r => r.TagType).ThenBy(r => Sql.Length(r.Name.En_Gb)).ThenBy(r => r.TagId).Take(50);
+        return database.BlizzardData.Where(r => r.Name_EnGb.ToLower().StartsWith(searchString)).OrderBy(r => r.TagType).ThenBy(r => r.Name_EnGb.Length).ThenBy(r => r.TagId).Take(50);
     }
 
     private PostTagInfo CreatePostTagInfo(BlizzardDataRecord record, string locale)
@@ -145,7 +145,7 @@ public class TagServices : ITagServices
             record.Media = null;
         }
 
-        var name = record.Name.En_Gb;
+        var name = record.Name_EnGb;
         if (string.IsNullOrWhiteSpace(name))
         {
             name = PostTagInfo.GetTagString(record.TagType, record.TagId);
@@ -263,7 +263,7 @@ public class TagServices : ITagServices
     [ComputeMethod]
     protected virtual async Task<bool> IsValidTagIdWithBlizzardDataSanityChecks(PostTagType tagType, long tagId)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
 
         var tagString = await (from data in database.BlizzardData
                                where data.TagType == tagType && data.TagId == tagId

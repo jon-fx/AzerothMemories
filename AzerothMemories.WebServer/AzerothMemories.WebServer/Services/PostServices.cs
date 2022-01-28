@@ -6,11 +6,11 @@ namespace AzerothMemories.WebServer.Services;
 
 [RegisterComputeService]
 [RegisterAlias(typeof(IPostServices))]
-public class PostServices : IPostServices
+public class PostServices : DbServiceBase<AppDbContext>, IPostServices
 {
     private readonly CommonServices _commonServices;
 
-    public PostServices(CommonServices commonServices)
+    public PostServices(IServiceProvider services, CommonServices commonServices) : base(services)
     {
         _commonServices = commonServices;
     }
@@ -171,40 +171,47 @@ public class PostServices : IPostServices
             return new AddMemoryResult(uploadAndSortResult);
         }
 
-        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        postRecord.Id = await database.InsertWithInt64IdentityAsync(postRecord, token: cancellationToken);
+        command.UploadResults.Clear();
 
-        foreach (var tagRecord in tagRecords)
-        {
-            tagRecord.PostId = postRecord.Id;
-        }
+        await using var database = await CreateCommandDbContext(cancellationToken);
 
-        await database.PostTags.BulkCopyAsync(tagRecords, cancellationToken);
+        postRecord.PostTags = tagRecords;
 
-        await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
-        {
-            AccountId = activeAccount.Id,
-            CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-            Type = AccountHistoryType.MemoryRestored,
-            TargetId = postRecord.AccountId,
-            TargetPostId = postRecord.Id
-        });
+        await database.Posts.AddAsync(postRecord, cancellationToken);
+        await database.SaveChangesAsync(cancellationToken);
 
-        foreach (var userTag in accountsTaggedInComment)
-        {
-            await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
-            {
-                AccountId = userTag,
-                OtherAccountId = activeAccount.Id,
-                Type = AccountHistoryType.TaggedPost,
-                CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-                TargetId = postRecord.AccountId,
-                TargetPostId = postRecord.Id
-            });
-        }
+        //postRecord.Id = await database.InsertWithInt64IdentityAsync(postRecord, token: cancellationToken);
 
-        transaction.Complete();
+        //foreach (var tagRecord in tagRecords)
+        //{
+        //    tagRecord.PostId = postRecord.Id;
+        //}
+
+        //await database.PostTags.BulkInsertAsync(tagRecords, cancellationToken);
+
+        //await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+        //{
+        //    AccountId = activeAccount.Id,
+        //    CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+        //    Type = AccountHistoryType.MemoryRestored,
+        //    TargetId = postRecord.AccountId,
+        //    TargetPostId = postRecord.Id
+        //});
+
+        //foreach (var userTag in accountsTaggedInComment)
+        //{
+        //    await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+        //    {
+        //        AccountId = userTag,
+        //        OtherAccountId = activeAccount.Id,
+        //        Type = AccountHistoryType.TaggedPost,
+        //        CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+        //        TargetId = postRecord.AccountId,
+        //        TargetPostId = postRecord.Id
+        //    });
+        //}
+
+        //transaction.Complete();
 
         context.Operation().Items.Set(new Post_InvalidateAccount(activeAccount.Id));
 
@@ -385,11 +392,9 @@ public class PostServices : IPostServices
             return 0;
         }
 
-        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = await CreateCommandDbContext(cancellationToken);
 
         var newReaction = command.NewReaction;
-        var postQuery = database.GetUpdateQuery(postRecord, out _);
         var reactionRecord = await database.PostReactions.FirstOrDefaultAsync(x => x.AccountId == activeAccount.Id && x.PostId == postId, cancellationToken);
         if (reactionRecord == null)
         {
@@ -406,8 +411,8 @@ public class PostServices : IPostServices
                 LastUpdateTime = SystemClock.Instance.GetCurrentInstant()
             };
 
-            reactionRecord.Id = await database.InsertWithInt64IdentityAsync(reactionRecord, token: cancellationToken);
-            postQuery = ModifyPostQueryWithReaction(postQuery, newReaction, +1, true);
+            await database.PostReactions.AddAsync(reactionRecord, cancellationToken);
+            await ModifyPostWithReaction(database, postRecord.Id, newReaction, +1, true);
         }
         else
         {
@@ -416,49 +421,46 @@ public class PostServices : IPostServices
                 return reactionRecord.Id;
             }
 
-            var reactionQuery = database.GetUpdateQuery(reactionRecord, out _);
             var previousReaction = reactionRecord.Reaction;
             if (previousReaction != PostReaction.None)
             {
-                reactionQuery = reactionQuery.Set(x => x.Reaction, PostReaction.None);
-                postQuery = ModifyPostQueryWithReaction(postQuery, previousReaction, -1, newReaction == PostReaction.None);
+                reactionRecord.Reaction = PostReaction.None;
+                await ModifyPostWithReaction(database, postRecord.Id, previousReaction, -1, newReaction == PostReaction.None);
             }
 
             if (newReaction != PostReaction.None)
             {
-                reactionQuery = reactionQuery.Set(x => x.Reaction, newReaction);
-                postQuery = ModifyPostQueryWithReaction(postQuery, newReaction, +1, previousReaction == PostReaction.None);
+                reactionRecord.Reaction = newReaction;
+                await ModifyPostWithReaction(database, postRecord.Id, newReaction, +1, previousReaction == PostReaction.None);
             }
 
-            await reactionQuery.Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync(cancellationToken);
+            reactionRecord.LastUpdateTime = SystemClock.Instance.GetCurrentInstant();
         }
-
-        await postQuery.UpdateAsync(cancellationToken);
 
         if (newReaction != PostReaction.None)
         {
-            await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
-            {
-                AccountId = activeAccount.Id,
-                OtherAccountId = postRecord.AccountId,
-                CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-                Type = AccountHistoryType.ReactedToPost1,
-                TargetId = postRecord.AccountId,
-                TargetPostId = postRecord.Id
-            });
+            //await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+            //{
+            //    AccountId = activeAccount.Id,
+            //    OtherAccountId = postRecord.AccountId,
+            //    CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            //    Type = AccountHistoryType.ReactedToPost1,
+            //    TargetId = postRecord.AccountId,
+            //    TargetPostId = postRecord.Id
+            //});
 
-            await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
-            {
-                AccountId = postRecord.AccountId,
-                OtherAccountId = activeAccount.Id,
-                CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-                Type = AccountHistoryType.ReactedToPost2,
-                TargetId = postRecord.AccountId,
-                TargetPostId = postRecord.Id
-            });
+            //await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+            //{
+            //    AccountId = postRecord.AccountId,
+            //    OtherAccountId = activeAccount.Id,
+            //    CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            //    Type = AccountHistoryType.ReactedToPost2,
+            //    TargetId = postRecord.AccountId,
+            //    TargetPostId = postRecord.Id
+            //});
         }
 
-        transaction.Complete();
+        await database.SaveChangesAsync(cancellationToken);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
         context.Operation().Items.Set(new Post_InvalidateAccount(activeAccount.Id));
@@ -469,7 +471,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     protected virtual async Task<Dictionary<long, PostReactionViewModel>> TryGetPostReactions(long postId)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
 
         var query = from r in database.PostReactions
                     where r.PostId == postId && r.Reaction != PostReaction.None
@@ -490,7 +492,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     protected virtual async Task<Dictionary<long, PostReactionViewModel>> TryGetPostCommentReactions(long commentId)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
 
         var query = from r in database.PostCommentReactions
                     where r.CommentId == commentId && r.Reaction != PostReaction.None
@@ -580,7 +582,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     protected virtual async Task<PostCommentPageViewModel> TryGetPostCommentsByPage(long postId, int page, long focusedCommentId)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
 
         var allCommentPages = await TryGetAllPostComments(postId);
         if (allCommentPages.Length == 1)
@@ -604,7 +606,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     protected virtual async Task<PostCommentPageViewModel[]> TryGetAllPostComments(long postId)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
 
         var query = from c in database.PostComments
                     from a in database.Accounts.Where(r => r.Id == c.AccountId)
@@ -755,33 +757,34 @@ public class PostServices : IPostServices
             return false;
         }
 
-        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        //using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+        await using var database = await CreateCommandDbContext(cancellationToken);
 
         await TryRestoreMemoryUpdate(database, postId, PostTagType.Account, accountTagToRemove, newAccountTag);
         await TryRestoreMemoryUpdate(database, postId, PostTagType.Character, characterTagToRemove, newCharacterTag);
 
-        await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
-        {
-            AccountId = activeAccount.Id,
-            OtherAccountId = postRecord.AccountId,
-            CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-            Type = AccountHistoryType.MemoryRestoredExternal1,
-            TargetId = postRecord.AccountId,
-            TargetPostId = postRecord.Id
-        });
+        //await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+        //{
+        //    AccountId = activeAccount.Id,
+        //    OtherAccountId = postRecord.AccountId,
+        //    CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+        //    Type = AccountHistoryType.MemoryRestoredExternal1,
+        //    TargetId = postRecord.AccountId,
+        //    TargetPostId = postRecord.Id
+        //});
 
-        await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
-        {
-            AccountId = postRecord.AccountId,
-            OtherAccountId = activeAccount.Id,
-            CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-            Type = AccountHistoryType.MemoryRestoredExternal2,
-            TargetId = postRecord.AccountId,
-            TargetPostId = postRecord.Id
-        });
+        //await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+        //{
+        //    AccountId = postRecord.AccountId,
+        //    OtherAccountId = activeAccount.Id,
+        //    CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+        //    Type = AccountHistoryType.MemoryRestoredExternal2,
+        //    TargetId = postRecord.AccountId,
+        //    TargetPostId = postRecord.Id
+        //});
 
-        transaction.Complete();
+        //transaction.Complete();
+        await database.SaveChangesAsync(cancellationToken);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
         context.Operation().Items.Set(new Post_InvalidateAccount(activeAccount.Id));
@@ -789,14 +792,14 @@ public class PostServices : IPostServices
         return true;
     }
 
-    private async Task TryRestoreMemoryUpdate(DatabaseConnection database, long postId, PostTagType tagType, long? oldTag, long? newTag)
+    private async Task TryRestoreMemoryUpdate(AppDbContext database, long postId, PostTagType tagType, long? oldTag, long? newTag)
     {
         if (oldTag == null)
         {
         }
         else
         {
-            await database.PostTags.Where(x => x.PostId == postId && x.TagType == tagType && x.TagId == oldTag.Value).Set(x => x.TagKind, PostTagKind.Deleted).UpdateAsync();
+            await database.PostTags.Where(x => x.PostId == postId && x.TagType == tagType && x.TagId == oldTag.Value).UpdateAsync(r => new PostTagRecord { TagKind = PostTagKind.Deleted });
         }
 
         if (newTag == null)
@@ -804,7 +807,7 @@ public class PostServices : IPostServices
         }
         else
         {
-            var update = await database.PostTags.Where(x => x.PostId == postId && x.TagType == tagType && x.TagId == newTag.Value).Set(x => x.TagKind, PostTagKind.PostRestored).UpdateAsync();
+            var update = await database.PostTags.Where(x => x.PostId == postId && x.TagType == tagType && x.TagId == newTag.Value).UpdateAsync(r => new PostTagRecord { TagKind = PostTagKind.PostRestored });
             if (update == 0)
             {
                 var tagString = PostTagInfo.GetTagString(tagType, newTag.Value);
@@ -819,7 +822,7 @@ public class PostServices : IPostServices
                     TagKind = PostTagKind.PostRestored
                 };
 
-                await database.InsertAsync(record);
+                await database.PostTags.AddAsync(record);
             }
         }
     }
@@ -929,8 +932,7 @@ public class PostServices : IPostServices
             return 0;
         }
 
-        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = await CreateCommandDbContext(cancellationToken);
         var commentRecord = new PostCommentRecord
         {
             AccountId = activeAccount.Id,
@@ -940,55 +942,55 @@ public class PostServices : IPostServices
             CreatedTime = SystemClock.Instance.GetCurrentInstant()
         };
 
-        commentRecord.Id = await database.InsertWithInt64IdentityAsync(commentRecord, token: cancellationToken);
-
-        await database.GetUpdateQuery(postRecord, out _).Set(x => x.TotalCommentCount, x => x.TotalCommentCount + 1).UpdateAsync(cancellationToken);
-
         foreach (var tagRecord in tagRecords)
         {
             tagRecord.PostId = postRecord.Id;
             tagRecord.CommentId = commentRecord.Id;
         }
 
-        await database.PostTags.BulkCopyAsync(tagRecords, cancellationToken);
+        commentRecord.CommentTags = tagRecords;
 
-        await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
-        {
-            AccountId = activeAccount.Id,
-            OtherAccountId = commentRecord.AccountId,
-            CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-            Type = AccountHistoryType.Commented1,
-            TargetId = postRecord.AccountId,
-            TargetPostId = postId,
-            TargetCommentId = commentRecord.Id
-        });
+        await database.PostComments.AddAsync(commentRecord, cancellationToken);
+        await database.Posts.Where(x => x.Id == postRecord.Id).UpdateAsync(r => new PostRecord { TotalCommentCount = r.TotalCommentCount + 1 }, cancellationToken);
+        await database.SaveChangesAsync(cancellationToken);
 
-        await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
-        {
-            AccountId = commentRecord.AccountId,
-            OtherAccountId = activeAccount.Id,
-            CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-            Type = AccountHistoryType.Commented2,
-            TargetId = postRecord.AccountId,
-            TargetPostId = postId,
-            TargetCommentId = commentRecord.Id
-        });
+        //await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+        //{
+        //    AccountId = activeAccount.Id,
+        //    OtherAccountId = commentRecord.AccountId,
+        //    CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+        //    Type = AccountHistoryType.Commented1,
+        //    TargetId = postRecord.AccountId,
+        //    TargetPostId = postId,
+        //    TargetCommentId = commentRecord.Id
+        //});
 
-        foreach (var userTag in accountsTaggedInComment)
-        {
-            await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
-            {
-                AccountId = userTag,
-                OtherAccountId = activeAccount.Id,
-                Type = AccountHistoryType.TaggedComment,
-                CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-                TargetId = postRecord.AccountId,
-                TargetPostId = postRecord.Id,
-                TargetCommentId = commentRecord.Id
-            });
-        }
+        //await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+        //{
+        //    AccountId = commentRecord.AccountId,
+        //    OtherAccountId = activeAccount.Id,
+        //    CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+        //    Type = AccountHistoryType.Commented2,
+        //    TargetId = postRecord.AccountId,
+        //    TargetPostId = postId,
+        //    TargetCommentId = commentRecord.Id
+        //});
 
-        transaction.Complete();
+        //foreach (var userTag in accountsTaggedInComment)
+        //{
+        //    await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+        //    {
+        //        AccountId = userTag,
+        //        OtherAccountId = activeAccount.Id,
+        //        Type = AccountHistoryType.TaggedComment,
+        //        CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+        //        TargetId = postRecord.AccountId,
+        //        TargetPostId = postRecord.Id,
+        //        TargetCommentId = commentRecord.Id
+        //    });
+        //}
+
+        //transaction.Complete();
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
         context.Operation().Items.Set(new Post_InvalidateAccount(activeAccount.Id));
@@ -1051,11 +1053,11 @@ public class PostServices : IPostServices
             return 0;
         }
 
-        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        //using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+        await using var database = await CreateCommandDbContext(cancellationToken);
 
         var newReaction = command.NewReaction;
-        var postQuery = database.PostComments.Where(x => x.Id == commentId).AsUpdatable();
+        //var postQuery = database.PostComments.Where(x => x.Id == commentId).AsUpdatable();
         var reactionRecord = await database.PostCommentReactions.FirstOrDefaultAsync(x => x.AccountId == activeAccount.Id && x.CommentId == commentId, cancellationToken);
         if (reactionRecord == null)
         {
@@ -1072,8 +1074,8 @@ public class PostServices : IPostServices
                 LastUpdateTime = SystemClock.Instance.GetCurrentInstant()
             };
 
-            reactionRecord.Id = await database.InsertWithInt64IdentityAsync(reactionRecord, token: cancellationToken);
-            postQuery = ModifyPostQueryWithReaction(postQuery, newReaction, +1, true);
+            await database.PostCommentReactions.AddAsync(reactionRecord, cancellationToken);
+            await ModifyPostCommentWithReaction(database, commentId, newReaction, +1, true);
         }
         else
         {
@@ -1082,51 +1084,52 @@ public class PostServices : IPostServices
                 return reactionRecord.Id;
             }
 
-            var reactionQuery = database.GetUpdateQuery(reactionRecord, out _);
             var previousReaction = reactionRecord.Reaction;
             if (previousReaction != PostReaction.None)
             {
-                reactionQuery = reactionQuery.Set(x => x.Reaction, PostReaction.None);
-                postQuery = ModifyPostQueryWithReaction(postQuery, previousReaction, -1, newReaction == PostReaction.None);
+                reactionRecord.Reaction = PostReaction.None;
+                await ModifyPostCommentWithReaction(database, commentId, previousReaction, -1, newReaction == PostReaction.None);
             }
 
             if (newReaction != PostReaction.None)
             {
-                reactionQuery = reactionQuery.Set(x => x.Reaction, newReaction);
-                postQuery = ModifyPostQueryWithReaction(postQuery, newReaction, +1, previousReaction == PostReaction.None);
+                reactionRecord.Reaction = newReaction;
+                await ModifyPostCommentWithReaction(database, commentId, newReaction, +1, previousReaction == PostReaction.None);
             }
 
-            await reactionQuery.Set(x => x.LastUpdateTime, SystemClock.Instance.GetCurrentInstant()).UpdateAsync(cancellationToken);
+            reactionRecord.LastUpdateTime = SystemClock.Instance.GetCurrentInstant();
         }
 
-        await postQuery.UpdateAsync(cancellationToken);
+        //await postQuery.UpdateAsync(cancellationToken);
 
         if (newReaction != PostReaction.None)
         {
-            await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
-            {
-                AccountId = activeAccount.Id,
-                OtherAccountId = commentViewModel.AccountId,
-                CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-                Type = AccountHistoryType.ReactedToComment1,
-                TargetId = postRecord.AccountId,
-                TargetPostId = postRecord.Id,
-                TargetCommentId = commentId
-            });
+            //await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+            //{
+            //    AccountId = activeAccount.Id,
+            //    OtherAccountId = commentViewModel.AccountId,
+            //    CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            //    Type = AccountHistoryType.ReactedToComment1,
+            //    TargetId = postRecord.AccountId,
+            //    TargetPostId = postRecord.Id,
+            //    TargetCommentId = commentId
+            //});
 
-            await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
-            {
-                AccountId = commentViewModel.AccountId,
-                OtherAccountId = activeAccount.Id,
-                CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-                Type = AccountHistoryType.ReactedToComment2,
-                TargetId = postRecord.AccountId,
-                TargetPostId = postRecord.Id,
-                TargetCommentId = commentId
-            });
+            //await _commonServices.AccountServices.TestingHistory(database, new AccountHistoryRecord
+            //{
+            //    AccountId = commentViewModel.AccountId,
+            //    OtherAccountId = activeAccount.Id,
+            //    CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            //    Type = AccountHistoryType.ReactedToComment2,
+            //    TargetId = postRecord.AccountId,
+            //    TargetPostId = postRecord.Id,
+            //    TargetCommentId = commentId
+            //});
         }
 
-        transaction.Complete();
+        //transaction.Complete();
+
+        await database.SaveChangesAsync(cancellationToken);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
         context.Operation().Items.Set(new Post_InvalidateAccount(activeAccount.Id));
@@ -1175,8 +1178,9 @@ public class PostServices : IPostServices
 
         var newVisibility = Math.Clamp(command.NewVisibility, (byte)0, (byte)1);
 
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        await database.GetUpdateQuery(postRecord, out _).Set(x => x.PostVisibility, newVisibility).UpdateAsync(cancellationToken);
+        await using var database = await CreateCommandDbContext(cancellationToken);
+        await database.Posts.Where(x => x.Id == postRecord.Id).UpdateAsync(r => new PostRecord { PostVisibility = newVisibility }, cancellationToken);
+        //await database.SaveChangesAsync(cancellationToken);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
 
@@ -1224,8 +1228,9 @@ public class PostServices : IPostServices
             return 0;
         }
 
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        await database.GetUpdateQuery(postRecord, out _).Set(x => x.DeletedTimeStamp, now).UpdateAsync(cancellationToken);
+        await using var database = await CreateCommandDbContext(cancellationToken);
+        await database.Posts.Where(x => x.Id == postRecord.Id).UpdateAsync(r => new PostRecord { DeletedTimeStamp = now }, cancellationToken);
+        //await database.SaveChangesAsync(cancellationToken);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
 
@@ -1275,12 +1280,9 @@ public class PostServices : IPostServices
             return 0;
         }
 
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-        var query = from comment in database.PostComments
-                    where comment.Id == commentId
-                    select comment;
-
-        await query.Set(x => x.DeletedTimeStamp, now).UpdateAsync(cancellationToken);
+        await using var database = await CreateCommandDbContext(cancellationToken);
+        await database.PostComments.Where(x => x.Id == commentId).UpdateAsync(r => new PostCommentRecord { DeletedTimeStamp = now }, cancellationToken);
+        //await database.SaveChangesAsync(cancellationToken);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
 
@@ -1333,21 +1335,12 @@ public class PostServices : IPostServices
             reasonText = reasonText[..ZExtensions.ReportPostCommentMaxLength];
         }
 
-        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-
-        var reportQuery = from r in database.PostReports
-                          where r.PostId == postRecord.Id && r.AccountId == activeAccount.Id
-                          select r;
-
-        var reportQueryResult = await reportQuery.FirstOrDefaultAsync(cancellationToken);
+        //using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+        await using var database = await CreateCommandDbContext(cancellationToken);
+        var reportQueryResult = await database.PostReports.FirstOrDefaultAsync(r => r.PostId == postRecord.Id && r.AccountId == activeAccount.Id, cancellationToken);
         if (reportQueryResult == null)
         {
-            var postUpdateQuery = database.GetUpdateQuery(postRecord, out _);
-
-            await postUpdateQuery.Set(x => x.TotalReportCount, x => x.TotalReportCount + 1).UpdateAsync(cancellationToken);
-
-            await database.InsertWithInt64IdentityAsync(new PostReportRecord
+            reportQueryResult = new PostReportRecord
             {
                 AccountId = activeAccount.Id,
                 PostId = postRecord.Id,
@@ -1355,34 +1348,20 @@ public class PostServices : IPostServices
                 ReasonText = reasonText,
                 CreatedTime = SystemClock.Instance.GetCurrentInstant(),
                 ModifiedTime = SystemClock.Instance.GetCurrentInstant()
-            }, token: cancellationToken);
+            };
+
+            database.PostReports.Add(reportQueryResult);
+
+            await database.Posts.Where(x => x.Id == postId).UpdateAsync(r => new PostRecord { TotalReportCount = r.TotalReportCount + 1 }, cancellationToken);
         }
         else
         {
-            var reportUpdateQuery = database.GetUpdateQuery(reportQueryResult, out var reportUpdateQueryChanged);
-
-            if (CheckAndChange.Check(ref reportQueryResult.Reason, reason, ref reportUpdateQueryChanged))
-            {
-                reportUpdateQuery = reportUpdateQuery.Set(x => x.Reason, reportQueryResult.Reason);
-            }
-
-            if (CheckAndChange.Check(ref reportQueryResult.ReasonText, reasonText, ref reportUpdateQueryChanged))
-            {
-                reportUpdateQuery = reportUpdateQuery.Set(x => x.ReasonText, reportQueryResult.ReasonText);
-            }
-
-            if (CheckAndChange.Check(ref reportQueryResult.ModifiedTime, SystemClock.Instance.GetCurrentInstant(), ref reportUpdateQueryChanged))
-            {
-                reportUpdateQuery = reportUpdateQuery.Set(x => x.ModifiedTime, reportQueryResult.ModifiedTime);
-            }
-
-            if (reportUpdateQueryChanged)
-            {
-                await reportUpdateQuery.UpdateAsync(cancellationToken);
-            }
+            reportQueryResult.Reason = reason;
+            reportQueryResult.ReasonText = reasonText;
+            reportQueryResult.ModifiedTime = SystemClock.Instance.GetCurrentInstant();
         }
 
-        transaction.Complete();
+        await database.SaveChangesAsync(cancellationToken);
 
         return true;
     }
@@ -1441,25 +1420,11 @@ public class PostServices : IPostServices
             reasonText = reasonText[..ZExtensions.MaxPostCommentLength];
         }
 
-        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
-
-        var reportQuery = from r in database.PostCommentReports
-                          where r.CommentId == commentId && r.AccountId == activeAccount.Id
-                          select r;
-
-        var reportQueryResult = await reportQuery.FirstOrDefaultAsync(cancellationToken);
+        await using var database = await CreateCommandDbContext(cancellationToken);
+        var reportQueryResult = await database.PostCommentReports.FirstOrDefaultAsync(r => r.CommentId == commentId && r.AccountId == activeAccount.Id, cancellationToken);
         if (reportQueryResult == null)
         {
-            var commentUpdateQuery = (from c in database.PostComments
-                                      where c.Id == commentId
-                                      select c).AsUpdatable();
-
-            commentUpdateQuery = commentUpdateQuery.Set(x => x.TotalReportCount, x => x.TotalReportCount + 1);
-
-            await commentUpdateQuery.UpdateAsync(cancellationToken);
-
-            await database.InsertWithInt64IdentityAsync(new PostCommentReportRecord
+            reportQueryResult = new PostCommentReportRecord
             {
                 AccountId = activeAccount.Id,
                 CommentId = commentId,
@@ -1467,34 +1432,20 @@ public class PostServices : IPostServices
                 ReasonText = reasonText,
                 CreatedTime = SystemClock.Instance.GetCurrentInstant(),
                 ModifiedTime = SystemClock.Instance.GetCurrentInstant(),
-            }, token: cancellationToken);
+            };
+
+            database.PostCommentReports.Add(reportQueryResult);
+
+            await database.PostComments.Where(x => x.Id == commentId).UpdateAsync(r => new PostCommentRecord { TotalReportCount = r.TotalReportCount + 1 }, cancellationToken);
         }
         else
         {
-            var reportUpdateQuery = database.GetUpdateQuery(reportQueryResult, out var reportUpdateQueryChanged);
-
-            if (CheckAndChange.Check(ref reportQueryResult.Reason, reason, ref reportUpdateQueryChanged))
-            {
-                reportUpdateQuery = reportUpdateQuery.Set(x => x.Reason, reportQueryResult.Reason);
-            }
-
-            if (CheckAndChange.Check(ref reportQueryResult.ReasonText, reasonText, ref reportUpdateQueryChanged))
-            {
-                reportUpdateQuery = reportUpdateQuery.Set(x => x.ReasonText, reportQueryResult.ReasonText);
-            }
-
-            if (CheckAndChange.Check(ref reportQueryResult.ModifiedTime, SystemClock.Instance.GetCurrentInstant(), ref reportUpdateQueryChanged))
-            {
-                reportUpdateQuery = reportUpdateQuery.Set(x => x.ModifiedTime, reportQueryResult.ModifiedTime);
-            }
-
-            if (reportUpdateQueryChanged)
-            {
-                await reportUpdateQuery.UpdateAsync(cancellationToken);
-            }
+            reportQueryResult.Reason = reason;
+            reportQueryResult.ReasonText = reasonText;
+            reportQueryResult.ModifiedTime = SystemClock.Instance.GetCurrentInstant();
         }
 
-        transaction.Complete();
+        await database.SaveChangesAsync(cancellationToken);
 
         return true;
     }
@@ -1550,8 +1501,7 @@ public class PostServices : IPostServices
             return false;
         }
 
-        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = await CreateCommandDbContext(cancellationToken);
 
         foreach (var tagRecord in tagRecords)
         {
@@ -1565,20 +1515,19 @@ public class PostServices : IPostServices
             }
             else
             {
-                var postTagQuery = database.GetUpdateQuery(tagRecord, out _);
-                await postTagQuery.Set(x => x.TotalReportCount, x => x.TotalReportCount + 1).UpdateAsync(cancellationToken);
+                await database.PostTags.Where(x => x.Id == tagRecord.Id).UpdateAsync(r => new PostTagRecord { TotalReportCount = r.TotalReportCount + 1 }, cancellationToken);
 
-                await database.InsertAsync(new PostTagReportRecord
+                await database.PostTagReports.AddAsync(new PostTagReportRecord
                 {
                     AccountId = activeAccount.Id,
                     PostId = postRecord.Id,
                     TagId = tagRecord.Id,
                     CreatedTime = SystemClock.Instance.GetCurrentInstant()
-                }, token: cancellationToken);
+                }, cancellationToken);
             }
         }
 
-        transaction.Complete();
+        await database.SaveChangesAsync(cancellationToken);
 
         return true;
     }
@@ -1636,8 +1585,7 @@ public class PostServices : IPostServices
         var removedSet = new HashSet<string>(allCurrentTags.Keys);
         removedSet.ExceptWith(command.NewTags);
 
-        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = await CreateCommandDbContext(cancellationToken);
 
         if (addedSet.Count > 64)
         {
@@ -1657,7 +1605,7 @@ public class PostServices : IPostServices
                     return AddMemoryResultCode.InvalidTags;
                 }
 
-                var currentTag = await database.PostTags.Where(x => x.PostId == postId && x.TagType == newRecord.TagType && x.TagId == newRecord.TagId).FirstOrDefaultAsync(cancellationToken);
+                var currentTag = await database.PostTags.FirstOrDefaultAsync(x => x.PostId == postId && x.TagType == newRecord.TagType && x.TagId == newRecord.TagId, cancellationToken);
                 if (currentTag == null)
                 {
                     newRecord.PostId = postRecord.Id;
@@ -1695,12 +1643,12 @@ public class PostServices : IPostServices
 
             if (recordsToInsert.Count > 0)
             {
-                await database.PostTags.BulkCopyAsync(recordsToInsert, cancellationToken);
+                await database.PostTags.BulkInsertAsync(recordsToInsert, cancellationToken);
             }
 
             foreach (var tagRecord in recordsToUpdate)
             {
-                await database.GetUpdateQuery(tagRecord, out _).Set(x => x.TagKind, tagRecord.TagKind).UpdateAsync(cancellationToken);
+                await database.PostTags.Where(x => x.Id == tagRecord.Id).UpdateAsync(r => new PostTagRecord { TagKind = tagRecord.TagKind }, cancellationToken);
             }
         }
 
@@ -1715,9 +1663,8 @@ public class PostServices : IPostServices
             avatar = null;
         }
 
-        await database.GetUpdateQuery(postRecord, out _).Set(x => x.PostAvatar, avatar).UpdateAsync(cancellationToken);
-
-        transaction.Complete();
+        await database.Posts.Where(x => x.Id == postRecord.Id).UpdateAsync(r => new PostRecord { PostAvatar = avatar }, cancellationToken);
+        await database.SaveChangesAsync(cancellationToken);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
 
@@ -1727,7 +1674,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     protected virtual async Task<Dictionary<long, PostCommentReactionViewModel>> TryGetMyCommentReactions(long activeAccountId, long postId)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
 
         var query = from reaction in database.PostCommentReactions
                     from comment in database.PostComments.Where(pr => pr.Id == reaction.CommentId)
@@ -1739,21 +1686,15 @@ public class PostServices : IPostServices
 
     public void InvalidatePostRecordAndTags(long postId)
     {
-        using var computed = Computed.Invalidate();
-        _ = GetPostRecord(postId);
-        _ = GetAllPostTags(postId);
+        throw new NotImplementedException();
     }
 
     [ComputeMethod]
     protected virtual async Task<PostRecord> GetPostRecord(long postId)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
 
-        var query = from p in database.Posts
-                    where p.DeletedTimeStamp == 0 && p.Id == postId
-                    select p;
-
-        return await query.FirstOrDefaultAsync();
+        return await database.Posts.FirstOrDefaultAsync(p => p.DeletedTimeStamp == 0 && p.Id == postId);
     }
 
     [ComputeMethod]
@@ -1787,7 +1728,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     protected virtual async Task<PostTagRecord[]> GetAllPostTags(long postId)
     {
-        await using var database = _commonServices.DatabaseProvider.GetDatabase();
+        await using var database = CreateDbContext();
 
         var allTags = from tag in database.PostTags
                       where tag.PostId == postId && (tag.TagKind == PostTagKind.Post || tag.TagKind == PostTagKind.PostComment || tag.TagKind == PostTagKind.PostRestored)
@@ -1796,57 +1737,58 @@ public class PostServices : IPostServices
         return await allTags.ToArrayAsync();
     }
 
-    private static IUpdatable<PostRecord> ModifyPostQueryWithReaction(IUpdatable<PostRecord> query, PostReaction reaction, int change, bool modifyTotal)
+    private static async Task ModifyPostWithReaction(AppDbContext dbContext, long id, PostReaction reaction, int change, bool modifyTotal)
     {
         switch (reaction)
         {
             case PostReaction.None:
             {
-                return query;
+                //return query;
+                break;
             }
             case PostReaction.Reaction1:
             {
-                query = query.Set(x => x.ReactionCount1, x => x.ReactionCount1 + change);
+                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount1 = r.ReactionCount1 + change });
                 break;
             }
             case PostReaction.Reaction2:
             {
-                query = query.Set(x => x.ReactionCount2, x => x.ReactionCount2 + change);
+                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount2 = r.ReactionCount2 + change });
                 break;
             }
             case PostReaction.Reaction3:
             {
-                query = query.Set(x => x.ReactionCount3, x => x.ReactionCount3 + change);
+                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount3 = r.ReactionCount3 + change });
                 break;
             }
             case PostReaction.Reaction4:
             {
-                query = query.Set(x => x.ReactionCount4, x => x.ReactionCount4 + change);
+                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount4 = r.ReactionCount4 + change });
                 break;
             }
             case PostReaction.Reaction5:
             {
-                query = query.Set(x => x.ReactionCount5, x => x.ReactionCount5 + change);
+                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount5 = r.ReactionCount5 + change });
                 break;
             }
             case PostReaction.Reaction6:
             {
-                query = query.Set(x => x.ReactionCount6, x => x.ReactionCount6 + change);
+                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount6 = r.ReactionCount6 + change });
                 break;
             }
             case PostReaction.Reaction7:
             {
-                query = query.Set(x => x.ReactionCount7, x => x.ReactionCount7 + change);
+                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount7 = r.ReactionCount7 + change });
                 break;
             }
             case PostReaction.Reaction8:
             {
-                query = query.Set(x => x.ReactionCount8, x => x.ReactionCount8 + change);
+                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount8 = r.ReactionCount8 + change });
                 break;
             }
             case PostReaction.Reaction9:
             {
-                query = query.Set(x => x.ReactionCount9, x => x.ReactionCount9 + change);
+                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount9 = r.ReactionCount9 + change });
                 break;
             }
             default:
@@ -1857,63 +1799,62 @@ public class PostServices : IPostServices
 
         if (modifyTotal)
         {
-            query = query.Set(x => x.TotalReactionCount, x => x.TotalReactionCount + change);
+            await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { TotalReactionCount = r.TotalReactionCount + change });
         }
-
-        return query;
     }
 
-    private static IUpdatable<PostCommentRecord> ModifyPostQueryWithReaction(IUpdatable<PostCommentRecord> query, PostReaction reaction, int change, bool modifyTotal)
+    private static async Task ModifyPostCommentWithReaction(AppDbContext dbContext, long id, PostReaction reaction, int change, bool modifyTotal)
     {
         switch (reaction)
         {
             case PostReaction.None:
             {
-                return query;
+                //return query;
+                break;
             }
             case PostReaction.Reaction1:
             {
-                query = query.Set(x => x.ReactionCount1, x => x.ReactionCount1 + change);
+                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount1 = r.ReactionCount1 + change });
                 break;
             }
             case PostReaction.Reaction2:
             {
-                query = query.Set(x => x.ReactionCount2, x => x.ReactionCount2 + change);
+                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount2 = r.ReactionCount2 + change });
                 break;
             }
             case PostReaction.Reaction3:
             {
-                query = query.Set(x => x.ReactionCount3, x => x.ReactionCount3 + change);
+                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount3 = r.ReactionCount3 + change });
                 break;
             }
             case PostReaction.Reaction4:
             {
-                query = query.Set(x => x.ReactionCount4, x => x.ReactionCount4 + change);
+                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount4 = r.ReactionCount4 + change });
                 break;
             }
             case PostReaction.Reaction5:
             {
-                query = query.Set(x => x.ReactionCount5, x => x.ReactionCount5 + change);
+                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount5 = r.ReactionCount5 + change });
                 break;
             }
             case PostReaction.Reaction6:
             {
-                query = query.Set(x => x.ReactionCount6, x => x.ReactionCount6 + change);
+                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount6 = r.ReactionCount6 + change });
                 break;
             }
             case PostReaction.Reaction7:
             {
-                query = query.Set(x => x.ReactionCount7, x => x.ReactionCount7 + change);
+                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount7 = r.ReactionCount7 + change });
                 break;
             }
             case PostReaction.Reaction8:
             {
-                query = query.Set(x => x.ReactionCount8, x => x.ReactionCount8 + change);
+                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount8 = r.ReactionCount8 + change });
                 break;
             }
             case PostReaction.Reaction9:
             {
-                query = query.Set(x => x.ReactionCount9, x => x.ReactionCount9 + change);
+                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount9 = r.ReactionCount9 + change });
                 break;
             }
             default:
@@ -1924,9 +1865,7 @@ public class PostServices : IPostServices
 
         if (modifyTotal)
         {
-            query = query.Set(x => x.TotalReactionCount, x => x.TotalReactionCount + change);
+            await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { TotalReactionCount = r.TotalReactionCount + change });
         }
-
-        return query;
     }
 }
