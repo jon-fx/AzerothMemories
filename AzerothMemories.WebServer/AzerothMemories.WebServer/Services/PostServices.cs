@@ -740,9 +740,11 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
 
         long? accountTagToRemove = command.NewCharacterId > 0 ? null : activeAccount.Id;
         long? characterTagToRemove = command.PreviousCharacterId > 0 ? command.PreviousCharacterId : null;
+        var newTagKind = PostTagKind.PostRestored;
         if (activeAccount.Id == postRecord.AccountId)
         {
             accountTagToRemove = null;
+            newTagKind = PostTagKind.Post;
         }
 
         if (characterTagToRemove != null && activeAccount.GetCharactersSafe().FirstOrDefault(x => x.Id == characterTagToRemove.Value) == null)
@@ -757,8 +759,8 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
 
         await using var database = await CreateCommandDbContext(cancellationToken);
 
-        await TryRestoreMemoryUpdate(database, postId, PostTagType.Account, accountTagToRemove, newAccountTag);
-        await TryRestoreMemoryUpdate(database, postId, PostTagType.Character, characterTagToRemove, newCharacterTag);
+        await TryRestoreMemoryUpdate(database, postId, PostTagType.Account, accountTagToRemove, newAccountTag, newTagKind);
+        await TryRestoreMemoryUpdate(database, postId, PostTagType.Character, characterTagToRemove, newCharacterTag, newTagKind);
 
         await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
@@ -788,7 +790,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         return true;
     }
 
-    private async Task TryRestoreMemoryUpdate(AppDbContext database, long postId, PostTagType tagType, long? oldTag, long? newTag)
+    private async Task TryRestoreMemoryUpdate(AppDbContext database, long postId, PostTagType tagType, long? oldTag, long? newTag, PostTagKind newTagKind)
     {
         if (oldTag == null)
         {
@@ -803,7 +805,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
         else
         {
-            var update = await database.PostTags.Where(x => x.PostId == postId && x.TagType == tagType && x.TagId == newTag.Value).UpdateAsync(r => new PostTagRecord { TagKind = PostTagKind.PostRestored });
+            var update = await database.PostTags.Where(x => x.PostId == postId && x.TagType == tagType && x.TagId == newTag.Value).UpdateAsync(r => new PostTagRecord { TagKind = newTagKind });
             if (update == 0)
             {
                 var tagString = PostTagInfo.GetTagString(tagType, newTag.Value);
@@ -815,7 +817,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
                     TagString = tagString,
                     PostId = postId,
                     CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-                    TagKind = PostTagKind.PostRestored
+                    TagKind = newTagKind
                 };
 
                 await database.PostTags.AddAsync(record);
