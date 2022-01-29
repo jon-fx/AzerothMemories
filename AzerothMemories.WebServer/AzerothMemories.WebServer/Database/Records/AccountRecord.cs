@@ -52,7 +52,7 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
 
     [Column] public HttpStatusCode UpdateJobLastResult { get; set; }
 
-    public ICollection<CharacterRecord> Characters { get; set; }
+    //public ICollection<CharacterRecord> Characters { get; set; }
 
     public AccountViewModel CreateViewModel(bool activeOrAdmin, Dictionary<long, AccountFollowingViewModel> followingViewModels, Dictionary<long, AccountFollowingViewModel> followersViewModels)
     {

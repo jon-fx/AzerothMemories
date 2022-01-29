@@ -23,6 +23,7 @@ builder.Services.AddLogging(logging =>
 });
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+EntityFrameworkPlusManager.IsCommunity = true;
 ProgramEx.Initialize(builder.Services);
 
 builder.Services.AddRazorPages();
@@ -57,6 +58,7 @@ builder.Services.AddHangfire(options =>
 });
 builder.Services.AddHangfireServer(options =>
 {
+    options.WorkerCount = 2;
     options.Queues = BlizzardUpdateHandler.AllQueues;
 });
 
@@ -177,7 +179,8 @@ await using var dbContext = dbContextFactory.CreateDbContext();
 //await dbContext.CharacterAchievements.DeleteAsync();
 //await dbContext.Guilds.DeleteAsync();
 
-//await dbContext.Characters.UpdateAsync(x => new CharacterRecord { BlizzardAchievementsLastModified = 0, BlizzardProfileLastModified = 0, BlizzardRendersLastModified = 0 });
-//await dbContext.Guilds.UpdateAsync(x => new GuildRecord { BlizzardAchievementsLastModified = 0, BlizzardRosterLastModified = 0 });
+//await dbContext.Accounts.UpdateAsync(x => new AccountRecord { UpdateJobEndTime = Instant.FromUnixTimeMilliseconds(0) });
+//await dbContext.Characters.UpdateAsync(x => new CharacterRecord { UpdateJobEndTime = Instant.FromUnixTimeMilliseconds(0), BlizzardAchievementsLastModified = 0, BlizzardProfileLastModified = 0, BlizzardRendersLastModified = 0 });
+//await dbContext.Guilds.UpdateAsync(x => new GuildRecord { UpdateJobEndTime = Instant.FromUnixTimeMilliseconds(0), BlizzardAchievementsLastModified = 0, BlizzardRosterLastModified = 0 });
 
 app.Run();

@@ -20,7 +20,12 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         if (Computed.IsInvalidating())
         {
             var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
-            InvalidateHelpers.InvalidateRecord(_commonServices, invRecord);
+            if (invRecord != null)
+            {
+                _ = DependsOnAccountRecord(invRecord.Id);
+                _ = TryGetAccountRecordUsername(invRecord.Username);
+                _ = TryGetAccountRecordFusionId(invRecord.FusionId);
+            }
 
             return;
         }
@@ -116,7 +121,20 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
     }
 
-    private async Task<AccountRecord> GetOrCreateAccount(string userId)
+    [ComputeMethod]
+    public virtual Task<long> DependsOnAccountRecord(long accountId)
+    {
+        return Task.FromResult(accountId);
+    }
+
+    [ComputeMethod]
+    public virtual Task<long> DependsOnAccountAchievements(long accountId)
+    {
+        return Task.FromResult(accountId);
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<AccountRecord> GetOrCreateAccount(string userId)
     {
         var accountRecord = await TryGetAccountRecordFusionId(userId);
         if (accountRecord == null)
@@ -139,6 +157,8 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
                 throw new NotImplementedException();
             }
 
+            //await DependsOnAccountRecord(accountRecord.Id);
+
             await AddNewHistoryItem(new Account_AddNewHistoryItem
             {
                 AccountId = accountRecord.Id,
@@ -154,25 +174,36 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
     [ComputeMethod]
     public virtual async Task<AccountRecord> TryGetAccountRecord(long id)
     {
+        await DependsOnAccountRecord(id);
+
         await using var database = CreateDbContext();
-        var user = await database.Accounts.FirstOrDefaultAsync(a => a.Id == id);
-        return user;
+        var accountRecord = await database.Accounts.FirstOrDefaultAsync(a => a.Id == id);
+
+        return accountRecord;
     }
 
     [ComputeMethod]
     public virtual async Task<AccountRecord> TryGetAccountRecordFusionId(string fusionId)
     {
         await using var database = CreateDbContext();
-        var user = await database.Accounts.FirstOrDefaultAsync(a => a.FusionId == fusionId);
-        return user;
+        var accountRecord = await database.Accounts.FirstOrDefaultAsync(a => a.FusionId == fusionId);
+        if (accountRecord != null)
+        {
+            await DependsOnAccountRecord(accountRecord.Id);
+        }
+        return accountRecord;
     }
 
     [ComputeMethod]
     public virtual async Task<AccountRecord> TryGetAccountRecordUsername(string username)
     {
         await using var database = CreateDbContext();
-        var user = await database.Accounts.FirstOrDefaultAsync(a => a.Username == username);
-        return user;
+        var accountRecord = await database.Accounts.FirstOrDefaultAsync(a => a.Username == username);
+        if (accountRecord != null)
+        {
+            await DependsOnAccountRecord(accountRecord.Id);
+        }
+        return accountRecord;
     }
 
     [ComputeMethod]
@@ -184,12 +215,15 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             return null;
         }
 
-        return await CreateAccountViewModel(accountRecord.Id, true);
+        await DependsOnAccountRecord(accountRecord.Id);
+        return await CreateAccountViewModel(accountRecord, true);
     }
 
     [ComputeMethod]
     public virtual async Task<AccountViewModel> TryGetAccountById(Session session, long accountId)
     {
+        await DependsOnAccountRecord(accountId);
+
         var sessionAccount = await TryGetActiveAccount(session);
         if (sessionAccount != null && sessionAccount.Id == accountId)
         {
@@ -202,7 +236,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             return null;
         }
 
-        return await CreateAccountViewModel(accountRecord.Id, sessionAccount != null && sessionAccount.AccountType >= AccountType.Admin);
+        return await CreateAccountViewModel(accountRecord, sessionAccount != null && sessionAccount.AccountType >= AccountType.Admin);
     }
 
     [ComputeMethod]
@@ -220,7 +254,8 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             return null;
         }
 
-        return await CreateAccountViewModel(accountRecord.Id, sessionAccount != null && sessionAccount.AccountType >= AccountType.Admin);
+        await DependsOnAccountRecord(accountRecord.Id);
+        return await CreateAccountViewModel(accountRecord, sessionAccount != null && sessionAccount.AccountType >= AccountType.Admin);
     }
 
     public async Task<bool> TryEnqueueUpdate(Session session)
@@ -237,9 +272,9 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountViewModel> CreateAccountViewModel(long accountId, bool activeOrAdmin)
+    public virtual async Task<AccountViewModel> CreateAccountViewModel(AccountRecord accountRecord, bool activeOrAdmin)
     {
-        var accountRecord = await TryGetAccountRecord(accountId);
+        await DependsOnAccountRecord(accountRecord.Id);
 
         await _commonServices.BlizzardUpdateHandler.TryUpdate(accountRecord, BlizzardUpdatePriority.Account);
 
@@ -325,17 +360,21 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         if (Computed.IsInvalidating())
         {
             var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
-            InvalidateHelpers.InvalidateRecord(_commonServices, invRecord);
-
-            var username = invRecord?.Username;
-            if (!string.IsNullOrWhiteSpace(username))
+            if (invRecord != null)
             {
-                _ = CheckIsValidUsername(username);
+                _ = DependsOnAccountRecord(invRecord.Id);
+
+                var username = invRecord.Username;
+                if (!string.IsNullOrWhiteSpace(username))
+                {
+                    _ = CheckIsValidUsername(username);
+                }
             }
 
             var invPreviousUsername = context.Operation().Items.Get<string>();
-            if (invPreviousUsername != null)
+            if (!string.IsNullOrWhiteSpace(invPreviousUsername))
             {
+                _ = CheckIsValidUsername(invPreviousUsername);
                 _ = TryGetAccountRecordUsername(invPreviousUsername);
             }
 
@@ -389,7 +428,10 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         if (Computed.IsInvalidating())
         {
             var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
-            InvalidateHelpers.InvalidateRecord(_commonServices, invRecord);
+            if (invRecord != null)
+            {
+                _ = DependsOnAccountRecord(invRecord.Id);
+            }
 
             return default;
         }
@@ -419,7 +461,10 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         if (Computed.IsInvalidating())
         {
             var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
-            InvalidateHelpers.InvalidateRecord(_commonServices, invRecord);
+            if (invRecord != null)
+            {
+                _ = DependsOnAccountRecord(invRecord.Id);
+            }
 
             return default;
         }
@@ -449,7 +494,10 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         if (Computed.IsInvalidating())
         {
             var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
-            InvalidateHelpers.InvalidateRecord(_commonServices, invRecord);
+            if (invRecord != null)
+            {
+                _ = DependsOnAccountRecord(invRecord.Id);
+            }
 
             return default;
         }
@@ -504,7 +552,10 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         if (Computed.IsInvalidating())
         {
             var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
-            InvalidateHelpers.InvalidateRecord(_commonServices, invRecord);
+            if (invRecord != null)
+            {
+                _ = DependsOnAccountRecord(invRecord.Id);
+            }
 
             return default;
         }
@@ -604,6 +655,8 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         {
             return Array.Empty<PostTagInfo>();
         }
+
+        await DependsOnAccountAchievements(accountRecord.Id);
 
         diffInSeconds = Math.Clamp(diffInSeconds, 0, 300);
 
@@ -710,13 +763,13 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             return null;
         }
 
-        //user.MustBeAuthenticated();
-
         var accountRecord = await TryGetAccountRecordFusionId(user.Id.Value);
         if (accountRecord == null)
         {
             return null;
         }
+
+        await DependsOnAccountRecord(accountRecord.Id);
 
         return accountRecord;
     }

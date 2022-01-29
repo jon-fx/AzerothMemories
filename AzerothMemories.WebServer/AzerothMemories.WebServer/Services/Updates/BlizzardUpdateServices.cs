@@ -19,43 +19,44 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
             var invRecord = context.Operation().Items.Get<Updates_UpdateAccountInvalidate>();
             if (invRecord != null)
             {
-                InvalidateHelpers.InvalidateRecord(_commonServices, new Account_InvalidateAccountRecord(invRecord.AccountId, invRecord.Username, invRecord.FusionId));
+                //InvalidateHelpers.InvalidateRecord(_commonServices, new Account_InvalidateAccountRecord(invRecord.AccountId, invRecord.Username, invRecord.FusionId));
+
+                _ = _commonServices.AccountServices.DependsOnAccountRecord(invRecord.AccountId);
+                _ = _commonServices.CharacterServices.TryGetAllAccountCharacters(invRecord.AccountId);
 
                 foreach (var characterId in invRecord.CharacterIds)
                 {
-                    _ = _commonServices.CharacterServices.TryGetCharacterRecord(characterId);
-                    _ = _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Character, characterId);
+                    _ = _commonServices.CharacterServices.DependsOnCharacterRecord(characterId);
                 }
-
-                _ = _commonServices.CharacterServices.TryGetAllAccountCharacters(invRecord.AccountId);
             }
 
             return default;
         }
 
         await using var database = await CreateCommandDbContext(cancellationToken);
-        var record = await database.Accounts.Include(x => x.Characters).FirstOrDefaultAsync(x => x.Id == command.AccountId, cancellationToken);
+        var record = await database.Accounts.FirstOrDefaultAsync(x => x.Id == command.AccountId, cancellationToken);
         if (record == null)
         {
             return default;
         }
 
         using var client = _commonServices.WarcraftClientProvider.Get(record.BlizzardRegionId);
+        var characters = await database.Characters.Where(x => x.AccountId == command.AccountId).ToDictionaryAsync(x => x.MoaRef, x => x, cancellationToken);
         var accountSummaryResult = await client.GetAccountProfile(record.BattleNetToken, 0 /*record.BlizzardAccountLastModified*/).ConfigureAwait(false);
         if (accountSummaryResult.IsSuccess)
         {
-            var deletedCharactersSets = new List<CharacterRecord>(record.Characters);
+            var deletedCharactersSets = new Dictionary<string, CharacterRecord>(characters);
 
             foreach (var account in accountSummaryResult.ResultData.WowAccounts)
             {
                 foreach (var accountCharacter in account.Characters)
                 {
                     var characterRef = MoaRef.GetCharacterRef(record.BlizzardRegionId, accountCharacter.Realm.Slug, accountCharacter.Name, accountCharacter.Id);
-                    var characterRecord = record.Characters.FirstOrDefault(x => x.MoaRef == characterRef.Full);
-                    if (characterRecord == null)
+                    if (!characters.TryGetValue(characterRef.Full, out var characterRecord))
                     {
                         characterRecord = await _commonServices.CharacterServices.GetOrCreateCharacterRecord(characterRef.Full);
-                        record.Characters.Add(characterRecord);
+
+                        database.Characters.Attach(characterRecord);
                     }
 
                     characterRecord.AccountId = record.Id;
@@ -73,11 +74,11 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
                     characterRecord.Faction = accountCharacter.Faction.AsFaction();
                     characterRecord.Level = (byte)accountCharacter.Level;
 
-                    deletedCharactersSets.Remove(characterRecord);
+                    deletedCharactersSets.Remove(characterRecord.MoaRef);
                 }
             }
 
-            foreach (var character in deletedCharactersSets)
+            foreach (var character in deletedCharactersSets.Values)
             {
                 character.CharacterStatus = CharacterStatus2.MaybeDeleted;
             }
@@ -92,7 +93,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
 
         await database.SaveChangesAsync(cancellationToken);
 
-        context.Operation().Items.Set(new Updates_UpdateAccountInvalidate(record.Id, record.FusionId, record.Username, record.Characters.Select(x => x.Id).ToHashSet()));
+        context.Operation().Items.Set(new Updates_UpdateAccountInvalidate(record.Id, record.FusionId, record.Username, characters.Values.Select(x => x.Id).ToHashSet()));
 
         return accountSummaryResult.ResultCode;
     }
@@ -104,7 +105,20 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         if (Computed.IsInvalidating())
         {
             var invRecord = context.Operation().Items.Get<Character_InvalidateCharacterRecord>();
-            InvalidateHelpers.InvalidateRecord(_commonServices, invRecord);
+            if (invRecord != null)
+            {
+                if (invRecord.CharacterId > 0)
+                {
+                    _ = _commonServices.CharacterServices.DependsOnCharacterRecord(invRecord.CharacterId);
+                    _ = _commonServices.CharacterServices.TryGetCharacterRecord(invRecord.CharacterId);
+                }
+
+                if (invRecord.AccountId > 0)
+                {
+                    _ = _commonServices.AccountServices.DependsOnAccountAchievements(invRecord.AccountId);
+                    _ = _commonServices.CharacterServices.TryGetAllAccountCharacters(invRecord.AccountId);
+                }
+            }
 
             return default;
         }
@@ -206,12 +220,9 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
             newGuildId = guildData.Id;
             newGuildName = guildData.Name;
             var newGuildRef = MoaRef.GetGuildRef(record.BlizzardRegionId, guildData.Realm.Slug, newGuildName, newGuildId).Full;
-
-            if (newGuildRef != null)
-            {
-                guildRecord = await _commonServices.GuildServices.GetOrCreate(newGuildRef);
-                newGuildId = guildRecord.BlizzardId;
-            }
+            
+            guildRecord = await _commonServices.GuildServices.GetOrCreate(newGuildRef);
+            newGuildId = guildRecord.BlizzardId;
         }
 
         record.BlizzardGuildId = newGuildId;
@@ -282,7 +293,15 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         if (Computed.IsInvalidating())
         {
             var invRecord = context.Operation().Items.Get<Guild_InvalidateGuildRecord>();
-            InvalidateHelpers.InvalidateRecord(_commonServices, invRecord);
+            if (invRecord != null)
+            {
+                _ = _commonServices.GuildServices.DependsOnGuildRecord(invRecord.GuildId);
+
+                foreach (var characterId in invRecord.CharacterIds)
+                {
+                    _ = _commonServices.CharacterServices.DependsOnCharacterRecord(characterId);
+                }
+            }
 
             return default;
         }
@@ -302,7 +321,13 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
 
         await database.SaveChangesAsync(cancellationToken);
 
-        context.Operation().Items.Set(new Guild_InvalidateGuildRecord(record.Id));
+        var characterQuery = from r in database.Characters
+                             where r.GuildId == r.Id
+                             select r.Id;
+
+        var characterIds = await characterQuery.ToArrayAsync(cancellationToken);
+
+        context.Operation().Items.Set(new Guild_InvalidateGuildRecord(record.Id, characterIds.ToHashSet()));
 
         return updateResult;
     }

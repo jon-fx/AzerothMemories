@@ -12,6 +12,12 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
     }
 
     [ComputeMethod]
+    public virtual Task<long> DependsOnCharacterRecord(long characterId)
+    {
+        return Task.FromResult(characterId);
+    }
+
+    [ComputeMethod]
     public virtual async Task<CharacterRecord> TryGetCharacterRecord(long id)
     {
         await using var database = CreateDbContext();
@@ -23,6 +29,8 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
 
             Exceptions.ThrowIf(!moaRef.IsValidCharacter);
             Exceptions.ThrowIf(moaRef.Id != record.BlizzardId);
+
+            await DependsOnCharacterRecord(record.Id);
         }
 
         return record;
@@ -37,13 +45,13 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
         Exceptions.ThrowIf(!moaRef.IsValidCharacter);
 
         await using var database = CreateDbContext(true);
-        var characterId = await (from r in database.Characters
-                                 where r.MoaRef == moaRef.Full
-                                 select r.Id).FirstOrDefaultAsync();
+        var characterRecord = await (from r in database.Characters
+                                     where r.MoaRef == moaRef.Full
+                                     select r).FirstOrDefaultAsync();
 
-        if (characterId == 0)
+        if (characterRecord == null)
         {
-            var record = new CharacterRecord
+            characterRecord = new CharacterRecord
             {
                 MoaRef = moaRef.Full,
                 BlizzardId = moaRef.Id,
@@ -51,13 +59,11 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
                 CreatedDateTime = SystemClock.Instance.GetCurrentInstant()
             };
 
-            await database.Characters.AddAsync(record);
+            await database.Characters.AddAsync(characterRecord);
             await database.SaveChangesAsync();
-
-            characterId = record.Id;
         }
 
-        var characterRecord = await TryGetCharacterRecord(characterId);
+        await DependsOnCharacterRecord(characterRecord.Id);
         return characterRecord;
     }
 
@@ -76,12 +82,15 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
     [ComputeMethod]
     public virtual async Task<Dictionary<long, CharacterViewModel>> TryGetAllAccountCharacters(long accountId)
     {
+        //await _commonServices.AccountServices.DependsOnAccountRecord(accountId);
+
         await using var database = CreateDbContext();
 
         var allCharacters = await database.Characters.Where(x => x.AccountId == accountId).ToArrayAsync();
         var results = new Dictionary<long, CharacterViewModel>();
         foreach (var characterRecord in allCharacters)
         {
+            await DependsOnCharacterRecord(characterRecord.Id);
             await _commonServices.BlizzardUpdateHandler.TryUpdate(characterRecord, BlizzardUpdatePriority.CharacterHigh);
 
             results.Add(characterRecord.Id, characterRecord.CreateViewModel());
@@ -97,7 +106,11 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
         if (Computed.IsInvalidating())
         {
             var invRecord = context.Operation().Items.Get<Character_InvalidateCharacterRecord>();
-            InvalidateHelpers.InvalidateRecord(_commonServices, invRecord);
+            if (invRecord != null)
+            {
+                _ = DependsOnCharacterRecord(invRecord.CharacterId);
+                //_ = _commonServices.AccountServices.DependsOnAccountRecord(invRecord.AccountId);
+            }
 
             return default;
         }
@@ -192,7 +205,11 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
         if (Computed.IsInvalidating())
         {
             var invRecord = context.Operation().Items.Get<Character_InvalidateCharacterRecord>();
-            InvalidateHelpers.InvalidateRecord(_commonServices, invRecord);
+            if (invRecord != null)
+            {
+                _ = DependsOnCharacterRecord(invRecord.CharacterId);
+                //_ = _commonServices.AccountServices.DependsOnAccountRecord(invRecord.AccountId);
+            }
 
             return default;
         }
@@ -236,8 +253,11 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
             var invRecord = context.Operation().Items.Get<Character_TrySetCharacterRenamedOrTransferredInvalidate>();
             if (invRecord != null)
             {
-                InvalidateHelpers.InvalidateRecord(_commonServices, new Character_InvalidateCharacterRecord(invRecord.OldCharacterId, invRecord.OldAccountId));
-                InvalidateHelpers.InvalidateRecord(_commonServices, new Character_InvalidateCharacterRecord(invRecord.NewCharacterId, invRecord.NewAccountId));
+                _ = DependsOnCharacterRecord(invRecord.OldCharacterId);
+                //_ = _commonServices.AccountServices.DependsOnAccountRecord(invRecord.OldAccountId);
+
+                _ = DependsOnCharacterRecord(invRecord.NewCharacterId);
+                //_ = _commonServices.AccountServices.DependsOnAccountRecord(invRecord.NewAccountId);
 
                 if (invRecord.PostIds != null)
                 {

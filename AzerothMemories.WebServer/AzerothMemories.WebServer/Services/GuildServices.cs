@@ -12,6 +12,12 @@ public class GuildServices : DbServiceBase<AppDbContext>, IGuildServices
     }
 
     [ComputeMethod]
+    public virtual Task<long> DependsOnGuildRecord(long guildId)
+    {
+        return Task.FromResult(guildId);
+    }
+
+    [ComputeMethod]
     public virtual async Task<GuildRecord> TryGetGuildRecord(long id)
     {
         await using var database = CreateDbContext();
@@ -24,6 +30,7 @@ public class GuildServices : DbServiceBase<AppDbContext>, IGuildServices
             Exceptions.ThrowIf(!moaRef.IsValidGuild);
             Exceptions.ThrowIf(moaRef.Id != record.BlizzardId);
 
+            await DependsOnGuildRecord(record.Id);
             await _commonServices.BlizzardUpdateHandler.TryUpdate(record, BlizzardUpdatePriority.Guild);
         }
 
@@ -40,22 +47,19 @@ public class GuildServices : DbServiceBase<AppDbContext>, IGuildServices
         Exceptions.ThrowIf(!moaRef.IsValidGuild);
 
         await using var database = CreateDbContext(true);
-        var guildId = await (from r in database.Guilds
-                             where r.MoaRef == moaRef.Full
-                             select r.Id).FirstOrDefaultAsync();
+        var guildRecord = await (from r in database.Guilds
+                                 where r.MoaRef == moaRef.Full
+                                 select r).FirstOrDefaultAsync();
 
-        if (guildId == 0)
+        if (guildRecord == null)
         {
-            guildId = await (from r in database.Guilds
-                             where EF.Functions.Like(r.MoaRef, moaRef.GetLikeQuery())
-                             select r.Id).FirstOrDefaultAsync();
+            guildRecord = await (from r in database.Guilds
+                                 where EF.Functions.Like(r.MoaRef, moaRef.GetLikeQuery())
+                                 select r).FirstOrDefaultAsync();
 
-            if (guildId > 0)
+            if (guildRecord == null)
             {
-            }
-            else
-            {
-                var record = new GuildRecord
+                guildRecord = new GuildRecord
                 {
                     MoaRef = moaRef.Full,
                     BlizzardId = moaRef.Id,
@@ -63,16 +67,19 @@ public class GuildServices : DbServiceBase<AppDbContext>, IGuildServices
                     CreatedDateTime = SystemClock.Instance.GetCurrentInstant()
                 };
 
-                await database.Guilds.AddAsync(record);
+                await database.Guilds.AddAsync(guildRecord);
                 await database.SaveChangesAsync();
-
-                guildId = record.Id;
             }
-
-            Exceptions.ThrowIf(guildId == 0);
+            else
+            {
+            }
         }
 
-        var guildRecord = await TryGetGuildRecord(guildId);
+        Exceptions.ThrowIf(guildRecord.Id == 0);
+
+        await DependsOnGuildRecord(guildRecord.Id);
+        await _commonServices.BlizzardUpdateHandler.TryUpdate(guildRecord, BlizzardUpdatePriority.Guild);
+
         return guildRecord;
     }
 

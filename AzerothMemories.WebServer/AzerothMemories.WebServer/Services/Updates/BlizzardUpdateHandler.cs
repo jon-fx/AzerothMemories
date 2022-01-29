@@ -6,7 +6,7 @@ namespace AzerothMemories.WebServer.Services.Updates;
 internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
 {
     private const string Progress = "P-";
-    private const string Queued = "Q-IN_QUEUE";
+    private const string Queued = "Q-";
 
     public const string AccountQueue1 = "a-account";
     public const string CharacterQueue1 = "b-character";
@@ -61,9 +61,12 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
 
         await using var database = CreateDbContext(true);
 
-        var updateResult = await database.Set<TRecord>().Where(x => x.Id == record.Id && x.UpdateJob == record.UpdateJob).UpdateAsync(x => new TRecord { UpdateJob = Queued });
+        var jobName = $"{Queued}{SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds()}";
+        var updateResult = await database.Set<TRecord>().Where(x => x.Id == record.Id && x.UpdateJob == record.UpdateJob).UpdateAsync(x => new TRecord { UpdateJob = jobName });
         if (updateResult > 0)
         {
+            record.UpdateJob = jobName;
+
             _callbacks[(int)updatePriority](record.Id);
         }
     }
@@ -93,9 +96,12 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
         {
             return ShouldRequeue(record.UpdateJob.Replace(Progress, ""));
         }
-        else if (record.UpdateJob == Queued && now > record.UpdateJobEndTime + duration * 2)
+        else if (record.UpdateJob.StartsWith(Queued))
         {
-            return true;
+            if (long.TryParse(record.UpdateJob.Split('-')[1], out var timeStamp) && now > Instant.FromUnixTimeMilliseconds(timeStamp) + duration * 2)
+            {
+                return true;
+            }
         }
         else if (now > record.UpdateJobEndTime + duration * 2)
         {
@@ -136,7 +142,7 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
     private async Task<bool> OnUpdateStarted<TRecord>(DbSet<TRecord> dbSet, long id, PerformContext context) where TRecord : class, IBlizzardUpdateRecord, new()
     {
         var jobId = context.BackgroundJob.Id;
-        var result = await dbSet.Where(x => x.Id == id && x.UpdateJob == Queued).UpdateAsync(x => new TRecord { UpdateJob = $"{Progress}{jobId}" });
+        var result = await dbSet.Where(x => x.Id == id && x.UpdateJob.StartsWith(Queued)).UpdateAsync(x => new TRecord { UpdateJob = $"{Progress}{jobId}" });
         if (result > 0)
         {
             return true;

@@ -68,6 +68,8 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
 
             if (data != null)
             {
+                await _commonServices.AccountServices.DependsOnAccountRecord(tagId);
+
                 return new PostTagInfo(PostTagType.Account, tagId, data.Username, data.Avatar);
             }
         }
@@ -80,6 +82,8 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
 
             if (data != null)
             {
+                await _commonServices.CharacterServices.DependsOnCharacterRecord(tagId);
+
                 return new PostTagInfo(PostTagType.Character, tagId, data.Name, data.AvatarLink);
             }
         }
@@ -92,6 +96,8 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
 
             if (data != null)
             {
+                await _commonServices.GuildServices.DependsOnGuildRecord(tagId);
+
                 return new PostTagInfo(PostTagType.Guild, tagId, data.Name, null);
             }
         }
@@ -183,27 +189,27 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
         switch (tagType)
         {
             case PostTagType.None:
-                {
-                    return null;
-                }
+            {
+                return null;
+            }
             case PostTagType.Type:
             case PostTagType.Main:
             case PostTagType.Region:
             case PostTagType.Realm:
-                {
-                    if (await IsValidTagIdWithBlizzardDataSanityChecks(tagType, tagId))
-                    {
-                        break;
-                    }
-
-                    return null;
-                }
-            case PostTagType.Account:
-            case PostTagType.Character:
-            case PostTagType.Guild:
+            {
+                if (await IsValidTagIdWithBlizzardDataSanityChecks(tagType, tagId))
                 {
                     break;
                 }
+
+                return null;
+            }
+            case PostTagType.Account:
+            case PostTagType.Character:
+            case PostTagType.Guild:
+            {
+                break;
+            }
             case PostTagType.Achievement:
             case PostTagType.Item:
             case PostTagType.Mount:
@@ -219,22 +225,22 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
             case PostTagType.CharacterRace:
             case PostTagType.CharacterClass:
             case PostTagType.CharacterClassSpecialization:
+            {
+                if (await IsValidTagIdWithBlizzardDataSanityChecks(tagType, tagId))
                 {
-                    if (await IsValidTagIdWithBlizzardDataSanityChecks(tagType, tagId))
-                    {
-                        break;
-                    }
+                    break;
+                }
 
-                    return null;
-                }
+                return null;
+            }
             case PostTagType.HashTag:
-                {
-                    return null;
-                }
+            {
+                return null;
+            }
             default:
-                {
-                    return null;
-                }
+            {
+                return null;
+            }
         }
 
         return new PostTagRecord

@@ -24,7 +24,7 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord
 
     [Column] public long? AccountId { get; set; }
 
-    [Column] public AccountRecord Account { get; set; }
+    //[Column] public AccountRecord Account { get; set; }
 
     [Column] public bool AccountSync { get; set; }
 
