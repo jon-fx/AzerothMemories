@@ -138,7 +138,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         return await query.ToArrayAsync();
     }
 
-    [ComputeMethod(AutoInvalidateTime = 60)]
+    [ComputeMethod]
     protected virtual async Task<long[]> TryGetRecentPosts(long accountId)
     {
         await using var database = CreateDbContext();
@@ -158,6 +158,11 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
             }
 
             allFollowingIds.Add(kvp.Key);
+        }
+
+        foreach (var followingViewModel in allFollowingIds)
+        {
+            await _commonServices.PostServices.DependsOnPostsBy(followingViewModel);
         }
 
         var query = from p in database.Posts
@@ -299,37 +304,37 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         switch (sortMode)
         {
             case PostSortMode.PostTimeStampDescending:
-                {
-                    query = from p in query
-                            orderby p.PostTime descending
-                            select p;
-                    break;
-                }
+            {
+                query = from p in query
+                        orderby p.PostTime descending
+                        select p;
+                break;
+            }
             case PostSortMode.PostTimeStampAscending:
-                {
-                    query = from p in query
-                            orderby p.PostTime
-                            select p;
-                    break;
-                }
+            {
+                query = from p in query
+                        orderby p.PostTime
+                        select p;
+                break;
+            }
             case PostSortMode.PostCreatedTimeStampDescending:
-                {
-                    query = from p in query
-                            orderby p.PostCreatedTime descending
-                            select p;
-                    break;
-                }
+            {
+                query = from p in query
+                        orderby p.PostCreatedTime descending
+                        select p;
+                break;
+            }
             case PostSortMode.PostCreatedTimeStampAscending:
-                {
-                    query = from p in query
-                            orderby p.PostCreatedTime
-                            select p;
-                    break;
-                }
+            {
+                query = from p in query
+                        orderby p.PostCreatedTime
+                        select p;
+                break;
+            }
             default:
-                {
-                    throw new ArgumentOutOfRangeException(nameof(sortMode), sortMode, null);
-                }
+            {
+                throw new ArgumentOutOfRangeException(nameof(sortMode), sortMode, null);
+            }
         }
 
         return query;

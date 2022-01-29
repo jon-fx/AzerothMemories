@@ -16,6 +16,12 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
+    public virtual Task<long> DependsOnPostsBy(long accountId)
+    {
+        return Task.FromResult(accountId);
+    }
+
+    [ComputeMethod]
     protected virtual async Task<bool> CanAccountSeePost(long activeAccountId, PostRecord postRecord)
     {
         Exceptions.ThrowIf(postRecord == null);
@@ -103,6 +109,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             var invAccount = context.Operation().Items.Get<Post_InvalidateAccount>();
             if (invAccount != null && invAccount.AccountId > 0)
             {
+                _ = DependsOnPostsBy(invAccount.AccountId);
                 _ = _commonServices.AccountServices.GetPostCount(invAccount.AccountId);
             }
 
