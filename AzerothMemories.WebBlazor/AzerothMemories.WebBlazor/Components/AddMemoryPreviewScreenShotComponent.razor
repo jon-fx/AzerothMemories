@@ -1,4 +1,6 @@
-﻿@if (UploadedImage == null)
+﻿@implements IDisposable
+
+@if (UploadedImage == null)
 {
 
 }
@@ -17,6 +19,10 @@ else
                 <MudText Typo="Typo.body1">@timeStr</MudText>
             </CardHeaderContent>
             <CardHeaderActions>
+                <MudTooltip Text="Reset" Color="Color.Dark">
+                    <MudIconButton Icon="@Icons.Material.Filled.ResetTv" Color="Color.Warning" OnClick="ResetImage" Disabled="@(UploadedImage.EditedFileContent == null)" />
+                </MudTooltip>
+
                 <MudTooltip Text="Delete" Color="Color.Dark">
                     <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Disabled="@(Index == 0)" />
                 </MudTooltip>
@@ -24,7 +30,7 @@ else
         </MudCardHeader>
         <MudCardContent Class="@ClassPresets.CardContent">
             @{
-                <img id="@GetImageId" style="width: 100%; height: auto; object-fit: cover;" />
+                <img id="@GetImageId" style="width: 100%; height: auto; object-fit: cover;" @onmousedown="OnImageClicked" />
             }
         </MudCardContent>
     </MudCard>
@@ -35,10 +41,11 @@ else
     [Parameter, EditorRequired] public int Index { get; init; }
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
     [Parameter, EditorRequired] public AddMemoryUploadResult UploadedImage { get; init; }
-    
+
     [Inject] public IJSRuntime JsRuntime { get; init; }
 
     private string GetImageId => $"imageBox-{Index}";
+    private DotNetObjectReference<AddMemoryPreviewScreenShotComponent> _objReference;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -53,5 +60,36 @@ else
     protected override bool ShouldRender()
     {
         return false;
+    }
+
+    private async Task ResetImage()
+    {
+        UploadedImage.EditedFileContent = null;
+
+        await JsRuntime.InvokeVoidAsync("SetImage", GetImageId, UploadedImage.ContentType, UploadedImage.FileContent);
+    }
+
+    private async Task OnImageClicked()
+    {
+        _objReference ??= DotNetObjectReference.Create(this);
+
+        await JsRuntime.InvokeVoidAsync("OpenImageEditor", GetImageId, _objReference);
+    }
+
+    [JSInvokable]
+    public Task UpdateImage(byte[] buffer)
+    {
+        //_objReference?.Dispose();
+        //_objReference = null;
+
+        UploadedImage.EditedFileContent = buffer;
+
+        return Task.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+        _objReference?.Dispose();
+        _objReference = null;
     }
 }

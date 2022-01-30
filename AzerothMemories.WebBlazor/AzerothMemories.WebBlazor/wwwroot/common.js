@@ -16,6 +16,33 @@ function SetImage(id, type, data) {
     );
 }
 
+function OpenImageEditor(id, dotNetHelper) {
+    Painterro({
+        toolbarHeightPx: 54,
+        buttonSizePx: 42,
+        backgroundFillColor: '#222',
+
+        hideByEsc: true,
+        saveByEnter: true,
+
+        hiddenTools: [/*'line', 'arrow', 'rect',*/ 'ellipse', 'brush', /*'text',*/ 'rotate', 'resize', /*'save'*/, 'open',/* 'close'*/, /*'undo', 'redo',*/ 'bucket'],
+        pixelizePixelSize: 10,
+        pixelizeHideUserInput: true,
+
+        saveHandler: function (image, done) {
+            document.getElementById(id).src = image.asDataURL('image/jpeg', 1);
+
+            console.log(image.getWidth());
+            console.log(image.getHeight());
+
+            image.asBlob('image/jpeg', 1).arrayBuffer().then(buffer => {
+                dotNetHelper.invokeMethodAsync('UpdateImage', new Uint8Array(buffer));
+                done(true);
+            });
+        }
+    }).show(document.getElementById(id).src);
+}
+
 function SetUpTagTextBox(textBoxName, userTags) {
     if (window.hasOwnProperty('mainTribute') && window.hasOwnProperty('mainTributeAttached')) {
         window.mainTribute.detach(window.mainTributeAttached);

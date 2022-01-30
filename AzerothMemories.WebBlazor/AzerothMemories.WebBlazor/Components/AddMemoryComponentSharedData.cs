@@ -183,6 +183,14 @@ public sealed class AddMemoryComponentSharedData
             avatarTag = PostAvatarImages[SelectedPostAvatarImage].Tag.TagString;
         }
 
+        foreach (var uploadResult in uploadResults)
+        {
+            if (uploadResult.EditedFileContent != null)
+            {
+                uploadResult.FileContent = uploadResult.EditedFileContent;
+            }
+        }
+
         var result = await _viewModel.Services.CommandRunner.Run(new Post_TryPostMemory(_viewModel.Services.Session, timeStamp.ToUnixTimeMilliseconds(), avatarTag, PrivatePost, finalText, systemTags, uploadResults));
         return result.Result;
     }

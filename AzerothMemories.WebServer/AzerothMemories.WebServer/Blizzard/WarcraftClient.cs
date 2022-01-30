@@ -103,5 +103,9 @@ public sealed class WarcraftClient : IDisposable
         {
             return new RequestResult<T>(HttpStatusCode.RequestTimeout, null, Instant.MinValue, null);
         }
+        catch (HttpRequestException)
+        {
+            return new RequestResult<T>(HttpStatusCode.ServiceUnavailable, null, Instant.MinValue, null);
+        }
     }
 }
