@@ -304,6 +304,11 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
                 await using var memoryStream = new MemoryStream();
                 await image.SaveAsJpegAsync(memoryStream);
 
+                {
+                    await using var fileStream = File.Create(@$"C:\Users\John\Desktop\Stuff\New folder\{SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds()}.jpg");
+                    await image.SaveAsJpegAsync(fileStream);
+                }
+
                 var buffer = memoryStream.ToArray();
                 var hashData = MD5.HashData(buffer);
                 var hashString = GetHashString(hashData);
@@ -1565,8 +1570,8 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         var postId = command.PostId;
-        var postRecord = await GetPostRecord(postId);
-        if (postRecord == null)
+        var cachedPostRecord = await GetPostRecord(postId);
+        if (cachedPostRecord == null)
         {
             return AddMemoryResultCode.Failed;
         }
@@ -1574,23 +1579,29 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         var accountViewModel = activeAccount;
         if (activeAccount.AccountType >= AccountType.Admin)
         {
-            accountViewModel = await _commonServices.AccountServices.TryGetAccountById(command.Session, postRecord.AccountId);
+            accountViewModel = await _commonServices.AccountServices.TryGetAccountById(command.Session, cachedPostRecord.AccountId);
         }
-        else if (activeAccount.Id != postRecord.AccountId)
+        else if (activeAccount.Id != cachedPostRecord.AccountId)
         {
             return AddMemoryResultCode.SessionNotFound;
         }
 
-        var allTagRecords = await GetAllPostTags(postId);
-        var allCurrentTags = allTagRecords.ToDictionary(x => x.TagString, x => x);
+        await using var database = await CreateCommandDbContext(cancellationToken);
+
+        var postRecord = await database.Posts.Include(x => x.PostTags).FirstOrDefaultAsync(p => p.DeletedTimeStamp == 0 && p.Id == postId, cancellationToken);
+        if (postRecord == null)
+        {
+            return AddMemoryResultCode.Failed;
+        }
+
+        var allCurrentTags = postRecord.PostTags.Where(x => x.TagKind != PostTagKind.UserComment).ToDictionary(x => x.TagString, x => x);
+        var allActiveTags = allCurrentTags.Where(x => x.Value.TagKind != PostTagKind.Deleted).Select(x => x.Key).ToHashSet();
 
         var addedSet = new HashSet<string>(command.NewTags);
-        addedSet.ExceptWith(allCurrentTags.Keys);
+        addedSet.ExceptWith(allActiveTags);
 
-        var removedSet = new HashSet<string>(allCurrentTags.Keys);
+        var removedSet = new HashSet<string>(allActiveTags);
         removedSet.ExceptWith(command.NewTags);
-
-        await using var database = await CreateCommandDbContext(cancellationToken);
 
         if (addedSet.Count > 64)
         {
@@ -1599,9 +1610,6 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
 
         if (addedSet.Count > 0 || removedSet.Count > 0)
         {
-            var recordsToInsert = new HashSet<PostTagRecord>();
-            var recordsToUpdate = new HashSet<PostTagRecord>();
-
             foreach (var systemTag in addedSet)
             {
                 var newRecord = await _commonServices.TagServices.TryCreateTagRecord(systemTag, accountViewModel, PostTagKind.Post);
@@ -1610,22 +1618,19 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
                     return AddMemoryResultCode.InvalidTags;
                 }
 
-                var currentTag = await database.PostTags.FirstOrDefaultAsync(x => x.PostId == postId && x.TagType == newRecord.TagType && x.TagId == newRecord.TagId, cancellationToken);
-                if (currentTag == null)
+                if (allCurrentTags.TryGetValue(newRecord.TagString, out var currentTag))
                 {
-                    newRecord.PostId = postRecord.Id;
-                    newRecord.TagKind = PostTagKind.Post;
-
-                    recordsToInsert.Add(newRecord);
-                    allCurrentTags.Add(newRecord.TagString, newRecord);
+                    newRecord = currentTag;
                 }
                 else
                 {
-                    currentTag.TagKind = PostTagKind.Post;
-
-                    recordsToUpdate.Add(currentTag);
-                    allCurrentTags.Add(currentTag.TagString, currentTag);
+                    postRecord.PostTags.Add(newRecord);
                 }
+
+                newRecord.PostId = postRecord.Id;
+                newRecord.TagKind = PostTagKind.Post;
+
+                allCurrentTags[newRecord.TagString] = newRecord;
             }
 
             foreach (var systemTag in removedSet)
@@ -1633,7 +1638,6 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
                 if (allCurrentTags.TryGetValue(systemTag, out var tagRecord))
                 {
                     tagRecord.TagKind = PostTagKind.Deleted;
-                    recordsToUpdate.Add(tagRecord);
                 }
                 else
                 {
@@ -1641,34 +1645,26 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
                 }
             }
 
-            if (!PostTagRecord.ValidateTagCounts(allCurrentTags.Values.ToHashSet()))
+            if (!PostTagRecord.ValidateTagCounts(postRecord.PostTags.ToHashSet()))
             {
                 return AddMemoryResultCode.TooManyTags;
-            }
-
-            if (recordsToInsert.Count > 0)
-            {
-                await database.PostTags.BulkInsertAsync(recordsToInsert, cancellationToken);
-            }
-
-            foreach (var tagRecord in recordsToUpdate)
-            {
-                await database.PostTags.Where(x => x.Id == tagRecord.Id).UpdateAsync(r => new PostTagRecord { TagKind = tagRecord.TagKind }, cancellationToken);
             }
         }
 
         var avatar = command.Avatar;
-        if (!string.IsNullOrWhiteSpace(avatar) && !allCurrentTags.ContainsKey(avatar))
+        var activeTags = postRecord.PostTags.Where(x => x.TagKind != PostTagKind.Deleted).Select(x => x.TagString).ToHashSet();
+        if (!string.IsNullOrWhiteSpace(avatar) && !activeTags.Contains(avatar))
         {
             avatar = postRecord.PostAvatar;
         }
 
-        if (!string.IsNullOrWhiteSpace(avatar) && !allCurrentTags.ContainsKey(avatar))
+        if (!string.IsNullOrWhiteSpace(avatar) && !activeTags.Contains(avatar))
         {
             avatar = null;
         }
 
-        await database.Posts.Where(x => x.Id == postRecord.Id).UpdateAsync(r => new PostRecord { PostAvatar = avatar }, cancellationToken);
+        postRecord.PostAvatar = avatar;
+
         await database.SaveChangesAsync(cancellationToken);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
@@ -1689,13 +1685,8 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         return await query.ToDictionaryAsync(x => x.CommentId, x => x);
     }
 
-    public void InvalidatePostRecordAndTags(long postId)
-    {
-        throw new NotImplementedException();
-    }
-
     [ComputeMethod]
-    protected virtual async Task<PostRecord> GetPostRecord(long postId)
+    public virtual async Task<PostRecord> GetPostRecord(long postId)
     {
         await using var database = CreateDbContext();
 
@@ -1731,7 +1722,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<PostTagRecord[]> GetAllPostTags(long postId)
+    public virtual async Task<PostTagRecord[]> GetAllPostTags(long postId)
     {
         await using var database = CreateDbContext();
 

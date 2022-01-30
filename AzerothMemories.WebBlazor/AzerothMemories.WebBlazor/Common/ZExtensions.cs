@@ -183,16 +183,13 @@ public static class ZExtensions
                 return "🪐 ";
             }
             case PostTagType.Account:
-            {
-                return "🔶 ";
-            }
             case PostTagType.Character:
             {
-                return "🔷 ";
+                break;
             }
             case PostTagType.Guild:
             {
-                return "🔺 ";
+                return "🔶 ";
             }
             case PostTagType.HashTag:
             {

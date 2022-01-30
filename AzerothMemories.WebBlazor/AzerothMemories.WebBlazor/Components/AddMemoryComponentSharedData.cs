@@ -345,6 +345,8 @@ public sealed class AddMemoryComponentSharedData
 
                 RemoveImageFromSelection(characterRealmTag);
             }
+
+            _selectedCharacter = null;
         }
     }
 
@@ -456,6 +458,18 @@ public sealed class AddMemoryComponentSharedData
         _selectedExtraTags.Remove(postTagInfo);
 
         RemoveImageFromSelection(postTagInfo);
+
+        if (_selectedCharacter != null)
+        {
+            if (postTagInfo.Type == PostTagType.Character && _selectedCharacter.Id == postTagInfo.Id)
+            {
+                TryRemoveSelectedCharacterInfo();
+            }
+            //else if (postTagInfo.Type == PostTagType.Realm && _selectedCharacter.RealmId == postTagInfo.Id)
+            //{
+            //    TryRemoveSelectedCharacterInfo();
+            //}
+        }
 
         OnTagsChanged?.Invoke();
     }

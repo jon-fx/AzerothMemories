@@ -263,7 +263,8 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
                 {
                     foreach (var postId in invRecord.PostIds)
                     {
-                        _commonServices.PostServices.InvalidatePostRecordAndTags(postId);
+                        _ =   _commonServices.PostServices.GetPostRecord(postId);
+                        _ =   _commonServices.PostServices.GetAllPostTags(postId);
                     }
                 }
             }

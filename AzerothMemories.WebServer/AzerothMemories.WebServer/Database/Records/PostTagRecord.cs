@@ -40,6 +40,11 @@ public sealed class PostTagRecord : IDatabaseRecord
                 continue;
             }
 
+            if (tagRecord.TagKind == PostTagKind.UserComment || tagRecord.TagKind == PostTagKind.Deleted)
+            {
+                continue;
+            }
+
             array[id]++;
         }
 
