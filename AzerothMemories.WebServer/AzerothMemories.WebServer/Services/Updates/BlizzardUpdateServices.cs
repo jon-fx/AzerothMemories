@@ -40,6 +40,17 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
             return default;
         }
 
+        if (string.IsNullOrWhiteSpace(record.BattleNetToken) || record.BattleNetTokenExpiresAt.GetValueOrDefault(Instant.FromUnixTimeMilliseconds(0)) >= SystemClock.Instance.GetCurrentInstant())
+        {
+            record.UpdateJob = null;
+            record.UpdateJobEndTime = SystemClock.Instance.GetCurrentInstant();
+            record.UpdateJobLastResult = HttpStatusCode.Forbidden;
+
+            await database.SaveChangesAsync(cancellationToken);
+
+            return record.UpdateJobLastResult;
+        }
+
         using var client = _commonServices.WarcraftClientProvider.Get(record.BlizzardRegionId);
         var characters = await database.Characters.Where(x => x.AccountId == command.AccountId).ToDictionaryAsync(x => x.MoaRef, x => x, cancellationToken);
         var accountSummaryResult = await client.GetAccountProfile(record.BattleNetToken, 0 /*record.BlizzardAccountLastModified*/).ConfigureAwait(false);
@@ -220,7 +231,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
             newGuildId = guildData.Id;
             newGuildName = guildData.Name;
             var newGuildRef = MoaRef.GetGuildRef(record.BlizzardRegionId, guildData.Realm.Slug, newGuildName, newGuildId).Full;
-            
+
             guildRecord = await _commonServices.GuildServices.GetOrCreate(newGuildRef);
             newGuildId = guildRecord.BlizzardId;
         }
