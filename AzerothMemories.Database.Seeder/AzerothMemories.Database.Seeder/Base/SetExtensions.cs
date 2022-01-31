@@ -8,27 +8,27 @@ internal static class SetExtensions
     {
         return new BlizzardDataRecordLocal
         {
-            En_Us = name.En_US,
-            Ko_Kr = name.Ko_KR,
-            Fr_Fr = name.Fr_FR,
-            De_De = name.De_DE,
-            Zh_Cn = name.Zh_CN,
-            Es_Es = name.Es_ES,
-            Zh_Tw = name.Zh_TW,
-            En_Gb = name.En_GB,
-            Es_Mx = name.Es_MX,
-            Ru_Ru = name.Ru_RU,
-            Pt_Br = name.Pt_BR,
-            It_It = name.It_IT,
-            Pt_Pt = name.Pt_PT,
+            EnUs = name.En_US,
+            KoKr = name.Ko_KR,
+            FrFr = name.Fr_FR,
+            DeDe = name.De_DE,
+            ZhCn = name.Zh_CN,
+            EsEs = name.Es_ES,
+            ZhTw = name.Zh_TW,
+            EnGb = name.En_GB,
+            EsMx = name.Es_MX,
+            RuRu = name.Ru_RU,
+            PtBr = name.Pt_BR,
+            ItIt = name.It_IT,
+            PtPt = name.Pt_PT,
         };
     }
 
     public static void SetValue(BlizzardDataRecordLocal record, string key, string value)
     {
         var index = key.IndexOf('_') + 1;
-        var fieldName = key[index..].Insert(2, "_");
-        var fieldInfo = typeof(BlizzardDataRecordLocal).GetField(fieldName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+        var fieldName = key[index..];
+        var fieldInfo = typeof(BlizzardDataRecordLocal).GetProperty(fieldName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
         fieldInfo.SetValue(record, value);
     }
 
@@ -47,7 +47,7 @@ internal static class SetExtensions
             var fieldValue = fieldInfo.GetValue(record) as string;
             if (string.IsNullOrWhiteSpace(fieldValue))
             {
-                fieldValue = record.En_Gb;
+                fieldValue = record.EnGb;
 
                 Console.WriteLine("Set Extensions lang field == null using en_GB");
             }
@@ -68,7 +68,7 @@ internal static class SetExtensions
 
     public static void Update(BlizzardDataRecordLocal record, Func<string, string, string> func)
     {
-        var fields = typeof(BlizzardDataRecordLocal).GetFields(BindingFlags.Public | BindingFlags.Instance);
+        var fields = typeof(BlizzardDataRecordLocal).GetProperties(BindingFlags.Public | BindingFlags.Instance);
         foreach (var field in fields)
         {
             var fieldName = field.Name.ToLower();
@@ -77,7 +77,7 @@ internal static class SetExtensions
                 continue;
             }
 
-            var fieldInfo = typeof(BlizzardDataRecordLocal).GetField(fieldName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+            var fieldInfo = typeof(BlizzardDataRecordLocal).GetProperty(fieldName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
             var fieldValue = fieldInfo.GetValue(record) as string;
             if (string.IsNullOrWhiteSpace(fieldValue))
             {

@@ -37,14 +37,14 @@ internal sealed class CommonDataSeeder : GenericBase<CommonDataSeeder>
     {
         return new BlizzardDataRecordLocal
         {
-            En_Us = value,
+            EnUs = value,
             //Ko_Kr = value,
             //Fr_Fr = value,
             //De_De = value,
             //Zh_Cn = value,
             //Es_Es = value,
             //Zh_Tw = value,
-            En_Gb = value,
+            EnGb = value,
             //Es_Mx = value,
             //Ru_Ru = value,
             //Pt_Br = value,

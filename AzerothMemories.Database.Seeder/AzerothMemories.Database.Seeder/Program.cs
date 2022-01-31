@@ -2,9 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http.Headers;
 
-var commonConfig = new CommonConfig();
+var config = new CommonConfig();
 var services = new ServiceCollection();
-services.AddSingleton(commonConfig);
+services.AddSingleton(config);
 services.AddLogging(configure => configure.AddConsole());
 services.AddHttpClient("Default", x =>
 {
@@ -13,10 +13,16 @@ services.AddHttpClient("Default", x =>
 });
 
 services.AddSingleton<WowTools>();
-services.AddSingleton<DatabaseProvider>();
+//services.AddSingleton<DatabaseProvider>();
 services.AddSingleton<MoaResourceCache>();
 services.AddSingleton<MoaResourceWriter>();
 services.AddSingleton<WarcraftClientProvider>();
+
+services.AddDbContextFactory<AppDbContext>(optionsBuilder =>
+{
+    optionsBuilder.EnableSensitiveDataLogging();
+    optionsBuilder.UseNpgsql(config.DatabaseConnectionString, o => o.UseNodaTime());
+});
 
 var seeders = new List<Func<ServiceProvider, AbstractBase>>();
 
@@ -43,6 +49,8 @@ AddSeeder<PetDataSeeder>();
 AddSeeder<ToyDataSeeder>();
 
 var serviceProvider = services.BuildServiceProvider(true);
+
+await serviceProvider.GetRequiredService<MoaResourceWriter>().Initialize();
 
 foreach (var func in seeders)
 {

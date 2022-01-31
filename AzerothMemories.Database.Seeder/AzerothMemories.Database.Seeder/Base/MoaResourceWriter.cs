@@ -2,12 +2,13 @@
 
 internal sealed class MoaResourceWriter
 {
-    private readonly DatabaseProvider _databaseProvider;
+    private readonly IDbContextFactory<AppDbContext> _databaseProvider;
     private readonly Dictionary<string, BlizzardDataRecord> _serverSideResources;
+
     private readonly Dictionary<string, BlizzardDataRecord> _changedServerSideResources;
     private readonly Dictionary<string, Dictionary<string, string>> _allResourceStringsByLocal;
 
-    public MoaResourceWriter(DatabaseProvider databaseProvider)
+    public MoaResourceWriter(IDbContextFactory<AppDbContext> databaseProvider)
     {
         _databaseProvider = databaseProvider;
         _serverSideResources = new Dictionary<string, BlizzardDataRecord>();
@@ -18,22 +19,65 @@ internal sealed class MoaResourceWriter
         };
     }
 
+    public async Task Initialize()
+    {
+        await using var database = await _databaseProvider.CreateDbContextAsync();
+
+        var results = await database.BlizzardData.ToArrayAsync();
+        foreach (var result in results)
+        {
+            _serverSideResources.Add(result.Key, result);
+        }
+    }
+
     public void AddServerSideLocalizationName(PostTagType tagType, long tagId, BlizzardDataRecordLocal data)
     {
         var resource = GetOrCreateServerSideResource(tagType, tagId);
-        var updated = resource.Name.Update(data);
+        var changed = false;
 
-        OnServerSideRecordUpdated(updated, resource);
+        CheckAndChange(() => resource.Name.EnUs, x => resource.Name.EnUs = x, data.EnUs, ref changed);
+        CheckAndChange(() => resource.Name.KoKr, x => resource.Name.KoKr = x, data.KoKr, ref changed);
+        CheckAndChange(() => resource.Name.FrFr, x => resource.Name.FrFr = x, data.FrFr, ref changed);
+        CheckAndChange(() => resource.Name.DeDe, x => resource.Name.DeDe = x, data.DeDe, ref changed);
+        CheckAndChange(() => resource.Name.ZhCn, x => resource.Name.ZhCn = x, data.ZhCn, ref changed);
+        CheckAndChange(() => resource.Name.EsEs, x => resource.Name.EsEs = x, data.EsEs, ref changed);
+        CheckAndChange(() => resource.Name.ZhTw, x => resource.Name.ZhTw = x, data.ZhTw, ref changed);
+        CheckAndChange(() => resource.Name.EnGb, x => resource.Name.EnGb = x, data.EnGb, ref changed);
+
+        CheckAndChange(() => resource.Name.EsMx, x => resource.Name.EsMx = x, data.EsMx, ref changed);
+        CheckAndChange(() => resource.Name.RuRu, x => resource.Name.RuRu = x, data.RuRu, ref changed);
+        CheckAndChange(() => resource.Name.PtBr, x => resource.Name.PtBr = x, data.PtBr, ref changed);
+        CheckAndChange(() => resource.Name.ItIt, x => resource.Name.ItIt = x, data.ItIt, ref changed);
+        CheckAndChange(() => resource.Name.PtPt, x => resource.Name.PtPt = x, data.PtPt, ref changed);
+
+        OnServerSideRecordUpdated(changed, resource);
 
         SetExtensions.Update(PostTagInfo.GetTagString(tagType, tagId), data, _allResourceStringsByLocal);
+    }
+
+    private void CheckAndChange(Func<string> getterFunc, Action<string> setterFunc, string newValue, ref bool changed)
+    {
+        var current = getterFunc();
+        if (current == newValue)
+        {
+            return;
+        }
+
+        setterFunc(newValue);
+        changed = true;
     }
 
     public void AddServerSideLocalizationMedia(PostTagType tagType, long tagId, string media)
     {
         var resource = GetOrCreateServerSideResource(tagType, tagId);
-        var updated = resource.UpdateMedia(media);
+        if (resource.Media == media)
+        {
+            return;
+        }
 
-        OnServerSideRecordUpdated(updated, resource);
+        resource.Media = media;
+
+        OnServerSideRecordUpdated(true, resource);
     }
 
     public bool GetClientSideLocalizationData(string locale, string key, out string value)
@@ -52,12 +96,7 @@ internal sealed class MoaResourceWriter
         var key = PostTagInfo.GetTagString(tagType, tagId);
         if (!_serverSideResources.TryGetValue(key, out var value))
         {
-            using (var database = _databaseProvider.GetDatabase())
-            {
-                value = database.BlizzardData.FirstOrDefault(x => x.Key == key);
-            }
-
-            value ??= new BlizzardDataRecord(tagType, tagId);
+            value = new BlizzardDataRecord(tagType, tagId);
 
             Exceptions.ThrowIf(value.TagId != tagId);
             Exceptions.ThrowIf(value.TagType != tagType);
@@ -82,13 +121,37 @@ internal sealed class MoaResourceWriter
         var newResources = _changedServerSideResources.Values.Where(x => x.Id == 0);
         var updatedResources = _changedServerSideResources.Values.Where(x => x.Id > 0);
 
-        await using var database = _databaseProvider.GetDatabase();
-        await database.BulkCopyAsync(newResources);
+        await using var database = await _databaseProvider.CreateDbContextAsync();
 
-        foreach (var resource in updatedResources)
+        foreach (var newResource in newResources)
         {
-            await database.UpdateAsync(resource);
+            database.BlizzardData.Add(newResource);
         }
+
+        foreach (var updatedResource in updatedResources)
+        {
+            await database.BlizzardData.Where(x => x.Id == updatedResource.Id).UpdateAsync(x => new BlizzardDataRecord()
+            {
+                Name = new BlizzardDataRecordLocal
+                {
+                    EnUs = updatedResource.Name.EnUs,
+                    KoKr = updatedResource.Name.KoKr,
+                    FrFr = updatedResource.Name.FrFr,
+                    DeDe = updatedResource.Name.DeDe,
+                    ZhCn = updatedResource.Name.ZhCn,
+                    EsEs = updatedResource.Name.EsEs,
+                    ZhTw = updatedResource.Name.ZhTw,
+                    EnGb = updatedResource.Name.EnGb,
+                    EsMx = updatedResource.Name.EsMx,
+                    RuRu = updatedResource.Name.RuRu,
+                    PtBr = updatedResource.Name.PtBr,
+                    ItIt = updatedResource.Name.ItIt,
+                    PtPt = updatedResource.Name.PtPt,
+                }
+            });
+        }
+
+        await database.SaveChangesAsync();
 
         var typeTags = await database.BlizzardData.Where(x => x.TagType == PostTagType.Type).OrderBy(x => x.TagId).ToListAsync();
         var mainTags = await database.BlizzardData.Where(x => x.TagType == PostTagType.Main).OrderBy(x => x.TagId).ToListAsync();
