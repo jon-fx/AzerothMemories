@@ -40,11 +40,11 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
         _validRecordTypes[(int)BlizzardUpdatePriority.Guild] = typeof(GuildRecord);
 
         _durationsBetweenUpdates = new Duration[(int)BlizzardUpdatePriority.Count];
-        _durationsBetweenUpdates[(int)BlizzardUpdatePriority.Account] = Duration.FromHours(1);
-        _durationsBetweenUpdates[(int)BlizzardUpdatePriority.CharacterHigh] = Duration.FromHours(1);
-        _durationsBetweenUpdates[(int)BlizzardUpdatePriority.CharacterMed] = Duration.FromHours(5);
-        _durationsBetweenUpdates[(int)BlizzardUpdatePriority.CharacterLow] = Duration.FromHours(10);
-        _durationsBetweenUpdates[(int)BlizzardUpdatePriority.Guild] = Duration.FromDays(1);
+        _durationsBetweenUpdates[(int)BlizzardUpdatePriority.Account] = _commonServices.Config.UpdateAccountDelay;
+        _durationsBetweenUpdates[(int)BlizzardUpdatePriority.CharacterHigh] = _commonServices.Config.UpdateCharacterHighDelay;
+        _durationsBetweenUpdates[(int)BlizzardUpdatePriority.CharacterMed] = _commonServices.Config.UpdateCharacterMedDelay;
+        _durationsBetweenUpdates[(int)BlizzardUpdatePriority.CharacterLow] = _commonServices.Config.UpdateCharacterLowDelay;
+        _durationsBetweenUpdates[(int)BlizzardUpdatePriority.Guild] = _commonServices.Config.UpdateGuildDelay;
     }
 
     public async Task TryUpdate<TRecord>(TRecord record, BlizzardUpdatePriority updatePriority) where TRecord : class, IBlizzardUpdateRecord, new()

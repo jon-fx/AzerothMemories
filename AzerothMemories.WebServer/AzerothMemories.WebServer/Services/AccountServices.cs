@@ -73,27 +73,6 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(accountRecord);
 
-        //var accountRecord = await TryGetAccountRecordFusionId(userId);
-        //if (accountRecord == null)
-        //{
-        //    accountRecord = new AccountRecord
-        //    {
-        //        FusionId = userId,
-        //        CreatedDateTime = SystemClock.Instance.GetCurrentInstant()
-        //    };
-
-        //    await database.Accounts.AddAsync(accountRecord, cancellationToken);
-
-        //    await AddNewHistoryItem(new Account_AddNewHistoryItem
-        //    {
-        //        AccountId = accountRecord.Id,
-        //        Type = AccountHistoryType.AccountCreated
-        //    }, cancellationToken);
-        //}
-        //else
-        //{
-        //}
-
         accountRecord.BlizzardId = blizzardId;
         accountRecord.BlizzardRegionId = blizzardRegion;
         accountRecord.BattleTag = battleTag;
@@ -142,10 +121,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             accountRecord = new AccountRecord
             {
                 FusionId = userId,
-                //MoaRef = moaRef.Full,
-                //BlizzardId = moaRef.Id,
                 CreatedDateTime = SystemClock.Instance.GetCurrentInstant()
-                //LastLoginDateTime = SystemClock.Instance.GetCurrentInstant().ToDateTimeOffset(),
             };
 
             await using var database = CreateDbContext(true);

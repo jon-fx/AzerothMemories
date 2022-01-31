@@ -19,8 +19,6 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
             var invRecord = context.Operation().Items.Get<Updates_UpdateAccountInvalidate>();
             if (invRecord != null)
             {
-                //InvalidateHelpers.InvalidateRecord(_commonServices, new Account_InvalidateAccountRecord(invRecord.AccountId, invRecord.Username, invRecord.FusionId));
-
                 _ = _commonServices.AccountServices.DependsOnAccountRecord(invRecord.AccountId);
                 _ = _commonServices.CharacterServices.TryGetAllAccountCharacters(invRecord.AccountId);
 
@@ -238,7 +236,6 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
 
         record.BlizzardGuildId = newGuildId;
         record.BlizzardGuildName = newGuildName;
-        //record.Guild = guildRecord;
         record.GuildRef = guildRecord?.MoaRef;
         record.GuildId = guildRecord?.Id;
         record.BlizzardProfileLastModified = lastModifiedTime;

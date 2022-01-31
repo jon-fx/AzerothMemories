@@ -109,7 +109,6 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
             if (invRecord != null)
             {
                 _ = DependsOnCharacterRecord(invRecord.CharacterId);
-                //_ = _commonServices.AccountServices.DependsOnAccountRecord(invRecord.AccountId);
             }
 
             return default;
@@ -208,7 +207,6 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
             if (invRecord != null)
             {
                 _ = DependsOnCharacterRecord(invRecord.CharacterId);
-                //_ = _commonServices.AccountServices.DependsOnAccountRecord(invRecord.AccountId);
             }
 
             return default;
@@ -254,17 +252,14 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
             if (invRecord != null)
             {
                 _ = DependsOnCharacterRecord(invRecord.OldCharacterId);
-                //_ = _commonServices.AccountServices.DependsOnAccountRecord(invRecord.OldAccountId);
-
                 _ = DependsOnCharacterRecord(invRecord.NewCharacterId);
-                //_ = _commonServices.AccountServices.DependsOnAccountRecord(invRecord.NewAccountId);
 
                 if (invRecord.PostIds != null)
                 {
                     foreach (var postId in invRecord.PostIds)
                     {
-                        _ =   _commonServices.PostServices.GetPostRecord(postId);
-                        _ =   _commonServices.PostServices.GetAllPostTags(postId);
+                        _ = _commonServices.PostServices.GetPostRecord(postId);
+                        _ = _commonServices.PostServices.GetAllPostTags(postId);
                     }
                 }
             }

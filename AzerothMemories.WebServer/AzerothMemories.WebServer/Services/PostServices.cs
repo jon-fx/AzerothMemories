@@ -187,15 +187,6 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         await database.Posts.AddAsync(postRecord, cancellationToken);
         await database.SaveChangesAsync(cancellationToken);
 
-        //postRecord.Id = await database.InsertWithInt64IdentityAsync(postRecord, token: cancellationToken);
-
-        //foreach (var tagRecord in tagRecords)
-        //{
-        //    tagRecord.PostId = postRecord.Id;
-        //}
-
-        //await database.PostTags.BulkInsertAsync(tagRecords, cancellationToken);
-
         await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
             AccountId = activeAccount.Id,
@@ -1064,7 +1055,6 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         await using var database = await CreateCommandDbContext(cancellationToken);
 
         var newReaction = command.NewReaction;
-        //var postQuery = database.PostComments.Where(x => x.Id == commentId).AsUpdatable();
         var reactionRecord = await database.PostCommentReactions.FirstOrDefaultAsync(x => x.AccountId == activeAccount.Id && x.CommentId == commentId, cancellationToken);
         if (reactionRecord == null)
         {
@@ -1106,8 +1096,6 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
 
             reactionRecord.LastUpdateTime = SystemClock.Instance.GetCurrentInstant();
         }
-
-        //await postQuery.UpdateAsync(cancellationToken);
 
         if (newReaction != PostReaction.None)
         {
