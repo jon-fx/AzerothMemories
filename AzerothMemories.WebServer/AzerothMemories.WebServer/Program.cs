@@ -87,25 +87,19 @@ var authenticationBuilder = builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 });
 
-authenticationBuilder.AddOAuth(BlizzardRegion.Europe);
-authenticationBuilder.AddOAuth(BlizzardRegion.Taiwan);
-authenticationBuilder.AddOAuth(BlizzardRegion.Korea);
-authenticationBuilder.AddOAuth(BlizzardRegion.UnitedStates);
+authenticationBuilder.AddPatreonAuth();
+authenticationBuilder.AddBlizzardAuth(BlizzardRegion.Europe, config);
+authenticationBuilder.AddBlizzardAuth(BlizzardRegion.Taiwan, config);
+authenticationBuilder.AddBlizzardAuth(BlizzardRegion.Korea, config);
+authenticationBuilder.AddBlizzardAuth(BlizzardRegion.UnitedStates, config);
 
 authenticationBuilder.AddCookie(options =>
 {
     options.LoginPath = "/signIn";
     options.LogoutPath = "/signOut";
 
-    //if (builder.Environment.IsDevelopment())
-    //{
-    //    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
-    //}
-
-    // This controls the expiration time stored in the cookie itself
     options.ExpireTimeSpan = TimeSpan.FromDays(7);
     options.SlidingExpiration = true;
-    // And this controls when the browser forgets the cookie
     options.Events.OnSigningIn = ctx =>
     {
         ctx.CookieOptions.Expires = DateTimeOffset.UtcNow.AddDays(28);
@@ -114,7 +108,7 @@ authenticationBuilder.AddCookie(options =>
 });
 
 builder.Services.AddServerSideBlazor(o => o.DetailedErrors = true);
-fusionAuth.AddBlazor(o => { }); // Must follow services.AddServerSideBlazor()!
+fusionAuth.AddBlazor(_ => { });
 
 builder.Services.AddSingleton(config);
 builder.Services.AddSingleton<CommonServices>();

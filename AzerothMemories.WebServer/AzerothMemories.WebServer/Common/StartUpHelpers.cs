@@ -5,15 +5,26 @@ namespace AzerothMemories.WebServer.Common;
 
 internal static class StartUpHelpers
 {
-    public static AuthenticationBuilder AddOAuth(this AuthenticationBuilder builder, BlizzardRegion region)
+    public static AuthenticationBuilder AddPatreonAuth(this AuthenticationBuilder builder)
+    {
+        return builder;
+    }
+
+    public static AuthenticationBuilder AddBlizzardAuth(this AuthenticationBuilder builder, BlizzardRegion region, CommonConfig commonConfig)
     {
         var regionInfo = region.ToInfo();
+        var clientInfo = commonConfig.BlizzardClientInfo[(int)region];
+        if (!clientInfo.HasValue)
+        {
+            return builder;
+        }
+
         var schema = $"BattleNet-{regionInfo.Name}";
         return builder.AddBattleNet(schema, $"Battle Net - {regionInfo.Name}", options =>
         {
             options.ClaimsIssuer = schema;
-            options.ClientId = "***REMOVED***";
-            options.ClientSecret = "***REMOVED***";
+            options.ClientId = clientInfo.Value.Id;
+            options.ClientSecret = clientInfo.Value.Secret;
             options.CallbackPath = $"/authorization-code/callback/{regionInfo.Name.ToLower()}";
             options.TokenEndpoint = regionInfo.TokenEndpoint;
             options.AuthorizationEndpoint = regionInfo.AuthorizationEndpoint;
@@ -26,29 +37,29 @@ internal static class StartUpHelpers
             options.ClaimActions.MapJsonKey("BattleNet-Id", "id");
             options.ClaimActions.MapJsonKey("BattleNet-Tag", "battletag");
 
-            options.Events.OnCreatingTicket += OnCreatingTicket;
-            options.Events.OnTicketReceived += OnTicketReceived;
-            options.Events.OnAccessDenied += OnAccessDenied;
-            options.Events.OnRemoteFailure += OnRemoteFailure;
+            options.Events.OnCreatingTicket += OnBlizzardCreatingTicket;
+            options.Events.OnTicketReceived += OnBlizzardTicketReceived;
+            options.Events.OnAccessDenied += OnBlizzardAccessDenied;
+            options.Events.OnRemoteFailure += OnBlizzardRemoteFailure;
         });
     }
 
-    private static Task OnTicketReceived(TicketReceivedContext arg)
+    private static Task OnBlizzardTicketReceived(TicketReceivedContext arg)
     {
         return Task.CompletedTask;
     }
 
-    private static Task OnAccessDenied(AccessDeniedContext arg)
+    private static Task OnBlizzardAccessDenied(AccessDeniedContext arg)
     {
         return Task.CompletedTask;
     }
 
-    private static Task OnRemoteFailure(RemoteFailureContext arg)
+    private static Task OnBlizzardRemoteFailure(RemoteFailureContext arg)
     {
         return Task.CompletedTask;
     }
 
-    private static Task OnCreatingTicket(OAuthCreatingTicketContext context)
+    private static Task OnBlizzardCreatingTicket(OAuthCreatingTicketContext context)
     {
         if (context.Identity == null)
         {
