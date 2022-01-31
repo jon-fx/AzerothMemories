@@ -1706,7 +1706,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             }
         }
 
-        return allTagInfo.ToArray();
+        return allTagInfo.OrderBy(x => x.Type).ThenBy(x => x.Id).ToArray();
     }
 
     [ComputeMethod]
