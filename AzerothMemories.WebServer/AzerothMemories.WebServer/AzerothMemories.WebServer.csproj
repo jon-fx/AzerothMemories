@@ -19,10 +19,10 @@
 	      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	    </PackageReference>
 	    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
-	    <PackageReference Include="Stl.Fusion.Blazor" Version="2.3.1" />
-	    <PackageReference Include="Stl.Fusion.EntityFramework.Npgsql" Version="2.3.1" />
-	    <PackageReference Include="Stl.Fusion.RegisterAttributes" Version="2.3.1" />
-	    <PackageReference Include="Stl.Fusion.Server" Version="2.3.1" />
+	    <PackageReference Include="Stl.Fusion.Blazor" Version="2.3.11" />
+	    <PackageReference Include="Stl.Fusion.EntityFramework.Npgsql" Version="2.3.11" />
+	    <PackageReference Include="Stl.Fusion.RegisterAttributes" Version="2.3.11" />
+	    <PackageReference Include="Stl.Fusion.Server" Version="2.3.11" />
 	    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
 	    <PackageReference Include="AspNet.Security.OAuth.BattleNet" Version="6.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.1" />

@@ -39,6 +39,8 @@ else
 
 @code
 {
+    private bool _firstRenderDone;
+
     [Parameter, SupplyParameterFromQuery(Name = "tag")] public string[] Tags { get; init; }
 
     [Parameter, SupplyParameterFromQuery(Name = "sort")] public string SortMode { get; init; }
@@ -51,11 +53,25 @@ else
     
     [Inject] public IJSRuntime JsRuntime { get; init; }
 
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (firstRender)
+        {
+            _firstRenderDone = true;
+        }
+    }
+
     protected override async Task InternalComputeState()
     {
         await base.InternalComputeState();
 
         await ViewModel.ComputeState(Tags, SortMode, CurrentPage, PostMinTime, PostMaxTime);
-        await JsRuntime.InvokeVoidAsync("HideWowheadToolTips");
+
+        if (_firstRenderDone)
+        {
+            await JsRuntime.InvokeVoidAsync("HideWowheadToolTips");
+        }
     }
 }
