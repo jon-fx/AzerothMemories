@@ -1501,14 +1501,16 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
 
         await using var database = await CreateCommandDbContext(cancellationToken);
 
+        var reportQuery = from r in database.PostTagReports
+                          where r.PostId == postRecord.Id && r.AccountId == activeAccount.Id
+                          select r.TagId;
+
+        var alreadyReported = await reportQuery.ToArrayAsync(cancellationToken);
+        var alreadyReportedSet = alreadyReported.ToHashSet();
+
         foreach (var tagRecord in tagRecords)
         {
-            var reportQuery = from r in database.PostTagReports
-                              where r.PostId == postRecord.Id && r.AccountId == activeAccount.Id && r.TagId == tagRecord.Id
-                              select r;
-
-            var alreadyReported = await reportQuery.CountAsync(cancellationToken) > 0;
-            if (alreadyReported)
+            if (alreadyReportedSet.Contains(tagRecord.Id))
             {
             }
             else
