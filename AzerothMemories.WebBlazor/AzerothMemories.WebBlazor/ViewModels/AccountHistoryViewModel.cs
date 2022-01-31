@@ -172,6 +172,30 @@ public sealed class AccountHistoryViewModel
 
                 return $"<a href='account/{OtherAccountId}'>{OtherAccountUsername}</a> tagged themself in your <a href='post/{TargetId}/{TargetPostId}/'>memory</a>.";
             }
+            case AccountHistoryType.PostReported:
+            {
+                Exceptions.ThrowIf(TargetId == 0);
+                Exceptions.ThrowIf(TargetPostId == 0);
+                Exceptions.ThrowIf(TargetCommentId != 0);
+
+                return $"You reported <a href='account/{OtherAccountId}'>{OtherAccountUsername}'s</a> <a href='post/{TargetId}/{TargetPostId}'>post</a>.";
+            }
+            case AccountHistoryType.PostReportedComment:
+            {
+                Exceptions.ThrowIf(TargetId == 0);
+                Exceptions.ThrowIf(TargetPostId == 0);
+                Exceptions.ThrowIf(TargetCommentId == 0);
+
+                return $"You reported <a href='account/{OtherAccountId}'>{OtherAccountUsername}'s</a> <a href='post/{TargetId}/{TargetPostId}/?comment={TargetCommentId}'>comment</a>.";
+            }
+            case AccountHistoryType.PostReportedTags:
+            {
+                Exceptions.ThrowIf(TargetId == 0);
+                Exceptions.ThrowIf(TargetPostId == 0);
+                Exceptions.ThrowIf(TargetCommentId != 0);
+
+                return $"You reported tags on <a href='account/{OtherAccountId}'>{OtherAccountUsername}'s</a> <a href='post/{TargetId}/{TargetPostId}'>post</a>.";
+            }
             case AccountHistoryType.None:
             default:
             {

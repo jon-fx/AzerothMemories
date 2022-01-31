@@ -1359,6 +1359,16 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             reportQueryResult.ModifiedTime = SystemClock.Instance.GetCurrentInstant();
         }
 
+        await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        {
+            AccountId = activeAccount.Id,
+            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            Type = AccountHistoryType.PostReported,
+            TargetId = postRecord.AccountId,
+            TargetPostId = postRecord.Id,
+            OtherAccountId = postRecord.AccountId,
+        }, cancellationToken);
+
         await database.SaveChangesAsync(cancellationToken);
 
         return true;
@@ -1445,6 +1455,17 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
 
         await database.SaveChangesAsync(cancellationToken);
 
+        await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        {
+            AccountId = activeAccount.Id,
+            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            Type = AccountHistoryType.PostReportedComment,
+            TargetId = postRecord.AccountId,
+            TargetPostId = postRecord.Id,
+            TargetCommentId = commentId,
+            OtherAccountId = commentViewModel.AccountId,
+        }, cancellationToken);
+
         return true;
     }
 
@@ -1526,6 +1547,16 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
                 }, cancellationToken);
             }
         }
+
+        await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        {
+            AccountId = activeAccount.Id,
+            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            Type = AccountHistoryType.PostReportedTags,
+            TargetId = postRecord.AccountId,
+            TargetPostId = postRecord.Id,
+            OtherAccountId = postRecord.AccountId,
+        }, cancellationToken);
 
         await database.SaveChangesAsync(cancellationToken);
 

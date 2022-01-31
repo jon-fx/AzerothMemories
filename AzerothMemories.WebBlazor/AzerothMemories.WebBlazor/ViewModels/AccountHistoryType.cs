@@ -30,4 +30,8 @@ public enum AccountHistoryType
 
     MemoryRestoredExternal1,
     MemoryRestoredExternal2,
+
+    PostReported,
+    PostReportedComment,
+    PostReportedTags
 }
