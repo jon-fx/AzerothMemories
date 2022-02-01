@@ -32,8 +32,8 @@ function OpenImageEditor(id, dotNetHelper) {
         saveHandler: function (image, done) {
             document.getElementById(id).src = image.asDataURL('image/jpeg', 1);
 
-            console.log(image.getWidth());
-            console.log(image.getHeight());
+            //console.log(image.getWidth());
+            //console.log(image.getHeight());
 
             image.asBlob('image/jpeg', 1).arrayBuffer().then(buffer => {
                 dotNetHelper.invokeMethodAsync('UpdateImage', new Uint8Array(buffer));
@@ -41,6 +41,34 @@ function OpenImageEditor(id, dotNetHelper) {
             });
         }
     }).show(document.getElementById(id).src);
+}
+
+function TestImageViewer(id, index) {
+    const gallery = new Viewer(document.getElementById(id),
+        {
+            title: false,
+            toolbar: {
+                zoomIn: 4,
+                zoomOut: 4,
+                oneToOne: 4,
+                reset: 4,
+                prev: 4,
+                play: {
+                    show: 4,
+                    size: 'large',
+                },
+                next: 4,
+                rotateLeft: 0,
+                rotateRight: 0,
+                flipHorizontal: 0,
+                flipVertical: 0,
+            },
+            initialViewIndex: index,
+            movable: false,
+            scalable: false,
+        });
+
+    gallery.show();
 }
 
 function SetUpTagTextBox(textBoxName, userTags) {
