@@ -212,16 +212,25 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
 
     private async Task<PostViewModel[]> GetPostViewModelsForPage(Session session, long[] allSearchResult, int currentPage, int postsPerPage, string locale)
     {
-        var allPostViewModels = new List<PostViewModel>();
-        var pagedResults = allSearchResult.Skip((currentPage - 1) * postsPerPage).Take(postsPerPage).ToArray();
-        foreach (var pagedResult in pagedResults)
+        var viewModels = new List<PostViewModel>();
+        for (var i = (currentPage - 1) * postsPerPage; i < allSearchResult.Length; i++)
         {
-            var postViewModel = await _commonServices.PostServices.TryGetPostViewModel(session, pagedResult, locale);
+            var postViewModel = await _commonServices.PostServices.TryGetPostViewModel(session, allSearchResult[i], locale);
+            if (postViewModel == null)
+            {
+            }
+            else
+            {
+                viewModels.Add(postViewModel);
 
-            allPostViewModels.Add(postViewModel);
+                if (viewModels.Count >= postsPerPage)
+                {
+                    break;
+                }
+            }
         }
 
-        return allPostViewModels.ToArray();
+        return viewModels.ToArray();
     }
 
     [ComputeMethod]

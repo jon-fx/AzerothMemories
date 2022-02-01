@@ -73,7 +73,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     {
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
         var activeAccountId = activeAccount?.Id ?? 0;
-        var postRecord = await GetPostRecord(postId);
+        var postRecord = await TryGetPostRecord(postId);
         if (postRecord == null)
         {
             return null;
@@ -356,7 +356,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)
             {
-                _ = GetPostRecord(invPost.PostId);
+                _ = TryGetPostRecord(invPost.PostId);
                 _ = TryGetPostReactions(invPost.PostId);
             }
 
@@ -381,7 +381,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         var postId = command.PostId;
-        var postRecord = await GetPostRecord(postId);
+        var postRecord = await TryGetPostRecord(postId);
         if (postRecord == null)
         {
             return 0;
@@ -516,7 +516,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     {
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
         var activeAccountId = activeAccount?.Id ?? 0;
-        var postRecord = await GetPostRecord(postId);
+        var postRecord = await TryGetPostRecord(postId);
         if (postRecord == null)
         {
             return null;
@@ -537,7 +537,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     {
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
         var activeAccountId = activeAccount?.Id ?? 0;
-        var postRecord = await GetPostRecord(postId);
+        var postRecord = await TryGetPostRecord(postId);
         if (postRecord == null)
         {
             return null;
@@ -557,7 +557,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     {
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
         var activeAccountId = activeAccount?.Id ?? 0;
-        var postRecord = await GetPostRecord(postId);
+        var postRecord = await TryGetPostRecord(postId);
         if (postRecord == null)
         {
             return null;
@@ -678,7 +678,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     {
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
         var activeAccountId = activeAccount?.Id ?? 0;
-        var postRecord = await GetPostRecord(postId);
+        var postRecord = await TryGetPostRecord(postId);
         if (postRecord == null)
         {
             return new Dictionary<long, PostCommentReactionViewModel>();
@@ -726,7 +726,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         var postId = command.PostId;
-        var postRecord = await GetPostRecord(postId);
+        var postRecord = await TryGetPostRecord(postId);
         if (postRecord == null)
         {
             return false;
@@ -837,7 +837,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)
             {
-                _ = GetPostRecord(invPost.PostId);
+                _ = TryGetPostRecord(invPost.PostId);
                 _ = TryGetAllPostComments(invPost.PostId);
             }
 
@@ -862,7 +862,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         var postId = command.PostId;
-        var postRecord = await GetPostRecord(postId);
+        var postRecord = await TryGetPostRecord(postId);
         if (postRecord == null)
         {
             return 0;
@@ -1032,7 +1032,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         var postId = command.PostId;
-        var postRecord = await GetPostRecord(postId);
+        var postRecord = await TryGetPostRecord(postId);
         if (postRecord == null)
         {
             return 0;
@@ -1139,7 +1139,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)
             {
-                _ = GetPostRecord(invPost.PostId);
+                _ = TryGetPostRecord(invPost.PostId);
             }
 
             return default;
@@ -1152,7 +1152,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         var postId = command.PostId;
-        var postRecord = await GetPostRecord(postId);
+        var postRecord = await TryGetPostRecord(postId);
         if (postRecord == null)
         {
             return null;
@@ -1188,7 +1188,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)
             {
-                _ = GetPostRecord(invPost.PostId);
+                _ = TryGetPostRecord(invPost.PostId);
             }
 
             return default;
@@ -1201,7 +1201,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         var postId = command.PostId;
-        var postRecord = await GetPostRecord(postId);
+        var postRecord = await TryGetPostRecord(postId);
         if (postRecord == null)
         {
             return 0;
@@ -1229,7 +1229,8 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = AccountHistoryType.MemoryDeleted,
             TargetId = postRecord.AccountId,
-            TargetPostId = postRecord.Id
+            TargetPostId = postRecord.Id,
+            OtherAccountId = activeAccount.Id,
         }, cancellationToken);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
@@ -1259,6 +1260,12 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         var postId = command.PostId;
+        var postRecord = await TryGetPostRecord(postId);
+        if (postRecord == null)
+        {
+            return 0;
+        }
+
         var commentId = command.CommentId;
         var allCommentPages = await TryGetAllPostComments(postId);
         var allComments = allCommentPages[0].AllComments;
@@ -1283,6 +1290,16 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         await using var database = await CreateCommandDbContext(cancellationToken);
         await database.PostComments.Where(x => x.Id == commentId).UpdateAsync(r => new PostCommentRecord { DeletedTimeStamp = now }, cancellationToken);
 
+        await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        {
+            AccountId = postRecord.AccountId,
+            Type = AccountHistoryType.CommentDeleted,
+            TargetId = postRecord.AccountId,
+            TargetPostId = postRecord.Id,
+            TargetCommentId = commentId,
+            OtherAccountId = activeAccount.Id,
+        }, cancellationToken);
+
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
 
         return now;
@@ -1304,7 +1321,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         var postId = command.PostId;
-        var postRecord = await GetPostRecord(postId);
+        var postRecord = await TryGetPostRecord(postId);
         if (postRecord == null)
         {
             return false;
@@ -1390,7 +1407,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         var postId = command.PostId;
-        var postRecord = await GetPostRecord(postId);
+        var postRecord = await TryGetPostRecord(postId);
         if (postRecord == null)
         {
             return false;
@@ -1485,7 +1502,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         var postId = command.PostId;
-        var postRecord = await GetPostRecord(postId);
+        var postRecord = await TryGetPostRecord(postId);
         if (postRecord == null)
         {
             return false;
@@ -1572,7 +1589,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)
             {
-                _ = GetPostRecord(invPost.PostId);
+                _ = TryGetPostRecord(invPost.PostId);
                 _ = GetAllPostTags(invPost.PostId);
             }
 
@@ -1591,7 +1608,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         var postId = command.PostId;
-        var cachedPostRecord = await GetPostRecord(postId);
+        var cachedPostRecord = await TryGetPostRecord(postId);
         if (cachedPostRecord == null)
         {
             return AddMemoryResultCode.Failed;
@@ -1707,7 +1724,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostRecord> GetPostRecord(long postId)
+    public virtual async Task<PostRecord> TryGetPostRecord(long postId)
     {
         await using var database = CreateDbContext();
 

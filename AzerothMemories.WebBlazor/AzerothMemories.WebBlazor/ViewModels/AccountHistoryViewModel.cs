@@ -37,7 +37,25 @@ public sealed class AccountHistoryViewModel
             }
             case AccountHistoryType.MemoryDeleted:
             {
-                return "Memory deleted.";
+                if (AccountId == OtherAccountId)
+                {
+                    return "Memory deleted.";
+                }
+
+                return "Memory deleted by admin.";
+            }
+            case AccountHistoryType.CommentDeleted:
+            {
+                Exceptions.ThrowIf(TargetId == 0);
+                Exceptions.ThrowIf(TargetPostId == 0);
+                Exceptions.ThrowIf(TargetCommentId == 0);
+
+                if (AccountId == OtherAccountId)
+                {
+                    return $"<a href='post/{TargetId}/{TargetPostId}/?comment={TargetCommentId}'>Comment</a> deleted.";
+                }
+
+                return $"<a href='post/{TargetId}/{TargetPostId}/?comment={TargetCommentId}'>Comment</a> deleted by admin.";
             }
             case AccountHistoryType.CharacterUpdated:
             {

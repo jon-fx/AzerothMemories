@@ -30,7 +30,7 @@
                         </MudTooltip>
                     </MudMenuItem>
 
-                    @if (Services.ActiveAccountServices.IsActiveAccount(comment.AccountId))
+                    @if (Services.ActiveAccountServices.IsActiveAccount(comment.AccountId) || Services.ActiveAccountServices.IsAdmin)
                     {
                         <MudMenuItem OnClick="@OnDeleteComment" Disabled="@(comment.DeletedTimeStamp != 0)">
                             <MudTooltip Text="Delete" Arrow="true" Placement="Placement.Left" Color="Color.Dark">

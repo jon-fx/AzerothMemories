@@ -33,5 +33,7 @@ public enum AccountHistoryType
 
     PostReported,
     PostReportedComment,
-    PostReportedTags
+    PostReportedTags,
+
+    CommentDeleted,
 }
