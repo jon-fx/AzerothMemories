@@ -6,9 +6,9 @@ public sealed class CommonConfig
 
     public string HangfireConnectionString { get; } = "***REMOVED***";
 
-    //public string BlobStorageConnectionString { get; } = "***REMOVED***";
+    public string BlobStorageConnectionString { get; } = "***REMOVED***";
 
-    //public string BlobStoragePath { get; } = "***REMOVED***";
+    public string BlobStoragePath { get; } = "***REMOVED***";
 
     //public Duration ChangeUserNameDelay { get; } = Duration.FromSeconds(10);
 

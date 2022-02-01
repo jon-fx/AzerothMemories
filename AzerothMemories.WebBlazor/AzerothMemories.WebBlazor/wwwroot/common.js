@@ -43,14 +43,14 @@ function OpenImageEditor(id, dotNetHelper) {
     }).show(document.getElementById(id).src);
 }
 
-function TestImageViewer(id, index) {
+function InitiallizeImageViewer(id, index) {
     const gallery = new Viewer(document.getElementById(id),
         {
             title: false,
             toolbar: {
-                zoomIn: 4,
-                zoomOut: 4,
-                oneToOne: 4,
+                zoomIn: 0,
+                zoomOut: 0,
+                oneToOne: 0,
                 reset: 4,
                 prev: 4,
                 play: {
@@ -64,7 +64,6 @@ function TestImageViewer(id, index) {
                 flipVertical: 0,
             },
             initialViewIndex: index,
-            movable: false,
             scalable: false,
         });
 

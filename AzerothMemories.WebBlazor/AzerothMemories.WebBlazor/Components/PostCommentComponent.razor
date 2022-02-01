@@ -54,7 +54,7 @@
         @if (comment.DeletedTimeStamp == 0)
         {
             <MudCardContent Class="@ClassPresets.CardContent">
-                <MudText Typo="Typo.body2" Style="overflow-wrap: anywhere;">@(new MarkupString(comment.PostComment))</MudText>
+                <MudText Typo="Typo.body2" Style="overflow-wrap: break-word;">@(new MarkupString(comment.PostComment))</MudText>
                 <MudText Class="cardLinkText" Typo="Typo.body2" @onclick="OnReactionLinkClicked">@ZExtensions.BuildReactionString(comment.TotalReactionCount, comment.ReactionCounters)</MudText>
             </MudCardContent>
 

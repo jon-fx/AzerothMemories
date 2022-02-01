@@ -1,4 +1,5 @@
-﻿using SixLabors.ImageSharp;
+﻿using Azure.Storage.Blobs;
+using SixLabors.ImageSharp;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -294,17 +295,17 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
 
                 await using var memoryStream = new MemoryStream();
                 await image.SaveAsJpegAsync(memoryStream);
+                memoryStream.Position = 0;
 
-                {
-                    await using var fileStream = File.Create(@$"C:\Users\John\Desktop\Stuff\New folder\{SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds()}.jpg");
-                    await image.SaveAsJpegAsync(fileStream);
-                }
+                var blobName = $"{postRecord.AccountId}-{Guid.NewGuid()}.jpg";
+                var blobClient = new BlobClient(_commonServices.Config.BlobStorageConnectionString, "moaimages", blobName);
+                var result = await blobClient.UploadAsync(memoryStream);
 
                 var buffer = memoryStream.ToArray();
                 var hashData = MD5.HashData(buffer);
                 var hashString = GetHashString(hashData);
 
-                data.Add((buffer, hashString, uploadResult.FileName, uploadResult.FileTimeStamp, "TODO"));
+                data.Add((buffer, hashString, uploadResult.FileName, uploadResult.FileTimeStamp, blobName));
             }
             catch (Exception)
             {
