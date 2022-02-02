@@ -2,6 +2,12 @@
 
 public sealed class PostViewModel
 {
+    [JsonIgnore] private PostViewModelBlobInfo[] _blobInfo;
+
+    public PostViewModel()
+    {
+    }
+
     [JsonInclude] public long Id;
 
     [JsonInclude] public long AccountId;
@@ -38,5 +44,40 @@ public sealed class PostViewModel
 
     [JsonInclude] public long DeletedTimeStamp;
 
-    //[JsonInclude] public PostReactionViewModel[] ReactionData;
+    public PostViewModelBlobInfo[] GetImageBlobInfo()
+    {
+        if (_blobInfo == null)
+        {
+            var results = new List<PostViewModelBlobInfo>();
+            var title = $"{AccountUsername}'s memory";
+            var description = "false";
+            if (string.IsNullOrWhiteSpace(PostComment))
+            {
+            }
+            else if (PostComment.Length > 50)
+            {
+                description = $"{PostComment[..50]}...";
+            }
+            else
+            {
+                description = PostComment;
+            }
+
+            foreach (var imageBlobName in ImageBlobNames)
+            {
+                if (string.IsNullOrWhiteSpace(imageBlobName))
+                {
+                    continue;
+                }
+
+                var imageSource = $"{ZExtensions.BlobStoragePath}{imageBlobName}";
+
+                results.Add(new PostViewModelBlobInfo { Title = title, Description = description, Source = imageSource });
+            }
+
+            _blobInfo = results.ToArray();
+        }
+
+        return _blobInfo;
+    }
 }

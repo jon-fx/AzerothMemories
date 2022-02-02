@@ -94,21 +94,15 @@ else
                     <MudText Typo="Typo.body2" Style="overflow-wrap: break-word;">@(new MarkupString(Post.PostComment))</MudText>
                 }
 
-                var divName = $"postImages-{Post.Id}";
-                var blobNames = Post.ImageBlobNames.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
-                @*blobNames = Enumerable.Repeat(blobNames[0], 10).ToArray();*@
+                var allBlobInfo = Post.GetImageBlobInfo();
                 <div>
-                    <div id="@divName">
-                        
-                        @for (var i = 0; i < blobNames.Length; i++ )
-                        {
-                            var index = i;
-                            var blobName = blobNames[index];
-                            var imageSource = $"{ZExtensions.BlobStoragePath}{blobName}";
+                    @for (var i = 0; i < allBlobInfo.Length; i++ )
+                    {
+                        var index = i;
+                        var blobInfo = allBlobInfo[index];
 
-                            <MudElement HtmlTag="img" Class="img-fluid;" Style="width: 100%; height: auto; object-fit: cover;" src="@imageSource" @onclick="() => OnImageClicked(index)"/>
-                        }
-                    </div>
+                        <MudElement HtmlTag="img" Class="img-fluid;" Style="width: 100%; height: auto; object-fit: cover;" src="@blobInfo.Source" @onclick="() => OnImageClicked(index)"/>
+                    }
                 </div>
 
                 <div class="d-flex justify-space-between pa-0 ma-2">
@@ -269,7 +263,6 @@ else
     private bool _postChanged;
     private readonly PostViewModel _post;
 
-    private bool _viewerLoaded;
     private bool _userReacting;
     private bool _showReactions;
     private bool _reactionAreLoading;
@@ -472,13 +465,11 @@ else
 
     private async Task OnImageClicked(int index)
     {
-        if (_viewerLoaded || Post == null)
+        if (Post == null)
         {
             return;
         }
-
-        _viewerLoaded = true;
-
-        await JsRuntime.InvokeVoidAsync("InitiallizeImageViewer", $"postImages-{Post.Id}", index);
+        
+        await JsRuntime.InvokeVoidAsync("InitiallizeImageViewer",  index, Post.GetImageBlobInfo());
     }
 }

@@ -43,31 +43,10 @@ function OpenImageEditor(id, dotNetHelper) {
     }).show(document.getElementById(id).src);
 }
 
-function InitiallizeImageViewer(id, index) {
-    const gallery = new Viewer(document.getElementById(id),
-        {
-            title: false,
-            toolbar: {
-                zoomIn: 0,
-                zoomOut: 0,
-                oneToOne: 0,
-                reset: 4,
-                prev: 4,
-                play: {
-                    show: 4,
-                    size: 'large',
-                },
-                next: 4,
-                rotateLeft: 0,
-                rotateRight: 0,
-                flipHorizontal: 0,
-                flipVertical: 0,
-            },
-            initialViewIndex: index,
-            scalable: false,
-        });
-
-    gallery.show();
+function InitiallizeImageViewer(index, gallery) {
+    Spotlight.show(gallery, {
+        index: index + 1,
+    });
 }
 
 function SetUpTagTextBox(textBoxName, userTags) {
