@@ -74,7 +74,13 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
 
         var characterRecord = await GetOrCreateCharacterRecord(refFull);
 
-        await _commonServices.BlizzardUpdateHandler.TryUpdate(characterRecord, priority);
+        if (priority == BlizzardUpdatePriority.CharacterLow)
+        {
+        }
+        else
+        {
+            await _commonServices.BlizzardUpdateHandler.TryUpdate(characterRecord, priority);
+        }
 
         return characterRecord;
     }

@@ -1,6 +1,6 @@
 ﻿using Azure.Storage.Blobs;
 using SixLabors.ImageSharp;
-using System.Security.Cryptography;
+using SixLabors.ImageSharp.Formats.Jpeg;
 using System.Text;
 
 namespace AzerothMemories.WebServer.Services;
@@ -173,7 +173,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             return new AddMemoryResult(AddMemoryResultCode.TooManyTags);
         }
 
-        var uploadAndSortResult = await UploadAndSortImages(postRecord, command.UploadResults);
+        var uploadAndSortResult = await UploadAndSortImages(activeAccount, postRecord, command.UploadResults);
         if (uploadAndSortResult != AddMemoryResultCode.Success)
         {
             return new AddMemoryResult(uploadAndSortResult);
@@ -264,9 +264,9 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         return AddMemoryResultCode.Success;
     }
 
-    private async Task<AddMemoryResultCode> UploadAndSortImages(PostRecord postRecord, List<AddMemoryUploadResult> uploadResults)
+    private async Task<AddMemoryResultCode> UploadAndSortImages(AccountViewModel accountRecord, PostRecord postRecord, List<AddMemoryUploadResult> uploadResults)
     {
-        var data = new List<(byte[] Buffer, string Hash, string Name, long TimeStamp, string ImageBlobName)>();
+        var data = new List<(string Name, long TimeStamp, string ImageBlobName)>();
         foreach (var uploadResult in uploadResults)
         {
             if (uploadResult == null)
@@ -287,25 +287,48 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             try
             {
                 using var image = Image.Load(uploadResult.FileContent);
+                image.Metadata.ExifProfile = null;
+
                 //image.Mutate(x => x.Resize(new ResizeOptions
                 //{
                 //    Mode = ResizeMode.Max,
                 //    Size = new Size(1920, 1080)
                 //}));
 
+                var encoder = new JpegEncoder
+                {
+                    Quality = 80,
+                };
+
+                if (accountRecord.AccountType >= AccountType.Tier1)
+                {
+                }
+                if (accountRecord.AccountType >= AccountType.Tier2)
+                {
+                    encoder.Quality = 85;
+                }
+                if (accountRecord.AccountType >= AccountType.Tier3)
+                {
+                    encoder.Quality = 90;
+                }
+
                 await using var memoryStream = new MemoryStream();
-                await image.SaveAsJpegAsync(memoryStream);
+                await image.SaveAsJpegAsync(memoryStream, encoder);
                 memoryStream.Position = 0;
 
                 var blobName = $"{postRecord.AccountId}-{Guid.NewGuid()}.jpg";
                 var blobClient = new BlobClient(_commonServices.Config.BlobStorageConnectionString, "moaimages", blobName);
                 var result = await blobClient.UploadAsync(memoryStream);
+                if (result.Value == null)
+                {
+                    return AddMemoryResultCode.UploadFailed;
+                }
 
-                var buffer = memoryStream.ToArray();
-                var hashData = MD5.HashData(buffer);
-                var hashString = GetHashString(hashData);
+                //var buffer = memoryStream.ToArray();
+                ////var hashData = MD5.HashData(buffer);
+                //var hashString = GetHashString(hashData);
 
-                data.Add((buffer, hashString, uploadResult.FileName, uploadResult.FileTimeStamp, blobName));
+                data.Add((uploadResult.FileName, uploadResult.FileTimeStamp, blobName));
             }
             catch (Exception)
             {
@@ -325,16 +348,16 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         return AddMemoryResultCode.Success;
     }
 
-    private string GetHashString(byte[] hashData)
-    {
-        var output = new StringBuilder(hashData.Length);
-        foreach (var b in hashData)
-        {
-            output.Append(b.ToString("X2"));
-        }
+    //private string GetHashString(byte[] hashData)
+    //{
+    //    var output = new StringBuilder(hashData.Length);
+    //    foreach (var b in hashData)
+    //    {
+    //        output.Append(b.ToString("X2"));
+    //    }
 
-        return output.ToString();
-    }
+    //    return output.ToString();
+    //}
 
     [ComputeMethod]
     public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postAccountId, long postId, string locale)
