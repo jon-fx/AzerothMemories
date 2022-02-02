@@ -256,10 +256,15 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         return (searchPostTags.ToArray(), serverSideTagStrings);
     }
 
-    [ComputeMethod(AutoInvalidateTime = 60)]
+    [ComputeMethod]
     protected virtual async Task<long[]> TrySearchPosts(HashSet<string> tagStrings, PostSortMode sortMode, long minTime, long maxTime)
     {
         await using var database = CreateDbContext();
+
+        foreach (var tagString in tagStrings)
+        {
+            await _commonServices.PostServices.DependsOnPostsWithTagString(tagString);
+        }
 
         var query = from p in GetPostSearchQuery(database, tagStrings, sortMode, minTime, maxTime)
                     select p.Id;

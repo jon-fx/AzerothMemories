@@ -23,6 +23,12 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
+    public virtual Task<string> DependsOnPostsWithTagString(string tagString)
+    {
+        return Task.FromResult(tagString);
+    }
+
+    [ComputeMethod]
     protected virtual async Task<bool> CanAccountSeePost(long activeAccountId, PostRecord postRecord)
     {
         Exceptions.ThrowIf(postRecord == null);
@@ -112,6 +118,15 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             {
                 _ = DependsOnPostsBy(invAccount.AccountId);
                 _ = _commonServices.AccountServices.GetPostCount(invAccount.AccountId);
+            }
+
+            var invTags = context.Operation().Items.Get<Post_InvalidateTags>();
+            if (invTags != null && invTags.TagStrings != null)
+            {
+                foreach (var tagString in invTags.TagStrings)
+                {
+                    _ = DependsOnPostsWithTagString(tagString);
+                }
             }
 
             return default;
@@ -211,6 +226,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         context.Operation().Items.Set(new Post_InvalidateAccount(activeAccount.Id));
+        context.Operation().Items.Set(new Post_InvalidateTags(postRecord.PostTags.Select(x => x.TagString).ToHashSet()));
 
         return new AddMemoryResult(AddMemoryResultCode.Success, postRecord.AccountId, postRecord.Id);
     }
@@ -768,6 +784,9 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         long? accountTagToRemove = command.NewCharacterId > 0 ? null : activeAccount.Id;
         long? characterTagToRemove = command.PreviousCharacterId > 0 ? command.PreviousCharacterId : null;
         var newTagKind = PostTagKind.PostRestored;
+
+        await using var database = await CreateCommandDbContext(cancellationToken);
+
         if (activeAccount.Id == postRecord.AccountId)
         {
             accountTagToRemove = null;
@@ -783,8 +802,6 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         {
             return false;
         }
-
-        await using var database = await CreateCommandDbContext(cancellationToken);
 
         await TryRestoreMemoryUpdate(database, postId, PostTagType.Account, accountTagToRemove, newAccountTag, newTagKind);
         await TryRestoreMemoryUpdate(database, postId, PostTagType.Character, characterTagToRemove, newCharacterTag, newTagKind);
@@ -1617,6 +1634,15 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
                 _ = GetAllPostTags(invPost.PostId);
             }
 
+            var invTags = context.Operation().Items.Get<Post_InvalidateTags>();
+            if (invTags != null && invTags.TagStrings != null)
+            {
+                foreach (var tagString in invTags.TagStrings)
+                {
+                    _ = DependsOnPostsWithTagString(tagString);
+                }
+            }
+
             return default;
         }
 
@@ -1730,6 +1756,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         await database.SaveChangesAsync(cancellationToken);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
+        context.Operation().Items.Set(new Post_InvalidateTags(postRecord.PostTags.Select(x => x.TagString).ToHashSet()));
 
         return AddMemoryResultCode.Success;
     }
