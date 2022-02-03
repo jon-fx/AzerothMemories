@@ -32,10 +32,10 @@
         <PackageReference Include="Microsoft.Extensions.Localization" Version="6.0.1" />
         <PackageReference Include="MudBlazor" Version="6.0.5" />
         <PackageReference Include="NodaTime" Version="3.0.9" />
-        <PackageReference Include="Stl.Fusion" Version="2.3.11" />
-        <PackageReference Include="Stl.CommandR" Version="2.3.11" />
-        <PackageReference Include="Stl.Fusion.Blazor" Version="2.3.11" />
-        <PackageReference Include="Stl.Fusion.Client" Version="2.3.11" />
+        <PackageReference Include="Stl.Fusion" Version="2.3.13" />
+        <PackageReference Include="Stl.CommandR" Version="2.3.13" />
+        <PackageReference Include="Stl.Fusion.Blazor" Version="2.3.13" />
+        <PackageReference Include="Stl.Fusion.Client" Version="2.3.13" />
     </ItemGroup>
 
     <ItemGroup>

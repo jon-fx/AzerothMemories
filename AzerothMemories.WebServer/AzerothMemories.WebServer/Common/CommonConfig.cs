@@ -2,9 +2,25 @@
 
 public sealed class CommonConfig
 {
-    public string DatabaseConnectionString { get; } = "***REMOVED***";
+    public CommonConfig()
+    {
+    }
 
-    public string HangfireConnectionString { get; } = "***REMOVED***";
+    public CommonConfig(bool azure)
+    {
+        if (azure)
+        {
+        }
+        else
+        {
+            DatabaseConnectionString = "***REMOVED***";
+            HangfireConnectionString = "***REMOVED***";
+        }
+    }
+
+    public string DatabaseConnectionString { get; init; } = "***REMOVED***";
+
+    public string HangfireConnectionString { get; init; } = "***REMOVED***";
 
     public string BlobStorageConnectionString { get; } = "***REMOVED***";
 
@@ -36,8 +52,6 @@ public sealed class CommonConfig
 
     public void Initialize()
     {
-        //DatabaseConnectionString = "***REMOVED***";
-        //HangfireConnectionString = "***REMOVED***";
     }
 
     public const int PostsPerPage = 10;
