@@ -17,6 +17,12 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
+    public virtual Task<int> DependsOnNewPosts()
+    {
+        return Task.FromResult(0);
+    }
+
+    [ComputeMethod]
     public virtual Task<long> DependsOnPostsBy(long accountId)
     {
         return Task.FromResult(accountId);
@@ -129,6 +135,12 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
                 }
             }
 
+            var invRecentPosts = context.Operation().Items.Get<Post_InvalidateRecentPost>();
+            if (invRecentPosts != null)
+            {
+                _ = DependsOnNewPosts();
+            }
+
             return default;
         }
 
@@ -227,6 +239,11 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
 
         context.Operation().Items.Set(new Post_InvalidateAccount(activeAccount.Id));
         context.Operation().Items.Set(new Post_InvalidateTags(postRecord.PostTags.Select(x => x.TagString).ToHashSet()));
+
+        if (postRecord.PostVisibility == 0)
+        {
+            context.Operation().Items.Set(new Post_InvalidateRecentPost(true));
+        }
 
         return new AddMemoryResult(AddMemoryResultCode.Success, postRecord.AccountId, postRecord.Id);
     }
@@ -1183,6 +1200,11 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
                 _ = TryGetPostRecord(invPost.PostId);
             }
 
+            var invRecentPosts = context.Operation().Items.Get<Post_InvalidateRecentPost>();
+            if (invRecentPosts != null)
+            {
+                _ = DependsOnNewPosts();
+            }
             return default;
         }
 
@@ -1216,6 +1238,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         await database.Posts.Where(x => x.Id == postRecord.Id).UpdateAsync(r => new PostRecord { PostVisibility = newVisibility }, cancellationToken);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
+        context.Operation().Items.Set(new Post_InvalidateRecentPost(true));
 
         return newVisibility;
     }
@@ -1230,6 +1253,19 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             if (invPost != null && invPost.PostId > 0)
             {
                 _ = TryGetPostRecord(invPost.PostId);
+            }
+
+            var invAccount = context.Operation().Items.Get<Post_InvalidateAccount>();
+            if (invAccount != null && invAccount.AccountId > 0)
+            {
+                _ = DependsOnPostsBy(invAccount.AccountId);
+                _ = _commonServices.AccountServices.GetPostCount(invAccount.AccountId);
+            }
+
+            var invRecentPosts = context.Operation().Items.Get<Post_InvalidateRecentPost>();
+            if (invRecentPosts != null)
+            {
+                _ = DependsOnNewPosts();
             }
 
             return default;
@@ -1275,6 +1311,12 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }, cancellationToken);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
+        context.Operation().Items.Set(new Post_InvalidateAccount(postRecord.AccountId));
+
+        if (postRecord.PostVisibility == 0)
+        {
+            context.Operation().Items.Set(new Post_InvalidateRecentPost(true));
+        }
 
         return now;
     }

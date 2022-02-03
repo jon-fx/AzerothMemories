@@ -125,10 +125,12 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         };
     }
 
-    [ComputeMethod(AutoInvalidateTime = 60)]
+    [ComputeMethod]
     protected virtual async Task<long[]> TryGetRecentPosts()
     {
         await using var database = CreateDbContext();
+
+        await _commonServices.PostServices.DependsOnNewPosts();
 
         var query = from p in database.Posts
                     where p.DeletedTimeStamp == 0 && p.PostVisibility == 0
