@@ -14,7 +14,8 @@ builder.Services.AddLogging(logging =>
 {
     logging.ClearProviders();
     logging.AddConsole();
-    logging.SetMinimumLevel(LogLevel.Information);
+    logging.AddAzureWebAppDiagnostics();
+    //logging.SetMinimumLevel(LogLevel.Information);
     //if (Env.IsDevelopment()) {
     //logging.AddFilter("Microsoft", LogLevel.Warning);
     //logging.AddFilter("Microsoft.AspNetCore.Hosting", LogLevel.Information);
@@ -144,7 +145,11 @@ else
 app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
-app.UseHangfireDashboard();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseHangfireDashboard();
+}
 
 app.UseWebSockets(new WebSocketOptions
 {

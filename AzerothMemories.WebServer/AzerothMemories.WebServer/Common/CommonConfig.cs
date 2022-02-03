@@ -34,6 +34,12 @@ public sealed class CommonConfig
         new("***REMOVED***", "***REMOVED***")
     };
 
+    public void Initialize()
+    {
+        //DatabaseConnectionString = "***REMOVED***";
+        //HangfireConnectionString = "***REMOVED***";
+    }
+
     public const int PostsPerPage = 10;
     public const int CommentsPerPage = 50;
     public const int HistoryItemsPerPage = 50;

@@ -38,7 +38,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
             return default;
         }
 
-        if (string.IsNullOrWhiteSpace(record.BattleNetToken) || record.BattleNetTokenExpiresAt.GetValueOrDefault(Instant.FromUnixTimeMilliseconds(0)) >= SystemClock.Instance.GetCurrentInstant())
+        if (string.IsNullOrWhiteSpace(record.BattleNetToken) || SystemClock.Instance.GetCurrentInstant() >= record.BattleNetTokenExpiresAt.GetValueOrDefault(Instant.FromUnixTimeMilliseconds(0)))
         {
             record.UpdateJob = null;
             record.UpdateJobEndTime = SystemClock.Instance.GetCurrentInstant();
