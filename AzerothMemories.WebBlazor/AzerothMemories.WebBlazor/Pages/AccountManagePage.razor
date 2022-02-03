@@ -18,7 +18,7 @@
             </MudCardHeader>
             <MudCardContent Class="@ClassPresets.CardContent">
                 <MudGrid>
-                    <MudItem xs="6">
+                    <MudItem xs="8" sm="3">
                         <MudTextField T="string"
                                   Label="Username"
                                   @bind-Value="ViewModel.NewUsername"
@@ -30,25 +30,31 @@
                                   OnDebounceIntervalElapsed="ViewModel.OnNewUsernameTextChanged"
                                   MaxLength="49" />
                     </MudItem>
-                    <MudItem xs="6" Class="my-auto">
+                    <MudItem xs="4" Class="my-auto">
                         @if (ViewModel.ChangeUsernameButtonVisible)
                         {
                             <MudButton Variant="Variant.Filled" Disabled="!ViewModel.NewUsernameValid" FullWidth="true" OnClick="ViewModel.OnChangeUsernameClicked">Change Username</MudButton>
                         }
                     </MudItem>
-                    <MudItem xs="6">
+                    <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+                        <MudItem sm="5"/>
+                    </MudHidden>
+                    <MudItem xs="8" sm="3">
                         <MudTextField T="string" Label="Battle Tag" @bind-Value="ViewModel.AccountViewModel.BattleTag" Disabled="true" MaxLength="49" />
                     </MudItem>
-                    <MudItem xs="6" Class="my-auto">
+                    <MudItem xs="4" Class="my-auto">
                         <MudSwitch T="bool" Checked="@ViewModel.AccountViewModel.BattleTagIsPublic" Color="Color.Primary" Label="Public" CheckedChanged="ViewModel.OnBattleTagVisibilityChanged" />
                     </MudItem>
+                    <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+                        <MudItem sm="5"/>
+                    </MudHidden>
                     <MudItem xs="12">
                         <MudSwitch T="bool" Checked="@ViewModel.AccountViewModel.IsPrivate" Color="Color.Primary" Label="Private" CheckedChanged="ViewModel.OnIsPrivateChanged" />
                     </MudItem>
 
                     @foreach (var link in SocialHelpers.All)
                     {
-                        <MudItem xs="6" Class="d-flex align-baseline">
+                        <MudItem xs="12" sm="6" Class="d-flex align-baseline">
                             <img src="@link.SocialIconLink" width="18" height="18" />
                             <MudTextField T="string"
                                   Class="px-2"
@@ -60,8 +66,9 @@
                                   ValueChanged="x => ViewModel.OnSocialLinkChanged(link, x)"
                                   MaxLength="49" />
                         </MudItem>
-                        <MudItem xs="6">
-                        </MudItem>
+                        <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+                            <MudItem sm="6"/>
+                        </MudHidden>
                     }
                 </MudGrid>
 
