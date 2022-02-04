@@ -114,7 +114,24 @@
 
     @if (Services.ActiveAccountServices.ActiveCommentContext == this)
     {
-        <PublishCommentBoxComponent Services="@Services" ReplyToUserId="@comment.AccountId" ReplyToUsername="@comment.AccountUsername" PostId="@comment.PostId" CommentId="@comment.Id" />
+        var depth = 0;
+        var parentNode = item.Parent;
+        while (parentNode != null)
+        {
+            depth++;
+            parentNode = parentNode.Parent;
+        }
+
+        if (depth > ZExtensions.MaxCommentDepth)
+        {
+            <MudCardContent Class="@ClassPresets.CardContent">
+                <MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Center">Comment too deep.</MudAlert>
+            </MudCardContent>
+        }
+        else
+        {
+            <PublishCommentBoxComponent Services="@Services" ReplyToUserId="@comment.AccountId" ReplyToUsername="@comment.AccountUsername" PostId="@comment.PostId" CommentId="@comment.Id" />
+        }
     }
 </div>
 

@@ -17,6 +17,7 @@ public sealed class PostCommentTreeNode
     public bool ShowReactionIsLoading;
     public PostReactionViewModel[] ReactionData;
 
+    public PostCommentTreeNode Parent;
     public List<PostCommentTreeNode> Children = new();
 
     public PostCommentTreeNode(long postersAccountId, long postId, long commentId)

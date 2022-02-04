@@ -952,6 +952,21 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             return 0;
         }
 
+        {
+            var depth = -1;
+            var parentId = command.ParentCommentId;
+            while (parentId > 0 && allComments.TryGetValue(parentId, out var temp))
+            {
+                depth++;
+                parentId = temp.ParentId;
+            }
+
+            if (depth > ZExtensions.MaxCommentDepth)
+            {
+                return 0;
+            }
+        }
+
         var usersThatCanBeTagged = new Dictionary<long, string>(activeAccount.GetUserTagList());
         if (parentComment != null)
         {

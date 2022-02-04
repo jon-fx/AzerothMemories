@@ -94,6 +94,8 @@ public sealed class PostPageViewModelHelper
             {
                 if (_allCommentTreeNodes.TryGetValue(comment.Value.ParentId, out var parentNode))
                 {
+                    treeNode.Parent = parentNode;
+
                     if (parentNode.Children.Contains(treeNode))
                     {
                     }
@@ -133,11 +135,11 @@ public sealed class PostPageViewModelHelper
 
         if (currentPage == 0 && _focusedNode != null)
         {
-            var parentId = _focusedNode.ParentId;
-            while (parentId != 0 && _allCommentTreeNodes.TryGetValue(parentId, out var parentNode))
+            var parentNode = _focusedNode.Parent;
+            while (parentNode != null)
             {
                 parentNode.ShowChildren = true;
-                parentId = parentNode.ParentId;
+                parentNode = parentNode.Parent;
             }
 
             _scrollToFocus = true;

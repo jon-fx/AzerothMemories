@@ -6,6 +6,7 @@ public static class ZExtensions
 {
     public static string BlobStoragePath = "https://moastorage.blob.core.windows.net/moaimages/";
 
+    public static int MaxCommentDepth = 5;
     public static int MaxPostCommentLength = 2048;
     public static int MaxCommentLength = 2048;
     public static int ReportPostCommentMaxLength = 200;
