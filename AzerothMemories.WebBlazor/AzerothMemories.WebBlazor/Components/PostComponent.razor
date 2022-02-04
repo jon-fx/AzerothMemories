@@ -14,6 +14,11 @@ else if (Post.DeletedTimeStamp != 0)
 }
 else
 {
+    var isSmall = true;
+    <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+        @{ isSmall = false; } 
+    </MudHidden>
+
     <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
         <MudCardHeader Class="@ClassPresets.CardHeader">
             <CardHeaderAvatar >
@@ -27,10 +32,18 @@ else
                 <a href="@($"/account/{Post.AccountId}")" tabindex="-1">
                     <MudText Typo="Typo.body1">@Post.AccountUsername</MudText>
                 </a>
-                <div class="d-flex justify-space-between">
-                    <MudText Typo="Typo.body2" Inline="true">@Services.TimeProvider.GetTimeAsLocalStringAgo(Post.PostTime, true)</MudText>
-                    <MudText Typo="Typo.body2" Inline="true">@Services.TimeProvider.GetTimeAsLocalStringAgo(Post.PostCreatedTime, true)</MudText>
-                </div>
+                
+                @{
+                    var divClass = "d-flex justify-space-between";
+                    if (isSmall)
+                    {
+                        divClass = "";
+                    }
+                    <div class="@divClass">
+                        <MudText Typo="Typo.body2" Inline="!isSmall">@Services.TimeProvider.GetTimeAsLocalStringAgo(Post.PostTime, true)</MudText>
+                        <MudText Typo="Typo.body2" Inline="!isSmall">@Services.TimeProvider.GetTimeAsLocalStringAgo(Post.PostCreatedTime, true)</MudText>
+                    </div>
+                }
             </CardHeaderContent>
             <CardHeaderActions>
                 <MudMenu Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Dense="true">
@@ -153,7 +166,7 @@ else
                     <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction6)">@PostReaction.Reaction6.Humanize()</MudMenuItem>
                 </MudMenu>
                 <MudButton StartIcon="@Icons.Material.Filled.Comment" Disabled="@IsDisabled" OnClick="OnCommentButtonClicked">Comments</MudButton>
-                <MudButton StartIcon="@Icons.Material.Filled.Share" Disabled="@(IsDisabled ||  _isChangingTags)" OnClick="() => _showTagMenu = !_showTagMenu">Restore Memory</MudButton>
+                <MudButton StartIcon="@Icons.Material.Filled.Share" Disabled="@(IsDisabled ||  _isChangingTags)" OnClick="() => _showTagMenu = !_showTagMenu">@(isSmall ? "Restore" : "Restore Memory")</MudButton>
             </MudButtonGroup>
         </MudCardActions>
     </MudCard>

@@ -7,7 +7,7 @@ using Stl.Fusion.Server.Controllers;
 using System.Net.Http.Headers;
 using System.Text;
 
-var config = new CommonConfig(true);
+var config = new CommonConfig(false);
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddLogging(logging =>

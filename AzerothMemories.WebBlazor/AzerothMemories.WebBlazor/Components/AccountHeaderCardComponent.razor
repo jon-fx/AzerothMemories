@@ -4,6 +4,11 @@
 }
 else
 {
+    var isSmall = true;
+    <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+        @{ isSmall = false; } 
+    </MudHidden>
+    
     <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
         <MudCardHeader Class="@ClassPresets.CardHeader">
             <CardHeaderAvatar>
@@ -73,7 +78,7 @@ else
         <MudDivider />
 
         <MudCardActions Class="@ClassPresets.CardActions">
-            <MudButtonGroup OverrideStyles="true" Class="pa-0 ma-2" Variant="Variant.Filled">
+            <MudButtonGroup OverrideStyles="true" Class="pa-0 ma-2 " Variant="Variant.Filled"  VerticalAlign="isSmall">
 
                 <a href="@($"/follow/{AccountViewModel.Id}")">
                     <MudButton>
