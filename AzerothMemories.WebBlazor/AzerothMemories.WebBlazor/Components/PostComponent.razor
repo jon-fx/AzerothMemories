@@ -166,11 +166,14 @@ else
             </MudButtonGroup>
         </MudCardActions>
 
-        <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
-            <MudCardActions Class="@ClassPresets.CardActions">
-                <MudButton StartIcon="@Icons.Material.Filled.Share" FullWidth=true Variant="Variant.Filled" Size="Size.Small" Disabled="@(IsDisabled || _isChangingTags)" OnClick="() => _showTagMenu = !_showTagMenu">Restore Memory</MudButton>
-            </MudCardActions>
-        </MudHidden>
+        @if (Services.ActiveAccountServices.IsAccountActiveAndCanInteract)
+        {
+            <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
+                <MudCardActions Class="@ClassPresets.CardActions">
+                    <MudButton StartIcon="@Icons.Material.Filled.Share" FullWidth=true Variant="Variant.Filled" Size="Size.Small" Disabled="@(IsDisabled || _isChangingTags)" OnClick="() => _showTagMenu = !_showTagMenu">Restore Memory</MudButton>
+                </MudCardActions>
+            </MudHidden>
+        }
     </MudCard>
 
     @if (DoseNotHavePermission)
