@@ -7,7 +7,12 @@ using Stl.Fusion.Server.Controllers;
 using System.Net.Http.Headers;
 using System.Text;
 
-var config = new CommonConfig(false);
+var azure = true;
+#if DEBUG
+azure = false;
+#endif
+
+var config = new CommonConfig(azure);
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddLogging(logging =>

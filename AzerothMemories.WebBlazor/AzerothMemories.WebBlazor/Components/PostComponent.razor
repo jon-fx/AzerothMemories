@@ -14,14 +14,9 @@ else if (Post.DeletedTimeStamp != 0)
 }
 else
 {
-    var isSmall = true;
-    <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
-        @{ isSmall = false; } 
-    </MudHidden>
-
     <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
         <MudCardHeader Class="@ClassPresets.CardHeader">
-            <CardHeaderAvatar >
+            <CardHeaderAvatar>
                 <MudAvatar Size="Size.Medium" Image="@Post.AccountAvatar">@Post.AccountUsername[0]</MudAvatar>
                 @if (!string.IsNullOrWhiteSpace(Post.PostAvatar))
                 {
@@ -32,18 +27,17 @@ else
                 <a href="@($"/account/{Post.AccountId}")" tabindex="-1">
                     <MudText Typo="Typo.body1">@Post.AccountUsername</MudText>
                 </a>
-                
-                @{
-                    var divClass = "d-flex justify-space-between";
-                    if (isSmall)
-                    {
-                        divClass = "";
-                    }
-                    <div class="@divClass">
-                        <MudText Typo="Typo.body2" Inline="!isSmall">@Services.TimeProvider.GetTimeAsLocalStringAgo(Post.PostTime, true)</MudText>
-                        <MudText Typo="Typo.body2" Inline="!isSmall">@Services.TimeProvider.GetTimeAsLocalStringAgo(Post.PostCreatedTime, true)</MudText>
+
+                <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+                    <div class="d-flex justify-space-between">
+                        <MudText Typo="Typo.body2" Inline="true">@Services.TimeProvider.GetTimeAsLocalStringAgo(Post.PostTime, true)</MudText>
+                        <MudText Typo="Typo.body2" Inline="true">@Services.TimeProvider.GetTimeAsLocalStringAgo(Post.PostCreatedTime, true)</MudText>
                     </div>
-                }
+                </MudHidden>
+                <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
+                    <MudText Typo="Typo.body2" Inline="false">@Services.TimeProvider.GetTimeAsLocalStringAgo(Post.PostTime, true)</MudText>
+                    <MudText Typo="Typo.body2" Inline="false">@Services.TimeProvider.GetTimeAsLocalStringAgo(Post.PostCreatedTime, true)</MudText>
+                </MudHidden>
             </CardHeaderContent>
             <CardHeaderActions>
                 <MudMenu Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Dense="true">
@@ -54,7 +48,7 @@ else
                         </MudTooltip>
                     </MudMenuItem>
 
-                    @if (Services.ActiveAccountServices.IsActiveAccount(Post.AccountId ) || Services.ActiveAccountServices.IsAdmin)
+                    @if (Services.ActiveAccountServices.IsActiveAccount(Post.AccountId) || Services.ActiveAccountServices.IsAdmin)
                     {
                         <MudMenuItem OnClick="@OnTogglePostVisibility">
                             <MudTooltip Text="Toggle Visibility" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
@@ -94,7 +88,7 @@ else
         </MudCardHeader>
 
         <MudDivider />
-        
+
         <MudCardContent Class="@ClassPresets.CardContent">
             @if (DoseNotHavePermission)
             {
@@ -109,12 +103,12 @@ else
 
                 var allBlobInfo = Post.GetImageBlobInfo();
                 <div>
-                    @for (var i = 0; i < allBlobInfo.Length; i++ )
+                    @for (var i = 0; i < allBlobInfo.Length; i++)
                     {
                         var index = i;
                         var blobInfo = allBlobInfo[index];
 
-                        <MudElement HtmlTag="img" Class="img-fluid;" Style="width: 100%; height: auto; object-fit: cover;" src="@blobInfo.Source" @onclick="() => OnImageClicked(index)"/>
+                        <MudElement HtmlTag="img" Class="img-fluid;" Style="width: 100%; height: auto; object-fit: cover;" src="@blobInfo.Source" @onclick="() => OnImageClicked(index)" />
                     }
                 </div>
 
@@ -166,7 +160,12 @@ else
                     <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction6)">@PostReaction.Reaction6.Humanize()</MudMenuItem>
                 </MudMenu>
                 <MudButton StartIcon="@Icons.Material.Filled.Comment" Disabled="@IsDisabled" OnClick="OnCommentButtonClicked">Comments</MudButton>
-                <MudButton StartIcon="@Icons.Material.Filled.Share" Disabled="@(IsDisabled ||  _isChangingTags)" OnClick="() => _showTagMenu = !_showTagMenu">@(isSmall ? "Restore" : "Restore Memory")</MudButton>
+                <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+                    <MudButton StartIcon="@Icons.Material.Filled.Share" Disabled="@(IsDisabled || _isChangingTags)" OnClick="() => _showTagMenu = !_showTagMenu">Restore Memory</MudButton>
+                </MudHidden>
+                <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
+                    <MudButton StartIcon="@Icons.Material.Filled.Share" Disabled="@(IsDisabled || _isChangingTags)" OnClick="() => _showTagMenu = !_showTagMenu">Restore</MudButton>
+                </MudHidden>
             </MudButtonGroup>
         </MudCardActions>
     </MudCard>
@@ -233,7 +232,7 @@ else
                                 {
                                     var index = i;
                                     var character = characters[index];
-                 
+
                                     <MudTooltip @key="@character.Id" Placement="Placement.Bottom" Color="Color.Dark">
                                         <ChildContent>
                                             <MudButton Id="@index" Variant="Variant.Filled" Disabled="taggedCharacter != null && taggedCharacter.Id == character.Id" OnClick="() => OnRestoreButtonClicked(taggedCharacter, character)">
@@ -301,7 +300,7 @@ else
     [Parameter] public bool InDialog { get; init; }
 
     [Parameter] public EventCallback<PostTagInfo> OnTagChipClickedCallback { get; init; }
-    
+
     [Inject] public IJSRuntime JsRuntime { get; init; }
 
     public bool DoseNotHavePermission => Post.PostVisibility == 255;
@@ -346,7 +345,7 @@ else
         _userReacting = true;
 
         var postId = Post.Id;
-        
+
         var result = await Services.CommandRunner.Run(new Post_TryReactToPost(Services.Session, postId, newReaction));
         if (result.Result > 0)
         {
@@ -482,7 +481,7 @@ else
         {
             return;
         }
-        
-        await JsRuntime.InvokeVoidAsync("InitiallizeImageViewer",  index, Post.GetImageBlobInfo());
+
+        await JsRuntime.InvokeVoidAsync("InitiallizeImageViewer", index, Post.GetImageBlobInfo());
     }
 }

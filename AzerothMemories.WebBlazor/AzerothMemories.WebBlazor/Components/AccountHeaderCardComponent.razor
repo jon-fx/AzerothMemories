@@ -1,14 +1,8 @@
 ﻿@if (AccountViewModel == null)
 {
-
 }
 else
 {
-    var isSmall = true;
-    <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
-        @{ isSmall = false; } 
-    </MudHidden>
-    
     <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
         <MudCardHeader Class="@ClassPresets.CardHeader">
             <CardHeaderAvatar>
@@ -33,7 +27,6 @@ else
                     var discord = AccountViewModel.SocialLinks[(int)SocialLinks.Discord];
                     if (string.IsNullOrWhiteSpace(discord))
                     {
-
                     }
                     else
                     {
@@ -60,7 +53,7 @@ else
                     }
 
                     var fullLink = $"{socialHelper.LinkPrefix}{suffix}";
-  
+
                     <a href="@fullLink">
                         <MudAvatar Class="ma-1" Style="background-color: transparent" Size="Size.Small" Square="true" Image="@socialHelper.SocialIconLink" />
                     </a>
@@ -78,30 +71,60 @@ else
         <MudDivider />
 
         <MudCardActions Class="@ClassPresets.CardActions">
-            <MudButtonGroup OverrideStyles="true" Class="pa-0 ma-2 " Variant="Variant.Filled"  VerticalAlign="isSmall">
 
-                <a href="@($"/follow/{AccountViewModel.Id}")">
-                    <MudButton>
-                        <MudText Inline="true"><b>@_followingCount</b> Following</MudText>
-                    </MudButton>
-                </a>
-                <a href="@($"/follow/{AccountViewModel.Id}")">
-                    <MudButton>
-                        <MudText Inline="true"><b>@_followerCount</b> Followers</MudText>
-                    </MudButton>
-                </a>
+            <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+                <MudButtonGroup OverrideStyles="true" Class="pa-0 ma-2 " Variant="Variant.Filled" VerticalAlign="false">
 
-                @{
-                    var accountViewModel = Services.ActiveAccountServices.AccountViewModel;
-                    if (accountViewModel != null)
-                    {
-                        accountViewModel.FollowingViewModels.TryGetValue(AccountViewModel.Id, out var followingViewModel);
-                        accountViewModel.FollowersViewModels.TryGetValue(AccountViewModel.Id, out var followerViewModel);
+                    <a href="@($"/follow/{AccountViewModel.Id}")">
+                        <MudButton>
+                            <MudText Inline="true"><b>@_followingCount</b> Following</MudText>
+                        </MudButton>
+                    </a>
+                    <a href="@($"/follow/{AccountViewModel.Id}")">
+                        <MudButton>
+                            <MudText Inline="true"><b>@_followerCount</b> Followers</MudText>
+                        </MudButton>
+                    </a>
 
-                        <AccountFollowingComponent Services="@Services" ActiveAccountViewModel="@accountViewModel" OtherAccountId="@AccountViewModel.Id" FollowingViewModel="@followingViewModel" FollowerViewModel="@followerViewModel" />
+                    @{
+                        var accountViewModel = Services.ActiveAccountServices.AccountViewModel;
+                        if (accountViewModel != null)
+                        {
+                            accountViewModel.FollowingViewModels.TryGetValue(AccountViewModel.Id, out var followingViewModel);
+                            accountViewModel.FollowersViewModels.TryGetValue(AccountViewModel.Id, out var followerViewModel);
+
+                            <AccountFollowingComponent Services="@Services" ActiveAccountViewModel="@accountViewModel" OtherAccountId="@AccountViewModel.Id" FollowingViewModel="@followingViewModel" FollowerViewModel="@followerViewModel" />
+                        }
                     }
-                }
-            </MudButtonGroup>
+                </MudButtonGroup>
+            </MudHidden>
+            <MudHidden Breakpoint="Breakpoint.SmAndUp">
+                <MudButtonGroup OverrideStyles="true" Class="pa-0 ma-2 " Variant="Variant.Filled" VerticalAlign="true">
+                    <a href="@($"/follow/{AccountViewModel.Id}")">
+                        <MudButton>
+                            <MudText Inline="true"><b>@_followingCount</b> Following</MudText>
+                        </MudButton>
+                    </a>
+                    <a href="@($"/follow/{AccountViewModel.Id}")">
+                        <MudButton>
+                            <MudText Inline="true"><b>@_followerCount</b> Followers</MudText>
+                        </MudButton>
+                    </a>
+
+                    @{
+                        var accountViewModel = Services.ActiveAccountServices.AccountViewModel;
+                        if (accountViewModel != null)
+                        {
+                            accountViewModel.FollowingViewModels.TryGetValue(AccountViewModel.Id, out var followingViewModel);
+                            accountViewModel.FollowersViewModels.TryGetValue(AccountViewModel.Id, out var followerViewModel);
+
+                            <AccountFollowingComponent Services="@Services" ActiveAccountViewModel="@accountViewModel" OtherAccountId="@AccountViewModel.Id" FollowingViewModel="@followingViewModel" FollowerViewModel="@followerViewModel" />
+                        }
+                    }
+                </MudButtonGroup>
+            </MudHidden>
+
+
         </MudCardActions>
     </MudCard>
 
@@ -113,7 +136,6 @@ else
                 @foreach (var character in characters)
                 {
                     <CharacterLinkButton @key="character" StringLocalizer="@Services.StringLocalizer" CharacterViewModel="@character" />
-
                 }
             </MudCardContent>
         </MudCard>
@@ -127,7 +149,8 @@ else
     private int _followerCount;
     private int _followingCount;
 
-    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
+    [Parameter, EditorRequired]
+    public IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired]
     public AccountViewModel AccountViewModel
