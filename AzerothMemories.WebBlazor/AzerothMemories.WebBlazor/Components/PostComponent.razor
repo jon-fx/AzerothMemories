@@ -149,7 +149,7 @@ else
         </MudCardContent>
 
         <MudCardActions Class="@ClassPresets.CardActions">
-            <MudButtonGroup OverrideStyles="true" Class="pa-2 ma-2" Variant="Variant.Filled" Size="Size.Small">
+            <MudButtonGroup OverrideStyles="true" Class="pa-0 ma-2" Variant="Variant.Filled" Size="Size.Small">
                 <MudButton StartIcon="@Icons.Material.Filled.Favorite" IconColor="@(Post.Reaction == PostReaction.None ? Color.Default : Color.Secondary)" Disabled="@(IsDisabled || _userReacting)" OnClick="() => OnReactButtonClicked(Post.Reaction)">@Post.Reaction.Humanize()</MudButton>
                 <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Disabled="@(IsDisabled || _userReacting)" Direction="Direction.Bottom" OffsetY="true">
                     <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction1)">@PostReaction.Reaction1.Humanize()</MudMenuItem>
@@ -163,11 +163,14 @@ else
                 <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
                     <MudButton StartIcon="@Icons.Material.Filled.Share" Disabled="@(IsDisabled || _isChangingTags)" OnClick="() => _showTagMenu = !_showTagMenu">Restore Memory</MudButton>
                 </MudHidden>
-                <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
-                    <MudButton StartIcon="@Icons.Material.Filled.Share" Disabled="@(IsDisabled || _isChangingTags)" OnClick="() => _showTagMenu = !_showTagMenu">Restore</MudButton>
-                </MudHidden>
             </MudButtonGroup>
         </MudCardActions>
+
+        <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
+            <MudCardActions Class="@ClassPresets.CardActions">
+                <MudButton StartIcon="@Icons.Material.Filled.Share" FullWidth=true Variant="Variant.Filled" Size="Size.Small" Disabled="@(IsDisabled || _isChangingTags)" OnClick="() => _showTagMenu = !_showTagMenu">Restore Memory</MudButton>
+            </MudCardActions>
+        </MudHidden>
     </MudCard>
 
     @if (DoseNotHavePermission)
