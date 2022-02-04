@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebBlazor;
+﻿using Blazor.Analytics;
+
+namespace AzerothMemories.WebBlazor;
 
 public static class ProgramEx
 {
@@ -14,5 +16,7 @@ public static class ProgramEx
         services.AddScoped<ActiveAccountServices>();
 
         services.AddScoped<DialogHelperService>();
+
+        services.AddGoogleAnalytics("G-G4QYXHL15Y");
     }
 }
