@@ -108,7 +108,7 @@ else
                         var index = i;
                         var blobInfo = allBlobInfo[index];
 
-                        <MudElement HtmlTag="img" Class="img-fluid;" Style="width: 100%; height: auto; object-fit: cover;" src="@blobInfo.Source" @onclick="() => OnImageClicked(index)" />
+                        <MudImage ObjectFit="ObjectFit.Cover" Fluid="true" Src="@blobInfo.Source"  @onclick="() => OnImageClicked(index)" />
                     }
                 </div>
 

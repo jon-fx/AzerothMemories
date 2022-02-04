@@ -31,7 +31,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.1" PrivateAssets="all" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.2-mauipre.1.22054.8" />
         <PackageReference Include="Microsoft.Extensions.Localization" Version="6.0.1" />
-        <PackageReference Include="MudBlazor" Version="6.0.5" />
+        <PackageReference Include="MudBlazor" Version="6.0.6" />
         <PackageReference Include="NodaTime" Version="3.0.9" />
         <PackageReference Include="Stl.Fusion" Version="2.3.13" />
         <PackageReference Include="Stl.CommandR" Version="2.3.13" />
