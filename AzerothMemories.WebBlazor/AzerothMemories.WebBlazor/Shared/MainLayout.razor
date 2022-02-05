@@ -11,42 +11,48 @@
 <MudLayout>
     <MudAppBar Elevation="1">
         <MudIconButton Icon="@Icons.Material.Filled.HourglassBottom" Color="Color.Inherit" Edge="Edge.Start" />
-
+        
         <a href="">
             <MudText Typo="Typo.h6">Memories of Azeroth</MudText>
         </a>
 
         <MudSpacer />
-        <MainSearchBoxComponent />
+        
+        <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+            <MainSearchBoxComponent />
+        </MudHidden>
+
         <LoginDisplay />
     </MudAppBar>
 
-    <MudMainContent Class="ma-4">
-        <ErrorBoundary>
-            @{
-                var viewModel = _activeAccountServices.AccountViewModel;
-                if (viewModel != null && Instant.FromUnixTimeMilliseconds(viewModel.BanExpireTime) > SystemClock.Instance.GetCurrentInstant())
-                {
-                    <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
-                        <MudCardHeader Class="@ClassPresets.CardHeader">
-                            <CardHeaderContent>
-                                <MudAlert Severity="Severity.Error" Icon="false" ContentAlignment="HorizontalAlignment.Center">
+    <MudMainContent Class="ma-4">   
+        <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+            <ErrorBoundary>
+                @{
+                    var viewModel = _activeAccountServices.AccountViewModel;
+                    if (viewModel != null && Instant.FromUnixTimeMilliseconds(viewModel.BanExpireTime) > SystemClock.Instance.GetCurrentInstant())
+                    {
+                        <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
+                            <MudCardHeader Class="@ClassPresets.CardHeader">
+                                <CardHeaderContent>
+                                    <MudAlert Severity="Severity.Error" Icon="false" ContentAlignment="HorizontalAlignment.Center">
                                     
-                                    <MudText Typo="Typo.h6" Align="Align.Center">Account Banned</MudText>
-                                    <MudText Typo="Typo.h6" Align="Align.Center">@viewModel.BanReason</MudText>
-                                    <MudText Typo="Typo.h6" Align="Align.Center">@_timeProvider.GetTimeAsLocalStringAgo(Instant.FromUnixTimeMilliseconds(viewModel.BanExpireTime), false)</MudText>
+                                        <MudText Typo="Typo.h6" Align="Align.Center">Account Banned</MudText>
+                                        <MudText Typo="Typo.h6" Align="Align.Center">@viewModel.BanReason</MudText>
+                                        <MudText Typo="Typo.h6" Align="Align.Center">@_timeProvider.GetTimeAsLocalStringAgo(Instant.FromUnixTimeMilliseconds(viewModel.BanExpireTime), false)</MudText>
 
-                                </MudAlert>
-                            </CardHeaderContent>
-                        </MudCardHeader>
-                    </MudCard>
+                                    </MudAlert>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                        </MudCard>
+                    }
+                    else
+                    {
+                        @Body
+                    }
                 }
-                else
-                {
-                    @Body
-                }
-            }
-        </ErrorBoundary>
+            </ErrorBoundary>
+        </MudContainer>
     </MudMainContent>
 
     <MainFooter>
