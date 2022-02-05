@@ -10,6 +10,7 @@ public static class ZExtensions
     public static int MaxPostCommentLength = 2048;
     public static int MaxCommentLength = 2048;
     public static int ReportPostCommentMaxLength = 200;
+    public static int MaxPostScreenShots = 5;
 
     public static readonly (int Min, int Max)[] TagCountsPerPost;
     public static readonly Instant MinPostTime = Instant.FromUnixTimeMilliseconds(946684800000);

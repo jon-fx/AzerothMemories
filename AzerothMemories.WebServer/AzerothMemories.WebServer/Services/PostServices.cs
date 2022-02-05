@@ -350,7 +350,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
 
     private async Task<AddMemoryResultCode> UploadAndSortImages(AccountViewModel accountViewModel, PostRecord postRecord, List<byte[]> imageDataList)
     {
-        if (imageDataList.Count > 10)
+        if (imageDataList.Count > ZExtensions.MaxPostScreenShots)
         {
             return AddMemoryResultCode.UploadFailed;
         }
