@@ -13,8 +13,6 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
 
     protected TViewModel ViewModel { get; }
 
-    [Inject] public Session Session { get; init; }
-
     [Inject] public ComputeServices ComputeServices { get; init; }
 
     [Inject] public ActiveAccountServices ActiveAccountServices { get; init; }

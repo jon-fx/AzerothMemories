@@ -5,10 +5,12 @@ namespace AzerothMemories.WebServer.Controllers;
 public sealed class AccountController : ControllerBase, IAccountServices
 {
     private readonly CommonServices _commonServices;
+    private readonly ISessionResolver _sessionResolver;
 
-    public AccountController(CommonServices commonServices)
+    public AccountController(CommonServices commonServices, ISessionResolver sessionResolver)
     {
         _commonServices = commonServices;
+        _sessionResolver = sessionResolver;
     }
 
     [HttpGet, Publish]
@@ -44,30 +46,35 @@ public sealed class AccountController : ControllerBase, IAccountServices
     [HttpPost]
     public Task<bool> TryChangeUsername([FromBody] Account_TryChangeUsername command, CancellationToken cancellationToken)
     {
+        command.UseDefaultSession(_sessionResolver);
         return _commonServices.AccountServices.TryChangeUsername(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<bool> TryChangeIsPrivate([FromBody] Account_TryChangeIsPrivate command, CancellationToken cancellationToken = default)
     {
+        command.UseDefaultSession(_sessionResolver);
         return _commonServices.AccountServices.TryChangeIsPrivate(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<bool> TryChangeBattleTagVisibility([FromBody] Account_TryChangeBattleTagVisibility command, CancellationToken cancellationToken = default)
     {
+        command.UseDefaultSession(_sessionResolver);
         return _commonServices.AccountServices.TryChangeBattleTagVisibility(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<string> TryChangeAvatar([FromBody] Account_TryChangeAvatar command, CancellationToken cancellationToken = default)
     {
+        command.UseDefaultSession(_sessionResolver);
         return _commonServices.AccountServices.TryChangeAvatar(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<string> TryChangeSocialLink([FromBody] Account_TryChangeSocialLink command, CancellationToken cancellationToken = default)
     {
+        command.UseDefaultSession(_sessionResolver);
         return _commonServices.AccountServices.TryChangeSocialLink(command, cancellationToken);
     }
 

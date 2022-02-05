@@ -2,8 +2,6 @@
 
 public interface IMoaServices
 {
-    Session Session { get; }
-
     ComputeServices ComputeServices { get; }
 
     ActiveAccountServices ActiveAccountServices { get; }

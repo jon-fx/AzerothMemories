@@ -223,7 +223,7 @@ public sealed class AddMemoryComponentSharedData
             avatarTag = PostAvatarImages[SelectedPostAvatarImage].Tag.TagString;
         }
 
-        var result = await _viewModel.Services.CommandRunner.Run(new Post_TryUpdateSystemTags(_viewModel.Services.Session, currentPost.Id, avatarTag, newTags));
+        var result = await _viewModel.Services.CommandRunner.Run(new Post_TryUpdateSystemTags(null, currentPost.Id, avatarTag, newTags));
         return result.Result;
     }
 
