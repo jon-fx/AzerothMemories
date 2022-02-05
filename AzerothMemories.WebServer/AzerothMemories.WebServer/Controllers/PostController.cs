@@ -12,23 +12,17 @@ public sealed class PostController : ControllerBase, IPostServices
     }
 
     [HttpPost]
-    public async Task<string[]> TryUploadScreenShots(Session session)
+    public async Task<AddMemoryResult> TryPostMemory(Session session)
     {
         await using var memoryStream = new MemoryStream();
         await Request.Body.CopyToAsync(memoryStream);
 
-        return await _commonServices.PostServices.TryUploadScreenShots(session, memoryStream.GetBuffer());
+        return await _commonServices.PostServices.TryPostMemory(session, memoryStream.GetBuffer());
     }
 
-    public Task<string[]> TryUploadScreenShots(Session session, byte[] buffer)
+    public Task<AddMemoryResult> TryPostMemory(Session session, byte[] toArray)
     {
         throw new NotImplementedException();
-    }
-
-    [HttpPost]
-    public Task<AddMemoryResult> TryPostMemory([FromBody] Post_TryPostMemory command, CancellationToken cancellationToken = default)
-    {
-        return _commonServices.PostServices.TryPostMemory(command, cancellationToken);
     }
 
     [HttpGet("{accountId}/{postId}"), Publish]

@@ -115,4 +115,24 @@ public sealed class AccountViewModel
 
         return tagSet;
     }
+
+    public int GetUploadQuality()
+    {
+        var result = 80;
+        if (AccountType >= AccountType.Tier1)
+        {
+        }
+
+        if (AccountType >= AccountType.Tier2)
+        {
+            result = 85;
+        }
+
+        if (AccountType >= AccountType.Tier3)
+        {
+            result = 90;
+        }
+
+        return result;
+    }
 }

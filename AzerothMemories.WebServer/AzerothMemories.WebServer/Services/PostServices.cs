@@ -107,89 +107,6 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         return postRecord.CreatePostViewModel(posterAccount, canSeePost, reactionViewModel, postTagInfos);
     }
 
-    public async Task<string[]> TryUploadScreenShots(Session session, byte[] buffer)
-    {
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
-        if (activeAccount == null)
-        {
-            return Array.Empty<string>();
-        }
-
-        await using var stream = new MemoryStream(buffer);
-        using var binaryReader = new BinaryReader(stream);
-
-        var count = binaryReader.ReadInt32();
-        if (count > 10)
-        {
-            return Array.Empty<string>();
-        }
-
-        var results = new string[count];
-        for (var i = 0; i < results.Length; i++)
-        {
-            try
-            {
-                var bufferCount = binaryReader.ReadInt32();
-                if (bufferCount == -1)
-                {
-                    continue;
-                }
-
-                if (bufferCount == 0 || bufferCount > 1024 * 1024 * 10)
-                {
-                    break;
-                }
-
-                var imageBuffer = binaryReader.ReadBytes(bufferCount);
-                using var image = Image.Load(imageBuffer);
-                image.Metadata.ExifProfile = null;
-
-                var encoder = new JpegEncoder
-                {
-                    Quality = 80,
-                };
-
-                if (activeAccount.AccountType >= AccountType.Tier1)
-                {
-                }
-
-                if (activeAccount.AccountType >= AccountType.Tier2)
-                {
-                    encoder.Quality = 85;
-                }
-
-                if (activeAccount.AccountType >= AccountType.Tier3)
-                {
-                    encoder.Quality = 90;
-                }
-
-                await using var memoryStream = new MemoryStream();
-                await image.SaveAsJpegAsync(memoryStream, encoder);
-                memoryStream.Position = 0;
-
-                var blobName = $"{activeAccount.Id}-{Guid.NewGuid()}.jpg";
-                var blobClient = new BlobClient(_commonServices.Config.BlobStorageConnectionString, "moaimages", blobName);
-                var result = await blobClient.UploadAsync(memoryStream);
-                if (result.Value == null)
-                {
-                    return null;
-                }
-
-                //var buffer = memoryStream.ToArray();
-                ////var hashData = MD5.HashData(buffer);
-                //var hashString = GetHashString(hashData);
-
-                results[i] = blobName;
-            }
-            catch (Exception)
-            {
-                break;
-            }
-        }
-
-        return results;
-    }
-
     [CommandHandler]
     public virtual async Task<AddMemoryResult> TryPostMemory(Post_TryPostMemory command, CancellationToken cancellationToken = default)
     {
@@ -283,30 +200,13 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             return new AddMemoryResult(AddMemoryResultCode.TooManyTags);
         }
 
-        var imageNameBuilder = new StringBuilder();
-        foreach (var blobName in command.BlobNames)
+        var uploadAndSortResult = await UploadAndSortImages(activeAccount, postRecord, command.ImageData);
+        if (uploadAndSortResult != AddMemoryResultCode.Success)
         {
-            var split = blobName.Split('-');
-            if (split.Length == 0)
-            {
-                return new AddMemoryResult(AddMemoryResultCode.UploadFailed);
-            }
-
-            if (!long.TryParse(split[0], out var blobAccountId))
-            {
-                return new AddMemoryResult(AddMemoryResultCode.UploadFailed);
-            }
-
-            if (activeAccount.Id != blobAccountId)
-            {
-                return new AddMemoryResult(AddMemoryResultCode.UploadFailed);
-            }
-
-            imageNameBuilder.Append(blobName);
-            imageNameBuilder.Append('|');
+            return new AddMemoryResult(uploadAndSortResult);
         }
 
-        postRecord.BlobNames = imageNameBuilder.ToString().TrimEnd('|');
+        command.ImageData.Clear();
 
         await using var database = await CreateCommandDbContext(cancellationToken);
 
@@ -397,16 +297,122 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         return AddMemoryResultCode.Success;
     }
 
-    //private string GetHashString(byte[] hashData)
-    //{
-    //    var output = new StringBuilder(hashData.Length);
-    //    foreach (var b in hashData)
-    //    {
-    //        output.Append(b.ToString("X2"));
-    //    }
+    private async Task<AddMemoryResultCode> UploadAndSortImages(AccountViewModel accountViewModel, PostRecord postRecord, List<byte[]> imageDataList)
+    {
+        if (imageDataList.Count > 10)
+        {
+            return AddMemoryResultCode.UploadFailed;
+        }
 
-    //    return output.ToString();
-    //}
+        var dataToUpload = new BinaryData[imageDataList.Count];
+        for (var i = 0; i < imageDataList.Count; i++)
+        {
+            try
+            {
+                var buffer = imageDataList[i];
+                var bufferCount = buffer.Length;
+                if (bufferCount == 0 || bufferCount > 1024 * 1024 * 10)
+                {
+                    break;
+                }
+
+                using var image = Image.Load(buffer);
+                image.Metadata.ExifProfile = null;
+
+                var encoder = new JpegEncoder
+                {
+                    Quality = accountViewModel.GetUploadQuality(),
+                };
+
+                await using var memoryStream = new MemoryStream();
+                await image.SaveAsJpegAsync(memoryStream, encoder);
+                memoryStream.Position = 0;
+
+                dataToUpload[i] = new BinaryData(memoryStream.ToArray());
+            }
+            catch (Exception)
+            {
+                return AddMemoryResultCode.UploadFailed;
+            }
+        }
+
+        try
+        {
+            var imageNameBuilder = new StringBuilder();
+            foreach (var memoryStream in dataToUpload)
+            {
+                var blobName = $"{accountViewModel.Id}-{Guid.NewGuid()}.jpg";
+                var blobClient = new BlobClient(_commonServices.Config.BlobStorageConnectionString, "moaimages", blobName);
+                var result = await blobClient.UploadAsync(memoryStream);
+                if (result.Value == null)
+                {
+                    return AddMemoryResultCode.UploadFailed;
+                }
+
+                imageNameBuilder.Append(blobName);
+                imageNameBuilder.Append('|');
+            }
+
+            postRecord.BlobNames = imageNameBuilder.ToString().TrimEnd('|');
+
+            return AddMemoryResultCode.Success;
+        }
+        catch (Exception)
+        {
+            return AddMemoryResultCode.UploadFailed;
+        }
+    }
+
+    public Task<AddMemoryResult> TryPostMemory(Session session, byte[] buffer)
+    {
+        try
+        {
+            using var memoryStream = new MemoryStream(buffer);
+            using var binaryReader = new BinaryReader(memoryStream);
+
+            var timeStamp = binaryReader.ReadInt64();
+            var avatarTag = binaryReader.ReadString();
+            var isPrivate = binaryReader.ReadBoolean();
+            var comment = binaryReader.ReadString();
+            var tagCount = binaryReader.ReadInt32();
+            var systemTags = new HashSet<string>();
+            for (var i = 0; i < tagCount; i++)
+            {
+                systemTags.Add(binaryReader.ReadString());
+            }
+
+            var imageDataCount = binaryReader.ReadInt32();
+            var imageData = new List<byte[]>(imageDataCount);
+            for (var i = 0; i < imageDataCount; i++)
+            {
+                var byteCount = binaryReader.ReadInt32();
+                var imageBuffer = binaryReader.ReadBytes(byteCount);
+                imageData.Add(imageBuffer);
+            }
+
+            if (string.IsNullOrWhiteSpace(avatarTag))
+            {
+                avatarTag = null;
+            }
+
+            var command = new Post_TryPostMemory
+            {
+                Session = session,
+                TimeStamp = timeStamp,
+                AvatarTag = avatarTag,
+                IsPrivate = isPrivate,
+                Comment = comment,
+                SystemTags = systemTags,
+                ImageData = imageData,
+            };
+
+            return TryPostMemory(command);
+        }
+        catch (Exception)
+        {
+            return Task.FromResult(new AddMemoryResult(AddMemoryResultCode.Failed));
+        }
+    }
 
     [ComputeMethod]
     public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postAccountId, long postId, string locale)
@@ -1900,59 +1906,59 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         switch (reaction)
         {
             case PostReaction.None:
-                {
-                    //return query;
-                    break;
-                }
+            {
+                //return query;
+                break;
+            }
             case PostReaction.Reaction1:
-                {
-                    await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount1 = r.ReactionCount1 + change });
-                    break;
-                }
+            {
+                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount1 = r.ReactionCount1 + change });
+                break;
+            }
             case PostReaction.Reaction2:
-                {
-                    await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount2 = r.ReactionCount2 + change });
-                    break;
-                }
+            {
+                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount2 = r.ReactionCount2 + change });
+                break;
+            }
             case PostReaction.Reaction3:
-                {
-                    await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount3 = r.ReactionCount3 + change });
-                    break;
-                }
+            {
+                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount3 = r.ReactionCount3 + change });
+                break;
+            }
             case PostReaction.Reaction4:
-                {
-                    await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount4 = r.ReactionCount4 + change });
-                    break;
-                }
+            {
+                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount4 = r.ReactionCount4 + change });
+                break;
+            }
             case PostReaction.Reaction5:
-                {
-                    await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount5 = r.ReactionCount5 + change });
-                    break;
-                }
+            {
+                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount5 = r.ReactionCount5 + change });
+                break;
+            }
             case PostReaction.Reaction6:
-                {
-                    await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount6 = r.ReactionCount6 + change });
-                    break;
-                }
+            {
+                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount6 = r.ReactionCount6 + change });
+                break;
+            }
             case PostReaction.Reaction7:
-                {
-                    await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount7 = r.ReactionCount7 + change });
-                    break;
-                }
+            {
+                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount7 = r.ReactionCount7 + change });
+                break;
+            }
             case PostReaction.Reaction8:
-                {
-                    await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount8 = r.ReactionCount8 + change });
-                    break;
-                }
+            {
+                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount8 = r.ReactionCount8 + change });
+                break;
+            }
             case PostReaction.Reaction9:
-                {
-                    await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount9 = r.ReactionCount9 + change });
-                    break;
-                }
+            {
+                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount9 = r.ReactionCount9 + change });
+                break;
+            }
             default:
-                {
-                    throw new ArgumentOutOfRangeException();
-                }
+            {
+                throw new ArgumentOutOfRangeException();
+            }
         }
 
         if (modifyTotal)
@@ -1966,59 +1972,59 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         switch (reaction)
         {
             case PostReaction.None:
-                {
-                    //return query;
-                    break;
-                }
+            {
+                //return query;
+                break;
+            }
             case PostReaction.Reaction1:
-                {
-                    await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount1 = r.ReactionCount1 + change });
-                    break;
-                }
+            {
+                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount1 = r.ReactionCount1 + change });
+                break;
+            }
             case PostReaction.Reaction2:
-                {
-                    await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount2 = r.ReactionCount2 + change });
-                    break;
-                }
+            {
+                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount2 = r.ReactionCount2 + change });
+                break;
+            }
             case PostReaction.Reaction3:
-                {
-                    await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount3 = r.ReactionCount3 + change });
-                    break;
-                }
+            {
+                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount3 = r.ReactionCount3 + change });
+                break;
+            }
             case PostReaction.Reaction4:
-                {
-                    await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount4 = r.ReactionCount4 + change });
-                    break;
-                }
+            {
+                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount4 = r.ReactionCount4 + change });
+                break;
+            }
             case PostReaction.Reaction5:
-                {
-                    await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount5 = r.ReactionCount5 + change });
-                    break;
-                }
+            {
+                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount5 = r.ReactionCount5 + change });
+                break;
+            }
             case PostReaction.Reaction6:
-                {
-                    await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount6 = r.ReactionCount6 + change });
-                    break;
-                }
+            {
+                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount6 = r.ReactionCount6 + change });
+                break;
+            }
             case PostReaction.Reaction7:
-                {
-                    await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount7 = r.ReactionCount7 + change });
-                    break;
-                }
+            {
+                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount7 = r.ReactionCount7 + change });
+                break;
+            }
             case PostReaction.Reaction8:
-                {
-                    await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount8 = r.ReactionCount8 + change });
-                    break;
-                }
+            {
+                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount8 = r.ReactionCount8 + change });
+                break;
+            }
             case PostReaction.Reaction9:
-                {
-                    await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount9 = r.ReactionCount9 + change });
-                    break;
-                }
+            {
+                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount9 = r.ReactionCount9 + change });
+                break;
+            }
             default:
-                {
-                    throw new ArgumentOutOfRangeException();
-                }
+            {
+                throw new ArgumentOutOfRangeException();
+            }
         }
 
         if (modifyTotal)

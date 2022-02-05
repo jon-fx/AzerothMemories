@@ -7,5 +7,4 @@ public sealed class AddMemoryImageData
     public byte[] FileContent { get; set; }
     public byte[] EditedFileContent { get; set; }
     public string ContentType { get; init; }
-    public string BlobName { get; set; }
 }

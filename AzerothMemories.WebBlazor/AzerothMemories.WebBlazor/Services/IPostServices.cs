@@ -3,12 +3,8 @@
 [BasePath("post")]
 public interface IPostServices
 {
-    [Post(nameof(TryUploadScreenShots))]
-    Task<string[]> TryUploadScreenShots(Session session, [Body] byte[] buffer);
-
-    [CommandHandler]
     [Post(nameof(TryPostMemory))]
-    Task<AddMemoryResult> TryPostMemory([Body] Post_TryPostMemory command, CancellationToken cancellationToken = default);
+    Task<AddMemoryResult> TryPostMemory(Session session, [Body] byte[] toArray);
 
     [ComputeMethod]
     [Get(nameof(TryGetPostViewModel) + "/{accountId}/{postId}")]

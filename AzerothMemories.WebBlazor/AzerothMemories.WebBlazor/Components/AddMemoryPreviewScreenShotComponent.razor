@@ -85,9 +85,6 @@ else
     [JSInvokable]
     public Task UpdateImage(byte[] buffer)
     {
-        //_objReference?.Dispose();
-        //_objReference = null;
-
         UploadedImage.EditedFileContent = buffer;
 
         return Task.CompletedTask;

@@ -183,65 +183,34 @@ public sealed class AddMemoryComponentSharedData
             avatarTag = PostAvatarImages[SelectedPostAvatarImage].Tag.TagString;
         }
 
+        await using var memoryStream = new MemoryStream();
+        await using var binaryWriter = new BinaryWriter(memoryStream);
+        binaryWriter.Write(timeStamp.ToUnixTimeMilliseconds());
+        binaryWriter.Write(avatarTag ?? string.Empty);
+        binaryWriter.Write(PrivatePost);
+        binaryWriter.Write(finalText ?? string.Empty);
+
+        binaryWriter.Write(systemTags.Count);
+        foreach (var tag in systemTags)
+        {
+            binaryWriter.Write(tag);
+        }
+
+        binaryWriter.Write(uploadResults.Count);
         foreach (var uploadResult in uploadResults)
         {
             if (uploadResult.EditedFileContent != null)
             {
                 uploadResult.FileContent = uploadResult.EditedFileContent;
                 uploadResult.EditedFileContent = null;
-                uploadResult.BlobName = null;
             }
+
+            binaryWriter.Write(uploadResult.FileContent.Length);
+            binaryWriter.Write(uploadResult.FileContent);
         }
 
-        await using var memoryStream = new MemoryStream();
-        await using var binaryWriter = new BinaryWriter(memoryStream);
-        binaryWriter.Write(uploadResults.Count);
-
-        var requiresUpload = false;
-        foreach (var uploadResult in uploadResults)
-        {
-            if (string.IsNullOrWhiteSpace(uploadResult.BlobName))
-            {
-                requiresUpload = true;
-                binaryWriter.Write(uploadResult.FileContent.Length);
-                binaryWriter.Write(uploadResult.FileContent);
-            }
-            else
-            {
-                binaryWriter.Write(-1);
-            }
-        }
-
-        if (requiresUpload)
-        {
-            var serverUploadResult = await _viewModel.Services.ComputeServices.PostServices.TryUploadScreenShots(null, memoryStream.ToArray());
-            if (serverUploadResult.Length != uploadResults.Count)
-            {
-                return new AddMemoryResult(AddMemoryResultCode.UploadFailed);
-            }
-
-            for (var i = 0; i < uploadResults.Count; i++)
-            {
-                if (string.IsNullOrWhiteSpace(uploadResults[i].BlobName))
-                {
-                    uploadResults[i].BlobName = serverUploadResult[i];
-                }
-            }
-        }
-
-        var results = new List<string>();
-        foreach (var uploadResult in uploadResults)
-        {
-            if (string.IsNullOrWhiteSpace(uploadResult.BlobName))
-            {
-                return new AddMemoryResult(AddMemoryResultCode.UploadFailed);
-            }
-
-            results.Add(uploadResult.BlobName);
-        }
-
-        var result = await _viewModel.Services.CommandRunner.Run(new Post_TryPostMemory(_viewModel.Services.Session, timeStamp.ToUnixTimeMilliseconds(), avatarTag, PrivatePost, finalText, systemTags, results.ToArray()));
-        return result.Result;
+        var serverUploadResult = await _viewModel.Services.ComputeServices.PostServices.TryPostMemory(null, memoryStream.ToArray());
+        return serverUploadResult;
     }
 
     public async Task<AddMemoryResultCode> SubmitOnEditingPost(PostViewModel currentPost)
