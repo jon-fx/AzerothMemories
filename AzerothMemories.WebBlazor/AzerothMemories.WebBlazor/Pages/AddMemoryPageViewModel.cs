@@ -7,10 +7,10 @@ public sealed class AddMemoryPageViewModel : ViewModelBase
 {
     public AddMemoryPageViewModel()
     {
-        UploadedImages = new List<AddMemoryUploadResult>();
+        UploadedImages = new List<AddMemoryImageData>();
     }
 
-    public List<AddMemoryUploadResult> UploadedImages { get; }
+    public List<AddMemoryImageData> UploadedImages { get; }
 
     public bool MaxUploadReached => UploadedImages.Count > 3;
 
@@ -93,7 +93,7 @@ public sealed class AddMemoryPageViewModel : ViewModelBase
             screenShotUnixTime = file.LastModified.ToUnixTimeMilliseconds();
         }
 
-        var uploadResult = new AddMemoryUploadResult
+        var uploadResult = new AddMemoryImageData
         {
             FileName = file.Name,
             FileTimeStamp = screenShotUnixTime,

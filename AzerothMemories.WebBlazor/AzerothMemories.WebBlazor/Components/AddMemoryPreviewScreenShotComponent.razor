@@ -24,7 +24,7 @@ else
                 </MudTooltip>
 
                 <MudTooltip Text="Delete" Color="Color.Dark">
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Disabled="@(Index == 0)" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="DeleteImage" Disabled="@(Index == 0)"  />
                 </MudTooltip>
             </CardHeaderActions>
         </MudCardHeader>
@@ -40,7 +40,8 @@ else
 
     [Parameter, EditorRequired] public int Index { get; init; }
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
-    [Parameter, EditorRequired] public AddMemoryUploadResult UploadedImage { get; init; }
+    [Parameter, EditorRequired] public AddMemoryImageData UploadedImage { get; init; }
+    [Parameter, EditorRequired] public EventCallback<AddMemoryImageData> DeleteImageCallback{ get; init; }
 
     [Inject] public IJSRuntime JsRuntime { get; init; }
 
@@ -67,6 +68,11 @@ else
         UploadedImage.EditedFileContent = null;
 
         await JsRuntime.InvokeVoidAsync("SetImage", GetImageId, UploadedImage.ContentType, UploadedImage.FileContent);
+    }
+
+    private async Task DeleteImage()
+    {
+        await DeleteImageCallback.InvokeAsync(UploadedImage);
     }
 
     private async Task OnImageClicked()

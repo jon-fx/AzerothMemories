@@ -171,7 +171,7 @@ public sealed class AddMemoryComponentSharedData
         _viewModel.OnViewModelChanged?.Invoke();
     }
 
-    public async Task<AddMemoryResult> Submit(PublishCommentComponent commentComponent, List<AddMemoryUploadResult> uploadResults)
+    public async Task<AddMemoryResult> Submit(PublishCommentComponent commentComponent, List<AddMemoryImageData> uploadResults)
     {
         var timeStamp = PostTimeStamp;
         var finalText = commentComponent.GetCommentText();
@@ -188,10 +188,59 @@ public sealed class AddMemoryComponentSharedData
             if (uploadResult.EditedFileContent != null)
             {
                 uploadResult.FileContent = uploadResult.EditedFileContent;
+                uploadResult.EditedFileContent = null;
+                uploadResult.BlobName = null;
             }
         }
 
-        var result = await _viewModel.Services.CommandRunner.Run(new Post_TryPostMemory(_viewModel.Services.Session, timeStamp.ToUnixTimeMilliseconds(), avatarTag, PrivatePost, finalText, systemTags, uploadResults));
+        await using var memoryStream = new MemoryStream();
+        await using var binaryWriter = new BinaryWriter(memoryStream);
+        binaryWriter.Write(uploadResults.Count);
+
+        var requiresUpload = false;
+        foreach (var uploadResult in uploadResults)
+        {
+            if (string.IsNullOrWhiteSpace(uploadResult.BlobName))
+            {
+                requiresUpload = true;
+                binaryWriter.Write(uploadResult.FileContent.Length);
+                binaryWriter.Write(uploadResult.FileContent);
+            }
+            else
+            {
+                binaryWriter.Write(-1);
+            }
+        }
+
+        if (requiresUpload)
+        {
+            var serverUploadResult = await _viewModel.Services.ComputeServices.PostServices.TryUploadScreenShots(null, memoryStream.ToArray());
+            if (serverUploadResult.Length != uploadResults.Count)
+            {
+                return new AddMemoryResult(AddMemoryResultCode.UploadFailed);
+            }
+
+            for (var i = 0; i < uploadResults.Count; i++)
+            {
+                if (string.IsNullOrWhiteSpace(uploadResults[i].BlobName))
+                {
+                    uploadResults[i].BlobName = serverUploadResult[i];
+                }
+            }
+        }
+
+        var results = new List<string>();
+        foreach (var uploadResult in uploadResults)
+        {
+            if (string.IsNullOrWhiteSpace(uploadResult.BlobName))
+            {
+                return new AddMemoryResult(AddMemoryResultCode.UploadFailed);
+            }
+
+            results.Add(uploadResult.BlobName);
+        }
+
+        var result = await _viewModel.Services.CommandRunner.Run(new Post_TryPostMemory(_viewModel.Services.Session, timeStamp.ToUnixTimeMilliseconds(), avatarTag, PrivatePost, finalText, systemTags, results.ToArray()));
         return result.Result;
     }
 
