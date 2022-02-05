@@ -9,7 +9,7 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar Elevation="1">
+    <MudAppBar Elevation="25">
         <MudIconButton Icon="@Icons.Material.Filled.HourglassBottom" Color="Color.Inherit" Edge="Edge.Start" />
         
         <a href="">
@@ -18,14 +18,23 @@
 
         <MudSpacer />
         
-        <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+        <MudHidden Breakpoint="Breakpoint.Xs" Invert="false">
             <MainSearchBoxComponent />
         </MudHidden>
 
         <LoginDisplay />
     </MudAppBar>
 
-    <MudMainContent Class="ma-4">   
+    <MudMainContent>   
+        
+        <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+            <MudPaper Elevation="25">
+                <MudToolBar>
+                    <MainSearchBoxComponent/>
+                </MudToolBar>
+            </MudPaper>
+        </MudHidden>
+
         <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
             <ErrorBoundary>
                 @{
