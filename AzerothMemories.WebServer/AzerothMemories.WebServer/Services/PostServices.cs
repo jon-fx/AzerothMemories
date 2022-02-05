@@ -107,6 +107,57 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         return postRecord.CreatePostViewModel(posterAccount, canSeePost, reactionViewModel, postTagInfos);
     }
 
+    public Task<AddMemoryResult> TryPostMemory(Session session, byte[] buffer)
+    {
+        try
+        {
+            using var memoryStream = new MemoryStream(buffer);
+            using var binaryReader = new BinaryReader(memoryStream);
+
+            var timeStamp = binaryReader.ReadInt64();
+            var avatarTag = binaryReader.ReadString();
+            var isPrivate = binaryReader.ReadBoolean();
+            var comment = binaryReader.ReadString();
+            var tagCount = binaryReader.ReadInt32();
+            var systemTags = new HashSet<string>();
+            for (var i = 0; i < tagCount; i++)
+            {
+                systemTags.Add(binaryReader.ReadString());
+            }
+
+            var imageDataCount = binaryReader.ReadInt32();
+            var imageData = new List<byte[]>(imageDataCount);
+            for (var i = 0; i < imageDataCount; i++)
+            {
+                var byteCount = binaryReader.ReadInt32();
+                var imageBuffer = binaryReader.ReadBytes(byteCount);
+                imageData.Add(imageBuffer);
+            }
+
+            if (string.IsNullOrWhiteSpace(avatarTag))
+            {
+                avatarTag = null;
+            }
+
+            var command = new Post_TryPostMemory
+            {
+                Session = session,
+                TimeStamp = timeStamp,
+                AvatarTag = avatarTag,
+                IsPrivate = isPrivate,
+                Comment = comment,
+                SystemTags = systemTags,
+                ImageData = imageData,
+            };
+
+            return TryPostMemory(command);
+        }
+        catch (Exception)
+        {
+            return Task.FromResult(new AddMemoryResult(AddMemoryResultCode.Failed));
+        }
+    }
+
     [CommandHandler]
     public virtual async Task<AddMemoryResult> TryPostMemory(Post_TryPostMemory command, CancellationToken cancellationToken = default)
     {
@@ -360,57 +411,6 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         catch (Exception)
         {
             return AddMemoryResultCode.UploadFailed;
-        }
-    }
-
-    public Task<AddMemoryResult> TryPostMemory(Session session, byte[] buffer)
-    {
-        try
-        {
-            using var memoryStream = new MemoryStream(buffer);
-            using var binaryReader = new BinaryReader(memoryStream);
-
-            var timeStamp = binaryReader.ReadInt64();
-            var avatarTag = binaryReader.ReadString();
-            var isPrivate = binaryReader.ReadBoolean();
-            var comment = binaryReader.ReadString();
-            var tagCount = binaryReader.ReadInt32();
-            var systemTags = new HashSet<string>();
-            for (var i = 0; i < tagCount; i++)
-            {
-                systemTags.Add(binaryReader.ReadString());
-            }
-
-            var imageDataCount = binaryReader.ReadInt32();
-            var imageData = new List<byte[]>(imageDataCount);
-            for (var i = 0; i < imageDataCount; i++)
-            {
-                var byteCount = binaryReader.ReadInt32();
-                var imageBuffer = binaryReader.ReadBytes(byteCount);
-                imageData.Add(imageBuffer);
-            }
-
-            if (string.IsNullOrWhiteSpace(avatarTag))
-            {
-                avatarTag = null;
-            }
-
-            var command = new Post_TryPostMemory
-            {
-                Session = session,
-                TimeStamp = timeStamp,
-                AvatarTag = avatarTag,
-                IsPrivate = isPrivate,
-                Comment = comment,
-                SystemTags = systemTags,
-                ImageData = imageData,
-            };
-
-            return TryPostMemory(command);
-        }
-        catch (Exception)
-        {
-            return Task.FromResult(new AddMemoryResult(AddMemoryResultCode.Failed));
         }
     }
 
