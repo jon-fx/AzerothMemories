@@ -36,8 +36,8 @@ else
             <PostComponent @key="@postKey" Services="@Services" Post="@post" />
         </div>
     }
-
-    <div class="d-flex justify-center">
+    
+    <div class="d-flex justify-center pa-2 ma-2">
         <MudPagination Selected="@RecentPostsHelper.CurrentPage" SelectedChanged="@RecentPostsHelper.TryChangePage" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@RecentPostsHelper.TotalPages" />
     </div>
 }

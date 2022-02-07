@@ -60,12 +60,12 @@ public sealed class PostSearchHelper
 
         if (long.TryParse(postMinTimeString, out var minTime))
         {
-            minTime = Math.Clamp(minTime, 0, SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
+            minTime = Math.Clamp(minTime, ZExtensions.MinPostTime.ToUnixTimeMilliseconds(), SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
         }
 
         if (long.TryParse(postMaxTimeString, out var maxTime))
         {
-            maxTime = Math.Clamp(maxTime, 0, SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
+            maxTime = Math.Clamp(maxTime, ZExtensions.MinPostTime.ToUnixTimeMilliseconds(), SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
         }
 
         IsLoading = true;

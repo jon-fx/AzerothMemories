@@ -33,8 +33,8 @@ else
                 </MudTimelineItem>
             }
         </MudTimeline>
-
-        <div class="d-flex justify-center">
+        
+        <div class="d-flex justify-center pa-2 ma-2">
             <MudPagination Selected="@ViewModel.CurrentPage" SelectedChanged="@ViewModel.TryChangePage" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@ViewModel.TotalPages"/>
         </div>
     }

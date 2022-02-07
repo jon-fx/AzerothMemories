@@ -46,10 +46,12 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
 
         await using var database = CreateDbContext();
 
-        var record = await database.BlizzardData.FirstOrDefaultAsync(r => r.TagType == tagType && r.TagId == tagId);
+        var tagString = PostTagInfo.GetTagString(tagType, tagId);
+        //var record = await database.BlizzardData.FirstOrDefaultAsync(r => r.TagType == tagType && r.TagId == tagId);
+        var record = await database.BlizzardData.FirstOrDefaultAsync(r => r.Key == tagString);
         if (record == null)
         {
-            return new PostTagInfo(tagType, tagId, PostTagInfo.GetTagString(tagType, tagId), null);
+            return new PostTagInfo(tagType, tagId, tagString, null);
         }
 
         return CreatePostTagInfo(record, locale);
@@ -136,12 +138,12 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
             postTags.Add(postTag);
         }
 
-        return postTags.ToArray();
+        return postTags.OrderBy(x => x.Name.Length).ThenBy(x => x.Type).ThenBy(x => x.Id).Take(50).ToArray();
     }
 
     private IQueryable<BlizzardDataRecord> GetSearchQuery(AppDbContext database, string locale, string searchString)
     {
-        return database.BlizzardData.Where(r => r.Name.EnGb.ToLower().StartsWith(searchString)).OrderBy(r => r.TagType).ThenBy(r => r.Name.EnGb.Length).ThenBy(r => r.TagId).Take(50);
+        return database.BlizzardData.Where(r => r.Name.EnGb.ToLower().StartsWith(searchString));
     }
 
     private PostTagInfo CreatePostTagInfo(BlizzardDataRecord record, string locale)
