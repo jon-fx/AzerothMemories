@@ -175,8 +175,8 @@ app.UseEndpoints(endpoints =>
     endpoints.MapFallbackToPage("/_Host");
 });
 
-var dbContextFactory = app.Services.GetRequiredService<IDbContextFactory<AppDbContext>>();
-await using var dbContext = dbContextFactory.CreateDbContext();
+//var dbContextFactory = app.Services.GetRequiredService<IDbContextFactory<AppDbContext>>();
+//await using var dbContext = dbContextFactory.CreateDbContext();
 
 //await dbContext.Accounts.DeleteAsync();
 //await dbContext.Characters.DeleteAsync();

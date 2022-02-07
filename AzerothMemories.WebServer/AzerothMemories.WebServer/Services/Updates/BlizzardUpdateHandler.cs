@@ -8,12 +8,13 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
     private const string Progress = "P-";
     private const string Queued = "Q-";
 
+    public const string AbstractQueue = "a-abstract";
     public const string AccountQueue1 = "a-account";
     public const string CharacterQueue1 = "b-character";
     public const string CharacterQueue2 = "c-character";
     public const string CharacterQueue3 = "d-character";
     public const string GuildQueue1 = "e-guild";
-    public static readonly string[] AllQueues = { AccountQueue1, CharacterQueue1, CharacterQueue2, CharacterQueue3, GuildQueue1 };
+    public static readonly string[] AllQueues = { AbstractQueue, AccountQueue1, CharacterQueue1, CharacterQueue2, CharacterQueue3, GuildQueue1 };
 
     private readonly CommonServices _commonServices;
 
@@ -21,16 +22,16 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
     private readonly Func<long, string>[] _callbacks;
     private readonly Duration[] _durationsBetweenUpdates;
 
-    public BlizzardUpdateHandler(IServiceProvider services, CommonServices commonServices) : base(services)
+    public BlizzardUpdateHandler(IServiceProvider services, CommonServices commonServices, IBackgroundJobClient backgroundJob, IRecurringJobManager recurringJobManager) : base(services)
     {
         _commonServices = commonServices;
 
         _callbacks = new Func<long, string>[(int)BlizzardUpdatePriority.Count];
-        _callbacks[(int)BlizzardUpdatePriority.Account] = id => BackgroundJob.Enqueue(() => OnAccountUpdate(id, null));
-        _callbacks[(int)BlizzardUpdatePriority.CharacterHigh] = id => BackgroundJob.Enqueue(() => OnCharacterUpdate1(id, null));
-        _callbacks[(int)BlizzardUpdatePriority.CharacterMed] = id => BackgroundJob.Enqueue(() => OnCharacterUpdate2(id, null));
-        _callbacks[(int)BlizzardUpdatePriority.CharacterLow] = id => BackgroundJob.Enqueue(() => OnCharacterUpdate3(id, null));
-        _callbacks[(int)BlizzardUpdatePriority.Guild] = id => BackgroundJob.Enqueue(() => OnGuildUpdate(id, null));
+        _callbacks[(int)BlizzardUpdatePriority.Account] = id => backgroundJob.Enqueue(() => OnAccountUpdate(id, null));
+        _callbacks[(int)BlizzardUpdatePriority.CharacterHigh] = id => backgroundJob.Enqueue(() => OnCharacterUpdate1(id, null));
+        _callbacks[(int)BlizzardUpdatePriority.CharacterMed] = id => backgroundJob.Enqueue(() => OnCharacterUpdate2(id, null));
+        _callbacks[(int)BlizzardUpdatePriority.CharacterLow] = id => backgroundJob.Enqueue(() => OnCharacterUpdate3(id, null));
+        _callbacks[(int)BlizzardUpdatePriority.Guild] = id => backgroundJob.Enqueue(() => OnGuildUpdate(id, null));
 
         _validRecordTypes = new Type[(int)BlizzardUpdatePriority.Count];
         _validRecordTypes[(int)BlizzardUpdatePriority.Account] = typeof(AccountRecord);
@@ -45,6 +46,14 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
         _durationsBetweenUpdates[(int)BlizzardUpdatePriority.CharacterMed] = _commonServices.Config.UpdateCharacterMedDelay;
         _durationsBetweenUpdates[(int)BlizzardUpdatePriority.CharacterLow] = _commonServices.Config.UpdateCharacterLowDelay;
         _durationsBetweenUpdates[(int)BlizzardUpdatePriority.Guild] = _commonServices.Config.UpdateGuildDelay;
+
+        recurringJobManager.AddOrUpdate("OnHourlyUpdate", () => OnHourlyUpdate(), Cron.Hourly);
+    }
+
+    [Queue(AbstractQueue)]
+    public async Task OnHourlyUpdate()
+    {
+        await _commonServices.Commander.Call(new Updates_OnHourlyUpdate());
     }
 
     public async Task TryUpdate<TRecord>(TRecord record, BlizzardUpdatePriority updatePriority) where TRecord : class, IBlizzardUpdateRecord, new()

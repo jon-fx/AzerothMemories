@@ -144,10 +144,18 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         return results;
     }
 
-    [ComputeMethod(AutoInvalidateTime = 60 * 30)]
+    [ComputeMethod]
+    public virtual Task<int> DependsOnHour()
+    {
+        return Task.FromResult(0);
+    }
+
+    [ComputeMethod]
     protected virtual async Task<ActivitySet> TryGetActivitySet(long startTimeMs, long endTimeMs)
     {
         await using var database = CreateDbContext();
+
+        await DependsOnHour();
 
         var dailyAchievementssQuery = from achievemnts in database.CharacterAchievements
                                       where achievemnts.AchievementTimeStamp >= startTimeMs && achievemnts.AchievementTimeStamp < endTimeMs
