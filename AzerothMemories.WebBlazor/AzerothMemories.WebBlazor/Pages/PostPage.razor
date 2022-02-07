@@ -1,5 +1,6 @@
 ﻿@page "/post/{Id:long}/{PostId:long}"
 @page "/post/{Name}/{PostId:long}"
+@using System.Text
 @inherits MoaComponentBase<PostPageViewModel>
 
 @if (ViewModel.Helper == null)
@@ -16,7 +17,20 @@ else if ( ViewModel.Helper.AccountViewModel == null || ViewModel.Helper.PostView
 }
 else
 {
-    <PageTitle>@ViewModel.Helper.AccountViewModel.GetDisplayName()'s Memory of Azeroth</PageTitle>
+    var name = $"{ViewModel.Helper.AccountViewModel.GetDisplayName()}'s Memory of Azeroth";
+    var image = ViewModel.Helper.PostViewModel.ImageBlobNames.FirstOrDefault();
+    var altImage = name;
+    var stringBuilder = new StringBuilder();
+    foreach (var systemTag in ViewModel.Helper.PostViewModel.SystemTags)
+    {
+        stringBuilder.Append($"{systemTag.Name}, ");
+    }
+
+    var description = stringBuilder.ToString().TrimEnd(',', ' ');
+
+    <PageTitle>@name</PageTitle>
+    <HeadContentTest Url="@NavigationManager.Uri" Title="@name" Description="@description" Image="@image" AltImage="@altImage"/>
+
     <AccountHeaderCardComponent Services="@this" AccountViewModel="@ViewModel.Helper.AccountViewModel" />
     <PostViewComponent Services="@this" Helper="@ViewModel.Helper"/>
 }

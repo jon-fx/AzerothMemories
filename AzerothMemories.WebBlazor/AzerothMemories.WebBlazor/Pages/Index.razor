@@ -1,6 +1,11 @@
 ﻿@page "/"
 @inherits MoaComponentBase<IndexPageViewModel>
 
+@{
+    <PageTitle>Memories of Azeroth</PageTitle>
+    <HeadContentTest Url="@NavigationManager.Uri" Title="Memories of Azeroth" Description="Memories of Azeroth" Image="@null" AltImage="@null"/>
+}
+
 <AuthorizeView>
     <Authorized>
         <AccountHeaderCardComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" />

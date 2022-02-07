@@ -14,7 +14,13 @@
     }
     else
     {
-        <PageTitle>@ViewModel.AccountViewModel.GetDisplayName()'s Memories of Azeroth</PageTitle>
+        var name = $"{ViewModel.AccountViewModel.GetDisplayName()}'s Memories of Azeroth";
+        var image = ViewModel.AccountViewModel.Avatar;
+        var altImage = name;
+
+        <PageTitle>@name</PageTitle>
+        <HeadContentTest Url="@NavigationManager.Uri" Title="@name" Description="@name" Image="@image" AltImage="@altImage"/>
+
         <AccountHeaderCardComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" />
         <SearchPostViewComponent PostSearchHelper="@ViewModel.PostSearchHelper" />
     }

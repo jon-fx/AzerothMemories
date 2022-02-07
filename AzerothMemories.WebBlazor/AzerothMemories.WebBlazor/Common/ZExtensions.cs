@@ -4,6 +4,7 @@ namespace AzerothMemories.WebBlazor.Common;
 
 public static class ZExtensions
 {
+    public static string DefaultSocialImage;
     public static string BlobStoragePath = "https://moastorage.blob.core.windows.net/moaimages/";
 
     public static int MaxCommentDepth = 5;

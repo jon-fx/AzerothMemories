@@ -13,7 +13,13 @@
     }
     else
     {
-        <PageTitle>@ViewModel.GuildViewModel.Name's Memories of Azeroth</PageTitle>
+        var name = $"{ViewModel.GuildViewModel.Name}'s Memories of Azeroth";
+        var image = ViewModel.GuildViewModel.Avatar;
+        var altImage = name;
+
+        <PageTitle>@name</PageTitle>
+        <HeadContentTest Url="@NavigationManager.Uri" Title="@name" Description="@name" Image="@image" AltImage="@altImage"/>
+
         <GuildHeaderCardComponent Services="@this" GuildViewModel="@ViewModel.GuildViewModel" />
         <SearchPostViewComponent PostSearchHelper="@ViewModel.PostSearchHelper" />
     }
