@@ -77,9 +77,17 @@ public sealed class AddMemoryPageViewModel : ViewModelBase
             return;
         }
 
+        var extension = Path.GetExtension(file.Name);
+        if (!ZExtensions.ValidUploadExtensions.Contains(extension))
+        {
+            await Services.DialogService.ShowNotificationDialog(false, $"{extension} is not supported yet.");
+            return;
+        }
+
         var previous = UploadedImages.FirstOrDefault(x => x.FileName == file.Name);
         if (previous != null)
         {
+            await Services.DialogService.ShowNotificationDialog(false, $"{file.Name} already added.");
             return;
         }
 

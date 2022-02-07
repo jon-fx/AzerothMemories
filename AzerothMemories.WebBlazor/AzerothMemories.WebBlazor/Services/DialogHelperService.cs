@@ -5,18 +5,18 @@ namespace AzerothMemories.WebBlazor.Services;
 public sealed class DialogHelperService
 {
     private readonly IDialogService _dialogService;
-
-    private bool _loadingDialog;
-    private IDialogReference _currentDialog;
+    private readonly List<IDialogReference> _activeDialogs;
+    private IDialogReference _loadingDialog;
 
     public DialogHelperService(IDialogService dialogService)
     {
         _dialogService = dialogService;
+        _activeDialogs = new List<IDialogReference>();
     }
 
     public void ShowLoadingDialog()
     {
-        if (_currentDialog != null)
+        if (_loadingDialog != null)
         {
             throw new NotImplementedException();
         }
@@ -29,20 +29,18 @@ public sealed class DialogHelperService
             NoHeader = true
         };
 
-        _loadingDialog = true;
-        _currentDialog = _dialogService.Show<LoadingDialog>("Loading...", options);
+        _loadingDialog = _dialogService.Show<LoadingDialog>("Loading...", options);
     }
 
     public void HideLoadingDialog()
     {
-        if (!_loadingDialog)
+        if (_loadingDialog == null)
         {
             throw new NotImplementedException();
         }
 
-        _currentDialog?.Close();
-        _currentDialog = null;
-        _loadingDialog = false;
+        _loadingDialog.Close();
+        _loadingDialog = null;
     }
 
     public async Task ShowNotificationDialog(bool success, string message)
@@ -60,7 +58,7 @@ public sealed class DialogHelperService
             ["message"] = message
         };
 
-        await ShowDialog<NotificationDialog>("Report Post", parameters, options);
+        await ShowDialog<NotificationDialog>("Notification", parameters, options);
     }
 
     public async Task<DialogResult> ShowReportPostDialog(string message, long postId, long commentId)
@@ -107,18 +105,15 @@ public sealed class DialogHelperService
         return result;
     }
 
-    private async Task<DialogResult> ShowDialog<TDialog>(string title, DialogParameters dialogParameters = null, DialogOptions options = null) where TDialog : ComponentBase
+    private async Task<DialogResult> ShowDialog<TDialog>(string title, DialogParameters dialogParameters, DialogOptions options) where TDialog : ComponentBase
     {
-        if (_currentDialog != null || _loadingDialog)
-        {
-            throw new NotImplementedException();
-        }
+        var currentDialog = _dialogService.Show<TDialog>(title, dialogParameters, options);
 
-        _currentDialog = _dialogService.Show<TDialog>(title, dialogParameters, options);
+        _activeDialogs.Add(currentDialog);
 
-        var result = await _currentDialog.Result.ConfigureAwait(true);
+        var result = await currentDialog.Result;
 
-        _currentDialog = null;
+        _activeDialogs.Remove(currentDialog);
 
         return result;
     }

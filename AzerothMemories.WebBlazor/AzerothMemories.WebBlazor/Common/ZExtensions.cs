@@ -7,6 +7,9 @@ public static class ZExtensions
     public static string DefaultSocialImage;
     public static string BlobStoragePath = "https://moastorage.blob.core.windows.net/moaimages/";
 
+    public static List<string> ValidUploadExtensions = new() { ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".bmp" };
+    public static string UploadAcceptExtensions = "image/*";
+
     public static int MaxCommentDepth = 5;
     public static int MaxPostCommentLength = 2048;
     public static int MaxCommentLength = 2048;

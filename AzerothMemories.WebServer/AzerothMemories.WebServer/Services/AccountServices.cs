@@ -30,74 +30,77 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             return;
         }
 
-        if (!command.User.Claims.TryGetValue("BattleNet-Id", out var blizzardIdClaim))
+        if (command.AuthenticatedIdentity.Schema.StartsWith("BattleNet-"))
+        {
+            if (!command.User.Claims.TryGetValue("BattleNet-Id", out var blizzardIdClaim))
+            {
+                throw new NotImplementedException();
+            }
+
+            if (!long.TryParse(blizzardIdClaim, out var blizzardId))
+            {
+                throw new NotImplementedException();
+            }
+
+            if (!command.User.Claims.TryGetValue("BattleNet-Tag", out var battleTag))
+            {
+                throw new NotImplementedException();
+            }
+
+            if (!command.User.Claims.TryGetValue("BattleNet-Region", out var battleNetRegion))
+            {
+                throw new NotImplementedException();
+            }
+
+            if (!command.User.Claims.TryGetValue("BattleNet-Token", out var battleNetToken))
+            {
+                throw new NotImplementedException();
+            }
+
+            if (!command.User.Claims.TryGetValue("BattleNet-TokenExpires", out var battleNetTokenExpiresStr) || !long.TryParse(battleNetTokenExpiresStr, out var battleNetTokenExpires))
+            {
+                throw new NotImplementedException();
+            }
+
+            var sessionInfo = context.Operation().Items.Get<SessionInfo>();
+            if (sessionInfo == null)
+            {
+                throw new NotImplementedException();
+            }
+
+            var userId = sessionInfo.UserId;
+            var blizzardRegion = BlizzardRegionExt.FromName(battleNetRegion);
+
+            var accountRecord = await GetOrCreateAccount(userId);
+            await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+            database.Attach(accountRecord);
+
+            accountRecord.BlizzardId = blizzardId;
+            accountRecord.BlizzardRegionId = blizzardRegion;
+            accountRecord.BattleTag = battleTag;
+            accountRecord.BattleNetToken = battleNetToken;
+            accountRecord.BattleNetTokenExpiresAt = Instant.FromUnixTimeMilliseconds(battleNetTokenExpires);
+
+            if (string.IsNullOrWhiteSpace(accountRecord.Username))
+            {
+                var newUsername = $"User-{accountRecord.Id}";
+
+                accountRecord.Username = newUsername;
+                accountRecord.UsernameSearchable = DatabaseHelpers.GetSearchableName(newUsername);
+            }
+
+            await database.SaveChangesAsync(cancellationToken);
+
+            context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+        }
+        else if (command.AuthenticatedIdentity.Schema.StartsWith("ToDo-"))
         {
             throw new NotImplementedException();
         }
-
-        if (!long.TryParse(blizzardIdClaim, out var blizzardId))
+        else
         {
             throw new NotImplementedException();
         }
-
-        if (!command.User.Claims.TryGetValue("BattleNet-Tag", out var battleTag))
-        {
-            throw new NotImplementedException();
-        }
-
-        if (!command.User.Claims.TryGetValue("BattleNet-Region", out var battleNetRegion))
-        {
-            throw new NotImplementedException();
-        }
-
-        if (!command.User.Claims.TryGetValue("BattleNet-Token", out var battleNetToken))
-        {
-            throw new NotImplementedException();
-        }
-
-        if (!command.User.Claims.TryGetValue("BattleNet-TokenExpires", out var battleNetTokenExpiresStr) || !long.TryParse(battleNetTokenExpiresStr, out var battleNetTokenExpires))
-        {
-            throw new NotImplementedException();
-        }
-
-        var sessionInfo = context.Operation().Items.Get<SessionInfo>();
-        if (sessionInfo == null)
-        {
-            throw new NotImplementedException();
-        }
-
-        var userId = sessionInfo.UserId;
-        var blizzardRegion = BlizzardRegionExt.FromName(battleNetRegion);
-
-        var accountRecord = await GetOrCreateAccount(userId);
-        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        database.Attach(accountRecord);
-
-        accountRecord.BlizzardId = blizzardId;
-        accountRecord.BlizzardRegionId = blizzardRegion;
-        accountRecord.BattleTag = battleTag;
-        accountRecord.BattleNetToken = battleNetToken;
-        accountRecord.BattleNetTokenExpiresAt = Instant.FromUnixTimeMilliseconds(battleNetTokenExpires);
-
-        string newUsername = null;
-        var previousBattleTag = accountRecord.BattleTag ?? string.Empty;
-        if (string.IsNullOrWhiteSpace(accountRecord.Username) || accountRecord.Username == previousBattleTag.Replace("#", string.Empty))
-        {
-            newUsername = battleTag.Replace("#", string.Empty);
-        }
-
-        if (!string.IsNullOrWhiteSpace(newUsername))
-        {
-            var result = await database.Accounts.AnyAsync(x => x.Username == newUsername, cancellationToken);
-            newUsername = result ? $"User{accountRecord.Id}" : newUsername;
-
-            accountRecord.Username = newUsername;
-            accountRecord.UsernameSearchable = DatabaseHelpers.GetSearchableName(newUsername);
-        }
-
-        await database.SaveChangesAsync(cancellationToken);
-
-        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
     }
 
     [ComputeMethod]
