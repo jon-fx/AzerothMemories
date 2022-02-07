@@ -12,30 +12,47 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     }
 
     [ComputeMethod]
-    public virtual async Task<ActivityResultsChild> TryGetDailyActivity(Session session, string timeZoneId, string locale)
+    public virtual async Task<ActivityResultsChild> TryGetDailyActivity(Session session, string timeZoneId, long unixTime, string locale)
     {
-        var results = await TryGetActivity(timeZoneId, locale);
+        var results = await TryGetActivity(timeZoneId, unixTime, locale);
+        if (results.Totals == null)
+        {
+            return new ActivityResultsChild { Year = -1 };
+        }
+
         return results.Totals;
     }
 
     [ComputeMethod]
-    public virtual async Task<ActivityResults> TryGetDailyActivityFull(Session session, string timeZoneId, string locale)
+    public virtual async Task<ActivityResults> TryGetDailyActivityFull(Session session, string timeZoneId, long unixTime, string locale)
     {
-        var results = await TryGetActivity(timeZoneId, locale);
+        var results = await TryGetActivity(timeZoneId, unixTime, locale);
         return results;
     }
 
     [ComputeMethod]
-    protected virtual async Task<ActivityResults> TryGetActivity(string timeZoneId, string locale)
+    protected virtual async Task<ActivityResults> TryGetActivity(string timeZoneId, long unixTime, string locale)
     {
         var timeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(timeZoneId);
         if (timeZone == null)
         {
-            return null;
+            return new ActivityResults { Status = -1 };
+        }
+
+        var today = SystemClock.Instance.GetCurrentInstant().InZone(timeZone).Date;
+        return await TryGetActivity(timeZoneId, locale, today);
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<ActivityResults> TryGetActivity(string timeZoneId, string locale, LocalDate today)
+    {
+        var timeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(timeZoneId);
+        if (timeZone == null)
+        {
+            return new ActivityResults { Status = -1 };
         }
 
         var results = new ActivityResults();
-        var today = SystemClock.Instance.GetCurrentInstant().InZone(timeZone).Date;
         var endYear = today.Year - 2000 + 1;
         var topValueCount = 10;
         var totalPostTagCounts = new Dictionary<string, int>();
@@ -76,7 +93,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
             foreach (var kvp in dailyTopAchievemnts)
             {
                 var tag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, kvp.Key, null, locale);
-                daily.TopAchievements.Add(new Tuple<PostTagInfo, int>(tag, kvp.Value));
+                daily.TopAchievements.Add(new ActivityResultsTuple(tag, kvp.Value));
             }
 
             var dailyTopTags = currentActivitySet.PostTags.OrderByDescending(x => x.Value).Take(topValueCount);
@@ -88,7 +105,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                 }
 
                 var tag = await _commonServices.TagServices.GetTagInfo(postTagInfo.Type, postTagInfo.Id, postTagInfo.Text, locale);
-                daily.TopTags.Add(new Tuple<PostTagInfo, int>(tag, kvp.Value));
+                daily.TopTags.Add(new ActivityResultsTuple(tag, kvp.Value));
             }
 
             daily.TotalTags = currentActivitySet.PostTags.Count;
@@ -124,7 +141,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         foreach (var kvp in allTimeTopAchievement)
         {
             var tag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, kvp.Key, null, locale);
-            results.Totals.TopAchievements.Add(new Tuple<PostTagInfo, int>(tag, kvp.Value));
+            results.Totals.TopAchievements.Add(new ActivityResultsTuple(tag, kvp.Value));
         }
 
         var allTimeTopTags = totalPostTagCounts.OrderByDescending(x => x.Value).Take(topValueCount);
@@ -136,7 +153,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
             }
 
             var tag = await _commonServices.TagServices.GetTagInfo(postTagInfo.Type, postTagInfo.Id, postTagInfo.Text, locale);
-            results.Totals.TopTags.Add(new Tuple<PostTagInfo, int>(tag, kvp.Value));
+            results.Totals.TopTags.Add(new ActivityResultsTuple(tag, kvp.Value));
         }
 
         results.DataByYear = results.DataByYear.OrderByDescending(x => x.Year).ToList();
@@ -144,18 +161,10 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         return results;
     }
 
-    [ComputeMethod]
-    public virtual Task<int> DependsOnHour()
-    {
-        return Task.FromResult(0);
-    }
-
-    [ComputeMethod]
+    [ComputeMethod(AutoInvalidateTime = 60 * 10)]
     protected virtual async Task<ActivitySet> TryGetActivitySet(long startTimeMs, long endTimeMs)
     {
         await using var database = CreateDbContext();
-
-        await DependsOnHour();
 
         var dailyAchievementssQuery = from achievemnts in database.CharacterAchievements
                                       where achievemnts.AchievementTimeStamp >= startTimeMs && achievemnts.AchievementTimeStamp < endTimeMs

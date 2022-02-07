@@ -11,17 +11,6 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
     }
 
     [CommandHandler]
-    public virtual Task<int> Updates_OnHourlyUpdate(Updates_OnHourlyUpdate command, CancellationToken cancellationToken = default)
-    {
-        if (Computed.IsInvalidating())
-        {
-            _ = _commonServices.SearchServices.DependsOnHour();
-        }
-
-        return Task.FromResult(command.Id);
-    }
-
-    [CommandHandler]
     public virtual async Task<HttpStatusCode> UpdateAccount(Updates_UpdateAccountCommand command, CancellationToken cancellationToken = default)
     {
         var context = CommandContext.GetCurrent();

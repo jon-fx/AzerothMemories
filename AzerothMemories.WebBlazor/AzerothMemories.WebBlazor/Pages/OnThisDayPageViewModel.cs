@@ -6,6 +6,9 @@ public sealed class OnThisDayPageViewModel : ViewModelBase
 
     public override async Task ComputeState()
     {
-        Results = await Services.ComputeServices.SearchServices.TryGetDailyActivityFull(null, Services.TimeProvider.GetCurrentTimeZone().Id, CultureInfo.CurrentCulture.Name);
+        var timeZone = Services.TimeProvider.GetCurrentTimeZone();
+        var inZone = SystemClock.Instance.GetCurrentInstant().InZone(timeZone).Date;
+        var startTime = timeZone.AtStartOfDay(inZone).ToInstant().ToUnixTimeMilliseconds();
+        Results = await Services.ComputeServices.SearchServices.TryGetDailyActivityFull(null, timeZone.Id, startTime, CultureInfo.CurrentCulture.Name);
     }
 }

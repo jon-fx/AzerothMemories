@@ -2,6 +2,10 @@
 {
     <CardLoadingComponent />
 }
+else if (HeaderData.Year == -1)
+{
+    <CardErrorComponent ErrorMessage="Failed" />
+}
 else
 {
     <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
@@ -30,8 +34,8 @@ else
                 <MudText>Top Tags</MudText>
                 @foreach (var valueTuple in HeaderData.TopTags)
                 {
-                    <MudBadge Origin="Origin.TopRight" Content="valueTuple.Item2.ToMetric()" Visible="@(valueTuple.Item2 > 0)" Color="Color.Dark" Overlap="true" Dot="false">
-                        <PostTagChipComponent TagInfo="valueTuple.Item1" OnClick="@(() => NavigationManager.NavigateTo(valueTuple.Item1.GetTagQueryLink()))" />
+                    <MudBadge Origin="Origin.TopRight" Content="valueTuple.Counter.ToMetric()" Visible="@(valueTuple.Counter > 0)" Color="Color.Dark" Overlap="true" Dot="false">
+                        <PostTagChipComponent TagInfo="valueTuple.PostTagInfo" OnClick="@(() => NavigationManager.NavigateTo(valueTuple.PostTagInfo.GetTagQueryLink()))" />
                     </MudBadge>
                 }
             }
@@ -41,8 +45,8 @@ else
                 <MudText>Top Achievements</MudText>
                 @foreach (var valueTuple in HeaderData.TopAchievements)
                 {
-                    <MudBadge Origin="Origin.TopRight" Content="valueTuple.Item2.ToMetric()" Visible="@(valueTuple.Item2 > 0)" Color="Color.Dark" Overlap="true" Dot="false">
-                        <PostTagChipComponent TagInfo="valueTuple.Item1" OnClick="@(() => NavigationManager.NavigateTo(valueTuple.Item1.GetTagQueryLink()))" />
+                    <MudBadge Origin="Origin.TopRight" Content="valueTuple.Counter.ToMetric()" Visible="@(valueTuple.Counter > 0)" Color="Color.Dark" Overlap="true" Dot="false">
+                        <PostTagChipComponent TagInfo="valueTuple.PostTagInfo" OnClick="@(() => NavigationManager.NavigateTo(valueTuple.PostTagInfo.GetTagQueryLink()))" />
                     </MudBadge>
                 }
             }

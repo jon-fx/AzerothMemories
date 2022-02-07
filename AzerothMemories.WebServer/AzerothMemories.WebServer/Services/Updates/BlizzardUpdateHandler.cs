@@ -46,14 +46,6 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
         _durationsBetweenUpdates[(int)BlizzardUpdatePriority.CharacterMed] = _commonServices.Config.UpdateCharacterMedDelay;
         _durationsBetweenUpdates[(int)BlizzardUpdatePriority.CharacterLow] = _commonServices.Config.UpdateCharacterLowDelay;
         _durationsBetweenUpdates[(int)BlizzardUpdatePriority.Guild] = _commonServices.Config.UpdateGuildDelay;
-
-        recurringJobManager.AddOrUpdate("OnHourlyUpdate", () => OnHourlyUpdate(), Cron.Hourly);
-    }
-
-    [Queue(AbstractQueue)]
-    public async Task OnHourlyUpdate()
-    {
-        await _commonServices.Commander.Call(new Updates_OnHourlyUpdate());
     }
 
     public async Task TryUpdate<TRecord>(TRecord record, BlizzardUpdatePriority updatePriority) where TRecord : class, IBlizzardUpdateRecord, new()

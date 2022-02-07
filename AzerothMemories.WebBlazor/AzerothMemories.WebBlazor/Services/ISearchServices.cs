@@ -5,11 +5,11 @@ public interface ISearchServices
 {
     [ComputeMethod]
     [Get(nameof(TryGetDailyActivity))]
-    Task<ActivityResultsChild> TryGetDailyActivity(Session session, [Query] string timeZoneId, [Query] string locale);
+    Task<ActivityResultsChild> TryGetDailyActivity(Session session, [Query] string timeZoneId, [Query] long unixTime, [Query] string locale);
 
     [ComputeMethod]
     [Get(nameof(TryGetDailyActivityFull))]
-    Task<ActivityResults> TryGetDailyActivityFull(Session session, [Query] string timeZoneId, [Query] string locale);
+    Task<ActivityResults> TryGetDailyActivityFull(Session session, [Query] string timeZoneId, [Query] long unixTime, [Query] string locale);
 
     [ComputeMethod]
     [Get(nameof(TrySearch))]

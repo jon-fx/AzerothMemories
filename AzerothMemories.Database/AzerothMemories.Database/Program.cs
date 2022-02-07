@@ -3,13 +3,18 @@ using AzerothMemories.WebServer.Common;
 using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
 
-var commonConfig = new CommonConfig();
+var azure = true;
+#if DEBUG
+azure = false;
+#endif
+
+var config = new CommonConfig(azure);
 var services = new ServiceCollection();
 
 services.AddFluentMigratorCore()
     .ConfigureRunner(rb => rb
         .AddPostgres()
-        .WithGlobalConnectionString(commonConfig.DatabaseConnectionString)
+        .WithGlobalConnectionString(config.DatabaseConnectionString)
         .ScanIn(typeof(Migration0001).Assembly).For.Migrations());
 
 var serviceProvider = services.BuildServiceProvider(true);

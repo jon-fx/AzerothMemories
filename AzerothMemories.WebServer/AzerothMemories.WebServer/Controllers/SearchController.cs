@@ -12,15 +12,15 @@ public sealed class SearchController : ControllerBase, ISearchServices
     }
 
     [HttpGet, Publish]
-    public Task<ActivityResultsChild> TryGetDailyActivity(Session session, [FromQuery] string timeZoneId, [FromQuery] string locale)
+    public Task<ActivityResultsChild> TryGetDailyActivity(Session session, [FromQuery] string timeZoneId, [FromQuery] long unixTime, [FromQuery] string locale)
     {
-        return _commonServices.SearchServices.TryGetDailyActivity(session, timeZoneId, locale);
+        return _commonServices.SearchServices.TryGetDailyActivity(session, timeZoneId, unixTime, locale);
     }
 
     [HttpGet, Publish]
-    public Task<ActivityResults> TryGetDailyActivityFull(Session session, [FromQuery] string timeZoneId, [FromQuery] string locale)
+    public Task<ActivityResults> TryGetDailyActivityFull(Session session, [FromQuery] string timeZoneId, [FromQuery] long unixTime, [FromQuery] string locale)
     {
-        return _commonServices.SearchServices.TryGetDailyActivityFull(session, timeZoneId, locale);
+        return _commonServices.SearchServices.TryGetDailyActivityFull(session, timeZoneId, unixTime, locale);
     }
 
     [HttpGet, Publish]

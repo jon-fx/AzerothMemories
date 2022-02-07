@@ -3,7 +3,15 @@
 
 @{
     var results = ViewModel?.Results;
-    if (results != null)
+    if (results == null)
+    {
+        <CardLoadingComponent/>
+    }
+    else if (results.Status == -1)
+    {
+        <CardErrorComponent ErrorMessage="Failed" />
+    }
+    else
     {
         <OnThisDayHeader HeaderData="@results.Totals" NavigationManager="@NavigationManager"/>
 
