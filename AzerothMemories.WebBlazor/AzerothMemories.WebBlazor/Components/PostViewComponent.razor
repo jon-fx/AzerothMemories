@@ -1,10 +1,13 @@
 ﻿@using Microsoft.Extensions.Primitives
 @implements IActiveCommentContext
 
-<PostComponent Services="@Services" Post="@Helper.PostViewModel" InDialog="true" />
-
-@if (Helper.PostViewModel == null)
+@if (Helper == null)
 {
+    <CardLoadingComponent />
+}
+else if (Helper.PostViewModel == null)
+{
+    <CardLoadingComponent />
 }
 else if (Helper.PostViewModel.DeletedTimeStamp != 0)
 {
@@ -16,55 +19,56 @@ else if (Helper.PostViewModel.DeletedTimeStamp != 0)
         </MudCardHeader>
     </MudCard>
 }
-else if (Helper == null)
+else if (Helper.PostViewModel.DeletedTimeStamp == 0)
 {
-    <CardLoadingComponent />
-}
-else if (Helper.RootComments == null || Helper.RootComments.Count == 0)
-{
-    if (Services.ActiveAccountServices.ActiveCommentContext == this)
-    {
-        <PublishCommentBoxComponent Services="@Services" PostId="@Helper.PostViewModel.Id" />
-    }
-    else
-    {
-        <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
-            <MudCardContent Class="@ClassPresets.CardContent">
-                <MudText Class="pa-2 ma-2" Align="Align.Center" Typo="Typo.body2">No comments</MudText>
-                <MudButton Class="pa-2 ma-2" FullWidth="true" Variant="Variant.Filled" Disabled="@IsDisabled" OnClick="AddComment">Add comment</MudButton>
-            </MudCardContent>
-        </MudCard>
-    }
-}
-else
-{
-    <div id="moa-top-header-comments"></div>
+    <PostComponent Services="@Services" Post="@Helper.PostViewModel" InDialog="true" />
 
-    foreach (var comment in Helper.RootComments)
+    @if (Helper.RootComments == null || Helper.RootComments.Count == 0)
     {
-        <PostCommentComponent @key="@comment" Services="@Services" Comment="@comment" />
-    }
-
-    var showAdd = Services.ActiveAccountServices.ActiveCommentContext != this && Helper.Page == Helper.TotalPages;
-    if (Services.ActiveAccountServices.ActiveCommentContext == this)
-    {
-        <PublishCommentBoxComponent Services="@Services" PostId="@Helper.PostViewModel.Id" />
-    }
-
-    if (showAdd)
-    {
-        <div class="postIndent">
+        if (Services.ActiveAccountServices.ActiveCommentContext == this)
+        {
+            <PublishCommentBoxComponent Services="@Services" PostId="@Helper.PostViewModel.Id" />
+        }
+        else
+        {
             <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
                 <MudCardContent Class="@ClassPresets.CardContent">
+                    <MudText Class="pa-2 ma-2" Align="Align.Center" Typo="Typo.body2">No comments</MudText>
                     <MudButton Class="pa-2 ma-2" FullWidth="true" Variant="Variant.Filled" Disabled="@IsDisabled" OnClick="AddComment">Add comment</MudButton>
                 </MudCardContent>
             </MudCard>
+        }
+    }
+    else
+    {
+        <div id="moa-top-header-comments"></div>
+
+        foreach (var comment in Helper.RootComments)
+        {
+            <PostCommentComponent @key="@comment" Services="@Services" Comment="@comment" />
+        }
+
+        var showAdd = Services.ActiveAccountServices.ActiveCommentContext != this && Helper.Page == Helper.TotalPages;
+        if (Services.ActiveAccountServices.ActiveCommentContext == this)
+        {
+            <PublishCommentBoxComponent Services="@Services" PostId="@Helper.PostViewModel.Id" />
+        }
+
+        if (showAdd)
+        {
+            <div class="postIndent">
+                <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
+                    <MudCardContent Class="@ClassPresets.CardContent">
+                        <MudButton Class="pa-2 ma-2" FullWidth="true" Variant="Variant.Filled" Disabled="@IsDisabled" OnClick="AddComment">Add comment</MudButton>
+                    </MudCardContent>
+                </MudCard>
+            </div>
+        }
+
+        <div class="d-flex justify-center pa-2 ma-2">
+            <MudPagination Selected="@Helper.Page" SelectedChanged="OnPageChanged" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@Helper.TotalPages" />
         </div>
     }
-    
-    <div class="d-flex justify-center pa-2 ma-2">
-        <MudPagination Selected="@Helper.Page" SelectedChanged="OnPageChanged" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@Helper.TotalPages" />
-    </div>
 }
 
 @code
