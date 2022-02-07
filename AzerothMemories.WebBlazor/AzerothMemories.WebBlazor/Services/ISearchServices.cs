@@ -4,6 +4,14 @@
 public interface ISearchServices
 {
     [ComputeMethod]
+    [Get(nameof(TryGetDailyActivity))]
+    Task<ActivityResultsChild> TryGetDailyActivity(Session session, [Query] string timeZoneId, [Query] string locale);
+
+    [ComputeMethod]
+    [Get(nameof(TryGetDailyActivityFull))]
+    Task<ActivityResults> TryGetDailyActivityFull(Session session, [Query] string timeZoneId, [Query] string locale);
+
+    [ComputeMethod]
     [Get(nameof(TrySearch))]
     Task<MainSearchResult[]> TrySearch(Session session, [Query] MainSearchType searchType, [Query] string searchString);
 

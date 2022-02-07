@@ -7,6 +7,8 @@
     </Authorized>
 </AuthorizeView>
 
+
+<OnThisDayHeader HeaderData="@ViewModel.OnThisDay" NavigationManager="@NavigationManager"/>
 <RecentPostsComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" RecentPostsHelper="@ViewModel.RecentPostsHelper" />
 
 @code {

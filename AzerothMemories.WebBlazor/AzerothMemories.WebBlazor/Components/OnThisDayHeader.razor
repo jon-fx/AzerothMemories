@@ -1,0 +1,74 @@
+﻿@if (HeaderData == null)
+{
+    <CardLoadingComponent />
+}
+else
+{
+    <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+        <MudCardHeader Class="@ClassPresets.CardHeader">
+            <CardHeaderContent>
+                
+                @if (HeaderData.Year == 0)
+                {
+                    <a href="/on-this-day">
+                        <MudText Typo="Typo.h6">On This Day in Azeroth</MudText>
+                    </a>
+                }
+                else
+                {
+                    <MudText Typo="Typo.h6">Year @HeaderData.Year</MudText>
+                }
+
+                <MudText Typo="Typo.body1">Total Tags: @HeaderData.TotalTags</MudText>
+                <MudText Typo="Typo.body1">Total Achievements: @HeaderData.TotalAchievements</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudDivider />
+        <MudCardContent Class="@ClassPresets.CardContent">
+            @if (HeaderData.TopTags.Count > 0)
+            {
+                <MudText>Top Tags</MudText>
+                @foreach (var valueTuple in HeaderData.TopTags)
+                {
+                    <MudBadge Origin="Origin.TopRight" Content="valueTuple.Item2.ToMetric()" Visible="@(valueTuple.Item2 > 0)" Color="Color.Dark" Overlap="true" Dot="false">
+                        <PostTagChipComponent TagInfo="valueTuple.Item1" OnClick="@(() => NavigationManager.NavigateTo(valueTuple.Item1.GetTagQueryLink()))" />
+                    </MudBadge>
+                }
+            }
+
+            @if (HeaderData.TopAchievements.Count > 0)
+            {
+                <MudText>Top Achievements</MudText>
+                @foreach (var valueTuple in HeaderData.TopAchievements)
+                {
+                    <MudBadge Origin="Origin.TopRight" Content="valueTuple.Item2.ToMetric()" Visible="@(valueTuple.Item2 > 0)" Color="Color.Dark" Overlap="true" Dot="false">
+                        <PostTagChipComponent TagInfo="valueTuple.Item1" OnClick="@(() => NavigationManager.NavigateTo(valueTuple.Item1.GetTagQueryLink()))" />
+                    </MudBadge>
+                }
+            }
+
+            @if (HeaderData.FirstTags.Count > 0)
+            {
+                <MudText>First Tags</MudText>
+                @foreach (var valueTuple in HeaderData.FirstTags)
+                {
+                    <PostTagChipComponent TagInfo="valueTuple" OnClick="@(() => NavigationManager.NavigateTo(valueTuple.GetTagQueryLink()))" />
+                }
+            }
+
+            @if (HeaderData.FirstAchievements.Count > 0)
+            {
+                <MudText>First Achievements</MudText>
+                @foreach (var valueTuple in HeaderData.FirstAchievements)
+                {
+                    <PostTagChipComponent TagInfo="valueTuple" OnClick="@(() => NavigationManager.NavigateTo(valueTuple.GetTagQueryLink()))" />
+                }
+            }
+        </MudCardContent>
+    </MudCard>
+}
+
+@code {
+    [Parameter, EditorRequired] public ActivityResultsChild HeaderData { get; init; }
+    [Parameter, EditorRequired] public NavigationManager NavigationManager { get; init; }
+}

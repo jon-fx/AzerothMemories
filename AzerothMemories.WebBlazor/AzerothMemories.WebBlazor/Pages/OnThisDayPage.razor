@@ -1,0 +1,15 @@
+﻿@page "/on-this-day"
+@inherits MoaComponentBase<OnThisDayPageViewModel>
+
+@{
+    var results = ViewModel?.Results;
+    if (results != null)
+    {
+        <OnThisDayHeader HeaderData="@results.Totals" NavigationManager="@NavigationManager"/>
+
+        @foreach (var year in results.DataByYear)
+        {
+            <OnThisDayHeader HeaderData="@year" NavigationManager="@NavigationManager"/>
+        }
+    }
+}

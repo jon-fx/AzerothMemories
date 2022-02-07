@@ -12,6 +12,227 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     }
 
     [ComputeMethod]
+    public virtual async Task<ActivityResultsChild> TryGetDailyActivity(Session session, string timeZoneId, string locale)
+    {
+        var results = await TryGetActivity(timeZoneId, locale);
+        return results.Totals;
+    }
+
+    [ComputeMethod]
+    public virtual async Task<ActivityResults> TryGetDailyActivityFull(Session session, string timeZoneId, string locale)
+    {
+        var results = await TryGetActivity(timeZoneId, locale);
+        return results;
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<ActivityResults> TryGetActivity(string timeZoneId, string locale)
+    {
+        var timeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(timeZoneId);
+        if (timeZone == null)
+        {
+            return null;
+        }
+
+        var results = new ActivityResults();
+        var today = SystemClock.Instance.GetCurrentInstant().InZone(timeZone).Date;
+        var endYear = today.Year - 2000 + 1;
+        var topValueCount = 10;
+        var totalPostTagCounts = new Dictionary<string, int>();
+        var totalAchievementCounts = new Dictionary<int, int>();
+        for (var i = 0; i < endYear; i++)
+        {
+            var inZone = SystemClock.Instance.GetCurrentInstant().InZone(timeZone).Date.Minus(Period.FromYears(i));
+
+            var startTime = timeZone.AtStartOfDay(inZone);
+            var endTime = timeZone.AtStartOfDay(inZone.PlusDays(1));
+
+            var daily = new ActivityResultsChild
+            {
+                Year = inZone.Year,
+                StartTimeMs = startTime.ToInstant().ToUnixTimeMilliseconds(),
+                EndTimeMs = endTime.ToInstant().ToUnixTimeMilliseconds(),
+            };
+
+            var currentActivitySet = await TryGetActivitySet(daily.StartTimeMs, daily.EndTimeMs);
+            if (currentActivitySet.AchievementCounts.Count == 0 && currentActivitySet.PostTags.Count == 0)
+            {
+                continue;
+            }
+
+            foreach (var kvp in currentActivitySet.PostTags)
+            {
+                totalPostTagCounts.TryGetValue(kvp.Key, out var currentValue);
+                totalPostTagCounts[kvp.Key] = currentValue + kvp.Value;
+            }
+
+            foreach (var kvp in currentActivitySet.AchievementCounts)
+            {
+                totalAchievementCounts.TryGetValue(kvp.Key, out var currentValue);
+                totalAchievementCounts[kvp.Key] = currentValue + kvp.Value;
+            }
+
+            var dailyTopAchievemnts = currentActivitySet.AchievementCounts.OrderByDescending(x => x.Value).Take(topValueCount);
+            foreach (var kvp in dailyTopAchievemnts)
+            {
+                var tag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, kvp.Key, null, locale);
+                daily.TopAchievements.Add(new Tuple<PostTagInfo, int>(tag, kvp.Value));
+            }
+
+            var dailyTopTags = currentActivitySet.PostTags.OrderByDescending(x => x.Value).Take(topValueCount);
+            foreach (var kvp in dailyTopTags)
+            {
+                if (!ZExtensions.ParseTagInfoFrom(kvp.Key, out var postTagInfo))
+                {
+                    continue;
+                }
+
+                var tag = await _commonServices.TagServices.GetTagInfo(postTagInfo.Type, postTagInfo.Id, postTagInfo.Text, locale);
+                daily.TopTags.Add(new Tuple<PostTagInfo, int>(tag, kvp.Value));
+            }
+
+            daily.TotalTags = currentActivitySet.PostTags.Count;
+            daily.TotalAchievements = currentActivitySet.TotalAchievements;
+
+            foreach (var firstTag in currentActivitySet.FirstTags)
+            {
+                if (!ZExtensions.ParseTagInfoFrom(firstTag, out var postTagInfo))
+                {
+                    continue;
+                }
+
+                var tag = await _commonServices.TagServices.GetTagInfo(postTagInfo.Type, postTagInfo.Id, postTagInfo.Text, locale);
+                daily.FirstTags.Add(tag);
+            }
+
+            foreach (var firstAchievement in currentActivitySet.FirstAchievements)
+            {
+                var tag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, firstAchievement, null, locale);
+                daily.FirstAchievements.Add(tag);
+            }
+
+            results.Totals.TotalTags += daily.TotalTags;
+            results.Totals.TotalAchievements += daily.TotalAchievements;
+
+            results.Totals.FirstTags.AddRange(daily.FirstTags);
+            results.Totals.FirstAchievements.AddRange(daily.FirstAchievements);
+
+            results.DataByYear.Add(daily);
+        }
+
+        var allTimeTopAchievement = totalAchievementCounts.OrderByDescending(x => x.Value).Take(topValueCount);
+        foreach (var kvp in allTimeTopAchievement)
+        {
+            var tag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, kvp.Key, null, locale);
+            results.Totals.TopAchievements.Add(new Tuple<PostTagInfo, int>(tag, kvp.Value));
+        }
+
+        var allTimeTopTags = totalPostTagCounts.OrderByDescending(x => x.Value).Take(topValueCount);
+        foreach (var kvp in allTimeTopTags)
+        {
+            if (!ZExtensions.ParseTagInfoFrom(kvp.Key, out var postTagInfo))
+            {
+                continue;
+            }
+
+            var tag = await _commonServices.TagServices.GetTagInfo(postTagInfo.Type, postTagInfo.Id, postTagInfo.Text, locale);
+            results.Totals.TopTags.Add(new Tuple<PostTagInfo, int>(tag, kvp.Value));
+        }
+
+        results.DataByYear = results.DataByYear.OrderByDescending(x => x.Year).ToList();
+
+        return results;
+    }
+
+    [ComputeMethod(AutoInvalidateTime = 60 * 30)]
+    protected virtual async Task<ActivitySet> TryGetActivitySet(long startTimeMs, long endTimeMs)
+    {
+        await using var database = CreateDbContext();
+
+        var dailyAchievementssQuery = from achievemnts in database.CharacterAchievements
+                                      where achievemnts.AchievementTimeStamp >= startTimeMs && achievemnts.AchievementTimeStamp < endTimeMs
+                                      select achievemnts;
+
+        var dailyAchievementsIdQuery = from achievement in dailyAchievementssQuery
+                                       group achievement by achievement.AchievementId into g
+                                       select new
+                                       {
+                                           Id = g.Key,
+                                           Count = g.Count()
+                                       };
+
+        var activitySet = new ActivitySet();
+        var dailyAchievementsCount = await dailyAchievementssQuery.CountAsync();
+        var dailyAchievementsById = await dailyAchievementsIdQuery.ToArrayAsync();
+
+        foreach (var kvp in dailyAchievementsById)
+        {
+            activitySet.AchievementCounts[kvp.Id] = kvp.Count;
+        }
+
+        activitySet.TotalAchievements += dailyAchievementsCount;
+
+        var dailyPostsQuery = from post in database.Posts.Include(p => p.PostTags)
+                              where post.PostTime >= Instant.FromUnixTimeMilliseconds(startTimeMs) && post.PostTime < Instant.FromUnixTimeMilliseconds(endTimeMs)
+                              select post;
+
+        var dailyPosts = await dailyPostsQuery.ToArrayAsync();
+        foreach (var postRecord in dailyPosts)
+        {
+            foreach (var postTag in postRecord.PostTags)
+            {
+                if (postTag.TagKind != PostTagKind.Post)
+                {
+                    continue;
+                }
+
+                activitySet.PostTags.TryGetValue(postTag.TagString, out var tagCount);
+                activitySet.PostTags[postTag.TagString] = tagCount + 1;
+            }
+        }
+
+        var firstAchievementsQuery = from achievement in database.CharacterAchievements
+                                     group achievement by achievement.AchievementId into g
+                                     where g.Min(e => e.AchievementTimeStamp) >= startTimeMs && g.Min(e => e.AchievementTimeStamp) < endTimeMs
+                                     select new
+                                     {
+                                         Id = g.Key,
+                                     };
+
+        var firstAchievements = await firstAchievementsQuery.ToArrayAsync();
+        foreach (var firstAchievement in firstAchievements)
+        {
+            activitySet.FirstAchievements.Add(firstAchievement.Id);
+        }
+
+        var firstTagsQuery = from tag in database.PostTags
+                             join post in database.Posts
+                                 on tag.PostId equals post.Id
+                             where tag.TagKind == PostTagKind.Post
+                             select new
+                             {
+                                 post.PostTime,
+                                 tag.TagString,
+                             };
+
+        var firstTagsGroupedQuery = from kvp in firstTagsQuery
+                                    group kvp by kvp.TagString into g
+                                    where g.Min(e => e.PostTime) >= Instant.FromUnixTimeMilliseconds(startTimeMs) && g.Min(e => e.PostTime) < Instant.FromUnixTimeMilliseconds(endTimeMs)
+                                    select new
+                                    {
+                                        Id = g.Key,
+                                    };
+
+        var firstTags = await firstTagsGroupedQuery.ToArrayAsync();
+        foreach (var firstTag in firstTags)
+        {
+            activitySet.FirstTags.Add(firstTag.Id);
+        }
+
+        return activitySet;
+    }
+
+    [ComputeMethod]
     public virtual async Task<MainSearchResult[]> TrySearch(Session session, MainSearchType searchType, string searchString)
     {
         return await TrySearch(searchType, searchString);
