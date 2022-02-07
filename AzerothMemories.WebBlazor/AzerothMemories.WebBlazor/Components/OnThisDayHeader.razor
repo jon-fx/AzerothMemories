@@ -22,9 +22,9 @@ else
                 {
                     <MudText Typo="Typo.h6">Year @HeaderData.Year</MudText>
                 }
-
-                <MudText Typo="Typo.body1">Total Tags: @HeaderData.TotalTags</MudText>
-                <MudText Typo="Typo.body1">Total Achievements: @HeaderData.TotalAchievements</MudText>
+                
+                <MudText Typo="Typo.body1">Total Tags: @HeaderData.TotalTags.ToString("N0")</MudText>
+                <MudText Typo="Typo.body1">Total Achievements: @HeaderData.TotalAchievements.ToString("N0")</MudText>
             </CardHeaderContent>
         </MudCardHeader>
         <MudDivider />
