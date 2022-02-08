@@ -6,7 +6,7 @@ internal sealed class AchievementDataSeeder : GenericBase<AchievementDataSeeder>
     {
     }
 
-    protected override Task DoSomething()
+    protected override async Task DoSomething()
     {
         var data = new Dictionary<int, WowToolsData>();
         WowTools.LoadDataFromWowTools("achievement", "ID", ref data);
@@ -17,22 +17,12 @@ internal sealed class AchievementDataSeeder : GenericBase<AchievementDataSeeder>
 
             if (reference.TryGetData<int>("IconFileID", out var iconId))
             {
-                if (WowTools.TryGetIconName(iconId, out var iconName))
-                {
-                    var newValue = $"https://render.worldofwarcraft.com/eu/icons/56/{iconName}.jpg";
-                    ResourceWriter.AddServerSideLocalizationMedia(PostTagType.Achievement, reference.Id, newValue);
-                }
-                else
-                {
-                    throw new NotImplementedException();
-                }
+                await ResourceWriter.TryAddServerSideLocalizationMedia(PostTagType.Achievement, reference.Id, iconId);
             }
             else
             {
                 throw new NotImplementedException();
             }
         }
-
-        return Task.CompletedTask;
     }
 }

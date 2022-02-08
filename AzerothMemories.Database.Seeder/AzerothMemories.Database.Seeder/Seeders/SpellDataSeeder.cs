@@ -6,7 +6,7 @@ internal sealed class SpellDataSeeder : GenericBase<SpellDataSeeder>
     {
     }
 
-    protected override Task DoSomething()
+    protected override async Task DoSomething()
     {
         var data = new Dictionary<int, WowToolsData>();
         WowTools.LoadDataFromWowTools("SpellName", "ID", ref data);
@@ -18,25 +18,12 @@ internal sealed class SpellDataSeeder : GenericBase<SpellDataSeeder>
 
             if (reference.TryGetData<int>("SpellIconFileDataID", out var iconId))
             {
-                if (iconId == 0)
-                {
-                }
-                else if (WowTools.TryGetIconName(iconId, out var iconName))
-                {
-                    var newValue = $"https://render.worldofwarcraft.com/eu/icons/56/{iconName}.jpg";
-                    ResourceWriter.AddServerSideLocalizationMedia(PostTagType.Spell, reference.Id, newValue);
-                }
-                else
-                {
-                    Logger.LogWarning($"Spell: {reference.Id} - Missing Icon :{iconId}");
-                }
+                await ResourceWriter.TryAddServerSideLocalizationMedia(PostTagType.Spell, reference.Id, iconId);
             }
             else
             {
                 Logger.LogWarning($"Spell: {reference.Id} - Missing SpellIconFileDataID");
             }
         }
-
-        return Task.CompletedTask;
     }
 }

@@ -2,14 +2,18 @@
 
 internal sealed class MoaResourceWriter
 {
+    private readonly WowTools _wowTools;
+    private readonly ILogger<MoaResourceWriter> _logger;
     private readonly IDbContextFactory<AppDbContext> _databaseProvider;
     private readonly Dictionary<string, BlizzardDataRecord> _serverSideResources;
 
     private readonly Dictionary<string, BlizzardDataRecord> _changedServerSideResources;
     private readonly Dictionary<string, Dictionary<string, string>> _allResourceStringsByLocal;
 
-    public MoaResourceWriter(IDbContextFactory<AppDbContext> databaseProvider)
+    public MoaResourceWriter(WowTools wowTools, ILogger<MoaResourceWriter> logger, IDbContextFactory<AppDbContext> databaseProvider)
     {
+        _wowTools = wowTools;
+        _logger = logger;
         _databaseProvider = databaseProvider;
         _serverSideResources = new Dictionary<string, BlizzardDataRecord>();
         _changedServerSideResources = new Dictionary<string, BlizzardDataRecord>();
@@ -67,17 +71,102 @@ internal sealed class MoaResourceWriter
         changed = true;
     }
 
-    public void AddServerSideLocalizationMedia(PostTagType tagType, long tagId, string media)
+    public void TryAddServerSideLocalizationMedia(PostTagType tagType, long tagId, string mediaPath)
     {
+        Exceptions.ThrowIf(string.IsNullOrEmpty(mediaPath));
+
+        var fileInfo = GetLocalMediaFileInfo(Path.GetFileNameWithoutExtension(mediaPath));
+        if (tagType != PostTagType.Realm && !fileInfo.Exists)
+        {
+            throw new NotImplementedException();
+        }
+
         var resource = GetOrCreateServerSideResource(tagType, tagId);
-        if (resource.Media == media)
+        if (resource.Media == mediaPath)
         {
             return;
         }
 
-        resource.Media = media;
+        resource.Media = mediaPath;
 
         OnServerSideRecordUpdated(true, resource);
+    }
+
+    private FileInfo GetLocalMediaFileInfo(string mediaPath)
+    {
+        var localPath = $@"C:\Users\John\Desktop\Stuff\BlizzardData\Media\{mediaPath}.jpg";
+        return new FileInfo(localPath);
+    }
+
+    public async Task TryAddServerSideLocalizationMedia(PostTagType tagType, long tagId, int mediaId)
+    {
+        if (mediaId == 0)
+        {
+            return;
+        }
+
+        string remotePath = null;
+        if (_wowTools.TryGetIconName(mediaId, out var iconName))
+        {
+            remotePath = $"https://render.worldofwarcraft.com/eu/icons/56/{iconName}.jpg";
+        }
+        else
+        {
+            iconName = mediaId.ToString();
+        }
+
+        var fileInfo = GetLocalMediaFileInfo(iconName);
+        if (fileInfo.Exists && fileInfo.Length > 0)
+        {
+        }
+        else
+        {
+            await using var memoryStream = new MemoryStream();
+            var pathsToTry = new[]
+            {
+                remotePath,
+                $"https://wow.zamimg.com/images/wow/icons/large/{iconName.Replace(" ", "-")}.jpg",
+                $"https://wow.zamimg.com/images/wow/icons/large/{mediaId}.jpg",
+            };
+
+            foreach (var path in pathsToTry)
+            {
+                if (await TryDownloadImage(memoryStream, path))
+                {
+                    break;
+                }
+            }
+
+            var buffer = memoryStream.ToArray();
+            if (buffer.Length > 0)
+            {
+                await File.WriteAllBytesAsync(fileInfo.FullName, memoryStream.ToArray());
+            }
+            else
+            {
+                _logger.LogWarning($"{tagType}: {tagId} - Missing Icon: {mediaId}");
+                return;
+            }
+        }
+
+        TryAddServerSideLocalizationMedia(tagType, tagId, Path.GetFileNameWithoutExtension(fileInfo.Name));
+    }
+
+    private async Task<bool> TryDownloadImage(MemoryStream fileStream, string remotePath)
+    {
+        if (string.IsNullOrEmpty(remotePath))
+        {
+            return false;
+        }
+
+        using var client = new HttpClient();
+        using var response = await client.GetAsync(remotePath);
+        if (response.IsSuccessStatusCode)
+        {
+            await response.Content.CopyToAsync(fileStream);
+        }
+
+        return response.IsSuccessStatusCode;
     }
 
     public bool GetClientSideLocalizationData(string locale, string key, out string value)

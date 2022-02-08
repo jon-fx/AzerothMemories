@@ -6,7 +6,7 @@ internal sealed class PetDataSeeder : GenericBase<PetDataSeeder>
     {
     }
 
-    protected override Task DoSomething()
+    protected override async Task DoSomething()
     {
         var data = new Dictionary<int, WowToolsData>();
         WowTools.LoadDataFromWowTools("BattlePetSpecies", "ID", ref data, new[] { "ID", "SummonSpellID", "IconFileDataID" });
@@ -21,18 +21,8 @@ internal sealed class PetDataSeeder : GenericBase<PetDataSeeder>
 
             if (reference.TryGetData<int>("IconFileDataID", out var iconId))
             {
-                if (iconId > 0 && WowTools.TryGetIconName(iconId, out var iconName))
-                {
-                    var newValue = $"https://render.worldofwarcraft.com/eu/icons/56/{iconName}.jpg";
-                    ResourceWriter.AddServerSideLocalizationMedia(PostTagType.Pet, reference.Id, newValue);
-                }
-                else
-                {
-                    Logger.LogWarning($"Pet: {reference.Id} - Missing Icon: {iconId}");
-                }
+                await ResourceWriter.TryAddServerSideLocalizationMedia(PostTagType.Pet, reference.Id, iconId);
             }
         }
-
-        return Task.CompletedTask;
     }
 }

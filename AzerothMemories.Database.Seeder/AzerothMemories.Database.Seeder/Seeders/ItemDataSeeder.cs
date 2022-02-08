@@ -6,7 +6,7 @@ internal sealed class ItemDataSeeder : GenericBase<ItemDataSeeder>
     {
     }
 
-    protected override Task DoSomething()
+    protected override async Task DoSomething()
     {
         var data = new Dictionary<int, WowToolsData>();
 
@@ -53,18 +53,8 @@ internal sealed class ItemDataSeeder : GenericBase<ItemDataSeeder>
                     }
                 }
 
-                if (iconId > 0 && WowTools.TryGetIconName(iconId, out var iconName))
-                {
-                    var newValue = $"https://render.worldofwarcraft.com/eu/icons/56/{iconName}.jpg";
-                    ResourceWriter.AddServerSideLocalizationMedia(PostTagType.Item, reference.Id, newValue);
-                }
-                else
-                {
-                    Logger.LogWarning($"Item: {reference.Id} - Missing Icon: {iconId}");
-                }
+                await ResourceWriter.TryAddServerSideLocalizationMedia(PostTagType.Item, reference.Id, iconId);
             }
         }
-
-        return Task.CompletedTask;
     }
 }

@@ -25,7 +25,7 @@ internal sealed class PlayerDataSeeder : GenericBase<PlayerDataSeeder>
                         var media = classMedia.Assets.FirstOrDefault(x => x.Key == "icon");
                         if (media != null)
                         {
-                            ResourceWriter.AddServerSideLocalizationMedia(PostTagType.CharacterClass, classInfo.Id, media.Value.AbsoluteUri);
+                            ResourceWriter.TryAddServerSideLocalizationMedia(PostTagType.CharacterClass, classInfo.Id, media.Value.AbsoluteUri);
                         }
                         else
                         {
@@ -55,7 +55,7 @@ internal sealed class PlayerDataSeeder : GenericBase<PlayerDataSeeder>
                             var media = specMedia.Assets.FirstOrDefault(x => x.Key == "icon");
                             if (media != null)
                             {
-                                ResourceWriter.AddServerSideLocalizationMedia(PostTagType.CharacterClassSpecialization, dataSpecialization.Id, media.Value.AbsoluteUri);
+                                ResourceWriter.TryAddServerSideLocalizationMedia(PostTagType.CharacterClassSpecialization, dataSpecialization.Id, media.Value.AbsoluteUri);
                             }
                             else
                             {

@@ -24,7 +24,7 @@ internal sealed class RealmDataSeeder : GenericBase<RealmDataSeeder>
                     SetExtensions.Update(realmRecord, (l, x) => $"{twoLetters}-{x}");
 
                     ResourceWriter.AddServerSideLocalizationName(PostTagType.Realm, realmData.Id, realmRecord);
-                    ResourceWriter.AddServerSideLocalizationMedia(PostTagType.Realm, realmData.Id, realmData.Slug);
+                    ResourceWriter.TryAddServerSideLocalizationMedia(PostTagType.Realm, realmData.Id, realmData.Slug);
 
                     //ResourceWriter.AddClientSideCommonLocalizationData($"RealmSlug-{realmData.Id}", realmData.Slug);
                 }
