@@ -408,11 +408,11 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         try
         {
             var imageNameBuilder = new StringBuilder();
-            foreach (var tuple in dataToUpload)
+            foreach (var (extension, data) in dataToUpload)
             {
-                var blobName = $"{accountViewModel.Id}-{Guid.NewGuid()}.{tuple.Extension}";
+                var blobName = $"{accountViewModel.Id}-{Guid.NewGuid()}.{extension}";
                 var blobClient = new Azure.Storage.Blobs.BlobClient(_commonServices.Config.BlobStorageConnectionString, "moaimages", blobName);
-                var result = await blobClient.UploadAsync(tuple.Data);
+                var result = await blobClient.UploadAsync(data);
                 if (result.Value == null)
                 {
                     return AddMemoryResultCode.UploadFailed;

@@ -4,23 +4,16 @@ public sealed class CommonConfig
 {
     public CommonConfig()
     {
+        //DatabaseConnectionString = "***REMOVED***";
+        //HangfireConnectionString =  "***REMOVED***";
+
+        DatabaseConnectionString = "***REMOVED***";
+        HangfireConnectionString = "***REMOVED***";
     }
 
-    public CommonConfig(bool azure)
-    {
-        if (azure)
-        {
-        }
-        else
-        {
-            DatabaseConnectionString = "***REMOVED***";
-            HangfireConnectionString = "***REMOVED***";
-        }
-    }
+    public string DatabaseConnectionString { get; init; }
 
-    public string DatabaseConnectionString { get; init; } = "***REMOVED***";
-
-    public string HangfireConnectionString { get; init; } = "***REMOVED***";
+    public string HangfireConnectionString { get; init; }
 
     public string BlobStorageConnectionString { get; } = "***REMOVED***";
 

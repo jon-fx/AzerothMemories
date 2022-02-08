@@ -3,12 +3,7 @@ using AzerothMemories.WebServer.Common;
 using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
 
-var azure = true;
-#if DEBUG
-azure = false;
-#endif
-
-var config = new CommonConfig(azure);
+var config = new CommonConfig();
 var services = new ServiceCollection();
 
 services.AddFluentMigratorCore()
