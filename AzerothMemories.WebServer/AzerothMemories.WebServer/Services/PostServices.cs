@@ -1,5 +1,6 @@
-﻿using Azure.Storage.Blobs;
+﻿using Humanizer;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Gif;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using System.Text;
 
@@ -355,7 +356,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             return AddMemoryResultCode.UploadFailed;
         }
 
-        var dataToUpload = new BinaryData[imageDataList.Count];
+        var dataToUpload = new (string Extension, BinaryData Data)[imageDataList.Count];
         for (var i = 0; i < imageDataList.Count; i++)
         {
             try
@@ -367,19 +368,36 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
                     break;
                 }
 
+                await using var memoryStream = new MemoryStream();
                 using var image = Image.Load(buffer);
+                var extension = "jpg";
                 image.Metadata.ExifProfile = null;
 
-                var encoder = new JpegEncoder
+                if (image.Frames.Count > 1)
                 {
-                    Quality = accountViewModel.GetUploadQuality(),
-                };
+                    var encoder = new GifEncoder();
 
-                await using var memoryStream = new MemoryStream();
-                await image.SaveAsJpegAsync(memoryStream, encoder);
-                memoryStream.Position = 0;
+                    await image.SaveAsGifAsync(memoryStream, encoder);
+                    memoryStream.Position = 0;
+                    extension = "gif";
+                }
+                else
+                {
+                    var encoder = new JpegEncoder();
 
-                dataToUpload[i] = new BinaryData(memoryStream.ToArray());
+                    await image.SaveAsJpegAsync(memoryStream, encoder);
+                    memoryStream.Position = 0;
+
+                    if (memoryStream.Length > 1.Megabytes().Bytes)
+                    {
+                        encoder.Quality = accountViewModel.GetUploadQuality();
+
+                        await image.SaveAsJpegAsync(memoryStream, encoder);
+                        memoryStream.Position = 0;
+                    }
+                }
+
+                dataToUpload[i] = (extension, new BinaryData(memoryStream.ToArray()));
             }
             catch (Exception)
             {
@@ -390,15 +408,15 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         try
         {
             var imageNameBuilder = new StringBuilder();
-            foreach (var memoryStream in dataToUpload)
+            foreach (var tuple in dataToUpload)
             {
-                var blobName = $"{accountViewModel.Id}-{Guid.NewGuid()}.jpg";
-                var blobClient = new BlobClient(_commonServices.Config.BlobStorageConnectionString, "moaimages", blobName);
-                var result = await blobClient.UploadAsync(memoryStream);
-                if (result.Value == null)
-                {
-                    return AddMemoryResultCode.UploadFailed;
-                }
+                var blobName = $"{accountViewModel.Id}-{Guid.NewGuid()}.{tuple.Extension}";
+                //var blobClient = new BlobClient(_commonServices.Config.BlobStorageConnectionString, "moaimages", blobName);
+                //var result = await blobClient.UploadAsync(memoryStream);
+                //if (result.Value == null)
+                //{
+                //    return AddMemoryResultCode.UploadFailed;
+                //}
 
                 imageNameBuilder.Append(blobName);
                 imageNameBuilder.Append('|');
