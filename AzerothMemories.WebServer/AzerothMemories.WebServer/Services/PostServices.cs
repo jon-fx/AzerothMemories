@@ -362,7 +362,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             {
                 var buffer = imageDataList[i];
                 var bufferCount = buffer.Length;
-                if (bufferCount == 0 || bufferCount > 1024 * 1024 * 10)
+                if (bufferCount == 0 || bufferCount > ZExtensions.MaxAddMemoryFileSizeInBytes)
                 {
                     break;
                 }

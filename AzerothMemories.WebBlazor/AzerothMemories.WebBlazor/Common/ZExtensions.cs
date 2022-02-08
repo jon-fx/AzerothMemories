@@ -4,20 +4,21 @@ namespace AzerothMemories.WebBlazor.Common;
 
 public static class ZExtensions
 {
-    public static string DefaultSocialImage;
-    public static string BlobStoragePath = "https://moastorage.blob.core.windows.net/moaimages/";
+    public static readonly string DefaultSocialImage;
+    public static readonly string BlobStoragePath = "https://moastorage.blob.core.windows.net/moaimages/";
 
-    public static List<string> ValidUploadExtensions = new() { ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".bmp" };
-    public static string UploadAcceptExtensions = "image/*";
+    public static readonly List<string> ValidUploadExtensions = new() { ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".bmp" };
+    public static readonly string UploadAcceptExtensions = "image/*";
 
-    public static int MaxCommentDepth = 5;
-    public static int MaxPostCommentLength = 2048;
-    public static int MaxCommentLength = 2048;
-    public static int ReportPostCommentMaxLength = 200;
-    public static int MaxPostScreenShots = 5;
+    public static readonly int MaxCommentDepth = 5;
+    public static readonly int MaxPostCommentLength = 2048;
+    public static readonly int MaxCommentLength = 2048;
+    public static readonly int ReportPostCommentMaxLength = 200;
+    public static readonly int MaxPostScreenShots = 5;
+    public static readonly int MaxAddMemoryFileSizeInBytes = (int)10.Megabytes().Bytes;
 
     public static readonly (int Min, int Max)[] TagCountsPerPost;
-    public static readonly Instant MinPostTime = Instant.FromUnixTimeMilliseconds(946684800000);
+    public static readonly Instant MinPostTime = Instant.FromUnixTimeMilliseconds(946684800000);//Sat Jan 01 2000 00:00:00 GMT+0000
 
     static ZExtensions()
     {

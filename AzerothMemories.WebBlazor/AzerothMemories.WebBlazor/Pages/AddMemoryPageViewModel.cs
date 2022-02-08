@@ -91,11 +91,20 @@ public sealed class AddMemoryPageViewModel : ViewModelBase
             return;
         }
 
-        await using var memoryStream = new MemoryStream();
-        var stream = file.OpenReadStream(5120000 * 2);
-        await stream.CopyToAsync(memoryStream);
+        byte[] buffer;
+        try
+        {
+            await using var memoryStream = new MemoryStream();
+            var stream = file.OpenReadStream(ZExtensions.MaxAddMemoryFileSizeInBytes);
+            await stream.CopyToAsync(memoryStream);
+            buffer = memoryStream.ToArray();
+        }
+        catch (Exception)
+        {
+            await Services.DialogService.ShowNotificationDialog(false, $"{file.Name} read failed.");
+            return;
+        }
 
-        var buffer = memoryStream.ToArray();
         if (!Services.TimeProvider.TryGetTimeFromFileName(file.Name, out var screenShotUnixTime))
         {
             screenShotUnixTime = file.LastModified.ToUnixTimeMilliseconds();
