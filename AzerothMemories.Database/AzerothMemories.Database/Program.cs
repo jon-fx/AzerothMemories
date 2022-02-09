@@ -16,5 +16,5 @@ var serviceProvider = services.BuildServiceProvider(true);
 
 using var scope = serviceProvider.CreateScope();
 var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
-//runner.MigrateDown(0);
+runner.MigrateDown(0);
 runner.MigrateUp();

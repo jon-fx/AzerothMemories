@@ -32,6 +32,10 @@ internal static class MainTheme
             Warning = "#ffa800",
             Error = "#f64e62",
             Dark = "#27272f"
+        },
+        LayoutProperties = new LayoutProperties
+        {
+            AppbarHeight = "70px"
         }
     };
 }
