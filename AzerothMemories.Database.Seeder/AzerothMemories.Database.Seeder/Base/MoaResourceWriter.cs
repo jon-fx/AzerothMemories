@@ -32,6 +32,13 @@ internal sealed class MoaResourceWriter
         {
             _serverSideResources.Add(result.Key, result);
         }
+
+        var iconName = "inv_misc_questionmark";
+        var fileInfo = GetLocalMediaFileInfo(iconName);
+        if (!fileInfo.Exists)
+        {
+            await TryDownloadImage(fileInfo.FullName, new[] { "https://render.worldofwarcraft.com/eu/icons/56/inv_misc_questionmark.jpg" });
+        }
     }
 
     public void AddServerSideLocalizationName(PostTagType tagType, long tagId, BlizzardDataRecordLocal data)
@@ -121,7 +128,6 @@ internal sealed class MoaResourceWriter
         }
         else
         {
-            await using var memoryStream = new MemoryStream();
             var pathsToTry = new[]
             {
                 remotePath,
@@ -129,27 +135,40 @@ internal sealed class MoaResourceWriter
                 $"https://wow.zamimg.com/images/wow/icons/large/{mediaId}.jpg",
             };
 
-            foreach (var path in pathsToTry)
+            var result = await TryDownloadImage(fileInfo.FullName, pathsToTry);
+            if (result)
             {
-                if (await TryDownloadImage(memoryStream, path))
-                {
-                    break;
-                }
-            }
-
-            var buffer = memoryStream.ToArray();
-            if (buffer.Length > 0)
-            {
-                await File.WriteAllBytesAsync(fileInfo.FullName, memoryStream.ToArray());
             }
             else
             {
                 _logger.LogWarning($"{tagType}: {tagId} - Missing Icon: {mediaId}");
-                return;
             }
         }
 
         TryAddServerSideLocalizationMedia(tagType, tagId, Path.GetFileNameWithoutExtension(fileInfo.Name));
+    }
+
+    private async Task<bool> TryDownloadImage(string fileName, string[] pathsToTry)
+    {
+        await using var memoryStream = new MemoryStream();
+
+        foreach (var path in pathsToTry)
+        {
+            if (await TryDownloadImage(memoryStream, path))
+            {
+                break;
+            }
+        }
+
+        var buffer = memoryStream.ToArray();
+        if (buffer.Length > 0)
+        {
+            await File.WriteAllBytesAsync(fileName, memoryStream.ToArray());
+
+            return true;
+        }
+
+        return false;
     }
 
     private async Task<bool> TryDownloadImage(MemoryStream fileStream, string remotePath)
