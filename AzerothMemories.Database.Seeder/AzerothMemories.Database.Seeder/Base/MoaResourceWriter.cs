@@ -83,9 +83,16 @@ internal sealed class MoaResourceWriter
         Exceptions.ThrowIf(string.IsNullOrEmpty(mediaPath));
 
         var fileInfo = GetLocalMediaFileInfo(Path.GetFileNameWithoutExtension(mediaPath));
-        if (tagType != PostTagType.Realm && !fileInfo.Exists)
+        if (tagType == PostTagType.Realm)
+        {
+        }
+        else if (!fileInfo.Exists)
         {
             throw new NotImplementedException();
+        }
+        else
+        {
+            mediaPath = $"/media/{fileInfo.Name}";
         }
 
         var resource = GetOrCreateServerSideResource(tagType, tagId);
@@ -142,6 +149,7 @@ internal sealed class MoaResourceWriter
             else
             {
                 _logger.LogWarning($"{tagType}: {tagId} - Missing Icon: {mediaId}");
+                return;
             }
         }
 
