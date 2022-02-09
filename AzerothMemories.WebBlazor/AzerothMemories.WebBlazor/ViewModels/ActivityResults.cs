@@ -1,8 +1,8 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed class ActivityResults
+public sealed record ActivityResults
 {
-    [JsonInclude] public int Status { get; set; }
-    [JsonInclude] public ActivityResultsChild Totals { get; set; } = new();
-    [JsonInclude] public List<ActivityResultsChild> DataByYear { get; set; } = new();
+    [JsonInclude] public int Status { get; init; }
+    [JsonInclude] public ActivityResultsChild Totals { get; init; } = new();
+    [JsonInclude] public List<ActivityResultsChild> DataByYear { get; init; } = new();
 }

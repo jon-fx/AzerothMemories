@@ -156,7 +156,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
             results.Totals.TopTags.Add(new ActivityResultsTuple(tag, kvp.Value));
         }
 
-        results.DataByYear = results.DataByYear.OrderByDescending(x => x.Year).ToList();
+        results.DataByYear.AddRange(results.DataByYear.OrderByDescending(x => x.Year).ToList());
 
         return results;
     }
