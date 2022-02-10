@@ -43,7 +43,7 @@ function OpenImageEditor(id, dotNetHelper) {
     }).show(document.getElementById(id).src);
 }
 
-function InitiallizeImageViewer(index, gallery) {
+function InitializeImageViewer(index, gallery) {
     Spotlight.show(gallery, {
         index: index + 1,
     });
