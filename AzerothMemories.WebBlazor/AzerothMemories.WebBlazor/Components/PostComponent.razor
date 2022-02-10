@@ -102,15 +102,15 @@ else
                 }
 
                 var allBlobInfo = Post.GetImageBlobInfo();
-                <div>
-                    @for (var i = 0; i < allBlobInfo.Length; i++)
-                    {
-                        var index = i;
-                        var blobInfo = allBlobInfo[index];
 
-                        <MudImage ObjectFit="ObjectFit.Cover" Fluid="true" Src="@blobInfo.Source"  @onclick="() => OnImageClicked(index)" />
-                    }
-                </div>
+
+                @for (var i = 0; i < allBlobInfo.Length; i++)
+                {
+                    var index = i;
+                    var blobInfo = allBlobInfo[index];
+
+                    <MudImage ObjectFit="ObjectFit.Cover" Fluid="true" Src="@blobInfo.Source" @onclick="() => OnImageClicked(index)" />
+                }
 
                 <div class="d-flex justify-space-between pa-0 ma-2">
                     @if (InDialog)
