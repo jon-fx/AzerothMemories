@@ -6,7 +6,7 @@ public sealed class IndexPageViewModel : ViewModelBase
 {
     public AccountViewModel AccountViewModel { get; private set; }
 
-    public ActivityResultsChild OnThisDay { get; private set; }
+    public DailyActivityResults OnThisDay { get; private set; }
 
     public RecentPostsHelper RecentPostsHelper { get; private set; }
 

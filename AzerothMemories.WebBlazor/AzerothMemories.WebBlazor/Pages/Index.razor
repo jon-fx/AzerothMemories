@@ -13,7 +13,7 @@
 </AuthorizeView>
 
 
-<OnThisDayHeader HeaderData="@ViewModel.OnThisDay" NavigationManager="@NavigationManager"/>
+<OnThisDayHeader HeaderData="@ViewModel.OnThisDay" NavigationManager="@NavigationManager" TimeProvider="@TimeProvider"/>
 <RecentPostsComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" RecentPostsHelper="@ViewModel.RecentPostsHelper" />
 
 @code {

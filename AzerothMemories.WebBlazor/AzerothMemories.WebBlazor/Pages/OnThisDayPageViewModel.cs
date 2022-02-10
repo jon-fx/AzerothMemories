@@ -2,7 +2,7 @@
 
 public sealed class OnThisDayPageViewModel : ViewModelBase
 {
-    public ActivityResults Results { get; set; }
+    public DailyActivityResults[] Results { get; set; }
 
     public override async Task ComputeState()
     {

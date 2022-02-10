@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed class ActivitySet
+public sealed class ActivitySetMain
 {
     public int TotalAchievements { get; set; }
     public HashSet<string> FirstTags { get; set; } = new();

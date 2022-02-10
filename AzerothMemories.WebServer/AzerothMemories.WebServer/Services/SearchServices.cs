@@ -6,37 +6,100 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
 {
     private readonly CommonServices _commonServices;
 
+    private readonly int _year2000 = 2000;
+    private readonly int _totalYearValue = 0;
+    private readonly int _activityStartYear = 1;
+    private readonly int _activityEndYear = DateTime.UtcNow.Year - 2000;
+
     public SearchServices(IServiceProvider services, CommonServices commonServices) : base(services)
     {
         _commonServices = commonServices;
     }
 
     [ComputeMethod]
-    public virtual async Task<ActivityResultsChild> TryGetDailyActivity(Session session, string timeZoneId, long unixTime, string locale)
+    public virtual async Task<DailyActivityResults> TryGetDailyActivity(Session session, string timeZoneId, long unixTime, string locale)
     {
-        var results = await TryGetActivity(timeZoneId, unixTime, locale);
-        if (results.Totals == null)
+        long accountId = 0;
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        if (activeAccount != null)
         {
-            return new ActivityResultsChild { Year = -1 };
+            accountId = activeAccount.Id;
         }
 
-        return results.Totals;
+        return await TryGetDailyActivity(accountId, timeZoneId, unixTime, locale);
     }
 
     [ComputeMethod]
-    public virtual async Task<ActivityResults> TryGetDailyActivityFull(Session session, string timeZoneId, long unixTime, string locale)
+    public virtual async Task<DailyActivityResults> TryGetDailyActivity(long accountId, string timeZoneId, long unixTime, string locale)
     {
-        var results = await TryGetActivity(timeZoneId, unixTime, locale);
-        return results;
+        var allResults = await TryGetActivity(timeZoneId, unixTime, locale);
+        var userResults = new Dictionary<int, DailyActivityResultsUser>();
+        if (accountId > 0)
+        {
+            userResults = await TryGetUserActivity(accountId, timeZoneId, unixTime, locale);
+        }
+
+        allResults.TryGetValue(_totalYearValue, out var mainActivity);
+        userResults.TryGetValue(_totalYearValue, out var userActivity);
+
+        return new DailyActivityResults { Year = _totalYearValue, Main = mainActivity, User = userActivity };
     }
 
     [ComputeMethod]
-    protected virtual async Task<ActivityResults> TryGetActivity(string timeZoneId, long unixTime, string locale)
+    public virtual async Task<DailyActivityResults[]> TryGetDailyActivityFull(Session session, string timeZoneId, long unixTime, string locale)
+    {
+        long accountId = 0;
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        if (activeAccount != null)
+        {
+            accountId = activeAccount.Id;
+        }
+
+        return await TryGetDailyActivityFull(accountId, timeZoneId, unixTime, locale);
+    }
+
+    [ComputeMethod]
+    public virtual async Task<DailyActivityResults[]> TryGetDailyActivityFull(long accountId, string timeZoneId, long unixTime, string locale)
+    {
+        var allResults = await TryGetActivity(timeZoneId, unixTime, locale);
+        var userResults = new Dictionary<int, DailyActivityResultsUser>();
+        if (accountId > 0)
+        {
+            userResults = await TryGetUserActivity(accountId, timeZoneId, unixTime, locale);
+        }
+
+        var resultList = new List<DailyActivityResults>();
+        for (var i = _year2000; i < DateTime.UtcNow.Year; i++)
+        {
+            allResults.TryGetValue(i, out var mainActivity);
+            userResults.TryGetValue(i, out var userActivity);
+
+            var data = new DailyActivityResults { Year = i, Main = mainActivity, User = userActivity };
+            if (data.Main == null && data.User == null)
+            {
+            }
+            else
+            {
+                resultList.Add(data);
+            }
+        }
+
+        allResults.TryGetValue(_totalYearValue, out var totalMainActivity);
+        userResults.TryGetValue(_totalYearValue, out var totalUserActivity);
+
+        resultList = resultList.OrderByDescending(x => x.Year).ToList();
+        resultList.Insert(0, new DailyActivityResults { Year = _totalYearValue, Main = totalMainActivity, User = totalUserActivity });
+
+        return resultList.ToArray();
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<Dictionary<int, DailyActivityResultsMain>> TryGetActivity(string timeZoneId, long unixTime, string locale)
     {
         var timeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(timeZoneId);
         if (timeZone == null)
         {
-            return new ActivityResults { Status = -1 };
+            return new Dictionary<int, DailyActivityResultsMain>();
         }
 
         var today = SystemClock.Instance.GetCurrentInstant().InZone(timeZone).Date;
@@ -44,27 +107,27 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<ActivityResults> TryGetActivity(string timeZoneId, string locale, LocalDate today)
+    protected virtual async Task<Dictionary<int, DailyActivityResultsMain>> TryGetActivity(string timeZoneId, string locale, LocalDate today)
     {
         var timeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(timeZoneId);
         if (timeZone == null)
         {
-            return new ActivityResults { Status = -1 };
+            return new Dictionary<int, DailyActivityResultsMain>();
         }
 
-        var results = new ActivityResults();
-        var endYear = today.Year - 2000 + 1;
+        var results = new Dictionary<int, DailyActivityResultsMain>();
+        var totals = new DailyActivityResultsMain { Year = _totalYearValue };
         var topValueCount = 10;
         var totalPostTagCounts = new Dictionary<string, int>();
         var totalAchievementCounts = new Dictionary<int, int>();
-        for (var i = 0; i < endYear; i++)
+        for (var i = _activityStartYear; i < _activityEndYear; i++)
         {
             var inZone = SystemClock.Instance.GetCurrentInstant().InZone(timeZone).Date.Minus(Period.FromYears(i));
 
             var startTime = timeZone.AtStartOfDay(inZone);
             var endTime = timeZone.AtStartOfDay(inZone.PlusDays(1));
 
-            var daily = new ActivityResultsChild
+            var daily = new DailyActivityResultsMain
             {
                 Year = inZone.Year,
                 StartTimeMs = startTime.ToInstant().ToUnixTimeMilliseconds(),
@@ -128,20 +191,20 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                 daily.FirstAchievements.Add(tag);
             }
 
-            results.Totals.TotalTags += daily.TotalTags;
-            results.Totals.TotalAchievements += daily.TotalAchievements;
+            totals.TotalTags += daily.TotalTags;
+            totals.TotalAchievements += daily.TotalAchievements;
 
-            results.Totals.FirstTags.AddRange(daily.FirstTags);
-            results.Totals.FirstAchievements.AddRange(daily.FirstAchievements);
+            totals.FirstTags.AddRange(daily.FirstTags);
+            totals.FirstAchievements.AddRange(daily.FirstAchievements);
 
-            results.DataByYear.Add(daily);
+            results.Add(daily.Year, daily);
         }
 
         var allTimeTopAchievement = totalAchievementCounts.OrderByDescending(x => x.Value).Take(topValueCount);
         foreach (var kvp in allTimeTopAchievement)
         {
             var tag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, kvp.Key, null, locale);
-            results.Totals.TopAchievements.Add(new ActivityResultsTuple(tag, kvp.Value));
+            totals.TopAchievements.Add(new ActivityResultsTuple(tag, kvp.Value));
         }
 
         var allTimeTopTags = totalPostTagCounts.OrderByDescending(x => x.Value).Take(topValueCount);
@@ -153,16 +216,16 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
             }
 
             var tag = await _commonServices.TagServices.GetTagInfo(postTagInfo.Type, postTagInfo.Id, postTagInfo.Text, locale);
-            results.Totals.TopTags.Add(new ActivityResultsTuple(tag, kvp.Value));
+            totals.TopTags.Add(new ActivityResultsTuple(tag, kvp.Value));
         }
 
-        results.DataByYear.AddRange(results.DataByYear.OrderByDescending(x => x.Year).ToList());
+        results.Add(totals.Year, totals);
 
         return results;
     }
 
     [ComputeMethod(AutoInvalidateTime = 60 * 10)]
-    protected virtual async Task<ActivitySet> TryGetActivitySet(long startTimeMs, long endTimeMs)
+    protected virtual async Task<ActivitySetMain> TryGetActivitySet(long startTimeMs, long endTimeMs)
     {
         await using var database = CreateDbContext();
 
@@ -178,7 +241,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                                            Count = g.Count()
                                        };
 
-        var activitySet = new ActivitySet();
+        var activitySet = new ActivitySetMain();
         var dailyAchievementsCount = await dailyAchievementssQuery.CountAsync();
         var dailyAchievementsById = await dailyAchievementsIdQuery.ToArrayAsync();
 
@@ -190,7 +253,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         activitySet.TotalAchievements += dailyAchievementsCount;
 
         var dailyPostsQuery = from post in database.Posts.Include(p => p.PostTags)
-                              where post.PostTime >= Instant.FromUnixTimeMilliseconds(startTimeMs) && post.PostTime < Instant.FromUnixTimeMilliseconds(endTimeMs)
+                              where post.DeletedTimeStamp == 0 && post.PostTime >= Instant.FromUnixTimeMilliseconds(startTimeMs) && post.PostTime < Instant.FromUnixTimeMilliseconds(endTimeMs)
                               select post;
 
         var dailyPosts = await dailyPostsQuery.ToArrayAsync();
@@ -225,7 +288,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         var firstTagsQuery = from tag in database.PostTags
                              join post in database.Posts
                                  on tag.PostId equals post.Id
-                             where tag.TagKind == PostTagKind.Post
+                             where post.DeletedTimeStamp == 0 && tag.TagKind == PostTagKind.Post
                              select new
                              {
                                  post.PostTime,
@@ -244,6 +307,170 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         foreach (var firstTag in firstTags)
         {
             activitySet.FirstTags.Add(firstTag.Id);
+        }
+
+        return activitySet;
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<Dictionary<int, DailyActivityResultsUser>> TryGetUserActivity(long accountId, string timeZoneId, long unixTime, string locale)
+    {
+        var timeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(timeZoneId);
+        if (timeZone == null)
+        {
+            return null;
+        }
+
+        var today = SystemClock.Instance.GetCurrentInstant().InZone(timeZone).Date;
+        return await TryGetUserActivity(accountId, timeZoneId, locale, today);
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<Dictionary<int, DailyActivityResultsUser>> TryGetUserActivity(long accountId, string timeZoneId, string locale, LocalDate today)
+    {
+        var timeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(timeZoneId);
+        if (timeZone == null)
+        {
+            return new Dictionary<int, DailyActivityResultsUser>();
+        }
+
+        var results = new Dictionary<int, DailyActivityResultsUser>();
+        var totals = new DailyActivityResultsUser { AccountId = accountId, Year = _totalYearValue };
+        for (var i = _activityStartYear; i < _activityEndYear; i++)
+        {
+            var inZone = SystemClock.Instance.GetCurrentInstant().InZone(timeZone).Date.Minus(Period.FromYears(i));
+
+            var startTime = timeZone.AtStartOfDay(inZone);
+            var endTime = timeZone.AtStartOfDay(inZone.PlusDays(1));
+
+            var daily = new DailyActivityResultsUser
+            {
+                Year = inZone.Year,
+                AccountId = accountId,
+                StartTimeMs = startTime.ToInstant().ToUnixTimeMilliseconds(),
+                EndTimeMs = endTime.ToInstant().ToUnixTimeMilliseconds(),
+            };
+
+            var currentActivitySet = await TryGetUserActivitySet(accountId, daily.StartTimeMs, daily.EndTimeMs);
+            if (currentActivitySet.Achievements.Count == 0 && currentActivitySet.FirstAchievements.Count == 0 && currentActivitySet.FirstTags.Count == 0 && currentActivitySet.MyMemories.Count == 0)
+            {
+                continue;
+            }
+
+            foreach (var achievement in currentActivitySet.Achievements)
+            {
+                var tag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, achievement, null, locale);
+                daily.Achievements.Add(tag);
+            }
+
+            foreach (var achievement in currentActivitySet.FirstAchievements)
+            {
+                var tag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, achievement, null, locale);
+                daily.FirstAchievements.Add(tag);
+            }
+
+            daily.MyMemories.AddRange(currentActivitySet.MyMemories.OrderByDescending(x => x.PostTime));
+
+            totals.Achievements.AddRange(daily.Achievements);
+            totals.FirstAchievements.AddRange(daily.FirstAchievements);
+            totals.MyMemories.AddRange(daily.MyMemories);
+
+            results.Add(daily.Year, daily);
+        }
+
+        results.Add(totals.Year, totals);
+
+        return results;
+    }
+
+    [ComputeMethod(AutoInvalidateTime = 60 * 10)]
+    protected virtual async Task<ActivitySetUser> TryGetUserActivitySet(long accountId, long startTimeMs, long endTimeMs)
+    {
+        await using var database = CreateDbContext();
+
+        var dailyAchievementssQuery = from achievement in database.CharacterAchievements
+                                      where achievement.AccountId == accountId && achievement.AchievementTimeStamp >= startTimeMs && achievement.AchievementTimeStamp < endTimeMs
+                                      select achievement.AchievementId;
+
+        var activitySet = new ActivitySetUser();
+        var dailyAchievementsId = await dailyAchievementssQuery.ToArrayAsync();
+
+        foreach (var kvp in dailyAchievementsId)
+        {
+            activitySet.Achievements.Add(kvp);
+        }
+
+        var firstAchievementsQuery = from achievement in database.CharacterAchievements
+                                     where achievement.AccountId == accountId
+                                     group achievement by achievement.AchievementId into g
+                                     where g.Min(e => e.AchievementTimeStamp) >= startTimeMs && g.Min(e => e.AchievementTimeStamp) < endTimeMs
+                                     select new
+                                     {
+                                         Id = g.Key,
+                                     };
+
+        var firstAchievements = await firstAchievementsQuery.ToArrayAsync();
+        foreach (var firstAchievement in firstAchievements)
+        {
+            activitySet.FirstAchievements.Add(firstAchievement.Id);
+        }
+
+        var firstTagsQuery = from tag in database.PostTags
+                             join post in database.Posts
+                                 on tag.PostId equals post.Id
+                             where post.AccountId == accountId && post.DeletedTimeStamp == 0 && tag.TagKind == PostTagKind.Post
+                             select new
+                             {
+                                 post.PostTime,
+                                 tag.TagString,
+                             };
+
+        var firstTagsGroupedQuery = from kvp in firstTagsQuery
+                                    group kvp by kvp.TagString into g
+                                    where g.Min(e => e.PostTime) >= Instant.FromUnixTimeMilliseconds(startTimeMs) && g.Min(e => e.PostTime) < Instant.FromUnixTimeMilliseconds(endTimeMs)
+                                    select new
+                                    {
+                                        Id = g.Key,
+                                    };
+
+        var firstTags = await firstTagsGroupedQuery.ToArrayAsync();
+        foreach (var firstTag in firstTags)
+        {
+            activitySet.FirstTags.Add(firstTag.Id);
+        }
+
+        var memoriesQuery = from tag in database.PostTags
+                            join post in database.Posts
+                                on tag.PostId equals post.Id
+                            where post.DeletedTimeStamp == 0 && (tag.TagKind == PostTagKind.Post || tag.TagKind == PostTagKind.PostRestored) && post.PostTime >= Instant.FromUnixTimeMilliseconds(startTimeMs) && post.PostTime < Instant.FromUnixTimeMilliseconds(endTimeMs)
+                            select new { post.Id, post.AccountId, post.PostTime, post.PostComment, post.BlobNames };
+
+        var memories = await memoriesQuery.ToArrayAsync();
+        var memoriesById = new HashSet<long>();
+        foreach (var memory in memories)
+        {
+            if (!memoriesById.Add(memory.Id))
+            {
+                continue;
+            }
+
+            var userTagInfo = await _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Account, memory.AccountId);
+            var blobNames = Array.Empty<string>();
+            if (string.IsNullOrEmpty(memory.BlobNames))
+            {
+            }
+            else
+            {
+                blobNames = memory.BlobNames.Split('|');
+            }
+
+            activitySet.MyMemories.Add(new DailyActivityResultsUserPostInfo
+            {
+                PostId = memory.Id,
+                AccountId = memory.AccountId,
+                PostTime = memory.PostTime.ToUnixTimeMilliseconds(),
+                BlobInfo = PostViewModelBlobInfo.CreateBlobInfo(userTagInfo.Name, memory.PostComment, blobNames),
+            });
         }
 
         return activitySet;

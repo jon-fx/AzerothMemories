@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed record ActivityResultsChild
+public sealed record DailyActivityResultsMain
 {
     [JsonInclude] public int Year { get; init; }
     [JsonInclude] public long StartTimeMs { get; init; }
