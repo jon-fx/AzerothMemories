@@ -411,11 +411,15 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             foreach (var (extension, data) in dataToUpload)
             {
                 var blobName = $"{accountViewModel.Id}-{Guid.NewGuid()}.{extension}";
-                var blobClient = new Azure.Storage.Blobs.BlobClient(_commonServices.Config.BlobStorageConnectionString, "moaimages", blobName);
-                var result = await blobClient.UploadAsync(data);
-                if (result.Value == null)
+
+                if (_commonServices.Config.UploadToBlobStorage)
                 {
-                    return AddMemoryResultCode.UploadFailed;
+                    var blobClient = new Azure.Storage.Blobs.BlobClient(_commonServices.Config.BlobStorageConnectionString, "moaimages", blobName);
+                    var result = await blobClient.UploadAsync(data);
+                    if (result.Value == null)
+                    {
+                        return AddMemoryResultCode.UploadFailed;
+                    }
                 }
 
                 imageNameBuilder.Append(blobName);
@@ -436,6 +440,11 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postAccountId, long postId, string locale)
     {
         var result = await TryGetPostViewModel(session, postId, locale);
+        if (result == null)
+        {
+            return null;
+        }
+
         if (result.AccountId != postAccountId)
         {
             return null;

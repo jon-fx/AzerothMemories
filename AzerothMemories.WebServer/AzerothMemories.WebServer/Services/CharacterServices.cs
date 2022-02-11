@@ -74,7 +74,7 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
 
         var characterRecord = await GetOrCreateCharacterRecord(refFull);
 
-        if (priority == BlizzardUpdatePriority.CharacterLow)
+        if (_commonServices.Config.UpdateSkipCharactersOnLowPriority && priority == BlizzardUpdatePriority.CharacterLow)
         {
         }
         else

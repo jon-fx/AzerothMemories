@@ -20,6 +20,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
             if (invRecord != null)
             {
                 _ = _commonServices.AccountServices.DependsOnAccountRecord(invRecord.AccountId);
+                _ = _commonServices.AccountServices.DependsOnAccountAchievements(invRecord.AccountId);
                 _ = _commonServices.CharacterServices.TryGetAllAccountCharacters(invRecord.AccountId);
 
                 foreach (var characterId in invRecord.CharacterIds)
@@ -84,6 +85,8 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
                     characterRecord.Level = (byte)accountCharacter.Level;
 
                     deletedCharactersSets.Remove(characterRecord.MoaRef);
+
+                    await database.CharacterAchievements.Where(x => x.CharacterId == characterRecord.Id && x.AccountId == null).UpdateAsync(x => new CharacterAchievementRecord { AccountId = record.Id }, cancellationToken);
                 }
             }
 
@@ -195,7 +198,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         var achievementsSummary = await client.GetCharacterAchievementsSummaryAsync(characterRef.Realm, characterRef.Name, record.BlizzardAchievementsLastModified).ConfigureAwait(false);
         if (achievementsSummary.IsSuccess)
         {
-            await UpdateAchievementsPosts(database, record, achievementsSummary);
+            await OnAchievementsUpdate(database, record, achievementsSummary);
         }
         else if (achievementsSummary.IsNotModified)
         {
@@ -257,7 +260,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         return Task.CompletedTask;
     }
 
-    private async Task UpdateAchievementsPosts(AppDbContext database, CharacterRecord record, RequestResult<CharacterAchievementsSummary> achievementsSummary)
+    private async Task OnAchievementsUpdate(AppDbContext database, CharacterRecord record, RequestResult<CharacterAchievementsSummary> achievementsSummary)
     {
         Exceptions.ThrowIf(record.Id == 0);
 
