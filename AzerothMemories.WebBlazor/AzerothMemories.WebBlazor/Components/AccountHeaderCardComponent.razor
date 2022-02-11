@@ -77,12 +77,12 @@ else
 
                     <a href="@($"/follow/{AccountViewModel.Id}")">
                         <MudButton>
-                            <MudText Inline="true"><b>@_followingCount</b> Following</MudText>
+                            <MudText Inline="true"><b>@_followingCount.ToString("N0")</b> Following</MudText>
                         </MudButton>
                     </a>
                     <a href="@($"/follow/{AccountViewModel.Id}")">
                         <MudButton>
-                            <MudText Inline="true"><b>@_followerCount</b> Followers</MudText>
+                            <MudText Inline="true"><b>@_followerCount.ToString("N0")</b> Followers</MudText>
                         </MudButton>
                     </a>
 
@@ -102,12 +102,12 @@ else
                 <MudButtonGroup OverrideStyles="true" Class="pa-0 ma-2 " Variant="Variant.Filled" VerticalAlign="true">
                     <a href="@($"/follow/{AccountViewModel.Id}")">
                         <MudButton>
-                            <MudText Inline="true"><b>@_followingCount</b> Following</MudText>
+                            <MudText Inline="true"><b>@_followingCount.ToString("N0")</b> Following</MudText>
                         </MudButton>
                     </a>
                     <a href="@($"/follow/{AccountViewModel.Id}")">
                         <MudButton>
-                            <MudText Inline="true"><b>@_followerCount</b> Followers</MudText>
+                            <MudText Inline="true"><b>@_followerCount.ToString("N0")</b> Followers</MudText>
                         </MudButton>
                     </a>
 

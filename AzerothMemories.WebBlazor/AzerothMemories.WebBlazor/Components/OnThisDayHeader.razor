@@ -60,8 +60,8 @@ else
                 {
                     new("First Tags", mainData.FirstTags),
                     new("First Achievements", mainData.FirstAchievements),
-                    new("Your Achievements", userData.Achievements),
-                    new("Your First Achievements", userData.FirstAchievements),
+                    new("My Achievements", userData.Achievements),
+                    new("My First Achievements", userData.FirstAchievements),
                 };
 
                 foreach (var (text, items) in mainTuples)
@@ -97,6 +97,7 @@ else
                 if (userData.MyMemories.Count > 0)
                 {
                     <MudPaper Outlined="true" Class="ma-2 pa-2">
+                        <MudText Typo="Typo.body2"><b>My Memories</b></MudText>
 
                         @foreach (var memory in userData.MyMemories)
                         {
