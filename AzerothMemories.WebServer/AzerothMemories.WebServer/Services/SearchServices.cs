@@ -229,11 +229,11 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     {
         await using var database = CreateDbContext();
 
-        var dailyAchievementssQuery = from achievemnts in database.CharacterAchievements
-                                      where achievemnts.AchievementTimeStamp >= startTimeMs && achievemnts.AchievementTimeStamp < endTimeMs
-                                      select achievemnts;
+        var dailyAchievementsQuery = from achievemnts in database.CharacterAchievements
+                                     where achievemnts.AchievementTimeStamp >= startTimeMs && achievemnts.AchievementTimeStamp < endTimeMs
+                                     select achievemnts;
 
-        var dailyAchievementsIdQuery = from achievement in dailyAchievementssQuery
+        var dailyAchievementsIdQuery = from achievement in dailyAchievementsQuery
                                        group achievement by achievement.AchievementId into g
                                        select new
                                        {
@@ -242,7 +242,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                                        };
 
         var activitySet = new ActivitySetMain();
-        var dailyAchievementsCount = await dailyAchievementssQuery.CountAsync();
+        var dailyAchievementsCount = await dailyAchievementsQuery.CountAsync();
         var dailyAchievementsById = await dailyAchievementsIdQuery.ToArrayAsync();
 
         foreach (var kvp in dailyAchievementsById)
