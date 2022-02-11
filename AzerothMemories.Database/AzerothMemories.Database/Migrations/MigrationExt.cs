@@ -9,7 +9,7 @@ public static class MigrationExt
     {
         return table
             .WithColumn(nameof(IBlizzardUpdateRecord.UpdateJob)).AsString(60).Nullable()
-            .WithColumn(nameof(IBlizzardUpdateRecord.UpdateJobEndTime)).AsDateTimeOffset().WithDefaultValue(DateTimeOffset.MinValue)
+            .WithColumn(nameof(IBlizzardUpdateRecord.UpdateJobEndTime)).AsDateTimeOffset().WithDefaultValue(DateTimeOffset.UnixEpoch)
             .WithColumn(nameof(IBlizzardUpdateRecord.UpdateJobLastResult)).AsInt16().WithDefaultValue(0);
     }
 

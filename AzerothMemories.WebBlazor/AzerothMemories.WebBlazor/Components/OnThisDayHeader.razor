@@ -26,25 +26,25 @@ else
                 {
                     <MudText Typo="Typo.h6">Year @HeaderData.Year</MudText>
                 }
+                
+                @{
+                    var none = "None";
+                    var strings = new List<string>
+                    {
+                        $"Total Tags: {(mainData.TotalTags > 0 ? mainData.TotalTags.ToString("N0") : none)}",
+                        $"Total Achievements: {(mainData.TotalAchievements > 0 ? mainData.TotalAchievements.ToString("N0") : none)}",
+                    };
 
-                @if (mainData.TotalTags > 0)
-                {
-                    <MudText Typo="Typo.body1">Total Tags: @mainData.TotalTags.ToString("N0")</MudText>
-                }
+                    if (userData.AccountId > 0)
+                    {
+                        strings.Add($"Your Achievements: {(userData.Achievements.Count > 0 ? userData.Achievements.Count.ToString("N0") : none)}");
+                        strings.Add($"Your First Achievements: {(userData.FirstAchievements.Count > 0 ? userData.FirstAchievements.Count.ToString("N0") : none)}");
+                    }
 
-                @if (mainData.TotalAchievements > 0)
-                {
-                    <MudText Typo="Typo.body1">Total Achievements: @mainData.TotalAchievements.ToString("N0")</MudText>
-                }
-
-                @if (userData.Achievements.Count > 0)
-                {
-                    <MudText Typo="Typo.body1">Your Achievements: @userData.Achievements.Count.ToString("N0")</MudText>
-                }
-
-                @if (userData.FirstAchievements.Count > 0)
-                {
-                    <MudText Typo="Typo.body1">Your First Achievements: @userData.FirstAchievements.Count.ToString("N0")</MudText>
+                    foreach (var str in strings)
+                    {
+                        <MudText Typo="Typo.body1">@str</MudText>
+                    }
                 }
             </CardHeaderContent>
         </MudCardHeader>
@@ -72,7 +72,7 @@ else
                             <MudText Typo="Typo.body2"><b>@text</b></MudText>
                             @foreach (var valueTuple in items)
                             {
-                                <MudBadge Origin="Origin.TopRight" Content="valueTuple.Counter.ToMetric()" Visible="@(valueTuple.Counter > 0)" Color="Color.Dark" Overlap="true" Dot="false">
+                                <MudBadge BadgeClass="mx-n4" Origin="Origin.TopRight" Content="valueTuple.Counter.ToMetric()" Visible="@(valueTuple.Counter > 0)" Color="Color.Dark" Overlap="true" Dot="false">
                                     <PostTagChipComponent TagInfo="valueTuple.PostTagInfo" OnClick="() => OnMainTagClicked(valueTuple.PostTagInfo)" />
                                 </MudBadge>
                             }

@@ -86,7 +86,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
 
                     deletedCharactersSets.Remove(characterRecord.MoaRef);
 
-                    await database.CharacterAchievements.Where(x => x.CharacterId == characterRecord.Id && x.AccountId == null).UpdateAsync(x => new CharacterAchievementRecord { AccountId = record.Id }, cancellationToken);
+                    await database.Database.ExecuteSqlRawAsync($"UPDATE \"Characters_Achievements\" SET \"AccountId\" = {record.Id} WHERE \"CharacterId\" = {characterRecord.Id} AND \"AccountId\" = NULL", cancellationToken);
                 }
             }
 

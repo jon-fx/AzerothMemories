@@ -202,6 +202,30 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(AccountHistoryRecord.TargetPostId)).AsInt64().ForeignKey("Posts", "Id").OnDelete(Rule.SetNull).Nullable()
             .WithColumn(nameof(AccountHistoryRecord.TargetCommentId)).AsInt64().ForeignKey("Posts_Comments", "Id").OnDelete(Rule.SetNull).Nullable()
             .WithColumn(nameof(AccountHistoryRecord.CreatedTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
+
+        
+        Create.Index().OnTable("Characters_Achievements")
+            .OnColumn(nameof(CharacterAchievementRecord.AchievementId));
+
+        Create.Index().OnTable("Characters_Achievements")
+            .OnColumn(nameof(CharacterAchievementRecord.AchievementTimeStamp));
+
+        Create.Index().OnTable("Posts")
+            .OnColumn(nameof(PostRecord.PostCreatedTime));
+
+        Create.Index().OnTable("Posts")
+            .OnColumn(nameof(PostRecord.DeletedTimeStamp));
+        Create.Index().OnTable("Posts_Tags")
+            .OnColumn(nameof(PostTagRecord.TagKind));
+
+        Create.Index().OnTable("Posts_Tags")
+            .OnColumn(nameof(PostTagRecord.TagType));
+
+        Create.Index().OnTable("Posts_Tags")
+            .OnColumn(nameof(PostTagRecord.TagId));
+
+        Create.Index().OnTable("Posts_Tags")
+            .OnColumn(nameof(PostTagRecord.TagString));
     }
 
     public override void Down()
