@@ -4,7 +4,7 @@
 }
 else if (TagInfo.WowHeadLink == null)
 {
-    <MudBadge Origin="Origin.TopRight" Content="TagInfo.ReportCounter" Visible="@(TagInfo.ReportCounter > 0)" Color="Color.Error" Overlap="true" Dot="true">
+    @*<MudBadge Origin="Origin.TopRight" Content="TagInfo.ReportCounter" Visible="@(TagInfo.ReportCounter > 0)" Color="Color.Error" Overlap="true" Dot="true">*@
         @if (TagInfo.IsChipClosable)
         {
             <MudChip @key="TagInfo.TagString" Color="TagInfo.GetChipColor()" Default="Default" Value="TagInfo" OnClick="OnClick" OnClose="OnClose">
@@ -27,11 +27,11 @@ else if (TagInfo.WowHeadLink == null)
                 @TagInfo.NameWithIcon
             </MudChip>
         }
-    </MudBadge>
+    @*</MudBadge>*@
 }
 else
 {
-    <MudBadge Origin="Origin.TopRight" Content="TagInfo.ReportCounter" Visible="@(TagInfo.ReportCounter > 0)" Color="Color.Error" Overlap="true" Dot="true">
+    @*<MudBadge Origin="Origin.TopRight" Content="TagInfo.ReportCounter" Visible="@(TagInfo.ReportCounter > 0)" Color="Color.Error" Overlap="true" Dot="true">*@
         <a class="cardlink2" data-wowhead="@TagInfo.WowHeadLink">
             @if (TagInfo.IsChipClosable)
             {
@@ -56,7 +56,7 @@ else
                 </MudChip>
             }
         </a>
-    </MudBadge>
+    @*</MudBadge>*@
 }
 
 @code {

@@ -9,22 +9,23 @@ public sealed class PostTagInfo
     [JsonInclude] public readonly string Name;
     [JsonInclude] public readonly string Image;
     [JsonInclude] public readonly PostTagType Type;
-    [JsonInclude] public readonly string NameWithIcon;
-    [JsonInclude] public readonly string WowHeadLink;
-    [JsonInclude] public int ReportCounter;
 
-    public PostTagInfo(PostTagType type, long id, string name, string image, int reportCounter = 0)
+    [JsonIgnore] private string _nameWithIcon;
+    [JsonIgnore] private string _wowHeadLink;
+
+    public PostTagInfo(PostTagType type, long id, string name, string image)
     {
         Id = id;
         Image = image;
         Name = name;
         Type = type;
-        NameWithIcon = $"{Type.GetTagIcon()}{Name}";
-        WowHeadLink = Type.GetWowHeadLink(id);
-        ReportCounter = reportCounter;
     }
 
     [JsonInclude] public bool IsChipClosable { get; set; } = true;
+
+    [JsonIgnore] public string NameWithIcon => _nameWithIcon ??= $"{Type.GetTagIcon()}{Name}";
+
+    [JsonIgnore] public string WowHeadLink => _wowHeadLink ??= Type.GetWowHeadLink(Id);
 
     [JsonIgnore]
     public string TagString
