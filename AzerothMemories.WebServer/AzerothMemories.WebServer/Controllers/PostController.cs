@@ -22,6 +22,7 @@ public sealed class PostController : ControllerBase, IPostServices
         return await _commonServices.PostServices.TryPostMemory(session, memoryStream.GetBuffer());
     }
 
+    [NonAction]
     public Task<AddMemoryResult> TryPostMemory(Session session, byte[] toArray)
     {
         throw new NotImplementedException();
