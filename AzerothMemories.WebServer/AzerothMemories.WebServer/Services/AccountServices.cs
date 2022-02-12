@@ -639,8 +639,8 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
 
         diffInSeconds = Math.Clamp(diffInSeconds, 0, 300);
 
-        var min = Instant.FromUnixTimeMilliseconds(timeStamp).Minus(Duration.FromSeconds(diffInSeconds)).ToUnixTimeMilliseconds();
-        var max = Instant.FromUnixTimeMilliseconds(timeStamp).Plus(Duration.FromSeconds(diffInSeconds)).ToUnixTimeMilliseconds();
+        var min = Instant.FromUnixTimeMilliseconds(timeStamp).Minus(Duration.FromSeconds(diffInSeconds));
+        var max = Instant.FromUnixTimeMilliseconds(timeStamp).Plus(Duration.FromSeconds(diffInSeconds));
 
         await using var database = CreateDbContext();
         var query = from a in database.CharacterAchievements

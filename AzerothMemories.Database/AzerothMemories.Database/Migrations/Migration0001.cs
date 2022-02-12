@@ -93,7 +93,7 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(CharacterAchievementRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.SetNull).Nullable()
             .WithColumn(nameof(CharacterAchievementRecord.CharacterId)).AsInt64().ForeignKey("Characters", "Id").OnDelete(Rule.Cascade)
             .WithColumn(nameof(CharacterAchievementRecord.AchievementId)).AsInt32().WithDefaultValue(0)
-            .WithColumn(nameof(CharacterAchievementRecord.AchievementTimeStamp)).AsInt64().WithDefaultValue(0)
+            .WithColumn(nameof(CharacterAchievementRecord.AchievementTimeStamp)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
             .WithColumn(nameof(CharacterAchievementRecord.CompletedByCharacter)).AsBoolean().WithDefaultValue(false);
 
         //Create.Table("Blizzard_Data")
@@ -203,7 +203,6 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(AccountHistoryRecord.TargetCommentId)).AsInt64().ForeignKey("Posts_Comments", "Id").OnDelete(Rule.SetNull).Nullable()
             .WithColumn(nameof(AccountHistoryRecord.CreatedTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
 
-        
         Create.Index().OnTable("Characters_Achievements")
             .OnColumn(nameof(CharacterAchievementRecord.AchievementId));
 
@@ -215,6 +214,7 @@ public sealed class Migration0001 : Migration
 
         Create.Index().OnTable("Posts")
             .OnColumn(nameof(PostRecord.DeletedTimeStamp));
+
         Create.Index().OnTable("Posts_Tags")
             .OnColumn(nameof(PostTagRecord.TagKind));
 

@@ -52,8 +52,8 @@ else
             @{
                 var mainTuples = new (string Text, List<ActivityResultsTuple> Items)[]
                 {
-                    new("Top Tags", mainData.TopTags),
-                    new("Top Achievements", mainData.TopAchievements),
+                    new($"Top {mainData.TopTags.Count:N0} Tags", mainData.TopTags),
+                    new($"Top {mainData.TopAchievements.Count:N0} Achievements", mainData.TopAchievements),
                 };
 
                 var otherTuples = new (string Text, List<PostTagInfo> Items)[]

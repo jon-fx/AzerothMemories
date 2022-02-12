@@ -273,11 +273,10 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
     {
         await using var database = CreateDbContext();
 
-        var tagString = await (from data in database.BlizzardData
-                               where data.TagType == tagType && data.TagId == tagId
-                               select data.Key).FirstOrDefaultAsync();
+        var tagString = PostTagInfo.GetTagString(tagType, tagId);
+        var exists = await database.BlizzardData.AnyAsync(r => r.Key == tagString);
 
-        return tagString != null;
+        return !exists;
     }
 
     public bool GetCommentText(string commentText, Dictionary<long, string> userThatCanBeTagged, out string newCommentText, out HashSet<long> userTags, out HashSet<string> hashTags)

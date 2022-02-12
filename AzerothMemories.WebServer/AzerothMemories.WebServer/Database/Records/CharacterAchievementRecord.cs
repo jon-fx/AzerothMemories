@@ -14,7 +14,7 @@ public sealed class CharacterAchievementRecord : IDatabaseRecord
 
     [Column] public int AchievementId { get; set; }
 
-    [Column] public long AchievementTimeStamp { get; set; }
+    [Column] public Instant AchievementTimeStamp { get; set; }
 
     [Column] public bool CompletedByCharacter { get; set; }
 }

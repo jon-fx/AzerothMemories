@@ -288,7 +288,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
                 database.CharacterAchievements.Add(achievementRecord);
             }
 
-            achievementRecord.AchievementTimeStamp = timeStamp;
+            achievementRecord.AchievementTimeStamp = Instant.FromUnixTimeMilliseconds(timeStamp);
             achievementRecord.CompletedByCharacter = achievement.Criteria == null || achievement.Criteria != null && achievement.Criteria.IsCompleted;
         }
 
