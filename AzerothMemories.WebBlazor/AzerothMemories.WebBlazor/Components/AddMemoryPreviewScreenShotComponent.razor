@@ -19,6 +19,10 @@ else
                 <MudText Typo="Typo.body1">@timeStr</MudText>
             </CardHeaderContent>
             <CardHeaderActions>
+                <MudTooltip Text="Use Image Time" Color="Color.Dark">
+                    <MudIconButton Icon="@Icons.Material.Filled.MoreTime" Color="Color.Default" OnClick="UseImageTime"  />
+                </MudTooltip>
+
                 <MudTooltip Text="Reset" Color="Color.Dark">
                     <MudIconButton Icon="@Icons.Material.Filled.ResetTv" Color="Color.Warning" OnClick="ResetImage" Disabled="@(UploadedImage.EditedFileContent == null)" />
                 </MudTooltip>
@@ -41,6 +45,7 @@ else
     [Parameter, EditorRequired] public int Index { get; init; }
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
     [Parameter, EditorRequired] public AddMemoryImageData UploadedImage { get; init; }
+    [Parameter, EditorRequired] public EventCallback<long> UseImageTimeCallback{ get; init; }
     [Parameter, EditorRequired] public EventCallback<AddMemoryImageData> DeleteImageCallback{ get; init; }
 
     [Inject] public IJSRuntime JsRuntime { get; init; }
@@ -73,6 +78,11 @@ else
     private async Task DeleteImage()
     {
         await DeleteImageCallback.InvokeAsync(UploadedImage);
+    }
+
+    private async Task UseImageTime()
+    {
+        await UseImageTimeCallback.InvokeAsync(UploadedImage.FileTimeStamp);
     }
 
     private async Task OnImageClicked()

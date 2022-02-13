@@ -99,6 +99,11 @@ public sealed class AddMemoryComponentSharedData
 
     public async Task SetPostTimeStamp(Instant postTimeStamp)
     {
+        if (PostTimeStamp == postTimeStamp)
+        {
+            return;
+        }
+
         PostTimeStamp = postTimeStamp;
 
         await InitializeAchievements();
