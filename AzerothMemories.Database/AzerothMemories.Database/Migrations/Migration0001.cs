@@ -11,7 +11,7 @@ public sealed class Migration0001 : Migration
 
     public override void Up()
     {
-        Create.Table("Accounts")
+        Create.Table(AccountRecord.TableName)
             .WithColumn(nameof(AccountRecord.Id)).AsInt64().PrimaryKey().Identity()
             .WithColumn(nameof(AccountRecord.FusionId)).AsString(60).Unique().NotNullable()
             .WithColumn(nameof(AccountRecord.AccountType)).AsByte().WithDefaultValue(0)
@@ -34,15 +34,15 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(AccountRecord.BanExpireTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
             .WithUpdateJobInfo();
 
-        Create.Table("Accounts_Following")
+        Create.Table(AccountFollowingRecord.TableName)
             .WithColumn(nameof(AccountFollowingRecord.Id)).AsInt64().PrimaryKey().Identity()
-            .WithColumn(nameof(AccountFollowingRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade)
-            .WithColumn(nameof(AccountFollowingRecord.FollowerId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(AccountFollowingRecord.AccountId)).AsInt64().ForeignKey(AccountRecord.TableName, "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(AccountFollowingRecord.FollowerId)).AsInt64().ForeignKey(AccountRecord.TableName, "Id").OnDelete(Rule.Cascade)
             .WithColumn(nameof(AccountFollowingRecord.Status)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(AccountFollowingRecord.LastUpdateTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
             .WithColumn(nameof(AccountFollowingRecord.CreatedTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
 
-        Create.Table("Guilds")
+        Create.Table(GuildRecord.TableName)
             .WithColumn(nameof(GuildRecord.Id)).AsInt64().PrimaryKey().Identity()
             .WithColumn(nameof(GuildRecord.MoaRef)).AsString(128).Unique().NotNullable()
             .WithColumn(nameof(GuildRecord.BlizzardId)).AsInt64().WithDefaultValue(0)
@@ -60,7 +60,7 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(GuildRecord.BlizzardRosterLastModified)).AsInt64().WithDefaultValue(0)
             .WithUpdateJobInfo();
 
-        Create.Table("Characters")
+        Create.Table(CharacterRecord.TableName)
             .WithColumn(nameof(CharacterRecord.Id)).AsInt64().PrimaryKey().Identity()
             .WithColumn(nameof(CharacterRecord.MoaRef)).AsString(128).Unique().NotNullable()
             .WithColumn(nameof(CharacterRecord.BlizzardId)).AsInt64().WithDefaultValue(0)
@@ -69,7 +69,7 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(CharacterRecord.NameSearchable)).AsString(60).Nullable()
             .WithColumn(nameof(CharacterRecord.CreatedDateTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
             .WithColumn(nameof(CharacterRecord.CharacterStatus)).AsByte().WithDefaultValue(0)
-            .WithColumn(nameof(CharacterRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.SetNull).Nullable()
+            .WithColumn(nameof(CharacterRecord.AccountId)).AsInt64().ForeignKey(AccountRecord.TableName, "Id").OnDelete(Rule.SetNull).Nullable()
             .WithColumn(nameof(CharacterRecord.AccountSync)).AsBoolean().WithDefaultValue(false)
             .WithColumn(nameof(CharacterRecord.RealmId)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(CharacterRecord.Class)).AsByte().WithDefaultValue(0)
@@ -80,7 +80,7 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(CharacterRecord.AvatarLink)).AsString(128).Nullable()
             .WithColumn(nameof(CharacterRecord.AchievementTotalPoints)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(CharacterRecord.AchievementTotalQuantity)).AsInt32().WithDefaultValue(0)
-            .WithColumn(nameof(CharacterRecord.GuildId)).AsInt64().ForeignKey("Guilds", "Id").OnDelete(Rule.SetNull).Nullable()
+            .WithColumn(nameof(CharacterRecord.GuildId)).AsInt64().ForeignKey(GuildRecord.TableName, "Id").OnDelete(Rule.SetNull).Nullable()
             .WithColumn(nameof(CharacterRecord.GuildRef)).AsString(128).Nullable()
             .WithColumn(nameof(CharacterRecord.BlizzardGuildId)).AsInt64().WithDefaultValue(0)
             .WithColumn(nameof(CharacterRecord.BlizzardGuildRank)).AsByte().WithDefaultValue(0)
@@ -90,10 +90,10 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(CharacterRecord.BlizzardAchievementsLastModified)).AsInt64().WithDefaultValue(0)
             .WithUpdateJobInfo();
 
-        Create.Table("Characters_Achievements")
+        Create.Table(CharacterAchievementRecord.TableName)
             .WithColumn(nameof(CharacterAchievementRecord.Id)).AsInt64().PrimaryKey().Identity()
-            .WithColumn(nameof(CharacterAchievementRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.SetNull).Nullable()
-            .WithColumn(nameof(CharacterAchievementRecord.CharacterId)).AsInt64().ForeignKey("Characters", "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(CharacterAchievementRecord.AccountId)).AsInt64().ForeignKey(AccountRecord.TableName, "Id").OnDelete(Rule.SetNull).Nullable()
+            .WithColumn(nameof(CharacterAchievementRecord.CharacterId)).AsInt64().ForeignKey(CharacterRecord.TableName, "Id").OnDelete(Rule.Cascade)
             .WithColumn(nameof(CharacterAchievementRecord.AchievementId)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(CharacterAchievementRecord.AchievementTimeStamp)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
             .WithColumn(nameof(CharacterAchievementRecord.CompletedByCharacter)).AsBoolean().WithDefaultValue(false);
@@ -103,7 +103,7 @@ public sealed class Migration0001 : Migration
         }
         else
         {
-            Create.Table("Blizzard_Data")
+            Create.Table(BlizzardDataRecord.TableName)
                 .WithColumn(nameof(BlizzardDataRecord.Id)).AsInt64().PrimaryKey().Identity()
                 .WithColumn(nameof(BlizzardDataRecord.TagId)).AsInt64()
                 .WithColumn(nameof(BlizzardDataRecord.TagType)).AsByte()
@@ -124,9 +124,9 @@ public sealed class Migration0001 : Migration
                 .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.PtPt)}").AsString(250).Nullable();
         }
 
-        Create.Table("Posts")
+        Create.Table(PostRecord.TableName)
             .WithColumn(nameof(PostRecord.Id)).AsInt64().PrimaryKey().Identity()
-            .WithColumn(nameof(PostRecord.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(PostRecord.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey(AccountRecord.TableName, "Id").OnDelete(Rule.Cascade)
             .WithColumn(nameof(PostRecord.PostComment)).AsString(2048).Nullable()
             .WithColumn(nameof(PostRecord.PostAvatar)).AsString(256).Nullable()
             .WithColumn(nameof(PostRecord.PostVisibility)).AsByte().WithDefaultValue(0)
@@ -140,131 +140,131 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(PostRecord.TotalReportCount)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(PostRecord.DeletedTimeStamp)).AsInt64().WithDefaultValue(0);
 
-        Create.Table("Posts_Comments")
+        Create.Table(PostCommentRecord.TableName)
             .WithColumn(nameof(PostCommentRecord.Id)).AsInt64().PrimaryKey().Identity()
-            .WithColumn(nameof(PostCommentRecord.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade)
-            .WithColumn(nameof(PostCommentRecord.PostId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts", "Id").OnDelete(Rule.Cascade)
-            .WithColumn(nameof(PostCommentRecord.ParentId)).AsInt64().ForeignKey("Posts_Comments", "Id").OnDelete(Rule.Cascade).Nullable()
+            .WithColumn(nameof(PostCommentRecord.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey(AccountRecord.TableName, "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(PostCommentRecord.PostId)).AsInt64().WithDefaultValue(0).ForeignKey(PostRecord.TableName, "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(PostCommentRecord.ParentId)).AsInt64().ForeignKey(PostCommentRecord.TableName, "Id").OnDelete(Rule.Cascade).Nullable()
             .WithColumn(nameof(PostCommentRecord.PostComment)).AsString(2048).NotNullable()
             .WithReactionInfo()
             .WithColumn(nameof(PostCommentRecord.CreatedTime)).AsDateTimeOffset()
             .WithColumn(nameof(PostCommentRecord.TotalReportCount)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(PostCommentRecord.DeletedTimeStamp)).AsInt64().WithDefaultValue(0);
 
-        Create.Table("Posts_Tags")
+        Create.Table(PostTagRecord.TableName)
             .WithColumn(nameof(PostTagRecord.Id)).AsInt64().PrimaryKey().Identity()
             .WithColumn(nameof(PostTagRecord.TagKind)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(PostTagRecord.TagType)).AsByte().WithDefaultValue(0)
-            .WithColumn(nameof(PostTagRecord.PostId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts", "Id").OnDelete(Rule.Cascade)
-            .WithColumn(nameof(PostTagRecord.CommentId)).AsInt64().WithDefaultValue(null).ForeignKey("Posts_Comments", "Id").OnDelete(Rule.Cascade).Nullable()
+            .WithColumn(nameof(PostTagRecord.PostId)).AsInt64().WithDefaultValue(0).ForeignKey(PostRecord.TableName, "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(PostTagRecord.CommentId)).AsInt64().WithDefaultValue(null).ForeignKey(PostCommentRecord.TableName, "Id").OnDelete(Rule.Cascade).Nullable()
             .WithColumn(nameof(PostTagRecord.TagId)).AsInt64().WithDefaultValue(0)
             .WithColumn(nameof(PostTagRecord.TagString)).AsString(128)
             .WithColumn(nameof(PostTagRecord.TotalReportCount)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(PostTagRecord.CreatedTime)).AsDateTimeOffset();
 
-        Create.Table("Posts_Reactions")
+        Create.Table(PostReactionRecord.TableName)
             .WithColumn(nameof(PostReactionRecord.Id)).AsInt64().PrimaryKey().Identity()
-            .WithColumn(nameof(PostReactionRecord.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade)
-            .WithColumn(nameof(PostReactionRecord.PostId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts", "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(PostReactionRecord.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey(AccountRecord.TableName, "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(PostReactionRecord.PostId)).AsInt64().WithDefaultValue(0).ForeignKey(PostRecord.TableName, "Id").OnDelete(Rule.Cascade)
             .WithColumn(nameof(PostReactionRecord.Reaction)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(PostReactionRecord.LastUpdateTime)).AsDateTimeOffset();
 
         Create.Table("Posts_Comments_Reactions")
             .WithColumn(nameof(PostCommentReactionRecord.Id)).AsInt64().PrimaryKey().Identity()
-            .WithColumn(nameof(PostCommentReactionRecord.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade)
-            .WithColumn(nameof(PostCommentReactionRecord.CommentId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts_Comments", "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(PostCommentReactionRecord.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey(AccountRecord.TableName, "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(PostCommentReactionRecord.CommentId)).AsInt64().WithDefaultValue(0).ForeignKey(PostCommentRecord.TableName, "Id").OnDelete(Rule.Cascade)
             .WithColumn(nameof(PostCommentReactionRecord.Reaction)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(PostCommentReactionRecord.LastUpdateTime)).AsDateTimeOffset();
 
-        Create.Table("Posts_Reports")
+        Create.Table(PostReportRecord.TableName)
             .WithColumn(nameof(PostReportRecord.Id)).AsInt64().PrimaryKey().Identity()
-            .WithColumn(nameof(PostReportRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade)
-            .WithColumn(nameof(PostReportRecord.PostId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts", "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(PostReportRecord.AccountId)).AsInt64().ForeignKey(AccountRecord.TableName, "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(PostReportRecord.PostId)).AsInt64().WithDefaultValue(0).ForeignKey(PostRecord.TableName, "Id").OnDelete(Rule.Cascade)
             .WithColumn(nameof(PostReportRecord.Reason)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(PostReportRecord.ReasonText)).AsString(200).Nullable()
             .WithColumn(nameof(PostReportRecord.CreatedTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
             .WithColumn(nameof(PostReportRecord.ModifiedTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
 
-        Create.Table("Posts_Comments_Reports")
+        Create.Table(PostCommentReportRecord.TableName)
             .WithColumn(nameof(PostCommentReportRecord.Id)).AsInt64().PrimaryKey().Identity()
-            .WithColumn(nameof(PostCommentReportRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade)
-            .WithColumn(nameof(PostCommentReportRecord.CommentId)).AsInt64().ForeignKey("Posts_Comments", "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(PostCommentReportRecord.AccountId)).AsInt64().ForeignKey(AccountRecord.TableName, "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(PostCommentReportRecord.CommentId)).AsInt64().ForeignKey(PostCommentRecord.TableName, "Id").OnDelete(Rule.Cascade)
             .WithColumn(nameof(PostCommentReportRecord.Reason)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(PostCommentReportRecord.ReasonText)).AsString(200).Nullable()
             .WithColumn(nameof(PostCommentReportRecord.CreatedTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
             .WithColumn(nameof(PostCommentReportRecord.ModifiedTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
 
-        Create.Table("Posts_Reports_Tags")
+        Create.Table(PostTagReportRecord.TableName)
             .WithColumn(nameof(PostTagReportRecord.Id)).AsInt64().PrimaryKey().Identity()
-            .WithColumn(nameof(PostTagReportRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade)
-            .WithColumn(nameof(PostTagReportRecord.PostId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts", "Id").OnDelete(Rule.Cascade)
-            .WithColumn(nameof(PostTagReportRecord.TagId)).AsInt64().WithDefaultValue(0).ForeignKey("Posts_Tags", "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(PostTagReportRecord.AccountId)).AsInt64().ForeignKey(AccountRecord.TableName, "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(PostTagReportRecord.PostId)).AsInt64().WithDefaultValue(0).ForeignKey(PostRecord.TableName, "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(PostTagReportRecord.TagId)).AsInt64().WithDefaultValue(0).ForeignKey(PostTagRecord.TableName, "Id").OnDelete(Rule.Cascade)
             .WithColumn(nameof(PostTagReportRecord.CreatedTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
 
-        Create.Table("Accounts_History")
+        Create.Table(AccountHistoryRecord.TableName)
             .WithColumn(nameof(AccountHistoryRecord.Id)).AsInt64().PrimaryKey().Identity()
-            .WithColumn(nameof(AccountHistoryRecord.AccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(AccountHistoryRecord.AccountId)).AsInt64().ForeignKey(AccountRecord.TableName, "Id").OnDelete(Rule.Cascade)
             .WithColumn(nameof(AccountHistoryRecord.Type)).AsByte().WithDefaultValue(0)
-            .WithColumn(nameof(AccountHistoryRecord.OtherAccountId)).AsInt64().ForeignKey("Accounts", "Id").OnDelete(Rule.SetNull).Nullable()
+            .WithColumn(nameof(AccountHistoryRecord.OtherAccountId)).AsInt64().ForeignKey(AccountRecord.TableName, "Id").OnDelete(Rule.SetNull).Nullable()
             .WithColumn(nameof(AccountHistoryRecord.TargetId)).AsInt64().WithDefaultValue(0)
-            .WithColumn(nameof(AccountHistoryRecord.TargetPostId)).AsInt64().ForeignKey("Posts", "Id").OnDelete(Rule.SetNull).Nullable()
-            .WithColumn(nameof(AccountHistoryRecord.TargetCommentId)).AsInt64().ForeignKey("Posts_Comments", "Id").OnDelete(Rule.SetNull).Nullable()
+            .WithColumn(nameof(AccountHistoryRecord.TargetPostId)).AsInt64().ForeignKey(PostRecord.TableName, "Id").OnDelete(Rule.SetNull).Nullable()
+            .WithColumn(nameof(AccountHistoryRecord.TargetCommentId)).AsInt64().ForeignKey(PostCommentRecord.TableName, "Id").OnDelete(Rule.SetNull).Nullable()
             .WithColumn(nameof(AccountHistoryRecord.CreatedTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
 
-        Create.Index().OnTable("Characters_Achievements")
+        Create.Index().OnTable(CharacterAchievementRecord.TableName)
             .OnColumn(nameof(CharacterAchievementRecord.AchievementId));
 
-        Create.Index().OnTable("Characters_Achievements")
+        Create.Index().OnTable(CharacterAchievementRecord.TableName)
             .OnColumn(nameof(CharacterAchievementRecord.AchievementTimeStamp));
 
-        Create.Index().OnTable("Posts")
+        Create.Index().OnTable(PostRecord.TableName)
             .OnColumn(nameof(PostRecord.PostCreatedTime));
 
-        Create.Index().OnTable("Posts")
+        Create.Index().OnTable(PostRecord.TableName)
             .OnColumn(nameof(PostRecord.DeletedTimeStamp));
 
-        Create.Index().OnTable("Posts_Tags")
+        Create.Index().OnTable(PostTagRecord.TableName)
             .OnColumn(nameof(PostTagRecord.TagKind));
 
-        Create.Index().OnTable("Posts_Tags")
+        Create.Index().OnTable(PostTagRecord.TableName)
             .OnColumn(nameof(PostTagRecord.TagType));
 
-        Create.Index().OnTable("Posts_Tags")
+        Create.Index().OnTable(PostTagRecord.TableName)
             .OnColumn(nameof(PostTagRecord.TagId));
 
-        Create.Index().OnTable("Posts_Tags")
+        Create.Index().OnTable(PostTagRecord.TableName)
             .OnColumn(nameof(PostTagRecord.TagString));
     }
 
     public override void Down()
     {
-        Delete.Table("Accounts_History");
+        Delete.Table(AccountHistoryRecord.TableName);
 
-        Delete.Table("Posts_Reports");
-        Delete.Table("Posts_Comments_Reports");
-        Delete.Table("Posts_Reports_Tags");
+        Delete.Table(PostReportRecord.TableName);
+        Delete.Table(PostCommentReportRecord.TableName);
+        Delete.Table(PostTagReportRecord.TableName);
 
-        Delete.Table("Posts_Tags");
-        Delete.Table("Posts_Comments_Reactions");
-        Delete.Table("Posts_Comments");
+        Delete.Table(PostTagRecord.TableName);
+        Delete.Table(PostCommentReactionRecord.TableName);
+        Delete.Table(PostCommentRecord.TableName);
 
-        Delete.Table("Posts_Reactions");
-        Delete.Table("Posts");
+        Delete.Table(PostReactionRecord.TableName);
+        Delete.Table(PostRecord.TableName);
 
-        Delete.Table("Characters_Achievements");
-        Delete.Table("Characters");
+        Delete.Table(CharacterAchievementRecord.TableName);
+        Delete.Table(CharacterRecord.TableName);
 
-        Delete.Table("Guilds");
+        Delete.Table(GuildRecord.TableName);
 
-        Delete.Table("Accounts_Following");
-        Delete.Table("Accounts");
+        Delete.Table(AccountFollowingRecord.TableName);
+        Delete.Table(AccountRecord.TableName);
 
         if (SkipBlizzardData)
         {
         }
         else
         {
-            Delete.Table("Blizzard_Data");
+            Delete.Table(BlizzardDataRecord.TableName);
         }
     }
 }
