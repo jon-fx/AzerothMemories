@@ -49,14 +49,14 @@ public sealed class CharacterPagePageViewModel : ViewModelBase
                 return;
             }
 
-            var regionInfo = BlizzardRegionInfo.AllByName.Values.FirstOrDefault(x => x.TwoLetters.ToLowerInvariant() == region);
+            var regionInfo = BlizzardRegionInfo.AllByName.Values.FirstOrDefault(x => x.TwoLetters.ToLowerInvariant() == region.ToLowerInvariant());
             if (regionInfo == null)
             {
                 ErrorMessage = "Invalid Region";
                 return;
             }
 
-            if (!Services.TagHelpers.GetRealmId(realm, out _))
+            if (!Services.TagHelpers.GetRealmId(realm, out _) && !Services.TagHelpers.GetRealmSlug($"{regionInfo.TwoLetters}-{realm}", out realm))
             {
                 ErrorMessage = "Invalid Realm";
                 return;

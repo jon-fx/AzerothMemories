@@ -43,15 +43,15 @@ public sealed class GuildPageViewModel : ViewModelBase
                 ErrorMessage = "Invalid Name";
                 return;
             }
-
-            var regionInfo = BlizzardRegionInfo.AllByName.Values.FirstOrDefault(x => x.TwoLetters.ToLowerInvariant() == region);
+            
+            var regionInfo = BlizzardRegionInfo.AllByName.Values.FirstOrDefault(x => string.Equals(x.TwoLetters, region, StringComparison.InvariantCultureIgnoreCase));
             if (regionInfo == null)
             {
                 ErrorMessage = "Invalid Region";
                 return;
             }
 
-            if (!Services.TagHelpers.GetRealmId(realm, out _))
+            if (!Services.TagHelpers.GetRealmId(realm, out _) && !Services.TagHelpers.GetRealmSlug($"{regionInfo.TwoLetters}-{realm}", out realm))
             {
                 ErrorMessage = "Invalid Realm";
                 return;
