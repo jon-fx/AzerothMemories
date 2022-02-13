@@ -20,7 +20,7 @@ else
             </CardHeaderContent>
             <CardHeaderActions>
                 <MudTooltip Text="Use Image Time" Color="Color.Dark">
-                    <MudIconButton Icon="@Icons.Material.Filled.MoreTime" Color="Color.Default" OnClick="UseImageTime"  />
+                    <MudIconButton Icon="@Icons.Material.Filled.MoreTime" Color="Color.Success" OnClick="UseImageTime" Disabled="@(UploadedImage.FileTimeStamp == 0 || Instant.FromUnixTimeMilliseconds(UploadedImage.FileTimeStamp) == ViewModel.SharedData.PostTimeStamp)" />
                 </MudTooltip>
 
                 <MudTooltip Text="Reset" Color="Color.Dark">
@@ -28,7 +28,7 @@ else
                 </MudTooltip>
 
                 <MudTooltip Text="Delete" Color="Color.Dark">
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="DeleteImage" Disabled="@(Index == 0)"  />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="DeleteImage" Disabled="@(ViewModel.UploadedImages.Count == 1)"  />
                 </MudTooltip>
             </CardHeaderActions>
         </MudCardHeader>
@@ -45,8 +45,7 @@ else
     [Parameter, EditorRequired] public int Index { get; init; }
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
     [Parameter, EditorRequired] public AddMemoryImageData UploadedImage { get; init; }
-    [Parameter, EditorRequired] public EventCallback<long> UseImageTimeCallback{ get; init; }
-    [Parameter, EditorRequired] public EventCallback<AddMemoryImageData> DeleteImageCallback{ get; init; }
+    [Parameter, EditorRequired] public AddMemoryPageViewModel ViewModel { get; init; }
 
     [Inject] public IJSRuntime JsRuntime { get; init; }
 
@@ -63,11 +62,6 @@ else
         }
     }
 
-    protected override bool ShouldRender()
-    {
-        return false;
-    }
-
     private async Task ResetImage()
     {
         UploadedImage.EditedFileContent = null;
@@ -75,14 +69,15 @@ else
         await JsRuntime.InvokeVoidAsync("SetImage", GetImageId, UploadedImage.ContentType, UploadedImage.FileContent);
     }
 
-    private async Task DeleteImage()
+    private void DeleteImage()
     {
-        await DeleteImageCallback.InvokeAsync(UploadedImage);
+        ViewModel.UploadedImages.Remove(UploadedImage);
+        ViewModel.OnViewModelChanged?.Invoke();
     }
 
     private async Task UseImageTime()
     {
-        await UseImageTimeCallback.InvokeAsync(UploadedImage.FileTimeStamp);
+        await ViewModel.SharedData.SetPostTimeStamp(Instant.FromUnixTimeMilliseconds(UploadedImage.FileTimeStamp));;
     }
 
     private async Task OnImageClicked()

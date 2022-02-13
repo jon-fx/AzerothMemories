@@ -26,7 +26,7 @@
             var index = i;
             var upload = ViewModel.UploadedImages[index];
 
-            <AddMemoryPreviewScreenShotComponent Services="@Services" Index="index" UploadedImage="upload" DeleteImageCallback="OnDeleteImageCallback" UseImageTimeCallback="OnUseImageTimeCallback"/>
+            <AddMemoryPreviewScreenShotComponent Services="@Services" Index="index" UploadedImage="upload" ViewModel="ViewModel" />
         }
     </MudPaper>
 
@@ -81,15 +81,5 @@
         {
             await ViewModel.SharedData.SetPostTimeStamp(arg.Value);
         }
-    }
-
-    private void OnDeleteImageCallback(AddMemoryImageData addMemoryImageData)
-    {
-        ViewModel.UploadedImages.Remove(addMemoryImageData);
-    }
-
-    private async Task OnUseImageTimeCallback(long timeStamp)
-    {
-        await ViewModel.SharedData.SetPostTimeStamp(Instant.FromUnixTimeMilliseconds(timeStamp));
     }
 }
