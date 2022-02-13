@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.Database.Seeder.Base;
+﻿using Stl.Collections;
+
+namespace AzerothMemories.Database.Seeder.Base;
 
 internal sealed class MoaResourceWriter
 {
@@ -283,25 +285,23 @@ internal sealed class MoaResourceWriter
             {"None", noneDict}
         };
 
+        noneDict.AddRange(typeTags.Select(x => new KeyValuePair<string, string>(x.Key, x.Key)));
+        noneDict.AddRange(mainTags.Select(x => new KeyValuePair<string, string>(x.Key, x.Key)));
+        noneDict.AddRange(realmData.Select(x => new KeyValuePair<string, string>($"RealmSlug-{x.TagId}", x.Media)).Where(x => !string.IsNullOrEmpty(x.Value)));
+
         foreach (var record in realmData)
         {
             SetExtensions.Update(record.Key, record.Name, clientSideDataDict);
-
-            noneDict.Add($"RealmSlug-{record.TagId}", record.Media);
         }
 
         foreach (var record in typeTags)
         {
             SetExtensions.Update(record.Key, record.Name, clientSideDataDict);
-
-            noneDict.Add(record.Key, record.Key);
         }
 
         foreach (var record in mainTags)
         {
             SetExtensions.Update(record.Key, record.Name, clientSideDataDict);
-
-            noneDict.Add(record.Key, record.Key);
         }
 
         foreach (var record in characterRaceData)
