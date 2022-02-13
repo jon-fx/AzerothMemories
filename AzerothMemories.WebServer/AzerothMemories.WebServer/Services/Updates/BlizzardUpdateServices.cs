@@ -69,6 +69,14 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
                         database.Characters.Attach(characterRecord);
                     }
 
+                    if (characterRecord.AccountId.HasValue)
+                    {
+                    }
+                    else
+                    {
+                        await database.Database.ExecuteSqlRawAsync($"UPDATE \"Characters_Achievements\" SET \"AccountId\" = {record.Id} WHERE \"CharacterId\" = {characterRecord.Id} AND \"AccountId\" IS NULL", cancellationToken);
+                    }
+
                     characterRecord.AccountId = record.Id;
                     characterRecord.MoaRef = characterRef.Full;
                     characterRecord.BlizzardId = accountCharacter.Id;
@@ -85,8 +93,6 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
                     characterRecord.Level = (byte)accountCharacter.Level;
 
                     deletedCharactersSets.Remove(characterRecord.MoaRef);
-
-                    await database.Database.ExecuteSqlRawAsync($"UPDATE \"Characters_Achievements\" SET \"AccountId\" = {record.Id} WHERE \"CharacterId\" = {characterRecord.Id} AND \"AccountId\" = NULL", cancellationToken);
                 }
             }
 

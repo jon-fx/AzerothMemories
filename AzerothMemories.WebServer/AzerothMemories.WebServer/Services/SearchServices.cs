@@ -24,6 +24,12 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
             accountId = activeAccount.Id;
         }
 
+        var timeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(timeZoneId);
+        if (timeZone == null)
+        {
+            timeZoneId = DateTimeZoneProviders.Tzdb.GetSystemDefault().Id;
+        }
+
         inZoneDay = Math.Clamp(inZoneDay, (byte)1, (byte)31);
         inZoneMonth = Math.Clamp(inZoneMonth, (byte)1, (byte)12);
 
@@ -54,6 +60,12 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         if (activeAccount != null)
         {
             accountId = activeAccount.Id;
+        }
+
+        var timeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(timeZoneId);
+        if (timeZone == null)
+        {
+            timeZoneId = DateTimeZoneProviders.Tzdb.GetSystemDefault().Id;
         }
 
         inZoneDay = Math.Clamp(inZoneDay, (byte)1, (byte)31);
@@ -120,6 +132,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
             var daily = new DailyActivityResultsMain
             {
                 Year = year,
+                ZoneId = timeZoneId,
                 StartTimeMs = timeZone.AtStartOfDay(new LocalDate(year, inZoneMonth, inZoneDay)).ToInstant().ToUnixTimeMilliseconds(),
                 EndTimeMs = timeZone.AtStartOfDay(new LocalDate(year, inZoneMonth, inZoneDay).PlusDays(1)).ToInstant().ToUnixTimeMilliseconds(),
             };
@@ -340,6 +353,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
             var daily = new DailyActivityResultsUser
             {
                 Year = year,
+                ZoneId = timeZoneId,
                 StartTimeMs = timeZone.AtStartOfDay(new LocalDate(year, inZoneMonth, inZoneDay)).ToInstant().ToUnixTimeMilliseconds(),
                 EndTimeMs = timeZone.AtStartOfDay(new LocalDate(year, inZoneMonth, inZoneDay).PlusDays(1)).ToInstant().ToUnixTimeMilliseconds(),
             };

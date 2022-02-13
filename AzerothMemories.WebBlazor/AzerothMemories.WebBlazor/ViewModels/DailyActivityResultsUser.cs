@@ -3,6 +3,7 @@
 public sealed record DailyActivityResultsUser
 {
     [JsonInclude] public int Year { get; init; }
+    [JsonInclude] public string ZoneId { get; init; }
     [JsonInclude] public long StartTimeMs { get; init; }
     [JsonInclude] public long EndTimeMs { get; init; }
     [JsonInclude] public long AccountId { get; init; }
