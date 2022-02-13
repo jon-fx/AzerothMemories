@@ -2,6 +2,7 @@
 
 public sealed class ActivitySetMain
 {
+    public int Year { get; set; }
     public int TotalAchievements { get; set; }
     public HashSet<string> FirstTags { get; set; } = new();
     public HashSet<int> FirstAchievements { get; set; } = new();

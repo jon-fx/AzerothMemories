@@ -19,3 +19,15 @@
         }
     }
 }
+
+@code
+{
+    [Parameter, SupplyParameterFromQuery(Name = "day")] public string CurrentDay { get; init; }
+
+    [Parameter, SupplyParameterFromQuery(Name = "month")] public string CurrentMonth { get; init; }
+
+    protected override async Task InternalComputeState()
+    {
+        await ViewModel.ComputeState(CurrentDay, CurrentMonth);
+    }
+}
