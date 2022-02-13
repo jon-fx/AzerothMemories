@@ -44,7 +44,12 @@ public static class DatabaseHelpers
     {
         var tempBytes = Encoding.GetEncoding("ISO-8859-8").GetBytes(name);
         var asciiStr = Encoding.UTF8.GetString(tempBytes);
-        asciiStr = asciiStr.Trim().ToLowerInvariant();
+        asciiStr = asciiStr.Replace("?", string.Empty).Trim().ToLowerInvariant();
+
+        if (string.IsNullOrWhiteSpace(asciiStr))
+        {
+            asciiStr = name;
+        }
 
         return asciiStr;
     }
