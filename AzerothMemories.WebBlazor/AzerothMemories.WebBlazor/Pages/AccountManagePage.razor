@@ -275,7 +275,9 @@
                                     </MudTd>
 
                                     <MudTd DataLabel="Result">
-                                        @row.LastUpdateHttpResult
+                                        <MudTooltip Text="@TimeProvider.GetTimeAsLocalStringAgo(row.UpdateJobEndTime, true)" Color="Color.Dark">
+                                            @row.UpdateJobLastResult
+                                        </MudTooltip>
                                     </MudTd>
                                 </tr>
                             }

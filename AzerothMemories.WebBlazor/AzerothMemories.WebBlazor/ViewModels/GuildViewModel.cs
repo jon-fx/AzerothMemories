@@ -20,9 +20,13 @@ public sealed class GuildViewModel
 
     [JsonInclude] public long BlizzardCreatedTimestamp;
 
-    [JsonInclude] public long LastUpdateJobEndTime;
+    [JsonInclude] public long UpdateJobEndTime;
 
     [JsonInclude] public CharacterViewModel[] CharactersArray;
+
+    [JsonInclude] public HttpStatusCode UpdateJobLastResult;
+
+    [JsonIgnore] public bool IsLoadingFromArmory => UpdateJobLastResult == 0 || UpdateJobEndTime == 0 || RealmId == 0;
 
     public string GetAvatarText()
     {

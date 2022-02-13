@@ -38,9 +38,9 @@ public sealed class CharacterViewModel
 
     //[JsonInclude] public byte GuildRank;
 
-    //[JsonInclude] public long LastUpdateJobEndTime;
+    [JsonInclude] public long UpdateJobEndTime;
 
-    [JsonInclude] public HttpStatusCode LastUpdateHttpResult;
+    [JsonInclude] public HttpStatusCode UpdateJobLastResult;
 
     [JsonIgnore]
     public string AvatarLinkWithFallBack
@@ -56,6 +56,8 @@ public sealed class CharacterViewModel
             return $"{str}?alt=/shadow/avatar/{Race}-{Gender}.jpg";
         }
     }
+
+    [JsonIgnore] public bool IsLoadingFromArmory => UpdateJobLastResult == 0 || UpdateJobEndTime == 0 || Class == 0 || RealmId == 0;
 
     //[JsonIgnore] public string TagString => PostTagInfo.GetTagString(PostTagType.Character, Id);
 }
