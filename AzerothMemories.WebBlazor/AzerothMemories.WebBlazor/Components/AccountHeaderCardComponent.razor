@@ -10,7 +10,7 @@ else
             </CardHeaderAvatar>
             <CardHeaderContent>
                 <a href="@($"/account/{AccountViewModel.Id}")" tabindex="-1">
-                    <MudText Typo="Typo.h6">@AccountViewModel.GetDisplayName()</MudText>
+                    <MudText Inline="true" Typo="Typo.h6">@AccountViewModel.GetDisplayName()</MudText>
                 </a>
                 @{
                     if (string.IsNullOrWhiteSpace(AccountViewModel.BattleTag))

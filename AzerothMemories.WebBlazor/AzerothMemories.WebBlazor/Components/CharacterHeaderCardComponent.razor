@@ -14,17 +14,17 @@ else
 {
     <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
         <MudCardHeader Class="@ClassPresets.CardHeader">
-            <CardHeaderAvatar >
+            <CardHeaderAvatar>
                 <MudAvatar Size="Size.Large" Image="@CharacterViewModel.AvatarLinkWithFallBack">@CharacterViewModel.Name[0]</MudAvatar>
             </CardHeaderAvatar>
             <CardHeaderContent>
                 <CharacterNameLinkComponent Typo="Typo.h6"
-                                            CharacterName="@CharacterViewModel.Name"
-                                            CharacterClass="@CharacterViewModel.Class"
-                                            CharacterRealmId="@CharacterViewModel.RealmId"
-                                            CharacterRegionInfo="@CharacterViewModel.RegionId.ToInfo()" />
+                                        CharacterName="@CharacterViewModel.Name"
+                                        CharacterClass="@CharacterViewModel.Class"
+                                        CharacterRealmId="@CharacterViewModel.RealmId"
+                                        CharacterRegionInfo="@CharacterViewModel.RegionId.ToInfo()" />
                 <div>
-                    <MudText Inline="true"  Typo="Typo.body2" >@CharacterViewModel.Level</MudText>
+                    <MudText Inline="true" Typo="Typo.body2">@CharacterViewModel.Level</MudText>
                     <CharacterRaceComponent Typo="Typo.body2" Inline="true" CharacterRace="@CharacterViewModel.Race" />
                     <CharacterClassComponent Typo="Typo.body2" Inline="true" CharacterClass="@CharacterViewModel.Class" />
                 </div>
@@ -32,15 +32,17 @@ else
                 @if (CharacterViewModel.GuildRef != null)
                 {
                     var moaRef = new MoaRef(CharacterViewModel.GuildRef);
-                    <GuildNameLinkComponent Class="d-block"
-                                            Typo="Typo.body2"
-                                            GuildName="@CharacterViewModel.GuildName"
-                                            GuildRealmId="0"
-                                            GuildRealmSlug="@moaRef.Realm"
-                                            GuildRegionInfo="@CharacterViewModel.RegionId.ToInfo()" />
+                    <div>
+                        <GuildNameLinkComponent Typo="Typo.body2"
+                                        GuildName="@CharacterViewModel.GuildName"
+                                        GuildRealmId="0"
+                                        GuildRealmSlug="@moaRef.Realm"
+                                        GuildRegionInfo="@CharacterViewModel.RegionId.ToInfo()" />
+                    </div>
                 }
-
-                <RealmLinkComponent Class="d-block" Typo="Typo.caption" BlizzardRealmId="@CharacterViewModel.RealmId" />
+                <div>
+                    <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@CharacterViewModel.RealmId" />
+                </div>
             </CardHeaderContent>
         </MudCardHeader>
     </MudCard>

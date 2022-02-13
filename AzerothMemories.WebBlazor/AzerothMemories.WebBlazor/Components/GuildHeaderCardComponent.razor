@@ -14,16 +14,19 @@ else
 {
     <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
         <MudCardHeader Class="@ClassPresets.CardHeader">
-            <CardHeaderAvatar >
+            <CardHeaderAvatar>
                 <MudAvatar Size="Size.Large" Image="@GuildViewModel.Avatar">@GuildViewModel.GetAvatarText()</MudAvatar>
             </CardHeaderAvatar>
             <CardHeaderContent>
-                <GuildNameLinkComponent Typo="Typo.h6"
-                                    GuildName="@GuildViewModel.Name"
-                                    GuildRealmId="@GuildViewModel.RealmId"
-                                    GuildRegionInfo="@GuildViewModel.RegionId.ToInfo()" />
-
-                <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@GuildViewModel.RealmId" />
+                <div>
+                    <GuildNameLinkComponent Typo="Typo.h6"
+                                        GuildName="@GuildViewModel.Name"
+                                        GuildRealmId="@GuildViewModel.RealmId"
+                                        GuildRegionInfo="@GuildViewModel.RegionId.ToInfo()" />
+                </div>
+                <div>
+                    <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@GuildViewModel.RealmId" />
+                </div>
             </CardHeaderContent>
             <CardHeaderActions>
                 <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
@@ -41,14 +44,14 @@ else
                     var remainingCharacters = characters.Length;
                     foreach (var character in characters)
                     {
-                        if (counter > _maxCharacterCount )
+                        if (counter > _maxCharacterCount)
                         {
                             break;
                         }
 
                         counter++;
                         remainingCharacters--;
-                        <CharacterLinkButton @key="character" StringLocalizer="@Services.StringLocalizer" CharacterViewModel="@character"/>
+                        <CharacterLinkButton @key="character" StringLocalizer="@Services.StringLocalizer" CharacterViewModel="@character" />
                     }
 
                     if (remainingCharacters > 0)
@@ -56,7 +59,7 @@ else
                         <MudTooltip Placement="Placement.Bottom" Color="Color.Dark">
                             <ChildContent>
                                 <MudButton Variant="Variant.Filled" OnClick="() => _maxCharacterCount += 25">
-                                    <MudAvatar Size="Size.Medium" >...</MudAvatar>
+                                    <MudAvatar Size="Size.Medium">...</MudAvatar>
                                 </MudButton>
                             </ChildContent>
                             <TooltipContent>

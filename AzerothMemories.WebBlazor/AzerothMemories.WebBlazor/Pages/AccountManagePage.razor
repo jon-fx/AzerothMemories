@@ -149,9 +149,10 @@
                                 <CharacterRaceComponent Typo="Typo.body2" Inline="true" CharacterRace="@character.Race" />
                                 <CharacterClassComponent Typo="Typo.body2" Inline="true" CharacterClass="@character.Class" />
                             </div>
-
-
-                            <RealmLinkComponent Class="d-block" Typo="Typo.caption" BlizzardRealmId="@character.RealmId" />
+                            
+                            <div>
+                                <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@character.RealmId" />
+                            </div>
                         </CardHeaderContent>
                     </MudCardHeader>
                     <MudCardActions Class="@ClassPresets.CardActions">
@@ -179,9 +180,10 @@
                                             <CharacterRaceComponent Typo="Typo.body2" Inline="true" CharacterRace="@otherCharacter.Race" LinkDisabled="true" />
                                             <CharacterClassComponent Typo="Typo.body2" Inline="true" CharacterClass="@otherCharacter.Class" LinkDisabled="true" />
                                         </div>
-
-
-                                        <RealmLinkComponent Class="d-block" Typo="Typo.caption" BlizzardRealmId="@otherCharacter.RealmId" LinkDisabled="true" />
+                                        
+                                        <div>
+                                            <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@otherCharacter.RealmId" LinkDisabled="true" />
+                                        </div>
                                     </MudMenuItem>
                                 }
                             </MudMenu>
