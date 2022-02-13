@@ -211,6 +211,27 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(AccountHistoryRecord.TargetCommentId)).AsInt64().ForeignKey(PostCommentRecord.TableName, "Id").OnDelete(Rule.SetNull).Nullable()
             .WithColumn(nameof(AccountHistoryRecord.CreatedTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
 
+        Create.Index().OnTable(AccountFollowingRecord.TableName)
+            .OnColumn(nameof(AccountFollowingRecord.AccountId));
+
+        Create.Index().OnTable(AccountFollowingRecord.TableName)
+            .OnColumn(nameof(AccountFollowingRecord.FollowerId));
+
+        Create.Index().OnTable(AccountHistoryRecord.TableName)
+            .OnColumn(nameof(AccountHistoryRecord.AccountId));
+
+        Create.Index().OnTable(CharacterRecord.TableName)
+            .OnColumn(nameof(CharacterRecord.AccountId));
+
+        Create.Index().OnTable(CharacterRecord.TableName)
+            .OnColumn(nameof(CharacterRecord.GuildId));
+
+        Create.Index().OnTable(CharacterAchievementRecord.TableName)
+            .OnColumn(nameof(CharacterAchievementRecord.AccountId));
+
+        Create.Index().OnTable(CharacterAchievementRecord.TableName)
+            .OnColumn(nameof(CharacterAchievementRecord.CharacterId));
+
         Create.Index().OnTable(CharacterAchievementRecord.TableName)
             .OnColumn(nameof(CharacterAchievementRecord.AchievementId));
 
@@ -218,10 +239,61 @@ public sealed class Migration0001 : Migration
             .OnColumn(nameof(CharacterAchievementRecord.AchievementTimeStamp));
 
         Create.Index().OnTable(PostRecord.TableName)
+            .OnColumn(nameof(PostRecord.AccountId));
+
+        Create.Index().OnTable(PostRecord.TableName)
             .OnColumn(nameof(PostRecord.PostCreatedTime));
 
         Create.Index().OnTable(PostRecord.TableName)
             .OnColumn(nameof(PostRecord.DeletedTimeStamp));
+
+        Create.Index().OnTable(PostCommentRecord.TableName)
+            .OnColumn(nameof(PostCommentRecord.AccountId));
+
+        Create.Index().OnTable(PostCommentRecord.TableName)
+            .OnColumn(nameof(PostCommentRecord.PostId));
+
+        Create.Index().OnTable(PostCommentRecord.TableName)
+            .OnColumn(nameof(PostCommentRecord.ParentId));
+
+        Create.Index().OnTable(PostCommentReactionRecord.TableName)
+            .OnColumn(nameof(PostCommentReactionRecord.AccountId));
+
+        Create.Index().OnTable(PostCommentReactionRecord.TableName)
+            .OnColumn(nameof(PostCommentReactionRecord.CommentId));
+
+        Create.Index().OnTable(PostCommentReportRecord.TableName)
+            .OnColumn(nameof(PostCommentReportRecord.AccountId));
+
+        Create.Index().OnTable(PostCommentReportRecord.TableName)
+            .OnColumn(nameof(PostCommentReportRecord.CommentId));
+
+        Create.Index().OnTable(PostReactionRecord.TableName)
+            .OnColumn(nameof(PostReactionRecord.AccountId));
+
+        Create.Index().OnTable(PostReactionRecord.TableName)
+            .OnColumn(nameof(PostReactionRecord.PostId));
+
+        Create.Index().OnTable(PostReportRecord.TableName)
+            .OnColumn(nameof(PostReportRecord.AccountId));
+
+        Create.Index().OnTable(PostReportRecord.TableName)
+            .OnColumn(nameof(PostReportRecord.PostId));
+
+        Create.Index().OnTable(PostTagReportRecord.TableName)
+            .OnColumn(nameof(PostTagReportRecord.AccountId));
+
+        Create.Index().OnTable(PostTagReportRecord.TableName)
+            .OnColumn(nameof(PostTagReportRecord.PostId));
+
+        Create.Index().OnTable(PostTagReportRecord.TableName)
+            .OnColumn(nameof(PostTagReportRecord.TagId));
+
+        Create.Index().OnTable(PostTagRecord.TableName)
+            .OnColumn(nameof(PostTagRecord.PostId));
+
+        Create.Index().OnTable(PostTagRecord.TableName)
+            .OnColumn(nameof(PostTagRecord.CommentId));
 
         Create.Index().OnTable(PostTagRecord.TableName)
             .OnColumn(nameof(PostTagRecord.TagKind));
