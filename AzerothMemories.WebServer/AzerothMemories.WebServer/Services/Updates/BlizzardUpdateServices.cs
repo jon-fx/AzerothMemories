@@ -235,15 +235,14 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
 
         if (guildData != null)
         {
-            newGuildId = guildData.Id;
+            //newGuildId = guildData.Id;
             newGuildName = guildData.Name;
-            var newGuildRef = MoaRef.GetGuildRef(record.BlizzardRegionId, guildData.Realm.Slug, newGuildName, newGuildId).Full;
-
+            var newGuildRef = MoaRef.GetGuildRef(record.BlizzardRegionId, guildData.Realm.Slug, newGuildName).Full;
             guildRecord = await _commonServices.GuildServices.GetOrCreate(newGuildRef);
-            newGuildId = guildRecord.BlizzardId;
+            //newGuildId = guildRecord.BlizzardId;
         }
 
-        record.BlizzardGuildId = newGuildId;
+        //record.BlizzardGuildId = newGuildId;
         record.BlizzardGuildName = newGuildName;
         record.GuildRef = guildRecord?.MoaRef;
         record.GuildId = guildRecord?.Id;
@@ -366,7 +365,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
             record.Faction = guildSummary.ResultData.Faction.AsFaction();
             record.BlizzardProfileLastModified = guildSummary.ResultLastModifiedMs;
 
-            Exceptions.ThrowIf(new MoaRef(record.MoaRef).Id != record.BlizzardId);
+            Exceptions.ThrowIf(new MoaRef(record.MoaRef).Id != 0);
         }
         else if (guildSummary.IsNotModified)
         {
@@ -410,7 +409,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
                 {
                     GuildId = record.Id,
                     GuildRef = guildRef.Full,
-                    BlizzardGuildId = record.BlizzardId,
+                    //BlizzardGuildId = record.BlizzardId,
                     BlizzardGuildName = guildRoster.ResultData.Guild.Name,
                     Name = guildMember.Character.Name,
                     NameSearchable = DatabaseHelpers.GetSearchableName(guildMember.Character.Name),

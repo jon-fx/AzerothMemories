@@ -82,7 +82,7 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(CharacterRecord.AchievementTotalQuantity)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(CharacterRecord.GuildId)).AsInt64().ForeignKey(GuildRecord.TableName, "Id").OnDelete(Rule.SetNull).Nullable()
             .WithColumn(nameof(CharacterRecord.GuildRef)).AsString(128).Nullable()
-            .WithColumn(nameof(CharacterRecord.BlizzardGuildId)).AsInt64().WithDefaultValue(0)
+            //.WithColumn(nameof(CharacterRecord.BlizzardGuildId)).AsInt64().WithDefaultValue(0)
             .WithColumn(nameof(CharacterRecord.BlizzardGuildRank)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(CharacterRecord.BlizzardGuildName)).AsString(60).Nullable()
             .WithColumn(nameof(CharacterRecord.BlizzardProfileLastModified)).AsInt64().WithDefaultValue(0)

@@ -11,7 +11,6 @@ public sealed class MoaRef
         Region = region;
 
         Full = $"{Type}|{Region.ToValue()}|{Id}|{Realm}|{Name}".ToLower();
-        //Full = Id >= 0 ? $"{Type}|{Region.ToValue()}|{Id}|{Realm}|{Name}".ToLower() : $"{Type}|{Region.ToValue()}|%|{Realm}|{Name}".ToLower();
     }
 
     public MoaRef(string full)
@@ -34,6 +33,10 @@ public sealed class MoaRef
         Name = split[4];
         Realm = split[3];
         Region = (BlizzardRegion)regionId;
+
+        Exceptions.ThrowIf(Type == 'a');
+        Exceptions.ThrowIf(Type == 'c' && Id == 0);
+        Exceptions.ThrowIf(Type == 'g' && Id != 0);
     }
 
     public char Type { get; }
@@ -83,11 +86,13 @@ public sealed class MoaRef
             if (Realm == null) return false;
             if (IsWildCard) return false;
 
+            Exceptions.ThrowIf(Id != 0);
+
             return true;
         }
     }
 
-    public bool IsWildCard => Id <= 0;
+    public bool IsWildCard => Id < 0;
 
     //public static MoaRef GetAccountRef(BlizzardRegion region, long id)
     //{
@@ -99,9 +104,9 @@ public sealed class MoaRef
         return new MoaRef('c', region, realm, name, id);
     }
 
-    public static MoaRef GetGuildRef(BlizzardRegion region, string realm, string name, long id)
+    public static MoaRef GetGuildRef(BlizzardRegion region, string realm, string name)
     {
-        return new MoaRef('g', region, realm, name, id);
+        return new MoaRef('g', region, realm, name, 0);
     }
 
     public string GetLikeQuery()

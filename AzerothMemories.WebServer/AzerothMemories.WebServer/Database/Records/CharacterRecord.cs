@@ -52,7 +52,7 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord
 
     [Column] public string GuildRef { get; set; }
 
-    [Column] public long BlizzardGuildId { get; set; }
+    //[Column] public long BlizzardGuildId { get; set; }
 
     [Column] public byte BlizzardGuildRank { get; set; }
 
