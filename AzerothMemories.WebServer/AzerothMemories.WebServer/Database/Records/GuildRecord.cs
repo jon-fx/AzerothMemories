@@ -3,9 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AzerothMemories.WebServer.Database.Records;
 
-[Table("Guilds")]
+[Table(TableName)]
 public sealed class GuildRecord : IBlizzardUpdateRecord
 {
+    public const string TableName = "Guilds";
+
     [Key] public long Id { get; set; }
 
     [Column] public string MoaRef { get; set; }

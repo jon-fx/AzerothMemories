@@ -3,9 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AzerothMemories.WebServer.Database.Records;
 
-[Table("Blizzard_Data")]
+[Table(TableName)]
 public sealed class BlizzardDataRecord : IDatabaseRecord
 {
+    public const string TableName = "Blizzard_Data";
+
     [Key] public long Id { get; set; }
 
     [Column] public long TagId { get; set; }

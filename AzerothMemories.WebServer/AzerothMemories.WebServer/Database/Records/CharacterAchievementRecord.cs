@@ -3,9 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AzerothMemories.WebServer.Database.Records;
 
-[Table("Characters_Achievements")]
+[Table(TableName)]
 public sealed class CharacterAchievementRecord : IDatabaseRecord
 {
+    public const string TableName = "Characters_Achievements";
+
     [Key] public long Id { get; set; }
 
     [Column] public long? AccountId { get; set; }

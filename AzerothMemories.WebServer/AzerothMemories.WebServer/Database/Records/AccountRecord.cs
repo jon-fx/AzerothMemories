@@ -3,9 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AzerothMemories.WebServer.Database.Records;
 
-[Table("Accounts")]
+[Table(TableName)]
 public sealed class AccountRecord : IBlizzardUpdateRecord
 {
+    public const string TableName = "Accounts";
+
     [Key] public long Id { get; set; }
 
     [Column] public string FusionId { get; set; }

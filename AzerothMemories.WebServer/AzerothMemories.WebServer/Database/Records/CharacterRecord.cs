@@ -3,9 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AzerothMemories.WebServer.Database.Records;
 
-[Table("Characters")]
+[Table(TableName)]
 public sealed class CharacterRecord : IBlizzardUpdateRecord
 {
+    public const string TableName = "Characters";
+
     [Key] public long Id { get; set; }
 
     [Column] public string MoaRef { get; set; }

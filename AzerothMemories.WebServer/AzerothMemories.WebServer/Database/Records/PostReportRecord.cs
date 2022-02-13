@@ -3,9 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AzerothMemories.WebServer.Database.Records;
 
-[Table("Posts_Reports")]
+[Table(TableName)]
 public sealed class PostReportRecord : IDatabaseRecord
 {
+    public const string TableName = "Posts_Reports";
+
     [Key] public long Id { get; set; }
 
     [Column] public long AccountId { get; set; }

@@ -3,9 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AzerothMemories.WebServer.Database.Records;
 
-[Table("Accounts_History")]
+[Table(TableName)]
 public sealed class AccountHistoryRecord
 {
+    public const string TableName = "Accounts_History";
+
     [Key] public long Id { get; set; }
 
     [Column] public long AccountId { get; set; }
