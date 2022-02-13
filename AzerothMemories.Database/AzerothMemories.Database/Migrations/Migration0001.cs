@@ -7,6 +7,8 @@ namespace AzerothMemories.Database.Migrations;
 [Migration(1)]
 public sealed class Migration0001 : Migration
 {
+    private readonly bool SkipBlizzardData = true;
+
     public override void Up()
     {
         Create.Table("Accounts")
@@ -96,25 +98,31 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(CharacterAchievementRecord.AchievementTimeStamp)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
             .WithColumn(nameof(CharacterAchievementRecord.CompletedByCharacter)).AsBoolean().WithDefaultValue(false);
 
-        //Create.Table("Blizzard_Data")
-        //    .WithColumn(nameof(BlizzardDataRecord.Id)).AsInt64().PrimaryKey().Identity()
-        //    .WithColumn(nameof(BlizzardDataRecord.TagId)).AsInt64()
-        //    .WithColumn(nameof(BlizzardDataRecord.TagType)).AsByte()
-        //    .WithColumn(nameof(BlizzardDataRecord.Key)).AsString(128).Unique().NotNullable()
-        //    .WithColumn(nameof(BlizzardDataRecord.Media)).AsString(250).Nullable()
-        //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.EnUs)}").AsString(250).Nullable()
-        //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.KoKr)}").AsString(250).Nullable()
-        //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.FrFr)}").AsString(250).Nullable()
-        //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.DeDe)}").AsString(250).Nullable()
-        //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.ZhCn)}").AsString(250).Nullable()
-        //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.EsEs)}").AsString(250).Nullable()
-        //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.ZhTw)}").AsString(250).Nullable()
-        //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.EnGb)}").AsString(250).Nullable()
-        //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.EsMx)}").AsString(250).Nullable()
-        //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.RuRu)}").AsString(250).Nullable()
-        //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.PtBr)}").AsString(250).Nullable()
-        //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.ItIt)}").AsString(250).Nullable()
-        //    .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.PtPt)}").AsString(250).Nullable();
+        if (SkipBlizzardData)
+        {
+        }
+        else
+        {
+            Create.Table("Blizzard_Data")
+                .WithColumn(nameof(BlizzardDataRecord.Id)).AsInt64().PrimaryKey().Identity()
+                .WithColumn(nameof(BlizzardDataRecord.TagId)).AsInt64()
+                .WithColumn(nameof(BlizzardDataRecord.TagType)).AsByte()
+                .WithColumn(nameof(BlizzardDataRecord.Key)).AsString(128).Unique().NotNullable()
+                .WithColumn(nameof(BlizzardDataRecord.Media)).AsString(250).Nullable()
+                .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.EnUs)}").AsString(250).Nullable()
+                .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.KoKr)}").AsString(250).Nullable()
+                .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.FrFr)}").AsString(250).Nullable()
+                .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.DeDe)}").AsString(250).Nullable()
+                .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.ZhCn)}").AsString(250).Nullable()
+                .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.EsEs)}").AsString(250).Nullable()
+                .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.ZhTw)}").AsString(250).Nullable()
+                .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.EnGb)}").AsString(250).Nullable()
+                .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.EsMx)}").AsString(250).Nullable()
+                .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.RuRu)}").AsString(250).Nullable()
+                .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.PtBr)}").AsString(250).Nullable()
+                .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.ItIt)}").AsString(250).Nullable()
+                .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.PtPt)}").AsString(250).Nullable();
+        }
 
         Create.Table("Posts")
             .WithColumn(nameof(PostRecord.Id)).AsInt64().PrimaryKey().Identity()
@@ -251,6 +259,12 @@ public sealed class Migration0001 : Migration
         Delete.Table("Accounts_Following");
         Delete.Table("Accounts");
 
-        //Delete.Table("Blizzard_Data");
+        if (SkipBlizzardData)
+        {
+        }
+        else
+        {
+            Delete.Table("Blizzard_Data");
+        }
     }
 }
