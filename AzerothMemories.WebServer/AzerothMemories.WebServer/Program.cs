@@ -59,7 +59,7 @@ builder.Services.AddHangfire(options =>
 });
 builder.Services.AddHangfireServer(options =>
 {
-    options.WorkerCount = 2;
+    options.WorkerCount = Environment.ProcessorCount;
     options.Queues = BlizzardUpdateHandler.AllQueues;
 });
 
