@@ -74,10 +74,13 @@
     {
         await base.OnAfterRenderAsync(firstRender);
 
-        var jsArray = (from userTag in FullTagsList
-            select new { key = userTag.Value }).ToArray();
+        if (firstRender)
+        {
+            var jsArray = (from userTag in FullTagsList
+                select new { key = userTag.Value }).ToArray();
 
-        await JsRuntime.InvokeVoidAsync("SetUpTagTextBox", "mudTextField", jsArray);
+            await JsRuntime.InvokeVoidAsync("SetUpTagTextBox", "mudTextField", jsArray);
+        }
     }
 
     public void SetText(string text)
