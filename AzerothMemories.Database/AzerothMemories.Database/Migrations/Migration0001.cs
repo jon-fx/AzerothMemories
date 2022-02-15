@@ -264,6 +264,9 @@ public sealed class Migration0001 : Migration
             .OnColumn(nameof(PostRecord.AccountId));
 
         Create.Index().OnTable(PostRecord.TableName)
+            .OnColumn(nameof(PostRecord.PostTime));
+
+        Create.Index().OnTable(PostRecord.TableName)
             .OnColumn(nameof(PostRecord.PostCreatedTime));
 
         Create.Index().OnTable(PostRecord.TableName)
