@@ -122,6 +122,28 @@ public sealed class Migration0001 : Migration
                 .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.PtBr)}").AsString(250).Nullable()
                 .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.ItIt)}").AsString(250).Nullable()
                 .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.PtPt)}").AsString(250).Nullable();
+
+            var indexNames = new[]
+            {
+                $"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.EnUs)}",
+                $"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.KoKr)}",
+                $"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.FrFr)}",
+                $"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.DeDe)}",
+                $"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.ZhCn)}",
+                $"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.EsEs)}",
+                $"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.ZhTw)}",
+                $"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.EnGb)}",
+                $"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.EsMx)}",
+                $"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.RuRu)}",
+                $"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.PtBr)}",
+                $"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.ItIt)}",
+                $"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.PtPt)}"
+            };
+
+            foreach (var indexName in indexNames)
+            {
+                Execute.Sql($"CREATE INDEX IX_Blizzard_Data_{indexName} ON \"{BlizzardDataRecord.TableName}\" (LOWER(\"{indexName}\") varchar_pattern_ops)");
+            }
         }
 
         Create.Table(PostRecord.TableName)
@@ -169,7 +191,7 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(PostReactionRecord.Reaction)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(PostReactionRecord.LastUpdateTime)).AsDateTimeOffset();
 
-        Create.Table("Posts_Comments_Reactions")
+        Create.Table(PostCommentReactionRecord.TableName)
             .WithColumn(nameof(PostCommentReactionRecord.Id)).AsInt64().PrimaryKey().Identity()
             .WithColumn(nameof(PostCommentReactionRecord.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey(AccountRecord.TableName, "Id").OnDelete(Rule.Cascade)
             .WithColumn(nameof(PostCommentReactionRecord.CommentId)).AsInt64().WithDefaultValue(0).ForeignKey(PostCommentRecord.TableName, "Id").OnDelete(Rule.Cascade)
