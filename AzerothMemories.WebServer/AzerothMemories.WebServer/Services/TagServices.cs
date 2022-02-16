@@ -15,15 +15,29 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
     }
 
     [ComputeMethod]
-    public virtual async Task<int> TryGetRealmId(string realmSlug)
+    public virtual async Task<bool> IsValidRealmSlug(string realmSlug)
+    {
+        var allRealmSlugs = await GetAllRealmSlugs();
+        return allRealmSlugs.Contains(realmSlug);
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<HashSet<string>> GetAllRealmSlugs()
     {
         await using var database = CreateDbContext();
 
         var query = from r in database.BlizzardData
-                    where r.TagType == PostTagType.Realm && r.Media == realmSlug
-                    select r.TagId;
+                    where r.TagType == PostTagType.Realm
+                    select r.Media;
 
-        return (int)await query.FirstOrDefaultAsync();
+        var resultsSet = new HashSet<string>();
+        var queryResults = await query.ToArrayAsync();
+        foreach (var queryResult in queryResults)
+        {
+            resultsSet.Add(queryResult);
+        }
+
+        return resultsSet;
     }
 
     [ComputeMethod]
@@ -276,7 +290,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
         var tagString = PostTagInfo.GetTagString(tagType, tagId);
         var exists = await database.BlizzardData.AnyAsync(r => r.Key == tagString);
 
-        return !exists;
+        return exists;
     }
 
     public bool GetCommentText(string commentText, Dictionary<long, string> userThatCanBeTagged, out string newCommentText, out HashSet<long> userTags, out HashSet<string> hashTags)

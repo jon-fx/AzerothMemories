@@ -24,7 +24,7 @@ builder.Services.AddLogging(logging =>
 });
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-EntityFrameworkPlusManager.IsCommunity = true;
+//EntityFrameworkPlusManager.IsCommunity = true;
 ProgramEx.Initialize(builder.Services);
 
 builder.Services.AddRazorPages();

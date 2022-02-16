@@ -110,8 +110,8 @@ public class GuildServices : DbServiceBase<AppDbContext>, IGuildServices
             return null;
         }
 
-        var realmId = await _commonServices.TagServices.TryGetRealmId(realmSlug);
-        if (realmId == 0)
+        var validRealmSlug = await _commonServices.TagServices.IsValidRealmSlug(realmSlug);
+        if (!validRealmSlug)
         {
             return null;
         }

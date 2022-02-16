@@ -131,11 +131,6 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             await database.Accounts.AddAsync(accountRecord);
             await database.SaveChangesAsync();
 
-            if (accountRecord.Id == 0)
-            {
-                throw new NotImplementedException();
-            }
-
             //await DependsOnAccountRecord(accountRecord.Id);
 
             await AddNewHistoryItem(new Account_AddNewHistoryItem
@@ -146,6 +141,8 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
 
             //InvalidateAccountRecord(accountRecord);
         }
+
+        Exceptions.ThrowIf(accountRecord.Id == 0);
 
         return accountRecord;
     }
@@ -379,13 +376,11 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         }
 
         var previousUsername = accountRecord.Username;
-        var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.Username == accountRecord.Username)
-                                                  .UpdateAsync(r => new AccountRecord { Username = command.NewUsername, UsernameSearchable = DatabaseHelpers.GetSearchableName(command.NewUsername) }, cancellationToken);
+        database.Attach(accountRecord);
+        accountRecord.Username = command.NewUsername;
+        accountRecord.UsernameSearchable = DatabaseHelpers.GetSearchableName(command.NewUsername);
 
-        if (updateResult == 0)
-        {
-            return false;
-        }
+        await database.SaveChangesAsync(cancellationToken);
 
         await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
@@ -422,11 +417,9 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         }
 
         await using var database = await CreateCommandDbContext(cancellationToken);
-        var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.IsPrivate == !command.NewValue).UpdateAsync(r => new AccountRecord { IsPrivate = command.NewValue }, cancellationToken);
-        if (updateResult == 0)
-        {
-            return !command.NewValue;
-        }
+        database.Attach(accountRecord);
+        accountRecord.IsPrivate = command.NewValue;
+        await database.SaveChangesAsync(cancellationToken);
 
         context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
 
@@ -455,11 +448,10 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         }
 
         await using var database = await CreateCommandDbContext(cancellationToken);
-        var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id && x.BattleTagIsPublic == !command.NewValue).UpdateAsync(r => new AccountRecord { BattleTagIsPublic = command.NewValue }, cancellationToken);
-        if (updateResult == 0)
-        {
-            return !command.NewValue;
-        }
+        database.Attach(accountRecord);
+        accountRecord.BattleTagIsPublic = command.NewValue;
+
+        await database.SaveChangesAsync(cancellationToken);
 
         context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
 
@@ -512,12 +504,10 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
 
         var accountRecord = await TryGetActiveAccountRecord(command.Session);
         await using var database = await CreateCommandDbContext(cancellationToken);
+        database.Attach(accountRecord);
+        accountRecord.Avatar = newAvatar;
 
-        var updateResult = await database.Accounts.Where(x => x.Id == accountRecord.Id).UpdateAsync(r => new AccountRecord { Avatar = newAvatar }, cancellationToken);
-        if (updateResult == 0)
-        {
-            return accountViewModel.Avatar;
-        }
+        await database.SaveChangesAsync(cancellationToken);
 
         context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
 
@@ -561,12 +551,11 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         ServerSocialHelpers.SetterFunc[helper.LinkId](accountRecord, newValue);
 
         await using var database = await CreateCommandDbContext(cancellationToken);
+        database.Attach(accountRecord);
 
-        var updateResult = await ServerSocialHelpers.QuerySetter[helper.LinkId](database, accountRecord.Id, newValue);
-        if (updateResult == 0)
-        {
-            return previous;
-        }
+        ServerSocialHelpers.QuerySetter[helper.LinkId](accountRecord, newValue);
+
+        await database.SaveChangesAsync(cancellationToken);
 
         context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
 

@@ -34,5 +34,4 @@ global using Stl.RegisterAttributes;
 global using System.Net;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
-global using Z.EntityFramework.Plus;
 global using SystemClock = NodaTime.SystemClock;

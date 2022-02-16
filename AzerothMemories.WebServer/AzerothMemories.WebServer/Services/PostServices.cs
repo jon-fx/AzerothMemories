@@ -500,6 +500,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         await using var database = await CreateCommandDbContext(cancellationToken);
+        database.Attach(postRecord);
 
         var newReaction = command.NewReaction;
         var reactionRecord = await database.PostReactions.FirstOrDefaultAsync(x => x.AccountId == activeAccount.Id && x.PostId == postId, cancellationToken);
@@ -519,7 +520,8 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             };
 
             await database.PostReactions.AddAsync(reactionRecord, cancellationToken);
-            await ModifyPostWithReaction(database, postRecord.Id, newReaction, +1, true);
+
+            ModifyPostWithReaction(postRecord, newReaction, +1, true);
         }
         else
         {
@@ -532,13 +534,13 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             if (previousReaction != PostReaction.None)
             {
                 reactionRecord.Reaction = PostReaction.None;
-                await ModifyPostWithReaction(database, postRecord.Id, previousReaction, -1, newReaction == PostReaction.None);
+                ModifyPostWithReaction(postRecord, previousReaction, -1, newReaction == PostReaction.None);
             }
 
             if (newReaction != PostReaction.None)
             {
                 reactionRecord.Reaction = newReaction;
-                await ModifyPostWithReaction(database, postRecord.Id, newReaction, +1, previousReaction == PostReaction.None);
+                ModifyPostWithReaction(postRecord, newReaction, +1, previousReaction == PostReaction.None);
             }
 
             reactionRecord.LastUpdateTime = SystemClock.Instance.GetCurrentInstant();
@@ -907,7 +909,11 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
         else
         {
-            await database.PostTags.Where(x => x.PostId == postId && x.TagType == tagType && x.TagId == oldTag.Value).UpdateAsync(r => new PostTagRecord { TagKind = PostTagKind.Deleted });
+            var postTag = await database.PostTags.FirstOrDefaultAsync(x => x.PostId == postId && x.TagType == tagType && x.TagId == oldTag.Value);
+            if (postTag != null)
+            {
+                postTag.TagKind = PostTagKind.Deleted;
+            }
         }
 
         if (newTag == null)
@@ -915,8 +921,8 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
         else
         {
-            var update = await database.PostTags.Where(x => x.PostId == postId && x.TagType == tagType && x.TagId == newTag.Value).UpdateAsync(r => new PostTagRecord { TagKind = newTagKind });
-            if (update == 0)
+            var update = await database.PostTags.FirstOrDefaultAsync(x => x.PostId == postId && x.TagType == tagType && x.TagId == newTag.Value);
+            if (update == null)
             {
                 var tagString = PostTagInfo.GetTagString(tagType, newTag.Value);
 
@@ -931,6 +937,10 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
                 };
 
                 await database.PostTags.AddAsync(record);
+            }
+            else
+            {
+                update.TagKind = newTagKind;
             }
         }
     }
@@ -1056,6 +1066,8 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         await using var database = await CreateCommandDbContext(cancellationToken);
+        database.Attach(postRecord);
+
         var commentRecord = new PostCommentRecord
         {
             AccountId = activeAccount.Id,
@@ -1071,10 +1083,10 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             tagRecord.CommentId = commentRecord.Id;
         }
 
+        postRecord.TotalCommentCount++;
         commentRecord.CommentTags = tagRecords;
 
         await database.PostComments.AddAsync(commentRecord, cancellationToken);
-        await database.Posts.Where(x => x.Id == postRecord.Id).UpdateAsync(r => new PostRecord { TotalCommentCount = r.TotalCommentCount + 1 }, cancellationToken);
         await database.SaveChangesAsync(cancellationToken);
 
         await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
@@ -1175,6 +1187,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         await using var database = await CreateCommandDbContext(cancellationToken);
+        var commentRecord = database.PostComments.First(x => x.Id == postId);
 
         var newReaction = command.NewReaction;
         var reactionRecord = await database.PostCommentReactions.FirstOrDefaultAsync(x => x.AccountId == activeAccount.Id && x.CommentId == commentId, cancellationToken);
@@ -1194,7 +1207,8 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             };
 
             await database.PostCommentReactions.AddAsync(reactionRecord, cancellationToken);
-            await ModifyPostCommentWithReaction(database, commentId, newReaction, +1, true);
+
+            ModifyPostCommentWithReaction(commentRecord, newReaction, +1, true);
         }
         else
         {
@@ -1207,13 +1221,15 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             if (previousReaction != PostReaction.None)
             {
                 reactionRecord.Reaction = PostReaction.None;
-                await ModifyPostCommentWithReaction(database, commentId, previousReaction, -1, newReaction == PostReaction.None);
+
+                ModifyPostCommentWithReaction(commentRecord, previousReaction, -1, newReaction == PostReaction.None);
             }
 
             if (newReaction != PostReaction.None)
             {
                 reactionRecord.Reaction = newReaction;
-                await ModifyPostCommentWithReaction(database, commentId, newReaction, +1, previousReaction == PostReaction.None);
+
+                ModifyPostCommentWithReaction(commentRecord, newReaction, +1, previousReaction == PostReaction.None);
             }
 
             reactionRecord.LastUpdateTime = SystemClock.Instance.GetCurrentInstant();
@@ -1299,7 +1315,10 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         var newVisibility = Math.Clamp(command.NewVisibility, (byte)0, (byte)1);
 
         await using var database = await CreateCommandDbContext(cancellationToken);
-        await database.Posts.Where(x => x.Id == postRecord.Id).UpdateAsync(r => new PostRecord { PostVisibility = newVisibility }, cancellationToken);
+        database.Attach(postRecord);
+        postRecord.PostVisibility = newVisibility;
+
+        await database.SaveChangesAsync(cancellationToken);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
         context.Operation().Items.Set(new Post_InvalidateRecentPost(true));
@@ -1362,7 +1381,9 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         await using var database = await CreateCommandDbContext(cancellationToken);
-        await database.Posts.Where(x => x.Id == postRecord.Id).UpdateAsync(r => new PostRecord { DeletedTimeStamp = now }, cancellationToken);
+        database.Attach(postRecord);
+        postRecord.DeletedTimeStamp = now;
+        await database.SaveChangesAsync(cancellationToken);
 
         await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
@@ -1435,7 +1456,10 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         await using var database = await CreateCommandDbContext(cancellationToken);
-        await database.PostComments.Where(x => x.Id == commentId).UpdateAsync(r => new PostCommentRecord { DeletedTimeStamp = now }, cancellationToken);
+        var commentRecord = await database.PostComments.FirstAsync(x => x.Id == commentId, cancellationToken: cancellationToken);
+        commentRecord.DeletedTimeStamp = now;
+
+        await database.SaveChangesAsync(cancellationToken);
 
         await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
@@ -1499,6 +1523,8 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         await using var database = await CreateCommandDbContext(cancellationToken);
+        database.Attach(postRecord);
+
         var reportQueryResult = await database.PostReports.FirstOrDefaultAsync(r => r.PostId == postRecord.Id && r.AccountId == activeAccount.Id, cancellationToken);
         if (reportQueryResult == null)
         {
@@ -1513,8 +1539,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             };
 
             database.PostReports.Add(reportQueryResult);
-
-            await database.Posts.Where(x => x.Id == postId).UpdateAsync(r => new PostRecord { TotalReportCount = r.TotalReportCount + 1 }, cancellationToken);
+            postRecord.TotalReportCount++;
         }
         else
         {
@@ -1593,6 +1618,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         await using var database = await CreateCommandDbContext(cancellationToken);
+
         var reportQueryResult = await database.PostCommentReports.FirstOrDefaultAsync(r => r.CommentId == commentId && r.AccountId == activeAccount.Id, cancellationToken);
         if (reportQueryResult == null)
         {
@@ -1608,7 +1634,8 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
 
             database.PostCommentReports.Add(reportQueryResult);
 
-            await database.PostComments.Where(x => x.Id == commentId).UpdateAsync(r => new PostCommentRecord { TotalReportCount = r.TotalReportCount + 1 }, cancellationToken);
+            var commentRecord = await database.PostComments.FirstAsync(x => x.Id == commentId, cancellationToken);
+            commentRecord.TotalReportCount++;
         }
         else
         {
@@ -1700,7 +1727,8 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             }
             else
             {
-                await database.PostTags.Where(x => x.Id == tagRecord.Id).UpdateAsync(r => new PostTagRecord { TotalReportCount = r.TotalReportCount + 1 }, cancellationToken);
+                database.Attach(tagRecord);
+                tagRecord.TotalReportCount++;
 
                 await database.PostTagReports.AddAsync(new PostTagReportRecord
                 {
@@ -1928,7 +1956,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         return await allTags.ToArrayAsync();
     }
 
-    private static async Task ModifyPostWithReaction(AppDbContext dbContext, long id, PostReaction reaction, int change, bool modifyTotal)
+    private static void ModifyPostWithReaction(PostRecord record, PostReaction reaction, int change, bool modifyTotal)
     {
         switch (reaction)
         {
@@ -1939,47 +1967,47 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             }
             case PostReaction.Reaction1:
             {
-                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount1 = r.ReactionCount1 + change });
+                record.ReactionCount1 += change;
                 break;
             }
             case PostReaction.Reaction2:
             {
-                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount2 = r.ReactionCount2 + change });
+                record.ReactionCount2 += change;
                 break;
             }
             case PostReaction.Reaction3:
             {
-                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount3 = r.ReactionCount3 + change });
+                record.ReactionCount3 += change;
                 break;
             }
             case PostReaction.Reaction4:
             {
-                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount4 = r.ReactionCount4 + change });
+                record.ReactionCount4 += change;
                 break;
             }
             case PostReaction.Reaction5:
             {
-                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount5 = r.ReactionCount5 + change });
+                record.ReactionCount5 += change;
                 break;
             }
             case PostReaction.Reaction6:
             {
-                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount6 = r.ReactionCount6 + change });
+                record.ReactionCount6 += change;
                 break;
             }
             case PostReaction.Reaction7:
             {
-                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount7 = r.ReactionCount7 + change });
+                record.ReactionCount7 += change;
                 break;
             }
             case PostReaction.Reaction8:
             {
-                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount8 = r.ReactionCount8 + change });
+                record.ReactionCount8 += change;
                 break;
             }
             case PostReaction.Reaction9:
             {
-                await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { ReactionCount9 = r.ReactionCount9 + change });
+                record.ReactionCount9 += change;
                 break;
             }
             default:
@@ -1990,11 +2018,11 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
 
         if (modifyTotal)
         {
-            await dbContext.Posts.Where(x => x.Id == id).UpdateAsync(r => new PostRecord { TotalReactionCount = r.TotalReactionCount + change });
+            record.TotalReactionCount += change;
         }
     }
 
-    private static async Task ModifyPostCommentWithReaction(AppDbContext dbContext, long id, PostReaction reaction, int change, bool modifyTotal)
+    private static void ModifyPostCommentWithReaction(PostCommentRecord record, PostReaction reaction, int change, bool modifyTotal)
     {
         switch (reaction)
         {
@@ -2005,47 +2033,47 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             }
             case PostReaction.Reaction1:
             {
-                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount1 = r.ReactionCount1 + change });
+                record.ReactionCount1 += change;
                 break;
             }
             case PostReaction.Reaction2:
             {
-                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount2 = r.ReactionCount2 + change });
+                record.ReactionCount2 += change;
                 break;
             }
             case PostReaction.Reaction3:
             {
-                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount3 = r.ReactionCount3 + change });
+                record.ReactionCount3 += change;
                 break;
             }
             case PostReaction.Reaction4:
             {
-                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount4 = r.ReactionCount4 + change });
+                record.ReactionCount4 += change;
                 break;
             }
             case PostReaction.Reaction5:
             {
-                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount5 = r.ReactionCount5 + change });
+                record.ReactionCount5 += change;
                 break;
             }
             case PostReaction.Reaction6:
             {
-                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount6 = r.ReactionCount6 + change });
+                record.ReactionCount6 += change;
                 break;
             }
             case PostReaction.Reaction7:
             {
-                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount7 = r.ReactionCount7 + change });
+                record.ReactionCount7 += change;
                 break;
             }
             case PostReaction.Reaction8:
             {
-                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount8 = r.ReactionCount8 + change });
+                record.ReactionCount8 += change;
                 break;
             }
             case PostReaction.Reaction9:
             {
-                await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { ReactionCount9 = r.ReactionCount9 + change });
+                record.ReactionCount9 += change;
                 break;
             }
             default:
@@ -2056,7 +2084,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
 
         if (modifyTotal)
         {
-            await dbContext.PostComments.Where(x => x.Id == id).UpdateAsync(r => new PostCommentRecord { TotalReactionCount = r.TotalReactionCount + change });
+            record.TotalReactionCount += change;
         }
     }
 }

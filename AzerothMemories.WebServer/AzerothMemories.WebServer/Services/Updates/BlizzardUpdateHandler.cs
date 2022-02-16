@@ -63,10 +63,18 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
         await using var database = CreateDbContext(true);
 
         var jobName = $"{Queued}{SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds()}";
-        var updateResult = await database.Set<TRecord>().Where(x => x.Id == record.Id && x.UpdateJob == record.UpdateJob).UpdateAsync(x => new TRecord { UpdateJob = jobName });
-        if (updateResult > 0)
+
+        var tempRecord = await database.Set<TRecord>().FirstOrDefaultAsync(x => x.Id == record.Id);
+        if (tempRecord == null)
         {
-            record.UpdateJob = jobName;
+            return;
+        }
+
+        if (tempRecord.UpdateJob == record.UpdateJob)
+        {
+            tempRecord.UpdateJob = jobName;
+
+            await database.SaveChangesAsync();
 
             _callbacks[(int)updatePriority](record.Id);
         }
@@ -143,13 +151,19 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
     private async Task<bool> OnUpdateStarted<TRecord>(DbSet<TRecord> dbSet, long id, PerformContext context) where TRecord : class, IBlizzardUpdateRecord, new()
     {
         var jobId = context.BackgroundJob.Id;
-        var result = await dbSet.Where(x => x.Id == id && x.UpdateJob.StartsWith(Queued)).UpdateAsync(x => new TRecord { UpdateJob = $"{Progress}{jobId}" });
-        if (result > 0)
+        var result = await dbSet.FirstOrDefaultAsync(x => x.Id == id);
+        if (result == null)
         {
-            return true;
+            return false;
         }
 
-        return false;
+        if (!result.UpdateJob.StartsWith(Queued))
+        {
+            return false;
+        }
+
+        result.UpdateJob = $"{Progress}{jobId}";
+        return true;
     }
 
     [Queue(AccountQueue1)]

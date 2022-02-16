@@ -229,7 +229,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         record.Gender = character.Gender.AsGender();
 
         var guildData = character.Guild;
-        long newGuildId = 0;
+        //long newGuildId = 0;
         string newGuildName = null;
         GuildRecord guildRecord = null;
 
@@ -405,20 +405,18 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
                     throw new NotImplementedException();
                 }
 
-                await database.Characters.Where(x => x.Id == characterRecord.Id).UpdateAsync(x => new CharacterRecord
-                {
-                    GuildId = record.Id,
-                    GuildRef = guildRef.Full,
-                    //BlizzardGuildId = record.BlizzardId,
-                    BlizzardGuildName = guildRoster.ResultData.Guild.Name,
-                    Name = guildMember.Character.Name,
-                    NameSearchable = DatabaseHelpers.GetSearchableName(guildMember.Character.Name),
-                    RealmId = guildMember.Character.Realm.Id,
-                    Class = (byte)guildMember.Character.PlayableClass.Id,
-                    Race = (byte)guildMember.Character.PlayableRace.Id,
-                    BlizzardGuildRank = (byte)guildMember.Rank,
-                    Level = (byte)guildMember.Character.Level,
-                });
+                database.Attach(characterRecord);
+                characterRecord.GuildId = record.Id;
+                characterRecord.GuildRef = guildRef.Full;
+                //characterRecord.BlizzardGuildId = record.BlizzardId;
+                characterRecord.BlizzardGuildName = guildRoster.ResultData.Guild.Name;
+                characterRecord.Name = guildMember.Character.Name;
+                characterRecord.NameSearchable = DatabaseHelpers.GetSearchableName(guildMember.Character.Name);
+                characterRecord.RealmId = guildMember.Character.Realm.Id;
+                characterRecord.Class = (byte)guildMember.Character.PlayableClass.Id;
+                characterRecord.Race = (byte)guildMember.Character.PlayableRace.Id;
+                characterRecord.BlizzardGuildRank = (byte)guildMember.Rank;
+                characterRecord.Level = (byte)guildMember.Character.Level;
             }
 
             record.BlizzardRosterLastModified = guildRoster.ResultLastModifiedMs;
