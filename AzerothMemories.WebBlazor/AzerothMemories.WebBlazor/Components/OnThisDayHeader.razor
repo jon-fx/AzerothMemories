@@ -50,35 +50,15 @@ else
         </MudCardHeader>
         <MudCardContent Class="@ClassPresets.CardContent">
             @{
-                var mainTuples = new (string Text, List<ActivityResultsTuple> Items)[]
+                var otherTuples = new (string Text, List<PostTagInfo> Items)[]
                 {
                     new($"Top {mainData.TopTags.Count:N0} Tags", mainData.TopTags),
                     new($"Top {mainData.TopAchievements.Count:N0} Achievements", mainData.TopAchievements),
-                };
-
-                var otherTuples = new (string Text, List<PostTagInfo> Items)[]
-                {
                     new("First Tags", mainData.FirstTags),
                     new("First Achievements", mainData.FirstAchievements),
                     new("My Achievements", userData.Achievements),
                     new("My First Achievements", userData.FirstAchievements),
                 };
-
-                foreach (var (text, items) in mainTuples)
-                {
-                    @if (items.Count > 0)
-                    {
-                        <MudPaper Outlined="true" Class="ma-2 pa-2">
-                            <MudText  Class="ma-2" Typo="Typo.body2"><b>@text</b></MudText>
-                            @foreach (var valueTuple in items)
-                            {
-                                <MudBadge BadgeClass="mx-n4" Origin="Origin.TopRight" Content="valueTuple.Counter.ToMetric()" Visible="@(valueTuple.Counter > 0)" Color="Color.Dark" Overlap="true" Dot="false">
-                                    <PostTagChipComponent TagInfo="valueTuple.PostTagInfo" OnClick="() => OnMainTagClicked(valueTuple.PostTagInfo)" />
-                                </MudBadge>
-                            }
-                        </MudPaper>
-                    }
-                }
 
                 foreach (var (text, items) in otherTuples)
                 {
