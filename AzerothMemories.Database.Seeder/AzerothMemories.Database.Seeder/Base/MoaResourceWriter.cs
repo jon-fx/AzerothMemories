@@ -29,7 +29,7 @@ internal sealed class MoaResourceWriter
     {
         await using var database = await _databaseProvider.CreateDbContextAsync();
 
-        var results = await database.BlizzardData.ToArrayAsync();
+        var results = await database.BlizzardData.AsNoTracking().ToArrayAsync();
         foreach (var result in results)
         {
             _serverSideResources.Add(result.Key, result);
@@ -248,25 +248,23 @@ internal sealed class MoaResourceWriter
 
         foreach (var updatedResource in updatedResources)
         {
-            await database.BlizzardData.Where(x => x.Id == updatedResource.Id).UpdateAsync(x => new BlizzardDataRecord()
+            var record = await database.BlizzardData.FirstAsync(x => x.Id == updatedResource.Id);
+            record.Name = new BlizzardDataRecordLocal
             {
-                Name = new BlizzardDataRecordLocal
-                {
-                    EnUs = updatedResource.Name.EnUs,
-                    KoKr = updatedResource.Name.KoKr,
-                    FrFr = updatedResource.Name.FrFr,
-                    DeDe = updatedResource.Name.DeDe,
-                    ZhCn = updatedResource.Name.ZhCn,
-                    EsEs = updatedResource.Name.EsEs,
-                    ZhTw = updatedResource.Name.ZhTw,
-                    EnGb = updatedResource.Name.EnGb,
-                    EsMx = updatedResource.Name.EsMx,
-                    RuRu = updatedResource.Name.RuRu,
-                    PtBr = updatedResource.Name.PtBr,
-                    ItIt = updatedResource.Name.ItIt,
-                    PtPt = updatedResource.Name.PtPt,
-                }
-            });
+                EnUs = updatedResource.Name.EnUs,
+                KoKr = updatedResource.Name.KoKr,
+                FrFr = updatedResource.Name.FrFr,
+                DeDe = updatedResource.Name.DeDe,
+                ZhCn = updatedResource.Name.ZhCn,
+                EsEs = updatedResource.Name.EsEs,
+                ZhTw = updatedResource.Name.ZhTw,
+                EnGb = updatedResource.Name.EnGb,
+                EsMx = updatedResource.Name.EsMx,
+                RuRu = updatedResource.Name.RuRu,
+                PtBr = updatedResource.Name.PtBr,
+                ItIt = updatedResource.Name.ItIt,
+                PtPt = updatedResource.Name.PtPt,
+            };
         }
 
         await database.SaveChangesAsync();

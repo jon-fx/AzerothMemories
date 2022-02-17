@@ -12,4 +12,3 @@ global using Microsoft.Extensions.Logging;
 global using System.Globalization;
 global using System.Resources;
 global using System.Text.Json;
-global using Z.EntityFramework.Plus;
