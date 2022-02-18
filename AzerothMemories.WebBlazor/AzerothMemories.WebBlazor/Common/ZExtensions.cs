@@ -5,7 +5,8 @@ namespace AzerothMemories.WebBlazor.Common;
 public static class ZExtensions
 {
     public static readonly string DefaultSocialImage;
-    public static readonly string BlobStoragePath = "https://moastorage.blob.core.windows.net/moaimages/";
+    public static readonly string BlobImageStoragePath = $"https://moastorage.blob.core.windows.net/{BlobImages}/";
+    public static readonly string BlobAvatarStoragePath = $"https://moastorage.blob.core.windows.net/{BlobAvatars}/";
 
     public static readonly List<string> ValidUploadExtensions = new() { ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".bmp" };
     public static readonly string UploadAcceptExtensions = "image/*";
@@ -16,6 +17,13 @@ public static class ZExtensions
     public static readonly int ReportPostCommentMaxLength = 200;
     public static readonly int MaxPostScreenShots = 5;
     public static readonly int MaxAddMemoryFileSizeInBytes = (int)10.Megabytes().Bytes;
+    public static readonly int MaxAvatarFileSizeInBytes = (int)5.Megabytes().Bytes;
+
+    public const string BlobImages = "moaimages";
+    public const string BlobAvatars = "moaimages";
+
+    public const string AvatarBlobFilePrefix = "UserAvatar-";
+    public static readonly string CustomAvatarPathPrefix = $"https://moastorage.blob.core.windows.net/{BlobAvatars}/{AvatarBlobFilePrefix}";
 
     public static readonly (int Min, int Max)[] TagCountsPerPost;
     public static readonly Instant MinPostTime = Instant.FromUnixTimeMilliseconds(946684800000);//Sat Jan 01 2000 00:00:00 GMT+0000
@@ -202,7 +210,7 @@ public static class ZExtensions
             }
             case PostTagType.HashTag:
             {
-                return "🏁 ";
+                return "📎 ";
             }
             case PostTagType.None:
             case PostTagType.Type:
@@ -352,8 +360,7 @@ public static class ZExtensions
         return commentStr.ToString();
     }
 
-    public static void AddToDictOrNull<TValue>(Dictionary<string, object> dictionary, string key, TValue value,
-        bool addNull)
+    public static void AddToDictOrNull<TValue>(Dictionary<string, object> dictionary, string key, TValue value, bool addNull)
     {
         if (addNull)
         {

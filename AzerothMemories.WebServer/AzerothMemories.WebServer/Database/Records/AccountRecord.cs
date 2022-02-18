@@ -14,6 +14,8 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
 
     [Column] public AccountType AccountType { get; set; }
 
+    [Column] public AccountFlags AccountFlags { get; set; }
+
     [Column] public Instant CreatedDateTime { get; set; }
 
     [Column] public long BlizzardId { get; set; }
@@ -62,6 +64,7 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
         {
             Id = Id,
             Avatar = Avatar,
+            AccountFlags = AccountFlags,
             Username = Username,
             AccountType = AccountType,
             RegionId = BlizzardRegionId,

@@ -8,6 +8,8 @@ public sealed class AccountViewModel
 
     [JsonInclude] public AccountType AccountType;
 
+    [JsonInclude] public AccountFlags AccountFlags;
+
     [JsonInclude] public string BattleTag;
 
     [JsonInclude] public bool BattleTagIsPublic;
@@ -134,5 +136,15 @@ public sealed class AccountViewModel
         }
 
         return result;
+    }
+
+    public bool IsCustomAvatar()
+    {
+        if (string.IsNullOrWhiteSpace(Avatar))
+        {
+            return false;
+        }
+
+        return Avatar.StartsWith(ZExtensions.CustomAvatarPathPrefix);
     }
 }

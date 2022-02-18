@@ -72,6 +72,21 @@ public sealed class AccountController : ControllerBase, IAccountServices
     }
 
     [HttpPost]
+    public async Task<string> TryChangeAvatarUpload(Session session)
+    {
+        await using var memoryStream = new MemoryStream();
+        await Request.Body.CopyToAsync(memoryStream);
+
+        return await _commonServices.AccountServices.TryChangeAvatarUpload(session, memoryStream.GetBuffer());
+    }
+
+    [NonAction]
+    public Task<string> TryChangeAvatarUpload(Session session, byte[] buffer)
+    {
+        throw new NotImplementedException();
+    }
+
+    [HttpPost]
     public Task<string> TryChangeSocialLink([FromBody] Account_TryChangeSocialLink command, CancellationToken cancellationToken = default)
     {
         command.UseDefaultSession(_sessionResolver);

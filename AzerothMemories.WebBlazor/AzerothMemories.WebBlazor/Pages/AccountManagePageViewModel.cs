@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebBlazor.Pages;
+﻿using Microsoft.AspNetCore.Components.Forms;
+
+namespace AzerothMemories.WebBlazor.Pages;
 
 public sealed class AccountManagePageViewModel : ViewModelBase
 {
@@ -21,6 +23,8 @@ public sealed class AccountManagePageViewModel : ViewModelBase
     public Color[] SocialLinksAdornmentColors { get; private set; }
 
     public string AvatarLink { get; private set; }
+
+    public string CustomAvatarLink { get; private set; }
 
     public override async Task ComputeState()
     {
@@ -48,6 +52,11 @@ public sealed class AccountManagePageViewModel : ViewModelBase
             }
 
             AvatarLink ??= AccountViewModel.Avatar;
+
+            if (CustomAvatarLink == null && AccountViewModel.IsCustomAvatar())
+            {
+                CustomAvatarLink = AccountViewModel.Avatar;
+            }
         }
     }
 
@@ -199,11 +208,56 @@ public sealed class AccountManagePageViewModel : ViewModelBase
             return;
         }
 
-        var result = await Services.CommandRunner.Run(new Account_TryChangeAvatar { NewAvatar = character.AvatarLink });
+        await OnChangeAvatarButtonClicked(character.AvatarLink);
+    }
+
+    public async Task OnChangeAvatarButtonClicked(string avatarLink)
+    {
+        var result = await Services.CommandRunner.Run(new Account_TryChangeAvatar { NewAvatar = avatarLink });
         if (result.Result != AccountViewModel.Avatar)
         {
             AvatarLink = result.Result;
             AccountViewModel.Avatar = result.Result;
+            OnViewModelChanged?.Invoke();
+        }
+    }
+
+    public async Task UploadCustomAvatar(InputFileChangeEventArgs arg)
+    {
+        var file = arg.File;
+        var extension = Path.GetExtension(file.Name);
+        if (!ZExtensions.ValidUploadExtensions.Contains(extension))
+        {
+            await Services.DialogService.ShowNotificationDialog(false, $"{extension} is not supported yet.");
+            return;
+        }
+
+        byte[] buffer;
+        try
+        {
+            await using var memoryStream = new MemoryStream();
+            var stream = file.OpenReadStream(ZExtensions.MaxAddMemoryFileSizeInBytes);
+            await stream.CopyToAsync(memoryStream);
+            buffer = memoryStream.ToArray();
+        }
+        catch (Exception)
+        {
+            await Services.DialogService.ShowNotificationDialog(false, $"{file.Name} read failed.");
+            return;
+        }
+
+        await using var memoryStream2 = new MemoryStream();
+        await using var binaryWriter = new BinaryWriter(memoryStream2);
+
+        binaryWriter.Write(buffer.Length);
+        binaryWriter.Write(buffer);
+
+        var result = await Services.ComputeServices.AccountServices.TryChangeAvatarUpload(null, memoryStream2.ToArray());
+        if (result != null && !string.IsNullOrWhiteSpace(result) && result != AccountViewModel.Avatar)
+        {
+            AvatarLink = result;
+            CustomAvatarLink = result;
+            AccountViewModel.Avatar = result;
             OnViewModelChanged?.Invoke();
         }
     }

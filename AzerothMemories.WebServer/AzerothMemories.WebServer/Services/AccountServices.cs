@@ -1,4 +1,8 @@
-﻿namespace AzerothMemories.WebServer.Services;
+﻿using Humanizer;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+
+namespace AzerothMemories.WebServer.Services;
 
 [RegisterComputeService]
 [RegisterAlias(typeof(IAccountServices))]
@@ -489,6 +493,9 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         {
             newAvatar = null;
         }
+        else if (newAvatar.StartsWith($"{ZExtensions.CustomAvatarPathPrefix}{accountViewModel.Id}"))
+        {
+        }
         else if (newAvatar.StartsWith("https://render") && newAvatar.Contains(".worldofwarcraft.com"))
         {
             var character = accountViewModel.GetAllCharactersSafe().FirstOrDefault(x => x.AvatarLink == newAvatar);
@@ -506,6 +513,118 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         await using var database = await CreateCommandDbContext(cancellationToken);
         database.Attach(accountRecord);
         accountRecord.Avatar = newAvatar;
+
+        await database.SaveChangesAsync(cancellationToken);
+
+        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+
+        return newAvatar;
+    }
+
+    public Task<string> TryChangeAvatarUpload(Session session, byte[] buffer)
+    {
+        try
+        {
+            using var memoryStream = new MemoryStream(buffer);
+            using var binaryReader = new BinaryReader(memoryStream);
+
+            var byteCount = binaryReader.ReadInt32();
+            var imageBuffer = binaryReader.ReadBytes(byteCount);
+
+            var command = new Account_TryChangeAvatarUpload
+            {
+                Session = session,
+                ImageData = imageBuffer,
+            };
+
+            return TryChangeAvatarUpload(command);
+        }
+        catch (Exception)
+        {
+            return Task.FromResult(string.Empty);
+        }
+    }
+
+    [CommandHandler]
+    public virtual async Task<string> TryChangeAvatarUpload(Account_TryChangeAvatarUpload command, CancellationToken cancellationToken = default)
+    {
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
+            if (invRecord != null)
+            {
+                _ = DependsOnAccountRecord(invRecord.Id);
+            }
+
+            return default;
+        }
+
+        var accountViewModel = await TryGetActiveAccount(command.Session);
+        if (accountViewModel == null)
+        {
+            return null;
+        }
+
+        var newAvatar = accountViewModel.Avatar;
+        var avatarIndex = accountViewModel.AccountFlags.HasFlag(AccountFlags.SecondAvatarIndex) ? 1 : 0;
+        try
+        {
+            var buffer = command.ImageData;
+            var bufferCount = buffer.Length;
+            if (bufferCount == 0 || bufferCount > ZExtensions.MaxAvatarFileSizeInBytes)
+            {
+                return newAvatar;
+            }
+
+            await using var memoryStream = new MemoryStream();
+            using var image = Image.Load(buffer);
+            image.Metadata.ExifProfile = null;
+
+            var encoder = new JpegEncoder();
+
+            await image.SaveAsJpegAsync(memoryStream, encoder, cancellationToken);
+            memoryStream.Position = 0;
+
+            BinaryData dataToUpload = null;
+            if (memoryStream.Length > 1.Megabytes().Bytes)
+            {
+                encoder.Quality = accountViewModel.GetUploadQuality();
+
+                await image.SaveAsJpegAsync(memoryStream, encoder, cancellationToken);
+                memoryStream.Position = 0;
+
+                dataToUpload = new BinaryData(memoryStream.ToArray());
+            }
+
+            var blobName = $"{ZExtensions.AvatarBlobFilePrefix}{accountViewModel.Id}-{avatarIndex}.jpg";
+            if (_commonServices.Config.UploadToBlobStorage && dataToUpload != null)
+            {
+                var blobClient = new Azure.Storage.Blobs.BlobClient(_commonServices.Config.BlobStorageConnectionString, ZExtensions.BlobAvatars, blobName);
+                var result = await blobClient.UploadAsync(dataToUpload, true, cancellationToken);
+                if (result.Value == null)
+                {
+                    return newAvatar;
+                }
+            }
+
+            newAvatar = $"{ZExtensions.BlobAvatarStoragePath}{blobName}";
+        }
+        catch (Exception)
+        {
+            return newAvatar;
+        }
+
+        if (accountViewModel.Avatar == newAvatar)
+        {
+            return accountViewModel.Avatar;
+        }
+
+        var accountRecord = await TryGetActiveAccountRecord(command.Session);
+        await using var database = await CreateCommandDbContext(cancellationToken);
+        database.Attach(accountRecord);
+        accountRecord.Avatar = newAvatar;
+        accountRecord.AccountFlags = avatarIndex == 0 ? accountRecord.AccountFlags | AccountFlags.SecondAvatarIndex : accountRecord.AccountFlags & ~AccountFlags.SecondAvatarIndex;
 
         await database.SaveChangesAsync(cancellationToken);
 

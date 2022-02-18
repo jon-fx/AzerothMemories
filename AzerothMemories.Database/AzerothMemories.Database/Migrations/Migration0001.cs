@@ -15,6 +15,7 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(AccountRecord.Id)).AsInt64().PrimaryKey().Identity()
             .WithColumn(nameof(AccountRecord.FusionId)).AsString(60).Unique().NotNullable()
             .WithColumn(nameof(AccountRecord.AccountType)).AsByte().WithDefaultValue(0)
+            .WithColumn(nameof(AccountRecord.AccountFlags)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(AccountRecord.BlizzardId)).AsInt64().WithDefaultValue(0)
             .WithColumn(nameof(AccountRecord.BlizzardRegionId)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(AccountRecord.BattleTag)).AsString(60).Nullable()

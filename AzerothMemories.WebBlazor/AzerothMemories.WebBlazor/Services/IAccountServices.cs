@@ -38,6 +38,9 @@ public interface IAccountServices
     [Post(nameof(TryChangeAvatar))]
     Task<string> TryChangeAvatar([Body] Account_TryChangeAvatar command, CancellationToken cancellationToken = default);
 
+    [Post(nameof(TryChangeAvatarUpload))]
+    Task<string> TryChangeAvatarUpload(Session session, [Body] byte[] buffer);
+
     [CommandHandler]
     [Post(nameof(TryChangeSocialLink))]
     Task<string> TryChangeSocialLink([Body] Account_TryChangeSocialLink command, CancellationToken cancellationToken = default);

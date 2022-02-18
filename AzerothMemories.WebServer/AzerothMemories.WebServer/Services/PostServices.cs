@@ -414,7 +414,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
 
                 if (_commonServices.Config.UploadToBlobStorage)
                 {
-                    var blobClient = new Azure.Storage.Blobs.BlobClient(_commonServices.Config.BlobStorageConnectionString, "moaimages", blobName);
+                    var blobClient = new Azure.Storage.Blobs.BlobClient(_commonServices.Config.BlobStorageConnectionString, ZExtensions.BlobImages, blobName);
                     var result = await blobClient.UploadAsync(data);
                     if (result.Value == null)
                     {
