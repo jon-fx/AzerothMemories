@@ -29,9 +29,15 @@ public sealed class CommonConfig
 
     public Duration UpdateGuildDelay { get; } = Duration.FromDays(1);
 
-    public bool UploadToBlobStorage { get; set; } = false;
+    public bool UploadToBlobStorage { get; set; } = !false;
 
     public bool UpdateSkipCharactersOnLowPriority { get; set; } = false;
+
+    public int UploadsInTheLastXCount { get; set; } = 30;
+
+    public Duration UploadsInTheLastXDuration { get; set; } = Duration.FromMinutes(10);
+
+    public int MaxUploadsWithTheSameHash { get; set; } = 10;
 
     public readonly (string Id, string Secret)?[] BlizzardClientInfo =
     {

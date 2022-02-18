@@ -43,6 +43,13 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(AccountFollowingRecord.LastUpdateTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
             .WithColumn(nameof(AccountFollowingRecord.CreatedTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
 
+        Create.Table(AccountUploadLog.TableName)
+            .WithColumn(nameof(AccountUploadLog.Id)).AsInt64().PrimaryKey().Identity()
+            .WithColumn(nameof(AccountUploadLog.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey(AccountRecord.TableName, "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(AccountUploadLog.BlobName)).AsString(128).Unique().NotNullable()
+            .WithColumn(nameof(AccountUploadLog.BlobHash)).AsString(64).WithDefaultValue(0)
+            .WithColumn(nameof(AccountUploadLog.UploadTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
+
         Create.Table(GuildRecord.TableName)
             .WithColumn(nameof(GuildRecord.Id)).AsInt64().PrimaryKey().Identity()
             .WithColumn(nameof(GuildRecord.MoaRef)).AsString(128).Unique().NotNullable()
@@ -239,6 +246,9 @@ public sealed class Migration0001 : Migration
 
         Create.Index().OnTable(AccountFollowingRecord.TableName)
             .OnColumn(nameof(AccountFollowingRecord.FollowerId));
+
+        Create.Index().OnTable(AccountUploadLog.TableName)
+            .OnColumn(nameof(AccountUploadLog.AccountId));
 
         Create.Index().OnTable(AccountHistoryRecord.TableName)
             .OnColumn(nameof(AccountHistoryRecord.AccountId));

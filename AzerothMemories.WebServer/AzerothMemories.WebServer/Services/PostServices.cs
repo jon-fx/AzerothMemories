@@ -2,6 +2,7 @@
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Gif;
 using SixLabors.ImageSharp.Formats.Jpeg;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace AzerothMemories.WebServer.Services;
@@ -252,15 +253,15 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             return new AddMemoryResult(AddMemoryResultCode.TooManyTags);
         }
 
-        var uploadAndSortResult = await UploadAndSortImages(activeAccount, postRecord, command.ImageData);
+        await using var database = await CreateCommandDbContext(cancellationToken);
+
+        var uploadAndSortResult = await UploadAndSortImages(database, activeAccount, postRecord, command.ImageData);
         if (uploadAndSortResult != AddMemoryResultCode.Success)
         {
             return new AddMemoryResult(uploadAndSortResult);
         }
 
         command.ImageData.Clear();
-
-        await using var database = await CreateCommandDbContext(cancellationToken);
 
         postRecord.PostTags = tagRecords;
 
@@ -349,14 +350,21 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         return AddMemoryResultCode.Success;
     }
 
-    private async Task<AddMemoryResultCode> UploadAndSortImages(AccountViewModel accountViewModel, PostRecord postRecord, List<byte[]> imageDataList)
+    private async Task<AddMemoryResultCode> UploadAndSortImages(AppDbContext database, AccountViewModel accountViewModel, PostRecord postRecord, List<byte[]> imageDataList)
     {
         if (imageDataList.Count > ZExtensions.MaxPostScreenShots)
         {
             return AddMemoryResultCode.UploadFailed;
         }
 
-        var dataToUpload = new (string Extension, BinaryData Data)[imageDataList.Count];
+        var timeAgo = SystemClock.Instance.GetCurrentInstant() - _commonServices.Config.UploadsInTheLastXDuration;
+        var uploadsInTheLastX = database.UploadLogs.Count(x => x.AccountId == accountViewModel.Id && x.UploadTime > timeAgo);
+        if (uploadsInTheLastX > _commonServices.Config.UploadsInTheLastXCount)
+        {
+            return AddMemoryResultCode.UploadFailedQuota;
+        }
+
+        var dataToUpload = new (string Extension, BinaryData BlobData, string BlobHash)[imageDataList.Count];
         for (var i = 0; i < imageDataList.Count; i++)
         {
             try
@@ -397,7 +405,9 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
                     }
                 }
 
-                dataToUpload[i] = (extension, new BinaryData(memoryStream.ToArray()));
+                var blobData = memoryStream.ToArray();
+                var hashBytes = MD5.HashData(blobData);
+                dataToUpload[i] = (extension, new BinaryData(blobData), CreateHashString(hashBytes));
             }
             catch (Exception)
             {
@@ -405,25 +415,47 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             }
         }
 
+        foreach (var valueTuple in dataToUpload)
+        {
+            var count = database.UploadLogs.Count(x => x.AccountId == accountViewModel.Id && x.BlobHash == valueTuple.BlobHash);
+            if (count > _commonServices.Config.MaxUploadsWithTheSameHash)
+            {
+                return AddMemoryResultCode.UploadFailedHash;
+            }
+        }
+
         try
         {
             var imageNameBuilder = new StringBuilder();
-            foreach (var (extension, data) in dataToUpload)
+            foreach (var (extension, blobData, blobHash) in dataToUpload)
             {
                 var blobName = $"{accountViewModel.Id}-{Guid.NewGuid()}.{extension}";
-
                 if (_commonServices.Config.UploadToBlobStorage)
                 {
                     var blobClient = new Azure.Storage.Blobs.BlobClient(_commonServices.Config.BlobStorageConnectionString, ZExtensions.BlobImages, blobName);
-                    var result = await blobClient.UploadAsync(data);
+                    var result = await blobClient.UploadAsync(blobData);
                     if (result.Value == null)
                     {
                         return AddMemoryResultCode.UploadFailed;
+                    }
+
+                    var azureHash = CreateHashString(result.Value.ContentHash);
+                    if (azureHash != blobHash)
+                    {
+                        return AddMemoryResultCode.UploadFailedHashCheck;
                     }
                 }
 
                 imageNameBuilder.Append(blobName);
                 imageNameBuilder.Append('|');
+
+                database.UploadLogs.Add(new AccountUploadLog
+                {
+                    AccountId = accountViewModel.Id,
+                    BlobName = blobName,
+                    BlobHash = blobHash,
+                    UploadTime = SystemClock.Instance.GetCurrentInstant()
+                });
             }
 
             postRecord.BlobNames = imageNameBuilder.ToString().TrimEnd('|');
@@ -434,6 +466,16 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         {
             return AddMemoryResultCode.UploadFailed;
         }
+    }
+
+    private string CreateHashString(byte[] hashBytes)
+    {
+        var sb = new StringBuilder();
+        for (var i = 0; i < hashBytes.Length; i++)
+        {
+            sb.Append(hashBytes[i].ToString("X2"));
+        }
+        return sb.ToString();
     }
 
     [ComputeMethod]

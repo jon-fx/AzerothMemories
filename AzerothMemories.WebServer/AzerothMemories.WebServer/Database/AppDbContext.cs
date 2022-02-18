@@ -21,6 +21,8 @@ public class AppDbContext : DbContextBase
 
     public DbSet<AccountHistoryRecord> AccountHistory { get; protected set; } = null!;
 
+    public DbSet<AccountUploadLog> UploadLogs { get; protected set; } = null!;
+
     public DbSet<CharacterRecord> Characters { get; protected set; } = null!;
 
     public DbSet<CharacterAchievementRecord> CharacterAchievements { get; protected set; } = null!;
