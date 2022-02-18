@@ -43,11 +43,6 @@ public sealed class PostTagInfo
 
     public string GetTagQueryLink()
     {
-        if (Type == PostTagType.HashTag)
-        {
-            throw new NotImplementedException();
-        }
-
         return $"postsearch?tag={TagString}";
         //return QueryHelpers.AddQueryString("postsearch", "tag", GetTagValue());
     }
