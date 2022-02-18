@@ -1425,6 +1425,17 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         await using var database = await CreateCommandDbContext(cancellationToken);
         database.Attach(postRecord);
         postRecord.DeletedTimeStamp = now;
+
+        var imageBlobNames = postRecord.BlobNames.Split('|');
+        foreach (var blobName in imageBlobNames)
+        {
+            var record = await database.UploadLogs.FirstOrDefaultAsync(x => x.AccountId == postRecord.AccountId && x.BlobName == blobName, cancellationToken);
+            if (record != null)
+            {
+                record.UploadStatus = AccountUploadLogStatus.DeletePending;
+            }
+        }
+
         await database.SaveChangesAsync(cancellationToken);
 
         await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem

@@ -16,5 +16,7 @@ public sealed class AccountUploadLog : IDatabaseRecord
 
     [Column] public string BlobHash { get; set; }
 
+    [Column] public AccountUploadLogStatus UploadStatus { get; set; }
+
     [Column] public Instant UploadTime { get; set; }
 }
