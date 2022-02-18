@@ -17,7 +17,7 @@ public sealed class CommonConfig
 
     public string BlobStorageConnectionString { get; } = "***REMOVED***";
 
-    public string BlobStoragePath { get; } = "***REMOVED***";
+    //public string BlobStoragePath { get; } = "***REMOVED***";
 
     public Duration UpdateAccountDelay { get; } = Duration.FromHours(1);
 
