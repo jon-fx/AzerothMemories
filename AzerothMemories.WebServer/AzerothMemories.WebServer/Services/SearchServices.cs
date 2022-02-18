@@ -425,7 +425,6 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
 
         var postRecordPredicate = PredicateBuilder.New<PostRecord>();
         var achievementRecordPredicate = PredicateBuilder.New<CharacterAchievementRecord>();
-        var memoriesPredicate = PredicateBuilder.New<Tuple<PostTagRecord, PostRecord>>();
         var timeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(timeZoneId);
         Exceptions.ThrowIf(timeZone == null);
         for (var year = _startYear; year < _endYear; year++)
