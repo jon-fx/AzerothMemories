@@ -33,7 +33,7 @@ public sealed class AccountHistoryViewModel
                 Exceptions.ThrowIf(TargetPostId == 0);
                 Exceptions.ThrowIf(TargetCommentId != 0);
 
-                return $"<a href='post/{TargetId}/{TargetPostId}/'>Memory restored</a>.";
+                return $"{GetPostLink("Memory restored")}.";
             }
             case AccountHistoryType.MemoryDeleted:
             {
@@ -52,10 +52,10 @@ public sealed class AccountHistoryViewModel
 
                 if (AccountId == OtherAccountId)
                 {
-                    return $"<a href='post/{TargetId}/{TargetPostId}/?comment={TargetCommentId}'>Comment</a> deleted.";
+                    return $"{GetPostCommentLink("Comment")} deleted.";
                 }
 
-                return $"<a href='post/{TargetId}/{TargetPostId}/?comment={TargetCommentId}'>Comment</a> deleted by admin.";
+                return $"{GetPostCommentLink("Comment")} deleted by admin.";
             }
             case AccountHistoryType.CharacterUpdated:
             {
@@ -71,44 +71,42 @@ public sealed class AccountHistoryViewModel
                     var region = moaRef.Region.ToInfo();
                     var nameLink = $"<a class='wowclass-{character.Class}' href='character/{region.TwoLetters}/{moaRef.Realm}/{character.Name}'>{character.Name}</a>";
                     name = $"{nameLink} ({stringLocalizer[$"Realm-{character.RealmId}"]})";
-
-                    //name = $"<a class='wowclass-{character.Class}' href='character/{character.Id}'>{character.Name}</a> ({stringLocalizer[$"Realm-{character.RealmId}"]})";
                 }
 
                 return $"Character {name} updated.";
             }
             case AccountHistoryType.FollowingRequestSent:
             {
-                return $"You sent a following request to <a href='account/{OtherAccountId}'>{OtherAccountUsername}</a>.";
+                return $"{GetYouLink()} sent a following request to {GetOtherAccountLink()}.";
             }
             case AccountHistoryType.FollowingRequestReceived:
             {
-                return $"You received a following request from <a href='account/{OtherAccountId}'>{OtherAccountUsername}</a>.";
+                return $"{GetYouLink()} received a following request from {GetOtherAccountLink()}.";
             }
             case AccountHistoryType.FollowingRequestAccepted1:
             {
-                return $"You accepted a following request from <a href='account/{OtherAccountId}'>{OtherAccountUsername}</a>.";
+                return $"{GetYouLink()} accepted a following request from {GetOtherAccountLink()}.";
             }
             case AccountHistoryType.FollowingRequestAccepted2:
             {
-                return $"<a href='account/{OtherAccountId}'>{OtherAccountUsername}</a> accepted your following request.";
+                return $"{GetOtherAccountLink()} accepted your following request.";
             }
             case AccountHistoryType.FollowerRemoved:
             {
-                return $"You removed <a href='account/{OtherAccountId}'>{OtherAccountUsername}</a> as a follower.";
+                return $"{GetYouLink()} removed {GetOtherAccountLink()} as a follower.";
             }
             case AccountHistoryType.StartedFollowing:
             {
                 if (TargetId == 0)
                 {
-                    return $"You started following <a href='account/{OtherAccountId}'>{OtherAccountUsername}</a>.";
+                    return $"{GetYouLink()} started following {GetOtherAccountLink()}.";
                 }
 
-                return $"<a href='account/{OtherAccountId}'>{OtherAccountUsername}</a> started following you.";
+                return $"{GetOtherAccountLink()} started following {GetYouLink("you")}.";
             }
             case AccountHistoryType.StoppedFollowing:
             {
-                return $"You stopped following <a href='account/{OtherAccountId}'>{OtherAccountUsername}</a>.";
+                return $"{GetYouLink()} stopped following {GetOtherAccountLink()}.";
             }
             case AccountHistoryType.Commented1:
             {
@@ -116,7 +114,12 @@ public sealed class AccountHistoryViewModel
                 Exceptions.ThrowIf(TargetPostId == 0);
                 Exceptions.ThrowIf(TargetCommentId == 0);
 
-                return $"You commented on <a href='account/{OtherAccountId}'>{OtherAccountUsername}</a>'s <a href='post/{TargetId}/{TargetPostId}/?comment={TargetCommentId}'>post</a>.";
+                if (AccountId == OtherAccountId)
+                {
+                    return $"{GetYouLink()} {GetPostCommentLink("commented")} on {GetYouLink("your own")} {GetPostLink("post")}.";
+                }
+
+                return $"{GetYouLink()} {GetPostCommentLink("commented")} on {GetOtherAccountLink()}'s {GetPostLink("post")}.";
             }
             case AccountHistoryType.Commented2:
             {
@@ -124,7 +127,12 @@ public sealed class AccountHistoryViewModel
                 Exceptions.ThrowIf(TargetPostId == 0);
                 Exceptions.ThrowIf(TargetCommentId == 0);
 
-                return $"<a href='account/{OtherAccountId}'>{OtherAccountUsername}</a> comment on your <a href='post/{TargetId}/{TargetPostId}?comment={TargetCommentId}'>post</a>.";
+                if (AccountId == OtherAccountId)
+                {
+                    return $"{GetYouLink()} {GetPostCommentLink("commented")} on {GetYouLink("your own")} {GetPostLink("post")}.";
+                }
+
+                return $"{GetOtherAccountLink()} {GetPostCommentLink("commented")} on your {GetPostLink("post")}.";
             }
             case AccountHistoryType.ReactedToPost1:
             {
@@ -132,7 +140,12 @@ public sealed class AccountHistoryViewModel
                 Exceptions.ThrowIf(TargetPostId == 0);
                 Exceptions.ThrowIf(TargetCommentId != 0);
 
-                return $"You reacted to <a href='account/{OtherAccountId}'>{OtherAccountUsername}</a>'s <a href='post/{TargetId}/{TargetPostId}'>post</a>.";
+                if (AccountId == OtherAccountId)
+                {
+                    return $"{GetYouLink()} reacted to {GetYouLink("your own")} {GetPostLink("post")}.";
+                }
+
+                return $"{GetYouLink()} reacted to {GetOtherAccountLink()}'s {GetPostLink("post")}.";
             }
             case AccountHistoryType.ReactedToPost2:
             {
@@ -140,7 +153,12 @@ public sealed class AccountHistoryViewModel
                 Exceptions.ThrowIf(TargetPostId == 0);
                 Exceptions.ThrowIf(TargetCommentId != 0);
 
-                return $"<a href='account/{OtherAccountId}'>{OtherAccountUsername}</a> reacted to your <a href='post/{TargetId}/{TargetPostId}'>post</a>.";
+                if (AccountId == OtherAccountId)
+                {
+                    return $"{GetYouLink()} reacted to {GetYouLink("your own")} {GetPostLink("post")}.";
+                }
+
+                return $"{GetOtherAccountLink()} reacted to your {GetPostLink("post")}.";
             }
             case AccountHistoryType.ReactedToComment1:
             {
@@ -148,7 +166,12 @@ public sealed class AccountHistoryViewModel
                 Exceptions.ThrowIf(TargetPostId == 0);
                 Exceptions.ThrowIf(TargetCommentId == 0);
 
-                return $"You reacted to <a href='account/{OtherAccountId}'>{OtherAccountUsername}</a>'s <a href='post/{TargetId}/{TargetPostId}/?comment={TargetCommentId}'>comment</a>.";
+                if (AccountId == OtherAccountId)
+                {
+                    return $"{GetYouLink()} reacted to {GetYouLink("your own")} {GetPostCommentLink("comment")}.";
+                }
+
+                return $"{GetYouLink()} reacted to {GetOtherAccountLink()}'s {GetPostCommentLink("comment")}.";
             }
             case AccountHistoryType.ReactedToComment2:
             {
@@ -156,7 +179,12 @@ public sealed class AccountHistoryViewModel
                 Exceptions.ThrowIf(TargetPostId == 0);
                 Exceptions.ThrowIf(TargetCommentId == 0);
 
-                return $"<a href='account/{OtherAccountId}'>{OtherAccountUsername}</a> reacted to your <a href='post/{TargetId}/{TargetPostId}/?comment={TargetCommentId}'>comment</a>.";
+                if (AccountId == OtherAccountId)
+                {
+                    return $"{GetYouLink()} reacted to {GetYouLink("your own")} {GetPostCommentLink("comment")}.";
+                }
+
+                return $"{GetOtherAccountLink()} reacted to your {GetPostCommentLink("comment")}.";
             }
             case AccountHistoryType.TaggedPost:
             {
@@ -164,7 +192,12 @@ public sealed class AccountHistoryViewModel
                 Exceptions.ThrowIf(TargetPostId == 0);
                 Exceptions.ThrowIf(TargetCommentId != 0);
 
-                return $"<a href='account/{OtherAccountId}'>{OtherAccountUsername}</a> tagged you in a <a href='post/{TargetId}/{TargetPostId}'>post</a>.";
+                if (AccountId == OtherAccountId)
+                {
+                    return $"{GetYouLink()} tagged yourself in a {GetPostLink("post")}.";
+                }
+
+                return $"{GetOtherAccountLink()} tagged {GetYouLink("you")} in a {GetPostLink("post")}.";
             }
             case AccountHistoryType.TaggedComment:
             {
@@ -172,7 +205,12 @@ public sealed class AccountHistoryViewModel
                 Exceptions.ThrowIf(TargetPostId == 0);
                 Exceptions.ThrowIf(TargetCommentId == 0);
 
-                return $"<a href='account/{OtherAccountId}'>{OtherAccountUsername}</a> tagged you in a <a href='post/{TargetId}/{TargetPostId}/?comment={TargetCommentId}'>comment</a>.";
+                if (AccountId == OtherAccountId)
+                {
+                    return $"{GetYouLink()} tagged {GetYouLink("yourself")} in a {GetPostCommentLink("comment")}.";
+                }
+
+                return $"{GetOtherAccountLink()} tagged {GetYouLink("you")} in a {GetPostCommentLink("comment")}.";
             }
             case AccountHistoryType.MemoryRestoredExternal1:
             {
@@ -180,7 +218,12 @@ public sealed class AccountHistoryViewModel
                 Exceptions.ThrowIf(TargetPostId == 0);
                 Exceptions.ThrowIf(TargetCommentId != 0);
 
-                return $"You tagged yourself in <a href='account/{OtherAccountId}'>{OtherAccountUsername}</a>'s <a href='post/{TargetId}/{TargetPostId}/'>memory</a>.";
+                if (AccountId == OtherAccountId)
+                {
+                    return $"{GetYouLink()} tagged yourself in {GetYouLink("your own")} {GetPostLink("memory")}.";
+                }
+
+                return $"{GetYouLink()} tagged yourself in {GetOtherAccountLink()}'s {GetPostLink("memory")}.";
             }
             case AccountHistoryType.MemoryRestoredExternal2:
             {
@@ -188,7 +231,7 @@ public sealed class AccountHistoryViewModel
                 Exceptions.ThrowIf(TargetPostId == 0);
                 Exceptions.ThrowIf(TargetCommentId != 0);
 
-                return $"<a href='account/{OtherAccountId}'>{OtherAccountUsername}</a> tagged themself in your <a href='post/{TargetId}/{TargetPostId}/'>memory</a>.";
+                return $"{GetOtherAccountLink()} tagged themself in your {GetPostLink("memory")}.";
             }
             case AccountHistoryType.PostReported:
             {
@@ -196,7 +239,7 @@ public sealed class AccountHistoryViewModel
                 Exceptions.ThrowIf(TargetPostId == 0);
                 Exceptions.ThrowIf(TargetCommentId != 0);
 
-                return $"You reported <a href='account/{OtherAccountId}'>{OtherAccountUsername}'s</a> <a href='post/{TargetId}/{TargetPostId}'>post</a>.";
+                return $"{GetYouLink()} reported {GetOtherAccountLink()} {GetPostLink("post")}.";
             }
             case AccountHistoryType.PostReportedComment:
             {
@@ -204,7 +247,7 @@ public sealed class AccountHistoryViewModel
                 Exceptions.ThrowIf(TargetPostId == 0);
                 Exceptions.ThrowIf(TargetCommentId == 0);
 
-                return $"You reported <a href='account/{OtherAccountId}'>{OtherAccountUsername}'s</a> <a href='post/{TargetId}/{TargetPostId}/?comment={TargetCommentId}'>comment</a>.";
+                return $"{GetYouLink()} reported {GetOtherAccountLink()}'s {GetPostCommentLink("comment")}.";
             }
             case AccountHistoryType.PostReportedTags:
             {
@@ -212,7 +255,7 @@ public sealed class AccountHistoryViewModel
                 Exceptions.ThrowIf(TargetPostId == 0);
                 Exceptions.ThrowIf(TargetCommentId != 0);
 
-                return $"You reported tags on <a href='account/{OtherAccountId}'>{OtherAccountUsername}'s</a> <a href='post/{TargetId}/{TargetPostId}'>post</a>.";
+                return $"{GetYouLink()} reported tags on {GetOtherAccountLink()}'s {GetPostLink("post")}.";
             }
             case AccountHistoryType.None:
             default:
@@ -220,5 +263,31 @@ public sealed class AccountHistoryViewModel
                 throw new ArgumentOutOfRangeException();
             }
         }
+    }
+    private string GetYouLink(string text = "You")
+    {
+        return $"<a href='account/{AccountId}'>{text}</a>";
+    }
+
+    private string GetPostLink(string text)
+    {
+        Exceptions.ThrowIf(TargetId == 0);
+        Exceptions.ThrowIf(TargetPostId == 0);
+
+        return $"<a href='post/{TargetId}/{TargetPostId}'>{text}</a>";
+    }
+
+    private string GetPostCommentLink(string text)
+    {
+        Exceptions.ThrowIf(TargetId == 0);
+        Exceptions.ThrowIf(TargetPostId == 0);
+        Exceptions.ThrowIf(TargetCommentId == 0);
+
+        return $"<a href='post/{TargetId}/{TargetPostId}?comment={TargetCommentId}'>{text}</a>";
+    }
+
+    private string GetOtherAccountLink()
+    {
+        return $"<a href='account/{OtherAccountId}'>{OtherAccountUsername}</a>";
     }
 }

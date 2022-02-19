@@ -600,15 +600,18 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
                 TargetPostId = postRecord.Id
             }, cancellationToken);
 
-            await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+            if (activeAccount.Id != postRecord.AccountId)
             {
-                AccountId = postRecord.AccountId,
-                OtherAccountId = activeAccount.Id,
-                //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-                Type = AccountHistoryType.ReactedToPost2,
-                TargetId = postRecord.AccountId,
-                TargetPostId = postRecord.Id
-            }, cancellationToken);
+                await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+                {
+                    AccountId = postRecord.AccountId,
+                    OtherAccountId = activeAccount.Id,
+                    //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+                    Type = AccountHistoryType.ReactedToPost2,
+                    TargetId = postRecord.AccountId,
+                    TargetPostId = postRecord.Id
+                }, cancellationToken);
+            }
         }
 
         await database.SaveChangesAsync(cancellationToken);
@@ -926,15 +929,18 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             TargetPostId = postRecord.Id
         }, cancellationToken);
 
-        await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        if (activeAccount.Id != postRecord.AccountId)
         {
-            AccountId = postRecord.AccountId,
-            OtherAccountId = activeAccount.Id,
-            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-            Type = AccountHistoryType.MemoryRestoredExternal2,
-            TargetId = postRecord.AccountId,
-            TargetPostId = postRecord.Id
-        }, cancellationToken);
+            await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+            {
+                AccountId = postRecord.AccountId,
+                OtherAccountId = activeAccount.Id,
+                //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+                Type = AccountHistoryType.MemoryRestoredExternal2,
+                TargetId = postRecord.AccountId,
+                TargetPostId = postRecord.Id
+            }, cancellationToken);
+        }
 
         await database.SaveChangesAsync(cancellationToken);
 
@@ -1142,16 +1148,19 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             TargetCommentId = commentRecord.Id
         }, cancellationToken);
 
-        await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        if (activeAccount.Id != commentRecord.AccountId)
         {
-            AccountId = commentRecord.AccountId,
-            OtherAccountId = activeAccount.Id,
-            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-            Type = AccountHistoryType.Commented2,
-            TargetId = postRecord.AccountId,
-            TargetPostId = postId,
-            TargetCommentId = commentRecord.Id
-        }, cancellationToken);
+            await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+            {
+                AccountId = commentRecord.AccountId,
+                OtherAccountId = activeAccount.Id,
+                //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+                Type = AccountHistoryType.Commented2,
+                TargetId = postRecord.AccountId,
+                TargetPostId = postId,
+                TargetCommentId = commentRecord.Id
+            }, cancellationToken);
+        }
 
         foreach (var userTag in accountsTaggedInComment)
         {
@@ -1290,16 +1299,19 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
                 TargetCommentId = commentId
             }, cancellationToken);
 
-            await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+            if (activeAccount.Id != commentViewModel.AccountId)
             {
-                AccountId = commentViewModel.AccountId,
-                OtherAccountId = activeAccount.Id,
-                //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-                Type = AccountHistoryType.ReactedToComment2,
-                TargetId = postRecord.AccountId,
-                TargetPostId = postRecord.Id,
-                TargetCommentId = commentId
-            }, cancellationToken);
+                await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+                {
+                    AccountId = commentViewModel.AccountId,
+                    OtherAccountId = activeAccount.Id,
+                    //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+                    Type = AccountHistoryType.ReactedToComment2,
+                    TargetId = postRecord.AccountId,
+                    TargetPostId = postRecord.Id,
+                    TargetCommentId = commentId
+                }, cancellationToken);
+            }
         }
 
         await database.SaveChangesAsync(cancellationToken);
