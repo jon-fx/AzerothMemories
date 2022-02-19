@@ -1,4 +1,4 @@
-﻿<form @onsubmit=OnFormSubmit>
+﻿<form @onsubmit=Submit>
     <MudGrid>
         <MudItem xs="@(Lines == 1 ? 11 : 12)" Class="my-auto">
             <MudTextField id="mudTextField"
@@ -27,7 +27,7 @@
                                Icon="@Icons.Filled.Send"
                                Color="Color.Primary"
                                Disabled="@(string.IsNullOrWhiteSpace(_currentTextFieldText) || _currentTextFieldText.Length <= 1)"
-                               OnClick="OnFormSubmit"/>
+                               OnClick="Submit"/>
             </MudItem>
         }
     </MudGrid>
@@ -52,7 +52,6 @@
 
     [Inject] public IJSRuntime JsRuntime { get; init; }
 
-    public string CommentText => _currentTextFieldText;
 
     public Dictionary<long, string> ExtraTags { get; } = new();
 
@@ -93,17 +92,18 @@
         _currentTextFieldText = string.Empty;
     }
 
-    private async Task OnFormSubmit(EventArgs obj)
+    private async Task Submit()
     {
-        if (Lines == 1 && !string.IsNullOrWhiteSpace(_currentTextFieldText) && _currentTextFieldText.Length > 1)
+        var commentText = GetCommentText();
+        if (Lines == 1 && !string.IsNullOrWhiteSpace(commentText) && commentText.Length > 1)
         {
-            await OnSingleLineSubmit.InvokeAsync(_currentTextFieldText);
+            await OnSingleLineSubmit.InvokeAsync(commentText);
         }
     }
 
     public string GetCommentText()
     {
-        var commentText = CommentText;
+        var commentText = _currentTextFieldText;
         if (string.IsNullOrWhiteSpace(commentText))
         {
             return string.Empty;
