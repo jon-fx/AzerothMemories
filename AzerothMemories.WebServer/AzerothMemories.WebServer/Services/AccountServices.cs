@@ -9,20 +9,23 @@ namespace AzerothMemories.WebServer.Services;
 public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
 {
     private readonly CommonServices _commonServices;
+    private readonly IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> _sessionRepo;
 
     public AccountServices(IServiceProvider services, CommonServices commonServices) : base(services)
     {
         _commonServices = commonServices;
+        _sessionRepo = services.GetRequiredService<IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string>>();
     }
 
     [CommandHandler(IsFilter = true, Priority = 1)]
     protected virtual async Task OnSignIn(SignInCommand command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
-        await context.InvokeRemainingHandlers(cancellationToken);
 
         if (Computed.IsInvalidating())
         {
+            await context.InvokeRemainingHandlers(cancellationToken);
+
             var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
             if (invRecord != null)
             {
@@ -36,6 +39,9 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
 
         if (command.AuthenticatedIdentity.Schema.StartsWith("BattleNet-"))
         {
+            var regionStr = command.AuthenticatedIdentity.Schema.Replace("BattleNet-", "");
+            var blizzardRegion = BlizzardRegionExt.FromName(regionStr);
+
             if (!command.User.Claims.TryGetValue("BattleNet-Id", out var blizzardIdClaim))
             {
                 throw new NotImplementedException();
@@ -51,11 +57,6 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
                 throw new NotImplementedException();
             }
 
-            if (!command.User.Claims.TryGetValue("BattleNet-Region", out var battleNetRegion))
-            {
-                throw new NotImplementedException();
-            }
-
             if (!command.User.Claims.TryGetValue("BattleNet-Token", out var battleNetToken))
             {
                 throw new NotImplementedException();
@@ -66,6 +67,20 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
                 throw new NotImplementedException();
             }
 
+            await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+
+            var dbSessionInfo = await _sessionRepo.Get(database, command.Session.Id, false, cancellationToken).ConfigureAwait(false);
+            if (dbSessionInfo != null)
+            {
+                var tempAccount = await TryGetAccountRecordFusionId(dbSessionInfo.UserId);
+                if (tempAccount != null && tempAccount.BlizzardRegionId != BlizzardRegion.None && tempAccount.BlizzardRegionId != blizzardRegion)
+                {
+                    return;
+                }
+            }
+
+            await context.InvokeRemainingHandlers(cancellationToken);
+
             var sessionInfo = context.Operation().Items.Get<SessionInfo>();
             if (sessionInfo == null)
             {
@@ -73,10 +88,9 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             }
 
             var userId = sessionInfo.UserId;
-            var blizzardRegion = BlizzardRegionExt.FromName(battleNetRegion);
 
             var accountRecord = await GetOrCreateAccount(userId);
-            await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+
             database.Attach(accountRecord);
 
             accountRecord.BlizzardId = blizzardId;
@@ -99,10 +113,14 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         }
         else if (command.AuthenticatedIdentity.Schema.StartsWith("ToDo-"))
         {
+            await context.InvokeRemainingHandlers(cancellationToken);
+
             throw new NotImplementedException();
         }
         else
         {
+            await context.InvokeRemainingHandlers(cancellationToken);
+
             throw new NotImplementedException();
         }
     }

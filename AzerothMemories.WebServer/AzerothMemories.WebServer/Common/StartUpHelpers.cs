@@ -66,19 +66,19 @@ internal static class StartUpHelpers
             throw new NotImplementedException();
         }
 
-        var regionStr = context.Scheme.Name.Replace("BattleNet-", "");
-        var blizzardRegion = BlizzardRegionExt.FromName(regionStr);
+        //var regionStr = context.Scheme.Name.Replace("BattleNet-", "");
+        //var blizzardRegion = BlizzardRegionExt.FromName(regionStr);
         var token = context.AccessToken;
-        if (token == null)
-        {
-            throw new NotImplementedException();
-        }
+        //if (token == null)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         var tokenExpiresAt = (SystemClock.Instance.GetCurrentInstant() + context.ExpiresIn.GetValueOrDefault().ToDuration()).ToUnixTimeMilliseconds();
 
         context.Identity.AddClaim(new Claim("BattleNet-Token", token));
         context.Identity.AddClaim(new Claim("BattleNet-TokenExpires", tokenExpiresAt.ToString()));
-        context.Identity.AddClaim(new Claim("BattleNet-Region", blizzardRegion.ToString()));
+        //context.Identity.AddClaim(new Claim("BattleNet-Region", blizzardRegion.ToString()));
 
         return Task.CompletedTask;
     }
