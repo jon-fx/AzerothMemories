@@ -365,6 +365,7 @@ public sealed class Migration0001 : Migration
 
         Delete.Table(GuildRecord.TableName);
 
+        Delete.Table(AccountUploadLog.TableName);
         Delete.Table(AccountFollowingRecord.TableName);
         Delete.Table(AccountRecord.TableName);
 
