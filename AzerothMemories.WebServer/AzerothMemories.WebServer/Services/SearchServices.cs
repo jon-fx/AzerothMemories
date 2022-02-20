@@ -21,7 +21,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     public virtual async Task<DailyActivityResults> TryGetDailyActivity(Session session, string timeZoneId, byte inZoneDay, byte inZoneMonth, string locale)
     {
         long accountId = 0;
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         if (activeAccount != null)
         {
             accountId = activeAccount.Id;
@@ -36,17 +36,17 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         inZoneDay = Math.Clamp(inZoneDay, (byte)1, (byte)31);
         inZoneMonth = Math.Clamp(inZoneMonth, (byte)1, (byte)12);
 
-        return await TryGetDailyActivity(accountId, timeZoneId, inZoneDay, inZoneMonth, locale);
+        return await TryGetDailyActivity(accountId, timeZoneId, inZoneDay, inZoneMonth, locale).ConfigureAwait(false);
     }
 
     [ComputeMethod]
     protected virtual async Task<DailyActivityResults> TryGetDailyActivity(long accountId, string timeZoneId, byte inZoneDay, byte inZoneMonth, string locale)
     {
-        var allResults = await TryGetDailyActivityFull(timeZoneId, inZoneDay, inZoneMonth, locale);
+        var allResults = await TryGetDailyActivityFull(timeZoneId, inZoneDay, inZoneMonth, locale).ConfigureAwait(false);
         var userResults = new Dictionary<int, DailyActivityResultsUser>();
         if (accountId > 0)
         {
-            userResults = await TryGetUserActivityFull(accountId, timeZoneId, inZoneDay, inZoneMonth, locale);
+            userResults = await TryGetUserActivityFull(accountId, timeZoneId, inZoneDay, inZoneMonth, locale).ConfigureAwait(false);
         }
 
         allResults.TryGetValue(_totalYearValue, out var mainActivity);
@@ -59,7 +59,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     public virtual async Task<DailyActivityResults[]> TryGetDailyActivityFull(Session session, string timeZoneId, byte inZoneDay, byte inZoneMonth, string locale)
     {
         long accountId = 0;
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         if (activeAccount != null)
         {
             accountId = activeAccount.Id;
@@ -74,17 +74,17 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         inZoneDay = Math.Clamp(inZoneDay, (byte)1, (byte)31);
         inZoneMonth = Math.Clamp(inZoneMonth, (byte)1, (byte)12);
 
-        return await TryGetDailyActivityFull(accountId, timeZoneId, inZoneDay, inZoneMonth, locale);
+        return await TryGetDailyActivityFull(accountId, timeZoneId, inZoneDay, inZoneMonth, locale).ConfigureAwait(false);
     }
 
     [ComputeMethod]
     protected virtual async Task<DailyActivityResults[]> TryGetDailyActivityFull(long accountId, string timeZoneId, byte inZoneDay, byte inZoneMonth, string locale)
     {
-        var allResults = await TryGetDailyActivityFull(timeZoneId, inZoneDay, inZoneMonth, locale);
+        var allResults = await TryGetDailyActivityFull(timeZoneId, inZoneDay, inZoneMonth, locale).ConfigureAwait(false);
         var userResults = new Dictionary<int, DailyActivityResultsUser>();
         if (accountId > 0)
         {
-            userResults = await TryGetUserActivityFull(accountId, timeZoneId, inZoneDay, inZoneMonth, locale);
+            userResults = await TryGetUserActivityFull(accountId, timeZoneId, inZoneDay, inZoneMonth, locale).ConfigureAwait(false);
         }
 
         var resultList = new List<DailyActivityResults>();
@@ -126,7 +126,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         var totals = new DailyActivityResultsMain { Year = _totalYearValue };
         for (var year = _startYear; year < _endYear; year++)
         {
-            var currentActivitySet = await TryGetMainActivitySet(timeZoneId, inZoneDay, inZoneMonth, year);
+            var currentActivitySet = await TryGetMainActivitySet(timeZoneId, inZoneDay, inZoneMonth, year).ConfigureAwait(false);
             if (currentActivitySet.AchievementCounts.Count == 0 && currentActivitySet.PostTags.Count == 0)
             {
                 continue;
@@ -143,7 +143,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
             var dailyTopAchievemnts = currentActivitySet.AchievementCounts.OrderByDescending(x => x.Value).Take(topValueCount);
             foreach (var kvp in dailyTopAchievemnts)
             {
-                var tag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, kvp.Key, null, locale);
+                var tag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, kvp.Key, null, locale).ConfigureAwait(false);
                 daily.TopAchievements.Add(tag);
             }
 
@@ -155,7 +155,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                     continue;
                 }
 
-                var tag = await _commonServices.TagServices.GetTagInfo(postTagInfo.Type, postTagInfo.Id, postTagInfo.Text, locale);
+                var tag = await _commonServices.TagServices.GetTagInfo(postTagInfo.Type, postTagInfo.Id, postTagInfo.Text, locale).ConfigureAwait(false);
                 daily.TopTags.Add(tag);
             }
 
@@ -169,13 +169,13 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                     continue;
                 }
 
-                var tag = await _commonServices.TagServices.GetTagInfo(postTagInfo.Type, postTagInfo.Id, postTagInfo.Text, locale);
+                var tag = await _commonServices.TagServices.GetTagInfo(postTagInfo.Type, postTagInfo.Id, postTagInfo.Text, locale).ConfigureAwait(false);
                 daily.FirstTags.Add(tag);
             }
 
             foreach (var firstAchievement in currentActivitySet.FirstAchievements)
             {
-                var tag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, firstAchievement, null, locale);
+                var tag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, firstAchievement, null, locale).ConfigureAwait(false);
                 daily.FirstAchievements.Add(tag);
             }
 
@@ -188,11 +188,11 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
             results.Add(daily.Year, daily);
         }
 
-        var totalsActivitySet = await TryGetMainActivitySet(timeZoneId, inZoneDay, inZoneMonth, _totalYearValue);
+        var totalsActivitySet = await TryGetMainActivitySet(timeZoneId, inZoneDay, inZoneMonth, _totalYearValue).ConfigureAwait(false);
         var allTimeTopAchievement = totalsActivitySet.AchievementCounts.OrderByDescending(x => x.Value).Take(topValueCount);
         foreach (var kvp in allTimeTopAchievement)
         {
-            var tag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, kvp.Key, null, locale);
+            var tag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, kvp.Key, null, locale).ConfigureAwait(false);
             totals.TopAchievements.Add(tag);
         }
 
@@ -204,7 +204,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                 continue;
             }
 
-            var tag = await _commonServices.TagServices.GetTagInfo(postTagInfo.Type, postTagInfo.Id, postTagInfo.Text, locale);
+            var tag = await _commonServices.TagServices.GetTagInfo(postTagInfo.Type, postTagInfo.Id, postTagInfo.Text, locale).ConfigureAwait(false);
             totals.TopTags.Add(tag);
         }
 
@@ -216,7 +216,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     [ComputeMethod]
     protected virtual async Task<ActivitySetMain> TryGetMainActivitySet(string timeZoneId, int inZoneDay, int inZoneMonth, int inZoneYear)
     {
-        var results = await TryGetMainActivitySetFull(timeZoneId, inZoneDay, inZoneMonth);
+        var results = await TryGetMainActivitySetFull(timeZoneId, inZoneDay, inZoneMonth).ConfigureAwait(false);
         if (!results.TryGetValue(inZoneYear, out var result))
         {
             result = new ActivitySetMain();
@@ -256,7 +256,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         await using var database = CreateDbContext();
 
         var dailyAchievementsQuery = database.CharacterAchievements.AsExpandableEFCore().Where(achievementRecordPredicate).Select(x => new { x.Id, x.AchievementId, x.AchievementTimeStamp });
-        var dailyAchievementsById = await dailyAchievementsQuery.ToArrayAsync();
+        var dailyAchievementsById = await dailyAchievementsQuery.ToArrayAsync().ConfigureAwait(false);
         foreach (var kvp in dailyAchievementsById)
         {
             var localDateTime = kvp.AchievementTimeStamp.InZone(timeZone).LocalDateTime;
@@ -272,7 +272,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         }
 
         var dailyPostsQuery = database.Posts.AsExpandableEFCore().Include(p => p.PostTags).Where(postRecordPredicate).Select(x => new { x.Id, x.PostTags, x.PostTime });
-        var dailyPosts = await dailyPostsQuery.ToArrayAsync();
+        var dailyPosts = await dailyPostsQuery.ToArrayAsync().ConfigureAwait(false);
         foreach (var postRecord in dailyPosts)
         {
             var localDateTime = postRecord.PostTime.InZone(timeZone).LocalDateTime;
@@ -292,7 +292,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
             }
         }
 
-        var firstAchievements = await GetAllFirstAchievements();
+        var firstAchievements = await GetAllFirstAchievements().ConfigureAwait(false);
         foreach (var firstAchievement in firstAchievements)
         {
             var itemZonedDateTime = firstAchievement.Item2.InZone(timeZone);
@@ -304,7 +304,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
             }
         }
 
-        var firstTags = await GetAllFirstTags();
+        var firstTags = await GetAllFirstTags().ConfigureAwait(false);
         foreach (var firstTag in firstTags)
         {
             var itemZonedDateTime = firstTag.Item2.InZone(timeZone);
@@ -326,7 +326,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
 
         var firstAchievementsQuery = database.CharacterAchievements.TagWith("GetAllFirstAchievements").GroupBy(achievements => achievements.AchievementId).Select(g => new Tuple<int, Instant>(g.Key, g.Min(e => e.AchievementTimeStamp)));
 
-        return await firstAchievementsQuery.ToArrayAsync();
+        return await firstAchievementsQuery.ToArrayAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod(AutoInvalidateTime = 60 * 10)]
@@ -348,7 +348,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                                     group kvp by kvp.TagString into g
                                     select new Tuple<string, Instant>(g.Key, g.Min(e => e.PostTime));
 
-        return await firstTagsGroupedQuery.TagWith("GetAllFirstTags").ToArrayAsync();
+        return await firstTagsGroupedQuery.TagWith("GetAllFirstTags").ToArrayAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -364,7 +364,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         var totals = new DailyActivityResultsUser { Year = _totalYearValue };
         for (var year = _startYear; year < _endYear; year++)
         {
-            var currentActivitySet = await TryGetUserActivitySet(accountId, timeZoneId, inZoneDay, inZoneMonth, year);
+            var currentActivitySet = await TryGetUserActivitySet(accountId, timeZoneId, inZoneDay, inZoneMonth, year).ConfigureAwait(false);
             if (currentActivitySet.Achievements.Count == 0 && currentActivitySet.FirstAchievements.Count == 0 && currentActivitySet.MyMemories.Count == 0)
             {
                 continue;
@@ -380,13 +380,13 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
 
             foreach (var achievement in currentActivitySet.Achievements)
             {
-                var tag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, achievement, null, locale);
+                var tag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, achievement, null, locale).ConfigureAwait(false);
                 daily.Achievements.Add(tag);
             }
 
             foreach (var achievement in currentActivitySet.FirstAchievements)
             {
-                var tag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, achievement, null, locale);
+                var tag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, achievement, null, locale).ConfigureAwait(false);
                 daily.FirstAchievements.Add(tag);
             }
 
@@ -407,7 +407,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     [ComputeMethod]
     protected virtual async Task<ActivitySetUser> TryGetUserActivitySet(long accountId, string timeZoneId, int inZoneDay, int inZoneMonth, int inZoneYear)
     {
-        var results = await TryGetUserActivitySetFull(accountId, timeZoneId, inZoneDay, inZoneMonth);
+        var results = await TryGetUserActivitySetFull(accountId, timeZoneId, inZoneDay, inZoneMonth).ConfigureAwait(false);
         if (!results.TryGetValue(inZoneYear, out var result))
         {
             result = new ActivitySetUser();
@@ -445,7 +445,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         await using var database = CreateDbContext();
 
         var achievementRecords = database.CharacterAchievements.Where(x => x.AccountId == accountId).Where(achievementRecordPredicate).Select(x => new { x.AchievementId, x.AchievementTimeStamp });
-        var dailyAchievementsId = await achievementRecords.ToArrayAsync();
+        var dailyAchievementsId = await achievementRecords.ToArrayAsync().ConfigureAwait(false);
 
         foreach (var dailyAchievement in dailyAchievementsId)
         {
@@ -465,7 +465,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                                          AchievementTimeStamp = g.Min(e => e.AchievementTimeStamp),
                                      };
 
-        var firstAchievements = await firstAchievementsQuery.ToArrayAsync();
+        var firstAchievements = await firstAchievementsQuery.ToArrayAsync().ConfigureAwait(false);
         foreach (var firstAchievement in firstAchievements)
         {
             var itemZonedDateTime = firstAchievement.AchievementTimeStamp.InZone(timeZone);
@@ -484,7 +484,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                             where tag.TagString == accountString && post.DeletedTimeStamp == 0 && (tag.TagKind == PostTagKind.Post || tag.TagKind == PostTagKind.PostRestored)
                             select new { post.Id, post.AccountId, post.PostTime, post.PostComment, post.BlobNames };
 
-        var memories = await memoriesQuery.ToArrayAsync();
+        var memories = await memoriesQuery.ToArrayAsync().ConfigureAwait(false);
         var memoriesById = new HashSet<long>();
         foreach (var memory in memories)
         {
@@ -499,7 +499,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                 continue;
             }
 
-            var userTagInfo = await _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Account, memory.AccountId);
+            var userTagInfo = await _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Account, memory.AccountId).ConfigureAwait(false);
             var blobNames = Array.Empty<string>();
             if (string.IsNullOrEmpty(memory.BlobNames))
             {
@@ -525,7 +525,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     [ComputeMethod]
     public virtual async Task<MainSearchResult[]> TrySearch(Session session, MainSearchType searchType, string searchString)
     {
-        return await TrySearch(searchType, searchString);
+        return await TrySearch(searchType, searchString).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -545,19 +545,19 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         var allResults = new List<MainSearchResult>();
         if ((searchType & MainSearchType.Account) == MainSearchType.Account)
         {
-            var results = await TrySearchAccounts(searchString);
+            var results = await TrySearchAccounts(searchString).ConfigureAwait(false);
             allResults.AddRange(results);
         }
 
         if ((searchType & MainSearchType.Character) == MainSearchType.Character)
         {
-            var results = await TrySearchCharacters(searchString);
+            var results = await TrySearchCharacters(searchString).ConfigureAwait(false);
             allResults.AddRange(results);
         }
 
         if ((searchType & MainSearchType.Guild) == MainSearchType.Guild)
         {
-            var results = await TrySearchGuilds(searchString);
+            var results = await TrySearchGuilds(searchString).ConfigureAwait(false);
             allResults.AddRange(results);
         }
 
@@ -573,7 +573,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                     orderby r.UsernameSearchable.Length
                     select MainSearchResult.CreateAccount(r.Id, r.Username, r.Avatar);
 
-        var results = await query.Take(50).ToArrayAsync();
+        var results = await query.Take(50).ToArrayAsync().ConfigureAwait(false);
         return results;
     }
 
@@ -586,7 +586,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                     orderby r.NameSearchable.Length
                     select MainSearchResult.CreateCharacter(r.Id, r.MoaRef, r.Name, r.AvatarLink, r.RealmId, r.Class);
 
-        var results = await query.Take(50).ToArrayAsync();
+        var results = await query.Take(50).ToArrayAsync().ConfigureAwait(false);
         return results;
     }
 
@@ -599,23 +599,23 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                     orderby r.NameSearchable.Length
                     select MainSearchResult.CreateGuild(r.Id, r.MoaRef, r.Name, null, r.RealmId);
 
-        var results = await query.Take(50).ToArrayAsync();
+        var results = await query.Take(50).ToArrayAsync().ConfigureAwait(false);
         return results;
     }
 
     [ComputeMethod]
     public virtual async Task<RecentPostsResults> TryGetRecentPosts(Session session, RecentPostsType postsType, PostSortMode sortMode, int currentPage, string locale)
     {
-        var account = await _commonServices.AccountServices.TryGetActiveAccount(session);
+        var account = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         var allSearchResult = Array.Empty<long>();
         if (account != null && postsType == RecentPostsType.Default)
         {
-            allSearchResult = await TryGetRecentPosts(account.Id);
+            allSearchResult = await TryGetRecentPosts(account.Id).ConfigureAwait(false);
         }
 
         if (allSearchResult.Length == 0)
         {
-            allSearchResult = await TryGetRecentPosts();
+            allSearchResult = await TryGetRecentPosts().ConfigureAwait(false);
         }
 
         var allPostViewModels = Array.Empty<PostViewModel>();
@@ -623,7 +623,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         if (allSearchResult.Length > 0)
         {
             currentPage = Math.Clamp(currentPage, 1, totalPages);
-            allPostViewModels = await GetPostViewModelsForPage(session, allSearchResult, currentPage, CommonConfig.PostsPerPage, locale);
+            allPostViewModels = await GetPostViewModelsForPage(session, allSearchResult, currentPage, CommonConfig.PostsPerPage, locale).ConfigureAwait(false);
         }
 
         return new RecentPostsResults
@@ -641,20 +641,20 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     {
         await using var database = CreateDbContext();
 
-        await _commonServices.PostServices.DependsOnNewPosts();
+        await _commonServices.PostServices.DependsOnNewPosts().ConfigureAwait(false);
 
         var query = from p in database.Posts
                     where p.DeletedTimeStamp == 0 && p.PostVisibility == 0
                     orderby p.PostCreatedTime descending
                     select p.Id;
 
-        return await query.ToArrayAsync();
+        return await query.ToArrayAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod]
     protected virtual async Task<long[]> TryGetRecentPosts(long accountId)
     {
-        var following = await _commonServices.FollowingServices.TryGetAccountFollowing(accountId);
+        var following = await _commonServices.FollowingServices.TryGetAccountFollowing(accountId).ConfigureAwait(false);
         if (following == null || following.Count == 0)
         {
             return Array.Empty<long>();
@@ -673,7 +673,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
 
         foreach (var followingViewModel in allFollowingIds)
         {
-            await _commonServices.PostServices.DependsOnPostsBy(followingViewModel);
+            await _commonServices.PostServices.DependsOnPostsBy(followingViewModel).ConfigureAwait(false);
         }
 
         await using var database = CreateDbContext();
@@ -682,7 +682,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                     orderby p.PostCreatedTime descending
                     select p.Id;
 
-        return await query.ToArrayAsync();
+        return await query.ToArrayAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -696,18 +696,18 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
 
         if (tagStrings != null)
         {
-            var result = await GetPostSearchTags(tagStrings, locale);
+            var result = await GetPostSearchTags(tagStrings, locale).ConfigureAwait(false);
             searchPostTags = result.Tags;
             serverSideTagStrings = result.Strings;
         }
 
-        var allSearchResult = await TrySearchPosts(serverSideTagStrings, sortMode, postMinTime, postMaxTime);
+        var allSearchResult = await TrySearchPosts(serverSideTagStrings, sortMode, postMinTime, postMaxTime).ConfigureAwait(false);
         var allPostViewModels = Array.Empty<PostViewModel>();
         var totalPages = (int)Math.Ceiling(allSearchResult.Length / (float)CommonConfig.PostsPerPage);
         if (allSearchResult.Length > 0)
         {
             currentPage = Math.Clamp(currentPage, 1, totalPages);
-            allPostViewModels = await GetPostViewModelsForPage(session, allSearchResult, currentPage, CommonConfig.PostsPerPage, locale);
+            allPostViewModels = await GetPostViewModelsForPage(session, allSearchResult, currentPage, CommonConfig.PostsPerPage, locale).ConfigureAwait(false);
         }
 
         return new SearchPostsResults
@@ -727,7 +727,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         var viewModels = new List<PostViewModel>();
         for (var i = (currentPage - 1) * postsPerPage; i < allSearchResult.Length; i++)
         {
-            var postViewModel = await _commonServices.PostServices.TryGetPostViewModel(session, allSearchResult[i], locale);
+            var postViewModel = await _commonServices.PostServices.TryGetPostViewModel(session, allSearchResult[i], locale).ConfigureAwait(false);
             if (postViewModel == null)
             {
             }
@@ -758,7 +758,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                 continue;
             }
 
-            var tagInfo = await _commonServices.TagServices.GetTagInfo(postTagInfo.Type, postTagInfo.Id, postTagInfo.Text, locale);
+            var tagInfo = await _commonServices.TagServices.GetTagInfo(postTagInfo.Type, postTagInfo.Id, postTagInfo.Text, locale).ConfigureAwait(false);
             if (tagInfo != null && serverSideTagStrings.Add(tagInfo.TagString))
             {
                 searchPostTags.Add(tagInfo);
@@ -775,13 +775,13 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
 
         foreach (var tagString in tagStrings)
         {
-            await _commonServices.PostServices.DependsOnPostsWithTagString(tagString);
+            await _commonServices.PostServices.DependsOnPostsWithTagString(tagString).ConfigureAwait(false);
         }
 
         var query = from p in GetPostSearchQuery(database, tagStrings, sortMode, minTime, maxTime)
                     select p.Id;
 
-        return await query.ToArrayAsync();
+        return await query.ToArrayAsync().ConfigureAwait(false);
     }
 
     private IQueryable<PostRecord> GetPostSearchQuery(AppDbContext database, HashSet<string> serverSideTagStrings, PostSortMode sortMode, long minTimeStamp, long maxTimeStamp)
@@ -830,37 +830,37 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         switch (sortMode)
         {
             case PostSortMode.PostTimeStampDescending:
-            {
-                query = from p in query
-                        orderby p.PostTime descending
-                        select p;
-                break;
-            }
+                {
+                    query = from p in query
+                            orderby p.PostTime descending
+                            select p;
+                    break;
+                }
             case PostSortMode.PostTimeStampAscending:
-            {
-                query = from p in query
-                        orderby p.PostTime
-                        select p;
-                break;
-            }
+                {
+                    query = from p in query
+                            orderby p.PostTime
+                            select p;
+                    break;
+                }
             case PostSortMode.PostCreatedTimeStampDescending:
-            {
-                query = from p in query
-                        orderby p.PostCreatedTime descending
-                        select p;
-                break;
-            }
+                {
+                    query = from p in query
+                            orderby p.PostCreatedTime descending
+                            select p;
+                    break;
+                }
             case PostSortMode.PostCreatedTimeStampAscending:
-            {
-                query = from p in query
-                        orderby p.PostCreatedTime
-                        select p;
-                break;
-            }
+                {
+                    query = from p in query
+                            orderby p.PostCreatedTime
+                            select p;
+                    break;
+                }
             default:
-            {
-                throw new ArgumentOutOfRangeException(nameof(sortMode), sortMode, null);
-            }
+                {
+                    throw new ArgumentOutOfRangeException(nameof(sortMode), sortMode, null);
+                }
         }
 
         return query;

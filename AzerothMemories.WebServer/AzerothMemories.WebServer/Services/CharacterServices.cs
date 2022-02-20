@@ -21,7 +21,7 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
     public virtual async Task<CharacterRecord> TryGetCharacterRecord(long id)
     {
         await using var database = CreateDbContext();
-        var record = await database.Characters.FirstOrDefaultAsync(a => a.Id == id);
+        var record = await database.Characters.FirstOrDefaultAsync(a => a.Id == id).ConfigureAwait(false);
 
         if (record != null)
         {
@@ -30,7 +30,7 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
             Exceptions.ThrowIf(!moaRef.IsValidCharacter);
             Exceptions.ThrowIf(moaRef.Id != record.BlizzardId);
 
-            await DependsOnCharacterRecord(record.Id);
+            await DependsOnCharacterRecord(record.Id).ConfigureAwait(false);
         }
 
         return record;
@@ -47,7 +47,7 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
         await using var database = CreateDbContext(true);
         var characterRecord = await (from r in database.Characters
                                      where r.MoaRef == moaRef.Full
-                                     select r).FirstOrDefaultAsync();
+                                     select r).FirstOrDefaultAsync().ConfigureAwait(false);
 
         if (characterRecord == null)
         {
@@ -59,13 +59,13 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
                 CreatedDateTime = SystemClock.Instance.GetCurrentInstant()
             };
 
-            await database.Characters.AddAsync(characterRecord);
-            await database.SaveChangesAsync();
+            await database.Characters.AddAsync(characterRecord).ConfigureAwait(false);
+            await database.SaveChangesAsync().ConfigureAwait(false);
         }
 
         Exceptions.ThrowIf(characterRecord.Id == 0);
 
-        await DependsOnCharacterRecord(characterRecord.Id);
+        await DependsOnCharacterRecord(characterRecord.Id).ConfigureAwait(false);
         return characterRecord;
     }
 
@@ -74,14 +74,14 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
     {
         Exceptions.ThrowIf(priority != BlizzardUpdatePriority.CharacterLow && priority != BlizzardUpdatePriority.CharacterMed && priority != BlizzardUpdatePriority.CharacterHigh);
 
-        var characterRecord = await GetOrCreateCharacterRecord(refFull);
+        var characterRecord = await GetOrCreateCharacterRecord(refFull).ConfigureAwait(false);
 
         if (_commonServices.Config.UpdateSkipCharactersOnLowPriority && priority == BlizzardUpdatePriority.CharacterLow)
         {
         }
         else
         {
-            await _commonServices.BlizzardUpdateHandler.TryUpdate(characterRecord, priority);
+            await _commonServices.BlizzardUpdateHandler.TryUpdate(characterRecord, priority).ConfigureAwait(false);
         }
 
         return characterRecord;
@@ -94,12 +94,12 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
 
         await using var database = CreateDbContext();
 
-        var allCharacters = await database.Characters.Where(x => x.AccountId == accountId).ToArrayAsync();
+        var allCharacters = await database.Characters.Where(x => x.AccountId == accountId).ToArrayAsync().ConfigureAwait(false);
         var results = new Dictionary<long, CharacterViewModel>();
         foreach (var characterRecord in allCharacters)
         {
-            await DependsOnCharacterRecord(characterRecord.Id);
-            await _commonServices.BlizzardUpdateHandler.TryUpdate(characterRecord, BlizzardUpdatePriority.CharacterHigh);
+            await DependsOnCharacterRecord(characterRecord.Id).ConfigureAwait(false);
+            await _commonServices.BlizzardUpdateHandler.TryUpdate(characterRecord, BlizzardUpdatePriority.CharacterHigh).ConfigureAwait(false);
 
             results.Add(characterRecord.Id, characterRecord.CreateViewModel());
         }
@@ -122,13 +122,13 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
             return default;
         }
 
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
         if (activeAccount == null)
         {
             return false;
         }
 
-        var characterRecord = await _commonServices.CharacterServices.TryGetCharacterRecord(command.CharacterId);
+        var characterRecord = await _commonServices.CharacterServices.TryGetCharacterRecord(command.CharacterId).ConfigureAwait(false);
         if (characterRecord.AccountId != activeAccount.Id)
         {
             return false;
@@ -139,10 +139,10 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
             return characterRecord.AccountSync;
         }
 
-        await using var database = await CreateCommandDbContext(cancellationToken);
+        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(characterRecord);
         characterRecord.AccountSync = command.NewValue;
-        await database.SaveChangesAsync(cancellationToken);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         context.Operation().Items.Set(new Character_InvalidateCharacterRecord(command.CharacterId, activeAccount.Id));
 
@@ -153,13 +153,13 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
     public virtual async Task<CharacterAccountViewModel> TryGetCharacter(Session session, long characterId)
     {
         var results = new CharacterAccountViewModel();
-        var characterRecord = await TryGetCharacterRecord(characterId);
+        var characterRecord = await TryGetCharacterRecord(characterId).ConfigureAwait(false);
         if (characterRecord == null)
         {
         }
         else if (characterRecord.AccountSync && characterRecord.AccountId is > 0)
         {
-            results.AccountViewModel = await _commonServices.AccountServices.TryGetAccountById(session, characterRecord.AccountId.Value);
+            results.AccountViewModel = await _commonServices.AccountServices.TryGetAccountById(session, characterRecord.AccountId.Value).ConfigureAwait(false);
             results.CharacterViewModel = results.AccountViewModel.GetCharactersSafe().FirstOrDefault(x => x.Id == characterRecord.Id);
         }
         else
@@ -178,7 +178,7 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
             return null;
         }
 
-        var validRealmSlug = await _commonServices.TagServices.IsValidRealmSlug(realmSlug);
+        var validRealmSlug = await _commonServices.TagServices.IsValidRealmSlug(realmSlug).ConfigureAwait(false);
         if (!validRealmSlug)
         {
             return null;
@@ -189,26 +189,26 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
             return null;
         }
 
-        var characterRef = await GetFullCharacterRef(region, realmSlug, characterName);
+        var characterRef = await GetFullCharacterRef(region, realmSlug, characterName).ConfigureAwait(false);
         if (characterRef == null)
         {
             return null;
         }
 
-        var characterRecord = await GetOrCreateCharacterRecord(characterRef.Full, BlizzardUpdatePriority.CharacterMed);
+        var characterRecord = await GetOrCreateCharacterRecord(characterRef.Full, BlizzardUpdatePriority.CharacterMed).ConfigureAwait(false);
 
-        return await TryGetCharacter(session, characterRecord.Id);
+        return await TryGetCharacter(session, characterRecord.Id).ConfigureAwait(false);
     }
 
     public async Task<bool> TryEnqueueUpdate(Session session, BlizzardRegion region, string realmSlug, string characterName)
     {
-        var characterRef = await GetFullCharacterRef(region, realmSlug, characterName);
+        var characterRef = await GetFullCharacterRef(region, realmSlug, characterName).ConfigureAwait(false);
         if (characterRef == null)
         {
             return false;
         }
 
-        await GetOrCreateCharacterRecord(characterRef.Full, BlizzardUpdatePriority.CharacterMed);
+        await GetOrCreateCharacterRecord(characterRef.Full, BlizzardUpdatePriority.CharacterMed).ConfigureAwait(false);
 
         return true;
     }
@@ -228,13 +228,13 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
             return default;
         }
 
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
         if (activeAccount == null)
         {
             return false;
         }
 
-        var characterRecord = await TryGetCharacterRecord(command.CharacterId);
+        var characterRecord = await TryGetCharacterRecord(command.CharacterId).ConfigureAwait(false);
         if (characterRecord == null)
         {
             return false;
@@ -250,10 +250,10 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
             return false;
         }
 
-        await using var database = await CreateCommandDbContext(cancellationToken);
+        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(characterRecord);
         characterRecord.CharacterStatus = CharacterStatus2.DeletePending;
-        await database.SaveChangesAsync(cancellationToken);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         context.Operation().Items.Set(new Character_InvalidateCharacterRecord(command.CharacterId, characterRecord.AccountId.GetValueOrDefault()));
 
@@ -285,19 +285,19 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
             return default;
         }
 
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
         if (activeAccount == null)
         {
             return false;
         }
 
-        var oldCharacterRecord = await TryGetCharacterRecord(command.OldCharacterId);
+        var oldCharacterRecord = await TryGetCharacterRecord(command.OldCharacterId).ConfigureAwait(false);
         if (oldCharacterRecord == null || oldCharacterRecord.AccountId != activeAccount.Id)
         {
             return false;
         }
 
-        var newCharacterRecord = await TryGetCharacterRecord(command.NewCharacterId);
+        var newCharacterRecord = await TryGetCharacterRecord(command.NewCharacterId).ConfigureAwait(false);
         if (newCharacterRecord == null || newCharacterRecord.AccountId != activeAccount.Id)
         {
             return false;
@@ -313,27 +313,27 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
             return false;
         }
 
-        await using var database = await CreateCommandDbContext(cancellationToken);
+        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(oldCharacterRecord);
         oldCharacterRecord.CharacterStatus = CharacterStatus2.RenamedOrTransferred;
 
         var oldTag = PostTagInfo.GetTagString(PostTagType.Character, oldCharacterRecord.Id);
         var newTag = PostTagInfo.GetTagString(PostTagType.Character, newCharacterRecord.Id);
 
-        var allPosts = await database.Posts.Where(x => x.PostAvatar == oldTag).ToArrayAsync(cancellationToken);
+        var allPosts = await database.Posts.Where(x => x.PostAvatar == oldTag).ToArrayAsync(cancellationToken).ConfigureAwait(false);
         foreach (var post in allPosts)
         {
             post.PostAvatar = newTag;
         }
 
-        var allPostTags = await database.PostTags.Where(x => x.TagString == oldTag).ToArrayAsync(cancellationToken);
+        var allPostTags = await database.PostTags.Where(x => x.TagString == oldTag).ToArrayAsync(cancellationToken).ConfigureAwait(false);
         foreach (var postTag in allPostTags)
         {
             postTag.TagId = newCharacterRecord.Id;
             postTag.TagString = newTag;
         }
 
-        await database.SaveChangesAsync(cancellationToken);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         var hashSet = new HashSet<long>(allPosts.Select(x => x.Id).ToHashSet());
         hashSet.UnionWith(allPostTags.Select(x => x.PostId));
@@ -354,14 +354,14 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
                     where EF.Functions.Like(r.MoaRef, moaRef.GetLikeQuery())
                     select new { r.Id, r.AccountId, r.MoaRef };
 
-        var result = await query.FirstOrDefaultAsync();
+        var result = await query.FirstOrDefaultAsync().ConfigureAwait(false);
         if (result != null)
         {
             return new MoaRef(result.MoaRef);
         }
 
         using var client = _commonServices.WarcraftClientProvider.Get(region);
-        var statusResult = await client.GetCharacterStatusAsync(realmSlug, characterName);
+        var statusResult = await client.GetCharacterStatusAsync(realmSlug, characterName).ConfigureAwait(false);
         if (statusResult.IsSuccess && statusResult.ResultData != null && statusResult.ResultData.IsValid && statusResult.ResultData.Id > 0)
         {
             return MoaRef.GetCharacterRef(region, realmSlug, characterName, statusResult.ResultData.Id);

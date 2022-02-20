@@ -75,9 +75,9 @@ public sealed class AccountController : ControllerBase, IAccountServices
     public async Task<string> TryChangeAvatarUpload(Session session)
     {
         await using var memoryStream = new MemoryStream();
-        await Request.Body.CopyToAsync(memoryStream);
+        await Request.Body.CopyToAsync(memoryStream).ConfigureAwait(false);
 
-        return await _commonServices.AccountServices.TryChangeAvatarUpload(session, memoryStream.GetBuffer());
+        return await _commonServices.AccountServices.TryChangeAvatarUpload(session, memoryStream.GetBuffer()).ConfigureAwait(false);
     }
 
     [NonAction]

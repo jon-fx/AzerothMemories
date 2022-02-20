@@ -34,7 +34,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
                                  Status = record.Status
                              };
 
-        return await followingQuery.ToDictionaryAsync(x => x.FollowerId, x => x);
+        return await followingQuery.ToDictionaryAsync(x => x.FollowerId, x => x).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -60,7 +60,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
                                  Status = record.Status
                              };
 
-        return await followersQuery.ToDictionaryAsync(x => x.FollowerId, x => x);
+        return await followersQuery.ToDictionaryAsync(x => x.FollowerId, x => x).ConfigureAwait(false);
     }
 
     [CommandHandler]
@@ -75,7 +75,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             return default;
         }
 
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
         if (activeAccount == null)
         {
             return null;
@@ -92,15 +92,15 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             return null;
         }
 
-        var followingViewModels = await TryGetAccountFollowing(activeAccount.Id);
+        var followingViewModels = await TryGetAccountFollowing(activeAccount.Id).ConfigureAwait(false);
         if (followingViewModels == null)
         {
             return null;
         }
 
-        await using var database = await CreateCommandDbContext(cancellationToken);
+        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
 
-        var otherAccountViewModel = await _commonServices.AccountServices.TryGetAccountRecord(otherAccountId);
+        var otherAccountViewModel = await _commonServices.AccountServices.TryGetAccountRecord(otherAccountId).ConfigureAwait(false);
         if (otherAccountViewModel == null)
         {
             return null;
@@ -116,8 +116,8 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
                 CreatedTime = SystemClock.Instance.GetCurrentInstant()
             };
 
-            await database.AccountFollowing.AddAsync(temp, cancellationToken);
-            await database.SaveChangesAsync(cancellationToken);
+            await database.AccountFollowing.AddAsync(temp, cancellationToken).ConfigureAwait(false);
+            await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
             var followingViewModelQuery = from record in database.AccountFollowing
                                           where record.Id == temp.Id
@@ -132,7 +132,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
                                               Status = record.Status
                                           };
 
-            followingViewModels[otherAccountId] = viewModel = await followingViewModelQuery.FirstAsync(cancellationToken);
+            followingViewModels[otherAccountId] = viewModel = await followingViewModelQuery.FirstAsync(cancellationToken).ConfigureAwait(false);
         }
 
         var status = AccountFollowingStatus.Active;
@@ -141,11 +141,11 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             status = AccountFollowingStatus.Pending;
         }
 
-        var currentRecord = await database.AccountFollowing.FirstAsync(x => x.Id == viewModel.Id, cancellationToken);
+        var currentRecord = await database.AccountFollowing.FirstAsync(x => x.Id == viewModel.Id, cancellationToken).ConfigureAwait(false);
         currentRecord.Status = viewModel.Status = status;
         currentRecord.LastUpdateTime = SystemClock.Instance.GetCurrentInstant();
 
-        await database.SaveChangesAsync(cancellationToken);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
@@ -153,7 +153,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             OtherAccountId = otherAccountId,
             //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = viewModel.Status == AccountFollowingStatus.Active ? AccountHistoryType.StartedFollowing : AccountHistoryType.FollowingRequestSent
-        }, cancellationToken);
+        }, cancellationToken).ConfigureAwait(false);
 
         await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
@@ -162,7 +162,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             OtherAccountId = activeAccount.Id,
             //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = viewModel.Status == AccountFollowingStatus.Active ? AccountHistoryType.StartedFollowing : AccountHistoryType.FollowingRequestReceived
-        }, cancellationToken);
+        }, cancellationToken).ConfigureAwait(false);
 
         context.Operation().Items.Set(new Following_InvalidateRecord(activeAccount.Id, otherAccountId));
 
@@ -181,7 +181,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             return default;
         }
 
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
         if (activeAccount == null)
         {
             return null;
@@ -198,7 +198,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             return null;
         }
 
-        var followingViewModels = await TryGetAccountFollowing(activeAccount.Id);
+        var followingViewModels = await TryGetAccountFollowing(activeAccount.Id).ConfigureAwait(false);
         if (followingViewModels == null)
         {
             return null;
@@ -209,13 +209,13 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             return null;
         }
 
-        await using var database = await CreateCommandDbContext(cancellationToken);
+        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
 
-        var currentRecord = await database.AccountFollowing.FirstAsync(x => x.Id == viewModel.Id, cancellationToken);
+        var currentRecord = await database.AccountFollowing.FirstAsync(x => x.Id == viewModel.Id, cancellationToken).ConfigureAwait(false);
         currentRecord.Status = viewModel.Status = AccountFollowingStatus.None;
         currentRecord.LastUpdateTime = SystemClock.Instance.GetCurrentInstant();
 
-        await database.SaveChangesAsync(cancellationToken);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
@@ -223,7 +223,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             OtherAccountId = otherAccountId,
             //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = AccountHistoryType.StoppedFollowing
-        }, cancellationToken);
+        }, cancellationToken).ConfigureAwait(false);
 
         context.Operation().Items.Set(new Following_InvalidateRecord(activeAccount.Id, otherAccountId));
 
@@ -242,7 +242,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             return default;
         }
 
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
         if (activeAccount == null)
         {
             return null;
@@ -259,7 +259,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             return null;
         }
 
-        var followersViewModels = await TryGetAccountFollowers(activeAccount.Id);
+        var followersViewModels = await TryGetAccountFollowers(activeAccount.Id).ConfigureAwait(false);
         if (followersViewModels == null)
         {
             return null;
@@ -270,13 +270,13 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             return null;
         }
 
-        await using var database = await CreateCommandDbContext(cancellationToken);
+        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
 
-        var currentRecord = await database.AccountFollowing.FirstAsync(x => x.Id == viewModel.Id, cancellationToken);
+        var currentRecord = await database.AccountFollowing.FirstAsync(x => x.Id == viewModel.Id, cancellationToken).ConfigureAwait(false);
         currentRecord.Status = viewModel.Status = AccountFollowingStatus.Active;
         currentRecord.LastUpdateTime = SystemClock.Instance.GetCurrentInstant();
 
-        await database.SaveChangesAsync(cancellationToken);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
@@ -284,7 +284,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             OtherAccountId = otherAccountId,
             //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = AccountHistoryType.FollowingRequestAccepted1
-        }, cancellationToken);
+        }, cancellationToken).ConfigureAwait(false);
 
         await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
@@ -292,7 +292,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             OtherAccountId = activeAccount.Id,
             //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = AccountHistoryType.FollowingRequestAccepted2
-        }, cancellationToken);
+        }, cancellationToken).ConfigureAwait(false);
 
         context.Operation().Items.Set(new Following_InvalidateRecord(activeAccount.Id, otherAccountId));
 
@@ -311,7 +311,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             return default;
         }
 
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
         if (activeAccount == null)
         {
             return null;
@@ -328,7 +328,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             return null;
         }
 
-        var followersViewModels = await TryGetAccountFollowers(activeAccount.Id);
+        var followersViewModels = await TryGetAccountFollowers(activeAccount.Id).ConfigureAwait(false);
         if (followersViewModels == null)
         {
             return null;
@@ -339,13 +339,13 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             return null;
         }
 
-        await using var database = await CreateCommandDbContext(cancellationToken);
+        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
 
-        var currentRecord = await database.AccountFollowing.FirstAsync(x => x.Id == viewModel.Id, cancellationToken);
+        var currentRecord = await database.AccountFollowing.FirstAsync(x => x.Id == viewModel.Id, cancellationToken).ConfigureAwait(false);
         currentRecord.Status = viewModel.Status = AccountFollowingStatus.None;
         currentRecord.LastUpdateTime = SystemClock.Instance.GetCurrentInstant();
 
-        await database.SaveChangesAsync(cancellationToken);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
@@ -353,7 +353,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             OtherAccountId = otherAccountId,
             //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = AccountHistoryType.FollowerRemoved
-        }, cancellationToken);
+        }, cancellationToken).ConfigureAwait(false);
 
         context.Operation().Items.Set(new Following_InvalidateRecord(activeAccount.Id, otherAccountId));
 

@@ -64,7 +64,7 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
 
         var jobName = $"{Queued}{SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds()}";
 
-        var tempRecord = await database.Set<TRecord>().FirstOrDefaultAsync(x => x.Id == record.Id);
+        var tempRecord = await database.Set<TRecord>().FirstOrDefaultAsync(x => x.Id == record.Id).ConfigureAwait(false);
         if (tempRecord == null)
         {
             return;
@@ -74,7 +74,7 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
         {
             tempRecord.UpdateJob = jobName;
 
-            await database.SaveChangesAsync();
+            await database.SaveChangesAsync().ConfigureAwait(false);
 
             _callbacks[(int)updatePriority](record.Id);
         }
@@ -151,7 +151,7 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
     private async Task<bool> OnUpdateStarted<TRecord>(DbSet<TRecord> dbSet, long id, PerformContext context) where TRecord : class, IBlizzardUpdateRecord, new()
     {
         var jobId = context.BackgroundJob.Id;
-        var result = await dbSet.FirstOrDefaultAsync(x => x.Id == id);
+        var result = await dbSet.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
         if (result == null)
         {
             return false;
@@ -171,10 +171,10 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
     {
         await using var database = CreateDbContext(true);
 
-        var requiresUpdate = await OnUpdateStarted(database.Accounts, id, context);
+        var requiresUpdate = await OnUpdateStarted(database.Accounts, id, context).ConfigureAwait(false);
         if (requiresUpdate)
         {
-            await _commonServices.Commander.Call(new Updates_UpdateAccountCommand(id));
+            await _commonServices.Commander.Call(new Updates_UpdateAccountCommand(id)).ConfigureAwait(false);
         }
     }
 
@@ -200,10 +200,10 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
     {
         await using var database = CreateDbContext(true);
 
-        var requiresUpdate = await OnUpdateStarted(database.Characters, id, context);
+        var requiresUpdate = await OnUpdateStarted(database.Characters, id, context).ConfigureAwait(false);
         if (requiresUpdate)
         {
-            await _commonServices.Commander.Call(new Updates_UpdateCharacterCommand(id));
+            await _commonServices.Commander.Call(new Updates_UpdateCharacterCommand(id)).ConfigureAwait(false);
         }
     }
 
@@ -212,10 +212,10 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
     {
         await using var database = CreateDbContext(true);
 
-        var requiresUpdate = await OnUpdateStarted(database.Guilds, id, context);
+        var requiresUpdate = await OnUpdateStarted(database.Guilds, id, context).ConfigureAwait(false);
         if (requiresUpdate)
         {
-            await _commonServices.Commander.Call(new Updates_UpdateGuildCommand(id));
+            await _commonServices.Commander.Call(new Updates_UpdateGuildCommand(id)).ConfigureAwait(false);
         }
     }
 }

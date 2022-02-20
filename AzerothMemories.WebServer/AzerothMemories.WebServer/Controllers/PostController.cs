@@ -17,9 +17,9 @@ public sealed class PostController : ControllerBase, IPostServices
     public async Task<AddMemoryResult> TryPostMemory(Session session)
     {
         await using var memoryStream = new MemoryStream();
-        await Request.Body.CopyToAsync(memoryStream);
+        await Request.Body.CopyToAsync(memoryStream).ConfigureAwait(false);
 
-        return await _commonServices.PostServices.TryPostMemory(session, memoryStream.GetBuffer());
+        return await _commonServices.PostServices.TryPostMemory(session, memoryStream.GetBuffer()).ConfigureAwait(false);
     }
 
     [NonAction]

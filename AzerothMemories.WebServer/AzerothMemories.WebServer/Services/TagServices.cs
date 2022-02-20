@@ -17,7 +17,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
     [ComputeMethod]
     public virtual async Task<bool> IsValidRealmSlug(string realmSlug)
     {
-        var allRealmSlugs = await GetAllRealmSlugs();
+        var allRealmSlugs = await GetAllRealmSlugs().ConfigureAwait(false);
         return allRealmSlugs.Contains(realmSlug);
     }
 
@@ -31,7 +31,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
                     select r.Media;
 
         var resultsSet = new HashSet<string>();
-        var queryResults = await query.ToArrayAsync();
+        var queryResults = await query.ToArrayAsync().ConfigureAwait(false);
         foreach (var queryResult in queryResults)
         {
             resultsSet.Add(queryResult);
@@ -45,7 +45,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
     {
         if (tagType == PostTagType.Account || tagType == PostTagType.Character || tagType == PostTagType.Guild)
         {
-            return await TryGetUserTagInfo(tagType, tagId);
+            return await TryGetUserTagInfo(tagType, tagId).ConfigureAwait(false);
         }
 
         if (tagType == PostTagType.HashTag)
@@ -62,7 +62,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
 
         var tagString = PostTagInfo.GetTagString(tagType, tagId);
         //var record = await database.BlizzardData.FirstOrDefaultAsync(r => r.TagType == tagType && r.TagId == tagId);
-        var record = await database.BlizzardData.FirstOrDefaultAsync(r => r.Key == tagString);
+        var record = await database.BlizzardData.FirstOrDefaultAsync(r => r.Key == tagString).ConfigureAwait(false);
         if (record == null)
         {
             return new PostTagInfo(tagType, tagId, tagString, null);
@@ -80,11 +80,11 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
         {
             var data = await (from r in database.Accounts
                               where r.Id == tagId
-                              select new { r.Username, r.Avatar }).FirstOrDefaultAsync();
+                              select new { r.Username, r.Avatar }).FirstOrDefaultAsync().ConfigureAwait(false);
 
             if (data != null)
             {
-                await _commonServices.AccountServices.DependsOnAccountRecord(tagId);
+                await _commonServices.AccountServices.DependsOnAccountRecord(tagId).ConfigureAwait(false);
 
                 return new PostTagInfo(PostTagType.Account, tagId, data.Username, data.Avatar);
             }
@@ -94,11 +94,11 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
         {
             var data = await (from r in database.Characters
                               where r.Id == tagId
-                              select new { r.Name, r.AvatarLink }).FirstOrDefaultAsync();
+                              select new { r.Name, r.AvatarLink }).FirstOrDefaultAsync().ConfigureAwait(false);
 
             if (data != null)
             {
-                await _commonServices.CharacterServices.DependsOnCharacterRecord(tagId);
+                await _commonServices.CharacterServices.DependsOnCharacterRecord(tagId).ConfigureAwait(false);
 
                 return new PostTagInfo(PostTagType.Character, tagId, data.Name, data.AvatarLink);
             }
@@ -108,11 +108,11 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
         {
             var data = await (from r in database.Guilds
                               where r.Id == tagId
-                              select new { r.Name }).FirstOrDefaultAsync();
+                              select new { r.Name }).FirstOrDefaultAsync().ConfigureAwait(false);
 
             if (data != null)
             {
-                await _commonServices.GuildServices.DependsOnGuildRecord(tagId);
+                await _commonServices.GuildServices.DependsOnGuildRecord(tagId).ConfigureAwait(false);
 
                 return new PostTagInfo(PostTagType.Guild, tagId, data.Name, null);
             }
@@ -135,7 +135,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
             return Array.Empty<PostTagInfo>();
         }
 
-        return await Search(searchString, locale);
+        return await Search(searchString, locale).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -144,7 +144,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
         await using var database = CreateDbContext();
 
         var query = GetSearchQuery(database, locale, searchString);
-        var records = await query.ToArrayAsync();
+        var records = await query.ToArrayAsync().ConfigureAwait(false);
         var postTags = new List<PostTagInfo>();
         foreach (var record in records)
         {
@@ -183,7 +183,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
             return null;
         }
 
-        var result = await TryCreateTagRecord(postTagInfo.Type, postTagInfo.Id, tagKind);
+        var result = await TryCreateTagRecord(postTagInfo.Type, postTagInfo.Id, tagKind).ConfigureAwait(false);
         if (result != null)
         {
             if (postTagInfo.Type == PostTagType.Account && accountViewModel.Id != postTagInfo.Id)
@@ -205,27 +205,27 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
         switch (tagType)
         {
             case PostTagType.None:
-            {
-                return null;
-            }
+                {
+                    return null;
+                }
             case PostTagType.Type:
             case PostTagType.Main:
             case PostTagType.Region:
             case PostTagType.Realm:
-            {
-                if (await IsValidTagIdWithBlizzardDataSanityChecks(tagType, tagId))
                 {
-                    break;
-                }
+                    if (await IsValidTagIdWithBlizzardDataSanityChecks(tagType, tagId).ConfigureAwait(false))
+                    {
+                        break;
+                    }
 
-                return null;
-            }
+                    return null;
+                }
             case PostTagType.Account:
             case PostTagType.Character:
             case PostTagType.Guild:
-            {
-                break;
-            }
+                {
+                    break;
+                }
             case PostTagType.Achievement:
             case PostTagType.Item:
             case PostTagType.Mount:
@@ -241,22 +241,22 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
             case PostTagType.CharacterRace:
             case PostTagType.CharacterClass:
             case PostTagType.CharacterClassSpecialization:
-            {
-                if (await IsValidTagIdWithBlizzardDataSanityChecks(tagType, tagId))
                 {
-                    break;
-                }
+                    if (await IsValidTagIdWithBlizzardDataSanityChecks(tagType, tagId).ConfigureAwait(false))
+                    {
+                        break;
+                    }
 
-                return null;
-            }
+                    return null;
+                }
             case PostTagType.HashTag:
-            {
-                return null;
-            }
+                {
+                    return null;
+                }
             default:
-            {
-                return null;
-            }
+                {
+                    return null;
+                }
         }
 
         return new PostTagRecord
@@ -288,7 +288,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
         await using var database = CreateDbContext();
 
         var tagString = PostTagInfo.GetTagString(tagType, tagId);
-        var exists = await database.BlizzardData.AnyAsync(r => r.Key == tagString);
+        var exists = await database.BlizzardData.AnyAsync(r => r.Key == tagString).ConfigureAwait(false);
 
         return exists;
     }
