@@ -10,6 +10,8 @@ using System.Text;
 var config = new CommonConfig();
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
+
 builder.Services.AddLogging(logging =>
 {
     logging.ClearProviders();
@@ -29,10 +31,7 @@ ProgramEx.Initialize(builder.Services);
 
 builder.Services.AddRazorPages();
 
-builder.Services.AddControllers(options =>
-{
-    options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
-});
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -138,6 +137,7 @@ builder.Services.AddAntiforgery(options =>
 var app = builder.Build();
 app.Services.GetRequiredService<CommonServices>().Initialize();
 app.Services.GetRequiredService<ComputeServices>().Initialize();
+app.UseSecurityHeaders(StartUpHelpers.GetHeaderPolicyCollection());
 
 if (app.Environment.IsDevelopment())
 {

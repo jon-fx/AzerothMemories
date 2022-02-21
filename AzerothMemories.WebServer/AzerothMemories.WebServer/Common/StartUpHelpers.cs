@@ -82,4 +82,46 @@ internal static class StartUpHelpers
 
         return Task.CompletedTask;
     }
+
+    public static HeaderPolicyCollection GetHeaderPolicyCollection()
+    {
+        var policy = new HeaderPolicyCollection()
+            .AddFrameOptionsDeny()
+            .AddXssProtectionBlock()
+            .AddContentTypeOptionsNoSniff()
+            .AddReferrerPolicyStrictOriginWhenCrossOrigin()
+            .RemoveServerHeader()
+            .AddCrossOriginOpenerPolicy(builder => builder.SameOrigin())
+            .AddCrossOriginResourcePolicy(builder => builder.SameOrigin())
+            //#if !DEBUG
+            //.AddCrossOriginEmbedderPolicy(builder => builder.RequireCorp())
+            //#endif
+            .AddContentSecurityPolicy(builder =>
+            {
+            })
+            .RemoveServerHeader()
+            .AddPermissionsPolicy(builder =>
+            {
+                builder.AddAccelerometer().None();
+                builder.AddAutoplay().None();
+                builder.AddCamera().None();
+                builder.AddEncryptedMedia().None();
+                builder.AddFullscreen().All();
+                builder.AddGeolocation().None();
+                builder.AddGyroscope().None();
+                builder.AddMagnetometer().None();
+                builder.AddMicrophone().None();
+                builder.AddMidi().None();
+                builder.AddPayment().None();
+                builder.AddPictureInPicture().None();
+                builder.AddSyncXHR().None();
+                builder.AddUsb().None();
+            });
+
+        //#if DEBUG
+        policy.AddStrictTransportSecurityMaxAgeIncludeSubDomains();
+        //#endif
+
+        return policy;
+    }
 }

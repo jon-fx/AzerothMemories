@@ -1,6 +1,7 @@
 namespace AzerothMemories.WebServer.Controllers;
 
 [ApiController, JsonifyErrors]
+[AutoValidateAntiforgeryToken]
 [Route("api/[controller]/[action]")]
 public sealed class FollowingController : ControllerBase, IFollowingServices
 {

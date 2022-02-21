@@ -4,11 +4,19 @@ public sealed class CommonConfig
 {
     public CommonConfig()
     {
-        //DatabaseConnectionString = "***REMOVED***";
-        //HangfireConnectionString = "***REMOVED***";
-
+#if DEBUG
         DatabaseConnectionString = "***REMOVED***";
         HangfireConnectionString = "***REMOVED***";
+
+        UploadToBlobStorage = false;
+        UpdateSkipCharactersOnLowPriority = false;
+#else
+        DatabaseConnectionString = "***REMOVED***";
+        HangfireConnectionString = "***REMOVED***";
+
+        UploadToBlobStorage = true;
+        UpdateSkipCharactersOnLowPriority = true;
+#endif
     }
 
     public string DatabaseConnectionString { get; init; }
