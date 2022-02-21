@@ -9,31 +9,28 @@ else if (!string.IsNullOrWhiteSpace(ViewModel.Helper.ErrorMessage))
 {
     <CardErrorComponent ErrorMessage="@ViewModel.Helper.ErrorMessage" />
 }
-else if (ViewModel.Helper.AccountViewModel == null || ViewModel.Helper.PostViewModel == null )
+else if (ViewModel.Helper.AccountViewModel == null || ViewModel.Helper.PostViewModel == null)
 {
     <CardLoadingComponent />
 }
-else 
+else
 {
     <PageTitle>@ViewModel.Helper.AccountViewModel.GetDisplayName()'s Memory of Azeroth</PageTitle>
 
-    if (ActiveAccountServices.IsAccountActiveAndCanInteract && (ActiveAccountServices.IsActiveAccount( ViewModel.Helper.AccountViewModel.Id) || ActiveAccountServices.IsAdmin))
+    if (ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract && (ClientServices.ActiveAccountServices.IsActiveAccount(ViewModel.Helper.AccountViewModel.Id) || ClientServices.ActiveAccountServices.IsAdmin))
     {
         <AddMemoryMainTagComponent Services="@this" SharedData="@ViewModel.SharedData" />
         <AddMemoryPostAvatarComponent SharedData="@ViewModel.SharedData" />
         <AddMemoryAllTagChipsComponent SharedData="@ViewModel.SharedData" />
-        
+
         <AddMemorySubmitCancelComponent SharedData="@ViewModel.SharedData" OnSubmit="@ViewModel.Submit" OnCancel="@ViewModel.UserCancel" />
     }
 
-    <PostViewComponent Services="@this" Helper="@ViewModel.Helper"/>
+    <PostViewComponent Services="@this" Helper="@ViewModel.Helper" />
 }
 
-
 @code {
-    
     [Parameter, EditorRequired] public long Id { get; set; }
-    
     [Parameter, EditorRequired] public long PostId { get; set; }
 
     [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }

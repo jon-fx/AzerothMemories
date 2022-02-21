@@ -8,14 +8,13 @@
         }
         else if (ViewModel.UploadedImages.Count > 0)
         {
-            <AddMemoryComponent Services="@this" ViewModel="@ViewModel" OnPostMemoryResult="@OnPostMemoryCallback"/>
+            <AddMemoryComponent Services="@this" ViewModel="@ViewModel" OnPostMemoryResult="@OnPostMemoryCallback" />
         }
         else
         {
-        
             <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
                 <MudCardContent Class="@ClassPresets.CardContent">
-                    <InputFile id="fileInput"  OnChange="ViewModel.Initialize" hidden accept="@ZExtensions.UploadAcceptExtensions"/>
+                    <InputFile id="fileInput" OnChange="ViewModel.Initialize" hidden accept="@ZExtensions.UploadAcceptExtensions" />
                     <MudButton HtmlTag="label" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Filled.CloudUpload" for="fileInput">Upload Image</MudButton>
                 </MudCardContent>
             </MudCard>
@@ -28,15 +27,15 @@
     private async Task OnPostMemoryCallback(AddMemoryResult result)
     {
         if (result.Result == AddMemoryResultCode.Success)
-        {                                                                                                                   
-            NavigationManager.NavigateTo($"post/{result.AccountId}/{result.PostId}");
+        {
+            ClientServices.NavigationManager.NavigateTo($"post/{result.AccountId}/{result.PostId}");
         }
         else if (result.Result == AddMemoryResultCode.Canceled)
         {
         }
         else
         {
-            await DialogService.ShowNotificationDialog(false, $"{result.Result}");
+            await ClientServices.DialogService.ShowNotificationDialog(false, $"{result.Result}");
         }
 
         StateHasChanged();

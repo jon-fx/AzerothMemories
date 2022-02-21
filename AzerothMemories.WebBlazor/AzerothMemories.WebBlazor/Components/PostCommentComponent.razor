@@ -20,7 +20,7 @@
                 <a href="@accountLink">
                     <MudText Class="cardLinkText" Typo="Typo.body1">@username</MudText>
                 </a>
-                <MudText Typo="Typo.body2">@Services.TimeProvider.GetTimeAsLocalStringAgo(comment.CreatedTime, true)</MudText>
+                <MudText Typo="Typo.body2">@Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(comment.CreatedTime, true)</MudText>
             </CardHeaderContent>
             <CardHeaderActions>
                 <MudMenu Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Dense="true">
@@ -30,7 +30,7 @@
                         </MudTooltip>
                     </MudMenuItem>
 
-                    @if (Services.ActiveAccountServices.IsActiveAccount(comment.AccountId) || Services.ActiveAccountServices.IsAdmin)
+                    @if (Services.ClientServices.ActiveAccountServices.IsActiveAccount(comment.AccountId) || Services.ClientServices.ActiveAccountServices.IsAdmin)
                     {
                         <MudMenuItem OnClick="@OnDeleteComment" Disabled="@(comment.DeletedTimeStamp != 0)">
                             <MudTooltip Text="Delete" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
@@ -39,7 +39,7 @@
                         </MudMenuItem>
                     }
 
-                    @if (Services.ActiveAccountServices.IsAccountActiveAndCanInteract && !Services.ActiveAccountServices.IsActiveAccount(comment.AccountId))
+                    @if (Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract && !Services.ClientServices.ActiveAccountServices.IsActiveAccount(comment.AccountId))
                     {
                         <MudMenuItem OnClick="@OnReportComment">
                             <MudTooltip Text="Report" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
@@ -112,7 +112,7 @@
         </div>
     }
 
-    @if (Services.ActiveAccountServices.ActiveCommentContext == this)
+    @if (Services.ClientServices.ActiveAccountServices.ActiveCommentContext == this)
     {
         var depth = 0;
         var parentNode = item.Parent;
@@ -139,7 +139,7 @@
 {
     private bool _userReacting;
 
-    public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActiveAndCanInteract || Comment.Comment.DeletedTimeStamp != 0;
+    public bool IsDisabled => !Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract || Comment.Comment.DeletedTimeStamp != 0;
 
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
 
@@ -168,7 +168,7 @@
 
         _userReacting = true;
         
-        var result = await Services.CommandRunner.Run(new Post_TryReactToPostComment(null, postId, commentId, newReaction));
+        var result = await Services.ClientServices.CommandRunner.Run(new Post_TryReactToPostComment(null, postId, commentId, newReaction));
         if (result.Result > 0)
         {
             node.ReactionId = result.Result;
@@ -182,7 +182,7 @@
 
     private void ReplyToComment(PostCommentTreeNode item)
     {
-        Services.ActiveAccountServices.ActiveCommentContext = Services.ActiveAccountServices.ActiveCommentContext == this ? null : this;
+        Services.ClientServices.ActiveAccountServices.ActiveCommentContext = Services.ClientServices.ActiveAccountServices.ActiveCommentContext == this ? null : this;
     }
 
     public void InvokeStateHasChanged()
@@ -198,24 +198,24 @@
             return;
         }
 
-        var confirmationResult = await Services.DialogService.ShowMessageBox("Warning", "Deleting can not be undone!", "Delete!", "Cancel");
+        var confirmationResult = await Services.ClientServices.DialogService.ShowMessageBox("Warning", "Deleting can not be undone!", "Delete!", "Cancel");
         if (confirmationResult.HasValue && confirmationResult.Value)
         {
             var postId = comment.PostId;
             var commentId = comment.Id;
             
-            var result = await Services.CommandRunner.Run(new Post_TryDeleteComment(null, postId, commentId));
+            var result = await Services.ClientServices.CommandRunner.Run(new Post_TryDeleteComment(null, postId, commentId));
 
             comment.DeletedTimeStamp = result.Result;
 
             var message = comment.DeletedTimeStamp == 0 ? "Comment delete failed." : "Comment deleted.";
-            await Services.DialogService.ShowNotificationDialog(true, message);
+            await Services.ClientServices.DialogService.ShowNotificationDialog(true, message);
         }
     }
 
     private async Task OnReportComment()
     {        
-        await Services.DialogService.ShowReportPostDialog($"Report {Comment.Comment.AccountUsername}'s Comment ({Comment.Comment.Id})", Comment.Comment.PostId, Comment.Comment.Id);
+        await Services.ClientServices.DialogService.ShowReportPostDialog($"Report {Comment.Comment.AccountUsername}'s Comment ({Comment.Comment.Id})", Comment.Comment.PostId, Comment.Comment.Id);
     }
 
     private async Task OnReactionLinkClicked()
@@ -230,6 +230,6 @@
 
     private void OnReactionChipClickedCallback(PostReactionViewModel reaction)
     {
-        Services.NavigationManager.NavigateTo($"/account/{reaction.AccountId}");
+        Services.ClientServices.NavigationManager.NavigateTo($"/account/{reaction.AccountId}");
     }
 }

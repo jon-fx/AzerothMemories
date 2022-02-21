@@ -22,9 +22,7 @@
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired] public EventCallback<PostTagInfo> OnSelectedItemChanged { get; init; }
-
-    [Inject] public IJSRuntime JsRuntime { get; init; }
-
+    
     private async Task OnValueChanged(PostTagInfo value)
     {
         if (_lastSelectedValue == value)
@@ -40,7 +38,7 @@
 
             await _autoComplete.Clear();
 
-            JsRuntime.InvokeVoidAsync("HideWowheadToolTips").AndForget();
+            Services.ClientServices.JsRuntime.InvokeVoidAsync("HideWowheadToolTips").AndForget();
         }
     }
 

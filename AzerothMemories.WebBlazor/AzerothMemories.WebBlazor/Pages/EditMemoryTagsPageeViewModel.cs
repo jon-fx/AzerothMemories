@@ -17,10 +17,8 @@ public sealed class EditMemoryTagsPageeViewModel : ViewModelBase
 
     public AddMemoryComponentSharedData SharedData { get; private set; }
 
-    public override async Task ComputeState()
+    public async Task ComputeState()
     {
-        await base.ComputeState();
-
         if (SharedData != null)
         {
             return;
@@ -58,7 +56,7 @@ public sealed class EditMemoryTagsPageeViewModel : ViewModelBase
 
     public async Task Submit()
     {
-        if (!Services.ActiveAccountServices.IsAccountActiveAndCanInteract)
+        if (!Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract)
         {
             return;
         }
@@ -69,12 +67,12 @@ public sealed class EditMemoryTagsPageeViewModel : ViewModelBase
             return;
         }
 
-        if (Services.ActiveAccountServices.IsActiveAccount(postViewModel.AccountId) || Services.ActiveAccountServices.IsAdmin)
+        if (Services.ClientServices.ActiveAccountServices.IsActiveAccount(postViewModel.AccountId) || Services.ClientServices.ActiveAccountServices.IsAdmin)
         {
             var result = await SharedData.SubmitOnEditingPost(Helper.PostViewModel);
             if (result == AddMemoryResultCode.Success)
             {
-                Services.NavigationManager.NavigateTo($"post/{postViewModel.AccountId}/{postViewModel.Id}");
+                Services.ClientServices.NavigationManager.NavigateTo($"post/{postViewModel.AccountId}/{postViewModel.Id}");
             }
             else if (result == AddMemoryResultCode.Canceled)
             {
@@ -82,7 +80,7 @@ public sealed class EditMemoryTagsPageeViewModel : ViewModelBase
             }
             else
             {
-                await Services.DialogService.ShowNotificationDialog(false, $"{result}");
+                await Services.ClientServices.DialogService.ShowNotificationDialog(false, $"{result}");
             }
         }
     }
@@ -95,6 +93,6 @@ public sealed class EditMemoryTagsPageeViewModel : ViewModelBase
             return;
         }
 
-        Services.NavigationManager.NavigateTo($"post/{postViewModel.AccountId}/{postViewModel.Id}");
+        Services.ClientServices.NavigationManager.NavigateTo($"post/{postViewModel.AccountId}/{postViewModel.Id}");
     }
 }

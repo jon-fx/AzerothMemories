@@ -56,7 +56,7 @@ public sealed class CharacterPagePageViewModel : ViewModelBase
                 return;
             }
 
-            if (!Services.TagHelpers.GetRealmId(realm, out _) && !Services.TagHelpers.GetRealmSlug($"{regionInfo.TwoLetters}-{realm}", out realm))
+            if (!Services.ClientServices.TagHelpers.GetRealmId(realm, out _) && !Services.ClientServices.TagHelpers.GetRealmSlug($"{regionInfo.TwoLetters}-{realm}", out realm))
             {
                 ErrorMessage = "Invalid Realm";
                 return;

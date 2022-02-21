@@ -32,11 +32,9 @@
 
     [CascadingParameter] public MudDialogInstance MudDialog { get; init; }
     
-    [Inject] public Session Session { get; init; }
+    [Inject] public ClientServices ClientServices { get; init; }
 
-    [Inject] public UICommandRunner CommandRunner { get; init; }
-
-    [Inject] public DialogHelperService DialogService { get; init; }
+    //[Inject] public DialogHelperService DialogService { get; init; }
 
     private async Task Submit()
     {
@@ -45,8 +43,8 @@
         if (Post != null && _selectedChips != null && _selectedChips.Count > 0)
         {
             var tagStrings = _selectedChips.Select(x => ((PostTagInfo)x).TagString).ToHashSet();
-            var result = await CommandRunner.Run(new Post_TryReportPostTags(Session, Post.Id, tagStrings));
-            await DialogService.ShowNotificationDialog(result.Result, "Tags reported.");
+            var result = await ClientServices.CommandRunner.Run(new Post_TryReportPostTags(null, Post.Id, tagStrings));
+            await ClientServices.DialogService.ShowNotificationDialog(result.Result, "Tags reported.");
         }
     }
 

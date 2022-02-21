@@ -9,7 +9,7 @@ else
     var timeStr = "Unknown";
     if (UploadedImage.FileTimeStamp > 0)
     {
-        timeStr = Services.TimeProvider.GetTimeAsLocalStringAgo(UploadedImage.FileTimeStamp, false);
+        timeStr = Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(UploadedImage.FileTimeStamp, false);
     }
 
     <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
@@ -47,7 +47,6 @@ else
     [Parameter, EditorRequired] public AddMemoryImageData UploadedImage { get; init; }
     [Parameter, EditorRequired] public AddMemoryPageViewModel ViewModel { get; init; }
 
-    [Inject] public IJSRuntime JsRuntime { get; init; }
 
     private string GetImageId => $"imageBox-{Index}";
     private DotNetObjectReference<AddMemoryPreviewScreenShotComponent> _objReference;
@@ -58,7 +57,7 @@ else
 
         if (firstRender)
         {
-            await JsRuntime.InvokeVoidAsync("SetImage", GetImageId, UploadedImage.ContentType, UploadedImage.FileContent);
+            await Services.ClientServices.JsRuntime.InvokeVoidAsync("SetImage", GetImageId, UploadedImage.ContentType, UploadedImage.FileContent);
         }
     }
 
@@ -66,7 +65,7 @@ else
     {
         UploadedImage.EditedFileContent = null;
 
-        await JsRuntime.InvokeVoidAsync("SetImage", GetImageId, UploadedImage.ContentType, UploadedImage.FileContent);
+        await Services.ClientServices.JsRuntime.InvokeVoidAsync("SetImage", GetImageId, UploadedImage.ContentType, UploadedImage.FileContent);
     }
 
     private void DeleteImage()
@@ -84,7 +83,7 @@ else
     {
         _objReference ??= DotNetObjectReference.Create(this);
 
-        await JsRuntime.InvokeVoidAsync("OpenImageEditor", GetImageId, _objReference);
+        await Services.ClientServices.JsRuntime.InvokeVoidAsync("OpenImageEditor", GetImageId, _objReference);
     }
 
     [JSInvokable]

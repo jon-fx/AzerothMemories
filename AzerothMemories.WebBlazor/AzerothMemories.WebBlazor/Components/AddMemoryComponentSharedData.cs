@@ -17,8 +17,8 @@ public sealed class AddMemoryComponentSharedData
     {
         _viewModel = viewModel;
 
-        MainTags = _viewModel.Services.TagHelpers.MainTags;
-        CommonTags = _viewModel.Services.TagHelpers.CommonTags;
+        MainTags = _viewModel.Services.ClientServices.TagHelpers.MainTags;
+        CommonTags = _viewModel.Services.ClientServices.TagHelpers.CommonTags;
 
         SelectedPostAvatarImage = 0;
         PostAvatarImages = new List<(PostTagInfo Tag, string ImageLink, string ImageText, string ToolTipText)>();
@@ -228,7 +228,7 @@ public sealed class AddMemoryComponentSharedData
             avatarTag = PostAvatarImages[SelectedPostAvatarImage].Tag.TagString;
         }
 
-        var result = await _viewModel.Services.CommandRunner.Run(new Post_TryUpdateSystemTags(null, currentPost.Id, avatarTag, newTags));
+        var result = await _viewModel.Services.ClientServices.CommandRunner.Run(new Post_TryUpdateSystemTags(null, currentPost.Id, avatarTag, newTags));
         return result.Result;
     }
 
@@ -332,7 +332,7 @@ public sealed class AddMemoryComponentSharedData
         _selectedCharacter = accountViewModel.GetCharactersSafe().FirstOrDefault(x => x.Id == newSelectedCharacter);
         if (_selectedCharacter != null)
         {
-            var stringLocalizer = _viewModel.Services.StringLocalizer;
+            var stringLocalizer = _viewModel.Services.ClientServices.StringLocalizer;
             var characterName = $"{_selectedCharacter.Name} ({stringLocalizer[$"Realm-{_selectedCharacter.RealmId}"]})";
             var characterNameTag = new PostTagInfo(PostTagType.Character, _selectedCharacter.Id, characterName, _selectedCharacter.AvatarLinkWithFallBack);
             var characterRealmTag = new PostTagInfo(PostTagType.Realm, _selectedCharacter.RealmId, stringLocalizer[$"Realm-{_selectedCharacter.RealmId}"], null);
@@ -515,8 +515,8 @@ public sealed class AddMemoryComponentSharedData
         var timeNow = SystemClock.Instance.GetCurrentInstant();
         if (PostTimeStamp <= ZExtensions.MinPostTime || PostTimeStamp >= timeNow)
         {
-            var minTime = _viewModel.Services.TimeProvider.GetTimeAsLocalString(ZExtensions.MinPostTime);
-            var maxTime = _viewModel.Services.TimeProvider.GetTimeAsLocalString(timeNow);
+            var minTime = _viewModel.Services.ClientServices.TimeProvider.GetTimeAsLocalString(ZExtensions.MinPostTime);
+            var maxTime = _viewModel.Services.ClientServices.TimeProvider.GetTimeAsLocalString(timeNow);
 
             errorStrings.Add($"Time muse be between {minTime} and {maxTime}.");
         }

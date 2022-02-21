@@ -25,7 +25,7 @@ else if (Helper.PostViewModel.DeletedTimeStamp == 0)
 
     @if (Helper.RootComments == null || Helper.RootComments.Count == 0)
     {
-        if (Services.ActiveAccountServices.ActiveCommentContext == this)
+        if (Services.ClientServices.ActiveAccountServices.ActiveCommentContext == this)
         {
             <PublishCommentBoxComponent Services="@Services" PostId="@Helper.PostViewModel.Id" />
         }
@@ -48,8 +48,8 @@ else if (Helper.PostViewModel.DeletedTimeStamp == 0)
             <PostCommentComponent @key="@comment" Services="@Services" Comment="@comment" />
         }
 
-        var showAdd = Services.ActiveAccountServices.ActiveCommentContext != this && Helper.Page == Helper.TotalPages;
-        if (Services.ActiveAccountServices.ActiveCommentContext == this)
+        var showAdd = Services.ClientServices.ActiveAccountServices.ActiveCommentContext != this && Helper.Page == Helper.TotalPages;
+        if (Services.ClientServices.ActiveAccountServices.ActiveCommentContext == this)
         {
             <PublishCommentBoxComponent Services="@Services" PostId="@Helper.PostViewModel.Id" />
         }
@@ -79,11 +79,11 @@ else if (Helper.PostViewModel.DeletedTimeStamp == 0)
 
     [Inject] IScrollManager ScrollManager { get; init; }
 
-    public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActiveAndCanInteract;
+    public bool IsDisabled => !Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract;
 
     private void AddComment()
     {
-        Services.ActiveAccountServices.ActiveCommentContext = this;
+        Services.ClientServices.ActiveAccountServices.ActiveCommentContext = this;
     }
 
     public void InvokeStateHasChanged()
@@ -98,7 +98,7 @@ else if (Helper.PostViewModel.DeletedTimeStamp == 0)
             return;
         }
 
-        var newPath = Services.NavigationManager.GetUriWithQueryParameter("page", currentPage);
-        Services.NavigationManager.NavigateTo(newPath);
+        var newPath = Services.ClientServices.NavigationManager.GetUriWithQueryParameter("page", currentPage);
+        Services.ClientServices.NavigationManager.NavigateTo(newPath);
     }
 }

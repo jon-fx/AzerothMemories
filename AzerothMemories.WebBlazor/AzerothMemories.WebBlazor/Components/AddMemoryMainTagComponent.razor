@@ -26,7 +26,7 @@
     {
         <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
             @{
-                var minTime = Services.TimeProvider.GetTimeAsLocalStringAgo(SharedData.PostTimeStamp, false);
+                var minTime = Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(SharedData.PostTimeStamp, false);
             }
             <MudText Typo="Typo.h6">Matching Achievements from @minTime</MudText>
 
@@ -86,8 +86,8 @@
                                         CharacterRegionInfo="@character.RegionId.ToInfo()" />
 
                             <div>
-                                <MudText Inline="true" Typo="Typo.body2">@character.Level @Services.StringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
-                                <MudText Inline="true" Typo="Typo.body2" Class=@($"wowclass-{character.Class}")>@Services.StringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
+                                <MudText Inline="true" Typo="Typo.body2">@character.Level @Services.ClientServices.StringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
+                                <MudText Inline="true" Typo="Typo.body2" Class=@($"wowclass-{character.Class}")>@Services.ClientServices.StringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
                             </div>
 
                             <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@character.RealmId" />

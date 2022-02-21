@@ -26,7 +26,7 @@ else
                 {
                     <MudText Typo="Typo.h6">Year @HeaderData.Year</MudText>
                 }
-                
+
                 @{
                     var none = "None";
                     var strings = new List<string>
@@ -65,7 +65,7 @@ else
                     @if (items.Count > 0)
                     {
                         <MudPaper Outlined="true" Class="ma-2 pa-2">
-                            <MudText  Class="ma-2" Typo="Typo.body2"><b>@text</b></MudText>
+                            <MudText Class="ma-2" Typo="Typo.body2"><b>@text</b></MudText>
                             @foreach (var postTagInfo in items)
                             {
                                 <PostTagChipComponent TagInfo="postTagInfo" OnClick="() => OnMainTagClicked(postTagInfo)" />
@@ -77,14 +77,14 @@ else
                 if (userData.MyMemories.Count > 0)
                 {
                     <MudPaper Outlined="true" Class="ma-2 pa-2">
-                        <MudText  Class="ma-2" Typo="Typo.body2"><b>My Memories</b></MudText>
+                        <MudText Class="ma-2" Typo="Typo.body2"><b>My Memories</b></MudText>
 
                         @foreach (var memory in userData.MyMemories)
                         {
                             var link = $"post/{memory.AccountId}/{memory.PostId}";
 
                             <a href="@link">
-                                <MudText Typo="Typo.body2">@TimeProvider.GetTimeAsLocalStringAgo(memory.PostTime, true)</MudText>
+                                <MudText Typo="Typo.body2">@Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(memory.PostTime, true)</MudText>
                             </a>
 
                             <MudGrid>
@@ -112,10 +112,7 @@ else
     private readonly List<PostViewModelBlobInfo> _allBlobInfos = new();
 
     [Parameter, EditorRequired] public DailyActivityResults HeaderData { get; init; }
-    [Parameter, EditorRequired] public NavigationManager NavigationManager { get; init; }
-    [Parameter, EditorRequired] public TimeProvider TimeProvider { get; init; }
-
-    [Inject] public IJSRuntime JsRuntime { get; init; }
+    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
 
     private void OnMainTagClicked(PostTagInfo postTagInfo)
     {
@@ -132,8 +129,8 @@ else
         ZExtensions.AddToDictOrNull(dictionary, "ptmin", HeaderData.Main.StartTimeMs, HeaderData.Main.StartTimeMs == 0);
         ZExtensions.AddToDictOrNull(dictionary, "ptmax", HeaderData.Main.EndTimeMs, HeaderData.Main.EndTimeMs == 0);
 
-        var newPath = NavigationManager.GetUriWithQueryParameters("postsearch", dictionary);
-        NavigationManager.NavigateTo(newPath);
+        var newPath = Services.ClientServices.NavigationManager.GetUriWithQueryParameters("postsearch", dictionary);
+        Services.ClientServices.NavigationManager.NavigateTo(newPath);
     }
 
     private void OnUserTagClicked(PostTagInfo postTagInfo)
@@ -154,12 +151,12 @@ else
         ZExtensions.AddToDictOrNull(dictionary, "ptmin", HeaderData.User.StartTimeMs, HeaderData.User.StartTimeMs == 0);
         ZExtensions.AddToDictOrNull(dictionary, "ptmax", HeaderData.User.EndTimeMs, HeaderData.User.EndTimeMs == 0);
 
-        var newPath = NavigationManager.GetUriWithQueryParameters("postsearch", dictionary);
-        NavigationManager.NavigateTo(newPath);
+        var newPath = Services.ClientServices.NavigationManager.GetUriWithQueryParameters("postsearch", dictionary);
+        Services.ClientServices.NavigationManager.NavigateTo(newPath);
     }
 
     private async Task OnImageClicked(int index)
     {
-        await JsRuntime.InvokeVoidAsync("InitializeImageViewer", index, _allBlobInfos.ToArray());
+        await Services.ClientServices.JsRuntime.InvokeVoidAsync("InitializeImageViewer", index, _allBlobInfos.ToArray());
     }
 }

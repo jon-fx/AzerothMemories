@@ -51,7 +51,7 @@ else
 
                         counter++;
                         remainingCharacters--;
-                        <CharacterLinkButton @key="character" StringLocalizer="@Services.StringLocalizer" CharacterViewModel="@character" />
+                        <CharacterLinkButton @key="character" StringLocalizer="@Services.ClientServices.StringLocalizer" CharacterViewModel="@character" />
                     }
 
                     if (remainingCharacters > 0)

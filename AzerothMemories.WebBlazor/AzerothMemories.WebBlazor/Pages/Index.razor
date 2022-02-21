@@ -3,7 +3,7 @@
 
 @{
     <PageTitle>Memories of Azeroth</PageTitle>
-    <HeadContentTest Url="@NavigationManager.Uri" Title="Memories of Azeroth" Description="Memories of Azeroth" Image="@null" AltImage="@null"/>
+    <HeadContentTest Url="@ClientServices.NavigationManager.Uri" Title="Memories of Azeroth" Description="Memories of Azeroth" Image="@null" AltImage="@null" />
 }
 
 <AuthorizeView>
@@ -12,8 +12,7 @@
     </Authorized>
 </AuthorizeView>
 
-
-<OnThisDayHeader HeaderData="@ViewModel.OnThisDay" NavigationManager="@NavigationManager" TimeProvider="@TimeProvider"/>
+<OnThisDayHeader HeaderData="@ViewModel.OnThisDay" Services="@this" />
 <RecentPostsComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" RecentPostsHelper="@ViewModel.RecentPostsHelper" />
 
 @code {

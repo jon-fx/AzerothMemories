@@ -8,7 +8,7 @@
 else
 {
     var viewModels = ViewModel.HistoryViewModels;
-    @if (viewModels== null || viewModels.Length == 0)
+    @if (viewModels == null || viewModels.Length == 0)
     {
         <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
             <MudCardContent Class="@ClassPresets.CardContent">
@@ -21,21 +21,20 @@ else
         <MudTimeline TimelinePosition="TimelinePosition.Start">
             @foreach (var viewModel in viewModels)
             {
-                var str = (MarkupString) viewModel.GetDisplayText(ActiveAccountServices.AccountViewModel, StringLocalizer);
+                var str = (MarkupString)viewModel.GetDisplayText(ClientServices.ActiveAccountServices.AccountViewModel, ClientServices.StringLocalizer);
 
                 <MudTimelineItem Color="Color.Info">
                     <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="25">
                         <MudCardContent Class="@ClassPresets.CardContent">
                             <MudText Typo="Typo.button">@str</MudText>
-                            <MudText Typo="Typo.body2" Class="mud-text-secondary">@TimeProvider.GetTimeAsLocalStringAgo(viewModel.CreatedTime, true)}</MudText>
+                            <MudText Typo="Typo.body2" Class="mud-text-secondary">@ClientServices.TimeProvider.GetTimeAsLocalStringAgo(viewModel.CreatedTime, true)}</MudText>
                         </MudCardContent>
                     </MudCard>
                 </MudTimelineItem>
             }
         </MudTimeline>
-        
         <div class="d-flex justify-center pa-2 ma-2">
-            <MudPagination Selected="@ViewModel.CurrentPage" SelectedChanged="@ViewModel.TryChangePage" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@ViewModel.TotalPages"/>
+            <MudPagination Selected="@ViewModel.CurrentPage" SelectedChanged="@ViewModel.TryChangePage" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@ViewModel.TotalPages" />
         </div>
     }
 }

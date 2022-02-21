@@ -18,7 +18,7 @@
         var altImage = name;
 
         <PageTitle>@name</PageTitle>
-        <HeadContentTest Url="@NavigationManager.Uri" Title="@name" Description="@name" Image="@image" AltImage="@altImage"/>
+        <HeadContentTest Url="@ClientServices.NavigationManager.Uri" Title="@name" Description="@name" Image="@image" AltImage="@altImage" />
 
         <GuildHeaderCardComponent Services="@this" GuildViewModel="@ViewModel.GuildViewModel" />
         <SearchPostViewComponent PostSearchHelper="@ViewModel.PostSearchHelper" />

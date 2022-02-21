@@ -87,7 +87,7 @@ else
                     </a>
 
                     @{
-                        var accountViewModel = Services.ActiveAccountServices.AccountViewModel;
+                        var accountViewModel = Services.ClientServices.ActiveAccountServices.AccountViewModel;
                         if (accountViewModel != null)
                         {
                             accountViewModel.FollowingViewModels.TryGetValue(AccountViewModel.Id, out var followingViewModel);
@@ -112,7 +112,7 @@ else
                     </a>
 
                     @{
-                        var accountViewModel = Services.ActiveAccountServices.AccountViewModel;
+                        var accountViewModel = Services.ClientServices.ActiveAccountServices.AccountViewModel;
                         if (accountViewModel != null)
                         {
                             accountViewModel.FollowingViewModels.TryGetValue(AccountViewModel.Id, out var followingViewModel);
@@ -135,7 +135,7 @@ else
             <MudCardContent Class="@ClassPresets.CardContent">
                 @foreach (var character in characters)
                 {
-                    <CharacterLinkButton @key="character" StringLocalizer="@Services.StringLocalizer" CharacterViewModel="@character" />
+                    <CharacterLinkButton @key="character" StringLocalizer="@Services.ClientServices.StringLocalizer" CharacterViewModel="@character" />
                 }
             </MudCardContent>
         </MudCard>

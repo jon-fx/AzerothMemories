@@ -18,7 +18,7 @@
 @code
 {
     private static readonly PostReportedReason[] _allReasons = Enum.GetValues<PostReportedReason>();
-    
+
     private string _reasonText;
     private PostReportedReason _reason;
     private readonly int _maxLength = 200;
@@ -29,11 +29,7 @@
 
     [CascadingParameter] public MudDialogInstance MudDialog { get; init; }
     
-    [Inject] public Session Session { get; init; }
-
-    [Inject] public UICommandRunner CommandRunner { get; init; }
-
-    [Inject] public DialogHelperService DialogService { get; init; }
+    [Inject] public ClientServices ClientServices { get; init; }
 
     private async Task Submit()
     {
@@ -58,13 +54,13 @@
 
         if (CommentId == 0)
         {
-            var result = await CommandRunner.Run(new Post_TryReportPost(Session, PostId, _reason, reasonText));
-            await DialogService.ShowNotificationDialog(result.Result, "Post reported.");
+            var result = await ClientServices.CommandRunner.Run(new Post_TryReportPost(null, PostId, _reason, reasonText));
+            await ClientServices.DialogService.ShowNotificationDialog(result.Result, "Post reported.");
         }
         else
         {
-            var result = await CommandRunner.Run(new Post_TryReportPostComment(Session, PostId, CommentId, _reason, reasonText));
-            await DialogService.ShowNotificationDialog(result.Result, "Comment reported.");
+            var result = await ClientServices.CommandRunner.Run(new Post_TryReportPostComment(null, PostId, CommentId, _reason, reasonText));
+            await ClientServices.DialogService.ShowNotificationDialog(result.Result, "Comment reported.");
         }
     }
 

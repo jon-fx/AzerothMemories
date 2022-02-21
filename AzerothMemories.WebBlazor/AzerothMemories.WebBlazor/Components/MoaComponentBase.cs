@@ -13,21 +13,9 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
 
     protected TViewModel ViewModel { get; }
 
+    [Inject] public ClientServices ClientServices { get; init; }
+
     [Inject] public ComputeServices ComputeServices { get; init; }
-
-    [Inject] public ActiveAccountServices ActiveAccountServices { get; init; }
-
-    [Inject] public TagHelpers TagHelpers { get; init; }
-
-    [Inject] public TimeProvider TimeProvider { get; init; }
-
-    [Inject] public UICommandRunner CommandRunner { get; init; }
-
-    [Inject] public NavigationManager NavigationManager { get; init; }
-
-    [Inject] public IStringLocalizer<BlizzardResources> StringLocalizer { get; init; }
-
-    [Inject] public DialogHelperService DialogService { get; init; }
 
     protected override sealed void OnInitialized()
     {
@@ -52,11 +40,11 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
 
     protected override sealed async Task<TViewModel> ComputeState(CancellationToken cancellationToken)
     {
-        await ActiveAccountServices.ComputeState();
+        await ClientServices.ActiveAccountServices.ComputeState();
 
         await InternalComputeState();
 
-        await ViewModel.ComputeState();
+        //await ViewModel.ComputeState();
 
         return ViewModel;
     }

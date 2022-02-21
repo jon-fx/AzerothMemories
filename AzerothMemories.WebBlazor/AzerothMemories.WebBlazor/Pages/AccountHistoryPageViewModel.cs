@@ -42,7 +42,7 @@ public sealed class AccountHistoryPageViewModel : ViewModelBase
             return;
         }
 
-        var newPath = Services.NavigationManager.GetUriWithQueryParameter("page", currentPage);
-        Services.NavigationManager.NavigateTo(newPath);
+        var newPath = Services.ClientServices.NavigationManager.GetUriWithQueryParameter("page", currentPage);
+        Services.ClientServices.NavigationManager.NavigateTo(newPath);
     }
 }

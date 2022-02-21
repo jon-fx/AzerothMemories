@@ -18,15 +18,15 @@
         var altImage = name;
 
         <PageTitle>@name</PageTitle>
-        <HeadContentTest Url="@NavigationManager.Uri" Title="@name" Description="@name" Image="@image" AltImage="@altImage"/>
+        <HeadContentTest Url="@ClientServices.NavigationManager.Uri" Title="@name" Description="@name" Image="@image" AltImage="@altImage" />
 
         <AccountHeaderCardComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" />
-        <CharacterHeaderCardComponent Services="@this" CharacterViewModel="@ViewModel.CharacterViewModel"/>
+        <CharacterHeaderCardComponent Services="@this" CharacterViewModel="@ViewModel.CharacterViewModel" />
         <SearchPostViewComponent PostSearchHelper="@ViewModel.PostSearchHelper" />
     }
 }
 
-@code 
+@code
 {
     [Parameter, EditorRequired] public long Id { get; set; }
 

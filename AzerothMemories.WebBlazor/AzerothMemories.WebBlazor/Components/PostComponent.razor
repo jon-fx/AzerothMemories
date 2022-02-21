@@ -30,13 +30,13 @@ else
 
                 <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
                     <div class="d-flex justify-space-between">
-                        <MudText Typo="Typo.body2" Inline="true">@Services.TimeProvider.GetTimeAsLocalStringAgo(Post.PostTime, true)</MudText>
-                        <MudText Typo="Typo.body2" Inline="true">@Services.TimeProvider.GetTimeAsLocalStringAgo(Post.PostCreatedTime, true)</MudText>
+                        <MudText Typo="Typo.body2" Inline="true">@Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(Post.PostTime, true)</MudText>
+                        <MudText Typo="Typo.body2" Inline="true">@Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(Post.PostCreatedTime, true)</MudText>
                     </div>
                 </MudHidden>
                 <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
-                    <MudText Typo="Typo.body2" Inline="false">@Services.TimeProvider.GetTimeAsLocalStringAgo(Post.PostTime, true)</MudText>
-                    <MudText Typo="Typo.body2" Inline="false">@Services.TimeProvider.GetTimeAsLocalStringAgo(Post.PostCreatedTime, true)</MudText>
+                    <MudText Typo="Typo.body2" Inline="false">@Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(Post.PostTime, true)</MudText>
+                    <MudText Typo="Typo.body2" Inline="false">@Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(Post.PostCreatedTime, true)</MudText>
                 </MudHidden>
             </CardHeaderContent>
             <CardHeaderActions>
@@ -48,7 +48,7 @@ else
                         </MudTooltip>
                     </MudMenuItem>
 
-                    @if (Services.ActiveAccountServices.IsActiveAccount(Post.AccountId) || Services.ActiveAccountServices.IsAdmin)
+                    @if (Services.ClientServices.ActiveAccountServices.IsActiveAccount(Post.AccountId) || Services.ClientServices.ActiveAccountServices.IsAdmin)
                     {
                         <MudMenuItem OnClick="@OnTogglePostVisibility">
                             <MudTooltip Text="Toggle Visibility" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
@@ -69,7 +69,7 @@ else
                         </MudMenuItem>
                     }
 
-                    @if (Services.ActiveAccountServices.IsAccountActiveAndCanInteract && !Services.ActiveAccountServices.IsActiveAccount(Post.AccountId))
+                    @if (Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract && !Services.ClientServices.ActiveAccountServices.IsActiveAccount(Post.AccountId))
                     {
                         <MudMenuItem OnClick="@OnReportPostTags">
                             <MudTooltip Text="Report Tags" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
@@ -141,7 +141,7 @@ else
                         }
                         else
                         {
-                            <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClick="@(() => Services.NavigationManager.NavigateTo(tagInfo.GetTagQueryLink()))" />
+                            <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClick="@(() => Services.ClientServices.NavigationManager.NavigateTo(tagInfo.GetTagQueryLink()))" />
                         }
                     }
                 }
@@ -166,7 +166,7 @@ else
             </MudButtonGroup>
         </MudCardActions>
 
-        @if (Services.ActiveAccountServices.IsAccountActiveAndCanInteract)
+        @if (Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract)
         {
             <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
                 <MudCardActions Class="@ClassPresets.CardActions">
@@ -206,7 +206,7 @@ else
                 var systemTags = Post.SystemTags;
                 if (systemTags != null)
                 {
-                    var characters = Services.ActiveAccountServices.AccountViewModel.GetCharactersSafe();
+                    var characters = Services.ClientServices.ActiveAccountServices.AccountViewModel.GetCharactersSafe();
                     if (characters.Length > 0)
                     {
                         CharacterViewModel taggedCharacter = null;
@@ -252,8 +252,8 @@ else
                                             CharacterRegionInfo="@character.RegionId.ToInfo()" />
 
                                             <div>
-                                                <MudText Inline="true" Typo="Typo.body2">@character.Level @Services.StringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
-                                                <MudText Inline="true" Typo="Typo.body2" Class=@($"wowclass-{character.Class}")>@Services.StringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
+                                                <MudText Inline="true" Typo="Typo.body2">@character.Level @Services.ClientServices.StringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
+                                                <MudText Inline="true" Typo="Typo.body2" Class=@($"wowclass-{character.Class}")>@Services.ClientServices.StringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
                                             </div>
 
                                             <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@character.RealmId" />
@@ -306,12 +306,10 @@ else
     [Parameter] public bool InDialog { get; init; }
 
     [Parameter] public EventCallback<PostTagInfo> OnTagChipClickedCallback { get; init; }
-
-    [Inject] public IJSRuntime JsRuntime { get; init; }
-
+    
     public bool DoseNotHavePermission => Post.PostVisibility == 255;
 
-    public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActiveAndCanInteract || DoseNotHavePermission;
+    public bool IsDisabled => !Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract || DoseNotHavePermission;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -352,7 +350,7 @@ else
 
         var postId = Post.Id;
 
-        var result = await Services.CommandRunner.Run(new Post_TryReactToPost(null, postId, newReaction));
+        var result = await Services.ClientServices.CommandRunner.Run(new Post_TryReactToPost(null, postId, newReaction));
         if (result.Result > 0)
         {
             Post.ReactionId = result.Result;
@@ -408,7 +406,7 @@ else
 
     private void OnCommentButtonClicked()
     {
-        Services.NavigationManager.NavigateTo($"/post/{Post.AccountId}/{Post.Id}");
+        Services.ClientServices.NavigationManager.NavigateTo($"/post/{Post.AccountId}/{Post.Id}");
     }
 
     private async Task OnRestoreButtonClicked(CharacterViewModel previousCharacter, CharacterViewModel character)
@@ -421,7 +419,7 @@ else
         _isChangingTags = true;
 
         var postId = Post.Id;
-        var result = await Services.CommandRunner.Run(new Post_TryRestoreMemory(null, postId, previousCharacter?.Id ?? -1, character?.Id ?? -1));
+        var result = await Services.ClientServices.CommandRunner.Run(new Post_TryRestoreMemory(null, postId, previousCharacter?.Id ?? -1, character?.Id ?? -1));
         if (result.Result)
         {
             _showTagMenu = false;
@@ -437,48 +435,48 @@ else
             return;
         }
 
-        var confirmationResult = await Services.DialogService.ShowMessageBox("Warning", "Deleting can not be undone!", "Delete!", "Cancel");
+        var confirmationResult = await Services.ClientServices.DialogService.ShowMessageBox("Warning", "Deleting can not be undone!", "Delete!", "Cancel");
         if (confirmationResult.HasValue && confirmationResult.Value)
         {
             var postId = Post.Id;
-            var result = await Services.CommandRunner.Run(new Post_TryDeletePost(null, postId));
+            var result = await Services.ClientServices.CommandRunner.Run(new Post_TryDeletePost(null, postId));
             Post.DeletedTimeStamp = result.Result;
 
             var message = Post.DeletedTimeStamp == 0 ? "Post delete failed." : "Post deleted.";
-            await Services.DialogService.ShowNotificationDialog(true, message);
+            await Services.ClientServices.DialogService.ShowNotificationDialog(true, message);
         }
     }
 
     private void OnEditPostTags()
     {
-        Services.NavigationManager.NavigateTo($"/edittags/{Post.AccountId}/{Post.Id}");
+        Services.ClientServices.NavigationManager.NavigateTo($"/edittags/{Post.AccountId}/{Post.Id}");
     }
 
     private async Task OnTogglePostVisibility()
     {
         var postId = Post.Id;
         var newVisibility = Post.PostVisibility == 1 ? (byte)0 : (byte)1;
-        var result = await Services.CommandRunner.Run(new Post_TrySetPostVisibility(null, postId, newVisibility));
+        var result = await Services.ClientServices.CommandRunner.Run(new Post_TrySetPostVisibility(null, postId, newVisibility));
         if (result.Result == null)
         {
-            await Services.DialogService.ShowNotificationDialog(false, "Post visibility change failed.");
+            await Services.ClientServices.DialogService.ShowNotificationDialog(false, "Post visibility change failed.");
         }
         else
         {
             Post.PostVisibility = result.Result.Value;
 
-            await Services.DialogService.ShowNotificationDialog(true, "Post visibility changed.");
+            await Services.ClientServices.DialogService.ShowNotificationDialog(true, "Post visibility changed.");
         }
     }
 
     private async Task OnReportPost()
     {
-        await Services.DialogService.ShowReportPostDialog($"Report {Post.AccountUsername}'s Post ({Post.Id})", Post.Id, 0);
+        await Services.ClientServices.DialogService.ShowReportPostDialog($"Report {Post.AccountUsername}'s Post ({Post.Id})", Post.Id, 0);
     }
 
     private async Task OnReportPostTags()
     {
-        await Services.DialogService.ShowReportPostTagsDialog($"Report Post Tags ({Post.Id})", Post);
+        await Services.ClientServices.DialogService.ShowReportPostTagsDialog($"Report Post Tags ({Post.Id})", Post);
     }
 
     private async Task OnImageClicked(int index)
@@ -488,6 +486,6 @@ else
             return;
         }
 
-        await JsRuntime.InvokeVoidAsync("InitializeImageViewer", index, Post.GetImageBlobInfo());
+        await Services.ClientServices.JsRuntime.InvokeVoidAsync("InitializeImageViewer", index, Post.GetImageBlobInfo());
     }
 }

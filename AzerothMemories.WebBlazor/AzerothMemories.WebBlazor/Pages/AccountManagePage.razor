@@ -1,7 +1,6 @@
 ﻿@page "/accountmanage"
 @inherits MoaComponentBase<AccountManagePageViewModel>
 
-
 <PageTitle>Manage Account - Memories of Azeroth</PageTitle>
 
 <AuthorizeView>
@@ -71,7 +70,6 @@
                         </MudHidden>
                     }
                 </MudGrid>
-
             </MudCardContent>
         </MudCard>
 
@@ -121,8 +119,8 @@
                                                 CharacterRegionInfo="@character.RegionId.ToInfo()" />
 
                                 <div>
-                                    <MudText Inline="true" Typo="Typo.body2">@character.Level @StringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
-                                    <MudText Inline="true" Typo="Typo.body2" Class=@($"wowclass-{character.Class}")>@StringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
+                                    <MudText Inline="true" Typo="Typo.body2">@character.Level @ClientServices.StringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
+                                    <MudText Inline="true" Typo="Typo.body2" Class=@($"wowclass-{character.Class}")>@ClientServices.StringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
                                 </div>
 
                                 <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@character.RealmId" />
@@ -132,7 +130,6 @@
 
                     <InputFile id="fileInput" OnChange="ViewModel.UploadCustomAvatar" hidden accept="@ZExtensions.UploadAcceptExtensions" />
                     <MudButton Class="ma-2" HtmlTag="label" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Filled.CloudUpload" for="fileInput">Upload Image</MudButton>
-
                 </MudCardContent>
             </MudCard>
         }
@@ -293,7 +290,7 @@
                                     </MudTd>
 
                                     <MudTd DataLabel="Result">
-                                        <MudTooltip Text="@TimeProvider.GetTimeAsLocalStringAgo(row.UpdateJobEndTime, true)" Color="Color.Dark">
+                                        <MudTooltip Text="@ClientServices.TimeProvider.GetTimeAsLocalStringAgo(row.UpdateJobEndTime, true)" Color="Color.Dark">
                                             @row.UpdateJobLastResult
                                         </MudTooltip>
                                     </MudTd>
@@ -306,3 +303,10 @@
         </MudCard>
     }
 </AuthorizeView>
+
+@code {
+    protected override async Task InternalComputeState()
+    {
+        await ViewModel.ComputeState();
+    }
+}

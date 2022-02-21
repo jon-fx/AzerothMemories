@@ -15,8 +15,8 @@ else
 
     <AccountHeaderCardComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" />
     <MudTabs Class="@ClassPresets.Card" Outlined="true" Elevation="10" Rounded="true" Centered="true">
-        <UserListComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" ActiveAccountViewModel="@ActiveAccountServices.AccountViewModel" Following="false" />
-        <UserListComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" ActiveAccountViewModel="@ActiveAccountServices.AccountViewModel" Following="true" />
+        <UserListComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" ActiveAccountViewModel="@ClientServices.ActiveAccountServices.AccountViewModel" Following="false" />
+        <UserListComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" ActiveAccountViewModel="@ClientServices.ActiveAccountServices.AccountViewModel" Following="true" />
     </MudTabs>
 }
 

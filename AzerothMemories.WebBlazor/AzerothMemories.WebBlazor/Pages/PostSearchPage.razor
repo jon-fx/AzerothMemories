@@ -49,8 +49,6 @@ else
 
     [Parameter, SupplyParameterFromQuery(Name = "ptmax")] public string PostMaxTime { get; init; }
     
-    [Inject] public IJSRuntime JsRuntime { get; init; }
-
     protected override void OnAfterRender(bool firstRender)
     {
         base.OnAfterRender(firstRender);
@@ -69,7 +67,7 @@ else
 
         if (_firstRenderDone)
         {
-            await JsRuntime.InvokeVoidAsync("HideWowheadToolTips");
+            await ClientServices.JsRuntime.InvokeVoidAsync("HideWowheadToolTips");
         }
     }
 }

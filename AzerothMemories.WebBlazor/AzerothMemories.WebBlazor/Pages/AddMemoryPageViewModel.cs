@@ -22,7 +22,7 @@ public sealed class AddMemoryPageViewModel : ViewModelBase
     {
         await Reset();
 
-        await SharedData.InitializeAccount(() => Services.ActiveAccountServices.AccountViewModel);
+        await SharedData.InitializeAccount(() => Services.ClientServices.ActiveAccountServices.AccountViewModel);
 
         foreach (var file in arg.GetMultipleFiles())
         {
@@ -46,14 +46,14 @@ public sealed class AddMemoryPageViewModel : ViewModelBase
             return;
         }
 
-        Services.DialogService.ShowLoadingDialog();
+        Services.ClientServices.DialogService.ShowLoadingDialog();
 
         foreach (var file in arg.GetMultipleFiles())
         {
             await TryAddFile(file);
         }
 
-        Services.DialogService.HideLoadingDialog();
+        Services.ClientServices.DialogService.HideLoadingDialog();
     }
 
     public Task<AddMemoryResult> Submit()
@@ -80,14 +80,14 @@ public sealed class AddMemoryPageViewModel : ViewModelBase
         var extension = Path.GetExtension(file.Name);
         if (!ZExtensions.ValidUploadExtensions.Contains(extension))
         {
-            await Services.DialogService.ShowNotificationDialog(false, $"{extension} is not supported yet.");
+            await Services.ClientServices.DialogService.ShowNotificationDialog(false, $"{extension} is not supported yet.");
             return;
         }
 
         var previous = UploadedImages.FirstOrDefault(x => x.FileName == file.Name);
         if (previous != null)
         {
-            await Services.DialogService.ShowNotificationDialog(false, $"{file.Name} already added.");
+            await Services.ClientServices.DialogService.ShowNotificationDialog(false, $"{file.Name} already added.");
             return;
         }
 
@@ -101,11 +101,11 @@ public sealed class AddMemoryPageViewModel : ViewModelBase
         }
         catch (Exception)
         {
-            await Services.DialogService.ShowNotificationDialog(false, $"{file.Name} read failed.");
+            await Services.ClientServices.DialogService.ShowNotificationDialog(false, $"{file.Name} read failed.");
             return;
         }
 
-        if (!Services.TimeProvider.TryGetTimeFromFileName(file.Name, out var screenShotUnixTime))
+        if (!Services.ClientServices.TimeProvider.TryGetTimeFromFileName(file.Name, out var screenShotUnixTime))
         {
             screenShotUnixTime = file.LastModified.ToUnixTimeMilliseconds();
         }

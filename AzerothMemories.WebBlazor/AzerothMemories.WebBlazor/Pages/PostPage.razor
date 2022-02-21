@@ -11,7 +11,7 @@ else if (!string.IsNullOrWhiteSpace(ViewModel.Helper.ErrorMessage))
 {
     <CardErrorComponent ErrorMessage="@ViewModel.Helper.ErrorMessage" />
 }
-else if ( ViewModel.Helper.AccountViewModel == null || ViewModel.Helper.PostViewModel == null )
+else if (ViewModel.Helper.AccountViewModel == null || ViewModel.Helper.PostViewModel == null)
 {
     <CardLoadingComponent />
 }
@@ -29,13 +29,13 @@ else
     var description = stringBuilder.ToString().TrimEnd(',', ' ');
 
     <PageTitle>@name</PageTitle>
-    <HeadContentTest Url="@NavigationManager.Uri" Title="@name" Description="@description" Image="@image" AltImage="@altImage"/>
+    <HeadContentTest Url="@ClientServices.NavigationManager.Uri" Title="@name" Description="@description" Image="@image" AltImage="@altImage" />
 
     <AccountHeaderCardComponent Services="@this" AccountViewModel="@ViewModel.Helper.AccountViewModel" />
-    <PostViewComponent Services="@this" Helper="@ViewModel.Helper"/>
+    <PostViewComponent Services="@this" Helper="@ViewModel.Helper" />
 }
 
-@code 
+@code
 {
     [Parameter, EditorRequired] public long Id { get; set; }
 
@@ -46,7 +46,7 @@ else
     [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }
 
     [Parameter, SupplyParameterFromQuery(Name = "comment")] public string FocusedCommentId { get; init; }
-    
+
     [Inject] IScrollManager ScrollManager { get; init; }
 
     protected override async Task InternalComputeState()

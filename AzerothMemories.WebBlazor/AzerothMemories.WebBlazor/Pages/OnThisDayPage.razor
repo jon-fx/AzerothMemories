@@ -5,7 +5,7 @@
     var results = ViewModel?.Results;
     if (results == null)
     {
-        <CardLoadingComponent/>
+        <CardLoadingComponent />
     }
     else if (results.Length == 0)
     {
@@ -15,7 +15,7 @@
     {
         @foreach (var year in results)
         {
-            <OnThisDayHeader HeaderData="@year" NavigationManager="@NavigationManager" TimeProvider="@TimeProvider"/>
+            <OnThisDayHeader HeaderData="@year" Services="@this" />
         }
     }
 }

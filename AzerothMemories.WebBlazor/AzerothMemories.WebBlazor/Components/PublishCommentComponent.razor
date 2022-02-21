@@ -51,8 +51,7 @@
     [Parameter] public EventCallback<string> OnSingleLineSubmit { get; init; }
 
     [Inject] public IJSRuntime JsRuntime { get; init; }
-
-
+    
     public Dictionary<long, string> ExtraTags { get; } = new();
 
     public Dictionary<long, string> FullTagsList

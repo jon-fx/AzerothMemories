@@ -26,7 +26,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
 
     public string CustomAvatarLink { get; private set; }
 
-    public override async Task ComputeState()
+    public async Task ComputeState()
     {
         AccountViewModel = await Services.ComputeServices.AccountServices.TryGetActiveAccount(null);
 
@@ -136,7 +136,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
             return;
         }
 
-        var result = await Services.CommandRunner.Run(new Account_TryChangeUsername { NewUsername = NewUsername });
+        var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeUsername { NewUsername = NewUsername });
         if (result.Result)
         {
             AccountViewModel.Username = NewUsername;
@@ -162,7 +162,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
             return;
         }
 
-        var result = await Services.CommandRunner.Run(new Account_TryChangeIsPrivate { NewValue = newValue });
+        var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeIsPrivate { NewValue = newValue });
         if (AccountViewModel.IsPrivate == result.Result)
         {
             return;
@@ -180,7 +180,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
             return;
         }
 
-        var result = await Services.CommandRunner.Run(new Account_TryChangeBattleTagVisibility { NewValue = newValue });
+        var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeBattleTagVisibility { NewValue = newValue });
         if (AccountViewModel.BattleTagIsPublic == result.Result)
         {
             return;
@@ -213,7 +213,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
 
     public async Task OnChangeAvatarButtonClicked(string avatarLink)
     {
-        var result = await Services.CommandRunner.Run(new Account_TryChangeAvatar { NewAvatar = avatarLink });
+        var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeAvatar { NewAvatar = avatarLink });
         if (result.Result != AccountViewModel.Avatar)
         {
             AvatarLink = result.Result;
@@ -228,7 +228,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
         var extension = Path.GetExtension(file.Name);
         if (!ZExtensions.ValidUploadExtensions.Contains(extension))
         {
-            await Services.DialogService.ShowNotificationDialog(false, $"{extension} is not supported yet.");
+            await Services.ClientServices.DialogService.ShowNotificationDialog(false, $"{extension} is not supported yet.");
             return;
         }
 
@@ -242,7 +242,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
         }
         catch (Exception)
         {
-            await Services.DialogService.ShowNotificationDialog(false, $"{file.Name} read failed.");
+            await Services.ClientServices.DialogService.ShowNotificationDialog(false, $"{file.Name} read failed.");
             return;
         }
 
@@ -310,7 +310,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
 
         if (shouldChange)
         {
-            var result = await Services.CommandRunner.Run(new Account_TryChangeSocialLink { LinkId = link.LinkId, NewValue = newValue });
+            var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeSocialLink { LinkId = link.LinkId, NewValue = newValue });
             AccountViewModel.SocialLinks[link.LinkId] = result.Result;
             SocialLinksAdornmentIcons[link.LinkId] = string.Empty;
         }
@@ -327,7 +327,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
 
         if (character.AccountSync != newValue)
         {
-            var result = await Services.CommandRunner.Run(new Character_TryChangeCharacterAccountSync(null, character.Id, newValue));
+            var result = await Services.ClientServices.CommandRunner.Run(new Character_TryChangeCharacterAccountSync(null, character.Id, newValue));
             if (character.AccountSync == result.Result)
             {
                 return;
@@ -346,7 +346,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
             return;
         }
 
-        var result = await Services.CommandRunner.Run(new Character_TrySetCharacterDeleted(null, character.Id));
+        var result = await Services.ClientServices.CommandRunner.Run(new Character_TrySetCharacterDeleted(null, character.Id));
     }
 
     public async Task OnCharacterRenamedOrTransferred(CharacterViewModel oldCharacter, CharacterViewModel newCharacter)
@@ -356,6 +356,6 @@ public sealed class AccountManagePageViewModel : ViewModelBase
             return;
         }
 
-        var result = await Services.CommandRunner.Run(new Character_TrySetCharacterRenamedOrTransferred(null, oldCharacter.Id, newCharacter.Id));
+        var result = await Services.ClientServices.CommandRunner.Run(new Character_TrySetCharacterRenamedOrTransferred(null, oldCharacter.Id, newCharacter.Id));
     }
 }

@@ -2,19 +2,7 @@
 
 public interface IMoaServices
 {
+    ClientServices ClientServices { get; }
+
     ComputeServices ComputeServices { get; }
-
-    ActiveAccountServices ActiveAccountServices { get; }
-
-    TagHelpers TagHelpers { get; }
-
-    TimeProvider TimeProvider { get; }
-
-    DialogHelperService DialogService { get; }
-
-    IStringLocalizer<BlizzardResources> StringLocalizer { get; }
-
-    UICommandRunner CommandRunner { get; }
-
-    NavigationManager NavigationManager { get; }
 }

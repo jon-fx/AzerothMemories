@@ -107,13 +107,13 @@ public sealed class RecentPostsHelper
         ZExtensions.AddToDictOrNull(dictionary, "page", _currentPage, _currentPage <= 1 || resetPage);
         ZExtensions.AddToDictOrNull(dictionary, "type", (int)_recentPostType, _recentPostType == 0);
 
-        var oldPath = _services.NavigationManager.Uri;
-        var newPath = _services.NavigationManager.GetUriWithQueryParameters(dictionary);
+        var oldPath = _services.ClientServices.NavigationManager.Uri;
+        var newPath = _services.ClientServices.NavigationManager.GetUriWithQueryParameters(dictionary);
         if (newPath == oldPath)
         {
             return;
         }
 
-        _services.NavigationManager.NavigateTo(newPath);
+        _services.ClientServices.NavigationManager.NavigateTo(newPath);
     }
 }

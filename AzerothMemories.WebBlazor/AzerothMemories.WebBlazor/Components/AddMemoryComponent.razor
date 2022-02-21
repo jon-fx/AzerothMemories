@@ -4,7 +4,7 @@
         <MudGrid>
             <MudItem xs="12">
                 @{
-                    var timeStr = Services.TimeProvider.GetTimeAsLocalStringAgo(ViewModel.SharedData.PostTimeStamp, false);
+                    var timeStr = Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(ViewModel.SharedData.PostTimeStamp, false);
                 }
                 <MudText Typo="Typo.h6">@timeStr</MudText>
             </MudItem>
@@ -38,7 +38,7 @@
     <AddMemoryMainTagComponent Services="Services" SharedData="@ViewModel.SharedData" />
 
     <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
-        <PublishCommentComponent @ref="ViewModel.PublishCommentComponent" Lines="10" TagsList="@Services.ActiveAccountServices.GetUserTagList()" />
+        <PublishCommentComponent @ref="ViewModel.PublishCommentComponent" Lines="10" TagsList="@Services.ClientServices.ActiveAccountServices.GetUserTagList()" />
     </MudPaper>
 
     <AddMemoryPostAvatarComponent SharedData="@ViewModel.SharedData" />
@@ -57,13 +57,13 @@
 
     private async Task Submit()
     {
-        Services.DialogService.ShowLoadingDialog();
+        Services.ClientServices.DialogService.ShowLoadingDialog();
 
         await Task.Delay(1);
 
         var result = await ViewModel.Submit();
 
-        Services.DialogService.HideLoadingDialog();
+        Services.ClientServices.DialogService.HideLoadingDialog();
 
         await OnPostMemoryResult.InvokeAsync(result);
     }

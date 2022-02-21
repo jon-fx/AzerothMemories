@@ -6,7 +6,7 @@ public sealed class OnThisDayPageViewModel : ViewModelBase
 
     public async Task ComputeState(string currentDay, string currentMonth)
     {
-        var timeZone = Services.TimeProvider.GetCurrentTimeZone();
+        var timeZone = Services.ClientServices.TimeProvider.GetCurrentTimeZone();
         var inZone = SystemClock.Instance.GetCurrentInstant().InZone(timeZone).Date;
 
         if (!byte.TryParse(currentDay, out var day))

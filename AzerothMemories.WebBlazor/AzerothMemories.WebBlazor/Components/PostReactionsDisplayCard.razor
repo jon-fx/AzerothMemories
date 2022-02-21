@@ -45,6 +45,6 @@ else if (reactionData.Length > 0)
 
     private void OnReactionChipClickedCallback(PostReactionViewModel reaction)
     {
-        Services.NavigationManager.NavigateTo($"/account/{reaction.AccountId}");
+        Services.ClientServices.NavigationManager.NavigateTo($"/account/{reaction.AccountId}");
     }
 }

@@ -1,5 +1,5 @@
 ﻿<div class="postIndent">
-    @if (!Services.ActiveAccountServices.IsAccountActiveAndCanInteract)
+    @if (!Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract)
     {
         <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
             <MudCardHeader Class="@ClassPresets.CardHeader">
@@ -14,17 +14,17 @@
         <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
             <MudCardHeader Class="@ClassPresets.CardHeader">
                 <CardHeaderAvatar >
-                    <MudAvatar Size="Size.Small" Image="@Services.ActiveAccountServices.AccountViewModel.Avatar">@Services.ActiveAccountServices.AccountViewModel.GetAvatarText()</MudAvatar>
+                    <MudAvatar Size="Size.Small" Image="@Services.ClientServices.ActiveAccountServices.AccountViewModel.Avatar">@Services.ClientServices.ActiveAccountServices.AccountViewModel.GetAvatarText()</MudAvatar>
                 </CardHeaderAvatar>
                 <CardHeaderContent>
-                    <MudText Typo="Typo.body1">@Services.ActiveAccountServices.AccountViewModel.Username</MudText>
+                    <MudText Typo="Typo.body1">@Services.ClientServices.ActiveAccountServices.AccountViewModel.Username</MudText>
                 </CardHeaderContent>
                 <CardHeaderActions>
                 </CardHeaderActions>
             </MudCardHeader>
             
             <MudCardContent Class="@ClassPresets.CardContent">
-                <PublishCommentComponent @ref="_commentComponent" Lines="1" TagsList="@Services.ActiveAccountServices.GetUserTagList()" OnSingleLineSubmit="@OnSubmitComment" Disabled="@_isCommentBoxDisabled" AutoFocus="true" />
+                <PublishCommentComponent @ref="_commentComponent" Lines="1" TagsList="@Services.ClientServices.ActiveAccountServices.GetUserTagList()" OnSingleLineSubmit="@OnSubmitComment" Disabled="@_isCommentBoxDisabled" AutoFocus="true" />
             </MudCardContent>
             
             <MudCardActions Class="@ClassPresets.CardActions">
@@ -74,12 +74,12 @@
 
         var postId = PostId;
         var parentId = CommentId;
-        var result = await Services.CommandRunner.Run(new Post_TryPublishComment(null, postId, parentId, commentText));
+        var result = await Services.ClientServices.CommandRunner.Run(new Post_TryPublishComment(null, postId, parentId, commentText));
         if (result.Result > 0)
         {
             _commentComponent.Reset();
 
-            Services.ActiveAccountServices.ActiveCommentContext = null;
+            Services.ClientServices.ActiveAccountServices.ActiveCommentContext = null;
             
             var dictionary = new Dictionary<string, object>
             {
@@ -87,8 +87,8 @@
                 { "comment", result.Result }
             };
 
-            var newPath = Services.NavigationManager.GetUriWithQueryParameters(dictionary);
-            Services.NavigationManager.NavigateTo(newPath);
+            var newPath = Services.ClientServices.NavigationManager.GetUriWithQueryParameters(dictionary);
+            Services.ClientServices.NavigationManager.NavigateTo(newPath);
         }
 
         _isCommentBoxDisabled = false;

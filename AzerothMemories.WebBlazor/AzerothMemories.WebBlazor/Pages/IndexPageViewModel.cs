@@ -19,7 +19,7 @@ public sealed class IndexPageViewModel : ViewModelBase
 
     public async Task ComputeState(string currentPageString, string sortModeString, string postTypeString)
     {
-        var timeZone = Services.TimeProvider.GetCurrentTimeZone();
+        var timeZone = Services.ClientServices.TimeProvider.GetCurrentTimeZone();
         var inZone = SystemClock.Instance.GetCurrentInstant().InZone(timeZone).Date;
         OnThisDay = await Services.ComputeServices.SearchServices.TryGetDailyActivity(null, timeZone.Id, (byte)inZone.Day, (byte)inZone.Month, CultureInfo.CurrentCulture.Name);
 
