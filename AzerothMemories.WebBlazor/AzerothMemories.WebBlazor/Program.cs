@@ -1,4 +1,5 @@
 using AzerothMemories.WebBlazor;
+using Microsoft.Extensions.Http;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<HeadOutlet>("head::after");
@@ -22,6 +23,16 @@ fusionClient.ConfigureHttpClientFactory((c, name, o) =>
     var clientBaseUri = isFusionClient ? baseUri : apiBaseUri;
     o.HttpClientActions.Add(client => client.BaseAddress = clientBaseUri);
 });
+
+builder.Services.ConfigureAll<HttpClientFactoryOptions>(options =>
+{
+    options.HttpMessageHandlerBuilderActions.Add(options2 =>
+    {
+        options2.AdditionalHandlers.Add(options2.Services.GetRequiredService<TokenDelegatingHandler>());
+    });
+});
+
+builder.Services.AddScoped<TokenDelegatingHandler>();
 
 fusionClient.AddReplicaService<IAccountServices>();
 fusionClient.AddReplicaService<IFollowingServices>();

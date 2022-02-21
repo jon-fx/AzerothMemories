@@ -28,6 +28,6 @@ public sealed class ComputeServices
     public ITagServices TagServices { get; private set; }
 
     public IPostServices PostServices { get; private set; }
-
+    
     public ISearchServices SearchServices { get; private set; }
 }

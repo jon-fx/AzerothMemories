@@ -60,16 +60,16 @@
 	</script>
 	<div class="alert alert-primary">
 		@(closeWindowFlowName) completed, you can close this window.
-		
+
 		@if (closeWindowFlowName == "Sign-out")
 		{
-			<img src="https://battle.net/login/logout" width="1" height="1"/>
+			<img src="https://battle.net/login/logout" width="1" height="1" />
 		}
 	</div>
-} 
-else 
+}
+else
 {
-	<component type="typeof(AzerothMemories.WebBlazor.App)" render-mode="WebAssemblyPrerendered"/>
+	<component type="typeof(AzerothMemories.WebBlazor.App)" render-mode="WebAssemblyPrerendered" />
 
 	<div id="blazor-error-ui">
 		<environment include="Staging,Production">
@@ -86,5 +86,7 @@ else
 	<script src="_framework/blazor.webassembly.js"></script>
 	<script src="_content/MudBlazor/MudBlazor.min.js"></script>
 }
+
+@Html.AntiForgeryToken()
 </body>
 </html>

@@ -5,7 +5,7 @@ public sealed class CommonConfig
     public CommonConfig()
     {
         //DatabaseConnectionString = "***REMOVED***";
-        //HangfireConnectionString =  "***REMOVED***";
+        //HangfireConnectionString = "***REMOVED***";
 
         DatabaseConnectionString = "***REMOVED***";
         HangfireConnectionString = "***REMOVED***";
@@ -17,8 +17,6 @@ public sealed class CommonConfig
 
     public string BlobStorageConnectionString { get; } = "***REMOVED***";
 
-    //public string BlobStoragePath { get; } = "***REMOVED***";
-
     public Duration UpdateAccountDelay { get; } = Duration.FromHours(1);
 
     public Duration UpdateCharacterHighDelay { get; } = Duration.FromHours(6);
@@ -29,9 +27,9 @@ public sealed class CommonConfig
 
     public Duration UpdateGuildDelay { get; } = Duration.FromDays(1);
 
-    public bool UploadToBlobStorage { get; set; } = !false;
+    public bool UploadToBlobStorage { get; set; } = !true;
 
-    public bool UpdateSkipCharactersOnLowPriority { get; set; } = false;
+    public bool UpdateSkipCharactersOnLowPriority { get; set; } = !true;
 
     public int UploadsInTheLastXCount { get; set; } = 30;
 

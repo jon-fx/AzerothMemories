@@ -38,6 +38,16 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
         return base.OnParametersSetAsync();
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender)
+        {
+            await ClientServices.CookieHelper.Initialize(ClientServices.JsRuntime);
+        }
+    }
+
     protected override sealed async Task<TViewModel> ComputeState(CancellationToken cancellationToken)
     {
         await ClientServices.ActiveAccountServices.ComputeState();

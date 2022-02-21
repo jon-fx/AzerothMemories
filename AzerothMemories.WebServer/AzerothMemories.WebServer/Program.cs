@@ -29,7 +29,10 @@ ProgramEx.Initialize(builder.Services);
 
 builder.Services.AddRazorPages();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -123,6 +126,14 @@ builder.Services.AddHttpClient("Blizzard", x =>
 });
 
 builder.Services.UseRegisterAttributeScanner().RegisterFrom(typeof(CommonServices).Assembly);
+
+builder.Services.AddAntiforgery(options =>
+{
+    options.HeaderName = TokenDelegatingHandler.HeaderName;
+    //options.Cookie.Name = "__Host-X-XSRF-TOKEN";
+    //options.Cookie.SameSite = SameSiteMode.Strict;
+    //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
 
 var app = builder.Build();
 app.Services.GetRequiredService<CommonServices>().Initialize();

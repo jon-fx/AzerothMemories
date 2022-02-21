@@ -25,7 +25,8 @@ public static class ProgramEx
         
         services.AddSingleton<TagHelpers>();
         services.AddSingleton<TimeProvider>();
-        
+        services.AddSingleton<CookieHelper>();
+
         services.AddScoped<ClientServices>();
         services.AddScoped<ActiveAccountServices>();
         services.AddScoped<DialogHelperService>();
