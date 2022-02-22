@@ -2034,59 +2034,59 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         switch (reaction)
         {
             case PostReaction.None:
-                {
-                    //return query;
-                    break;
-                }
+            {
+                //return query;
+                break;
+            }
             case PostReaction.Reaction1:
-                {
-                    record.ReactionCount1 += change;
-                    break;
-                }
+            {
+                record.ReactionCount1 += change;
+                break;
+            }
             case PostReaction.Reaction2:
-                {
-                    record.ReactionCount2 += change;
-                    break;
-                }
+            {
+                record.ReactionCount2 += change;
+                break;
+            }
             case PostReaction.Reaction3:
-                {
-                    record.ReactionCount3 += change;
-                    break;
-                }
+            {
+                record.ReactionCount3 += change;
+                break;
+            }
             case PostReaction.Reaction4:
-                {
-                    record.ReactionCount4 += change;
-                    break;
-                }
+            {
+                record.ReactionCount4 += change;
+                break;
+            }
             case PostReaction.Reaction5:
-                {
-                    record.ReactionCount5 += change;
-                    break;
-                }
+            {
+                record.ReactionCount5 += change;
+                break;
+            }
             case PostReaction.Reaction6:
-                {
-                    record.ReactionCount6 += change;
-                    break;
-                }
+            {
+                record.ReactionCount6 += change;
+                break;
+            }
             case PostReaction.Reaction7:
-                {
-                    record.ReactionCount7 += change;
-                    break;
-                }
+            {
+                record.ReactionCount7 += change;
+                break;
+            }
             case PostReaction.Reaction8:
-                {
-                    record.ReactionCount8 += change;
-                    break;
-                }
+            {
+                record.ReactionCount8 += change;
+                break;
+            }
             case PostReaction.Reaction9:
-                {
-                    record.ReactionCount9 += change;
-                    break;
-                }
+            {
+                record.ReactionCount9 += change;
+                break;
+            }
             default:
-                {
-                    throw new ArgumentOutOfRangeException();
-                }
+            {
+                throw new ArgumentOutOfRangeException();
+            }
         }
 
         if (modifyTotal)
@@ -2100,59 +2100,59 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         switch (reaction)
         {
             case PostReaction.None:
-                {
-                    //return query;
-                    break;
-                }
+            {
+                //return query;
+                break;
+            }
             case PostReaction.Reaction1:
-                {
-                    record.ReactionCount1 += change;
-                    break;
-                }
+            {
+                record.ReactionCount1 += change;
+                break;
+            }
             case PostReaction.Reaction2:
-                {
-                    record.ReactionCount2 += change;
-                    break;
-                }
+            {
+                record.ReactionCount2 += change;
+                break;
+            }
             case PostReaction.Reaction3:
-                {
-                    record.ReactionCount3 += change;
-                    break;
-                }
+            {
+                record.ReactionCount3 += change;
+                break;
+            }
             case PostReaction.Reaction4:
-                {
-                    record.ReactionCount4 += change;
-                    break;
-                }
+            {
+                record.ReactionCount4 += change;
+                break;
+            }
             case PostReaction.Reaction5:
-                {
-                    record.ReactionCount5 += change;
-                    break;
-                }
+            {
+                record.ReactionCount5 += change;
+                break;
+            }
             case PostReaction.Reaction6:
-                {
-                    record.ReactionCount6 += change;
-                    break;
-                }
+            {
+                record.ReactionCount6 += change;
+                break;
+            }
             case PostReaction.Reaction7:
-                {
-                    record.ReactionCount7 += change;
-                    break;
-                }
+            {
+                record.ReactionCount7 += change;
+                break;
+            }
             case PostReaction.Reaction8:
-                {
-                    record.ReactionCount8 += change;
-                    break;
-                }
+            {
+                record.ReactionCount8 += change;
+                break;
+            }
             case PostReaction.Reaction9:
-                {
-                    record.ReactionCount9 += change;
-                    break;
-                }
+            {
+                record.ReactionCount9 += change;
+                break;
+            }
             default:
-                {
-                    throw new ArgumentOutOfRangeException();
-                }
+            {
+                throw new ArgumentOutOfRangeException();
+            }
         }
 
         if (modifyTotal)
