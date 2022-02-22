@@ -1,0 +1,9 @@
+﻿<MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+    <MudCardContent Class="@ClassPresets.CardContent">
+        <MudAlert Severity="Severity.Normal" ContentAlignment="HorizontalAlignment.Center" NoIcon="true">@Message</MudAlert>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Parameter, EditorRequired] public string Message { get; init; }
+}

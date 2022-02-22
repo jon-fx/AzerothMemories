@@ -206,70 +206,75 @@ else
                 var systemTags = Post.SystemTags;
                 if (systemTags != null)
                 {
-                    var characters = Services.ClientServices.ActiveAccountServices.AccountViewModel.GetCharactersSafe();
-                    if (characters.Length > 0)
+                    var myRegion = Services.ClientServices.ActiveAccountServices.AccountViewModel.RegionId;
+                    var firstRegion = Post.SystemTags.FirstOrDefault(x => x.TagString == PostTagInfo.GetTagString(PostTagType.Region, myRegion.ToValue()));
+                    if (firstRegion == null)
                     {
-                        CharacterViewModel taggedCharacter = null;
-                        foreach (var moaCharacterViewModel in characters)
+                        <CardInfoComponent Message="Invalid Region" />
+                    }
+                    else
+                    {
+                        var characters = Services.ClientServices.ActiveAccountServices.AccountViewModel.GetCharactersSafe();
+                        if (characters.Length > 0)
                         {
-                            var tagInfo = systemTags.FirstOrDefault(x => x.Type == PostTagType.Character && x.Id == moaCharacterViewModel.Id);
-                            if (tagInfo == null)
+                            CharacterViewModel taggedCharacter = null;
+                            foreach (var moaCharacterViewModel in characters)
                             {
-                                continue;
+                                var tagInfo = systemTags.FirstOrDefault(x => x.Type == PostTagType.Character && x.Id == moaCharacterViewModel.Id);
+                                if (tagInfo == null)
+                                {
+                                    continue;
+                                }
+
+                                taggedCharacter = moaCharacterViewModel;
                             }
 
-                            taggedCharacter = moaCharacterViewModel;
-                        }
-
-                        <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
-                            <MudCardContent Class="@ClassPresets.CardContent">
-                                <MudTooltip Placement="Placement.End" Color="Color.Dark">
-                                    <ChildContent>
-                                        <MudButton Variant="Variant.Filled" Disabled="taggedCharacter == null" OnClick="() => OnRestoreButtonClicked(taggedCharacter, null)">
-                                            <MudAvatar Size="Size.Medium">?</MudAvatar>
-                                        </MudButton>
-                                    </ChildContent>
-                                    <TooltipContent>
-                                        <MudText>None</MudText>
-                                    </TooltipContent>
-                                </MudTooltip>
-
-                                @for (var i = 0; i < characters.Length; i++)
-                                {
-                                    var index = i;
-                                    var character = characters[index];
-
-                                    <MudTooltip @key="@character.Id" Placement="Placement.Bottom" Color="Color.Dark">
+                            <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+                                <MudCardContent Class="@ClassPresets.CardContent">
+                                    <MudTooltip Placement="Placement.End" Color="Color.Dark">
                                         <ChildContent>
-                                            <MudButton Id="@index" Variant="Variant.Filled" Disabled="taggedCharacter != null && taggedCharacter.Id == character.Id" OnClick="() => OnRestoreButtonClicked(taggedCharacter, character)">
-                                                <MudAvatar Size="Size.Medium" Image="@character.AvatarLinkWithFallBack" />
+                                            <MudButton Variant="Variant.Filled" Disabled="taggedCharacter == null" OnClick="() => OnRestoreButtonClicked(taggedCharacter, null)">
+                                                <MudAvatar Size="Size.Medium">?</MudAvatar>
                                             </MudButton>
                                         </ChildContent>
                                         <TooltipContent>
-                                            <CharacterNameLinkComponent CharacterName="@character.Name"
+                                            <MudText>None</MudText>
+                                        </TooltipContent>
+                                    </MudTooltip>
+
+                                    @for (var i = 0; i < characters.Length; i++)
+                                    {
+                                        var index = i;
+                                        var character = characters[index];
+
+                                        <MudTooltip @key="@character.Id" Placement="Placement.Bottom" Color="Color.Dark">
+                                            <ChildContent>
+                                                <MudButton Id="@index" Variant="Variant.Filled" Disabled="taggedCharacter != null && taggedCharacter.Id == character.Id" OnClick="() => OnRestoreButtonClicked(taggedCharacter, character)">
+                                                    <MudAvatar Size="Size.Medium" Image="@character.AvatarLinkWithFallBack" />
+                                                </MudButton>
+                                            </ChildContent>
+                                            <TooltipContent>
+                                                <CharacterNameLinkComponent CharacterName="@character.Name"
                                             CharacterClass="@character.Class"
                                             CharacterRealmId="@character.RealmId"
                                             CharacterRegionInfo="@character.RegionId.ToInfo()" />
 
-                                            <div>
-                                                <MudText Inline="true" Typo="Typo.body2">@character.Level @Services.ClientServices.StringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
-                                                <MudText Inline="true" Typo="Typo.body2" Class=@($"wowclass-{character.Class}")>@Services.ClientServices.StringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
-                                            </div>
+                                                <div>
+                                                    <MudText Inline="true" Typo="Typo.body2">@character.Level @Services.ClientServices.StringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
+                                                    <MudText Inline="true" Typo="Typo.body2" Class=@($"wowclass-{character.Class}")>@Services.ClientServices.StringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
+                                                </div>
 
-                                            <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@character.RealmId" />
-                                        </TooltipContent>
-                                    </MudTooltip>
-                                }
-                            </MudCardContent>
-                        </MudCard>
-                    }
-                    else
-                    {
-                        <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
-                            <MudCardContent Class="@ClassPresets.CardContent">
-                                <MudText Align="Align.Center">No Characters</MudText>
-                            </MudCardContent>
-                        </MudCard>
+                                                <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@character.RealmId" />
+                                            </TooltipContent>
+                                        </MudTooltip>
+                                    }
+                                </MudCardContent>
+                            </MudCard>
+                        }
+                        else
+                        {
+                            <CardInfoComponent Message="No Characters" />
+                        }
                     }
                 }
             }
@@ -306,7 +311,7 @@ else
     [Parameter] public bool InDialog { get; init; }
 
     [Parameter] public EventCallback<PostTagInfo> OnTagChipClickedCallback { get; init; }
-    
+
     public bool DoseNotHavePermission => Post.PostVisibility == 255;
 
     public bool IsDisabled => !Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract || DoseNotHavePermission;

@@ -1,19 +1,13 @@
 ﻿<div class="postIndent">
     @if (!Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract)
     {
-        <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
-            <MudCardHeader Class="@ClassPresets.CardHeader">
-                <CardHeaderContent>
-                    <MudText Typo="Typo.body1" Align="Align.Center">Insufficient permissions.</MudText>
-                </CardHeaderContent>
-            </MudCardHeader>
-        </MudCard>
+        <CardInfoComponent Message="Insufficient permissions." />
     }
     else
     {
         <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
             <MudCardHeader Class="@ClassPresets.CardHeader">
-                <CardHeaderAvatar >
+                <CardHeaderAvatar>
                     <MudAvatar Size="Size.Small" Image="@Services.ClientServices.ActiveAccountServices.AccountViewModel.Avatar">@Services.ClientServices.ActiveAccountServices.AccountViewModel.GetAvatarText()</MudAvatar>
                 </CardHeaderAvatar>
                 <CardHeaderContent>
@@ -22,11 +16,11 @@
                 <CardHeaderActions>
                 </CardHeaderActions>
             </MudCardHeader>
-            
+
             <MudCardContent Class="@ClassPresets.CardContent">
                 <PublishCommentComponent @ref="_commentComponent" Lines="1" TagsList="@Services.ClientServices.ActiveAccountServices.GetUserTagList()" OnSingleLineSubmit="@OnSubmitComment" Disabled="@_isCommentBoxDisabled" AutoFocus="true" />
             </MudCardContent>
-            
+
             <MudCardActions Class="@ClassPresets.CardActions">
             </MudCardActions>
         </MudCard>
@@ -80,7 +74,7 @@
             _commentComponent.Reset();
 
             Services.ClientServices.ActiveAccountServices.ActiveCommentContext = null;
-            
+
             var dictionary = new Dictionary<string, object>
             {
                 { "page",null},

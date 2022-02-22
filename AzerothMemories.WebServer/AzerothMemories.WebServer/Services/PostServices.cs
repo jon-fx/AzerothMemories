@@ -905,6 +905,14 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             accountTagToRemove = null;
             newTagKind = PostTagKind.Post;
         }
+        else
+        {
+            var accountRecord = await _commonServices.AccountServices.TryGetAccountRecord(postRecord.AccountId).ConfigureAwait(false);
+            if (accountRecord.BlizzardRegionId != activeAccount.RegionId)
+            {
+                return false;
+            }
+        }
 
         if (characterTagToRemove != null && activeAccount.GetCharactersSafe().FirstOrDefault(x => x.Id == characterTagToRemove.Value) == null)
         {

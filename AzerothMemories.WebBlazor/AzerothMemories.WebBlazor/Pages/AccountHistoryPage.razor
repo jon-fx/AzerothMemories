@@ -10,11 +10,7 @@ else
     var viewModels = ViewModel.HistoryViewModels;
     @if (viewModels == null || viewModels.Length == 0)
     {
-        <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
-            <MudCardContent Class="@ClassPresets.CardContent">
-                <MudText Align="Align.Center">None</MudText>
-            </MudCardContent>
-        </MudCard>
+        <CardInfoComponent Message="None" />
     }
     else
     {

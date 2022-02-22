@@ -4,11 +4,7 @@
 }
 else if (GuildViewModel.IsLoadingFromArmory)
 {
-    <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
-        <MudCardContent Class="@ClassPresets.CardContent">
-            <MudAlert Severity="Severity.Normal" ContentAlignment="HorizontalAlignment.Center">Loading Guild From Armory...</MudAlert>
-        </MudCardContent>
-    </MudCard>
+    <CardInfoComponent Message="Loading Guild From Armory..." />
 }
 else
 {
