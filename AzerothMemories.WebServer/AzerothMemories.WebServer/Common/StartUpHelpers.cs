@@ -91,15 +91,12 @@ internal static class StartUpHelpers
             .AddContentTypeOptionsNoSniff()
             .AddReferrerPolicyStrictOriginWhenCrossOrigin()
             .RemoveServerHeader()
-            .AddCrossOriginOpenerPolicy(builder => builder.SameOrigin())
+            .AddCrossOriginOpenerPolicy(builder => builder.SameOriginAllowPopups())
             .AddCrossOriginResourcePolicy(builder => builder.SameOrigin())
-            //#if !DEBUG
             //.AddCrossOriginEmbedderPolicy(builder => builder.RequireCorp())
-            //#endif
-            .AddContentSecurityPolicy(builder =>
+            .AddContentSecurityPolicyReportOnly(builder =>
             {
             })
-            .RemoveServerHeader()
             .AddPermissionsPolicy(builder =>
             {
                 builder.AddAccelerometer().None();
