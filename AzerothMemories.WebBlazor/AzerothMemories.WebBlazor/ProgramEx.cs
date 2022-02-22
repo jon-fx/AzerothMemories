@@ -8,7 +8,7 @@ public static class ProgramEx
     {
         services.AddMudServices(config =>
         {
-            config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopCenter;
+            config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopRight;
 
             config.SnackbarConfiguration.PreventDuplicates = true;
             config.SnackbarConfiguration.NewestOnTop = true;
@@ -22,7 +22,7 @@ public static class ProgramEx
         services.AddLocalization();
 
         services.AddSingleton<ComputeServices>();
-        
+
         services.AddSingleton<TagHelpers>();
         services.AddSingleton<TimeProvider>();
         services.AddSingleton<CookieHelper>();

@@ -1148,7 +1148,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
             AccountId = activeAccount.Id,
-            OtherAccountId = commentRecord.AccountId,
+            OtherAccountId = postRecord.AccountId,
             //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = AccountHistoryType.Commented1,
             TargetId = postRecord.AccountId,
@@ -1156,11 +1156,11 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             TargetCommentId = commentRecord.Id
         }, cancellationToken).ConfigureAwait(false);
 
-        if (activeAccount.Id != commentRecord.AccountId)
+        if (activeAccount.Id != postRecord.AccountId)
         {
             await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
             {
-                AccountId = commentRecord.AccountId,
+                AccountId = postRecord.AccountId,
                 OtherAccountId = activeAccount.Id,
                 //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
                 Type = AccountHistoryType.Commented2,
