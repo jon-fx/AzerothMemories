@@ -108,7 +108,7 @@ internal sealed class MoaResourceWriter
         OnServerSideRecordUpdated(true, resource);
     }
 
-    private FileInfo GetLocalMediaFileInfo(string mediaPath)
+    public FileInfo GetLocalMediaFileInfo(string mediaPath)
     {
         var localPath = $@"C:\Users\John\Desktop\Stuff\BlizzardData\Media\{mediaPath}.jpg";
         return new FileInfo(localPath);

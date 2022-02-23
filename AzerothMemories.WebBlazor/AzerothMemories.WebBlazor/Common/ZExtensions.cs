@@ -4,9 +4,10 @@ namespace AzerothMemories.WebBlazor.Common;
 
 public static class ZExtensions
 {
-    public static readonly string DefaultSocialImage;
+    public static readonly string DefaultSocialImage = "header-banner.png";
     public static readonly string BlobImageStoragePath = $"https://moastorage.blob.core.windows.net/{BlobImages}/";
     public static readonly string BlobAvatarStoragePath = $"https://moastorage.blob.core.windows.net/{BlobAvatars}/";
+    public static readonly string BlobMediaStoragePath = $"https://moastorage.blob.core.windows.net/{BlobMedia}/";
 
     public static readonly List<string> ValidUploadExtensions = new() { ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".bmp" };
     public static readonly string UploadAcceptExtensions = "image/*";
@@ -20,7 +21,8 @@ public static class ZExtensions
     public static readonly int MaxAvatarFileSizeInBytes = (int)5.Megabytes().Bytes;
 
     public const string BlobImages = "moaimages";
-    public const string BlobAvatars = "moaimages";
+    public const string BlobAvatars = "moaavatars";
+    public const string BlobMedia = "moamedia";
 
     public const string AvatarBlobFilePrefix = "UserAvatar-";
     public static readonly string CustomAvatarPathPrefix = $"https://moastorage.blob.core.windows.net/{BlobAvatars}/{AvatarBlobFilePrefix}";

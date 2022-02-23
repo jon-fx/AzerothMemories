@@ -16,6 +16,7 @@ services.AddSingleton<WowTools>();
 //services.AddSingleton<DatabaseProvider>();
 services.AddSingleton<MoaResourceCache>();
 services.AddSingleton<MoaResourceWriter>();
+services.AddSingleton<MoaImageUploader>();
 services.AddSingleton<WarcraftClientProvider>();
 
 services.AddDbContextFactory<AppDbContext>(optionsBuilder =>
@@ -58,3 +59,4 @@ foreach (var func in seeders)
 }
 
 await serviceProvider.GetRequiredService<MoaResourceWriter>().Save();
+await serviceProvider.GetRequiredService<MoaImageUploader>().Upload();
