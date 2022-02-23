@@ -1,6 +1,6 @@
 ﻿<MudDialog>
     <DialogContent>
-        <MudSelect Label="Select reason" @bind-Value="_reason" AdornmentIcon="@Icons.Material.Filled.Report" AdornmentColor="Color.Primary">
+        <MudSelect Label="Select reason" @bind-Value="@_reason" AdornmentIcon="Icons.Material.Filled.Report" AdornmentColor="Color.Primary">
             @foreach (var reason in _allReasons)
             {
                 <MudSelectItem Value="@reason">@reason.Humanize()</MudSelectItem>

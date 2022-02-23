@@ -62,7 +62,9 @@ public sealed class AccountManagePageViewModel : ViewModelBase
 
     public Task OnNewUsernameTextChanged(string username)
     {
-        return CheckValidUsername(username);
+        NewUsername = username;
+
+        return CheckValidUsername(NewUsername);
     }
 
     public async Task<bool> CheckValidUsername(string username)

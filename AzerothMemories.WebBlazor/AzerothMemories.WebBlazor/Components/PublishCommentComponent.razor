@@ -3,7 +3,7 @@
         <MudItem xs="@(Lines == 1 ? 11 : 12)" Class="my-auto">
             <MudTextField id="mudTextField"
                           @ref="_textField"
-                          @bind-Value="_currentTextFieldText"
+                          @bind-Value="@_currentTextFieldText"
                           T="string"
                           Label="Comment"
                           Variant="Variant.Filled"
@@ -51,7 +51,7 @@
     [Parameter] public EventCallback<string> OnSingleLineSubmit { get; init; }
 
     [Inject] public IJSRuntime JsRuntime { get; init; }
-    
+
     public Dictionary<long, string> ExtraTags { get; } = new();
 
     public Dictionary<long, string> FullTagsList

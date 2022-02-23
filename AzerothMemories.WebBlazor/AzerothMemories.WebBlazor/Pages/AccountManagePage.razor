@@ -18,16 +18,18 @@
             <MudCardContent Class="@ClassPresets.CardContent">
                 <MudGrid>
                     <MudItem xs="8" sm="3">
-                        <MudTextField T="string"
-                                  Label="Username"
-                                  @bind-Value="ViewModel.NewUsername"
-                                  Disabled="!ViewModel.AccountViewModel.CanChangeUsername"
-                                  Adornment="Adornment.End"
-                                  AdornmentIcon=@ViewModel.NewUsernameTextBoxAdornmentIcon
-                                  AdornmentColor=@ViewModel.NewUsernameTextBoxAdornmentColor
-                                  DebounceInterval="500"
-                                  OnDebounceIntervalElapsed="ViewModel.OnNewUsernameTextChanged"
-                                  MaxLength="49" />
+                        @{ var key = "usernameTextBox"; }
+                        <MudTextField @key="@key"
+                                      T="string"
+                                      Label="Username"
+                                      Value="@ViewModel.NewUsername"
+                                      Placeholder="@ViewModel.AccountViewModel.Username"
+                                      Disabled="!ViewModel.AccountViewModel.CanChangeUsername"
+                                      Adornment="Adornment.End"
+                                      AdornmentIcon=@ViewModel.NewUsernameTextBoxAdornmentIcon
+                                      AdornmentColor=@ViewModel.NewUsernameTextBoxAdornmentColor
+                                      ValueChanged="@ViewModel.OnNewUsernameTextChanged"
+                                      MaxLength="49" />
                     </MudItem>
                     <MudItem xs="4" Class="my-auto">
                         @if (ViewModel.ChangeUsernameButtonVisible)
@@ -39,7 +41,7 @@
                         <MudItem sm="5" />
                     </MudHidden>
                     <MudItem xs="8" sm="3">
-                        <MudTextField T="string" Label="Battle Tag" @bind-Value="ViewModel.AccountViewModel.BattleTag" Disabled="true" MaxLength="49" />
+                        <MudTextField T="string" Label="Battle Tag" @bind-Value="@ViewModel.AccountViewModel.BattleTag" Disabled="true" MaxLength="49" />
                     </MudItem>
                     <MudItem xs="4" Class="my-auto">
                         <MudSwitch T="bool" Checked="@ViewModel.AccountViewModel.BattleTagIsPublic" Color="Color.Primary" Label="Public" CheckedChanged="ViewModel.OnBattleTagVisibilityChanged" />
@@ -55,15 +57,16 @@
                     {
                         <MudItem xs="12" sm="6" Class="d-flex align-baseline">
                             <img src="@link.SocialIconLink" width="18" height="18" />
-                            <MudTextField T="string"
-                                  Class="px-2"
-                                  Value="@ViewModel.SocialLinks[link.LinkId]"
-                                  Label="@link.Name"
-                                  Adornment="Adornment.End"
-                                  AdornmentIcon=@ViewModel.SocialLinksAdornmentIcons[link.LinkId]
-                                  AdornmentColor=@ViewModel.SocialLinksAdornmentColors[link.LinkId]
-                                  ValueChanged="x => ViewModel.OnSocialLinkChanged(link, x)"
-                                  MaxLength="49" />
+                            <MudTextField @key="link"
+                                          T="string"
+                                          Class="px-2"
+                                          Value="@ViewModel.SocialLinks[link.LinkId]"
+                                          Label="@link.Name"
+                                          Adornment="Adornment.End"
+                                          AdornmentIcon=@ViewModel.SocialLinksAdornmentIcons[link.LinkId]
+                                          AdornmentColor=@ViewModel.SocialLinksAdornmentColors[link.LinkId]
+                                          ValueChanged="x => ViewModel.OnSocialLinkChanged(link, x)"
+                                          MaxLength="49" />
                         </MudItem>
                         <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
                             <MudItem sm="6" />
