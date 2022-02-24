@@ -205,27 +205,27 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
         switch (tagType)
         {
             case PostTagType.None:
-                {
-                    return null;
-                }
+            {
+                return null;
+            }
             case PostTagType.Type:
             case PostTagType.Main:
             case PostTagType.Region:
             case PostTagType.Realm:
-                {
-                    if (await IsValidTagIdWithBlizzardDataSanityChecks(tagType, tagId).ConfigureAwait(false))
-                    {
-                        break;
-                    }
-
-                    return null;
-                }
-            case PostTagType.Account:
-            case PostTagType.Character:
-            case PostTagType.Guild:
+            {
+                if (await IsValidTagIdWithBlizzardDataSanityChecks(tagType, tagId).ConfigureAwait(false))
                 {
                     break;
                 }
+
+                return null;
+            }
+            case PostTagType.Account:
+            case PostTagType.Character:
+            case PostTagType.Guild:
+            {
+                break;
+            }
             case PostTagType.Achievement:
             case PostTagType.Item:
             case PostTagType.Mount:
@@ -241,22 +241,22 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
             case PostTagType.CharacterRace:
             case PostTagType.CharacterClass:
             case PostTagType.CharacterClassSpecialization:
+            {
+                if (await IsValidTagIdWithBlizzardDataSanityChecks(tagType, tagId).ConfigureAwait(false))
                 {
-                    if (await IsValidTagIdWithBlizzardDataSanityChecks(tagType, tagId).ConfigureAwait(false))
-                    {
-                        break;
-                    }
+                    break;
+                }
 
-                    return null;
-                }
+                return null;
+            }
             case PostTagType.HashTag:
-                {
-                    return null;
-                }
+            {
+                return null;
+            }
             default:
-                {
-                    return null;
-                }
+            {
+                return null;
+            }
         }
 
         return new PostTagRecord
@@ -454,7 +454,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
                     return (false, results);
                 }
             }
-            else if (blockStart != null && char.IsLetterOrDigit(commentText[i]))
+            else if (blockStart != null && (char.IsLetterOrDigit(commentText[i]) || commentText[i] == '-'))
             {
                 blockText += commentText[i];
             }
