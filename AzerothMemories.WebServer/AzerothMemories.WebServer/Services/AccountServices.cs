@@ -284,7 +284,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         var commentCount = await GetCommentCount(accountRecord.Id).ConfigureAwait(false);
         var reactionCount = await GetReactionCount(accountRecord.Id).ConfigureAwait(false);
 
-        var viewModel = accountRecord.CreateViewModel(activeOrAdmin, followingViewModels, followersViewModels);
+        var viewModel = accountRecord.CreateViewModel(_commonServices, activeOrAdmin, followingViewModels, followersViewModels);
 
         viewModel.TotalPostCount = postCount;
         viewModel.TotalCommentCount = commentCount;
@@ -400,6 +400,13 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         {
             return false;
         }
+        else if (accountRecord.Username.StartsWith("User-"))
+        {
+        }
+        else if (accountRecord.UsernameChangedTime + _commonServices.Config.UsernameChangeDelay > SystemClock.Instance.GetCurrentInstant())
+        {
+            return false;
+        }
 
         if (accountRecord == null)
         {
@@ -417,6 +424,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         database.Attach(accountRecord);
         accountRecord.Username = newUsername;
         accountRecord.UsernameSearchable = DatabaseHelpers.GetSearchableName(newUsername);
+        accountRecord.UsernameChangedTime = SystemClock.Instance.GetCurrentInstant();
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 

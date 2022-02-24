@@ -34,6 +34,8 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
 
     [Column] public string UsernameSearchable { get; set; }
 
+    [Column] public Instant UsernameChangedTime { get; set; }
+
     [Column] public bool IsPrivate { get; set; }
 
     [Column] public string Avatar { get; set; }
@@ -58,7 +60,7 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
 
     //public ICollection<CharacterRecord> Characters { get; set; }
 
-    public AccountViewModel CreateViewModel(bool activeOrAdmin, Dictionary<long, AccountFollowingViewModel> followingViewModels, Dictionary<long, AccountFollowingViewModel> followersViewModels)
+    public AccountViewModel CreateViewModel(CommonServices commonServices, bool activeOrAdmin, Dictionary<long, AccountFollowingViewModel> followingViewModels, Dictionary<long, AccountFollowingViewModel> followersViewModels)
     {
         var viewModel = new AccountViewModel
         {
@@ -92,6 +94,11 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
         else
         {
             viewModel.BattleTag = null;
+        }
+
+        if (activeOrAdmin)
+        {
+            viewModel.NextUsernameChangedTime = (UsernameChangedTime + commonServices.Config.UsernameChangeDelay).ToUnixTimeMilliseconds();
         }
 
         return viewModel;

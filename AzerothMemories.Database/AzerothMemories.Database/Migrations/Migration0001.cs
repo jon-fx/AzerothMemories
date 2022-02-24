@@ -24,6 +24,7 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(AccountRecord.BattleNetTokenExpiresAt)).AsDateTimeOffset().Nullable()
             .WithColumn(nameof(AccountRecord.Username)).AsString(60).Unique().Nullable()
             .WithColumn(nameof(AccountRecord.UsernameSearchable)).AsString(60).Nullable()
+            .WithColumn(nameof(AccountRecord.UsernameChangedTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
             .WithColumn(nameof(AccountRecord.IsPrivate)).AsBoolean().WithDefaultValue(false)
             .WithColumn(nameof(AccountRecord.Avatar)).AsString(200).Nullable()
             .WithColumn(nameof(AccountRecord.SocialDiscord)).AsString(50).Nullable()

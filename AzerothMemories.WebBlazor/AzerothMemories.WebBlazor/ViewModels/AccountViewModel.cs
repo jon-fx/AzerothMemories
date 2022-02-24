@@ -6,6 +6,8 @@ public sealed class AccountViewModel
 
     [JsonInclude] public string Username;
 
+    [JsonInclude] public long NextUsernameChangedTime;
+
     [JsonInclude] public AccountType AccountType;
 
     [JsonInclude] public AccountFlags AccountFlags;
@@ -46,7 +48,7 @@ public sealed class AccountViewModel
 
     [JsonIgnore] public bool CanInteract => SystemClock.Instance.GetCurrentInstant() > Instant.FromUnixTimeMilliseconds(BanExpireTime);
 
-    [JsonIgnore] public bool CanChangeUsername => true;
+    [JsonIgnore] public bool CanChangeUsername => Username.Contains('-') || SystemClock.Instance.GetCurrentInstant() > Instant.FromUnixTimeMilliseconds(NextUsernameChangedTime);
 
     public AccountViewModel()
     {

@@ -35,6 +35,8 @@ public sealed class CommonConfig
 
     public Duration UpdateGuildDelay { get; } = Duration.FromDays(1);
 
+    public Duration UsernameChangeDelay { get; set; } = Duration.FromDays(30);
+
     public bool UploadToBlobStorage { get; set; } = !true;
 
     public bool UpdateSkipCharactersOnLowPriority { get; set; } = !true;
