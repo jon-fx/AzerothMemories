@@ -379,19 +379,35 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             return default;
         }
 
-        if (!DatabaseHelpers.IsValidAccountName(command.NewUsername))
+        var activeAccountRecord = await TryGetActiveAccountRecord(command.Session).ConfigureAwait(false);
+        if (activeAccountRecord == null)
         {
             return false;
         }
 
-        var accountRecord = await TryGetActiveAccountRecord(command.Session).ConfigureAwait(false);
+        var newUsername = command.NewUsername;
+        var accountRecord = activeAccountRecord;
+        if (activeAccountRecord.AccountType >= AccountType.Admin && command.AccountId > 0)
+        {
+            if (!DatabaseHelpers.IsValidAccountName(newUsername))
+            {
+                newUsername = $"User-{command.AccountId}";
+            }
+
+            accountRecord = await TryGetAccountRecord(command.AccountId).ConfigureAwait(false);
+        }
+        else if (!DatabaseHelpers.IsValidAccountName(newUsername))
+        {
+            return false;
+        }
+
         if (accountRecord == null)
         {
             return false;
         }
 
         await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        var usernameExists = await database.Accounts.AnyAsync(x => x.Username == command.NewUsername, cancellationToken).ConfigureAwait(false);
+        var usernameExists = await database.Accounts.AnyAsync(x => x.Username == newUsername, cancellationToken).ConfigureAwait(false);
         if (usernameExists)
         {
             return false;
@@ -399,8 +415,8 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
 
         var previousUsername = accountRecord.Username;
         database.Attach(accountRecord);
-        accountRecord.Username = command.NewUsername;
-        accountRecord.UsernameSearchable = DatabaseHelpers.GetSearchableName(command.NewUsername);
+        accountRecord.Username = newUsername;
+        accountRecord.UsernameSearchable = DatabaseHelpers.GetSearchableName(newUsername);
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
@@ -495,7 +511,18 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             return default;
         }
 
-        var accountViewModel = await TryGetActiveAccount(command.Session).ConfigureAwait(false);
+        var activeAccountViewModel = await TryGetActiveAccount(command.Session).ConfigureAwait(false);
+        if (activeAccountViewModel == null)
+        {
+            return null;
+        }
+
+        var accountViewModel = activeAccountViewModel;
+        if (activeAccountViewModel.AccountType >= AccountType.Admin && command.AccountId > 0)
+        {
+            accountViewModel = await TryGetAccountById(command.Session, command.AccountId).ConfigureAwait(false);
+        }
+
         if (accountViewModel == null)
         {
             return null;

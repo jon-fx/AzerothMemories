@@ -34,6 +34,7 @@ builder.Services.ConfigureAll<HttpClientFactoryOptions>(options =>
 
 builder.Services.AddScoped<TokenDelegatingHandler>();
 
+fusionClient.AddReplicaService<IAdminServices>();
 fusionClient.AddReplicaService<IAccountServices>();
 fusionClient.AddReplicaService<IFollowingServices>();
 fusionClient.AddReplicaService<ICharacterServices>();

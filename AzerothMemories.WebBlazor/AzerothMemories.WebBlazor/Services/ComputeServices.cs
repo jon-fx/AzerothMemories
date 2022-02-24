@@ -11,6 +11,7 @@ public sealed class ComputeServices
 
     public void Initialize()
     {
+        AdminServices = _serviceProvider.GetRequiredService<IAdminServices>();
         AccountServices = _serviceProvider.GetRequiredService<IAccountServices>();
         CharacterServices = _serviceProvider.GetRequiredService<ICharacterServices>();
         GuildServices = _serviceProvider.GetRequiredService<IGuildServices>();
@@ -18,6 +19,8 @@ public sealed class ComputeServices
         PostServices = _serviceProvider.GetRequiredService<IPostServices>();
         SearchServices = _serviceProvider.GetRequiredService<ISearchServices>();
     }
+
+    public IAdminServices AdminServices { get; private set; }
 
     public IAccountServices AccountServices { get; private set; }
 
@@ -28,6 +31,6 @@ public sealed class ComputeServices
     public ITagServices TagServices { get; private set; }
 
     public IPostServices PostServices { get; private set; }
-    
+
     public ISearchServices SearchServices { get; private set; }
 }

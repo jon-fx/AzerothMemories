@@ -17,6 +17,7 @@ public sealed class CommonServices
         BlizzardUpdateHandler = _serviceProvider.GetRequiredService<BlizzardUpdateHandler>();
         WarcraftClientProvider = _serviceProvider.GetRequiredService<WarcraftClientProvider>();
 
+        AdminServices = _serviceProvider.GetRequiredService<AdminServices>();
         AccountServices = _serviceProvider.GetRequiredService<AccountServices>();
         FollowingServices = _serviceProvider.GetRequiredService<FollowingServices>();
         CharacterServices = _serviceProvider.GetRequiredService<CharacterServices>();
@@ -33,6 +34,8 @@ public sealed class CommonServices
     internal CommonConfig Config { get; private set; }
 
     internal WarcraftClientProvider WarcraftClientProvider { get; private set; }
+
+    internal AdminServices AdminServices { get; private set; }
 
     internal AccountServices AccountServices { get; private set; }
 
