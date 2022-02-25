@@ -4,8 +4,15 @@ namespace AzerothMemories.WebBlazor.Services;
 
 public sealed class TimeProvider
 {
+    private bool _alwaysUseUtc;
+
     public DateTimeZone GetCurrentTimeZone()
     {
+        if (_alwaysUseUtc)
+        {
+            return DateTimeZone.Utc;
+        }
+
         try
         {
             return DateTimeZoneProviders.Tzdb.GetSystemDefault();
@@ -14,6 +21,11 @@ public sealed class TimeProvider
         {
             return DateTimeZone.Utc;
         }
+    }
+
+    public void AlwaysUseUtc(bool alwaysUseUtc)
+    {
+        _alwaysUseUtc = alwaysUseUtc ;
     }
 
     public ZonedDateTime GetTimeAsLocal(Instant instant)

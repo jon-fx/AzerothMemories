@@ -106,6 +106,7 @@ authenticationBuilder.AddCookie(options =>
     options.Events.OnSigningIn = ctx =>
     {
         ctx.CookieOptions.Expires = DateTimeOffset.UtcNow.AddDays(28);
+
         return Task.CompletedTask;
     };
 });
@@ -137,6 +138,7 @@ builder.Services.AddAntiforgery(options =>
 var app = builder.Build();
 app.Services.GetRequiredService<CommonServices>().Initialize();
 app.Services.GetRequiredService<ComputeServices>().Initialize();
+app.Services.GetRequiredService<TimeProvider>().AlwaysUseUtc(true);
 app.UseSecurityHeaders(StartUpHelpers.GetHeaderPolicyCollection());
 
 if (app.Environment.IsDevelopment())
