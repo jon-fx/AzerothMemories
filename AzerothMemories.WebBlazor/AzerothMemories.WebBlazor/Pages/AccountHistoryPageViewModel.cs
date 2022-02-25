@@ -3,6 +3,7 @@
 public sealed class AccountHistoryPageViewModel : ViewModelBase
 {
     private AccountHistoryPageResult _searchResults;
+    private string _currentPageString;
 
     public AccountHistoryPageViewModel()
     {
@@ -17,9 +18,16 @@ public sealed class AccountHistoryPageViewModel : ViewModelBase
 
     public bool NoResults => _searchResults.ViewModels.Length == 0;
 
-    public async Task ComputeState(string currentPageString)
+    public void OnParametersChanged(string currentPageString)
     {
-        if (int.TryParse(currentPageString, out var currentPage) && currentPage > 0)
+        _currentPageString = currentPageString;
+    }
+
+    public override async Task ComputeState(CancellationToken cancellationToken)
+    {
+        await base.ComputeState(cancellationToken);
+
+        if (int.TryParse(_currentPageString, out var currentPage) && currentPage > 0)
         {
             if (NoResults)
             {
@@ -30,9 +38,7 @@ public sealed class AccountHistoryPageViewModel : ViewModelBase
             }
         }
 
-        var searchResults = await Services.ComputeServices.AccountServices.TryGetAccountHistory(null, currentPage);
-
-        _searchResults = searchResults;
+        _searchResults = await Services.ComputeServices.AccountServices.TryGetAccountHistory(null, currentPage); ;
     }
 
     public void TryChangePage(int currentPage)

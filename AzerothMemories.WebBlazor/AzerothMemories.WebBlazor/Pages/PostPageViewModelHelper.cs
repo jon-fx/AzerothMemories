@@ -26,28 +26,108 @@ public sealed class PostPageViewModelHelper
 
     public List<PostCommentTreeNode> RootComments { get; private set; }
 
-    public async Task ComputeState(long accountId, string username, long postId, string pageString, string focusedCommentIdString)
+    public PostCommentPageViewModel PostCommentPageViewModel { get; private set; }
+
+    public Dictionary<long, PostCommentReactionViewModel> CommentReactions { get; private set; } = new();
+
+    public void SetErrorMessage(string errorMessage)
     {
-        var accountViewModel = AccountViewModel;
+        ErrorMessage = errorMessage;
+    }
+
+    public async Task<AccountViewModel> UpdateAccount(string accountString)
+    {
+        long.TryParse(accountString, out var accountId);
+
+        AccountViewModel = null;
+
         if (accountId > 0)
         {
-            accountViewModel = await _services.ComputeServices.AccountServices.TryGetAccountById(null, accountId);
+            AccountViewModel = await _services.ComputeServices.AccountServices.TryGetAccountById(null, accountId);
         }
-        else if (!string.IsNullOrWhiteSpace(username))
+        else if (!string.IsNullOrWhiteSpace(accountString))
         {
-            accountViewModel = await _services.ComputeServices.AccountServices.TryGetAccountByUsername(null, username);
+            AccountViewModel = await _services.ComputeServices.AccountServices.TryGetAccountByUsername(null, accountString);
         }
 
-        if (accountViewModel == null)
+        if (AccountViewModel == null)
         {
             ErrorMessage = "Invalid Account";
-            return;
         }
 
-        var postViewModel = await _services.ComputeServices.PostServices.TryGetPostViewModel(null, accountViewModel.Id, postId, CultureInfo.CurrentCulture.Name);
-        if (postViewModel == null)
+        return AccountViewModel;
+    }
+
+    public void SetAccountViewModel(AccountViewModel accountViewModel)
+    {
+        AccountViewModel = accountViewModel;
+    }
+
+    public async Task<PostViewModel> UpdatePost(string postIdString)
+    {
+        long.TryParse(postIdString, out var postId);
+
+        PostViewModel = null;
+
+        if (AccountViewModel != null)
         {
-            ErrorMessage = "Post Not Found";
+            PostViewModel = await _services.ComputeServices.PostServices.TryGetPostViewModel(null, AccountViewModel.Id, postId, CultureInfo.CurrentCulture.Name);
+
+            if (PostViewModel == null)
+            {
+                ErrorMessage = "Post Not Found";
+            }
+        }
+
+        return PostViewModel;
+    }
+
+    public void SetPostViewModel(PostViewModel postViewModel)
+    {
+        PostViewModel = postViewModel;
+    }
+
+    public async Task<PostCommentPageViewModel> UpdateComments(string pageString, string focusedCommentIdString)
+    {
+        if (AccountViewModel == null)
+        {
+            return null;
+        }
+
+        if (PostViewModel == null)
+        {
+            return null;
+        }
+
+        if (!int.TryParse(pageString, out var currentPage))
+        {
+            currentPage = 0;
+        }
+
+        if (!long.TryParse(focusedCommentIdString, out var focusedCommentId))
+        {
+            focusedCommentId = 0;
+        }
+
+        CommentReactions = await _services.ComputeServices.PostServices.TryGetMyCommentReactions(null, PostViewModel.Id);
+        PostCommentPageViewModel = await _services.ComputeServices.PostServices.TryGetCommentsPage(null, PostViewModel.Id, currentPage, focusedCommentId);
+
+        await UpdatePostCommentPageViewModel(pageString, focusedCommentIdString);
+
+        return PostCommentPageViewModel;
+    }
+
+    public void SetPostCommentPageViewModel(string pageString, string focusedCommentIdString, PostCommentPageViewModel postCommentPageViewModel)
+    {
+        PostCommentPageViewModel = postCommentPageViewModel;
+
+        UpdatePostCommentPageViewModel(pageString, focusedCommentIdString).AndForget();
+    }
+
+    private async Task UpdatePostCommentPageViewModel(string pageString, string focusedCommentIdString)
+    {
+        if (PostCommentPageViewModel == null)
+        {
             return;
         }
 
@@ -61,21 +141,12 @@ public sealed class PostPageViewModelHelper
             focusedCommentId = 0;
         }
 
-        //CurrentPage = currentPage;
-        //FocusedCommentId = focusedCommentId;
-
-        AccountViewModel = accountViewModel;
-        PostViewModel = postViewModel;
-
-        var commentReactions = await _services.ComputeServices.PostServices.TryGetMyCommentReactions(null, postId);
-        var pageViewModel = await _services.ComputeServices.PostServices.TryGetCommentsPage(null, postId, currentPage, focusedCommentId);
-
         var rootComments = new List<PostCommentTreeNode>();
-        foreach (var comment in pageViewModel.AllComments)
+        foreach (var comment in PostCommentPageViewModel.AllComments)
         {
             if (!_allCommentTreeNodes.TryGetValue(comment.Key, out var treeNode))
             {
-                _allCommentTreeNodes.Add(comment.Key, treeNode = new PostCommentTreeNode(PostViewModel.AccountId, postId, comment.Key));
+                _allCommentTreeNodes.Add(comment.Key, treeNode = new PostCommentTreeNode(PostViewModel.AccountId, PostViewModel.Id, comment.Key));
             }
 
             treeNode.Comment = comment.Value;
@@ -110,7 +181,7 @@ public sealed class PostPageViewModelHelper
                 }
             }
 
-            if (commentReactions.TryGetValue(comment.Key, out var reactionViewModel))
+            if (CommentReactions.TryGetValue(comment.Key, out var reactionViewModel))
             {
                 treeNode.Reaction = reactionViewModel.Reaction;
                 treeNode.ReactionId = reactionViewModel.Id;
@@ -145,8 +216,8 @@ public sealed class PostPageViewModelHelper
             _scrollToFocus = true;
         }
 
-        Page = pageViewModel.Page;
-        TotalPages = pageViewModel.TotalPages;
+        Page = PostCommentPageViewModel.Page;
+        TotalPages = PostCommentPageViewModel.TotalPages;
         RootComments = rootComments;
     }
 

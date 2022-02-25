@@ -26,8 +26,10 @@ public sealed class AccountManagePageViewModel : ViewModelBase
 
     public string CustomAvatarLink { get; private set; }
 
-    public async Task ComputeState()
+    public override async Task ComputeState(CancellationToken cancellationToken)
     {
+        await base.ComputeState(cancellationToken);
+
         AccountViewModel = await Services.ComputeServices.AccountServices.TryGetActiveAccount(null);
 
         if (AccountViewModel == null)

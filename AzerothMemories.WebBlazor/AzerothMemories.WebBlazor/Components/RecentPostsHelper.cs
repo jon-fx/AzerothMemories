@@ -28,9 +28,21 @@ public sealed class RecentPostsHelper
 
     public PostViewModel[] CurrentPosts => _searchResults.PostViewModels;
 
+    public RecentPostsResults SearchResults => _searchResults;
+
     public bool IsLoading { get; private set; }
 
-    public async Task ComputeState(string currentPageString, string sortModeString, string postTypeString)
+    public void SetSearchResults(RecentPostsResults recentPostsResults)
+    {
+        _searchResults = recentPostsResults;
+        _currentPage = _searchResults.CurrentPage;
+        _recentPostType = _searchResults.PostsType;
+        _sortMode = _searchResults.SortMode;
+
+        IsLoading = false;
+    }
+
+    public async Task<RecentPostsResults> ComputeState(string currentPageString, string sortModeString, string postTypeString)
     {
         if (int.TryParse(currentPageString, out _currentPage) && _currentPage > 0)
         {
@@ -62,6 +74,8 @@ public sealed class RecentPostsHelper
         _searchResults = searchResults;
 
         IsLoading = false;
+
+        return _searchResults;
     }
 
     public void OnShowAllChanged(bool showAll)

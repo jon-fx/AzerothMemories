@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebBlazor.Components;
 
-public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TViewModel>, IMoaServices where TViewModel : ViewModelBase, new()
+public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TViewModel>, IMoaServices, IDisposable where TViewModel : ViewModelBase, new()
 {
     protected MoaComponentBase()
     {
@@ -25,13 +25,19 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
     protected override sealed async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+
+        OnParametersChanged();
+
         await ViewModel.OnInitialized();
     }
 
     protected override sealed void OnParametersSet()
     {
         base.OnParametersSet();
+
+        OnParametersChanged();
     }
+
 
     protected override sealed Task OnParametersSetAsync()
     {
@@ -48,19 +54,28 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
         }
     }
 
+    protected virtual void OnParametersChanged()
+    {
+    }
+
     protected override sealed async Task<TViewModel> ComputeState(CancellationToken cancellationToken)
     {
         await ClientServices.ActiveAccountServices.ComputeState();
 
-        await InternalComputeState();
+        await ViewModel.ComputeState(cancellationToken);
 
-        //await ViewModel.ComputeState();
+        await OnComputeState(cancellationToken);
 
         return ViewModel;
     }
 
-    protected virtual Task InternalComputeState()
+    protected virtual Task OnComputeState(CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+        ViewModel.Dispose();
     }
 }

@@ -1,5 +1,4 @@
-﻿@page "/post/{Id:long}/{PostId:long}"
-@page "/post/{Name}/{PostId:long}"
+﻿@page "/post/{Id}/{PostId}"
 @using System.Text
 @inherits MoaComponentBase<PostPageViewModel>
 
@@ -37,11 +36,9 @@ else
 
 @code
 {
-    [Parameter, EditorRequired] public long Id { get; set; }
+    [Parameter, EditorRequired] public string Id { get; set; }
 
-    [Parameter, EditorRequired] public long PostId { get; set; }
-
-    [Parameter, EditorRequired] public string Name { get; set; }
+    [Parameter, EditorRequired] public string PostId { get; set; }
 
     [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }
 
@@ -49,9 +46,11 @@ else
 
     [Inject] IScrollManager ScrollManager { get; init; }
 
-    protected override async Task InternalComputeState()
+    protected override void OnParametersChanged()
     {
-        await ViewModel.Helper.ComputeState(Id, Name, PostId, CurrentPage, FocusedCommentId);
+        base.OnParametersChanged();
+
+        ViewModel.OnParametersChanged(Id, PostId, CurrentPage, FocusedCommentId);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

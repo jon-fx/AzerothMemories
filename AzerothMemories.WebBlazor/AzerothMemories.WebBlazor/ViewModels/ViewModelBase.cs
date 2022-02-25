@@ -10,4 +10,13 @@ public abstract class ViewModelBase
     {
         return Task.CompletedTask;
     }
+
+    public virtual Task ComputeState(CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
+    }
+
+    public virtual void Dispose()
+    {
+    }
 }

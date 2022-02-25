@@ -1,7 +1,21 @@
 ﻿namespace AzerothMemories.WebBlazor.Pages;
 
-public sealed class GuildPageViewModel : ViewModelBase
+public sealed class GuildPageViewModel : PersistentStateViewModel
 {
+    private string _idString;
+    private string _region;
+    private string _realm;
+    private string _name;
+    private string _sortModeString;
+    private string _currentPageString;
+
+    public GuildPageViewModel()
+    {
+        AddPersistentState(() => ErrorMessage, x => ErrorMessage = x, () => Task.FromResult<string>(null));
+        AddPersistentState(() => GuildViewModel, x => GuildViewModel = x, UpdateGuildViewModel);
+        AddPersistentState(() => PostSearchHelper.SearchResults, x => PostSearchHelper.SetSearchResults(x), UpdateSearchResults);
+    }
+
     public string ErrorMessage { get; private set; }
 
     public GuildViewModel GuildViewModel { get; private set; }
@@ -10,65 +24,94 @@ public sealed class GuildPageViewModel : ViewModelBase
 
     public bool IsLoading => GuildViewModel == null || PostSearchHelper == null;
 
-    public override async Task OnInitialized()
+    public void OnParametersChanged(string idString, string region, string realm, string name, string sortModeString, string currentPageString)
     {
-        await base.OnInitialized();
-
-        PostSearchHelper = new PostSearchHelper(Services);
+        _idString = idString;
+        _region = region;
+        _realm = realm;
+        _name = name;
+        _sortModeString = sortModeString;
+        _currentPageString = currentPageString;
     }
 
-    public async Task ComputeState(long id, string region, string realm, string name, string sortModeString, string currentPageString)
+    public override async Task OnInitialized()
     {
+        PostSearchHelper = new PostSearchHelper(Services);
+
+        await base.OnInitialized();
+    }
+
+    public override async Task ComputeState(CancellationToken cancellationToken)
+    {
+        await base.ComputeState(cancellationToken);
+
+        GuildViewModel = await UpdateGuildViewModel();
+
+        await UpdateSearchResults();
+    }
+
+    private async Task<GuildViewModel> UpdateGuildViewModel()
+    {
+        long.TryParse(_idString, out var id);
         GuildViewModel guildViewModel;
+
         if (id > 0)
         {
             guildViewModel = await Services.ComputeServices.GuildServices.TryGetGuild(null, id);
         }
         else
         {
-            if (string.IsNullOrWhiteSpace(region))
+            if (string.IsNullOrWhiteSpace(_region))
             {
                 ErrorMessage = "Invalid Region";
-                return;
+                return null;
             }
 
-            if (string.IsNullOrWhiteSpace(realm))
+            if (string.IsNullOrWhiteSpace(_realm))
             {
                 ErrorMessage = "Invalid Realm";
-                return;
+                return null;
             }
 
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(_name))
             {
                 ErrorMessage = "Invalid Name";
-                return;
+                return null;
             }
-            
-            var regionInfo = BlizzardRegionInfo.AllByName.Values.FirstOrDefault(x => string.Equals(x.TwoLetters, region, StringComparison.InvariantCultureIgnoreCase));
+
+            var regionInfo = BlizzardRegionInfo.AllByName.Values.FirstOrDefault(x => string.Equals(x.TwoLetters, _region, StringComparison.InvariantCultureIgnoreCase));
             if (regionInfo == null)
             {
                 ErrorMessage = "Invalid Region";
-                return;
+                return null;
             }
 
-            if (!Services.ClientServices.TagHelpers.GetRealmId(realm, out _) && !Services.ClientServices.TagHelpers.GetRealmSlug($"{regionInfo.TwoLetters}-{realm}", out realm))
+            if (!Services.ClientServices.TagHelpers.GetRealmId(_realm, out _) && !Services.ClientServices.TagHelpers.GetRealmSlug($"{regionInfo.TwoLetters}-{_realm}", out _realm))
             {
                 ErrorMessage = "Invalid Realm";
-                return;
+                return null;
             }
 
-            guildViewModel = await Services.ComputeServices.GuildServices.TryGetGuild(null, regionInfo.Region, realm, name);
+            guildViewModel = await Services.ComputeServices.GuildServices.TryGetGuild(null, regionInfo.Region, _realm, _name);
         }
 
         if (guildViewModel == null)
         {
             ErrorMessage = "Invalid Guild";
-            return;
+            return null;
         }
 
-        GuildViewModel = guildViewModel;
+        return guildViewModel;
+    }
+
+    private Task<SearchPostsResults> UpdateSearchResults()
+    {
+        if (GuildViewModel == null)
+        {
+            return Task.FromResult(new SearchPostsResults());
+        }
 
         var guildTag = new PostTagInfo(PostTagType.Guild, GuildViewModel.Id, GuildViewModel.Name, null);// GuildViewModel.AvatarLinkWithFallBack);
-        await PostSearchHelper.ComputeState(new[] { guildTag.TagString }, sortModeString, currentPageString, null, null);
+        return PostSearchHelper.ComputeState(new[] { guildTag.TagString }, _sortModeString, _currentPageString, null, null);
     }
 }

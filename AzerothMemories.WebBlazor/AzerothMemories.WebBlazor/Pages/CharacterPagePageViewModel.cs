@@ -1,83 +1,125 @@
 ﻿namespace AzerothMemories.WebBlazor.Pages;
 
-public sealed class CharacterPagePageViewModel : ViewModelBase
+public sealed class CharacterPagePageViewModel : PersistentStateViewModel
 {
+    private string _idString;
+    private string _region;
+    private string _realm;
+    private string _name;
+    private string _sortModeString;
+    private string _currentPageString;
+
+    private CharacterAccountViewModel _characterAccountViewModel;
+
+    public CharacterPagePageViewModel()
+    {
+        AddPersistentState(() => ErrorMessage, x => ErrorMessage = x, () => Task.FromResult<string>(null));
+        AddPersistentState(() => _characterAccountViewModel, x => _characterAccountViewModel = x, UpdateCharacterAccount);
+        AddPersistentState(() => PostSearchHelper.SearchResults, x => PostSearchHelper.SetSearchResults(x), UpdateSearchResults);
+    }
+
     public string ErrorMessage { get; private set; }
 
-    public AccountViewModel AccountViewModel { get; private set; }
+    public AccountViewModel AccountViewModel => _characterAccountViewModel?.AccountViewModel;
 
-    public CharacterViewModel CharacterViewModel { get; private set; }
+    public CharacterViewModel CharacterViewModel => _characterAccountViewModel?.CharacterViewModel;
 
     public PostSearchHelper PostSearchHelper { get; private set; }
 
     public bool IsLoading => CharacterViewModel == null || PostSearchHelper == null;
 
-    public override async Task OnInitialized()
+    public void OnParametersChanged(string idString, string region, string realm, string name, string sortModeString, string currentPageString)
     {
-        await base.OnInitialized();
-
-        PostSearchHelper = new PostSearchHelper(Services);
+        _idString = idString;
+        _region = region;
+        _realm = realm;
+        _name = name;
+        _sortModeString = sortModeString;
+        _currentPageString = currentPageString;
     }
 
-    public async Task ComputeState(long id, string region, string realm, string name, string sortModeString, string currentPageString)
+    public override async Task OnInitialized()
     {
-        AccountViewModel accountViewModel;
-        CharacterViewModel characterViewModel;
+        PostSearchHelper = new PostSearchHelper(Services);
+
+        await base.OnInitialized();
+    }
+
+    public override async Task ComputeState(CancellationToken cancellationToken)
+    {
+        await base.ComputeState(cancellationToken);
+
+        _characterAccountViewModel = await UpdateCharacterAccount();
+
+        await UpdateSearchResults();
+    }
+
+    private async Task<CharacterAccountViewModel> UpdateCharacterAccount()
+    {
+        long.TryParse(_idString, out var id);
+
         if (id > 0)
         {
-            var result = await Services.ComputeServices.CharacterServices.TryGetCharacter(null, id);
-            accountViewModel = result.AccountViewModel;
-            characterViewModel = result.CharacterViewModel;
+            var results = await Services.ComputeServices.CharacterServices.TryGetCharacter(null, id);
+            if (results == null || results.CharacterViewModel == null)
+            {
+                ErrorMessage = "Invalid Character";
+
+                return null;
+            }
+
+            return results;
         }
-        else
+
+        if (string.IsNullOrWhiteSpace(_region))
         {
-            if (string.IsNullOrWhiteSpace(region))
-            {
-                ErrorMessage = "Invalid Region";
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(realm))
-            {
-                ErrorMessage = "Invalid Realm";
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                ErrorMessage = "Invalid Name";
-                return;
-            }
-
-            var regionInfo = BlizzardRegionInfo.AllByName.Values.FirstOrDefault(x => x.TwoLetters.ToLowerInvariant() == region.ToLowerInvariant());
-            if (regionInfo == null)
-            {
-                ErrorMessage = "Invalid Region";
-                return;
-            }
-
-            if (!Services.ClientServices.TagHelpers.GetRealmId(realm, out _) && !Services.ClientServices.TagHelpers.GetRealmSlug($"{regionInfo.TwoLetters}-{realm}", out realm))
-            {
-                ErrorMessage = "Invalid Realm";
-                return;
-            }
-
-            var result = await Services.ComputeServices.CharacterServices.TryGetCharacter(null, regionInfo.Region, realm, name);
-
-            accountViewModel = result.AccountViewModel;
-            characterViewModel = result.CharacterViewModel;
+            ErrorMessage = "Invalid Region";
+            return null;
         }
 
-        if (characterViewModel == null)
+        if (string.IsNullOrWhiteSpace(_realm))
+        {
+            ErrorMessage = "Invalid Realm";
+            return null;
+        }
+
+        if (string.IsNullOrWhiteSpace(_name))
+        {
+            ErrorMessage = "Invalid Name";
+            return null;
+        }
+
+        var regionInfo = BlizzardRegionInfo.AllByName.Values.FirstOrDefault(x => x.TwoLetters.ToLowerInvariant() == _region.ToLowerInvariant());
+        if (regionInfo == null)
+        {
+            ErrorMessage = "Invalid Region";
+            return null;
+        }
+
+        if (!Services.ClientServices.TagHelpers.GetRealmId(_realm, out _) && !Services.ClientServices.TagHelpers.GetRealmSlug($"{regionInfo.TwoLetters}-{_realm}", out _realm))
+        {
+            ErrorMessage = "Invalid Realm";
+            return null;
+        }
+
+        var viewModel = await Services.ComputeServices.CharacterServices.TryGetCharacter(null, regionInfo.Region, _realm, _name);
+        if (viewModel == null || viewModel.CharacterViewModel == null)
         {
             ErrorMessage = "Invalid Character";
-            return;
+            return null;
         }
 
-        AccountViewModel = accountViewModel;
-        CharacterViewModel = characterViewModel;
+        return viewModel;
+    }
 
-        var accountTag = new PostTagInfo(PostTagType.Character, CharacterViewModel.Id, CharacterViewModel.Name, CharacterViewModel.AvatarLinkWithFallBack);
-        await PostSearchHelper.ComputeState(new[] { accountTag.TagString }, sortModeString, currentPageString, null, null);
+    private Task<SearchPostsResults> UpdateSearchResults()
+    {
+        if (CharacterViewModel == null)
+        {
+            return Task.FromResult(new SearchPostsResults());
+        }
+
+        var characterTag = new PostTagInfo(PostTagType.Character, CharacterViewModel.Id, CharacterViewModel.Name, CharacterViewModel.AvatarLinkWithFallBack);
+        return PostSearchHelper.ComputeState(new[] { characterTag.TagString }, _sortModeString, _currentPageString, null, null);
     }
 }

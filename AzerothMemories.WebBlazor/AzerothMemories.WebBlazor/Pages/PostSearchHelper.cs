@@ -37,7 +37,9 @@ public sealed class PostSearchHelper
 
     public bool IsLoading { get; private set; }
 
-    public async Task ComputeState(string[] tagStrings, string sortModeString, string currentPageString, string postMinTimeString, string postMaxTimeString)
+    public SearchPostsResults SearchResults => _searchResults;
+
+    public async Task<SearchPostsResults> ComputeState(string[] tagStrings, string sortModeString, string currentPageString, string postMinTimeString, string postMaxTimeString)
     {
         _tagStrings = tagStrings.ToHashSet();
 
@@ -81,6 +83,20 @@ public sealed class PostSearchHelper
         {
             info.IsChipClosable = true;
         }
+
+        IsLoading = false;
+
+        return _searchResults;
+    }
+
+    public void SetSearchResults(SearchPostsResults searchPostsResults)
+    {
+        _searchResults = searchPostsResults;
+        _currentPage = _searchResults.CurrentPage;
+        _sortMode = _searchResults.SortMode;
+
+        MinDateTime = _searchResults.MinTime > 0 ? Instant.FromUnixTimeMilliseconds(_searchResults.MinTime) : null;
+        MaxDateTime = _searchResults.MaxTime > 0 ? Instant.FromUnixTimeMilliseconds(_searchResults.MaxTime) : null;
 
         IsLoading = false;
     }

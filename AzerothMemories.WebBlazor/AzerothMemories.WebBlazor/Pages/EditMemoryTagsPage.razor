@@ -1,4 +1,4 @@
-﻿@page "/edittags/{Id:long}/{PostId:long}"
+﻿@page "/edittags/{Id}/{PostId}"
 @inherits MoaComponentBase<EditMemoryTagsPageeViewModel>
 
 @if (ViewModel.Helper == null)
@@ -30,14 +30,16 @@ else
 }
 
 @code {
-    [Parameter, EditorRequired] public long Id { get; set; }
-    [Parameter, EditorRequired] public long PostId { get; set; }
+    [Parameter, EditorRequired] public string Id { get; set; }
+
+    [Parameter, EditorRequired] public string PostId { get; set; }
 
     [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }
-
-    protected override async Task InternalComputeState()
+    
+    protected override void OnParametersChanged()
     {
-        await ViewModel.Helper.ComputeState(Id, null, PostId, CurrentPage, null);
-        await ViewModel.ComputeState();
+        base.OnParametersChanged();
+
+        ViewModel.OnParametersChanged(Id, PostId, CurrentPage, null);
     }
 }

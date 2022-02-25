@@ -2,18 +2,27 @@
 
 public sealed class AccountFollowPageViewModel : ViewModelBase
 {
+    private long _accountId;
+
     public bool IsLoading => string.IsNullOrWhiteSpace(ErrorMessage) && AccountViewModel == null;
 
     public string ErrorMessage { get; private set; }
 
     public AccountViewModel AccountViewModel { get; private set; }
 
-    public async Task ComputeState(long accountId)
+    public void OnParametersChanged(long id)
     {
+        _accountId = id;
+    }
+
+    public override async Task ComputeState(CancellationToken cancellationToken)
+    {
+        await base.ComputeState(cancellationToken);
+
         var accountViewModel = AccountViewModel;
-        if (accountId > 0)
+        if (_accountId > 0)
         {
-            accountViewModel = await Services.ComputeServices.AccountServices.TryGetAccountById(null, accountId);
+            accountViewModel = await Services.ComputeServices.AccountServices.TryGetAccountById(null, _accountId);
         }
 
         if (accountViewModel == null)
@@ -24,4 +33,5 @@ public sealed class AccountFollowPageViewModel : ViewModelBase
 
         AccountViewModel = accountViewModel;
     }
+
 }

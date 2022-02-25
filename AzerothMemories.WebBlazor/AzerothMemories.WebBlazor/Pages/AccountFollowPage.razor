@@ -23,8 +23,10 @@ else
 @code {
     [Parameter] public long Id { get; init; }
 
-    protected override async Task InternalComputeState()
+    protected override void OnParametersChanged()
     {
-        await ViewModel.ComputeState(Id);
+        base.OnParametersChanged();
+
+        ViewModel.OnParametersChanged(Id);
     }
 }

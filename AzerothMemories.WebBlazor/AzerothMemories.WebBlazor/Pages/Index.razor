@@ -20,9 +20,10 @@
 
     [Parameter, SupplyParameterFromQuery(Name = "type")] public string RecentPostType { get; init; }
 
-    protected override async Task InternalComputeState()
+    protected override void OnParametersChanged()
     {
-        await base.InternalComputeState();
-        await ViewModel.ComputeState(CurrentPage, null, RecentPostType);
+        base.OnParametersChanged();
+        
+        ViewModel.OnParametersChanged(CurrentPage, null, RecentPostType);
     }
 }

@@ -38,10 +38,10 @@ else
 @code {
     [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }
 
-    protected override async Task InternalComputeState()
+    protected override void OnParametersChanged()
     {
-        await base.InternalComputeState();
+        base.OnParametersChanged();
 
-        await ViewModel.ComputeState(CurrentPage);
+        ViewModel.OnParametersChanged(CurrentPage);
     }
 }

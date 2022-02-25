@@ -2,7 +2,7 @@
 @inherits MoaComponentBase<OnThisDayPageViewModel>
 
 @{
-    var results = ViewModel?.Results;
+    var results = ViewModel?.DailyActivityResults;
     if (results == null)
     {
         <CardLoadingComponent />
@@ -13,7 +13,7 @@
     }
     else
     {
-        @foreach (var year in results)
+        foreach (var year in results)
         {
             <OnThisDayHeader HeaderData="@year" Services="@this" />
         }
@@ -26,8 +26,10 @@
 
     [Parameter, SupplyParameterFromQuery(Name = "month")] public string CurrentMonth { get; init; }
 
-    protected override async Task InternalComputeState()
+    protected override void OnParametersChanged()
     {
-        await ViewModel.ComputeState(CurrentDay, CurrentMonth);
+        base.OnParametersChanged();
+        
+        ViewModel.OnParametersChanged(CurrentDay, CurrentMonth);
     }
 }

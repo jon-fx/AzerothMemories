@@ -1,6 +1,5 @@
 ﻿@page "/account/"
-@page "/account/{Id:long}"
-@page "/account/{Name}"
+@page "/account/{Id}"
 @inherits MoaComponentBase<AccountPageViewModel>
 
 @{
@@ -27,16 +26,16 @@
 }
 
 @code {
-    [Parameter, EditorRequired] public long Id { get; init; }
-
-    [Parameter, EditorRequired] public string Name { get; init; }
+    [Parameter, EditorRequired] public string Id { get; init; }
 
     [Parameter, SupplyParameterFromQuery(Name = "sort")] public string SortMode { get; init; }
 
     [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }
 
-    protected override async Task InternalComputeState()
+    protected override void OnParametersChanged()
     {
-        await ViewModel.ComputeState(Id, Name, SortMode, CurrentPage);
+        base.OnParametersChanged();
+        
+        ViewModel.OnParametersChanged(Id, SortMode, CurrentPage);
     }
 }

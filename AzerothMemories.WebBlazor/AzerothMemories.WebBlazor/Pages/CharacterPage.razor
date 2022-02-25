@@ -1,4 +1,4 @@
-﻿@page "/character/{Id:long}"
+﻿@page "/character/{Id}"
 @page "/character/{Region}/{Realm}/{Name}"
 @inherits MoaComponentBase<CharacterPagePageViewModel>
 
@@ -28,7 +28,7 @@
 
 @code
 {
-    [Parameter, EditorRequired] public long Id { get; set; }
+    [Parameter, EditorRequired] public string Id { get; set; }
 
     [Parameter, EditorRequired] public string Region { get; set; }
 
@@ -40,8 +40,10 @@
 
     [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }
 
-    protected override async Task InternalComputeState()
+    protected override void OnParametersChanged()
     {
-        await ViewModel.ComputeState(Id, Region, Realm, Name, SortMode, CurrentPage);
+        base.OnParametersChanged();
+        
+        ViewModel.OnParametersChanged(Id, Region, Realm, Name, SortMode, CurrentPage);
     }
 }

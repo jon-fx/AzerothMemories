@@ -1,5 +1,6 @@
 ﻿global using AzerothMemories.WebBlazor.Blizzard;
 global using AzerothMemories.WebBlazor.Common;
+global using AzerothMemories.WebBlazor.Components;
 global using AzerothMemories.WebBlazor.Resources;
 global using AzerothMemories.WebBlazor.Services;
 global using AzerothMemories.WebBlazor.Services.Commands;

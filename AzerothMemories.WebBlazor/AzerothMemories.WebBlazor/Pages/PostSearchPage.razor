@@ -48,7 +48,14 @@ else
     [Parameter, SupplyParameterFromQuery(Name = "ptmin")] public string PostMinTime { get; init; }
 
     [Parameter, SupplyParameterFromQuery(Name = "ptmax")] public string PostMaxTime { get; init; }
-    
+
+    protected override void OnParametersChanged()
+    {
+        base.OnParametersChanged();
+        
+        ViewModel.OnParametersChanged(Tags, SortMode, CurrentPage, PostMinTime, PostMaxTime);
+    }
+
     protected override void OnAfterRender(bool firstRender)
     {
         base.OnAfterRender(firstRender);
@@ -59,15 +66,13 @@ else
         }
     }
 
-    protected override async Task InternalComputeState()
+    protected override async Task OnComputeState(CancellationToken cancellationToken)
     {
-        await base.InternalComputeState();
-
-        await ViewModel.ComputeState(Tags, SortMode, CurrentPage, PostMinTime, PostMaxTime);
+        await base.OnComputeState(cancellationToken);
 
         if (_firstRenderDone)
         {
-            await ClientServices.JsRuntime.InvokeVoidAsync("HideWowheadToolTips");
+            await ClientServices.JsRuntime.InvokeVoidAsync("HideWowheadToolTips", cancellationToken);
         }
     }
 }

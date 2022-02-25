@@ -5,20 +5,34 @@ namespace AzerothMemories.WebBlazor.Pages;
 public sealed class EditMemoryTagsPageeViewModel : ViewModelBase
 {
     private PostPageViewModelHelper _postPageHelper;
+    private string _accountString;
+    private string _postIdString;
+    private string _currentPageString;
+    private string _focusedCommentId;
 
     public override async Task OnInitialized()
     {
-        await base.OnInitialized();
-
         _postPageHelper = new PostPageViewModelHelper(Services);
+
+        await base.OnInitialized();
     }
 
     public PostPageViewModelHelper Helper => _postPageHelper;
 
     public AddMemoryComponentSharedData SharedData { get; private set; }
-
-    public async Task ComputeState()
+    
+    public void OnParametersChanged(string idString, string postIdString, string currentPageString, string focusedCommentId)
     {
+        _accountString = idString;
+        _postIdString = postIdString;
+        _currentPageString = currentPageString;
+        _focusedCommentId = focusedCommentId;
+    }
+
+    public override async Task ComputeState(CancellationToken cancellationToken)
+    {
+        await base.ComputeState(cancellationToken);
+
         if (SharedData != null)
         {
             return;
@@ -28,6 +42,10 @@ public sealed class EditMemoryTagsPageeViewModel : ViewModelBase
         {
             return;
         }
+        
+        await _postPageHelper.UpdateAccount(_accountString);
+        await _postPageHelper.UpdatePost(_postIdString);
+        await _postPageHelper.UpdateComments(_currentPageString, _focusedCommentId);
 
         var errorMessage = Helper.ErrorMessage;
         if (errorMessage != null)
@@ -48,6 +66,7 @@ public sealed class EditMemoryTagsPageeViewModel : ViewModelBase
         }
 
         SharedData = new AddMemoryComponentSharedData(this);
+
         await SharedData.InitializeAccount(() => Helper.AccountViewModel);
         await SharedData.SetPostTimeStamp(Instant.FromUnixTimeMilliseconds(postViewModel.PostTime));
         await SharedData.InitializeAchievements();
