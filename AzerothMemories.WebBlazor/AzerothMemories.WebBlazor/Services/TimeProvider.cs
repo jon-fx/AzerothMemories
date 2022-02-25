@@ -1,10 +1,19 @@
-﻿namespace AzerothMemories.WebBlazor.Services;
+﻿using NodaTime.TimeZones;
+
+namespace AzerothMemories.WebBlazor.Services;
 
 public sealed class TimeProvider
 {
     public DateTimeZone GetCurrentTimeZone()
     {
-        return DateTimeZoneProviders.Tzdb.GetSystemDefault();
+        try
+        {
+            return DateTimeZoneProviders.Tzdb.GetSystemDefault();
+        }
+        catch (DateTimeZoneNotFoundException)
+        {
+            return DateTimeZone.Utc;
+        }
     }
 
     public ZonedDateTime GetTimeAsLocal(Instant instant)

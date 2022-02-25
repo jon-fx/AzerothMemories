@@ -64,67 +64,73 @@ else
         <MudDivider />
 
         <MudCardContent Class="@ClassPresets.CardContent">
-            <MudText Typo="Typo.body1"><b>@AccountViewModel.TotalPostCount.ToMetric()</b> Posts</MudText>
-            <MudText Typo="Typo.body1"><b>@((AccountViewModel.TotalPostCount + AccountViewModel.TotalMemoriesCount).ToMetric())</b> Memories</MudText>
+            <div class="d-flex align-baseline">
+                <MudIcon Class="mr-1" Icon="@Icons.Filled.CalendarToday" Size="Size.Small" />
+                <MudText Typo="Typo.body1" Class="my-auto">@Services.ClientServices.TimeProvider.GetJoinedDate(AccountViewModel.CreatedDateTime)</MudText>
+            </div>
+
+            @{
+                var totalPostCount = AccountViewModel.TotalPostCount;
+                var totalMemoriesCount = AccountViewModel.TotalPostCount + AccountViewModel.TotalMemoriesCount;
+
+                if (totalPostCount > 0)
+                {
+                    <div class="d-flex align-baseline">
+                        <MudIcon Class="mr-1" Icon="@Icons.Filled.PostAdd" Size="Size.Small" />
+                        <MudText Typo="Typo.body1" Class="my-auto"><b>@totalPostCount.ToMetric()</b> Posts</MudText>
+                    </div>
+                }
+
+                if (totalMemoriesCount > 0)
+                {
+                    <div class="d-flex align-baseline">
+                        <MudIcon Class="mr-1" Icon="@Icons.Filled.LinkedCamera" Size="Size.Small" />
+                        <MudText Typo="Typo.body1" Class="my-auto"><b>@totalMemoriesCount.ToMetric()</b> Memories</MudText>
+                    </div>
+                }
+            }
         </MudCardContent>
 
         <MudDivider />
 
         <MudCardActions Class="@ClassPresets.CardActions">
-
-            <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
-                <MudButtonGroup OverrideStyles="true" Class="pa-0 ma-2 " Variant="Variant.Filled" VerticalAlign="false">
-
-                    <a href="@($"/follow/{AccountViewModel.Id}")">
-                        <MudButton>
-                            <MudText Inline="true"><b>@_followingCount.ToString("N0")</b> Following</MudText>
-                        </MudButton>
-                    </a>
-                    <a href="@($"/follow/{AccountViewModel.Id}")">
-                        <MudButton>
-                            <MudText Inline="true"><b>@_followerCount.ToString("N0")</b> Followers</MudText>
-                        </MudButton>
-                    </a>
-
-                    @{
-                        var accountViewModel = Services.ClientServices.ActiveAccountServices.AccountViewModel;
-                        if (accountViewModel != null)
-                        {
-                            accountViewModel.FollowingViewModels.TryGetValue(AccountViewModel.Id, out var followingViewModel);
-                            accountViewModel.FollowersViewModels.TryGetValue(AccountViewModel.Id, out var followerViewModel);
-
-                            <AccountFollowingComponent Services="@Services" ActiveAccountViewModel="@accountViewModel" OtherAccountId="@AccountViewModel.Id" FollowingViewModel="@followingViewModel" FollowerViewModel="@followerViewModel" />
-                        }
+            @{
+                for (var i = 0; i < 2; i++)
+                {
+                    var boolean = i == 1;
+                    var buttonGroupClass = "pa-0 ma-2";
+                    if (!boolean)
+                    {
+                        buttonGroupClass += " mud-width-full";
                     }
-                </MudButtonGroup>
-            </MudHidden>
-            <MudHidden Breakpoint="Breakpoint.SmAndUp">
-                <MudButtonGroup OverrideStyles="true" Class="pa-0 ma-2 " Variant="Variant.Filled" VerticalAlign="true">
-                    <a href="@($"/follow/{AccountViewModel.Id}")">
-                        <MudButton>
-                            <MudText Inline="true"><b>@_followingCount.ToString("N0")</b> Following</MudText>
-                        </MudButton>
-                    </a>
-                    <a href="@($"/follow/{AccountViewModel.Id}")">
-                        <MudButton>
-                            <MudText Inline="true"><b>@_followerCount.ToString("N0")</b> Followers</MudText>
-                        </MudButton>
-                    </a>
 
-                    @{
-                        var accountViewModel = Services.ClientServices.ActiveAccountServices.AccountViewModel;
-                        if (accountViewModel != null)
-                        {
-                            accountViewModel.FollowingViewModels.TryGetValue(AccountViewModel.Id, out var followingViewModel);
-                            accountViewModel.FollowersViewModels.TryGetValue(AccountViewModel.Id, out var followerViewModel);
+                    <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="@boolean">
+                        <MudButtonGroup OverrideStyles="true" Class="@buttonGroupClass" Variant="Variant.Filled" VerticalAlign="!boolean">
+                            <a href="@($"/follow/{AccountViewModel.Id}")">
+                                <MudButton FullWidth="!boolean">
+                                    <MudText Inline="true"><b>@_followingCount.ToString("N0")</b> Following</MudText>
+                                </MudButton>
+                            </a>
+                            <a href="@($"/follow/{AccountViewModel.Id}")">
+                                <MudButton FullWidth="!boolean">
+                                    <MudText Inline="true"><b>@_followerCount.ToString("N0")</b> Followers</MudText>
+                                </MudButton>
+                            </a>
 
-                            <AccountFollowingComponent Services="@Services" ActiveAccountViewModel="@accountViewModel" OtherAccountId="@AccountViewModel.Id" FollowingViewModel="@followingViewModel" FollowerViewModel="@followerViewModel" />
-                        }
-                    }
-                </MudButtonGroup>
-            </MudHidden>
+                            @{
+                                var accountViewModel = Services.ClientServices.ActiveAccountServices.AccountViewModel;
+                                if (accountViewModel != null)
+                                {
+                                    accountViewModel.FollowingViewModels.TryGetValue(AccountViewModel.Id, out var followingViewModel);
+                                    accountViewModel.FollowersViewModels.TryGetValue(AccountViewModel.Id, out var followerViewModel);
 
-
+                                    <AccountFollowingComponent Services="@Services" ActiveAccountViewModel="@accountViewModel" OtherAccountId="@AccountViewModel.Id" FollowingViewModel="@followingViewModel" FollowerViewModel="@followerViewModel" ButtonFullWidth="!boolean" />
+                                }
+                            }
+                        </MudButtonGroup>
+                    </MudHidden>
+                }
+            }
         </MudCardActions>
     </MudCard>
 
