@@ -1,6 +1,4 @@
-﻿using AzerothMemories.WebBlazor.Components;
-
-namespace AzerothMemories.WebBlazor.Pages;
+﻿namespace AzerothMemories.WebBlazor.Pages;
 
 public sealed class EditMemoryTagsPageeViewModel : ViewModelBase
 {
@@ -20,7 +18,7 @@ public sealed class EditMemoryTagsPageeViewModel : ViewModelBase
     public PostPageViewModelHelper Helper => _postPageHelper;
 
     public AddMemoryComponentSharedData SharedData { get; private set; }
-    
+
     public void OnParametersChanged(string idString, string postIdString, string currentPageString, string focusedCommentId)
     {
         _accountString = idString;
@@ -42,7 +40,7 @@ public sealed class EditMemoryTagsPageeViewModel : ViewModelBase
         {
             return;
         }
-        
+
         await _postPageHelper.UpdateAccount(_accountString);
         await _postPageHelper.UpdatePost(_postIdString);
         await _postPageHelper.UpdateComments(_currentPageString, _focusedCommentId);

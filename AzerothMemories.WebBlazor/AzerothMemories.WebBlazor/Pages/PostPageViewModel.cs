@@ -12,13 +12,13 @@ public sealed class PostPageViewModel : PersistentStateViewModel
         AddPersistentState(() => Helper.ErrorMessage, x => Helper.SetErrorMessage(x), () => Task.FromResult<string>(null));
         AddPersistentState(() => Helper.AccountViewModel, x => Helper.SetAccountViewModel(x), () => Helper.UpdateAccount(_accountString));
         AddPersistentState(() => Helper.PostViewModel, x => Helper.SetPostViewModel(x), () => Helper.UpdatePost(_postIdString));
-        AddPersistentState(() => Helper.PostCommentPageViewModel , x => Helper.SetPostCommentPageViewModel(_currentPageString, _focusedCommentId, x), () => Helper.UpdateComments(_currentPageString, _focusedCommentId));
+        AddPersistentState(() => Helper.PostCommentPageViewModel, x => Helper.SetPostCommentPageViewModel(_currentPageString, _focusedCommentId, x), () => Helper.UpdateComments(_currentPageString, _focusedCommentId));
     }
 
     public override async Task OnInitialized()
     {
         Helper = new PostPageViewModelHelper(Services);
-        
+
         await base.OnInitialized();
     }
 

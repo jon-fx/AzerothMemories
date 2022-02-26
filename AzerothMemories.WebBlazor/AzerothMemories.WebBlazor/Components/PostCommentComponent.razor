@@ -167,7 +167,7 @@
         }
 
         _userReacting = true;
-        
+
         var result = await Services.ClientServices.CommandRunner.Run(new Post_TryReactToPostComment(null, postId, commentId, newReaction));
         if (result.Result > 0)
         {
@@ -203,7 +203,7 @@
         {
             var postId = comment.PostId;
             var commentId = comment.Id;
-            
+
             var result = await Services.ClientServices.CommandRunner.Run(new Post_TryDeleteComment(null, postId, commentId));
 
             comment.DeletedTimeStamp = result.Result;
@@ -214,7 +214,7 @@
     }
 
     private async Task OnReportComment()
-    {        
+    {
         await Services.ClientServices.DialogService.ShowReportPostDialog($"Report {Comment.Comment.AccountUsername}'s Comment ({Comment.Comment.Id})", Comment.Comment.PostId, Comment.Comment.Id);
     }
 

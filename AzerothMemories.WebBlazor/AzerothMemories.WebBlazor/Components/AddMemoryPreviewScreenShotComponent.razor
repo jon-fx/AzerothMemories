@@ -28,7 +28,7 @@ else
                 </MudTooltip>
 
                 <MudTooltip Text="Delete" Color="Color.Dark">
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="DeleteImage" Disabled="@(ViewModel.UploadedImages.Count == 1)"  />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="DeleteImage" Disabled="@(ViewModel.UploadedImages.Count == 1)" />
                 </MudTooltip>
             </CardHeaderActions>
         </MudCardHeader>
@@ -46,7 +46,6 @@ else
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
     [Parameter, EditorRequired] public AddMemoryImageData UploadedImage { get; init; }
     [Parameter, EditorRequired] public AddMemoryPageViewModel ViewModel { get; init; }
-
 
     private string GetImageId => $"imageBox-{Index}";
     private DotNetObjectReference<AddMemoryPreviewScreenShotComponent> _objReference;

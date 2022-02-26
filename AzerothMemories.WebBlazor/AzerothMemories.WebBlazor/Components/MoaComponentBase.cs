@@ -38,7 +38,6 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
         OnParametersChanged();
     }
 
-
     protected override sealed Task OnParametersSetAsync()
     {
         return base.OnParametersSetAsync();

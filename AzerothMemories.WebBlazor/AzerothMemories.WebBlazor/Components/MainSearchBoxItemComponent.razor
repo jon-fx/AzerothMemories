@@ -1,5 +1,5 @@
 ﻿<MudCardHeader Class="pa-0">
-    <CardHeaderAvatar >
+    <CardHeaderAvatar>
         <MudAvatar Size="Size.Small" Image="@Result.Avatar" Square="true">@Result.Name[0]</MudAvatar>
     </CardHeaderAvatar>
     <CardHeaderContent>
@@ -13,7 +13,7 @@
 
             <RealmLinkComponent Typo="Typo.caption"
                                 BlizzardRealmId="@Result.RealmId"
-                                LinkDisabled="true"/>
+                                LinkDisabled="true" />
         }
         else if (Result.Type == MainSearchType.Guild)
         {
@@ -21,7 +21,7 @@
 
             <RealmLinkComponent Typo="Typo.caption"
                                 BlizzardRealmId="@Result.RealmId"
-                                LinkDisabled="true"/>
+                                LinkDisabled="true" />
         }
         else
         {
@@ -32,7 +32,7 @@
 
 @code {
     [Parameter, EditorRequired] public MainSearchResult Result { get; init; }
- 
+
     protected override bool ShouldRender()
     {
         return false;

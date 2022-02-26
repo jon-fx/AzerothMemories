@@ -22,7 +22,7 @@
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired] public EventCallback<PostTagInfo> OnSelectedItemChanged { get; init; }
-    
+
     private async Task OnValueChanged(PostTagInfo value)
     {
         if (_lastSelectedValue == value)

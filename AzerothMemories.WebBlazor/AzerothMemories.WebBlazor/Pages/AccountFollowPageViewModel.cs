@@ -33,5 +33,4 @@ public sealed class AccountFollowPageViewModel : ViewModelBase
 
         AccountViewModel = accountViewModel;
     }
-
 }

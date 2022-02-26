@@ -5,7 +5,7 @@
         var icon = _allIcons[i];
 
         <MudTooltip key="@reason" Text="@reason.Humanize()" Arrow="true" Placement="Placement.Bottom">
-            <MudIconButton Icon="@icon" Disabled="SortMode == reason" OnClick="@(_ => OnSortChanged(reason))"  />
+            <MudIconButton Icon="@icon" Disabled="SortMode == reason" OnClick="@(_ => OnSortChanged(reason))" />
         </MudTooltip>
     }
 </MudButtonGroup>

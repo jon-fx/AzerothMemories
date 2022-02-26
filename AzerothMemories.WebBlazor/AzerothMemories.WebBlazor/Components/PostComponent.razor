@@ -27,7 +27,7 @@ else
                 <a href="@($"/account/{Post.AccountId}")" tabindex="-1">
                     <MudText Typo="Typo.body1">@Post.AccountUsername</MudText>
                 </a>
-                
+
                 <div class="d-block d-sm-none">
                     <MudText Typo="Typo.body2" Inline="false">@Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(Post.PostTime, true)</MudText>
                     <MudText Typo="Typo.body2" Inline="false">@Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(Post.PostCreatedTime, true)</MudText>
@@ -101,7 +101,6 @@ else
                 }
 
                 var allBlobInfo = Post.GetImageBlobInfo();
-
 
                 @for (var i = 0; i < allBlobInfo.Length; i++)
                 {

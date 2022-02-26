@@ -16,11 +16,10 @@ public sealed class TokenDelegatingHandler : DelegatingHandler
         var token = _cookieHelper.GetAntiForgeryToken();
         if (string.IsNullOrWhiteSpace(token))
         {
-            
         }
         else
         {
-            request.Headers.Add(HeaderName , token);
+            request.Headers.Add(HeaderName, token);
         }
 
         return await base.SendAsync(request, cancellationToken);

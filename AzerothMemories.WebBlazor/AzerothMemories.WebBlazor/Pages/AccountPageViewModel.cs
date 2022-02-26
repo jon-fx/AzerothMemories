@@ -35,7 +35,7 @@ public sealed class AccountPageViewModel : PersistentStateViewModel
         await base.OnInitialized();
     }
 
-    public override  async Task ComputeState(CancellationToken cancellationToken)
+    public override async Task ComputeState(CancellationToken cancellationToken)
     {
         await base.ComputeState(cancellationToken);
 

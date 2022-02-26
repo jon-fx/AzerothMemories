@@ -113,7 +113,7 @@ else
         }
 
         Exceptions.ThrowIf(viewModel.FollowerId != OtherAccountId);
-        
+
         var result = await Services.ClientServices.CommandRunner.Run(new Following_TryAcceptFollower { OtherAccountId = viewModel.FollowerId});
         if (result.Result != null)
         {
@@ -127,7 +127,7 @@ else
         {
             return;
         }
-        
+
         var result = await Services.ClientServices.CommandRunner.Run(new Following_TryRemoveFollower { OtherAccountId = viewModel.FollowerId});
         if (result.Result != null)
         {

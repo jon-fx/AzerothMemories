@@ -71,7 +71,7 @@
                     {
                         continue;
                     }
-                    
+
                     var key = $"c-a-tt-{character.Id}";
                     <MudTooltip @key="@key" Placement="Placement.Bottom" Color="Color.Dark">
                         <ChildContent>
@@ -101,7 +101,7 @@
     <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
         <SearchBlizzardDataComponent Services="Services" OnSelectedItemChanged="@SharedData.AddSearchDataToTags" />
     </MudPaper>
-    
+
     <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
         <MainSearchBoxComponent UseCallback="true" Placeholder="Search guilds..." SearchType="MainSearchType.Guild" OnSelectedItemChanged="@SharedData.AddSearchDataToTags" />
     </MudPaper>
@@ -111,7 +111,7 @@
 
     private bool _sharedDataChanged;
     private readonly AddMemoryComponentSharedData _sharedData;
-    
+
     [Parameter, EditorRequired]
     public IMoaServices Services { get; init; }
 

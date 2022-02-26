@@ -25,7 +25,7 @@ public sealed class TimeProvider
 
     public void AlwaysUseUtc(bool alwaysUseUtc)
     {
-        _alwaysUseUtc = alwaysUseUtc ;
+        _alwaysUseUtc = alwaysUseUtc;
     }
 
     public ZonedDateTime GetTimeAsLocal(Instant instant)

@@ -264,6 +264,7 @@ public sealed class AccountHistoryViewModel
             }
         }
     }
+
     private string GetYouLink(string text = "You")
     {
         return $"<a href='account/{AccountId}'>{text}</a>";

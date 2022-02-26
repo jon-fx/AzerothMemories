@@ -29,7 +29,7 @@ internal sealed class CommonDataSeeder : GenericBase<CommonDataSeeder>
         ResourceWriter.AddServerSideLocalizationName(PostTagType.Main, 7, GetFilledLocal("Collections"));
         ResourceWriter.AddServerSideLocalizationName(PostTagType.Main, 8, GetFilledLocal("Mounts"));
         ResourceWriter.AddServerSideLocalizationName(PostTagType.Main, 9, GetFilledLocal("Pets"));
-        
+
         ResourceWriter.AddServerSideLocalizationName(PostTagType.Realm, 0, GetFilledLocal("Unknown Realm"));
         ResourceWriter.AddServerSideLocalizationName(PostTagType.CharacterClass, 0, GetFilledLocal("Unknown Class"));
         ResourceWriter.AddServerSideLocalizationName(PostTagType.CharacterClassSpecialization, 0, GetFilledLocal("Unknown Specialization"));

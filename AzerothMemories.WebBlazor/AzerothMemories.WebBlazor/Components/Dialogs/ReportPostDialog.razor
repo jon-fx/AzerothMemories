@@ -28,7 +28,7 @@
     [Parameter] public long CommentId { get; init; }
 
     [CascadingParameter] public MudDialogInstance MudDialog { get; init; }
-    
+
     [Inject] public ClientServices ClientServices { get; init; }
 
     private async Task Submit()

@@ -10,26 +10,26 @@
 
 <MudLayout>
     <MudAppBar Elevation="25">
-        
-        <a href="" class="ma-2" >
-            <MudImage ObjectFit="ObjectFit.Cover" Fluid="true" Src="header-banner.png"/>
+
+        <a href="" class="ma-2">
+            <MudImage ObjectFit="ObjectFit.Cover" Fluid="true" Src="header-banner.png" />
         </a>
 
-        <MudSpacer/>
+        <MudSpacer />
 
         <MudHidden Breakpoint="Breakpoint.Xs" Invert="false">
-            <MainSearchBoxComponent/>
+            <MainSearchBoxComponent />
         </MudHidden>
 
-        <LoginDisplay/>
+        <LoginDisplay />
     </MudAppBar>
 
-    <MudMainContent>   
-        
+    <MudMainContent>
+
         <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
             <MudPaper Elevation="25">
                 <MudToolBar>
-                    <MainSearchBoxComponent/>
+                    <MainSearchBoxComponent />
                 </MudToolBar>
             </MudPaper>
         </MudHidden>
@@ -44,11 +44,10 @@
                             <MudCardHeader Class="@ClassPresets.CardHeader">
                                 <CardHeaderContent>
                                     <MudAlert Severity="Severity.Error" Icon="false" ContentAlignment="HorizontalAlignment.Center">
-                                    
+
                                         <MudText Typo="Typo.h6" Align="Align.Center">Account Banned</MudText>
                                         <MudText Typo="Typo.h6" Align="Align.Center">@viewModel.BanReason</MudText>
                                         <MudText Typo="Typo.h6" Align="Align.Center">@_timeProvider.GetTimeAsLocalStringAgo(Instant.FromUnixTimeMilliseconds(viewModel.BanExpireTime), false)</MudText>
-
                                     </MudAlert>
                                 </CardHeaderContent>
                             </MudCardHeader>

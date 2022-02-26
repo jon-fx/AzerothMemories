@@ -18,7 +18,7 @@ public sealed class OnThisDayPageViewModel : PersistentStateViewModel
         _currentMonth = currentMonth;
     }
 
-    public override  async Task ComputeState(CancellationToken cancellationToken)
+    public override async Task ComputeState(CancellationToken cancellationToken)
     {
         await base.ComputeState(cancellationToken);
 

@@ -35,7 +35,7 @@ else
     [Parameter, EditorRequired] public string PostId { get; set; }
 
     [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }
-    
+
     protected override void OnParametersChanged()
     {
         base.OnParametersChanged();

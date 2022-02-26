@@ -6,7 +6,7 @@
         public const string CardHeader = "pa-2 pa-2";
         public const string CardActions = "pa-2 pa-2";
         public const string CardContent = "pa-2 pa-2";
-        public static string CardContentNone= "pa-0 pa-0";
+        public static string CardContentNone = "pa-0 pa-0";
 
         public const string CardHeaderPostCard = "pa-2 ma-2 card postCard";
     }
