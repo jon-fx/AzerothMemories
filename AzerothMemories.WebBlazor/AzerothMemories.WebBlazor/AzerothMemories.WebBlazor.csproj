@@ -38,8 +38,18 @@
         <PackageReference Include="Stl.Fusion.Blazor" Version="2.3.23" />
         <PackageReference Include="Stl.Fusion.Client" Version="2.3.23" />
     </ItemGroup>
-
     <ItemGroup>
+        <EmbeddedResource Update="Resources\AzerothResources.resx">
+          <Generator>PublicResXFileCodeGenerator</Generator>
+          <LastGenOutput>AzerothResources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+
+        <Compile Update="Resources\AzerothResources.Designer.cs">
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>AzerothResources.resx</DependentUpon>
+        </Compile>
+
         <EmbeddedResource Update="Resources\BlizzardResources.resx">
             <Generator>PublicResXFileCodeGenerator</Generator>
             <LastGenOutput>BlizzardResources.Designer.cs</LastGenOutput>
@@ -51,5 +61,4 @@
             <DependentUpon>BlizzardResources.resx</DependentUpon>
         </Compile>
     </ItemGroup>
-
 </Project>

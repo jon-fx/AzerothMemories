@@ -141,7 +141,7 @@ else
             <MudCardContent Class="@ClassPresets.CardContent">
                 @foreach (var character in characters)
                 {
-                    <CharacterLinkButton @key="character" StringLocalizer="@Services.ClientServices.StringLocalizer" CharacterViewModel="@character" />
+                    <CharacterLinkButton @key="character" BlizzardStringLocalizer="@Services.ClientServices.BlizzardStringLocalizer" CharacterViewModel="@character" />
                 }
             </MudCardContent>
         </MudCard>

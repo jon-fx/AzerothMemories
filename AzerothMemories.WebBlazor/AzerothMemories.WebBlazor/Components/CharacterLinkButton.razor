@@ -1,4 +1,4 @@
-﻿<a href="character\@CharacterViewModel.RegionId.ToInfo().TwoLetters\@StringLocalizer[$"RealmSlug-{CharacterViewModel.RealmId}"]\@CharacterViewModel.Name">
+﻿<a href="character\@CharacterViewModel.RegionId.ToInfo().TwoLetters\@BlizzardStringLocalizer[$"RealmSlug-{CharacterViewModel.RealmId}"]\@CharacterViewModel.Name">
     <MudTooltip Placement="Placement.Bottom" Color="Color.Dark">
         <ChildContent>
             <MudButton Variant="Variant.Filled">
@@ -12,9 +12,9 @@
                                         CharacterRegionInfo="@CharacterViewModel.RegionId.ToInfo()" />
 
             <div>
-                <MudText Typo="Typo.body2" Inline="true">@CharacterViewModel.Level @StringLocalizer[$"CharacterRace-{CharacterViewModel.Race}"]</MudText>
-                <MudText Typo="Typo.body2" Inline="true" Class=@($"wowclass-{CharacterViewModel.Class}")>@StringLocalizer[$"CharacterClass-{CharacterViewModel.Class}"]</MudText>
-            </div>
+                <MudText Typo="Typo.body2" Inline="true">@CharacterViewModel.Level @BlizzardStringLocalizer[$"CharacterRace-{CharacterViewModel.Race}"]</MudText>
+                <MudText Typo="Typo.body2" Inline="true" Class=@($"wowclass-{CharacterViewModel.Class}")>@BlizzardStringLocalizer[$"CharacterClass-{CharacterViewModel.Class}"]</MudText>
+            </div>BlizzardStringLocalizer
 
             <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@CharacterViewModel.RealmId" />
         </TooltipContent>
@@ -23,7 +23,7 @@
 
 @code {
 
-    [Parameter, EditorRequired] public IStringLocalizer<BlizzardResources> StringLocalizer { get; init; }
+    [Parameter, EditorRequired] public IStringLocalizer<BlizzardResources> BlizzardStringLocalizer { get; init; }
 
     [Parameter, EditorRequired] public CharacterViewModel CharacterViewModel { get; init; }
 }

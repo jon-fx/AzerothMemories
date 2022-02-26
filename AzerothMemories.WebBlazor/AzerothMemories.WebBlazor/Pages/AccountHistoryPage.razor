@@ -17,7 +17,7 @@ else
         <MudTimeline TimelinePosition="TimelinePosition.Start">
             @foreach (var viewModel in viewModels)
             {
-                var str = (MarkupString)viewModel.GetDisplayText(ClientServices.ActiveAccountServices.AccountViewModel, ClientServices.StringLocalizer);
+                var str = (MarkupString)viewModel.GetDisplayText(ClientServices.ActiveAccountServices.AccountViewModel, ClientServices.BlizzardStringLocalizer);
 
                 <MudTimelineItem Color="Color.Info">
                     <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="25">

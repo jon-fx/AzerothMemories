@@ -332,7 +332,7 @@ public sealed class AddMemoryComponentSharedData
         _selectedCharacter = accountViewModel.GetCharactersSafe().FirstOrDefault(x => x.Id == newSelectedCharacter);
         if (_selectedCharacter != null)
         {
-            var stringLocalizer = _viewModel.Services.ClientServices.StringLocalizer;
+            var stringLocalizer = _viewModel.Services.ClientServices.BlizzardStringLocalizer;
             var characterName = $"{_selectedCharacter.Name} ({stringLocalizer[$"Realm-{_selectedCharacter.RealmId}"]})";
             var characterNameTag = new PostTagInfo(PostTagType.Character, _selectedCharacter.Id, characterName, _selectedCharacter.AvatarLinkWithFallBack);
             var characterRealmTag = new PostTagInfo(PostTagType.Realm, _selectedCharacter.RealmId, stringLocalizer[$"Realm-{_selectedCharacter.RealmId}"], null);
