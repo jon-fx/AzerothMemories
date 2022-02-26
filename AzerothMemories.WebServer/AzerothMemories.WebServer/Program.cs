@@ -69,20 +69,26 @@ builder.Services.AddSingleton(new Publisher.Options { Id = "p-67567567" });
 
 var fusion = builder.Services.AddFusion();
 var fusionServer = fusion.AddWebServer();
-var fusionAuth = fusion.AddAuthentication().AddServer(
-    signInControllerSettingsFactory: _ => SignInController.DefaultSettings with
-    {
-        DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme,
-        SignInPropertiesBuilder = (_, properties) =>
-        {
-            properties.IsPersistent = true;
-        }
-    },
-    serverAuthHelperSettingsFactory: _ => ServerAuthHelper.DefaultSettings with
-    {
-        NameClaimKeys = Array.Empty<string>(),
-    });
 
+var signInControllerSettings = SignInController.DefaultSettings with
+{
+    DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme,
+    SignInPropertiesBuilder = (_, properties) =>
+    {
+        properties.IsPersistent = true;
+    }
+};
+
+var authHelperSettings = ServerAuthHelper.DefaultSettings with
+{
+    NameClaimKeys = Array.Empty<string>(),
+};
+
+var sessionMiddlewareSettings = SessionMiddleware.DefaultSettings with
+{
+};
+
+var fusionAuth = fusion.AddAuthentication().AddServer(_ => sessionMiddlewareSettings, _ => authHelperSettings, _ => signInControllerSettings);
 var authenticationBuilder = builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
