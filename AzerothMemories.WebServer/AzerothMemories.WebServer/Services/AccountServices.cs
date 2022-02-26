@@ -18,7 +18,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
     }
 
     [CommandHandler(IsFilter = true, Priority = 1)]
-    protected virtual async Task OnSignIn(SignInCommand command, CancellationToken cancellationToken)
+    protected virtual async Task OnSignInCommand(SignInCommand command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
 
@@ -107,6 +107,8 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
                 accountRecord.UsernameSearchable = DatabaseHelpers.GetSearchableName(newUsername);
             }
 
+            accountRecord.TryUpdateLoginConsecutiveDaysCount();
+
             await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
             context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
@@ -123,6 +125,69 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
 
             throw new NotImplementedException();
         }
+    }
+
+    [CommandHandler(IsFilter = true, Priority = 1)]
+    protected virtual async Task OnSignOutCommand(SignOutCommand command, CancellationToken cancellationToken)
+    {
+        var context = CommandContext.GetCurrent();
+        await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
+
+        if (Computed.IsInvalidating())
+        {
+            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
+            if (invRecord != null)
+            {
+                _ = DependsOnAccountRecord(invRecord.Id);
+                _ = TryGetAccountRecordUsername(invRecord.Username);
+                _ = TryGetAccountRecordFusionId(invRecord.FusionId);
+            }
+
+            return;
+        }
+
+        var accountRecord = await TryGetActiveAccountRecord(command.Session).ConfigureAwait(false);
+        if (accountRecord == null)
+        {
+            return;
+        }
+
+        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+    }
+
+    [CommandHandler(IsFilter = true, Priority = 1)]
+    protected virtual async Task OnSetupSessionCommand(SetupSessionCommand command, CancellationToken cancellationToken)
+    {
+        var context = CommandContext.GetCurrent();
+        await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
+
+        if (Computed.IsInvalidating())
+        {
+            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
+            if (invRecord != null)
+            {
+                _ = DependsOnAccountRecord(invRecord.Id);
+                _ = TryGetAccountRecordUsername(invRecord.Username);
+                _ = TryGetAccountRecordFusionId(invRecord.FusionId);
+            }
+
+            return;
+        }
+
+        var accountRecord = await TryGetActiveAccountRecord(command.Session).ConfigureAwait(false);
+        if (accountRecord == null)
+        {
+            return;
+        }
+
+        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        database.Attach(accountRecord);
+
+        accountRecord.TryUpdateLoginConsecutiveDaysCount();
+
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
     }
 
     [ComputeMethod]

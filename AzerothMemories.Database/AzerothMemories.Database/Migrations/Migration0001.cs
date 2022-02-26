@@ -31,6 +31,8 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(AccountRecord.SocialTwitter)).AsString(50).Nullable()
             .WithColumn(nameof(AccountRecord.SocialTwitch)).AsString(50).Nullable()
             .WithColumn(nameof(AccountRecord.SocialYouTube)).AsString(50).Nullable()
+            .WithColumn(nameof(AccountRecord.LastLoginTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
+            .WithColumn(nameof(AccountRecord.LoginConsecutiveDaysCount)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(AccountRecord.CreatedDateTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
             .WithColumn(nameof(AccountRecord.BanReason)).AsString(200).Nullable()
             .WithColumn(nameof(AccountRecord.BanExpireTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)

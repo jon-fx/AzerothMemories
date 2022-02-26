@@ -36,6 +36,10 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
 
     [Column] public Instant UsernameChangedTime { get; set; }
 
+    [Column] public Instant LastLoginTime { get; set; }
+
+    [Column] public int LoginConsecutiveDaysCount { get; set; }
+
     [Column] public bool IsPrivate { get; set; }
 
     [Column] public string Avatar { get; set; }
@@ -118,5 +122,35 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
         }
 
         return results;
+    }
+
+    public void TryUpdateLoginConsecutiveDaysCount()
+    {
+        var lastSeen = LastLoginTime.InUtc();
+        var timeNow = SystemClock.Instance.GetCurrentInstant().InUtc();
+        if (timeNow.Year == lastSeen.Year)
+        {
+            if (timeNow.DayOfYear == lastSeen.DayOfYear)
+            {
+            }
+            else if (timeNow.DayOfYear == lastSeen.DayOfYear + 1)
+            {
+                LoginConsecutiveDaysCount++;
+            }
+            else
+            {
+                LoginConsecutiveDaysCount = 1;
+            }
+        }
+        else if (timeNow.Year == lastSeen.Year + 1 && timeNow.DayOfYear == 1 && lastSeen.Month == 12 && lastSeen.Day == 31)
+        {
+            LoginConsecutiveDaysCount++;
+        }
+        else
+        {
+            LoginConsecutiveDaysCount = 1;
+        }
+
+        LastLoginTime = timeNow.ToInstant();
     }
 }
