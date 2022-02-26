@@ -22,11 +22,11 @@ public static class ServerSocialHelpers
 
         GetterFunc[(int)SocialLinks.Twitch] = r => r.SocialTwitch;
         SetterFunc[(int)SocialLinks.Twitch] = (r, s) => r.SocialTwitch = s;
-        QuerySetter[(int)SocialLinks.Twitch] = (a, v) => a.SocialTwitch = v; ;
+        QuerySetter[(int)SocialLinks.Twitch] = (a, v) => a.SocialTwitch = v;
 
         GetterFunc[(int)SocialLinks.YouTube] = r => r.SocialYouTube;
         SetterFunc[(int)SocialLinks.YouTube] = (r, s) => r.SocialYouTube = s;
-        QuerySetter[(int)SocialLinks.YouTube] = (a, v) => a.SocialYouTube = v; ;
+        QuerySetter[(int)SocialLinks.YouTube] = (a, v) => a.SocialYouTube = v;
 
         Exceptions.ThrowIf(GetterFunc.Any(x => x == null));
         Exceptions.ThrowIf(SetterFunc.Any(x => x == null));
