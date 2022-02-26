@@ -4,7 +4,7 @@ namespace AzerothMemories.Database.Seeder.Base;
 
 internal sealed class WowTools
 {
-    private const string Build = "9.2.0.42423";
+    private const string Build = "9.2.0.42488";
 
     private Dictionary<int, string> _listFile;
 
@@ -25,15 +25,10 @@ internal sealed class WowTools
 
     private static Dictionary<int, string> GetListFile()
     {
-        var filePath = @"C:\Users\John\Desktop\Stuff\BlizzardData\listfile.csv";
-        var dictionary = new Dictionary<int, string>();
-        var fileInfo = new FileInfo(filePath);
-        if (!fileInfo.Exists)
-        {
-            throw new NotImplementedException();
-        }
-
+        var fileInfo = DownloadIfNotExists("_list-file.csv", "https://wow.tools/casc/listfile/download/csv/unverified");
         var lines = File.ReadAllLines(fileInfo.FullName);
+        var dictionary = new Dictionary<int, string>();
+
         foreach (var line in lines)
         {
             var split = line.Split(';');
@@ -49,6 +44,26 @@ internal sealed class WowTools
         return dictionary;
     }
 
+    private static FileInfo DownloadIfNotExists(string fileName, string remotePath)
+    {
+        var filePath = Path.Combine(@$"C:\Users\John\Desktop\Stuff\BlizzardData\Tools\{Build}\", fileName);
+        var fileInfo = new FileInfo(filePath);
+        
+        if (fileInfo.Directory != null && !fileInfo.Directory.Exists)
+        {
+            fileInfo.Directory.Create();
+        }
+
+        if (!fileInfo.Exists || fileInfo.Length == 0)
+        {
+            using var webClient = new WebClient();
+            webClient.Headers.Add("User-Agent: Other");
+            webClient.DownloadFile(remotePath, fileInfo.FullName);
+        }
+
+        return fileInfo;
+    }
+
     public void LoadDataFromWowTools(string fileName, string primaryKeyName, ref Dictionary<int, WowToolsData> dictionary, string[] fieldsToLoad = null)
     {
         foreach (var locale in WowToolsData.AllLocales)
@@ -59,19 +74,7 @@ internal sealed class WowTools
 
     public void LoadDataFromWowTools(string fileName, string primaryKeyName, ref Dictionary<int, WowToolsData> dictionary, string locale, string[] fieldsToLoad = null)
     {
-        var filePath = @$"C:\Users\John\Desktop\Stuff\BlizzardData\Tools\{fileName}-{locale}.csv";
-        var fileInfo = new FileInfo(filePath);
-        if (!fileInfo.Exists || fileInfo.Length == 0)
-        {
-            if (fileInfo.Directory != null && !fileInfo.Directory.Exists)
-            {
-                fileInfo.Directory.Create();
-            }
-
-            using var webClient = new WebClient();
-            webClient.Headers.Add("User-Agent: Other");
-            webClient.DownloadFile($"https://wow.tools/dbc/api/export/?name={fileName}&build={Build}&locale={locale}", filePath);
-        }
+        var fileInfo = DownloadIfNotExists($"{fileName}-{locale}.csv", $"https://wow.tools/dbc/api/export/?name={fileName}&build={Build}&locale={locale}");
 
         using var stream = fileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         using var streamReader = new StreamReader(stream);

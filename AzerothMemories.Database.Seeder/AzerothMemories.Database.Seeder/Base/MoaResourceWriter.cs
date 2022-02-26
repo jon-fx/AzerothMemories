@@ -29,11 +29,15 @@ internal sealed class MoaResourceWriter
     {
         await using var database = await _databaseProvider.CreateDbContextAsync();
 
+        _logger.LogInformation("Loading Resources from database...");
+
         var results = await database.BlizzardData.AsNoTracking().ToArrayAsync();
         foreach (var result in results)
         {
             _serverSideResources.Add(result.Key, result);
         }
+
+        _logger.LogInformation($"Loaded Resources: {_serverSideResources.Count}");
 
         var iconName = "inv_misc_questionmark";
         var fileInfo = GetLocalMediaFileInfo(iconName);
@@ -236,8 +240,13 @@ internal sealed class MoaResourceWriter
 
     public async Task Save()
     {
-        var newResources = _changedServerSideResources.Values.Where(x => x.Id == 0);
-        var updatedResources = _changedServerSideResources.Values.Where(x => x.Id > 0);
+        _logger.LogInformation("Begin Save");
+
+        var newResources = _changedServerSideResources.Values.Where(x => x.Id == 0).ToArray();
+        var updatedResources = _changedServerSideResources.Values.Where(x => x.Id > 0).ToArray();
+
+        _logger.LogInformation($"New Resources: {newResources.Length}");
+        _logger.LogInformation($"Updated Resources: {newResources.Length}");
 
         await using var database = await _databaseProvider.CreateDbContextAsync();
 
@@ -327,6 +336,8 @@ internal sealed class MoaResourceWriter
 
             writer.Generate();
         }
+
+        _logger.LogInformation("End Save");
     }
 
     private ResXResourceWriter CreateResourceWriter(string key)

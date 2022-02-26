@@ -47,7 +47,7 @@ internal sealed class MoaImageUploader
             var fileName = file.Name;
             if (alreadyUploadedHashData.TryGetValue(fileName, out var uploadedFileHash) && uploadedFileHash == currentFileHash)
             {
-                _logger.LogInformation($"Skipping: {fileName} Hash: {currentFileHash}");
+                _logger.LogDebug($"Skipping: {fileName} Hash: {currentFileHash}");
             }
             else
             {
