@@ -136,7 +136,7 @@ builder.Services.UseRegisterAttributeScanner().RegisterFrom(typeof(CommonService
 builder.Services.AddAntiforgery(options =>
 {
     options.HeaderName = TokenDelegatingHandler.HeaderName;
-    //options.Cookie.Name = "__Host-X-XSRF-TOKEN";
+    options.Cookie.Name = "X-XSRF-TOKEN";
     //options.Cookie.SameSite = SameSiteMode.Strict;
     //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
