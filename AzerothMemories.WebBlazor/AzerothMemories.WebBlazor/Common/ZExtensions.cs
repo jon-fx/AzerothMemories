@@ -30,6 +30,9 @@ public static class ZExtensions
     public static readonly (int Min, int Max)[] TagCountsPerPost;
     public static readonly Instant MinPostTime = Instant.FromUnixTimeMilliseconds(946684800000);//Sat Jan 01 2000 00:00:00 GMT+0000
 
+    public static readonly AccountType Permission_CanUploadAvatar = AccountType.Tier1;
+    public static readonly AccountType Permission_CanChangeSocialLinks = AccountType.Tier2;
+
     static ZExtensions()
     {
         TagCountsPerPost = new (int Min, int Max)[(int)PostTagType.CountExcludingHashTag];

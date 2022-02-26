@@ -684,6 +684,11 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             return null;
         }
 
+        if (accountViewModel.AccountType < ZExtensions.Permission_CanUploadAvatar)
+        {
+            return null;
+        }
+
         var newAvatar = accountViewModel.Avatar;
         var avatarIndex = accountViewModel.AccountFlags.HasFlag(AccountFlags.SecondAvatarIndex) ? 1 : 0;
         try
@@ -771,8 +776,18 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         {
             return null;
         }
-
+        
         var newValue = command.NewValue;
+        if (!string.IsNullOrWhiteSpace(newValue) && accountRecord.AccountType < ZExtensions.Permission_CanChangeSocialLinks)
+        {
+            return null;
+        }
+
+        if (accountRecord.AccountType >= AccountType.Admin && command.AccountId > 0)
+        {
+            accountRecord = await TryGetAccountRecord(command.AccountId).ConfigureAwait(false);
+        }
+
         var helper = SocialHelpers.All[command.LinkId];
         var previous = ServerSocialHelpers.GetterFunc[helper.LinkId](accountRecord);
         if (!string.IsNullOrWhiteSpace(newValue) && !helper.ValidatorFunc(newValue))
@@ -785,12 +800,10 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             return previous;
         }
 
-        ServerSocialHelpers.SetterFunc[helper.LinkId](accountRecord, newValue);
-
         await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(accountRecord);
 
-        ServerSocialHelpers.QuerySetter[helper.LinkId](accountRecord, newValue);
+        ServerSocialHelpers.SetterFunc[helper.LinkId](accountRecord, newValue);
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
