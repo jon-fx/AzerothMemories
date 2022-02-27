@@ -32,7 +32,7 @@ public sealed class PostTagRecord : IDatabaseRecord
 
     [NotMapped] public bool IsPostTag => TagKind != PostTagKind.UserComment;
 
-    [NotMapped] public bool IsDeleted => TagKind == PostTagKind.Deleted || TagKind == PostTagKind.DeletedByPoster;
+    [NotMapped] public bool IsDeleted => TagKind == PostTagKind.Deleted || TagKind == PostTagKind.DeletedByPoster || TagKind == PostTagKind.DeletedByAdmin;
 
     public static bool ValidateTagCounts(HashSet<PostTagRecord> tagRecords)
     {
@@ -63,20 +63,20 @@ public sealed class PostTagRecord : IDatabaseRecord
                 continue;
             }
 
-            if (tagRecord.IsDeleted)
-            {
-                continue;
-            }
-
             if (!tagRecord.IsPostTag)
             {
                 continue;
             }
 
-            if (tagRecord.TagKind == PostTagKind.UserComment || tagRecord.TagKind == PostTagKind.Deleted)
+            if (tagRecord.IsDeleted)
             {
                 continue;
             }
+
+            //if (tagRecord.TagKind == PostTagKind.UserComment || tagRecord.TagKind == PostTagKind.Deleted)
+            //{
+            //    continue;
+            //}
 
             array[id]++;
         }

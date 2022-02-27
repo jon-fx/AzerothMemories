@@ -1912,9 +1912,11 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             return AddMemoryResultCode.Failed;
         }
 
+        var deletedTagKind = PostTagKind.DeletedByPoster;
         var accountViewModel = activeAccount;
         if (activeAccount.AccountType >= AccountType.Admin)
         {
+            deletedTagKind = PostTagKind.DeletedByAdmin;
             accountViewModel = await _commonServices.AccountServices.TryGetAccountById(command.Session, cachedPostRecord.AccountId).ConfigureAwait(false);
         }
         else if (activeAccount.Id != cachedPostRecord.AccountId)
@@ -1968,6 +1970,15 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
                     postRecord.PostTags.Add(newRecord);
                 }
 
+                if (activeAccount.AccountType >= AccountType.Admin)
+                {
+                    
+                }
+                else if (newRecord.TagKind == PostTagKind.DeletedByAdmin)
+                {
+                    return AddMemoryResultCode.InvalidTags;
+                }
+
                 newRecord.PostId = postRecord.Id;
                 newRecord.TagKind = PostTagKind.Post;
 
@@ -1978,7 +1989,13 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             {
                 if (allCurrentTags.TryGetValue(systemTag, out var tagRecord))
                 {
-                    tagRecord.TagKind = PostTagKind.DeletedByPoster;
+                    if (tagRecord.TagKind == PostTagKind.DeletedByAdmin)
+                    {
+                    }
+                    else
+                    {
+                        tagRecord.TagKind = deletedTagKind;
+                    }
                 }
                 else
                 {
