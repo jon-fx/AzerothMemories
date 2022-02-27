@@ -422,7 +422,7 @@ else
         _isChangingTags = true;
 
         var postId = Post.Id;
-        var result = await Services.ClientServices.CommandRunner.Run(new Post_TryRestoreMemory(null, postId, previousCharacter?.Id ?? -1, character?.Id ?? -1));
+        var result = await Services.ClientServices.CommandRunner.Run(new Post_TryRestoreMemory(null, postId, character?.Id ?? -1));
         if (result.Result)
         {
             _showTagMenu = false;
