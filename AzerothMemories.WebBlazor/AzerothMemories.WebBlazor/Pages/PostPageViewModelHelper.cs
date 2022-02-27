@@ -221,13 +221,13 @@ public sealed class PostPageViewModelHelper
         RootComments = rootComments;
     }
 
-    public async Task OnAfterRenderAsync(IScrollManager scrollManager, bool firstRender)
+    public async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender && _scrollToFocus)
         {
             _scrollToFocus = false;
 
-            await scrollManager.ScrollToFragmentAsync($"moa-top-comment-{_focusedNode.Id}", ScrollBehavior.Smooth);
+            await _services.ClientServices.ScrollManager.ScrollToFragmentAsync($"moa-top-comment-{_focusedNode.Id}", ScrollBehavior.Smooth);
         }
     }
 }

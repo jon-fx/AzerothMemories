@@ -16,27 +16,20 @@ else if (PostSearchHelper.CurrentPosts.Length > 0)
         </MudCardContent>
     </MudCard>
 
-    <div id="moa-top-header"></div>
-
     for (var i = 0; i < PostSearchHelper.CurrentPosts.Length; i++)
     {
         var index = i;
         var post = PostSearchHelper.CurrentPosts[index];
-
-        var id = $"moa-account-post-{index}";
-        var divKey = $"moa-post-div-{post.Id }";
-        var postKey = $"moa-post-post-{post.Id}";
-
-        <div id="@id" @key="@divKey">
-            @{
-                if (IsSearchPage)
-                {
-                    <PostComponent @key="@postKey" Services="@PostSearchHelper.Services" Post="@post" OnTagChipClickedCallback="@PostSearchHelper.OnTagChipClickedCallback" />
-                }
-                else
-                {
-                    <PostComponent @key="@postKey" Services="@PostSearchHelper.Services" Post="@post" />
-                }
+        var postId = $"moa-post-{index}";
+        
+        <div id="@postId">
+            @if (IsSearchPage)
+            {
+                <PostComponent @key="@postId" Services="@PostSearchHelper.Services" Post="@post" OnTagChipClickedCallback="@PostSearchHelper.OnTagChipClickedCallback" />
+            }
+            else
+            {
+                <PostComponent @key="@postId" Services="@PostSearchHelper.Services" Post="@post" />
             }
         </div>
     }

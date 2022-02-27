@@ -44,7 +44,6 @@ else
 
     [Parameter, SupplyParameterFromQuery(Name = "comment")] public string FocusedCommentId { get; init; }
 
-    [Inject] IScrollManager ScrollManager { get; init; }
 
     protected override void OnParametersChanged()
     {
@@ -56,6 +55,6 @@ else
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
-        await ViewModel.Helper.OnAfterRenderAsync(ScrollManager, firstRender);
+        await ViewModel.Helper.OnAfterRenderAsync(firstRender);
     }
 }

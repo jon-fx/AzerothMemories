@@ -11,6 +11,7 @@ public sealed class ClientServices
         NavigationManager = serviceProvider.GetRequiredService<NavigationManager>();
         CommandRunner = serviceProvider.GetRequiredService<UICommandRunner>();
         JsRuntime = serviceProvider.GetRequiredService<IJSRuntime>();
+        ScrollManager = serviceProvider.GetRequiredService<IScrollManager>();
         TagHelpers = serviceProvider.GetRequiredService<TagHelpers>();
         TimeProvider = serviceProvider.GetRequiredService<TimeProvider>();
         BlizzardStringLocalizer = serviceProvider.GetRequiredService<IStringLocalizer<BlizzardResources>>();
@@ -27,6 +28,8 @@ public sealed class ClientServices
     public UICommandRunner CommandRunner { get; }
 
     public IJSRuntime JsRuntime { get; }
+
+    public IScrollManager ScrollManager { get; }
 
     public TagHelpers TagHelpers { get; }
 

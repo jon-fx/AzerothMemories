@@ -1,11 +1,8 @@
-﻿@if (AccountViewModel != null && RecentPostsHelper != null)
-{
-    <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
-        <MudCardContent Class="@ClassPresets.CardContentNone">
-            <MudSwitch T="bool" Checked="@(RecentPostsHelper.CurrentType != RecentPostsType.Default)" Color="Color.Primary" Class="d-flex justify-end" Label="" CheckedChanged="RecentPostsHelper.OnShowAllChanged" />
-        </MudCardContent>
-    </MudCard>
-}
+﻿<MudCard id="moa-top-header" Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+    <MudCardContent Class="@ClassPresets.CardContentNone">
+        <MudSwitch T="bool" Checked="@(RecentPostsHelper.CurrentType != RecentPostsType.Default)" Color="Color.Primary" Class="d-flex justify-end" Label="" Disabled="AccountViewModel == null || RecentPostsHelper == null" CheckedChanged="RecentPostsHelper.OnShowAllChanged" />
+    </MudCardContent>
+</MudCard>
 
 @if (RecentPostsHelper == null || RecentPostsHelper.IsLoading)
 {
@@ -17,19 +14,14 @@ else if (RecentPostsHelper.NoResults)
 }
 else
 {
-    <div id="moa-top-header"></div>
-
     for (var i = 0; i < RecentPostsHelper.CurrentPosts.Length; i++)
     {
         var index = i;
         var post = RecentPostsHelper.CurrentPosts[index];
-
-        var id = $"moa-account-post-{index}";
-        var divKey = $"moa-post-div-{post.Id}";
-        var postKey = $"moa-post-post-{post.Id}";
-
-        <div id="@id" @key="@divKey">
-            <PostComponent @key="@postKey" Services="@Services" Post="@post" />
+        var postId = $"moa-post-{index}";
+        
+        <div id="@postId">
+            <PostComponent @key="@postId" Services="@Services" Post="@post" />
         </div>
     }
 
