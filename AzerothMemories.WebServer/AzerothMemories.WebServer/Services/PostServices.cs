@@ -896,7 +896,6 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         long? characterTagToAdd = command.NewCharacterId > 0 ? command.NewCharacterId : null;
         long? accountTagToRemove = command.NewCharacterId > 0 ? null : activeAccount.Id;
 
-
         if (activeAccount.Id == postRecord.AccountId)
         {
             accountTagToRemove = null;
@@ -911,7 +910,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             }
         }
 
-        var accountCharacters = activeAccount.GetCharactersSafe();
+        var accountCharacters = activeAccount.GetAllCharactersSafe();
         if (characterTagToAdd != null && accountCharacters.FirstOrDefault(x => x.Id == characterTagToAdd.Value) == null)
         {
             return false;

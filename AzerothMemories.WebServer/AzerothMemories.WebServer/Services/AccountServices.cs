@@ -211,7 +211,8 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             accountRecord = new AccountRecord
             {
                 FusionId = userId,
-                CreatedDateTime = SystemClock.Instance.GetCurrentInstant()
+                AccountFlags = AccountFlags.AlphaUser,
+                CreatedDateTime = SystemClock.Instance.GetCurrentInstant(),
             };
 
             await using var database = CreateDbContext(true);

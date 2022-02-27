@@ -4,6 +4,8 @@
 public enum AccountFlags
 {
     None,
+    AlphaUser = 1 << 0,
+    BetaUser = 1 << 1,
 
     //Account = 1 << 0,
     //Character = 1 << 1,
