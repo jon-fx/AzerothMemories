@@ -133,7 +133,7 @@
                             </TooltipContent>
                         </MudTooltip>
                     }
-                    
+
                     @if (ViewModel.AccountViewModel.AccountType >= ZExtensions.Permission_CanUploadAvatar)
                     {
                         <InputFile id="fileInput" OnChange="ViewModel.UploadCustomAvatar" hidden accept="@ZExtensions.UploadAcceptExtensions" />

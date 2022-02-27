@@ -13,7 +13,7 @@
     }
     else
     {
-        var name = $"{ViewModel.CharacterViewModel.Name}'s Memories of Azeroth";
+        var name = ViewModel.CharacterViewModel.GetPageTitle();
         var image = ViewModel.CharacterViewModel.AvatarLinkWithFallBack;
         var altImage = name;
 

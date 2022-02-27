@@ -60,4 +60,14 @@ public sealed class CharacterViewModel
     [JsonIgnore] public bool IsLoadingFromArmory => UpdateJobLastResult == 0 || UpdateJobEndTime == 0 || Class == 0 || RealmId == 0;
 
     //[JsonIgnore] public string TagString => PostTagInfo.GetTagString(PostTagType.Character, Id);
+
+    public string GetPageTitle()
+    {
+        if (string.IsNullOrWhiteSpace(Name))
+        {
+            return "Memories of Azeroth";
+        }
+
+        return $"{Name}'s Memories of Azeroth";
+    }
 }

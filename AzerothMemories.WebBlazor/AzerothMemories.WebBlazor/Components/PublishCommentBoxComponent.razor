@@ -11,7 +11,7 @@
                     <MudAvatar Size="Size.Small" Image="@Services.ClientServices.ActiveAccountServices.AccountViewModel.Avatar">@Services.ClientServices.ActiveAccountServices.AccountViewModel.GetAvatarText()</MudAvatar>
                 </CardHeaderAvatar>
                 <CardHeaderContent>
-                    <MudText Typo="Typo.body1">@Services.ClientServices.ActiveAccountServices.AccountViewModel.Username</MudText>
+                    <MudText Typo="Typo.body1">@Services.ClientServices.ActiveAccountServices.AccountViewModel.GetDisplayName()</MudText>
                 </CardHeaderContent>
                 <CardHeaderActions>
                 </CardHeaderActions>

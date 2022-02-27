@@ -56,32 +56,32 @@ public sealed class AccountViewModel
 
     public string GetDisplayName()
     {
-        if (!string.IsNullOrWhiteSpace(Username))
+        if (string.IsNullOrWhiteSpace(Username))
         {
-            return Username;
+            return "Unknown";
         }
 
-        if (!string.IsNullOrWhiteSpace(BattleTag))
+        return Username;
+    }
+
+    public string GetPageTitle()
+    {
+        if (string.IsNullOrWhiteSpace(Username))
         {
-            return BattleTag;
+            return "Memories of Azeroth";
         }
 
-        return "Unknown";
+        return $"{Username}'s Memories of Azeroth";
     }
 
     public string GetAvatarText()
     {
-        if (!string.IsNullOrWhiteSpace(Username))
+        if (string.IsNullOrWhiteSpace(Username))
         {
-            return Username[0].ToString();
+            return "?";
         }
 
-        if (!string.IsNullOrWhiteSpace(BattleTag))
-        {
-            return BattleTag[0].ToString();
-        }
-
-        return "?";
+        return Username[0].ToString();
     }
 
     public CharacterViewModel[] GetCharactersSafe()
