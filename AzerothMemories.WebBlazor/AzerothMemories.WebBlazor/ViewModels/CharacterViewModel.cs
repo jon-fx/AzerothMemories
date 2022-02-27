@@ -42,24 +42,11 @@ public sealed class CharacterViewModel
 
     [JsonInclude] public HttpStatusCode UpdateJobLastResult;
 
-    [JsonIgnore]
-    public string AvatarLinkWithFallBack
-    {
-        get
-        {
-            var str = AvatarLink;
-            if (string.IsNullOrEmpty(str))
-            {
-                str = "https://render-us.worldofwarcraft.com/character/tichondrius/00/000000000-avatar.jpg";
-            }
-
-            return $"{str}?alt=/shadow/avatar/{Race}-{Gender}.jpg";
-        }
-    }
+    [JsonIgnore] public string AvatarLinkWithFallBack => GetAvatarStringWithFallBack(AvatarLink, Race, Gender);
 
     [JsonIgnore] public bool IsLoadingFromArmory => UpdateJobLastResult == 0 || UpdateJobEndTime == 0 || Class == 0 || RealmId == 0;
 
-    //[JsonIgnore] public string TagString => PostTagInfo.GetTagString(PostTagType.Character, Id);
+    [JsonIgnore] public string TagString => PostTagInfo.GetTagString(PostTagType.Character, Id);
 
     public string GetPageTitle()
     {
@@ -69,5 +56,15 @@ public sealed class CharacterViewModel
         }
 
         return $"{Name}'s Memories of Azeroth";
+    }
+
+    public static string GetAvatarStringWithFallBack(string avatarLink, byte race, byte gender)
+    {
+        if (string.IsNullOrEmpty(avatarLink))
+        {
+            avatarLink = "https://render-us.worldofwarcraft.com/character/tichondrius/00/000000000-avatar.jpg";
+        }
+
+        return $"{avatarLink}?alt=/shadow/avatar/{race}-{gender}.jpg";
     }
 }

@@ -30,14 +30,45 @@ public sealed class PostTagRecord : IDatabaseRecord
 
     [Column] public Instant CreatedTime { get; set; }
 
+    [NotMapped] public bool IsPostTag => TagKind != PostTagKind.UserComment;
+
+    [NotMapped] public bool IsDeleted => TagKind == PostTagKind.Deleted || TagKind == PostTagKind.DeletedByPoster;
+
     public static bool ValidateTagCounts(HashSet<PostTagRecord> tagRecords)
     {
-        var array = new int[ZExtensions.TagCountsPerPost.Length];
+        var accountsTaggedInPost = tagRecords.Count(x => x.TagKind == PostTagKind.Post && x.TagType == PostTagType.Account);
+        if (accountsTaggedInPost > 1)
+        {
+            return false;
+        }
 
+        var charactersTaggedInPost = tagRecords.Count(x => x.TagKind == PostTagKind.Post && x.TagType == PostTagType.Character);
+        if (charactersTaggedInPost > 1)
+        {
+            return false;
+        }
+
+        var guildsTaggedInPost = tagRecords.Count(x => x.TagKind == PostTagKind.Post && x.TagType == PostTagType.Guild);
+        if (guildsTaggedInPost > 1)
+        {
+            return false;
+        }
+        
+        var array = new int[ZExtensions.TagCountsPerPost.Length];
         foreach (var tagRecord in tagRecords)
         {
             var id = (int)tagRecord.TagType;
             if (id > array.Length)
+            {
+                continue;
+            }
+
+            if (tagRecord.IsDeleted)
+            {
+                continue;
+            }
+
+            if (!tagRecord.IsPostTag)
             {
                 continue;
             }

@@ -7,5 +7,6 @@ public enum PostTagKind
     PostRestored,
     PostComment,
     Deleted,
+    DeletedByPoster,
     UserComment,
 }

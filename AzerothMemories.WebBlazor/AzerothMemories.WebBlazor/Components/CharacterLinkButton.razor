@@ -14,7 +14,7 @@
             <div>
                 <MudText Typo="Typo.body2" Inline="true">@CharacterViewModel.Level @BlizzardStringLocalizer[$"CharacterRace-{CharacterViewModel.Race}"]</MudText>
                 <MudText Typo="Typo.body2" Inline="true" Class=@($"wowclass-{CharacterViewModel.Class}")>@BlizzardStringLocalizer[$"CharacterClass-{CharacterViewModel.Class}"]</MudText>
-            </div>BlizzardStringLocalizer
+            </div>
 
             <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@CharacterViewModel.RealmId" />
         </TooltipContent>

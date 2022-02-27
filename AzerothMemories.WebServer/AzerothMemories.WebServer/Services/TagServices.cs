@@ -94,13 +94,13 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
         {
             var data = await (from r in database.Characters
                               where r.Id == tagId
-                              select new { r.Name, r.AvatarLink }).FirstOrDefaultAsync().ConfigureAwait(false);
+                              select new { r.Name, r.AvatarLink, r.Gender, r.Race }).FirstOrDefaultAsync().ConfigureAwait(false);
 
             if (data != null)
             {
                 await _commonServices.CharacterServices.DependsOnCharacterRecord(tagId).ConfigureAwait(false);
 
-                return new PostTagInfo(PostTagType.Character, tagId, data.Name, data.AvatarLink);
+                return new PostTagInfo(PostTagType.Character, tagId, data.Name, CharacterViewModel.GetAvatarStringWithFallBack(data.AvatarLink, data.Race, data.Gender));
             }
         }
 

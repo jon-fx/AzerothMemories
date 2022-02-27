@@ -31,12 +31,7 @@ public sealed class EditMemoryTagsPageeViewModel : ViewModelBase
     {
         await base.ComputeState(cancellationToken);
 
-        if (SharedData != null)
-        {
-            return;
-        }
-
-        if (Helper == null)
+        if (_postPageHelper == null)
         {
             return;
         }
@@ -45,30 +40,33 @@ public sealed class EditMemoryTagsPageeViewModel : ViewModelBase
         await _postPageHelper.UpdatePost(_postIdString);
         await _postPageHelper.UpdateComments(_currentPageString, _focusedCommentId);
 
-        var errorMessage = Helper.ErrorMessage;
+        var errorMessage = _postPageHelper.ErrorMessage;
         if (errorMessage != null)
         {
             return;
         }
 
-        var accountViewModel = Helper.AccountViewModel;
+        var accountViewModel = _postPageHelper.AccountViewModel;
         if (accountViewModel == null)
         {
             return;
         }
 
-        var postViewModel = Helper.PostViewModel;
+        var postViewModel = _postPageHelper.PostViewModel;
         if (postViewModel == null)
         {
             return;
         }
 
-        SharedData = new AddMemoryComponentSharedData(this);
+        if (SharedData == null)
+        {
+            SharedData = new AddMemoryComponentSharedData(this);
 
-        await SharedData.InitializeAccount(() => Helper.AccountViewModel);
-        await SharedData.SetPostTimeStamp(Instant.FromUnixTimeMilliseconds(postViewModel.PostTime));
-        await SharedData.InitializeAchievements();
-        await SharedData.OnEditingPost(postViewModel);
+            await SharedData.InitializeAccount(() => _postPageHelper.AccountViewModel);
+            await SharedData.SetPostTimeStamp(Instant.FromUnixTimeMilliseconds(postViewModel.PostTime));
+            await SharedData.InitializeAchievements();
+            await SharedData.OnEditingPost(postViewModel);
+        }
     }
 
     public async Task Submit()
