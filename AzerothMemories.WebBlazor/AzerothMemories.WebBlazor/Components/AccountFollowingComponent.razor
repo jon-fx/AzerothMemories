@@ -62,15 +62,8 @@ else
     {
         base.OnParametersSet();
 
-        if (FollowingViewModel != null)
-        {
-            _followingStatus = FollowingViewModel.Status;
-        }
-
-        if (FollowerViewModel != null)
-        {
-            _followerStatus = FollowerViewModel.Status;
-        }
+        _followingStatus = FollowingViewModel?.Status ?? AccountFollowingStatus.None;
+        _followerStatus = FollowerViewModel?.Status ?? AccountFollowingStatus.None;
     }
 
     private async Task OnFollowButtonClicked(AccountFollowingViewModel viewModel)
