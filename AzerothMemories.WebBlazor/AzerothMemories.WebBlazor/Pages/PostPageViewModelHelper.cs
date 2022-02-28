@@ -223,7 +223,7 @@ public sealed class PostPageViewModelHelper
 
     public async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (!firstRender && _scrollToFocus)
+        if (_scrollToFocus)
         {
             _scrollToFocus = false;
 
