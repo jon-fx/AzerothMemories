@@ -2,6 +2,8 @@
 
 @code
 {
+    private bool _isTrackingEnabled;
+
     [Inject] public IJSRuntime JsRuntime { get; init; }
 
     [Inject] public NavigationManager NavigationManager { get; init; }
@@ -36,6 +38,13 @@
 
     private async Task OnLocationChanged(string location)
     {
-        await JsRuntime.InvokeVoidAsync("OnNavigate", location);
+        if (_isTrackingEnabled)
+        {
+            await JsRuntime.InvokeVoidAsync("OnNavigate", location);
+        }
+        else
+        {
+            _isTrackingEnabled = true;
+        }
     }
 }
