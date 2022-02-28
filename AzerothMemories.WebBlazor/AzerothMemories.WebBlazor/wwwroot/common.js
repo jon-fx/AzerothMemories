@@ -81,3 +81,8 @@ function SetUpTagTextBox(textBoxName, userTags) {
     window.mainTributeAttached = document.getElementById(textBoxName);
     window.mainTribute.attach(window.mainTributeAttached);
 }
+
+function OnNavigate(path) {
+    gtag('set', 'page_path', path);
+    gtag('event', 'page_view');
+}

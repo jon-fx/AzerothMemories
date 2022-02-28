@@ -1,0 +1,41 @@
+﻿@implements IDisposable
+
+@code
+{
+    [Inject] public IJSRuntime JsRuntime { get; init; }
+
+    [Inject] public NavigationManager NavigationManager { get; init; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        NavigationManager.LocationChanged -= OnLocationChanged;
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+    
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender)
+        {
+            await OnLocationChanged(NavigationManager.Uri);
+        }
+    } 
+
+    private void OnLocationChanged(object sender, LocationChangedEventArgs args)
+    {
+        OnLocationChanged(args.Location).AndForget();
+    }
+
+    private async Task OnLocationChanged(string location)
+    {
+        await JsRuntime.InvokeVoidAsync("OnNavigate", location);
+    }
+}
