@@ -37,9 +37,9 @@ public sealed class CommonConfig
 
     public Duration UsernameChangeDelay { get; set; } = Duration.FromDays(30);
 
-    public bool UploadToBlobStorage { get; set; } = !true;
+    public bool UploadToBlobStorage { get; set; }
 
-    public bool UpdateSkipCharactersOnLowPriority { get; set; } = !true;
+    public bool UpdateSkipCharactersOnLowPriority { get; set; }
 
     public int UploadsInTheLastXCount { get; set; } = 30;
 
@@ -58,6 +58,6 @@ public sealed class CommonConfig
     };
 
     public const int PostsPerPage = 10;
-    public const int CommentsPerPage = 50;
+    public const int CommentsPerPage = 25;
     public const int HistoryItemsPerPage = 50;
 }
