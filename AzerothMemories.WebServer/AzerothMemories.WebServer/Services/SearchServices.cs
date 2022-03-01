@@ -30,7 +30,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         var timeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(timeZoneId);
         if (timeZone == null)
         {
-            timeZoneId = DateTimeZoneProviders.Tzdb.GetSystemDefault().Id;
+            timeZoneId = DateTimeZone.Utc.Id;
         }
 
         inZoneDay = Math.Clamp(inZoneDay, (byte)1, (byte)31);
@@ -68,7 +68,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         var timeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(timeZoneId);
         if (timeZone == null)
         {
-            timeZoneId = DateTimeZoneProviders.Tzdb.GetSystemDefault().Id;
+            timeZoneId = DateTimeZone.Utc.Id;
         }
 
         inZoneDay = Math.Clamp(inZoneDay, (byte)1, (byte)31);

@@ -111,7 +111,7 @@ authenticationBuilder.AddCookie(options =>
     options.SlidingExpiration = true;
     options.Events.OnSigningIn = ctx =>
     {
-        ctx.CookieOptions.Expires = DateTimeOffset.UtcNow.AddDays(28);
+        ctx.CookieOptions.Expires = DateTimeOffset.UtcNow.AddDays(14);
 
         return Task.CompletedTask;
     };
