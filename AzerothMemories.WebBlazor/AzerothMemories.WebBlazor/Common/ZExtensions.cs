@@ -248,6 +248,7 @@ public static class ZExtensions
 
     public static string GetWowHeadLink(this PostTagType tagType, long id)
     {
+        string wowHeadLink = null;
         switch (tagType)
         {
             case PostTagType.None:
@@ -258,43 +259,53 @@ public static class ZExtensions
             }
             case PostTagType.Mount:
             {
-                return $"mount={id}";
+                wowHeadLink = $"mount={id}";
+                break;
             }
             case PostTagType.Pet:
             {
-                return $"battle-pet={id}";
+                wowHeadLink = $"battle-pet={id}";
+                break;
             }
             case PostTagType.Item:
             {
-                return $"item={id}";
+                wowHeadLink = $"item={id}";
+                break;
             }
             case PostTagType.Achievement:
             {
-                return $"achievement={id}";
+                wowHeadLink = $"achievement={id}";
+                break;
             }
             case PostTagType.Zone:
             {
-                return $"zone={id}";
+                wowHeadLink = $"zone={id}";
+                break;
             }
             case PostTagType.Npc:
             {
-                return $"npc={id}";
+                wowHeadLink = $"npc={id}";
+                break;
             }
             case PostTagType.Spell:
             {
-                return $"spell={id}";
+                wowHeadLink = $"spell={id}";
+                break;
             }
             case PostTagType.Object:
             {
-                return $"object={id}";
+                wowHeadLink = $"object={id}";
+                break;
             }
             case PostTagType.Quest:
             {
-                return $"quest={id}";
+                wowHeadLink = $"quest={id}";
+                break;
             }
             case PostTagType.ItemSet:
             {
-                return $"itemset={id}";
+                wowHeadLink = $"itemset={id}";
+                break;
             }
             case PostTagType.Toy:
             case PostTagType.Title:
@@ -316,7 +327,12 @@ public static class ZExtensions
             }
         }
 
-        return null;
+        if (!string.IsNullOrWhiteSpace(wowHeadLink))
+        {
+            wowHeadLink += ServerSideLocaleExt.GetWowHeadDomain();
+        }
+
+        return wowHeadLink;
     }
 
     public static Color GetChipColor(this PostTagInfo tagInfo)

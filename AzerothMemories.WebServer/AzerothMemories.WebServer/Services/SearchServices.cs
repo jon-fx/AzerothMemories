@@ -18,7 +18,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     }
 
     [ComputeMethod]
-    public virtual async Task<DailyActivityResults> TryGetDailyActivity(Session session, string timeZoneId, byte inZoneDay, byte inZoneMonth, string locale)
+    public virtual async Task<DailyActivityResults> TryGetDailyActivity(Session session, string timeZoneId, byte inZoneDay, byte inZoneMonth, ServerSideLocale locale)
     {
         long accountId = 0;
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
@@ -40,7 +40,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<DailyActivityResults> TryGetDailyActivity(long accountId, string timeZoneId, byte inZoneDay, byte inZoneMonth, string locale)
+    protected virtual async Task<DailyActivityResults> TryGetDailyActivity(long accountId, string timeZoneId, byte inZoneDay, byte inZoneMonth, ServerSideLocale locale)
     {
         var allResults = await TryGetDailyActivityFull(timeZoneId, inZoneDay, inZoneMonth, locale).ConfigureAwait(false);
         var userResults = new Dictionary<int, DailyActivityResultsUser>();
@@ -56,7 +56,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     }
 
     [ComputeMethod]
-    public virtual async Task<DailyActivityResults[]> TryGetDailyActivityFull(Session session, string timeZoneId, byte inZoneDay, byte inZoneMonth, string locale)
+    public virtual async Task<DailyActivityResults[]> TryGetDailyActivityFull(Session session, string timeZoneId, byte inZoneDay, byte inZoneMonth, ServerSideLocale locale)
     {
         long accountId = 0;
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
@@ -78,7 +78,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<DailyActivityResults[]> TryGetDailyActivityFull(long accountId, string timeZoneId, byte inZoneDay, byte inZoneMonth, string locale)
+    protected virtual async Task<DailyActivityResults[]> TryGetDailyActivityFull(long accountId, string timeZoneId, byte inZoneDay, byte inZoneMonth, ServerSideLocale locale)
     {
         var allResults = await TryGetDailyActivityFull(timeZoneId, inZoneDay, inZoneMonth, locale).ConfigureAwait(false);
         var userResults = new Dictionary<int, DailyActivityResultsUser>();
@@ -113,7 +113,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<Dictionary<int, DailyActivityResultsMain>> TryGetDailyActivityFull(string timeZoneId, byte inZoneDay, byte inZoneMonth, string locale)
+    protected virtual async Task<Dictionary<int, DailyActivityResultsMain>> TryGetDailyActivityFull(string timeZoneId, byte inZoneDay, byte inZoneMonth, ServerSideLocale locale)
     {
         var timeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(timeZoneId);
         if (timeZone == null)
@@ -352,7 +352,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<Dictionary<int, DailyActivityResultsUser>> TryGetUserActivityFull(long accountId, string timeZoneId, byte inZoneDay, byte inZoneMonth, string locale)
+    protected virtual async Task<Dictionary<int, DailyActivityResultsUser>> TryGetUserActivityFull(long accountId, string timeZoneId, byte inZoneDay, byte inZoneMonth, ServerSideLocale locale)
     {
         var timeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(timeZoneId);
         if (timeZone == null)
@@ -604,7 +604,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     }
 
     [ComputeMethod]
-    public virtual async Task<RecentPostsResults> TryGetRecentPosts(Session session, RecentPostsType postsType, PostSortMode sortMode, int currentPage, string locale)
+    public virtual async Task<RecentPostsResults> TryGetRecentPosts(Session session, RecentPostsType postsType, PostSortMode sortMode, int currentPage, ServerSideLocale locale)
     {
         var account = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         var allSearchResult = Array.Empty<long>();
@@ -686,7 +686,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     }
 
     [ComputeMethod]
-    public virtual async Task<SearchPostsResults> TrySearchPosts(Session session, string[] tagStrings, PostSortMode sortMode, int currentPage, long postMinTime, long postMaxTime, string locale)
+    public virtual async Task<SearchPostsResults> TrySearchPosts(Session session, string[] tagStrings, PostSortMode sortMode, int currentPage, long postMinTime, long postMaxTime, ServerSideLocale locale)
     {
         postMinTime = Math.Clamp(postMinTime, 0, SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
         postMaxTime = Math.Clamp(postMaxTime, 0, SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
@@ -722,7 +722,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         };
     }
 
-    private async Task<PostViewModel[]> GetPostViewModelsForPage(Session session, long[] allSearchResult, int currentPage, int postsPerPage, string locale)
+    private async Task<PostViewModel[]> GetPostViewModelsForPage(Session session, long[] allSearchResult, int currentPage, int postsPerPage, ServerSideLocale locale)
     {
         var viewModels = new List<PostViewModel>();
         for (var i = (currentPage - 1) * postsPerPage; i < allSearchResult.Length; i++)
@@ -746,7 +746,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<(PostTagInfo[] Tags, HashSet<string> Strings)> GetPostSearchTags(string[] tagStrings, string locale)
+    protected virtual async Task<(PostTagInfo[] Tags, HashSet<string> Strings)> GetPostSearchTags(string[] tagStrings, ServerSideLocale locale)
     {
         var searchPostTags = new List<PostTagInfo>();
         var serverSideTagStrings = new HashSet<string>();

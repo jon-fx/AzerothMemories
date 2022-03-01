@@ -48,6 +48,6 @@ public sealed class IndexPageViewModel : PersistentStateViewModel
         var timeZone = Services.ClientServices.TimeProvider.GetCurrentTimeZone();
         var inZone = SystemClock.Instance.GetCurrentInstant().InZone(timeZone).Date;
 
-        return Services.ComputeServices.SearchServices.TryGetDailyActivity(null, timeZone.Id, (byte)inZone.Day, (byte)inZone.Month, CultureInfo.CurrentCulture.Name);
+        return Services.ComputeServices.SearchServices.TryGetDailyActivity(null, timeZone.Id, (byte)inZone.Day, (byte)inZone.Month, ServerSideLocaleExt.GetServerSideLocale());
     }
 }

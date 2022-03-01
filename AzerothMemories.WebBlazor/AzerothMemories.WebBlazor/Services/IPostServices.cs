@@ -8,7 +8,7 @@ public interface IPostServices
 
     [ComputeMethod]
     [Get(nameof(TryGetPostViewModel) + "/{accountId}/{postId}")]
-    Task<PostViewModel> TryGetPostViewModel(Session session, [Path] long accountId, [Path] long postId, [Query] string locale);
+    Task<PostViewModel> TryGetPostViewModel(Session session, [Path] long accountId, [Path] long postId, [Query] ServerSideLocale locale);
 
     [CommandHandler]
     [Post(nameof(TryReactToPost))]

@@ -5,11 +5,11 @@ public interface ISearchServices
 {
     [ComputeMethod]
     [Get(nameof(TryGetDailyActivity))]
-    Task<DailyActivityResults> TryGetDailyActivity(Session session, [Query] string timeZoneId, [Query] byte inZoneDay, [Query] byte inZoneMonth, [Query] string locale);
+    Task<DailyActivityResults> TryGetDailyActivity(Session session, [Query] string timeZoneId, [Query] byte inZoneDay, [Query] byte inZoneMonth, [Query] ServerSideLocale locale);
 
     [ComputeMethod]
     [Get(nameof(TryGetDailyActivityFull))]
-    Task<DailyActivityResults[]> TryGetDailyActivityFull(Session session, [Query] string timeZoneId, [Query] byte inZoneDay, [Query] byte inZoneMonth, [Query] string locale);
+    Task<DailyActivityResults[]> TryGetDailyActivityFull(Session session, [Query] string timeZoneId, [Query] byte inZoneDay, [Query] byte inZoneMonth, [Query] ServerSideLocale locale);
 
     [ComputeMethod]
     [Get(nameof(TrySearch))]
@@ -17,9 +17,9 @@ public interface ISearchServices
 
     [ComputeMethod]
     [Get(nameof(TryGetRecentPosts))]
-    Task<RecentPostsResults> TryGetRecentPosts(Session session, [Query] RecentPostsType postsType, [Query] PostSortMode sortMode, [Query] int currentPage, [Query] string locale);
+    Task<RecentPostsResults> TryGetRecentPosts(Session session, [Query] RecentPostsType postsType, [Query] PostSortMode sortMode, [Query] int currentPage, [Query] ServerSideLocale locale);
 
     [ComputeMethod]
     [Get(nameof(TrySearchPosts))]
-    Task<SearchPostsResults> TrySearchPosts(Session session, [Query] string[] tagStrings, [Query] PostSortMode sortMode, [Query] int currentPage, [Query] long postMinTime, [Query] long postMaxTime, [Query] string locale);
+    Task<SearchPostsResults> TrySearchPosts(Session session, [Query] string[] tagStrings, [Query] PostSortMode sortMode, [Query] int currentPage, [Query] long postMinTime, [Query] long postMaxTime, [Query] ServerSideLocale locale);
 }

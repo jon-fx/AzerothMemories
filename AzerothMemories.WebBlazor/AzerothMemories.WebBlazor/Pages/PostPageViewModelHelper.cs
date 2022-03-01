@@ -71,7 +71,7 @@ public sealed class PostPageViewModelHelper
 
         if (AccountViewModel != null)
         {
-            PostViewModel = await _services.ComputeServices.PostServices.TryGetPostViewModel(null, AccountViewModel.Id, postId, CultureInfo.CurrentCulture.Name);
+            PostViewModel = await _services.ComputeServices.PostServices.TryGetPostViewModel(null, AccountViewModel.Id, postId, ServerSideLocaleExt.GetServerSideLocale());
 
             if (PostViewModel == null)
             {

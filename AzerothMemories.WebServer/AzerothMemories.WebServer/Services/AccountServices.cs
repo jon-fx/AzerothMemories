@@ -867,7 +867,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, long timeStamp, int diffInSeconds, string locale)
+    public virtual async Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, long timeStamp, int diffInSeconds, ServerSideLocale locale)
     {
         var accountRecord = await TryGetActiveAccountRecord(session).ConfigureAwait(false);
         if (accountRecord == null)

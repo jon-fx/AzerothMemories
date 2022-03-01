@@ -69,7 +69,7 @@ public sealed class RecentPostsHelper
 
         IsLoading = true;
 
-        var searchResults = await _services.ComputeServices.SearchServices.TryGetRecentPosts(null, _recentPostType, _sortMode, _currentPage, CultureInfo.CurrentCulture.Name);
+        var searchResults = await _services.ComputeServices.SearchServices.TryGetRecentPosts(null, _recentPostType, _sortMode, _currentPage, ServerSideLocaleExt.GetServerSideLocale());
 
         _searchResults = searchResults;
 

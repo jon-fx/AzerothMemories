@@ -49,7 +49,7 @@
             return Enumerable.Empty<PostTagInfo>();
         }
 
-        var results = await Services.ComputeServices.TagServices.Search(null, searchString, CultureInfo.CurrentCulture.Name);
+        var results = await Services.ComputeServices.TagServices.Search(null, searchString, ServerSideLocaleExt.GetServerSideLocale());
         return results;
     }
 

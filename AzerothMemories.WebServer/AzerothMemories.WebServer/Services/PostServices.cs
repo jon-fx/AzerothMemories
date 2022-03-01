@@ -84,7 +84,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postId, string locale)
+    public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postId, ServerSideLocale locale)
     {
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         var activeAccountId = activeAccount?.Id ?? 0;
@@ -479,7 +479,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postAccountId, long postId, string locale)
+    public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postAccountId, long postId, ServerSideLocale locale)
     {
         var result = await TryGetPostViewModel(session, postId, locale).ConfigureAwait(false);
         if (result == null)
@@ -2052,7 +2052,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<PostTagInfo[]> GetAllPostTagRecord(long postId, string locale)
+    protected virtual async Task<PostTagInfo[]> GetAllPostTagRecord(long postId, ServerSideLocale locale)
     {
         var allTagInfo = new List<PostTagInfo>();
         var allTagRecords = await GetAllPostTags(postId).ConfigureAwait(false);

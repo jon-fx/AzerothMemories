@@ -47,7 +47,7 @@ public interface IAccountServices
 
     [ComputeMethod]
     [Get(nameof(TryGetAchievementsByTime) + "/{timeStamp}/{diffInSeconds}")]
-    Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, [Path] long timeStamp, [Path] int diffInSeconds, [Query] string locale);
+    Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, [Path] long timeStamp, [Path] int diffInSeconds, [Query] ServerSideLocale locale);
 
     [ComputeMethod]
     [Get(nameof(TryGetAccountHistory))]

@@ -13,7 +13,7 @@ public sealed class TagController : ControllerBase, ITagServices
     }
 
     [HttpGet("{searchString}"), Publish]
-    public Task<PostTagInfo[]> Search(Session session, [FromRoute] string searchString, [FromQuery] string locale)
+    public Task<PostTagInfo[]> Search(Session session, [FromRoute] string searchString, [FromQuery] ServerSideLocale locale)
     {
         return _commonServices.TagServices.Search(session, searchString, locale);
     }

@@ -41,7 +41,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostTagInfo> GetTagInfo(PostTagType tagType, long tagId, string hashTagText, string locale)
+    public virtual async Task<PostTagInfo> GetTagInfo(PostTagType tagType, long tagId, string hashTagText, ServerSideLocale locale)
     {
         if (tagType == PostTagType.Account || tagType == PostTagType.Character || tagType == PostTagType.Guild)
         {
@@ -122,7 +122,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostTagInfo[]> Search(Session session, string searchString, string locale)
+    public virtual async Task<PostTagInfo[]> Search(Session session, string searchString, ServerSideLocale locale)
     {
         if (string.IsNullOrWhiteSpace(searchString) || searchString.Length < 3)
         {
@@ -139,11 +139,11 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<PostTagInfo[]> Search(string searchString, string locale)
+    protected virtual async Task<PostTagInfo[]> Search(string searchString, ServerSideLocale locale)
     {
         await using var database = CreateDbContext();
 
-        var query = GetSearchQuery(database, locale, searchString);
+        var query = ServerLocaleHelpers.GetSearchQuery(database, locale, searchString);
         var records = await query.ToArrayAsync().ConfigureAwait(false);
         var postTags = new List<PostTagInfo>();
         foreach (var record in records)
@@ -155,19 +155,14 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
         return postTags.OrderBy(x => x.Name.Length).ThenBy(x => x.Type).ThenBy(x => x.Id).Take(50).ToArray();
     }
 
-    private IQueryable<BlizzardDataRecord> GetSearchQuery(AppDbContext database, string locale, string searchString)
-    {
-        return database.BlizzardData.Where(r => r.Name.EnGb.ToLower().StartsWith(searchString));
-    }
-
-    private PostTagInfo CreatePostTagInfo(BlizzardDataRecord record, string locale)
+    private PostTagInfo CreatePostTagInfo(BlizzardDataRecord record, ServerSideLocale locale)
     {
         if (record.TagType == PostTagType.Realm)
         {
             record.Media = null;
         }
 
-        var name = record.Name.EnGb;
+        var name = ServerLocaleHelpers.GetName(locale, record.Name);
         if (string.IsNullOrWhiteSpace(name))
         {
             name = PostTagInfo.GetTagString(record.TagType, record.TagId);
