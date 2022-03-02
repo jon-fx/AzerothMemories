@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Services;
+﻿using AzerothMemories.WebServer.Blizzard.Models;
+
+namespace AzerothMemories.WebServer.Services;
 
 public sealed class CommonServices
 {
@@ -25,6 +27,7 @@ public sealed class CommonServices
         TagServices = _serviceProvider.GetRequiredService<TagServices>();
         PostServices = _serviceProvider.GetRequiredService<PostServices>();
         SearchServices = _serviceProvider.GetRequiredService<SearchServices>();
+        MediaServices = _serviceProvider.GetRequiredService<MediaServices>();
     }
 
     internal IAuth Auth { get; private set; }
@@ -50,6 +53,8 @@ public sealed class CommonServices
     internal PostServices PostServices { get; private set; }
 
     internal SearchServices SearchServices { get; private set; }
+
+    internal MediaServices MediaServices { get; private set; }
 
     internal BlizzardUpdateHandler BlizzardUpdateHandler { get; private set; }
 }
