@@ -4,7 +4,7 @@ namespace AzerothMemories.Database.Seeder.Base;
 
 internal sealed class WowTools
 {
-    private const string Build = "9.2.0.42521";
+    private const string Build = "9.2.0.42538";
 
     private Dictionary<int, string> _listFile;
 

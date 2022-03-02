@@ -98,7 +98,7 @@ internal sealed class MoaResourceWriter
         }
         else
         {
-            mediaPath = $"/media/{fileInfo.Name}";
+            mediaPath = fileInfo.Name;
         }
 
         var resource = GetOrCreateServerSideResource(tagType, tagId);
@@ -254,26 +254,10 @@ internal sealed class MoaResourceWriter
         {
             database.BlizzardData.Add(newResource);
         }
-
+        
         foreach (var updatedResource in updatedResources)
         {
-            var record = await database.BlizzardData.FirstAsync(x => x.Id == updatedResource.Id);
-            record.Name = new BlizzardDataRecordLocal
-            {
-                EnUs = updatedResource.Name.EnUs,
-                KoKr = updatedResource.Name.KoKr,
-                FrFr = updatedResource.Name.FrFr,
-                DeDe = updatedResource.Name.DeDe,
-                ZhCn = updatedResource.Name.ZhCn,
-                EsEs = updatedResource.Name.EsEs,
-                ZhTw = updatedResource.Name.ZhTw,
-                EnGb = updatedResource.Name.EnGb,
-                EsMx = updatedResource.Name.EsMx,
-                RuRu = updatedResource.Name.RuRu,
-                PtBr = updatedResource.Name.PtBr,
-                ItIt = updatedResource.Name.ItIt,
-                PtPt = updatedResource.Name.PtPt,
-            };
+            database.BlizzardData.Update(updatedResource);
         }
 
         await database.SaveChangesAsync();
