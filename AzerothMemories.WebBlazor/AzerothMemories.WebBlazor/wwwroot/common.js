@@ -36,7 +36,7 @@ function OpenImageEditor(id, dotNetHelper) {
         saveByEnter: true,
 
         hiddenTools: [/*'line', 'arrow', 'rect',*/ 'ellipse', 'brush', /*'text',*/ 'rotate', 'resize', /*'save'*/, 'open',/* 'close'*/, /*'undo', 'redo',*/ 'bucket'],
-        pixelizePixelSize: 10,
+        pixelizePixelSize: '10',
         pixelizeHideUserInput: true,
 
         saveHandler: function (image, done) {
