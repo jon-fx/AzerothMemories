@@ -9,7 +9,7 @@ internal sealed class ItemSetDataSeeder : GenericBase<ItemSetDataSeeder>
     protected override Task DoSomething()
     {
         var data = new Dictionary<int, WowToolsData>();
-        WowTools.LoadDataFromWowTools("ItemSet", "ID", ref data);
+        WowTools.Main.LoadDataFromWowTools("ItemSet", "ID", ref data);
 
         foreach (var reference in data.Values)
         {

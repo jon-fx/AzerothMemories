@@ -126,7 +126,7 @@ internal sealed class MoaResourceWriter
         }
 
         string remotePath = null;
-        if (_wowTools.TryGetIconName(mediaId, out var iconName))
+        if (_wowTools.Main.TryGetIconName(mediaId, out var iconName))
         {
             remotePath = $"https://render.worldofwarcraft.com/eu/icons/56/{iconName}.jpg";
         }

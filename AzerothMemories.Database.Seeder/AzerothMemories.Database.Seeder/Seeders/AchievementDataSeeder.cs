@@ -9,7 +9,7 @@ internal sealed class AchievementDataSeeder : GenericBase<AchievementDataSeeder>
     protected override async Task DoSomething()
     {
         var data = new Dictionary<int, WowToolsData>();
-        WowTools.LoadDataFromWowTools("achievement", "ID", ref data);
+        WowTools.Main.LoadDataFromWowTools("achievement", "ID", ref data);
 
         foreach (var reference in data.Values)
         {

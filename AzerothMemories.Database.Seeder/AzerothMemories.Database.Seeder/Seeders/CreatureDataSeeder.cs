@@ -9,7 +9,7 @@ internal sealed class CreatureDataSeeder : GenericBase<CreatureDataSeeder>
     protected override Task DoSomething()
     {
         var data = new Dictionary<int, WowToolsData>();
-        WowTools.LoadDataFromWowTools("creature", "ID", ref data);
+        WowTools.Main.LoadDataFromWowTools("creature", "ID", ref data);
 
         foreach (var reference in data.Values)
         {

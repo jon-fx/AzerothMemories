@@ -9,7 +9,7 @@ internal sealed class QuestDataSeeder : GenericBase<QuestDataSeeder>
     protected override Task DoSomething()
     {
         var data = new Dictionary<int, WowToolsData>();
-        WowTools.LoadDataFromWowTools("QuestV2CliTask", "ID", ref data);
+        WowTools.Main.LoadDataFromWowTools("QuestV2CliTask", "ID", ref data);
 
         foreach (var reference in data.Values)
         {

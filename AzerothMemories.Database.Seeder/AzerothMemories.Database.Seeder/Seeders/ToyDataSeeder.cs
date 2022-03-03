@@ -9,7 +9,7 @@ internal sealed class ToyDataSeeder : GenericBase<ToyDataSeeder>
     protected override Task DoSomething()
     {
         var data = new Dictionary<int, WowToolsData>();
-        WowTools.LoadDataFromWowTools("Toy", "ID", ref data, new[] { "ID", "ItemID" });
+        WowTools.Main.LoadDataFromWowTools("Toy", "ID", ref data, new[] { "ID", "ItemID" });
 
         foreach (var reference in data.Values)
         {

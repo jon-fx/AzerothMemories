@@ -10,14 +10,14 @@ internal sealed class ItemDataSeeder : GenericBase<ItemDataSeeder>
     {
         var data = new Dictionary<int, WowToolsData>();
 
-        WowTools.LoadDataFromWowTools("Item", "ID", ref data, "engb", new[] { "IconFileDataID" });
-        WowTools.LoadDataFromWowTools("ItemSparse", "ID", ref data, new[] { "Display_lang" });
-        WowTools.LoadDataFromWowTools("ItemSearchName", "ID", ref data, new[] { "Display_lang", "OverallQualityID" });
-        WowTools.LoadDataFromWowTools("ItemModifiedAppearance", "ItemID", ref data, "engb", new[] { "ItemAppearanceID" });
-        WowTools.LoadDataFromWowTools("ItemXItemEffect", "ItemID", ref data, "engb", new[] { "ItemEffectID" });
+        WowTools.Main.LoadDataFromWowTools("Item", "ID", ref data, "engb", new[] { "IconFileDataID" });
+        WowTools.Main.LoadDataFromWowTools("ItemSparse", "ID", ref data, new[] { "Display_lang" });
+        WowTools.Main.LoadDataFromWowTools("ItemSearchName", "ID", ref data, new[] { "Display_lang", "OverallQualityID" });
+        WowTools.Main.LoadDataFromWowTools("ItemModifiedAppearance", "ItemID", ref data, "engb", new[] { "ItemAppearanceID" });
+        WowTools.Main.LoadDataFromWowTools("ItemXItemEffect", "ItemID", ref data, "engb", new[] { "ItemEffectID" });
 
         var appearance = new Dictionary<int, WowToolsData>();
-        WowTools.LoadDataFromWowTools("ItemAppearance", "ID", ref appearance, "engb", new[] { "DefaultIconFileDataID" });
+        WowTools.Main.LoadDataFromWowTools("ItemAppearance", "ID", ref appearance, "engb", new[] { "DefaultIconFileDataID" });
 
         foreach (var reference in data.Values)
         {

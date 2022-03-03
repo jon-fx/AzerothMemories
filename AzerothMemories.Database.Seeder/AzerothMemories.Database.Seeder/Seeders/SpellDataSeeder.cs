@@ -9,8 +9,8 @@ internal sealed class SpellDataSeeder : GenericBase<SpellDataSeeder>
     protected override async Task DoSomething()
     {
         var data = new Dictionary<int, WowToolsData>();
-        WowTools.LoadDataFromWowTools("SpellName", "ID", ref data);
-        WowTools.LoadDataFromWowTools("SpellMisc", "SpellID", ref data, "engb", new[] { "ID", "SpellID", "SpellIconFileDataID" });
+        WowTools.Main.LoadDataFromWowTools("SpellName", "ID", ref data);
+        WowTools.Main.LoadDataFromWowTools("SpellMisc", "SpellID", ref data, "engb", new[] { "ID", "SpellID", "SpellIconFileDataID" });
 
         foreach (var reference in data.Values)
         {

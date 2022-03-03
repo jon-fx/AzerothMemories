@@ -9,7 +9,7 @@ internal sealed class MountDataSeeder : GenericBase<MountDataSeeder>
     protected override Task DoSomething()
     {
         var data = new Dictionary<int, WowToolsData>();
-        WowTools.LoadDataFromWowTools("Mount", "ID", ref data);
+        WowTools.Main.LoadDataFromWowTools("Mount", "ID", ref data);
 
         foreach (var reference in data.Values)
         {
