@@ -427,6 +427,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         try
         {
             var imageNameBuilder = new StringBuilder();
+            var postUploadLogs = new List<AccountUploadLog>();
             foreach (var (extension, blobData, blobHash) in dataToUpload)
             {
                 var blobName = $"{accountViewModel.Id}-{Guid.NewGuid()}.{extension}";
@@ -449,8 +450,9 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
                 imageNameBuilder.Append(blobName);
                 imageNameBuilder.Append('|');
 
-                database.UploadLogs.Add(new AccountUploadLog
+                postUploadLogs.Add(new AccountUploadLog
                 {
+                    Post = postRecord,
                     AccountId = accountViewModel.Id,
                     BlobName = blobName,
                     BlobHash = blobHash,
@@ -458,6 +460,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
                 });
             }
 
+            postRecord.Uploads = postUploadLogs;
             postRecord.BlobNames = imageNameBuilder.ToString().TrimEnd('|');
 
             return AddMemoryResultCode.Success;

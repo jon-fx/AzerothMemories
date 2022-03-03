@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Blobs;
+using NodaTime.Extensions;
 
 namespace AzerothMemories.WebServer.Services;
 
@@ -15,36 +16,49 @@ public class MediaServices : DbServiceBase<AppDbContext>
     [ComputeMethod]
     public virtual Task<MediaResult> TryGetMedia(Session session, string container, string fileName)
     {
-        return TryGetMedia(container, fileName);
+        return TryGetCommonMedia(container, fileName);
     }
 
     [ComputeMethod]
-    public virtual Task<MediaResult> TryGetImage(Session session, string fileName)
+    public virtual Task<MediaResult> TryGetCommonMedia(string container, string fileName)
     {
-        return TryGetMedia(ZExtensions.BlobImages, fileName);
+        return TryGetBlobData(container, fileName);
     }
 
     [ComputeMethod]
-    public virtual async Task<MediaResult> TryGetMedia(string container, string fileName)
+    public virtual Task<MediaResult> TryGetUserMedia(Session session, string fileName)
+    {
+        return TryGetUserMedia(0, fileName);
+    }
+
+    [ComputeMethod]
+    public virtual async Task<MediaResult> TryGetUserMedia(long accountId, string fileName)
+    {
+        var blobData = await TryGetBlobData(ZExtensions.BlobImages, fileName).ConfigureAwait(false);
+        if (blobData == null)
+        {
+            return null;
+        }
+     
+        return new MediaResult(blobData.LastModified, blobData.ETag, blobData.MediaType, blobData.MediaBytes);
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<MediaResult> TryGetBlobData(string container, string fileName)
     {
         var blobClient = new BlobClient(_commonServices.Config.BlobStorageConnectionString, container, fileName);
         var blobExists = await blobClient.ExistsAsync().ConfigureAwait(false);
         if (!blobExists.Value)
         {
-            return await NotFoundData().ConfigureAwait(false);
+            return null;
         }
 
         var memoryStream = new MemoryStream();
         await blobClient.DownloadToAsync(memoryStream).ConfigureAwait(false);
-        var fileData = memoryStream.ToArray();
+        var binaryData = memoryStream.ToArray();
 
-        return new MediaResult(true, $"image/*", fileData);
-    }
+        var properties = await blobClient.GetPropertiesAsync().ConfigureAwait(false);
 
-    [ComputeMethod]
-    protected virtual Task<MediaResult> NotFoundData()
-    {
-        //var file = await File.ReadAllBytesAsync(@"C:\Users\John\Documents\AzerothMemories\AzerothMemories.WebBlazor\AzerothMemories.WebBlazor\wwwroot\header-banner.png").ConfigureAwait(false);
-        return Task.FromResult<MediaResult>(null);
+        return new MediaResult(properties.Value.LastModified.ToInstant(), properties.Value.ETag, "image/*", binaryData);
     }
 }

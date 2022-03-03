@@ -580,6 +580,8 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             if (invRecord != null)
             {
                 _ = DependsOnAccountRecord(invRecord.Id);
+                _ = _commonServices.MediaServices.TryGetCommonMedia(ZExtensions.BlobAvatars, $"{ZExtensions.AvatarBlobFilePrefix}{invRecord.Id}-0.jpg");
+                _ = _commonServices.MediaServices.TryGetCommonMedia(ZExtensions.BlobAvatars, $"{ZExtensions.AvatarBlobFilePrefix}{invRecord.Id}-1.jpg");
             }
 
             return default;
@@ -612,7 +614,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         {
             newAvatar = null;
         }
-        else if (newAvatar.StartsWith($"{ZExtensions.CustomAvatarPathPrefix}{accountViewModel.Id}"))
+        else if (newAvatar.StartsWith($"{ZExtensions.CustomAvatarPathPrefix}{accountViewModel.Id}-"))
         {
         }
         else if (newAvatar.StartsWith("https://render") && newAvatar.Contains(".worldofwarcraft.com"))

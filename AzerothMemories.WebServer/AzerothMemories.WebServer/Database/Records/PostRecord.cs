@@ -56,6 +56,8 @@ public sealed class PostRecord : IDatabaseRecord
 
     public ICollection<PostTagRecord> PostTags { get; set; }
 
+    public ICollection<AccountUploadLog> Uploads { get; set; }
+
     public PostViewModel CreatePostViewModel(AccountViewModel accountViewModel, bool canSeePost, PostReactionViewModel reactionRecord, PostTagInfo[] postTagRecords)
     {
         var viewModel = new PostViewModel

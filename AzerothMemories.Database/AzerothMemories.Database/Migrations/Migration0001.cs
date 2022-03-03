@@ -49,6 +49,7 @@ public sealed class Migration0001 : Migration
         Create.Table(AccountUploadLog.TableName)
             .WithColumn(nameof(AccountUploadLog.Id)).AsInt64().PrimaryKey().Identity()
             .WithColumn(nameof(AccountUploadLog.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey(AccountRecord.TableName, "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(AccountUploadLog.PostId)).AsInt64().ForeignKey(PostRecord.TableName, "Id").OnDelete(Rule.SetNull).Nullable()
             .WithColumn(nameof(AccountUploadLog.BlobName)).AsString(128).Unique().NotNullable()
             .WithColumn(nameof(AccountUploadLog.BlobHash)).AsString(64).WithDefaultValue(0)
             .WithColumn(nameof(AccountUploadLog.UploadStatus)).AsByte().WithDefaultValue(0)

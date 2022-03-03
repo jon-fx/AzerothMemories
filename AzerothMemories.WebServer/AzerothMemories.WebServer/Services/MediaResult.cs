@@ -1,5 +1,7 @@
-﻿namespace AzerothMemories.WebServer.Services;
+﻿using Azure;
 
-public record MediaResult(bool Success, string MediaType, byte[] MediaBytes)
+namespace AzerothMemories.WebServer.Services;
+
+public record MediaResult(Instant LastModified, ETag ETag, string MediaType, byte[] MediaBytes)
 {
 }

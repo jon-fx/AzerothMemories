@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Controllers
+﻿using Microsoft.Net.Http.Headers;
+
+namespace AzerothMemories.WebServer.Controllers
 {
     [ApiController, JsonifyErrors]
     [AutoValidateAntiforgeryToken]
@@ -29,12 +31,12 @@
             }
             else if (container.ToLowerInvariant() == ZExtensions.BlobImages)
             {
-                results = await _commonServices.MediaServices.TryGetImage(session, fileName).ConfigureAwait(false);
+                results = await _commonServices.MediaServices.TryGetUserMedia(session, fileName).ConfigureAwait(false);
             }
 
-            if (results != null && results.Success)
+            if (results != null)
             {
-                return File(results.MediaBytes, results.MediaType);
+                return File(results.MediaBytes, results.MediaType, results.LastModified.ToDateTimeOffset(), EntityTagHeaderValue.Any);
             }
 
             return NoContent();

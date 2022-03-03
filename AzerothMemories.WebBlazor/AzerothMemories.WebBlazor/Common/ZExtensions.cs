@@ -25,7 +25,7 @@ public static class ZExtensions
     public const string BlobAvatars = "avatars";
 
     public const string AvatarBlobFilePrefix = "UserAvatar-";
-    public static readonly string CustomAvatarPathPrefix = $"https://moastorage.blob.core.windows.net/{BlobAvatars}/{AvatarBlobFilePrefix}";
+    public static readonly string CustomAvatarPathPrefix = $"{BlobAvatarStoragePath}{AvatarBlobFilePrefix}";
 
     public static readonly (int Min, int Max)[] TagCountsPerPost;
     public static readonly Instant MinPostTime = Instant.FromUnixTimeMilliseconds(946684800000);//Sat Jan 01 2000 00:00:00 GMT+0000
