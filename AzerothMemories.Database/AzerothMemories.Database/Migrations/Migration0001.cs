@@ -46,15 +46,6 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(AccountFollowingRecord.LastUpdateTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
             .WithColumn(nameof(AccountFollowingRecord.CreatedTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
 
-        Create.Table(AccountUploadLog.TableName)
-            .WithColumn(nameof(AccountUploadLog.Id)).AsInt64().PrimaryKey().Identity()
-            .WithColumn(nameof(AccountUploadLog.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey(AccountRecord.TableName, "Id").OnDelete(Rule.Cascade)
-            .WithColumn(nameof(AccountUploadLog.PostId)).AsInt64().ForeignKey(PostRecord.TableName, "Id").OnDelete(Rule.SetNull).Nullable()
-            .WithColumn(nameof(AccountUploadLog.BlobName)).AsString(128).Unique().NotNullable()
-            .WithColumn(nameof(AccountUploadLog.BlobHash)).AsString(64).WithDefaultValue(0)
-            .WithColumn(nameof(AccountUploadLog.UploadStatus)).AsByte().WithDefaultValue(0)
-            .WithColumn(nameof(AccountUploadLog.UploadTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
-
         Create.Table(GuildRecord.TableName)
             .WithColumn(nameof(GuildRecord.Id)).AsInt64().PrimaryKey().Identity()
             .WithColumn(nameof(GuildRecord.MoaRef)).AsString(128).Unique().NotNullable()
@@ -247,6 +238,15 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(AccountHistoryRecord.TargetCommentId)).AsInt64().ForeignKey(PostCommentRecord.TableName, "Id").OnDelete(Rule.SetNull).Nullable()
             .WithColumn(nameof(AccountHistoryRecord.CreatedTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
 
+        Create.Table(AccountUploadLog.TableName)
+            .WithColumn(nameof(AccountUploadLog.Id)).AsInt64().PrimaryKey().Identity()
+            .WithColumn(nameof(AccountUploadLog.AccountId)).AsInt64().WithDefaultValue(0).ForeignKey(AccountRecord.TableName, "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(AccountUploadLog.PostId)).AsInt64().ForeignKey(PostRecord.TableName, "Id").OnDelete(Rule.SetNull).Nullable()
+            .WithColumn(nameof(AccountUploadLog.BlobName)).AsString(128).Unique().NotNullable()
+            .WithColumn(nameof(AccountUploadLog.BlobHash)).AsString(64).WithDefaultValue(0)
+            .WithColumn(nameof(AccountUploadLog.UploadStatus)).AsByte().WithDefaultValue(0)
+            .WithColumn(nameof(AccountUploadLog.UploadTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
+
         Create.Index().OnTable(AccountFollowingRecord.TableName)
             .OnColumn(nameof(AccountFollowingRecord.AccountId));
 
@@ -352,6 +352,7 @@ public sealed class Migration0001 : Migration
 
     public override void Down()
     {
+        Delete.Table(AccountUploadLog.TableName);
         Delete.Table(AccountHistoryRecord.TableName);
 
         Delete.Table(PostReportRecord.TableName);
@@ -370,7 +371,6 @@ public sealed class Migration0001 : Migration
 
         Delete.Table(GuildRecord.TableName);
 
-        Delete.Table(AccountUploadLog.TableName);
         Delete.Table(AccountFollowingRecord.TableName);
         Delete.Table(AccountRecord.TableName);
 
