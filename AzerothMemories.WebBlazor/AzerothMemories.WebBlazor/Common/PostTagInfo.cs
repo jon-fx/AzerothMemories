@@ -9,16 +9,18 @@ public sealed class PostTagInfo
     [JsonInclude] public readonly string Name;
     [JsonInclude] public readonly string Image;
     [JsonInclude] public readonly PostTagType Type;
+    [JsonInclude] public readonly long MinTagTime;
 
     [JsonIgnore] private string _nameWithIcon;
     [JsonIgnore] private string _wowHeadLink;
 
-    public PostTagInfo(PostTagType type, long id, string name, string image)
+    public PostTagInfo(PostTagType type, long id, string name, string image, long minTagTime = 0)
     {
         Id = id;
         Image = image;
         Name = name;
         Type = type;
+        MinTagTime = minTagTime;
     }
 
     [JsonInclude] public bool IsChipClosable { get; set; } = true;

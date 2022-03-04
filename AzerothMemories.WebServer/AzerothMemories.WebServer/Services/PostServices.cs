@@ -310,7 +310,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
 
         foreach (var systemTag in systemTags)
         {
-            var tagRecord = await _commonServices.TagServices.TryCreateTagRecord(systemTag, accountViewModel, PostTagKind.Post).ConfigureAwait(false);
+            var tagRecord = await _commonServices.TagServices.TryCreateTagRecord(systemTag, postRecord, accountViewModel, PostTagKind.Post).ConfigureAwait(false);
             if (tagRecord == null)
             {
                 return AddMemoryResultCode.InvalidTags;
@@ -327,7 +327,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     {
         foreach (var accountId in accountsTaggedInComment)
         {
-            var tagRecord = await _commonServices.TagServices.TryCreateTagRecord(PostTagType.Account, accountId, PostTagKind.PostComment).ConfigureAwait(false);
+            var tagRecord = await _commonServices.TagServices.TryCreateTagRecord(postRecord, PostTagType.Account, accountId, PostTagKind.PostComment).ConfigureAwait(false);
             if (tagRecord == null)
             {
                 return AddMemoryResultCode.InvalidTags;
@@ -1139,7 +1139,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         var tagRecords = new HashSet<PostTagRecord>();
         foreach (var accountId in accountsTaggedInComment)
         {
-            var tagRecord = await _commonServices.TagServices.TryCreateTagRecord(PostTagType.Account, accountId, PostTagKind.UserComment).ConfigureAwait(false);
+            var tagRecord = await _commonServices.TagServices.TryCreateTagRecord(postRecord, PostTagType.Account, accountId, PostTagKind.UserComment).ConfigureAwait(false);
             if (tagRecord == null)
             {
                 return 0;
@@ -1957,7 +1957,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         {
             foreach (var systemTag in addedSet)
             {
-                var newRecord = await _commonServices.TagServices.TryCreateTagRecord(systemTag, accountViewModel, PostTagKind.Post).ConfigureAwait(false);
+                var newRecord = await _commonServices.TagServices.TryCreateTagRecord(systemTag, postRecord, accountViewModel, PostTagKind.Post).ConfigureAwait(false);
                 if (newRecord == null)
                 {
                     return AddMemoryResultCode.InvalidTags;
@@ -1974,7 +1974,6 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
 
                 if (activeAccount.AccountType >= AccountType.Admin)
                 {
-                    
                 }
                 else if (newRecord.TagKind == PostTagKind.DeletedByAdmin)
                 {

@@ -20,6 +20,8 @@ public sealed class BlizzardDataRecord : IDatabaseRecord
 
     [Column] public BlizzardDataRecordLocal Name { get; set; }
 
+    [Column] public Instant MinTagTime { get; set; }
+
     public BlizzardDataRecord()
     {
         Name = new BlizzardDataRecordLocal();

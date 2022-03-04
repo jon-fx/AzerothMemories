@@ -521,21 +521,25 @@ public sealed class AddMemoryComponentSharedData
             errorStrings.Add($"Time muse be between {minTime} and {maxTime}.");
         }
 
+        var allTags = new List<PostTagInfo>();
         foreach (var chip in SelectedMainTags)
         {
             var tagInfo = (PostTagInfo)chip;
             allTagCounters[(int)tagInfo.Type]++;
+            allTags.Add(tagInfo);
         }
 
         foreach (var chip in SelectedCommonTags)
         {
             var tagInfo = (PostTagInfo)chip;
             allTagCounters[(int)tagInfo.Type]++;
+            allTags.Add(tagInfo);
         }
 
         foreach (var tagInfo in SelectedExtraTags)
         {
             allTagCounters[(int)tagInfo.Type]++;
+            allTags.Add(tagInfo);
         }
 
         foreach (var chip in SelectedAchievementTags)
@@ -543,6 +547,7 @@ public sealed class AddMemoryComponentSharedData
             if (chip is PostTagInfo tagInfo)
             {
                 allTagCounters[(int)tagInfo.Type]++;
+                allTags.Add(tagInfo);
             }
         }
 
@@ -556,6 +561,19 @@ public sealed class AddMemoryComponentSharedData
             else
             {
                 errorStrings.Add($"{(PostTagType)i} tag count must be between {minMax.Min} and {minMax.Max}.");
+            }
+        }
+
+        foreach (var tagInfo in allTags)
+        {
+            if (tagInfo.MinTagTime > 0)
+            {
+                var minTagTime = Instant.FromUnixTimeMilliseconds(tagInfo.MinTagTime);
+                if (minTagTime > PostTimeStamp)
+                {
+                    var minTagTimeStr = _viewModel.Services.ClientServices.TimeProvider.GetTimeAsLocalString(minTagTime);
+                    errorStrings.Add($"{tagInfo.Name} can not be used in posts before {minTagTimeStr}.");
+                }
             }
         }
 

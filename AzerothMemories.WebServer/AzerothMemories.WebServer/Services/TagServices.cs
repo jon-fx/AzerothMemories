@@ -172,17 +172,17 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
             name = PostTagInfo.GetTagString(record.TagType, record.TagId);
         }
 
-        return new PostTagInfo(record.TagType, record.TagId, name, record.Media);
+        return new PostTagInfo(record.TagType, record.TagId, name, record.Media, record.MinTagTime.ToUnixTimeMilliseconds());
     }
 
-    public async Task<PostTagRecord> TryCreateTagRecord(string systemTag, AccountViewModel accountViewModel, PostTagKind tagKind)
+    public async Task<PostTagRecord> TryCreateTagRecord(string systemTag, PostRecord postRecord, AccountViewModel accountViewModel, PostTagKind tagKind)
     {
         if (!ZExtensions.ParseTagInfoFrom(systemTag, out var postTagInfo))
         {
             return null;
         }
 
-        var result = await TryCreateTagRecord(postTagInfo.Type, postTagInfo.Id, tagKind).ConfigureAwait(false);
+        var result = await TryCreateTagRecord(postRecord, postTagInfo.Type, postTagInfo.Id, tagKind).ConfigureAwait(false);
         if (result != null)
         {
             if (postTagInfo.Type == PostTagType.Account && accountViewModel.Id != postTagInfo.Id)
@@ -199,7 +199,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
         return result;
     }
 
-    public async Task<PostTagRecord> TryCreateTagRecord(PostTagType tagType, long tagId, PostTagKind tagKind)
+    public async Task<PostTagRecord> TryCreateTagRecord(PostRecord postRecord, PostTagType tagType, long tagId, PostTagKind tagKind)
     {
         switch (tagType)
         {
@@ -212,7 +212,8 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
             case PostTagType.Region:
             case PostTagType.Realm:
             {
-                if (await IsValidTagIdWithBlizzardDataSanityChecks(tagType, tagId).ConfigureAwait(false))
+                var results = await IsValidTagIdWithBlizzardDataSanityChecks(tagType, tagId).ConfigureAwait(false);
+                if (results.Exists && postRecord.PostTime >= results.MinTagTime)
                 {
                     break;
                 }
@@ -241,7 +242,8 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
             case PostTagType.CharacterClass:
             case PostTagType.CharacterClassSpecialization:
             {
-                if (await IsValidTagIdWithBlizzardDataSanityChecks(tagType, tagId).ConfigureAwait(false))
+                var results = await IsValidTagIdWithBlizzardDataSanityChecks(tagType, tagId).ConfigureAwait(false);
+                if (results.Exists && postRecord.PostTime >= results.MinTagTime)
                 {
                     break;
                 }
@@ -282,14 +284,22 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<bool> IsValidTagIdWithBlizzardDataSanityChecks(PostTagType tagType, long tagId)
+    protected virtual async Task<(bool Exists, Instant MinTagTime)> IsValidTagIdWithBlizzardDataSanityChecks(PostTagType tagType, long tagId)
     {
         await using var database = CreateDbContext();
 
         var tagString = PostTagInfo.GetTagString(tagType, tagId);
-        var exists = await database.BlizzardData.AnyAsync(r => r.Key == tagString).ConfigureAwait(false);
+        var query = from record in database.BlizzardData
+                    where record.Key == tagString
+                    select new { record.Id, record.MinTagTime };
 
-        return exists;
+        var exists = await query.FirstOrDefaultAsync().ConfigureAwait(false);
+        if (exists == null)
+        {
+            return (false, Instant.FromUnixTimeMilliseconds(0));
+        }
+
+        return (true, exists.MinTagTime);
     }
 
     public bool GetCommentText(string commentText, Dictionary<long, string> userThatCanBeTagged, out string newCommentText, out HashSet<long> userTags, out HashSet<string> hashTags)

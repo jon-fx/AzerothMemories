@@ -118,10 +118,11 @@ public sealed class Migration0001 : Migration
         {
             Create.Table(BlizzardDataRecord.TableName)
                 .WithColumn(nameof(BlizzardDataRecord.Id)).AsInt64().PrimaryKey().Identity()
-                .WithColumn(nameof(BlizzardDataRecord.TagId)).AsInt64()
                 .WithColumn(nameof(BlizzardDataRecord.TagType)).AsByte()
+                .WithColumn(nameof(BlizzardDataRecord.TagId)).AsInt64()
                 .WithColumn(nameof(BlizzardDataRecord.Key)).AsString(128).Unique().NotNullable()
                 .WithColumn(nameof(BlizzardDataRecord.Media)).AsString(250).Nullable()
+                .WithColumn(nameof(BlizzardDataRecord.MinTagTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
                 .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.EnUs)}").AsString(250).Nullable()
                 .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.KoKr)}").AsString(250).Nullable()
                 .WithColumn($"{nameof(BlizzardDataRecord.Name)}_{nameof(BlizzardDataRecordLocal.FrFr)}").AsString(250).Nullable()
