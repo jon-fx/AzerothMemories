@@ -24,7 +24,7 @@
 {
     private string _nullText = null;
     private MainSearchResult _nullValue = null;
-    private MainSearchResult _lastSelectedValue;
+    //private MainSearchResult _lastSelectedValue;
     private AutoCompleteComponent<MainSearchResult> _autoComplete;
 
     [Parameter] public string Placeholder { get; init; } = "Search...";
@@ -41,26 +41,21 @@
 
     private async Task OnValueChanged(MainSearchResult value)
     {
-        if (_lastSelectedValue == value)
+        if (value == null)
         {
             return;
         }
-
-        _lastSelectedValue = value;
-
-        if (_lastSelectedValue != null)
+        
+        if (UseCallback)
         {
-            if (UseCallback)
-            {
-                await OnSelectedItemChanged.InvokeAsync(_lastSelectedValue);
-            }
-            else
-            {
-                NavigationManager.NavigateTo(_lastSelectedValue.GetLink());
-            }
-
-            await _autoComplete.Clear();
+            await OnSelectedItemChanged.InvokeAsync(value);
         }
+        else
+        {
+            NavigationManager.NavigateTo(value.GetLink());
+        }
+
+        await _autoComplete.Clear();
     }
 
     private async Task<IEnumerable<MainSearchResult>> SearchFunc(string searchString)

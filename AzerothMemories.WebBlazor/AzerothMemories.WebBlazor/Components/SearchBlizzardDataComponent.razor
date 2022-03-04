@@ -16,7 +16,6 @@
 {
     private string _nullText = null;
     private PostTagInfo _nullValue = null;
-    private PostTagInfo _lastSelectedValue;
     private AutoCompleteComponent<PostTagInfo> _autoComplete;
 
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
@@ -25,21 +24,16 @@
 
     private async Task OnValueChanged(PostTagInfo value)
     {
-        if (_lastSelectedValue == value)
+        if (value == null)
         {
             return;
         }
+        
+        await OnSelectedItemChanged.InvokeAsync(value);
 
-        _lastSelectedValue = value;
+        await _autoComplete.Clear();
 
-        if (_lastSelectedValue != null)
-        {
-            await OnSelectedItemChanged.InvokeAsync(_lastSelectedValue);
-
-            await _autoComplete.Clear();
-
-            Services.ClientServices.JsRuntime.InvokeVoidAsync("HideWowheadToolTips").AndForget();
-        }
+        Services.ClientServices.JsRuntime.InvokeVoidAsync("HideWowheadToolTips").AndForget();
     }
 
     private async Task<IEnumerable<PostTagInfo>> SearchMemoryItems(string searchString)
