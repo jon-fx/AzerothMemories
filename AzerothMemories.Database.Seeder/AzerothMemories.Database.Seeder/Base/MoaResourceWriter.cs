@@ -246,7 +246,7 @@ internal sealed class MoaResourceWriter
         var updatedResources = _changedServerSideResources.Values.Where(x => x.Id > 0).ToArray();
 
         _logger.LogInformation($"New Resources: {newResources.Length}");
-        _logger.LogInformation($"Updated Resources: {newResources.Length}");
+        _logger.LogInformation($"Updated Resources: {updatedResources.Length}");
 
         await using var database = await _databaseProvider.CreateDbContextAsync();
 
