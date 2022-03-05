@@ -107,7 +107,7 @@ else
                     var index = i;
                     var blobInfo = allBlobInfo[index];
 
-                    <MudImage ObjectFit="ObjectFit.Cover" Fluid="true" Src="@blobInfo.Source" @onclick="() => OnImageClicked(index)" />
+                    <PostImageHelperComponent Source="@blobInfo.Source" OnClick="() => OnImageClicked(index)" />
                 }
 
                 <div class="d-flex justify-space-between pa-0 ma-2">

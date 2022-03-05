@@ -1,0 +1,27 @@
+﻿<div class="d-flex d-sm-none">
+    <MudImage ObjectFit="ObjectFit.Cover" Fluid="true" Src="@($"{Source}?size={(int)Breakpoint.Xs}")" @onclick="OnClick" />
+</div>
+
+<div class="d-none d-sm-flex">
+    <MudHidden Breakpoint="Breakpoint.Sm" Invert="true">
+        <MudImage ObjectFit="ObjectFit.Cover" Fluid="true" Src="@($"{Source}?size={(int)Breakpoint.Sm}")" @onclick="OnClick" />
+    </MudHidden>
+    <MudHidden Breakpoint="Breakpoint.Md" Invert="true">
+        <MudImage ObjectFit="ObjectFit.Cover" Fluid="true" Src="@($"{Source}?size={(int)Breakpoint.Md}")" @onclick="OnClick" />
+    </MudHidden>
+    <MudHidden Breakpoint="Breakpoint.Lg" Invert="true">
+        <MudImage ObjectFit="ObjectFit.Cover" Fluid="true" Src="@($"{Source}?size={(int)Breakpoint.Lg}")" @onclick="OnClick" />
+    </MudHidden>
+    <MudHidden Breakpoint="Breakpoint.Xl" Invert="true">
+        <MudImage ObjectFit="ObjectFit.Cover" Fluid="true" Src="@($"{Source}?size={(int)Breakpoint.Xl}")" @onclick="OnClick" />
+    </MudHidden>
+    <MudHidden Breakpoint="Breakpoint.Xxl" Invert="true">
+        <MudImage ObjectFit="ObjectFit.Cover" Fluid="true" Src="@($"{Source}?size={(int)Breakpoint.Xxl}")" @onclick="OnClick" />
+    </MudHidden>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string Source { get; init; }
+
+    [Parameter, EditorRequired] public EventCallback<MouseEventArgs> OnClick { get; init; }
+}

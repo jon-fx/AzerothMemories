@@ -580,8 +580,8 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             if (invRecord != null)
             {
                 _ = DependsOnAccountRecord(invRecord.Id);
-                _ = _commonServices.MediaServices.TryGetCommonMedia(ZExtensions.BlobAvatars, $"{ZExtensions.AvatarBlobFilePrefix}{invRecord.Id}-0.jpg");
-                _ = _commonServices.MediaServices.TryGetCommonMedia(ZExtensions.BlobAvatars, $"{ZExtensions.AvatarBlobFilePrefix}{invRecord.Id}-1.jpg");
+                _ = _commonServices.MediaServices.TryGetAvatar($"{ZExtensions.AvatarBlobFilePrefix}{invRecord.Id}-0.jpg");
+                _ = _commonServices.MediaServices.TryGetAvatar($"{ZExtensions.AvatarBlobFilePrefix}{invRecord.Id}-1.jpg");
             }
 
             return default;

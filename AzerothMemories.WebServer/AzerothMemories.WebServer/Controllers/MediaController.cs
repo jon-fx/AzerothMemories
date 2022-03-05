@@ -18,20 +18,21 @@ namespace AzerothMemories.WebServer.Controllers
 
         [HttpGet]
         [Route("~/media/{container}/{fileName}")]
-        public async Task<IActionResult> Get(Session session, [FromRoute] string container, [FromRoute] string fileName)
+        public async Task<IActionResult> Get(Session session, [FromRoute] string container, [FromRoute] string fileName, [FromQuery] MediaSize size = MediaSize.Xxl)
         {
             MediaResult results = null;
             if (container.ToLowerInvariant() == ZExtensions.BlobMedia)
             {
-                results = await _commonServices.MediaServices.TryGetMedia(session, ZExtensions.BlobMedia, fileName).ConfigureAwait(false);
+                results = await _commonServices.MediaServices.TryGetMedia(session, fileName).ConfigureAwait(false);
             }
             else if (container.ToLowerInvariant() == ZExtensions.BlobAvatars)
             {
-                results = await _commonServices.MediaServices.TryGetMedia(session, ZExtensions.BlobAvatars, fileName).ConfigureAwait(false);
+                results = await _commonServices.MediaServices.TryGetAvatar(session, fileName).ConfigureAwait(false);
             }
             else if (container.ToLowerInvariant() == ZExtensions.BlobImages)
             {
-                results = await _commonServices.MediaServices.TryGetUserMedia(session, fileName).ConfigureAwait(false);
+                size = (MediaSize)Math.Clamp((byte)size, (byte)0, (byte)MediaSize.Xxl);
+                results = await _commonServices.MediaServices.TryGetUserMedia(session, fileName, size).ConfigureAwait(false);
             }
 
             if (results != null)
@@ -39,7 +40,7 @@ namespace AzerothMemories.WebServer.Controllers
                 return File(results.MediaBytes, results.MediaType, results.LastModified.ToDateTimeOffset(), EntityTagHeaderValue.Any);
             }
 
-            return NoContent();
+            return NotFound();
         }
     }
 }
