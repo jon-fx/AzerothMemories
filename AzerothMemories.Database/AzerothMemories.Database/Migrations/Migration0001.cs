@@ -7,8 +7,6 @@ namespace AzerothMemories.Database.Migrations;
 [Migration(1)]
 public sealed class Migration0001 : Migration
 {
-    private readonly bool SkipBlizzardData = true;
-
     public override void Up()
     {
         Create.Table(AccountRecord.TableName)
@@ -102,7 +100,7 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(CharacterAchievementRecord.AchievementTimeStamp)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
             .WithColumn(nameof(CharacterAchievementRecord.CompletedByCharacter)).AsBoolean().WithDefaultValue(false);
 
-        if (SkipBlizzardData)
+        if (ConfigHelpers.SkipBlizzardData)
         {
         }
         else
@@ -383,7 +381,7 @@ public sealed class Migration0001 : Migration
         Delete.Table(AccountFollowingRecord.TableName);
         Delete.Table(AccountRecord.TableName);
 
-        if (SkipBlizzardData)
+        if (ConfigHelpers.SkipBlizzardData)
         {
         }
         else
