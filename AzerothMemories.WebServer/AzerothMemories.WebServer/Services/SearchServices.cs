@@ -296,9 +296,8 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         foreach (var firstAchievement in firstAchievements)
         {
             var itemZonedDateTime = firstAchievement.Item2.InZone(timeZone);
-            if (itemZonedDateTime.Day == inZoneDay && itemZonedDateTime.Month == inZoneMonth)
+            if (itemZonedDateTime.Day == inZoneDay && itemZonedDateTime.Month == inZoneMonth && results.TryGetValue(itemZonedDateTime.Year, out var activitySet))
             {
-                var activitySet = results[itemZonedDateTime.Year];
                 activitySet.FirstAchievements.Add(firstAchievement.Item1);
                 totals.FirstAchievements.Add(firstAchievement.Item1);
             }
@@ -308,9 +307,8 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         foreach (var firstTag in firstTags)
         {
             var itemZonedDateTime = firstTag.Item2.InZone(timeZone);
-            if (itemZonedDateTime.Day == inZoneDay && itemZonedDateTime.Month == inZoneMonth)
+            if (itemZonedDateTime.Day == inZoneDay && itemZonedDateTime.Month == inZoneMonth && results.TryGetValue(itemZonedDateTime.Year, out var activitySet))
             {
-                var activitySet = results[itemZonedDateTime.Year];
                 activitySet.FirstTags.Add(firstTag.Item1);
                 totals.FirstTags.Add(firstTag.Item1);
             }
