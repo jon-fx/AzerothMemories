@@ -157,6 +157,11 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
             return false;
         }
 
+        if (string.IsNullOrEmpty(result.UpdateJob))
+        {
+            return false;
+        }
+
         if (!result.UpdateJob.StartsWith(Queued))
         {
             return false;
