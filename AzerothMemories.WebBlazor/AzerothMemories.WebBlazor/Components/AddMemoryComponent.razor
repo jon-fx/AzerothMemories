@@ -26,7 +26,7 @@
             var index = i;
             var upload = ViewModel.UploadedImages[index];
 
-            <AddMemoryPreviewScreenShotComponent Services="@Services" Index="index" UploadedImage="upload" ViewModel="ViewModel" />
+            <AddMemoryPreviewScreenShotComponent @key="upload" Services="@Services" Index="index" UploadedImage="upload" ViewModel="ViewModel" />
         }
     </MudPaper>
 

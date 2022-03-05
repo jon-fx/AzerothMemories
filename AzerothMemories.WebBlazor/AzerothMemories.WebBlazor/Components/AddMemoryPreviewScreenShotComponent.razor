@@ -67,9 +67,15 @@ else
         await Services.ClientServices.JsRuntime.InvokeVoidAsync("SetImage", GetImageId, UploadedImage.ContentType, UploadedImage.FileContent);
     }
 
-    private void DeleteImage()
+    private async Task DeleteImage()
     {
         ViewModel.UploadedImages.Remove(UploadedImage);
+
+        if (ViewModel.SharedData.PostTimeStamp == Instant.FromUnixTimeMilliseconds(UploadedImage.FileTimeStamp))
+        {
+            await ViewModel.SharedData.SetPostTimeStamp(Instant.FromUnixTimeMilliseconds(ViewModel.UploadedImages[0].FileTimeStamp));
+        }
+
         ViewModel.OnViewModelChanged?.Invoke();
     }
 
