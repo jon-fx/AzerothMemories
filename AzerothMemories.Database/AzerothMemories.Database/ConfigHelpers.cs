@@ -2,28 +2,46 @@
 {
     internal static class ConfigHelpers
     {
+        public static bool IncludeBlizzardData = true;
+
         public static readonly bool MigrateDown = true;
         public static readonly bool ClearVersionDatabase = true;
 
-        public static readonly bool SkipBlizzardData = true;
-
-        
-        private static readonly Stack<ConsoleColor> _backgroundColors = new();
-        private static readonly Stack<ConsoleColor> _foregroundColors = new();
-
-        public static void PushColors(ConsoleColor back, ConsoleColor fore)
+        public static void WriteWithColors(ConsoleColor background, ConsoleColor foreground, string message)
         {
-            _backgroundColors.Push(Console.BackgroundColor );
-            _foregroundColors.Push(Console.ForegroundColor );
+            var prevBackground = Console.BackgroundColor;
+            var prevForeground = Console.ForegroundColor;
 
-            Console.BackgroundColor = back;
-            Console.ForegroundColor = fore;
+            Console.BackgroundColor = background;
+            Console.ForegroundColor = foreground;
+
+            Console.WriteLine(message);
+
+            Console.BackgroundColor = prevBackground;
+            Console.ForegroundColor = prevForeground;
         }
 
-        public static void PopColors()
+        public static bool SaftyCheck(bool option, string message)
         {
-            Console.BackgroundColor = _backgroundColors.Pop( );
-            Console.ForegroundColor =  _foregroundColors.Pop();
+            if (!option)
+            {
+                return false;
+            }
+
+            WriteWithColors(ConsoleColor.White, ConsoleColor.Red, message);
+
+            var readLine = Console.ReadLine();
+            var result = readLine != null && readLine.ToLower() == "yes";
+            if (result)
+            {
+                WriteWithColors(ConsoleColor.White, ConsoleColor.Green, $"{message} == TRUE");
+            }
+            else
+            {
+                WriteWithColors(ConsoleColor.White, ConsoleColor.DarkBlue, $"{message} == FALSE");
+            }
+
+            return result;
         }
     }
 }

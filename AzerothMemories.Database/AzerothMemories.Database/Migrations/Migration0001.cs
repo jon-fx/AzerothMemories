@@ -100,10 +100,7 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(CharacterAchievementRecord.AchievementTimeStamp)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
             .WithColumn(nameof(CharacterAchievementRecord.CompletedByCharacter)).AsBoolean().WithDefaultValue(false);
 
-        if (ConfigHelpers.SkipBlizzardData)
-        {
-        }
-        else
+        if (ConfigHelpers.IncludeBlizzardData)
         {
             Create.Table(BlizzardDataRecord.TableName)
                 .WithColumn(nameof(BlizzardDataRecord.Id)).AsInt32().PrimaryKey().Identity()
@@ -381,10 +378,7 @@ public sealed class Migration0001 : Migration
         Delete.Table(AccountFollowingRecord.TableName);
         Delete.Table(AccountRecord.TableName);
 
-        if (ConfigHelpers.SkipBlizzardData)
-        {
-        }
-        else
+        if (ConfigHelpers.IncludeBlizzardData)
         {
             Delete.Table(BlizzardDataRecord.TableName);
         }

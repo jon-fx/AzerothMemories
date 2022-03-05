@@ -18,18 +18,16 @@ var serviceProvider = services.BuildServiceProvider(true);
 using var scope = serviceProvider.CreateScope();
 var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
 
-if (ConfigHelpers.MigrateDown)
+if (ConfigHelpers.SaftyCheck(ConfigHelpers.IncludeBlizzardData, "DELETE ALL BLIZZARD DATA?!"))
 {
-    ConfigHelpers.PushColors(ConsoleColor.White, ConsoleColor.Red);
-    Console.WriteLine("DELETE DATA?");
-    ConfigHelpers.PopColors();
+}
+else
+{
+    ConfigHelpers.IncludeBlizzardData = false;
+}
 
-    var result = Console.ReadLine();
-    if (result == null || result.ToLower() != "y")
-    {
-        throw new NotImplementedException();
-    }
-
+if (ConfigHelpers.SaftyCheck(ConfigHelpers.MigrateDown, "DELETE ALL ACCOUNT DATA?!"))
+{
     runner.MigrateDown(0);
 
     if (ConfigHelpers.ClearVersionDatabase && runner.Processor.TableExists("public", "VersionInfo"))
