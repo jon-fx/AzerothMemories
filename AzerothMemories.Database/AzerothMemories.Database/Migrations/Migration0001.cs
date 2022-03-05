@@ -247,6 +247,9 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(AccountUploadLog.UploadStatus)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(AccountUploadLog.UploadTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
 
+        Create.Index().OnTable(AccountRecord.TableName)
+            .OnColumn(nameof(AccountRecord.UsernameSearchable));
+
         Create.Index().OnTable(AccountFollowingRecord.TableName)
             .OnColumn(nameof(AccountFollowingRecord.AccountId));
 
@@ -263,6 +266,9 @@ public sealed class Migration0001 : Migration
             .OnColumn(nameof(CharacterRecord.AccountId));
 
         Create.Index().OnTable(CharacterRecord.TableName)
+            .OnColumn(nameof(CharacterRecord.NameSearchable));
+
+        Create.Index().OnTable(CharacterRecord.TableName)
             .OnColumn(nameof(CharacterRecord.GuildId));
 
         Create.Index().OnTable(CharacterAchievementRecord.TableName)
@@ -276,6 +282,9 @@ public sealed class Migration0001 : Migration
 
         Create.Index().OnTable(CharacterAchievementRecord.TableName)
             .OnColumn(nameof(CharacterAchievementRecord.AchievementTimeStamp));
+
+        Create.Index().OnTable(GuildRecord.TableName)
+            .OnColumn(nameof(GuildRecord.NameSearchable));
 
         Create.Index().OnTable(PostRecord.TableName)
             .OnColumn(nameof(PostRecord.AccountId));

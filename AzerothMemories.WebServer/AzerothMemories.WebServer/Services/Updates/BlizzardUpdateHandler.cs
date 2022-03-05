@@ -12,9 +12,9 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
     public const string AccountQueue1 = "a-account";
     public const string CharacterQueue1 = "b-character";
     public const string CharacterQueue2 = "c-character";
-    public const string CharacterQueue3 = "d-character";
-    public const string GuildQueue1 = "e-guild";
-    public static readonly string[] AllQueues = { AbstractQueue, AccountQueue1, CharacterQueue1, CharacterQueue2, CharacterQueue3, GuildQueue1 };
+    public const string CharacterQueue3 = "g-character";
+    public const string GuildQueue1 = "f-guild";
+    public static readonly string[] AllQueues = { AbstractQueue, AccountQueue1, CharacterQueue1, CharacterQueue2, GuildQueue1, CharacterQueue3 };
 
     private readonly CommonServices _commonServices;
 
