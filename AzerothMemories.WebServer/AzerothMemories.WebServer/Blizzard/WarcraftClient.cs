@@ -15,42 +15,42 @@ public sealed class WarcraftClient : IDisposable
         _regionInfo = regionInfo;
     }
 
-    public Task<RequestResult<AccountProfileSummary>> GetAccountProfile(string accessToken, long lastModified)
+    public Task<RequestResult<AccountProfileSummary>> GetAccountProfile(string accessToken)
     {
-        return Get<AccountProfileSummary>(BlizzardNamespace.Profile, "/profile/user/wow", null, accessToken, false, lastModified);
+        return Get<AccountProfileSummary>(BlizzardNamespace.Profile, "/profile/user/wow", null, accessToken, false, null);
     }
 
     public Task<RequestResult<CharacterStatus>> GetCharacterStatusAsync(string realmName, string characterName)
     {
-        return Get<CharacterStatus>(BlizzardNamespace.Profile, $"/profile/wow/character/{realmName}/{characterName}/status", null, null, false, -1);
+        return Get<CharacterStatus>(BlizzardNamespace.Profile, $"/profile/wow/character/{realmName}/{characterName}/status", null, null, false, null);
     }
 
-    public Task<RequestResult<CharacterProfileSummary>> GetCharacterProfileSummaryAsync(string realmName, string characterName, long lastModified)
+    public Task<RequestResult<CharacterProfileSummary>> GetCharacterProfileSummaryAsync(string realmName, string characterName, Instant lastModified)
     {
         return Get<CharacterProfileSummary>(BlizzardNamespace.Profile, $"/profile/wow/character/{realmName}/{characterName}", null, null, false, lastModified);
     }
 
-    public Task<RequestResult<CharacterAchievementsSummary>> GetCharacterAchievementsSummaryAsync(string realmName, string characterName, long lastModified)
+    public Task<RequestResult<CharacterAchievementsSummary>> GetCharacterAchievementsSummaryAsync(string realmName, string characterName, Instant lastModified)
     {
         return Get<CharacterAchievementsSummary>(BlizzardNamespace.Profile, $"/profile/wow/character/{realmName}/{characterName}/achievements", null, null, false, lastModified);
     }
 
-    public Task<RequestResult<CharacterMediaSummary>> GetCharacterRendersAsync(string realmName, string characterName, long lastModified)
+    public Task<RequestResult<CharacterMediaSummary>> GetCharacterRendersAsync(string realmName, string characterName, Instant lastModified)
     {
         return Get<CharacterMediaSummary>(BlizzardNamespace.Profile, $"/profile/wow/character/{realmName}/{characterName}/character-media", null, null, false, lastModified);
     }
 
-    public Task<RequestResult<Guild>> GetGuildProfileSummaryAsync(string realmName, string guildName, long lastModified)
+    public Task<RequestResult<Guild>> GetGuildProfileSummaryAsync(string realmName, string guildName, Instant lastModified)
     {
         return Get<Guild>(BlizzardNamespace.Profile, $"/data/wow/guild/{realmName}/{guildName}", null, null, false, lastModified);
     }
 
-    public Task<RequestResult<GuildAchievements>> GetGuildAchievementsAsync(string realmName, string guildName, long lastModified)
+    public Task<RequestResult<GuildAchievements>> GetGuildAchievementsAsync(string realmName, string guildName, Instant lastModified)
     {
         return Get<GuildAchievements>(BlizzardNamespace.Profile, $"/data/wow/guild/{realmName}/{guildName}/achievements", null, null, false, lastModified);
     }
 
-    public Task<RequestResult<GuildRoster>> GetGuildRosterAsync(string realmName, string guildName, long lastModified)
+    public Task<RequestResult<GuildRoster>> GetGuildRosterAsync(string realmName, string guildName, Instant lastModified)
     {
         return Get<GuildRoster>(BlizzardNamespace.Profile, $"/data/wow/guild/{realmName}/{guildName}/roster", null, null, false, lastModified);
     }
@@ -60,7 +60,7 @@ public sealed class WarcraftClient : IDisposable
         _clientProvider.ReturnClient(this);
     }
 
-    public async Task<RequestResult<T>> Get<T>(BlizzardNamespace blizzardNamespace, string requestUri, string extra, string accessToken, bool readAsString, long lastModified) where T : class
+    public async Task<RequestResult<T>> Get<T>(BlizzardNamespace blizzardNamespace, string requestUri, string extra, string accessToken, bool readAsString, Instant? lastModified) where T : class
     {
         using var client = _clientProvider.CreateClient();
 
@@ -69,9 +69,9 @@ public sealed class WarcraftClient : IDisposable
         requestUri = $"{_regionInfo.Host}{requestUri.ToLower()}?namespace={blizzardNamespace}-{_regionInfo.TwoLetters}{extra}";
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-        if (lastModified > 0)
+        if (lastModified != null)
         {
-            client.DefaultRequestHeaders.IfModifiedSince = DateTimeOffset.FromUnixTimeMilliseconds(lastModified);
+            client.DefaultRequestHeaders.IfModifiedSince = lastModified.Value.ToDateTimeOffset();
         }
         else
         {

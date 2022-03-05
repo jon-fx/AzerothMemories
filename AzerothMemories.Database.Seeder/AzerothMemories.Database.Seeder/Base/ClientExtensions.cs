@@ -4,42 +4,42 @@ public static class ClientExtensions
 {
     public static Task<RequestResult<PlayableRacesIndex>> GetPlayableRaceIndex(this WarcraftClient client)
     {
-        return client.Get<PlayableRacesIndex>(BlizzardNamespace.Static, "/data/wow/playable-race/index ", null, null, true, -1);
+        return client.Get<PlayableRacesIndex>(BlizzardNamespace.Static, "/data/wow/playable-race/index ", null, null, true, null);
     }
 
     public static Task<RequestResult<PlayableRace>> GetPlayableRace(this WarcraftClient client, int id)
     {
-        return client.Get<PlayableRace>(BlizzardNamespace.Static, $"/data/wow/playable-race/{id}", null, null, true, -1);
+        return client.Get<PlayableRace>(BlizzardNamespace.Static, $"/data/wow/playable-race/{id}", null, null, true, null);
     }
 
     public static Task<RequestResult<PlayableClassesIndex>> GetPlayableClassIndex(this WarcraftClient client)
     {
-        return client.Get<PlayableClassesIndex>(BlizzardNamespace.Static, "/data/wow/playable-class/index ", null, null, true, -1);
+        return client.Get<PlayableClassesIndex>(BlizzardNamespace.Static, "/data/wow/playable-class/index ", null, null, true, null);
     }
 
     public static Task<RequestResult<PlayableClass>> GetPlayableClass(this WarcraftClient client, int id)
     {
-        return client.Get<PlayableClass>(BlizzardNamespace.Static, $"/data/wow/playable-class/{id}", null, null, true, -1);
+        return client.Get<PlayableClass>(BlizzardNamespace.Static, $"/data/wow/playable-class/{id}", null, null, true, null);
     }
 
     public static Task<RequestResult<PlayableClassMedia>> GetPlayableClassMedia(this WarcraftClient client, int id)
     {
-        return client.Get<PlayableClassMedia>(BlizzardNamespace.Static, $"/data/wow/media/playable-class/{id}", null, null, true, -1);
+        return client.Get<PlayableClassMedia>(BlizzardNamespace.Static, $"/data/wow/media/playable-class/{id}", null, null, true, null);
     }
 
     public static Task<RequestResult<PlayableSpecializationMedia>> GetPlayableSpecializationClassMedia(this WarcraftClient client, int id)
     {
-        return client.Get<PlayableSpecializationMedia>(BlizzardNamespace.Static, $"/data/wow/media/playable-specialization/{id}", null, null, true, -1);
+        return client.Get<PlayableSpecializationMedia>(BlizzardNamespace.Static, $"/data/wow/media/playable-specialization/{id}", null, null, true, null);
     }
 
     public static Task<RequestResult<RealmsIndex>> GetRealmData(this WarcraftClient client)
     {
-        return client.Get<RealmsIndex>(BlizzardNamespace.Dynamic, "/data/wow/realm/index", null, null, true, -1);
+        return client.Get<RealmsIndex>(BlizzardNamespace.Dynamic, "/data/wow/realm/index", null, null, true, null);
     }
 
     public static Task<RequestResult<ConnectedRealmsIndex>> GetConnectedRealmData(this WarcraftClient client)
     {
-        return client.Get<ConnectedRealmsIndex>(BlizzardNamespace.Dynamic, "/data/wow/connected-realm", null, null, true, -1);
+        return client.Get<ConnectedRealmsIndex>(BlizzardNamespace.Dynamic, "/data/wow/connected-realm", null, null, true, null);
     }
 
     //public static Task<RequestResult<AchievementsIndex>> GetAchievementsIndex(this WarcraftClient client)

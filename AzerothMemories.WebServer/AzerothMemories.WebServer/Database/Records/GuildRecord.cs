@@ -30,13 +30,13 @@ public sealed class GuildRecord : IBlizzardUpdateRecord
 
     [Column] public Instant CreatedDateTime { get; set; }
 
-    [Column] public long BlizzardCreatedTimestamp { get; set; }
+    [Column] public Instant BlizzardCreatedTimestamp { get; set; }
 
-    [Column] public long BlizzardProfileLastModified { get; set; }
+    [Column] public Instant BlizzardProfileLastModified { get; set; }
 
-    [Column] public long BlizzardAchievementsLastModified { get; set; }
+    [Column] public Instant BlizzardAchievementsLastModified { get; set; }
 
-    [Column] public long BlizzardRosterLastModified { get; set; }
+    [Column] public Instant BlizzardRosterLastModified { get; set; }
 
     [Column] public string UpdateJob { get; set; }
 
@@ -55,7 +55,7 @@ public sealed class GuildRecord : IBlizzardUpdateRecord
             MemberCount = MemberCount,
             AchievementPoints = AchievementPoints,
             CreatedDateTime = CreatedDateTime.ToUnixTimeMilliseconds(),
-            BlizzardCreatedTimestamp = BlizzardCreatedTimestamp,
+            BlizzardCreatedTimestamp = BlizzardCreatedTimestamp.ToUnixTimeMilliseconds(),
             UpdateJobEndTime = UpdateJobEndTime.ToUnixTimeMilliseconds(),
             UpdateJobLastResult = UpdateJobLastResult,
 

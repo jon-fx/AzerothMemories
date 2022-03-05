@@ -52,7 +52,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
 
         using var client = _commonServices.WarcraftClientProvider.Get(record.BlizzardRegionId);
         var characters = await database.Characters.Where(x => x.AccountId == command.AccountId).ToDictionaryAsync(x => x.MoaRef, x => x, cancellationToken).ConfigureAwait(false);
-        var accountSummaryResult = await client.GetAccountProfile(record.BattleNetToken, 0 /*record.BlizzardAccountLastModified*/).ConfigureAwait(false);
+        var accountSummaryResult = await client.GetAccountProfile(record.BattleNetToken).ConfigureAwait(false);
         if (accountSummaryResult.IsSuccess)
         {
             var deletedCharactersSets = new Dictionary<string, CharacterRecord>(characters);
@@ -217,7 +217,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         return HttpStatusCode.OK;
     }
 
-    private async Task OnCharacterUpdate(AppDbContext database, CharacterRecord record, CharacterProfileSummary character, long lastModifiedTime)
+    private async Task OnCharacterUpdate(AppDbContext database, CharacterRecord record, CharacterProfileSummary character, Instant lastModifiedTime)
     {
         record.RealmId = character.Realm.Id;
         record.Name = character.Name;
@@ -249,7 +249,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         record.BlizzardProfileLastModified = lastModifiedTime;
     }
 
-    private Task OnCharacterRendersUpdate(AppDbContext database, CharacterRecord record, CharacterMediaSummary media, long lastModifiedTime)
+    private Task OnCharacterRendersUpdate(AppDbContext database, CharacterRecord record, CharacterMediaSummary media, Instant lastModifiedTime)
     {
         var assets = media.Assets;
         var characterAvatarRender = record.AvatarLink;
@@ -359,7 +359,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
             record.Name = guildSummary.ResultData.Name;
             record.NameSearchable = DatabaseHelpers.GetSearchableName(record.Name);
             record.RealmId = guildSummary.ResultData.Realm.Id;
-            record.BlizzardCreatedTimestamp = guildSummary.ResultData.CreatedTimestamp;
+            record.BlizzardCreatedTimestamp = Instant.FromUnixTimeMilliseconds(guildSummary.ResultData.CreatedTimestamp);
             record.MemberCount = guildSummary.ResultData.MemberCount;
             record.AchievementPoints = guildSummary.ResultData.AchievementPoints;
             record.Faction = guildSummary.ResultData.Faction.AsFaction();
@@ -437,7 +437,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         return HttpStatusCode.OK;
     }
 
-    private Task OnGuildGuildAchievementsUpdate(AppDbContext database, GuildRecord record, long lastModifiedTime)
+    private Task OnGuildGuildAchievementsUpdate(AppDbContext database, GuildRecord record, Instant lastModifiedTime)
     {
         record.BlizzardAchievementsLastModified = lastModifiedTime;
 

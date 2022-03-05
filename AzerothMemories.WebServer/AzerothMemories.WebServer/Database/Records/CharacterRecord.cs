@@ -64,11 +64,11 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord
 
     [Column] public HttpStatusCode UpdateJobLastResult { get; set; }
 
-    [Column] public long BlizzardProfileLastModified { get; set; }
+    [Column] public Instant BlizzardProfileLastModified { get; set; }
 
-    [Column] public long BlizzardRendersLastModified { get; set; }
+    [Column] public Instant BlizzardRendersLastModified { get; set; }
 
-    [Column] public long BlizzardAchievementsLastModified { get; set; }
+    [Column] public Instant BlizzardAchievementsLastModified { get; set; }
 
     public CharacterViewModel CreateViewModel()
     {

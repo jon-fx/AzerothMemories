@@ -21,5 +21,5 @@ public sealed class RequestResult<T> where T : class
 
     public bool IsNotModified => ResultCode == HttpStatusCode.NotModified;
 
-    public long ResultLastModifiedMs => ResultLastModified.ToUnixTimeMilliseconds();
+    public Instant ResultLastModifiedMs => ResultLastModified;
 }

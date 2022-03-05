@@ -58,10 +58,10 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(GuildRecord.MemberCount)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(GuildRecord.AchievementPoints)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(GuildRecord.CreatedDateTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
-            .WithColumn(nameof(GuildRecord.BlizzardCreatedTimestamp)).AsInt64().WithDefaultValue(0)
-            .WithColumn(nameof(GuildRecord.BlizzardProfileLastModified)).AsInt64().WithDefaultValue(0)
-            .WithColumn(nameof(GuildRecord.BlizzardAchievementsLastModified)).AsInt64().WithDefaultValue(0)
-            .WithColumn(nameof(GuildRecord.BlizzardRosterLastModified)).AsInt64().WithDefaultValue(0)
+            .WithColumn(nameof(GuildRecord.BlizzardCreatedTimestamp)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
+            .WithColumn(nameof(GuildRecord.BlizzardProfileLastModified)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
+            .WithColumn(nameof(GuildRecord.BlizzardAchievementsLastModified)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
+            .WithColumn(nameof(GuildRecord.BlizzardRosterLastModified)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
             .WithUpdateJobInfo();
 
         Create.Table(CharacterRecord.TableName)
@@ -89,9 +89,9 @@ public sealed class Migration0001 : Migration
             //.WithColumn(nameof(CharacterRecord.BlizzardGuildId)).AsInt64().WithDefaultValue(0)
             .WithColumn(nameof(CharacterRecord.BlizzardGuildRank)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(CharacterRecord.BlizzardGuildName)).AsString(60).Nullable()
-            .WithColumn(nameof(CharacterRecord.BlizzardProfileLastModified)).AsInt64().WithDefaultValue(0)
-            .WithColumn(nameof(CharacterRecord.BlizzardRendersLastModified)).AsInt64().WithDefaultValue(0)
-            .WithColumn(nameof(CharacterRecord.BlizzardAchievementsLastModified)).AsInt64().WithDefaultValue(0)
+            .WithColumn(nameof(CharacterRecord.BlizzardProfileLastModified)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
+            .WithColumn(nameof(CharacterRecord.BlizzardRendersLastModified)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
+            .WithColumn(nameof(CharacterRecord.BlizzardAchievementsLastModified)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
             .WithUpdateJobInfo();
 
         Create.Table(CharacterAchievementRecord.TableName)
