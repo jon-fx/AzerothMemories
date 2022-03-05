@@ -21,7 +21,7 @@ public sealed class AccountController : ControllerBase, IAccountServices
     }
 
     [HttpGet("{accountId}"), Publish]
-    public Task<AccountViewModel> TryGetAccountById(Session session, [FromRoute] long accountId)
+    public Task<AccountViewModel> TryGetAccountById(Session session, [FromRoute] int accountId)
     {
         return _commonServices.AccountServices.TryGetAccountById(session, accountId);
     }

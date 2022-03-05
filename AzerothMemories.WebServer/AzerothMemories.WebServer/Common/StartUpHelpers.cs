@@ -69,10 +69,10 @@ internal static class StartUpHelpers
         //var regionStr = context.Scheme.Name.Replace("BattleNet-", "");
         //var blizzardRegion = BlizzardRegionExt.FromName(regionStr);
         var token = context.AccessToken;
-        //if (token == null)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        if (token == null)
+        {
+            token = string.Empty;
+        }
 
         var tokenExpiresAt = (SystemClock.Instance.GetCurrentInstant() + context.ExpiresIn.GetValueOrDefault().ToDuration()).ToUnixTimeMilliseconds();
 

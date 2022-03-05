@@ -1,6 +1,4 @@
-﻿using AzerothMemories.WebServer.Blizzard.Models;
-
-namespace AzerothMemories.WebServer.Services;
+﻿namespace AzerothMemories.WebServer.Services;
 
 public sealed class CommonServices
 {

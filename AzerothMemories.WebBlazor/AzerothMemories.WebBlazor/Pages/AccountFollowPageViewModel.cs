@@ -2,7 +2,7 @@
 
 public sealed class AccountFollowPageViewModel : ViewModelBase
 {
-    private long _accountId;
+    private int _accountId;
 
     public bool IsLoading => string.IsNullOrWhiteSpace(ErrorMessage) && AccountViewModel == null;
 
@@ -10,7 +10,7 @@ public sealed class AccountFollowPageViewModel : ViewModelBase
 
     public AccountViewModel AccountViewModel { get; private set; }
 
-    public void OnParametersChanged(long id)
+    public void OnParametersChanged(int id)
     {
         _accountId = id;
     }

@@ -22,7 +22,7 @@ public sealed class CharacterController : ControllerBase, ICharacterServices
     }
 
     [HttpGet("{characterId}"), Publish]
-    public Task<CharacterAccountViewModel> TryGetCharacter(Session session, [FromRoute] long characterId)
+    public Task<CharacterAccountViewModel> TryGetCharacter(Session session, [FromRoute] int characterId)
     {
         return _commonServices.CharacterServices.TryGetCharacter(session, characterId);
     }

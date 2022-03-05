@@ -46,7 +46,7 @@ public sealed class AccountPageViewModel : PersistentStateViewModel
 
     private async Task<AccountViewModel> GetAccountViewModel()
     {
-        long.TryParse(_accountIdString, out var accountId);
+        int.TryParse(_accountIdString, out var accountId);
 
         var accountViewModel = AccountViewModel;
         if (accountId > 0)

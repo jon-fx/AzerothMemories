@@ -75,7 +75,7 @@ else
 
     private async Task UseImageTime()
     {
-        await ViewModel.SharedData.SetPostTimeStamp(Instant.FromUnixTimeMilliseconds(UploadedImage.FileTimeStamp));;
+        await ViewModel.SharedData.SetPostTimeStamp(Instant.FromUnixTimeMilliseconds(UploadedImage.FileTimeStamp));
     }
 
     private async Task OnImageClicked()

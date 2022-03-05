@@ -47,7 +47,7 @@ internal sealed class MoaResourceWriter
         }
     }
 
-    public void AddServerSideLocalizationName(PostTagType tagType, long tagId, BlizzardDataRecordLocal data)
+    public void AddServerSideLocalizationName(PostTagType tagType, int tagId, BlizzardDataRecordLocal data)
     {
         var resource = GetOrCreateServerSideResource(tagType, tagId);
         var changed = false;
@@ -84,7 +84,7 @@ internal sealed class MoaResourceWriter
         changed = true;
     }
 
-    public void TryAddServerSideLocalizationMedia(PostTagType tagType, long tagId, string mediaPath)
+    public void TryAddServerSideLocalizationMedia(PostTagType tagType, int tagId, string mediaPath)
     {
         Exceptions.ThrowIf(string.IsNullOrEmpty(mediaPath));
 
@@ -118,7 +118,7 @@ internal sealed class MoaResourceWriter
         return new FileInfo(localPath);
     }
 
-    public async Task TryAddServerSideLocalizationMedia(PostTagType tagType, long tagId, int mediaId)
+    public async Task TryAddServerSideLocalizationMedia(PostTagType tagType, int tagId, int mediaId)
     {
         if (mediaId == 0)
         {
@@ -213,7 +213,7 @@ internal sealed class MoaResourceWriter
         return dict.TryGetValue(key, out value);
     }
 
-    public BlizzardDataRecord GetOrCreateServerSideResource(PostTagType tagType, long tagId)
+    public BlizzardDataRecord GetOrCreateServerSideResource(PostTagType tagType, int tagId)
     {
         var key = PostTagInfo.GetTagString(tagType, tagId);
         if (!_serverSideResources.TryGetValue(key, out var value))

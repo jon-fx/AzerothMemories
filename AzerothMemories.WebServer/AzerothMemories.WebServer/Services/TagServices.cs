@@ -41,7 +41,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostTagInfo> GetTagInfo(PostTagType tagType, long tagId, string hashTagText, ServerSideLocale locale)
+    public virtual async Task<PostTagInfo> GetTagInfo(PostTagType tagType, int tagId, string hashTagText, ServerSideLocale locale)
     {
         if (tagType == PostTagType.Account || tagType == PostTagType.Character || tagType == PostTagType.Guild)
         {
@@ -72,7 +72,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostTagInfo> TryGetUserTagInfo(PostTagType tagType, long tagId)
+    public virtual async Task<PostTagInfo> TryGetUserTagInfo(PostTagType tagType, int tagId)
     {
         await using var database = CreateDbContext();
 
@@ -199,7 +199,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
         return result;
     }
 
-    public async Task<PostTagRecord> TryCreateTagRecord(PostRecord postRecord, PostTagType tagType, long tagId, PostTagKind tagKind)
+    public async Task<PostTagRecord> TryCreateTagRecord(PostRecord postRecord, PostTagType tagType, int tagId, PostTagKind tagKind)
     {
         switch (tagType)
         {
@@ -284,7 +284,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<(bool Exists, Instant MinTagTime)> IsValidTagIdWithBlizzardDataSanityChecks(PostTagType tagType, long tagId)
+    protected virtual async Task<(bool Exists, Instant MinTagTime)> IsValidTagIdWithBlizzardDataSanityChecks(PostTagType tagType, int tagId)
     {
         await using var database = CreateDbContext();
 
@@ -302,9 +302,9 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
         return (true, exists.MinTagTime);
     }
 
-    public bool GetCommentText(string commentText, Dictionary<long, string> userThatCanBeTagged, out string newCommentText, out HashSet<long> userTags, out HashSet<string> hashTags)
+    public bool GetCommentText(string commentText, Dictionary<int, string> userThatCanBeTagged, out string newCommentText, out HashSet<int> userTags, out HashSet<string> hashTags)
     {
-        userTags = new HashSet<long>();
+        userTags = new HashSet<int>();
         hashTags = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         newCommentText = string.Empty;
 

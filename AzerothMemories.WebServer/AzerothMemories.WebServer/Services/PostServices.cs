@@ -25,7 +25,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
-    public virtual Task<long> DependsOnPostsBy(long accountId)
+    public virtual Task<int> DependsOnPostsBy(int accountId)
     {
         return Task.FromResult(accountId);
     }
@@ -37,7 +37,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<bool> CanAccountSeePost(long activeAccountId, PostRecord postRecord)
+    protected virtual async Task<bool> CanAccountSeePost(int activeAccountId, PostRecord postRecord)
     {
         Exceptions.ThrowIf(postRecord == null);
 
@@ -84,7 +84,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postId, ServerSideLocale locale)
+    public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, int postId, ServerSideLocale locale)
     {
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         var activeAccountId = activeAccount?.Id ?? 0;
@@ -323,7 +323,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         return AddMemoryResultCode.Success;
     }
 
-    private async Task<AddMemoryResultCode> AddCommentTags(PostRecord postRecord, HashSet<long> accountsTaggedInComment, HashSet<string> hashTagsTaggedInComment, HashSet<PostTagRecord> tagRecords)
+    private async Task<AddMemoryResultCode> AddCommentTags(PostRecord postRecord, HashSet<int> accountsTaggedInComment, HashSet<string> hashTagsTaggedInComment, HashSet<PostTagRecord> tagRecords)
     {
         foreach (var accountId in accountsTaggedInComment)
         {
@@ -482,7 +482,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, long postAccountId, long postId, ServerSideLocale locale)
+    public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, int postAccountId, int postId, ServerSideLocale locale)
     {
         var result = await TryGetPostViewModel(session, postId, locale).ConfigureAwait(false);
         if (result == null)
@@ -499,7 +499,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [CommandHandler]
-    public virtual async Task<long> TryReactToPost(Post_TryReactToPost command, CancellationToken cancellationToken = default)
+    public virtual async Task<int> TryReactToPost(Post_TryReactToPost command, CancellationToken cancellationToken = default)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -626,7 +626,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<Dictionary<long, PostReactionViewModel>> TryGetPostReactions(long postId)
+    protected virtual async Task<Dictionary<int, PostReactionViewModel>> TryGetPostReactions(int postId)
     {
         await using var database = CreateDbContext();
 
@@ -647,7 +647,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<Dictionary<long, PostReactionViewModel>> TryGetPostCommentReactions(long commentId)
+    protected virtual async Task<Dictionary<int, PostReactionViewModel>> TryGetPostCommentReactions(int commentId)
     {
         await using var database = CreateDbContext();
 
@@ -668,7 +668,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostReactionViewModel[]> TryGetReactions(Session session, long postId)
+    public virtual async Task<PostReactionViewModel[]> TryGetReactions(Session session, int postId)
     {
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         var activeAccountId = activeAccount?.Id ?? 0;
@@ -689,7 +689,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostCommentPageViewModel> TryGetCommentsPage(Session session, long postId, int page, long focusedCommentId)
+    public virtual async Task<PostCommentPageViewModel> TryGetCommentsPage(Session session, int postId, int page, int focusedCommentId)
     {
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         var activeAccountId = activeAccount?.Id ?? 0;
@@ -709,7 +709,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostReactionViewModel[]> TryGetCommentReactionData(Session session, long postId, long commentId)
+    public virtual async Task<PostReactionViewModel[]> TryGetCommentReactionData(Session session, int postId, int commentId)
     {
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         var activeAccountId = activeAccount?.Id ?? 0;
@@ -737,7 +737,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<PostCommentPageViewModel> TryGetPostCommentsByPage(long postId, int page, long focusedCommentId)
+    protected virtual async Task<PostCommentPageViewModel> TryGetPostCommentsByPage(int postId, int page, int focusedCommentId)
     {
         await using var database = CreateDbContext();
 
@@ -761,7 +761,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<PostCommentPageViewModel[]> TryGetAllPostComments(long postId)
+    protected virtual async Task<PostCommentPageViewModel[]> TryGetAllPostComments(int postId)
     {
         await using var database = CreateDbContext();
 
@@ -830,20 +830,20 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<Dictionary<long, PostCommentReactionViewModel>> TryGetMyCommentReactions(Session session, long postId)
+    public virtual async Task<Dictionary<int, PostCommentReactionViewModel>> TryGetMyCommentReactions(Session session, int postId)
     {
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         var activeAccountId = activeAccount?.Id ?? 0;
         var postRecord = await TryGetPostRecord(postId).ConfigureAwait(false);
         if (postRecord == null)
         {
-            return new Dictionary<long, PostCommentReactionViewModel>();
+            return new Dictionary<int, PostCommentReactionViewModel>();
         }
 
         var canSeePost = await CanAccountSeePost(activeAccountId, postRecord).ConfigureAwait(false);
         if (!canSeePost)
         {
-            return new Dictionary<long, PostCommentReactionViewModel>();
+            return new Dictionary<int, PostCommentReactionViewModel>();
         }
 
         return await TryGetMyCommentReactions(activeAccountId, postId).ConfigureAwait(false);
@@ -895,9 +895,9 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         var newTagKind = PostTagKind.PostRestored;
-        long? accountTagToAdd = command.NewCharacterId > 0 ? activeAccount.Id : null;
-        long? characterTagToAdd = command.NewCharacterId > 0 ? command.NewCharacterId : null;
-        long? accountTagToRemove = command.NewCharacterId > 0 ? null : activeAccount.Id;
+        int? accountTagToAdd = command.NewCharacterId > 0 ? activeAccount.Id : null;
+        int? characterTagToAdd = command.NewCharacterId > 0 ? command.NewCharacterId : null;
+        int? accountTagToRemove = command.NewCharacterId > 0 ? null : activeAccount.Id;
 
         if (activeAccount.Id == postRecord.AccountId)
         {
@@ -1045,7 +1045,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [CommandHandler]
-    public virtual async Task<long> TryPublishComment(Post_TryPublishComment command, CancellationToken cancellationToken = default)
+    public virtual async Task<int> TryPublishComment(Post_TryPublishComment command, CancellationToken cancellationToken = default)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -1125,7 +1125,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             }
         }
 
-        var usersThatCanBeTagged = new Dictionary<long, string>(activeAccount.GetUserTagList());
+        var usersThatCanBeTagged = new Dictionary<int, string>(activeAccount.GetUserTagList());
         if (parentComment != null)
         {
             usersThatCanBeTagged.TryAdd(parentComment.AccountId, parentComment.AccountUsername);
@@ -1234,7 +1234,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [CommandHandler]
-    public virtual async Task<long> TryReactToPostComment(Post_TryReactToPostComment command, CancellationToken cancellationToken = default)
+    public virtual async Task<int> TryReactToPostComment(Post_TryReactToPostComment command, CancellationToken cancellationToken = default)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -2033,7 +2033,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<Dictionary<long, PostCommentReactionViewModel>> TryGetMyCommentReactions(long activeAccountId, long postId)
+    protected virtual async Task<Dictionary<int, PostCommentReactionViewModel>> TryGetMyCommentReactions(int activeAccountId, int postId)
     {
         await using var database = CreateDbContext();
 
@@ -2046,7 +2046,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostRecord> TryGetPostRecord(long postId)
+    public virtual async Task<PostRecord> TryGetPostRecord(int postId)
     {
         await using var database = CreateDbContext();
 
@@ -2054,7 +2054,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<PostTagInfo[]> GetAllPostTagRecord(long postId, ServerSideLocale locale)
+    protected virtual async Task<PostTagInfo[]> GetAllPostTagRecord(int postId, ServerSideLocale locale)
     {
         var allTagInfo = new List<PostTagInfo>();
         var allTagRecords = await GetAllPostTags(postId).ConfigureAwait(false);
@@ -2082,7 +2082,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostTagRecord[]> GetAllPostTags(long postId)
+    public virtual async Task<PostTagRecord[]> GetAllPostTags(int postId)
     {
         await using var database = CreateDbContext();
 

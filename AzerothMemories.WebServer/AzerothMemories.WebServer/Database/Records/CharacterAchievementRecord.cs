@@ -8,11 +8,11 @@ public sealed class CharacterAchievementRecord : IDatabaseRecord
 {
     public const string TableName = "Characters_Achievements";
 
-    [Key] public long Id { get; set; }
+    [Key] public int Id { get; set; }
 
-    [Column] public long? AccountId { get; set; }
+    [Column] public int? AccountId { get; set; }
 
-    [Column] public long CharacterId { get; set; }
+    [Column] public int CharacterId { get; set; }
 
     [Column] public int AchievementId { get; set; }
 

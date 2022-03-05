@@ -2,9 +2,9 @@
 
 public sealed class PostReactionViewModel
 {
-    [JsonInclude] public long Id;
+    [JsonInclude] public int Id;
 
-    [JsonInclude] public long AccountId;
+    [JsonInclude] public int AccountId;
 
     [JsonInclude] public string AccountUsername;
 

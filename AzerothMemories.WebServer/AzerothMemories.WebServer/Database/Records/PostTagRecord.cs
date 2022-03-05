@@ -8,21 +8,21 @@ public sealed class PostTagRecord : IDatabaseRecord
 {
     public const string TableName = "Posts_Tags";
 
-    [Key] public long Id { get; set; }
+    [Key] public int Id { get; set; }
 
     [Column] public PostTagKind TagKind { get; set; }
 
     [Column] public PostTagType TagType { get; set; }
 
-    [Column] public long PostId { get; set; }
+    [Column] public int PostId { get; set; }
 
     [Column] public PostRecord Post { get; set; }
 
-    [Column] public long? CommentId { get; set; }
+    [Column] public int? CommentId { get; set; }
 
     [Column] public PostCommentRecord Comment { get; set; }
 
-    [Column] public long TagId { get; set; }
+    [Column] public int TagId { get; set; }
 
     [Column] public string TagString { get; set; }
 

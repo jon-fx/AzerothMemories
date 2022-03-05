@@ -56,7 +56,7 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel
 
     private async Task<CharacterAccountViewModel> UpdateCharacterAccount()
     {
-        long.TryParse(_idString, out var id);
+        int.TryParse(_idString, out var id);
 
         if (id > 0)
         {

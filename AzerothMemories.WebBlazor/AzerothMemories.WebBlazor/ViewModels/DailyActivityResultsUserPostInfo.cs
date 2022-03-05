@@ -2,8 +2,8 @@
 
 public sealed record DailyActivityResultsUserPostInfo
 {
-    public long AccountId { get; init; }
-    public long PostId { get; init; }
+    public int AccountId { get; init; }
+    public int PostId { get; init; }
     public long PostTime { get; init; }
     public PostViewModelBlobInfo[] BlobInfo { get; init; }
 }

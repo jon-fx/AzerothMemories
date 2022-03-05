@@ -30,38 +30,38 @@ public sealed class PostController : ControllerBase, IPostServices
     }
 
     [HttpGet("{accountId}/{postId}"), Publish]
-    public Task<PostViewModel> TryGetPostViewModel(Session session, [FromRoute] long accountId, [FromRoute] long postId, [FromQuery] ServerSideLocale locale)
+    public Task<PostViewModel> TryGetPostViewModel(Session session, [FromRoute] int accountId, [FromRoute] int postId, [FromQuery] ServerSideLocale locale)
     {
         return _commonServices.PostServices.TryGetPostViewModel(session, accountId, postId, locale);
     }
 
     [HttpPost]
-    public Task<long> TryReactToPost([FromBody] Post_TryReactToPost command, CancellationToken cancellationToken = default)
+    public Task<int> TryReactToPost([FromBody] Post_TryReactToPost command, CancellationToken cancellationToken = default)
     {
         command.UseDefaultSession(_sessionResolver);
         return _commonServices.PostServices.TryReactToPost(command, cancellationToken);
     }
 
     [HttpGet("{postId}"), Publish]
-    public Task<PostReactionViewModel[]> TryGetReactions(Session session, [FromRoute] long postId)
+    public Task<PostReactionViewModel[]> TryGetReactions(Session session, [FromRoute] int postId)
     {
         return _commonServices.PostServices.TryGetReactions(session, postId);
     }
 
     [HttpGet("{postId}"), Publish]
-    public Task<PostCommentPageViewModel> TryGetCommentsPage(Session session, [FromRoute] long postId, [FromQuery] int page = 0, [FromQuery] long focusedCommentId = 0)
+    public Task<PostCommentPageViewModel> TryGetCommentsPage(Session session, [FromRoute] int postId, [FromQuery] int page = 0, [FromQuery] int focusedCommentId = 0)
     {
         return _commonServices.PostServices.TryGetCommentsPage(session, postId, page, focusedCommentId);
     }
 
     [HttpGet("{postId}/{commentId}"), Publish]
-    public Task<PostReactionViewModel[]> TryGetCommentReactionData(Session session, [FromRoute] long postId, [FromRoute] long commentId)
+    public Task<PostReactionViewModel[]> TryGetCommentReactionData(Session session, [FromRoute] int postId, [FromRoute] int commentId)
     {
         return _commonServices.PostServices.TryGetCommentReactionData(session, postId, commentId);
     }
 
     [HttpGet("{postId}"), Publish]
-    public Task<Dictionary<long, PostCommentReactionViewModel>> TryGetMyCommentReactions(Session session, [FromRoute] long postId)
+    public Task<Dictionary<int, PostCommentReactionViewModel>> TryGetMyCommentReactions(Session session, [FromRoute] int postId)
     {
         return _commonServices.PostServices.TryGetMyCommentReactions(session, postId);
     }
@@ -74,14 +74,14 @@ public sealed class PostController : ControllerBase, IPostServices
     }
 
     [HttpPost]
-    public Task<long> TryPublishComment([FromBody] Post_TryPublishComment command, CancellationToken cancellationToken = default)
+    public Task<int> TryPublishComment([FromBody] Post_TryPublishComment command, CancellationToken cancellationToken = default)
     {
         command.UseDefaultSession(_sessionResolver);
         return _commonServices.PostServices.TryPublishComment(command, cancellationToken);
     }
 
     [HttpPost]
-    public Task<long> TryReactToPostComment([FromBody] Post_TryReactToPostComment command, CancellationToken cancellationToken = default)
+    public Task<int> TryReactToPostComment([FromBody] Post_TryReactToPostComment command, CancellationToken cancellationToken = default)
     {
         command.UseDefaultSession(_sessionResolver);
         return _commonServices.PostServices.TryReactToPostComment(command, cancellationToken);

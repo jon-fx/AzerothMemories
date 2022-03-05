@@ -2,7 +2,7 @@
 
 public sealed class GuildViewModel
 {
-    [JsonInclude] public long Id;
+    [JsonInclude] public int Id;
 
     [JsonInclude] public string Avatar;
 

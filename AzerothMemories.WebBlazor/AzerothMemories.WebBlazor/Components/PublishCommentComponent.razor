@@ -46,19 +46,19 @@
 
     [Parameter] public bool AutoFocus { get; init; }
 
-    [Parameter] public Dictionary<long, string> TagsList { get; init; }
+    [Parameter] public Dictionary<int, string> TagsList { get; init; }
 
     [Parameter] public EventCallback<string> OnSingleLineSubmit { get; init; }
 
     [Inject] public IJSRuntime JsRuntime { get; init; }
 
-    public Dictionary<long, string> ExtraTags { get; } = new();
+    public Dictionary<int, string> ExtraTags { get; } = new();
 
-    public Dictionary<long, string> FullTagsList
+    public Dictionary<int, string> FullTagsList
     {
         get
         {
-            var newDict = new Dictionary<long, string>(TagsList);
+            var newDict = new Dictionary<int, string>(TagsList);
             foreach (var kvp in ExtraTags)
             {
                 newDict.TryAdd(kvp.Key, kvp.Value);

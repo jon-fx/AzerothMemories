@@ -191,13 +191,13 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
     }
 
     [ComputeMethod]
-    public virtual Task<long> DependsOnAccountRecord(long accountId)
+    public virtual Task<int> DependsOnAccountRecord(int accountId)
     {
         return Task.FromResult(accountId);
     }
 
     [ComputeMethod]
-    public virtual Task<long> DependsOnAccountAchievements(long accountId)
+    public virtual Task<int> DependsOnAccountAchievements(int accountId)
     {
         return Task.FromResult(accountId);
     }
@@ -236,7 +236,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountRecord> TryGetAccountRecord(long id)
+    public virtual async Task<AccountRecord> TryGetAccountRecord(int id)
     {
         await DependsOnAccountRecord(id).ConfigureAwait(false);
 
@@ -284,7 +284,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountViewModel> TryGetAccountById(Session session, long accountId)
+    public virtual async Task<AccountViewModel> TryGetAccountById(Session session, int accountId)
     {
         await DependsOnAccountRecord(accountId).ConfigureAwait(false);
 
@@ -363,28 +363,28 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<int> GetPostCount(long accountId)
+    public virtual async Task<int> GetPostCount(int accountId)
     {
         await using var database = CreateDbContext();
         return await database.Posts.Where(x => x.AccountId == accountId).CountAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod]
-    public virtual async Task<int> GetMemoryCount(long accountId)
+    public virtual async Task<int> GetMemoryCount(int accountId)
     {
         await using var database = CreateDbContext();
         return await database.PostTags.Where(x => x.TagType == PostTagType.Account && x.TagId == accountId && x.TagKind == PostTagKind.PostRestored).CountAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod]
-    public virtual async Task<int> GetCommentCount(long accountId)
+    public virtual async Task<int> GetCommentCount(int accountId)
     {
         await using var database = CreateDbContext();
         return await database.PostComments.Where(x => x.AccountId == accountId).CountAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod]
-    public virtual async Task<int> GetReactionCount(long accountId)
+    public virtual async Task<int> GetReactionCount(int accountId)
     {
         await using var database = CreateDbContext();
         var postCount = await database.PostReactions.Where(x => x.AccountId == accountId && x.Reaction > PostReaction.None).CountAsync().ConfigureAwait(false);
@@ -890,7 +890,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
                     select a.AchievementId;
 
         var results = await query.ToArrayAsync().ConfigureAwait(false);
-        var hashSet = new HashSet<long>();
+        var hashSet = new HashSet<int>();
         var postTagSet = new HashSet<PostTagInfo>();
 
         foreach (var tagId in results)
@@ -923,7 +923,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountHistoryPageResult> TryGetAccountHistory(long activeAccountId, int currentPage)
+    public virtual async Task<AccountHistoryPageResult> TryGetAccountHistory(int activeAccountId, int currentPage)
     {
         Exceptions.ThrowIf(activeAccountId == 0);
         Exceptions.ThrowIf(currentPage == 0);

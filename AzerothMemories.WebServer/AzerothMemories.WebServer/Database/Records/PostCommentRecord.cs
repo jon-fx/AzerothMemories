@@ -8,13 +8,13 @@ public sealed class PostCommentRecord : IDatabaseRecord
 {
     public const string TableName = "Posts_Comments";
 
-    [Key] public long Id { get; set; }
+    [Key] public int Id { get; set; }
 
-    [Column] public long AccountId { get; set; }
+    [Column] public int AccountId { get; set; }
 
-    [Column] public long PostId { get; set; }
+    [Column] public int PostId { get; set; }
 
-    [Column] public long? ParentId { get; set; }
+    [Column] public int? ParentId { get; set; }
 
     [Column] public string PostComment { get; set; }
 

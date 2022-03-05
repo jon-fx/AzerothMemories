@@ -12,13 +12,13 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
     }
 
     [ComputeMethod]
-    public virtual Task<long> DependsOnCharacterRecord(long characterId)
+    public virtual Task<int> DependsOnCharacterRecord(int characterId)
     {
         return Task.FromResult(characterId);
     }
 
     [ComputeMethod]
-    public virtual async Task<CharacterRecord> TryGetCharacterRecord(long id)
+    public virtual async Task<CharacterRecord> TryGetCharacterRecord(int id)
     {
         await using var database = CreateDbContext();
         var record = await database.Characters.FirstOrDefaultAsync(a => a.Id == id).ConfigureAwait(false);
@@ -88,14 +88,14 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
     }
 
     [ComputeMethod]
-    public virtual async Task<Dictionary<long, CharacterViewModel>> TryGetAllAccountCharacters(long accountId)
+    public virtual async Task<Dictionary<int, CharacterViewModel>> TryGetAllAccountCharacters(int accountId)
     {
         //await _commonServices.AccountServices.DependsOnAccountRecord(accountId);
 
         await using var database = CreateDbContext();
 
         var allCharacters = await database.Characters.Where(x => x.AccountId == accountId).ToArrayAsync().ConfigureAwait(false);
-        var results = new Dictionary<long, CharacterViewModel>();
+        var results = new Dictionary<int, CharacterViewModel>();
         foreach (var characterRecord in allCharacters)
         {
             await DependsOnCharacterRecord(characterRecord.Id).ConfigureAwait(false);
@@ -150,7 +150,7 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
     }
 
     [ComputeMethod]
-    public virtual async Task<CharacterAccountViewModel> TryGetCharacter(Session session, long characterId)
+    public virtual async Task<CharacterAccountViewModel> TryGetCharacter(Session session, int characterId)
     {
         var results = new CharacterAccountViewModel();
         var characterRecord = await TryGetCharacterRecord(characterId).ConfigureAwait(false);
@@ -335,7 +335,7 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        var hashSet = new HashSet<long>(allPosts.Select(x => x.Id).ToHashSet());
+        var hashSet = new HashSet<int>(allPosts.Select(x => x.Id).ToHashSet());
         hashSet.UnionWith(allPostTags.Select(x => x.PostId));
 
         var item = new Character_TrySetCharacterRenamedOrTransferredInvalidate(oldCharacterRecord.AccountId.GetValueOrDefault(), oldCharacterRecord.Id, newCharacterRecord.AccountId.GetValueOrDefault(), newCharacterRecord.Id, hashSet);

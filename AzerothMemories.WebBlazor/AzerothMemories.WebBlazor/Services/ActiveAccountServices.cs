@@ -47,7 +47,7 @@ public sealed class ActiveAccountServices
         }
     }
 
-    public bool IsActiveAccount(long accountId)
+    public bool IsActiveAccount(int accountId)
     {
         if (AccountViewModel == null)
         {
@@ -98,11 +98,11 @@ public sealed class ActiveAccountServices
         }
     }
 
-    public Dictionary<long, string> GetUserTagList()
+    public Dictionary<int, string> GetUserTagList()
     {
         if (AccountViewModel == null)
         {
-            return new Dictionary<long, string>();
+            return new Dictionary<int, string>();
         }
 
         return AccountViewModel.GetUserTagList();

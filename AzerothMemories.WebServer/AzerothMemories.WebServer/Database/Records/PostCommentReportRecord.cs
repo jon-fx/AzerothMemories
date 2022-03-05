@@ -8,11 +8,11 @@ public sealed class PostCommentReportRecord : IDatabaseRecord
 {
     public const string TableName = "Posts_Comments_Reports";
 
-    [Key] public long Id { get; set; }
+    [Key] public int Id { get; set; }
 
-    [Column] public long AccountId { get; set; }
+    [Column] public int AccountId { get; set; }
 
-    [Column] public long CommentId { get; set; }
+    [Column] public int CommentId { get; set; }
 
     [Column] public PostReportedReason Reason { get; set; }
 

@@ -8,7 +8,7 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord
 {
     public const string TableName = "Characters";
 
-    [Key] public long Id { get; set; }
+    [Key] public int Id { get; set; }
 
     [Column] public string MoaRef { get; set; }
 
@@ -24,7 +24,7 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord
 
     [Column] public CharacterStatus2 CharacterStatus { get; set; }
 
-    [Column] public long? AccountId { get; set; }
+    [Column] public int? AccountId { get; set; }
 
     //[Column] public AccountRecord Account { get; set; }
 
@@ -48,7 +48,7 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord
 
     [Column] public int AchievementTotalPoints { get; set; }
 
-    [Column] public long? GuildId { get; set; }
+    [Column] public int? GuildId { get; set; }
 
     [Column] public string GuildRef { get; set; }
 

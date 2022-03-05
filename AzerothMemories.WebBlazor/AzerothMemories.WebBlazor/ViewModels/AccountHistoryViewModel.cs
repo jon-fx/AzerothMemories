@@ -2,16 +2,16 @@
 
 public sealed class AccountHistoryViewModel
 {
-    [JsonInclude] public long Id;
+    [JsonInclude] public int Id;
     [JsonInclude] public AccountHistoryType Type;
 
-    [JsonInclude] public long AccountId;
-    [JsonInclude] public long OtherAccountId;
+    [JsonInclude] public int AccountId;
+    [JsonInclude] public int OtherAccountId;
     [JsonInclude] public string OtherAccountUsername;
 
-    [JsonInclude] public long TargetId;
-    [JsonInclude] public long TargetPostId;
-    [JsonInclude] public long TargetCommentId;
+    [JsonInclude] public int TargetId;
+    [JsonInclude] public int TargetPostId;
+    [JsonInclude] public int TargetCommentId;
 
     [JsonInclude] public long CreatedTime;
 

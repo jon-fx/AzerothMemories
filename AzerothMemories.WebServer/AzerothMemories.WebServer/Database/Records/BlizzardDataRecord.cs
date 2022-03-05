@@ -8,9 +8,9 @@ public sealed class BlizzardDataRecord : IDatabaseRecord
 {
     public const string TableName = "Blizzard_Data";
 
-    [Key] public long Id { get; set; }
+    [Key] public int Id { get; set; }
 
-    [Column] public long TagId { get; set; }
+    [Column] public int TagId { get; set; }
 
     [Column] public PostTagType TagType { get; set; }
 
@@ -27,7 +27,7 @@ public sealed class BlizzardDataRecord : IDatabaseRecord
         Name = new BlizzardDataRecordLocal();
     }
 
-    public BlizzardDataRecord(PostTagType tagType, long tagId) : this()
+    public BlizzardDataRecord(PostTagType tagType, int tagId) : this()
     {
         TagId = tagId;
         TagType = tagType;

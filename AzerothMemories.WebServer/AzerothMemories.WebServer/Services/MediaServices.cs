@@ -68,7 +68,7 @@ public class MediaServices : DbServiceBase<AppDbContext>
     [ComputeMethod]
     public virtual async Task<MediaResult> TryGetUserMedia(Session session, string fileName, MediaSize size)
     {
-        long accountId = 0;
+        var accountId = 0;
         var account = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         if (account != null)
         {
@@ -79,7 +79,7 @@ public class MediaServices : DbServiceBase<AppDbContext>
     }
 
     [ComputeMethod]
-    public virtual async Task<MediaResult> TryGetUserMedia(long accountId, string fileName, MediaSize size)
+    public virtual async Task<MediaResult> TryGetUserMedia(int accountId, string fileName, MediaSize size)
     {
         var blobData = await TryGetBlobData(ZExtensions.BlobImages, fileName, size).ConfigureAwait(false);
         if (blobData == null)

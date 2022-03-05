@@ -35,13 +35,13 @@
 
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
 
-    [Parameter] public long ReplyToUserId { get; init; }
+    [Parameter] public int ReplyToUserId { get; init; }
 
     [Parameter] public string ReplyToUsername { get; init; }
 
-    [Parameter, EditorRequired] public long PostId { get; init; }
+    [Parameter, EditorRequired] public int PostId { get; init; }
 
-    [Parameter] public long CommentId { get; init; }
+    [Parameter] public int CommentId { get; init; }
 
     protected override void OnAfterRender(bool firstRender)
     {

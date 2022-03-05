@@ -171,7 +171,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         return updateResult;
     }
 
-    private async Task<HttpStatusCode> TryCharacterUpdateInternal(long id, AppDbContext database, CharacterRecord record)
+    private async Task<HttpStatusCode> TryCharacterUpdateInternal(int id, AppDbContext database, CharacterRecord record)
     {
         var characterRef = new MoaRef(record.MoaRef);
         using var client = _commonServices.WarcraftClientProvider.Get(record.BlizzardRegionId);
@@ -348,7 +348,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         return updateResult;
     }
 
-    private async Task<HttpStatusCode> TryUpdateGuildInternal(long id, AppDbContext database, GuildRecord record)
+    private async Task<HttpStatusCode> TryUpdateGuildInternal(int id, AppDbContext database, GuildRecord record)
     {
         var guildRef = new MoaRef(record.MoaRef);
         using var client = _commonServices.WarcraftClientProvider.Get(guildRef.Region);

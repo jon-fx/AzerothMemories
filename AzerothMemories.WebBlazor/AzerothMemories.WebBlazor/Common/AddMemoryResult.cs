@@ -2,11 +2,11 @@
 
 public sealed class AddMemoryResult
 {
-    [JsonInclude] public readonly long AccountId;
-    [JsonInclude] public readonly long PostId;
+    [JsonInclude] public readonly int AccountId;
+    [JsonInclude] public readonly int PostId;
     [JsonInclude] public readonly AddMemoryResultCode Result;
 
-    public AddMemoryResult(AddMemoryResultCode result, long accountId = 0, long postId = 0)
+    public AddMemoryResult(AddMemoryResultCode result, int accountId = 0, int postId = 0)
     {
         Result = result;
         AccountId = accountId;

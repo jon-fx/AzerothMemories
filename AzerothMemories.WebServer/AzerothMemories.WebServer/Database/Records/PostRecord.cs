@@ -8,9 +8,9 @@ public sealed class PostRecord : IDatabaseRecord
 {
     public const string TableName = "Posts";
 
-    [Key] public long Id { get; set; }
+    [Key] public int Id { get; set; }
 
-    [Column] public long AccountId { get; set; }
+    [Column] public int AccountId { get; set; }
 
     [Column] public string PostComment { get; set; }
 

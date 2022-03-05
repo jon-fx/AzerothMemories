@@ -8,13 +8,13 @@ public sealed class PostTagReportRecord : IDatabaseRecord
 {
     public const string TableName = "Posts_Reports_Tags";
 
-    [Key] public long Id { get; set; }
+    [Key] public int Id { get; set; }
 
-    [Column] public long AccountId { get; set; }
+    [Column] public int AccountId { get; set; }
 
-    [Column] public long PostId { get; set; }
+    [Column] public int PostId { get; set; }
 
-    [Column] public long TagId { get; set; }
+    [Column] public int TagId { get; set; }
 
     [Column] public Instant CreatedTime { get; set; }
 }

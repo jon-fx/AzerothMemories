@@ -12,7 +12,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
     }
 
     [ComputeMethod]
-    public virtual async Task<Dictionary<long, AccountFollowingViewModel>> TryGetAccountFollowing(long accountId)
+    public virtual async Task<Dictionary<int, AccountFollowingViewModel>> TryGetAccountFollowing(int accountId)
     {
         if (accountId == 0)
         {
@@ -38,7 +38,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
     }
 
     [ComputeMethod]
-    public virtual async Task<Dictionary<long, AccountFollowingViewModel>> TryGetAccountFollowers(long accountId)
+    public virtual async Task<Dictionary<int, AccountFollowingViewModel>> TryGetAccountFollowers(int accountId)
     {
         if (accountId == 0)
         {

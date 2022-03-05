@@ -20,7 +20,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     [ComputeMethod]
     public virtual async Task<DailyActivityResults> TryGetDailyActivity(Session session, string timeZoneId, byte inZoneDay, byte inZoneMonth, ServerSideLocale locale)
     {
-        long accountId = 0;
+        var accountId = 0;
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         if (activeAccount != null)
         {
@@ -40,7 +40,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<DailyActivityResults> TryGetDailyActivity(long accountId, string timeZoneId, byte inZoneDay, byte inZoneMonth, ServerSideLocale locale)
+    protected virtual async Task<DailyActivityResults> TryGetDailyActivity(int accountId, string timeZoneId, byte inZoneDay, byte inZoneMonth, ServerSideLocale locale)
     {
         var allResults = await TryGetDailyActivityFull(timeZoneId, inZoneDay, inZoneMonth, locale).ConfigureAwait(false);
         var userResults = new Dictionary<int, DailyActivityResultsUser>();
@@ -58,7 +58,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     [ComputeMethod]
     public virtual async Task<DailyActivityResults[]> TryGetDailyActivityFull(Session session, string timeZoneId, byte inZoneDay, byte inZoneMonth, ServerSideLocale locale)
     {
-        long accountId = 0;
+        var accountId = 0;
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         if (activeAccount != null)
         {
@@ -78,7 +78,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<DailyActivityResults[]> TryGetDailyActivityFull(long accountId, string timeZoneId, byte inZoneDay, byte inZoneMonth, ServerSideLocale locale)
+    protected virtual async Task<DailyActivityResults[]> TryGetDailyActivityFull(int accountId, string timeZoneId, byte inZoneDay, byte inZoneMonth, ServerSideLocale locale)
     {
         var allResults = await TryGetDailyActivityFull(timeZoneId, inZoneDay, inZoneMonth, locale).ConfigureAwait(false);
         var userResults = new Dictionary<int, DailyActivityResultsUser>();
@@ -352,7 +352,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<Dictionary<int, DailyActivityResultsUser>> TryGetUserActivityFull(long accountId, string timeZoneId, byte inZoneDay, byte inZoneMonth, ServerSideLocale locale)
+    protected virtual async Task<Dictionary<int, DailyActivityResultsUser>> TryGetUserActivityFull(int accountId, string timeZoneId, byte inZoneDay, byte inZoneMonth, ServerSideLocale locale)
     {
         var timeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(timeZoneId);
         if (timeZone == null)
@@ -405,7 +405,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<ActivitySetUser> TryGetUserActivitySet(long accountId, string timeZoneId, int inZoneDay, int inZoneMonth, int inZoneYear)
+    protected virtual async Task<ActivitySetUser> TryGetUserActivitySet(int accountId, string timeZoneId, int inZoneDay, int inZoneMonth, int inZoneYear)
     {
         var results = await TryGetUserActivitySetFull(accountId, timeZoneId, inZoneDay, inZoneMonth).ConfigureAwait(false);
         if (!results.TryGetValue(inZoneYear, out var result))
@@ -417,7 +417,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     }
 
     [ComputeMethod(AutoInvalidateTime = 60 * 10)]
-    protected virtual async Task<Dictionary<int, ActivitySetUser>> TryGetUserActivitySetFull(long accountId, string timeZoneId, int inZoneDay, int inZoneMonth)
+    protected virtual async Task<Dictionary<int, ActivitySetUser>> TryGetUserActivitySetFull(int accountId, string timeZoneId, int inZoneDay, int inZoneMonth)
     {
         var results = new Dictionary<int, ActivitySetUser>();
         var totals = new ActivitySetUser { Year = _totalYearValue };
@@ -485,7 +485,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                             select new { post.Id, post.AccountId, post.PostTime, post.PostComment, post.BlobNames };
 
         var memories = await memoriesQuery.ToArrayAsync().ConfigureAwait(false);
-        var memoriesById = new HashSet<long>();
+        var memoriesById = new HashSet<int>();
         foreach (var memory in memories)
         {
             var itemZonedDateTime = memory.PostTime.InZone(timeZone);
@@ -607,7 +607,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     public virtual async Task<RecentPostsResults> TryGetRecentPosts(Session session, RecentPostsType postsType, PostSortMode sortMode, int currentPage, ServerSideLocale locale)
     {
         var account = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
-        var allSearchResult = Array.Empty<long>();
+        var allSearchResult = Array.Empty<int>();
         if (account != null && postsType == RecentPostsType.Default)
         {
             allSearchResult = await TryGetRecentPosts(account.Id).ConfigureAwait(false);
@@ -637,7 +637,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<long[]> TryGetRecentPosts()
+    protected virtual async Task<int[]> TryGetRecentPosts()
     {
         await using var database = CreateDbContext();
 
@@ -652,15 +652,15 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<long[]> TryGetRecentPosts(long accountId)
+    protected virtual async Task<int[]> TryGetRecentPosts(int accountId)
     {
         var following = await _commonServices.FollowingServices.TryGetAccountFollowing(accountId).ConfigureAwait(false);
         if (following == null || following.Count == 0)
         {
-            return Array.Empty<long>();
+            return Array.Empty<int>();
         }
 
-        var allFollowingIds = new HashSet<long> { accountId };
+        var allFollowingIds = new HashSet<int> { accountId };
         foreach (var kvp in following)
         {
             if (kvp.Value.Status != AccountFollowingStatus.Active)
@@ -722,7 +722,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         };
     }
 
-    private async Task<PostViewModel[]> GetPostViewModelsForPage(Session session, long[] allSearchResult, int currentPage, int postsPerPage, ServerSideLocale locale)
+    private async Task<PostViewModel[]> GetPostViewModelsForPage(Session session, int[] allSearchResult, int currentPage, int postsPerPage, ServerSideLocale locale)
     {
         var viewModels = new List<PostViewModel>();
         for (var i = (currentPage - 1) * postsPerPage; i < allSearchResult.Length; i++)
@@ -769,7 +769,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<long[]> TrySearchPosts(HashSet<string> tagStrings, PostSortMode sortMode, long minTime, long maxTime)
+    protected virtual async Task<int[]> TrySearchPosts(HashSet<string> tagStrings, PostSortMode sortMode, long minTime, long maxTime)
     {
         await using var database = CreateDbContext();
 

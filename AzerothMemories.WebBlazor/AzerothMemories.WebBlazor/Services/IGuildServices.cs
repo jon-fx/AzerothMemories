@@ -5,7 +5,7 @@ public interface IGuildServices
 {
     [ComputeMethod]
     [Get(nameof(TryGetGuild) + "/{guildId}")]
-    Task<GuildViewModel> TryGetGuild(Session session, [Path] long guildId);
+    Task<GuildViewModel> TryGetGuild(Session session, [Path] int guildId);
 
     [ComputeMethod]
     [Get(nameof(TryGetGuild) + "/{region}/{realmSlug}/{guildName}")]

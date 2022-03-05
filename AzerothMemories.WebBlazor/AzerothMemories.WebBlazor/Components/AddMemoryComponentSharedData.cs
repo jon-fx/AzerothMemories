@@ -48,7 +48,7 @@ public sealed class AddMemoryComponentSharedData
 
     public HashSet<PostTagInfo> SelectedExtraTags => _selectedExtraTags;
 
-    public long SelectedCharacterId => _selectedCharacter?.Id ?? -1;
+    public int SelectedCharacterId => _selectedCharacter?.Id ?? -1;
 
     public int SelectedPostAvatarImage { get; set; }
 
@@ -318,7 +318,7 @@ public sealed class AddMemoryComponentSharedData
         OnTagsChanged?.Invoke();
     }
 
-    public Task ChangeSelectedCharacter(long newSelectedCharacter)
+    public Task ChangeSelectedCharacter(int newSelectedCharacter)
     {
         if (SelectedCharacterId == newSelectedCharacter)
         {

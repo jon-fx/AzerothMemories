@@ -2,11 +2,11 @@
 
 public sealed class AccountFollowingViewModel
 {
-    [JsonInclude] public long Id;
+    [JsonInclude] public int Id;
 
-    [JsonInclude] public long AccountId;
+    [JsonInclude] public int AccountId;
 
-    [JsonInclude] public long FollowerId;
+    [JsonInclude] public int FollowerId;
 
     [JsonInclude] public string FollowerUsername;
 

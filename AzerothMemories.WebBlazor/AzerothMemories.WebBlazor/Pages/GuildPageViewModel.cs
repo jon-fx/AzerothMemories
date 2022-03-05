@@ -52,7 +52,7 @@ public sealed class GuildPageViewModel : PersistentStateViewModel
 
     private async Task<GuildViewModel> UpdateGuildViewModel()
     {
-        long.TryParse(_idString, out var id);
+        int.TryParse(_idString, out var id);
         GuildViewModel guildViewModel;
 
         if (id > 0)

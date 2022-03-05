@@ -8,9 +8,9 @@ public sealed class AccountUploadLog : IDatabaseRecord
 {
     public const string TableName = "Accounts_UploadLog";
 
-    [Key] public long Id { get; set; }
+    [Key] public int Id { get; set; }
 
-    [Column] public long AccountId { get; set; }
+    [Column] public int AccountId { get; set; }
 
     [Column] public string BlobName { get; set; }
 
@@ -20,7 +20,7 @@ public sealed class AccountUploadLog : IDatabaseRecord
 
     [Column] public Instant UploadTime { get; set; }
     
-    [Column] public long? PostId { get; set; }
+    [Column] public int? PostId { get; set; }
 
     [Column] public PostRecord Post { get; set; }
 }

@@ -144,7 +144,7 @@ public static class ZExtensions
         }
     }
 
-    public static bool ParseTagInfoFrom(string key, out (PostTagType Type, long Id, string Text) result)
+    public static bool ParseTagInfoFrom(string key, out (PostTagType Type, int Id, string Text) result)
     {
         if (string.IsNullOrWhiteSpace(key))
         {
@@ -173,11 +173,11 @@ public static class ZExtensions
             return false;
         }
 
-        long id = -1;
+        int id = -1;
         if (type == PostTagType.HashTag)
         {
         }
-        else if (split.Length < 2 || !long.TryParse(split[1], out id))
+        else if (split.Length < 2 || !int.TryParse(split[1], out id))
         {
             result = default;
             return false;
@@ -246,7 +246,7 @@ public static class ZExtensions
         return "";
     }
 
-    public static string GetWowHeadLink(this PostTagType tagType, long id)
+    public static string GetWowHeadLink(this PostTagType tagType, int id)
     {
         string wowHeadLink = null;
         switch (tagType)

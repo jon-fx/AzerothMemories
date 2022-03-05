@@ -8,27 +8,27 @@ public interface IPostServices
 
     [ComputeMethod]
     [Get(nameof(TryGetPostViewModel) + "/{accountId}/{postId}")]
-    Task<PostViewModel> TryGetPostViewModel(Session session, [Path] long accountId, [Path] long postId, [Query] ServerSideLocale locale);
+    Task<PostViewModel> TryGetPostViewModel(Session session, [Path] int accountId, [Path] int postId, [Query] ServerSideLocale locale);
 
     [CommandHandler]
     [Post(nameof(TryReactToPost))]
-    Task<long> TryReactToPost([Body] Post_TryReactToPost command, CancellationToken cancellationToken = default);
+    Task<int> TryReactToPost([Body] Post_TryReactToPost command, CancellationToken cancellationToken = default);
 
     [ComputeMethod]
     [Get(nameof(TryGetReactions) + "/{postId}")]
-    Task<PostReactionViewModel[]> TryGetReactions(Session session, [Path] long postId);
+    Task<PostReactionViewModel[]> TryGetReactions(Session session, [Path] int postId);
 
     [ComputeMethod]
     [Get(nameof(TryGetCommentsPage) + "/{postId}")]
-    Task<PostCommentPageViewModel> TryGetCommentsPage(Session session, [Path] long postId, [Query] int page = 0, [Query] long focusedCommentId = 0);
+    Task<PostCommentPageViewModel> TryGetCommentsPage(Session session, [Path] int postId, [Query] int page = 0, [Query] int focusedCommentId = 0);
 
     [ComputeMethod]
     [Get(nameof(TryGetCommentReactionData) + "/{postId}/{commentId}")]
-    Task<PostReactionViewModel[]> TryGetCommentReactionData(Session session, [Path] long postId, [Path] long commentId);
+    Task<PostReactionViewModel[]> TryGetCommentReactionData(Session session, [Path] int postId, [Path] int commentId);
 
     [ComputeMethod]
     [Get(nameof(TryGetMyCommentReactions) + "/{postId}")]
-    Task<Dictionary<long, PostCommentReactionViewModel>> TryGetMyCommentReactions(Session session, [Path] long postId);
+    Task<Dictionary<int, PostCommentReactionViewModel>> TryGetMyCommentReactions(Session session, [Path] int postId);
 
     [CommandHandler]
     [Post(nameof(TryRestoreMemory))]
@@ -36,11 +36,11 @@ public interface IPostServices
 
     [CommandHandler]
     [Post(nameof(TryPublishComment))]
-    Task<long> TryPublishComment([Body] Post_TryPublishComment command, CancellationToken cancellationToken = default);
+    Task<int> TryPublishComment([Body] Post_TryPublishComment command, CancellationToken cancellationToken = default);
 
     [CommandHandler]
     [Post(nameof(TryReactToPostComment))]
-    Task<long> TryReactToPostComment([Body] Post_TryReactToPostComment command, CancellationToken cancellationToken = default);
+    Task<int> TryReactToPostComment([Body] Post_TryReactToPostComment command, CancellationToken cancellationToken = default);
 
     [CommandHandler]
     [Post(nameof(TrySetPostVisibility))]

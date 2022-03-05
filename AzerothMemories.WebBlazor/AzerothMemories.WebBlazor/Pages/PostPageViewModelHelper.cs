@@ -7,7 +7,7 @@ public sealed class PostPageViewModelHelper
     private bool _scrollToFocus;
     private PostCommentTreeNode _focusedNode;
 
-    private Dictionary<long, PostCommentTreeNode> _allCommentTreeNodes = new();
+    private Dictionary<int, PostCommentTreeNode> _allCommentTreeNodes = new();
 
     public PostPageViewModelHelper(IMoaServices services)
     {
@@ -28,7 +28,7 @@ public sealed class PostPageViewModelHelper
 
     public PostCommentPageViewModel PostCommentPageViewModel { get; private set; }
 
-    public Dictionary<long, PostCommentReactionViewModel> CommentReactions { get; private set; } = new();
+    public Dictionary<int, PostCommentReactionViewModel> CommentReactions { get; private set; } = new();
 
     public void SetErrorMessage(string errorMessage)
     {
@@ -37,7 +37,7 @@ public sealed class PostPageViewModelHelper
 
     public async Task<AccountViewModel> UpdateAccount(string accountString)
     {
-        long.TryParse(accountString, out var accountId);
+        int.TryParse(accountString, out var accountId);
 
         AccountViewModel = null;
 
@@ -65,7 +65,7 @@ public sealed class PostPageViewModelHelper
 
     public async Task<PostViewModel> UpdatePost(string postIdString)
     {
-        long.TryParse(postIdString, out var postId);
+        int.TryParse(postIdString, out var postId);
 
         PostViewModel = null;
 
@@ -104,7 +104,7 @@ public sealed class PostPageViewModelHelper
             currentPage = 0;
         }
 
-        if (!long.TryParse(focusedCommentIdString, out var focusedCommentId))
+        if (!int.TryParse(focusedCommentIdString, out var focusedCommentId))
         {
             focusedCommentId = 0;
         }
@@ -136,7 +136,7 @@ public sealed class PostPageViewModelHelper
             currentPage = 0;
         }
 
-        if (!long.TryParse(focusedCommentIdString, out var focusedCommentId))
+        if (!int.TryParse(focusedCommentIdString, out var focusedCommentId))
         {
             focusedCommentId = 0;
         }

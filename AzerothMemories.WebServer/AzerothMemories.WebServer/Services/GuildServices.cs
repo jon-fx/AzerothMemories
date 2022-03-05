@@ -12,13 +12,13 @@ public class GuildServices : DbServiceBase<AppDbContext>, IGuildServices
     }
 
     [ComputeMethod]
-    public virtual Task<long> DependsOnGuildRecord(long guildId)
+    public virtual Task<int> DependsOnGuildRecord(int guildId)
     {
         return Task.FromResult(guildId);
     }
 
     [ComputeMethod]
-    public virtual async Task<GuildRecord> TryGetGuildRecord(long id)
+    public virtual async Task<GuildRecord> TryGetGuildRecord(int id)
     {
         await using var database = CreateDbContext();
         var record = await database.Guilds.FirstOrDefaultAsync(r => r.Id == id).ConfigureAwait(false);
@@ -73,7 +73,7 @@ public class GuildServices : DbServiceBase<AppDbContext>, IGuildServices
     }
 
     [ComputeMethod]
-    public virtual async Task<GuildViewModel> TryGetGuild(Session session, long guildId)
+    public virtual async Task<GuildViewModel> TryGetGuild(Session session, int guildId)
     {
         var guildRecord = await TryGetGuildRecord(guildId).ConfigureAwait(false);
         if (guildRecord == null)

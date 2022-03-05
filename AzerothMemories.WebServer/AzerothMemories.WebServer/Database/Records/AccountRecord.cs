@@ -8,7 +8,7 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
 {
     public const string TableName = "Accounts";
 
-    [Key] public long Id { get; set; }
+    [Key] public int Id { get; set; }
 
     [Column] public string FusionId { get; set; }
 
@@ -64,7 +64,7 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
 
     //public ICollection<CharacterRecord> Characters { get; set; }
 
-    public AccountViewModel CreateViewModel(CommonServices commonServices, bool activeOrAdmin, Dictionary<long, AccountFollowingViewModel> followingViewModels, Dictionary<long, AccountFollowingViewModel> followersViewModels)
+    public AccountViewModel CreateViewModel(CommonServices commonServices, bool activeOrAdmin, Dictionary<int, AccountFollowingViewModel> followingViewModels, Dictionary<int, AccountFollowingViewModel> followersViewModels)
     {
         var viewModel = new AccountViewModel
         {
@@ -108,9 +108,9 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
         return viewModel;
     }
 
-    private static Dictionary<long, AccountFollowingViewModel> RemoveNoneStatus(Dictionary<long, AccountFollowingViewModel> viewModels)
+    private static Dictionary<int, AccountFollowingViewModel> RemoveNoneStatus(Dictionary<int, AccountFollowingViewModel> viewModels)
     {
-        var results = new Dictionary<long, AccountFollowingViewModel>();
+        var results = new Dictionary<int, AccountFollowingViewModel>();
         foreach (var kvp in viewModels)
         {
             if (kvp.Value.Status == AccountFollowingStatus.None)

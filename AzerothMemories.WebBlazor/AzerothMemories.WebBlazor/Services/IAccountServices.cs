@@ -9,7 +9,7 @@ public interface IAccountServices
 
     [ComputeMethod]
     [Get(nameof(TryGetAccountById) + "/{accountId}")]
-    Task<AccountViewModel> TryGetAccountById(Session session, [Path] long accountId);
+    Task<AccountViewModel> TryGetAccountById(Session session, [Path] int accountId);
 
     [ComputeMethod]
     [Get(nameof(TryGetAccountByUsername) + "/{username}")]

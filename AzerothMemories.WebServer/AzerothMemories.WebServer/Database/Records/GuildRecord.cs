@@ -8,7 +8,7 @@ public sealed class GuildRecord : IBlizzardUpdateRecord
 {
     public const string TableName = "Guilds";
 
-    [Key] public long Id { get; set; }
+    [Key] public int Id { get; set; }
 
     [Column] public string MoaRef { get; set; }
 

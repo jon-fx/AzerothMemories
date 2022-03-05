@@ -8,9 +8,9 @@ public sealed class PostViewModel
     {
     }
 
-    [JsonInclude] public long Id;
+    [JsonInclude] public int Id;
 
-    [JsonInclude] public long AccountId;
+    [JsonInclude] public int AccountId;
 
     [JsonInclude] public string AccountAvatar;
 
@@ -32,7 +32,7 @@ public sealed class PostViewModel
 
     [JsonInclude] public PostTagInfo[] SystemTags;
 
-    [JsonInclude] public long ReactionId;
+    [JsonInclude] public int ReactionId;
 
     [JsonInclude] public PostReaction Reaction;
 

@@ -5,7 +5,7 @@ public sealed class PostTagInfo
     public static readonly IEqualityComparer<PostTagInfo> EqualityComparer1 = new PostTagInfoEqualityComparer1();
     public static readonly IEqualityComparer<object> EqualityComparer2 = new PostTagInfoEqualityComparer2();
 
-    [JsonInclude] public readonly long Id;
+    [JsonInclude] public readonly int Id;
     [JsonInclude] public readonly string Name;
     [JsonInclude] public readonly string Image;
     [JsonInclude] public readonly PostTagType Type;
@@ -14,7 +14,7 @@ public sealed class PostTagInfo
     [JsonIgnore] private string _nameWithIcon;
     [JsonIgnore] private string _wowHeadLink;
 
-    public PostTagInfo(PostTagType type, long id, string name, string image, long minTagTime = 0)
+    public PostTagInfo(PostTagType type, int id, string name, string image, long minTagTime = 0)
     {
         Id = id;
         Image = image;
@@ -59,7 +59,7 @@ public sealed class PostTagInfo
         return $"{(int)Type}-{Id}";
     }
 
-    public static string GetTagString(PostTagType tagType, long tagId)
+    public static string GetTagString(PostTagType tagType, int tagId)
     {
         return $"{tagType}-{tagId}";
     }

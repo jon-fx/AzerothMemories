@@ -13,7 +13,7 @@ public sealed class GuildController : ControllerBase, IGuildServices
     }
 
     [HttpGet("{guildId}"), Publish]
-    public Task<GuildViewModel> TryGetGuild(Session session, [FromRoute] long guildId)
+    public Task<GuildViewModel> TryGetGuild(Session session, [FromRoute] int guildId)
     {
         return _commonServices.GuildServices.TryGetGuild(session, guildId);
     }

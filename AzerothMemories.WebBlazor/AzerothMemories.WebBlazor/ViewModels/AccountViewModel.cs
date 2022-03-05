@@ -2,7 +2,7 @@
 
 public sealed class AccountViewModel
 {
-    [JsonInclude] public long Id;
+    [JsonInclude] public int Id;
 
     [JsonInclude] public string Username;
 
@@ -42,9 +42,9 @@ public sealed class AccountViewModel
 
     [JsonInclude] public CharacterViewModel[] CharactersArray = Array.Empty<CharacterViewModel>();
 
-    [JsonInclude] public Dictionary<long, AccountFollowingViewModel> FollowingViewModels = new();
+    [JsonInclude] public Dictionary<int, AccountFollowingViewModel> FollowingViewModels = new();
 
-    [JsonInclude] public Dictionary<long, AccountFollowingViewModel> FollowersViewModels = new();
+    [JsonInclude] public Dictionary<int, AccountFollowingViewModel> FollowersViewModels = new();
 
     [JsonIgnore] public bool CanInteract => SystemClock.Instance.GetCurrentInstant() > Instant.FromUnixTimeMilliseconds(BanExpireTime);
 
@@ -104,14 +104,14 @@ public sealed class AccountViewModel
         return CharactersArray.OrderByDescending(x => x.Level).ThenBy(x => x.Name).ToArray();
     }
 
-    public Dictionary<long, string> GetUserTagList()
+    public Dictionary<int, string> GetUserTagList()
     {
         if (FollowersViewModels == null)
         {
-            return new Dictionary<long, string>();
+            return new Dictionary<int, string>();
         }
 
-        var tagSet = new Dictionary<long, string>();
+        var tagSet = new Dictionary<int, string>();
         foreach (var kvp in FollowersViewModels)
         {
             tagSet.TryAdd(kvp.Value.FollowerId, kvp.Value.FollowerUsername);

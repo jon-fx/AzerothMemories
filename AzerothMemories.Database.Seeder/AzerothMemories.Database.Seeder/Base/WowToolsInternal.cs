@@ -77,7 +77,7 @@ internal sealed class WowToolsInternal
             {
                 webClient.DownloadFile(remotePath, fileInfo.FullName);
             }
-            catch (System.Net.WebException)
+            catch (WebException)
             {
                 if (_throwIfNotFound)
                 {

@@ -61,7 +61,7 @@ public sealed class DialogHelperService
         await ShowDialog<NotificationDialog>("Notification", parameters, options);
     }
 
-    public async Task<DialogResult> ShowReportPostDialog(string message, long postId, long commentId)
+    public async Task<DialogResult> ShowReportPostDialog(string message, int postId, int commentId)
     {
         var options = new DialogOptions
         {

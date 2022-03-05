@@ -2,7 +2,7 @@
 
 public sealed class MainSearchResult
 {
-    [JsonInclude] public long Id { get; init; }
+    [JsonInclude] public int Id { get; init; }
     [JsonInclude] public string RefStr { get; init; }
     [JsonInclude] public string Name { get; init; }
 
@@ -60,7 +60,7 @@ public sealed class MainSearchResult
         throw new NotImplementedException();
     }
 
-    public static MainSearchResult CreateAccount(long id, string name, string avatar)
+    public static MainSearchResult CreateAccount(int id, string name, string avatar)
     {
         return new MainSearchResult
         {
@@ -71,7 +71,7 @@ public sealed class MainSearchResult
         };
     }
 
-    public static MainSearchResult CreateCharacter(long id, string moaRef, string name, string avatar, int realmId, byte characterClass)
+    public static MainSearchResult CreateCharacter(int id, string moaRef, string name, string avatar, int realmId, byte characterClass)
     {
         return new MainSearchResult
         {
@@ -85,7 +85,7 @@ public sealed class MainSearchResult
         };
     }
 
-    public static MainSearchResult CreateGuild(long id, string moaRef, string name, string avatar, int realmId)
+    public static MainSearchResult CreateGuild(int id, string moaRef, string name, string avatar, int realmId)
     {
         return new MainSearchResult
         {

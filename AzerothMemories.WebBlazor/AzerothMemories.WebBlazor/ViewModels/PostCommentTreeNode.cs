@@ -2,11 +2,11 @@
 
 public sealed class PostCommentTreeNode
 {
-    public readonly long Id;
-    public readonly long PostId;
-    public readonly long PostersAccountId;
+    public readonly int Id;
+    public readonly int PostId;
+    public readonly int PostersAccountId;
 
-    public long ReactionId;
+    public int ReactionId;
     public PostReaction Reaction;
 
     public bool IsFocused;
@@ -20,14 +20,14 @@ public sealed class PostCommentTreeNode
     public PostCommentTreeNode Parent;
     public List<PostCommentTreeNode> Children = new();
 
-    public PostCommentTreeNode(long postersAccountId, long postId, long commentId)
+    public PostCommentTreeNode(int postersAccountId, int postId, int commentId)
     {
         Id = commentId;
         PostId = postId;
         PostersAccountId = postersAccountId;
     }
 
-    public long ParentId => Comment.ParentId;
+    public int ParentId => Comment.ParentId;
 
     public bool HasChild => Children.Count > 0;
 

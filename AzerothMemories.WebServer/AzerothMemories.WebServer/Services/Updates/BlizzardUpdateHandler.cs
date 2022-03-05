@@ -19,14 +19,14 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
     private readonly CommonServices _commonServices;
 
     private readonly Type[] _validRecordTypes;
-    private readonly Func<long, string>[] _callbacks;
+    private readonly Func<int, string>[] _callbacks;
     private readonly Duration[] _durationsBetweenUpdates;
 
     public BlizzardUpdateHandler(IServiceProvider services, CommonServices commonServices, IBackgroundJobClient backgroundJob, IRecurringJobManager recurringJobManager) : base(services)
     {
         _commonServices = commonServices;
 
-        _callbacks = new Func<long, string>[(int)BlizzardUpdatePriority.Count];
+        _callbacks = new Func<int, string>[(int)BlizzardUpdatePriority.Count];
         _callbacks[(int)BlizzardUpdatePriority.Account] = id => backgroundJob.Enqueue(() => OnAccountUpdate(id, null));
         _callbacks[(int)BlizzardUpdatePriority.CharacterHigh] = id => backgroundJob.Enqueue(() => OnCharacterUpdate1(id, null));
         _callbacks[(int)BlizzardUpdatePriority.CharacterMed] = id => backgroundJob.Enqueue(() => OnCharacterUpdate2(id, null));
@@ -148,7 +148,7 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
         return false;
     }
 
-    private async Task<bool> OnUpdateStarted<TRecord>(DbSet<TRecord> dbSet, long id, PerformContext context) where TRecord : class, IBlizzardUpdateRecord, new()
+    private async Task<bool> OnUpdateStarted<TRecord>(DbSet<TRecord> dbSet, int id, PerformContext context) where TRecord : class, IBlizzardUpdateRecord, new()
     {
         var jobId = context.BackgroundJob.Id;
         var result = await dbSet.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
@@ -167,7 +167,7 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
     }
 
     [Queue(AccountQueue1)]
-    public async Task OnAccountUpdate(long id, PerformContext context)
+    public async Task OnAccountUpdate(int id, PerformContext context)
     {
         await using var database = CreateDbContext(true);
 
@@ -179,24 +179,24 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
     }
 
     [Queue(CharacterQueue1)]
-    public Task OnCharacterUpdate1(long id, PerformContext context)
+    public Task OnCharacterUpdate1(int id, PerformContext context)
     {
         return OnCharacterUpdate(id, context);
     }
 
     [Queue(CharacterQueue2)]
-    public Task OnCharacterUpdate2(long id, PerformContext context)
+    public Task OnCharacterUpdate2(int id, PerformContext context)
     {
         return OnCharacterUpdate(id, context);
     }
 
     [Queue(CharacterQueue3)]
-    public Task OnCharacterUpdate3(long id, PerformContext context)
+    public Task OnCharacterUpdate3(int id, PerformContext context)
     {
         return OnCharacterUpdate(id, context);
     }
 
-    private async Task OnCharacterUpdate(long id, PerformContext context)
+    private async Task OnCharacterUpdate(int id, PerformContext context)
     {
         await using var database = CreateDbContext(true);
 
@@ -208,7 +208,7 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
     }
 
     [Queue(GuildQueue1)]
-    public async Task OnGuildUpdate(long id, PerformContext context)
+    public async Task OnGuildUpdate(int id, PerformContext context)
     {
         await using var database = CreateDbContext(true);
 
