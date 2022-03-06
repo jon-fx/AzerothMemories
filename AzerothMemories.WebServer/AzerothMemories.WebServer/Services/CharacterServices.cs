@@ -351,7 +351,7 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
 
         var moaRef = MoaRef.GetCharacterRef(region, realmSlug, characterName, -1);
         var query = from r in database.Characters
-                    where EF.Functions.Like(r.MoaRef, moaRef.GetLikeQuery())
+                    where r.MoaRef.StartsWith(moaRef.GetLikeQuery())
                     select new { r.Id, r.AccountId, r.MoaRef };
 
         var result = await query.FirstOrDefaultAsync().ConfigureAwait(false);

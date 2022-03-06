@@ -10,7 +10,7 @@ public sealed class MoaRef
         Realm = realm;
         Region = region;
 
-        Full = $"{Type}|{Region.ToValue()}|{Id}|{Realm}|{Name}".ToLower();
+        Full = $"{Type}|{Region.ToValue()}|{Realm}|{Name}|{Id}".ToLower();
     }
 
     public MoaRef(string full)
@@ -23,15 +23,15 @@ public sealed class MoaRef
             throw new NotImplementedException();
         }
 
-        if (!long.TryParse(split[2], out var id))
+        if (!long.TryParse(split[4], out var id))
         {
             throw new NotImplementedException();
         }
 
         Id = id;
         Type = split[0][0];
-        Name = split[4];
-        Realm = split[3];
+        Name = split[3];
+        Realm = split[2];
         Region = (BlizzardRegion)regionId;
 
         Exceptions.ThrowIf(Type == 'a');
@@ -111,6 +111,6 @@ public sealed class MoaRef
 
     public string GetLikeQuery()
     {
-        return $"{Type}|{Region.ToValue()}|%|{Realm}|{Name}".ToLower();
+        return $"{Type}|{Region.ToValue()}|{Realm}|{Name}|".ToLower();
     }
 }
