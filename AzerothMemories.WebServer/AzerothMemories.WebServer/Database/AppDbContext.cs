@@ -47,7 +47,20 @@ public class AppDbContext : DbContextBase
 
     public DbSet<BlizzardDataRecord> BlizzardData { get; protected set; } = null!;
 
+    public DbSet<BlizzardUpdateRecord> BlizzardUpdates { get; protected set; } = null!;
+
+    public DbSet<BlizzardUpdateChildRecord> BlizzardUpdateChildren { get; protected set; } = null!;
+
     public AppDbContext(DbContextOptions options) : base(options)
     {
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<AccountRecord>().Navigation(e => e.UpdateRecord).AutoInclude();
+        modelBuilder.Entity<CharacterRecord>().Navigation(e => e.UpdateRecord).AutoInclude();
+        modelBuilder.Entity<GuildRecord>().Navigation(e => e.UpdateRecord).AutoInclude();
     }
 }

@@ -779,7 +779,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         {
             return null;
         }
-        
+
         var newValue = command.NewValue;
         if (!string.IsNullOrWhiteSpace(newValue) && accountRecord.AccountType < ZExtensions.Permission_CanChangeSocialLinks)
         {

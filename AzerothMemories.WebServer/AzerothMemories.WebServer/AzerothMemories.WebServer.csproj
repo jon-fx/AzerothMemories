@@ -10,9 +10,6 @@
 
     <ItemGroup>
         <PackageReference Include="Azure.Storage.Blobs" Version="12.11.0-beta.3" />
-        <PackageReference Include="Hangfire" Version="1.8.0-beta4" />
-        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.0-beta4" />
-        <PackageReference Include="Hangfire.PostgreSql" Version="1.9.6" />
         <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="6.1.1" />
         <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="6.0.2" />
         <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.16.1" />

@@ -53,7 +53,7 @@ public sealed class PostTagRecord : IDatabaseRecord
         {
             return false;
         }
-        
+
         var array = new int[ZExtensions.TagCountsPerPost.Length];
         foreach (var tagRecord in tagRecords)
         {

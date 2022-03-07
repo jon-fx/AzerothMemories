@@ -19,7 +19,7 @@ public sealed class AccountUploadLog : IDatabaseRecord
     [Column] public AccountUploadLogStatus UploadStatus { get; set; }
 
     [Column] public Instant UploadTime { get; set; }
-    
+
     [Column] public int? PostId { get; set; }
 
     [Column] public PostRecord Post { get; set; }

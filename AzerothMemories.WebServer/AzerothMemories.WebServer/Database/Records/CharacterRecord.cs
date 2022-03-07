@@ -26,8 +26,6 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord
 
     [Column] public int? AccountId { get; set; }
 
-    //[Column] public AccountRecord Account { get; set; }
-
     [Column] public bool AccountSync { get; set; }
 
     [Column] public int RealmId { get; set; }
@@ -52,23 +50,11 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord
 
     [Column] public string GuildRef { get; set; }
 
-    //[Column] public long BlizzardGuildId { get; set; }
-
     [Column] public byte BlizzardGuildRank { get; set; }
 
     [Column] public string BlizzardGuildName { get; set; }
 
-    [Column] public string UpdateJob { get; set; }
-
-    [Column] public Instant UpdateJobEndTime { get; set; }
-
-    [Column] public HttpStatusCode UpdateJobLastResult { get; set; }
-
-    [Column] public Instant BlizzardProfileLastModified { get; set; }
-
-    [Column] public Instant BlizzardRendersLastModified { get; set; }
-
-    [Column] public Instant BlizzardAchievementsLastModified { get; set; }
+    public BlizzardUpdateRecord UpdateRecord { get; set; }
 
     public CharacterViewModel CreateViewModel()
     {
@@ -93,8 +79,8 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord
             //AchievementTotalPoints = AchievementTotalPoints,
             //AchievementTotalQuantity = AchievementTotalQuantity,
 
-            UpdateJobEndTime = UpdateJobEndTime.ToUnixTimeMilliseconds(),
-            UpdateJobLastResult = UpdateJobLastResult
+            UpdateJobLastResult = UpdateRecord?.UpdateJobLastResult ?? 0,
+            UpdateJobLastEndTime = UpdateRecord?.UpdateJobLastEndTime.ToUnixTimeMilliseconds() ?? 0
         };
     }
 }

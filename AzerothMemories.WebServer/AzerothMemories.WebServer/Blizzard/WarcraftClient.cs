@@ -15,9 +15,9 @@ public sealed class WarcraftClient : IDisposable
         _regionInfo = regionInfo;
     }
 
-    public Task<RequestResult<AccountProfileSummary>> GetAccountProfile(string accessToken)
+    public Task<RequestResult<AccountProfileSummary>> GetAccountProfile(string accessToken, Instant lastModified)
     {
-        return Get<AccountProfileSummary>(BlizzardNamespace.Profile, "/profile/user/wow", null, accessToken, false, null);
+        return Get<AccountProfileSummary>(BlizzardNamespace.Profile, "/profile/user/wow", null, accessToken, false, lastModified);
     }
 
     public Task<RequestResult<CharacterStatus>> GetCharacterStatusAsync(string realmName, string characterName)
@@ -69,9 +69,11 @@ public sealed class WarcraftClient : IDisposable
         requestUri = $"{_regionInfo.Host}{requestUri.ToLower()}?namespace={blizzardNamespace}-{_regionInfo.TwoLetters}{extra}";
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
+        var lastModifiedNotNull = Instant.FromUnixTimeMilliseconds(0);
         if (lastModified != null)
         {
-            client.DefaultRequestHeaders.IfModifiedSince = lastModified.Value.ToDateTimeOffset();
+            lastModifiedNotNull = lastModified.Value;
+            client.DefaultRequestHeaders.IfModifiedSince = lastModifiedNotNull.ToDateTimeOffset();
         }
         else
         {
@@ -91,21 +93,22 @@ public sealed class WarcraftClient : IDisposable
                     resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
 
+                var headersLastModified = response.Content.Headers.LastModified;
                 var resultData = await JsonSerializer.DeserializeAsync<T>(contentStream, JsonHelpers.JsonSerializerOptions).ConfigureAwait(false);
-                var requestResult = new RequestResult<T>(response.StatusCode, resultData, response.Content.Headers.LastModified.GetValueOrDefault().ToInstant(), resultString);
+                var requestResult = new RequestResult<T>(response.StatusCode, resultData, headersLastModified?.ToInstant() ?? lastModifiedNotNull, resultString);
 
                 return requestResult;
             }
 
-            return new RequestResult<T>(response.StatusCode, null, Instant.MinValue, null);
+            return new RequestResult<T>(response.StatusCode, null, lastModifiedNotNull, null);
         }
         catch (TaskCanceledException)
         {
-            return new RequestResult<T>(HttpStatusCode.RequestTimeout, null, Instant.MinValue, null);
+            return new RequestResult<T>(HttpStatusCode.RequestTimeout, null, lastModifiedNotNull, null);
         }
         catch (HttpRequestException)
         {
-            return new RequestResult<T>(HttpStatusCode.ServiceUnavailable, null, Instant.MinValue, null);
+            return new RequestResult<T>(HttpStatusCode.ServiceUnavailable, null, lastModifiedNotNull, null);
         }
     }
 }

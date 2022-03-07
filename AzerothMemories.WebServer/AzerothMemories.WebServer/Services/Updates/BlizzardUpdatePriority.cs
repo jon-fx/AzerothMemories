@@ -2,11 +2,11 @@
 
 public enum BlizzardUpdatePriority
 {
-    Default,
+    None,
     Account,
     CharacterHigh,
     CharacterMed,
-    CharacterLow,
     Guild,
+    CharacterLow,
     Count,
 }

@@ -33,8 +33,7 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(AccountRecord.LoginConsecutiveDaysCount)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(AccountRecord.CreatedDateTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
             .WithColumn(nameof(AccountRecord.BanReason)).AsString(200).Nullable()
-            .WithColumn(nameof(AccountRecord.BanExpireTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
-            .WithUpdateJobInfo();
+            .WithColumn(nameof(AccountRecord.BanExpireTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
 
         Create.Table(AccountFollowingRecord.TableName)
             .WithColumn(nameof(AccountFollowingRecord.Id)).AsInt32().PrimaryKey().Identity()
@@ -56,11 +55,7 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(GuildRecord.MemberCount)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(GuildRecord.AchievementPoints)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(GuildRecord.CreatedDateTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
-            .WithColumn(nameof(GuildRecord.BlizzardCreatedTimestamp)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
-            .WithColumn(nameof(GuildRecord.BlizzardProfileLastModified)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
-            .WithColumn(nameof(GuildRecord.BlizzardAchievementsLastModified)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
-            .WithColumn(nameof(GuildRecord.BlizzardRosterLastModified)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
-            .WithUpdateJobInfo();
+            .WithColumn(nameof(GuildRecord.BlizzardCreatedTimestamp)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
 
         Create.Table(CharacterRecord.TableName)
             .WithColumn(nameof(CharacterRecord.Id)).AsInt32().PrimaryKey().Identity()
@@ -84,13 +79,8 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(CharacterRecord.AchievementTotalQuantity)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(CharacterRecord.GuildId)).AsInt32().ForeignKey(GuildRecord.TableName, "Id").OnDelete(Rule.SetNull).Nullable()
             .WithColumn(nameof(CharacterRecord.GuildRef)).AsString(128).Nullable()
-            //.WithColumn(nameof(CharacterRecord.BlizzardGuildId)).AsInt64().WithDefaultValue(0)
             .WithColumn(nameof(CharacterRecord.BlizzardGuildRank)).AsByte().WithDefaultValue(0)
-            .WithColumn(nameof(CharacterRecord.BlizzardGuildName)).AsString(60).Nullable()
-            .WithColumn(nameof(CharacterRecord.BlizzardProfileLastModified)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
-            .WithColumn(nameof(CharacterRecord.BlizzardRendersLastModified)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
-            .WithColumn(nameof(CharacterRecord.BlizzardAchievementsLastModified)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
-            .WithUpdateJobInfo();
+            .WithColumn(nameof(CharacterRecord.BlizzardGuildName)).AsString(60).Nullable();
 
         Create.Table(CharacterAchievementRecord.TableName)
             .WithColumn(nameof(CharacterAchievementRecord.Id)).AsInt32().PrimaryKey().Identity()
@@ -145,6 +135,25 @@ public sealed class Migration0001 : Migration
                 Execute.Sql($"CREATE INDEX IX_Blizzard_Data_{indexName} ON \"{BlizzardDataRecord.TableName}\" (LOWER(\"{indexName}\") varchar_pattern_ops)");
             }
         }
+
+        Create.Table(BlizzardUpdateRecord.TableName)
+            .WithColumn(nameof(BlizzardUpdateRecord.Id)).AsInt32().PrimaryKey().Identity()
+            .WithColumn(nameof(BlizzardUpdateRecord.AccountId)).AsInt32().Unique().ForeignKey(AccountRecord.TableName, "Id").OnDelete(Rule.SetNull).Nullable()
+            .WithColumn(nameof(BlizzardUpdateRecord.CharacterId)).AsInt32().Unique().ForeignKey(CharacterRecord.TableName, "Id").OnDelete(Rule.SetNull).Nullable()
+            .WithColumn(nameof(BlizzardUpdateRecord.GuildId)).AsInt32().Unique().ForeignKey(GuildRecord.TableName, "Id").OnDelete(Rule.SetNull).Nullable()
+            .WithColumn(nameof(BlizzardUpdateRecord.UpdateStatus)).AsByte().WithDefaultValue(0)
+            .WithColumn(nameof(BlizzardUpdateRecord.UpdatePriority)).AsByte().WithDefaultValue(0)
+            .WithColumn(nameof(BlizzardUpdateRecord.UpdateLastModified)).AsDateTimeOffset().WithDefaultValue(DateTimeOffset.UnixEpoch)
+            .WithColumn(nameof(BlizzardUpdateRecord.UpdateJobLastEndTime)).AsDateTimeOffset().WithDefaultValue(DateTimeOffset.UnixEpoch)
+            .WithColumn(nameof(BlizzardUpdateRecord.UpdateJobLastResult)).AsInt16().WithDefaultValue(0);
+
+        Create.Table(BlizzardUpdateChildRecord.TableName)
+            .WithColumn(nameof(BlizzardUpdateChildRecord.Id)).AsInt32().PrimaryKey().Identity()
+            .WithColumn(nameof(BlizzardUpdateChildRecord.ParentId)).AsInt32().ForeignKey(BlizzardUpdateRecord.TableName, "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(BlizzardUpdateChildRecord.UpdateType)).AsByte().WithDefaultValue(0)
+            .WithColumn(nameof(BlizzardUpdateChildRecord.UpdateFailCounter)).AsByte().WithDefaultValue(0)
+            .WithColumn(nameof(BlizzardUpdateChildRecord.BlizzardLastModified)).AsDateTimeOffset().WithDefaultValue(DateTimeOffset.UnixEpoch)
+            .WithColumn(nameof(BlizzardUpdateChildRecord.UpdateJobLastResult)).AsInt16().WithDefaultValue(0);
 
         Create.Table(PostRecord.TableName)
             .WithColumn(nameof(PostRecord.Id)).AsInt32().PrimaryKey().Identity()
@@ -281,6 +290,9 @@ public sealed class Migration0001 : Migration
         Create.Index().OnTable(GuildRecord.TableName)
             .OnColumn(nameof(GuildRecord.NameSearchable));
 
+        Create.Index().OnTable(BlizzardUpdateChildRecord.TableName)
+            .OnColumn(nameof(BlizzardUpdateChildRecord.ParentId));
+
         Create.Index().OnTable(PostRecord.TableName)
             .OnColumn(nameof(PostRecord.AccountId));
 
@@ -356,6 +368,9 @@ public sealed class Migration0001 : Migration
 
     public override void Down()
     {
+        Delete.Table(BlizzardUpdateChildRecord.TableName);
+        Delete.Table(BlizzardUpdateRecord.TableName);
+
         Delete.Table(AccountUploadLog.TableName);
         Delete.Table(AccountHistoryRecord.TableName);
 

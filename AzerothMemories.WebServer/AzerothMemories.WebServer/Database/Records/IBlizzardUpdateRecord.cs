@@ -2,9 +2,5 @@
 
 public interface IBlizzardUpdateRecord : IDatabaseRecord
 {
-    string UpdateJob { get; set; }
-
-    Instant UpdateJobEndTime { get; set; }
-
-    HttpStatusCode UpdateJobLastResult { get; set; }
+    BlizzardUpdateRecord UpdateRecord { get; set; }
 }

@@ -32,19 +32,9 @@ public sealed class GuildRecord : IBlizzardUpdateRecord
 
     [Column] public Instant BlizzardCreatedTimestamp { get; set; }
 
-    [Column] public Instant BlizzardProfileLastModified { get; set; }
+    public BlizzardUpdateRecord UpdateRecord { get; set; }
 
-    [Column] public Instant BlizzardAchievementsLastModified { get; set; }
-
-    [Column] public Instant BlizzardRosterLastModified { get; set; }
-
-    [Column] public string UpdateJob { get; set; }
-
-    [Column] public Instant UpdateJobEndTime { get; set; }
-
-    [Column] public HttpStatusCode UpdateJobLastResult { get; set; }
-
-    public GuildViewModel CreateViewModel(HashSet<CharacterViewModel> characterViewModels)
+    public GuildViewModel CreateViewModel(GuildMembersViewModel memberViewModels)
     {
         return new GuildViewModel
         {
@@ -56,10 +46,11 @@ public sealed class GuildRecord : IBlizzardUpdateRecord
             AchievementPoints = AchievementPoints,
             CreatedDateTime = CreatedDateTime.ToUnixTimeMilliseconds(),
             BlizzardCreatedTimestamp = BlizzardCreatedTimestamp.ToUnixTimeMilliseconds(),
-            UpdateJobEndTime = UpdateJobEndTime.ToUnixTimeMilliseconds(),
-            UpdateJobLastResult = UpdateJobLastResult,
 
-            CharactersArray = characterViewModels.ToArray()
+            UpdateJobLastResult = UpdateRecord?.UpdateJobLastResult ?? 0,
+            UpdateJobLastEndTime = UpdateRecord?.UpdateJobLastEndTime.ToUnixTimeMilliseconds() ?? 0,
+
+            MembersViewModel = memberViewModels
         };
     }
 }

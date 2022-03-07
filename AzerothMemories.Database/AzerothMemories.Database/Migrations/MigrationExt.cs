@@ -5,14 +5,6 @@ namespace AzerothMemories.Database.Migrations;
 
 public static class MigrationExt
 {
-    public static ICreateTableWithColumnSyntax WithUpdateJobInfo(this ICreateTableWithColumnSyntax table)
-    {
-        return table
-            .WithColumn(nameof(IBlizzardUpdateRecord.UpdateJob)).AsString(60).Nullable()
-            .WithColumn(nameof(IBlizzardUpdateRecord.UpdateJobEndTime)).AsDateTimeOffset().WithDefaultValue(DateTimeOffset.UnixEpoch)
-            .WithColumn(nameof(IBlizzardUpdateRecord.UpdateJobLastResult)).AsInt16().WithDefaultValue(0);
-    }
-
     public static ICreateTableWithColumnSyntax WithReactionInfo(this ICreateTableWithColumnSyntax table)
     {
         return table

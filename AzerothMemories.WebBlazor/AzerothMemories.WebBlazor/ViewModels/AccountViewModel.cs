@@ -34,7 +34,9 @@ public sealed class AccountViewModel
 
     [JsonInclude] public int TotalReactionsCount;
 
-    [JsonInclude] public long LastUpdateJobEndTime;
+    [JsonInclude] public long UpdateJobLastEndTime;
+
+    [JsonInclude] public HttpStatusCode UpdateJobLastResult;
 
     [JsonInclude] public string BanReason;
 

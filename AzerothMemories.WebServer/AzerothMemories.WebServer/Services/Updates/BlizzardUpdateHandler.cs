@@ -1,37 +1,21 @@
-﻿using Hangfire;
-using Hangfire.Server;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
+using System.Threading.Channels;
+using NodaTime.Extensions;
 
 namespace AzerothMemories.WebServer.Services.Updates;
 
 internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
 {
-    private const string Progress = "P-";
-    private const string Queued = "Q-";
-
-    public const string AbstractQueue = "a-abstract";
-    public const string AccountQueue1 = "a-account";
-    public const string CharacterQueue1 = "b-character";
-    public const string CharacterQueue2 = "c-character";
-    public const string CharacterQueue3 = "g-character";
-    public const string GuildQueue1 = "f-guild";
-    public static readonly string[] AllQueues = { AbstractQueue, AccountQueue1, CharacterQueue1, CharacterQueue2, GuildQueue1, CharacterQueue3 };
-
     private readonly CommonServices _commonServices;
 
     private readonly Type[] _validRecordTypes;
-    private readonly Func<int, string>[] _callbacks;
+    private readonly int[] _requiredChildrenCount;
     private readonly Duration[] _durationsBetweenUpdates;
 
-    public BlizzardUpdateHandler(IServiceProvider services, CommonServices commonServices, IBackgroundJobClient backgroundJob, IRecurringJobManager recurringJobManager) : base(services)
+    public BlizzardUpdateHandler(IServiceProvider services, CommonServices commonServices) : base(services)
     {
         _commonServices = commonServices;
-
-        _callbacks = new Func<int, string>[(int)BlizzardUpdatePriority.Count];
-        _callbacks[(int)BlizzardUpdatePriority.Account] = id => backgroundJob.Enqueue(() => OnAccountUpdate(id, null));
-        _callbacks[(int)BlizzardUpdatePriority.CharacterHigh] = id => backgroundJob.Enqueue(() => OnCharacterUpdate1(id, null));
-        _callbacks[(int)BlizzardUpdatePriority.CharacterMed] = id => backgroundJob.Enqueue(() => OnCharacterUpdate2(id, null));
-        _callbacks[(int)BlizzardUpdatePriority.CharacterLow] = id => backgroundJob.Enqueue(() => OnCharacterUpdate3(id, null));
-        _callbacks[(int)BlizzardUpdatePriority.Guild] = id => backgroundJob.Enqueue(() => OnGuildUpdate(id, null));
 
         _validRecordTypes = new Type[(int)BlizzardUpdatePriority.Count];
         _validRecordTypes[(int)BlizzardUpdatePriority.Account] = typeof(AccountRecord);
@@ -39,6 +23,13 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
         _validRecordTypes[(int)BlizzardUpdatePriority.CharacterMed] = typeof(CharacterRecord);
         _validRecordTypes[(int)BlizzardUpdatePriority.CharacterLow] = typeof(CharacterRecord);
         _validRecordTypes[(int)BlizzardUpdatePriority.Guild] = typeof(GuildRecord);
+
+        _requiredChildrenCount = new int[(int)BlizzardUpdatePriority.Count];
+        _requiredChildrenCount[(int)BlizzardUpdatePriority.Account] = (int)BlizzardUpdateType.Account_Count;
+        _requiredChildrenCount[(int)BlizzardUpdatePriority.CharacterHigh] = (int)BlizzardUpdateType.Character_Count;
+        _requiredChildrenCount[(int)BlizzardUpdatePriority.CharacterMed] = (int)BlizzardUpdateType.Character_Count;
+        _requiredChildrenCount[(int)BlizzardUpdatePriority.CharacterLow] = (int)BlizzardUpdateType.Character_Count;
+        _requiredChildrenCount[(int)BlizzardUpdatePriority.Guild] = (int)BlizzardUpdateType.Guild_Count;
 
         _durationsBetweenUpdates = new Duration[(int)BlizzardUpdatePriority.Count];
         _durationsBetweenUpdates[(int)BlizzardUpdatePriority.Account] = _commonServices.Config.UpdateAccountDelay;
@@ -48,179 +39,151 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
         _durationsBetweenUpdates[(int)BlizzardUpdatePriority.Guild] = _commonServices.Config.UpdateGuildDelay;
     }
 
+    public Type[] ValidRecordTypes => _validRecordTypes;
+
+    public int[] RequiredChildrenCount => _requiredChildrenCount;
+
     public async Task TryUpdate<TRecord>(TRecord record, BlizzardUpdatePriority updatePriority) where TRecord : class, IBlizzardUpdateRecord, new()
     {
-        if (!RecordRequiresUpdate(record, updatePriority))
+        if (record == null)
         {
             return;
         }
 
+#if DEBUG
         if (typeof(TRecord) != _validRecordTypes[(int)updatePriority])
         {
             throw new NotImplementedException();
         }
+#endif
 
         await using var database = CreateDbContext(true);
+        database.Attach(record);
 
-        var jobName = $"{Queued}{SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds()}";
-
-        var tempRecord = await database.Set<TRecord>().FirstOrDefaultAsync(x => x.Id == record.Id).ConfigureAwait(false);
-        if (tempRecord == null)
+        var requiresUpdate = false;
+        if (record.UpdateRecord == null)
         {
-            return;
+            requiresUpdate = true;
+            record.UpdateRecord = new BlizzardUpdateRecord();
         }
 
-        if (tempRecord.UpdateJob == record.UpdateJob)
+        if (!requiresUpdate)
         {
-            tempRecord.UpdateJob = jobName;
+            requiresUpdate = RecordRequiresUpdate(record.UpdateRecord, updatePriority, false);
+        }
+
+        if (requiresUpdate)
+        {
+            record.UpdateRecord.UpdatePriority = updatePriority;
+            record.UpdateRecord.UpdateStatus = BlizzardUpdateStatus.Queued;
+            record.UpdateRecord.UpdateLastModified = SystemClock.Instance.GetCurrentInstant();
 
             await database.SaveChangesAsync().ConfigureAwait(false);
-
-            _callbacks[(int)updatePriority](record.Id);
         }
     }
 
-    private bool RecordRequiresUpdate<TRecord>(TRecord record, BlizzardUpdatePriority blizzardUpdatePriority) where TRecord : class, IBlizzardUpdateRecord, new()
+    public bool RecordRequiresUpdate(BlizzardUpdateRecord updateRecord, BlizzardUpdatePriority updatePriority, bool inUpdateLoop)
     {
-        var now = SystemClock.Instance.GetCurrentInstant();
-        var duration = _durationsBetweenUpdates[(int)blizzardUpdatePriority];
-        if (record == null)
+        if (updateRecord == null)
         {
             return false;
         }
 
-        if (record.UpdateJob == null)
+        var now = SystemClock.Instance.GetCurrentInstant();
+        var duration = _durationsBetweenUpdates[(int)updatePriority];
+        if (updateRecord.UpdateStatus == BlizzardUpdateStatus.None)
         {
-            if (record.UpdateJobLastResult.IsFailure())
+            if (updateRecord.UpdateJobLastResult.IsFailure())
             {
                 duration /= 2;
             }
 
-            if (now > record.UpdateJobEndTime + duration)
+            if (now > updateRecord.UpdateJobLastEndTime + duration)
             {
                 return true;
             }
+
+            return false;
         }
-        else if (record.UpdateJob.StartsWith(Progress) && now > record.UpdateJobEndTime + duration / 2)
+
+        if (inUpdateLoop)
         {
-            return ShouldRequeue(record.UpdateJob.Replace(Progress, ""));
+            return true;
         }
-        else if (record.UpdateJob.StartsWith(Queued))
+
+        if (updateRecord.UpdateStatus == BlizzardUpdateStatus.Queued)
         {
-            if (long.TryParse(record.UpdateJob.Split('-')[1], out var timeStamp) && now > Instant.FromUnixTimeMilliseconds(timeStamp) + duration * 2)
+            if (updatePriority < updateRecord.UpdatePriority)
             {
                 return true;
             }
-        }
-        else if (now > record.UpdateJobEndTime + duration * 2)
-        {
-            return ShouldRequeue(record.UpdateJob);
-        }
 
-        return false;
-    }
-
-    private bool ShouldRequeue(string updateJob)
-    {
-        var connection = JobStorage.Current.GetConnection();
-        var jobData = connection.GetJobData(updateJob);
-        if (jobData == null)
-        {
-            return true;
-        }
-
-        var stateName = jobData.State;
-        if (stateName == Hangfire.States.SucceededState.StateName)
-        {
-            return true;
-        }
-
-        if (stateName == Hangfire.States.FailedState.StateName)
-        {
-            return true;
-        }
-
-        if (stateName == Hangfire.States.DeletedState.StateName)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    private async Task<bool> OnUpdateStarted<TRecord>(DbSet<TRecord> dbSet, int id, PerformContext context) where TRecord : class, IBlizzardUpdateRecord, new()
-    {
-        var jobId = context.BackgroundJob.Id;
-        var result = await dbSet.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
-        if (result == null)
-        {
             return false;
         }
 
-        if (string.IsNullOrEmpty(result.UpdateJob))
+        if (updateRecord.UpdateStatus == BlizzardUpdateStatus.Progress)
         {
+            if (now > updateRecord.UpdateLastModified + Duration.FromMinutes(5))
+            {
+                return true;
+            }
+
             return false;
         }
 
-        if (!result.UpdateJob.StartsWith(Queued))
-        {
-            return false;
-        }
-
-        result.UpdateJob = $"{Progress}{jobId}";
-        return true;
+        throw new NotImplementedException();
     }
 
-    [Queue(AccountQueue1)]
-    public async Task OnAccountUpdate(int id, PerformContext context)
+    public async Task OnStarting()
     {
         await using var database = CreateDbContext(true);
 
-        var requiresUpdate = await OnUpdateStarted(database.Accounts, id, context).ConfigureAwait(false);
-        if (requiresUpdate)
-        {
-            await _commonServices.Commander.Call(new Updates_UpdateAccountCommand(id)).ConfigureAwait(false);
-        }
+        var updateRecords = await database.BlizzardUpdates.Where(x => x.UpdateStatus == BlizzardUpdateStatus.Progress).OrderBy(x => x.UpdateLastModified).ToArrayAsync().ConfigureAwait(false);
+
+        await RunUpdatesOn(database, updateRecords).ConfigureAwait(false);
     }
 
-    [Queue(CharacterQueue1)]
-    public Task OnCharacterUpdate1(int id, PerformContext context)
-    {
-        return OnCharacterUpdate(id, context);
-    }
-
-    [Queue(CharacterQueue2)]
-    public Task OnCharacterUpdate2(int id, PerformContext context)
-    {
-        return OnCharacterUpdate(id, context);
-    }
-
-    [Queue(CharacterQueue3)]
-    public Task OnCharacterUpdate3(int id, PerformContext context)
-    {
-        return OnCharacterUpdate(id, context);
-    }
-
-    private async Task OnCharacterUpdate(int id, PerformContext context)
+    public async Task OnUpdating()
     {
         await using var database = CreateDbContext(true);
 
-        var requiresUpdate = await OnUpdateStarted(database.Characters, id, context).ConfigureAwait(false);
-        if (requiresUpdate)
-        {
-            await _commonServices.Commander.Call(new Updates_UpdateCharacterCommand(id)).ConfigureAwait(false);
-        }
+        var updateRecords = await database.BlizzardUpdates.Where(x => x.UpdateStatus == BlizzardUpdateStatus.Queued).OrderBy(x => x.UpdatePriority).ThenBy(x => x.UpdateLastModified).Take(25).ToArrayAsync().ConfigureAwait(false);
+
+        await RunUpdatesOn(database, updateRecords).ConfigureAwait(false);
     }
 
-    [Queue(GuildQueue1)]
-    public async Task OnGuildUpdate(int id, PerformContext context)
+    private async Task RunUpdatesOn(AppDbContext database, BlizzardUpdateRecord[] updateRecords)
     {
-        await using var database = CreateDbContext(true);
-
-        var requiresUpdate = await OnUpdateStarted(database.Guilds, id, context).ConfigureAwait(false);
-        if (requiresUpdate)
+        var queue = new ConcurrentQueue<ICommand<HttpStatusCode>>();
+        foreach (var record in updateRecords)
         {
-            await _commonServices.Commander.Call(new Updates_UpdateGuildCommand(id)).ConfigureAwait(false);
+            if (!RecordRequiresUpdate(record, record.UpdatePriority, true))
+            {
+                continue;
+            }
+            
+            record.UpdateStatus = BlizzardUpdateStatus.Progress;
+            record.UpdateLastModified = SystemClock.Instance.GetCurrentInstant();
+
+            queue.Enqueue(record.GetUpdateCommand());
+        }
+
+        await database.SaveChangesAsync().ConfigureAwait(false);
+        
+        var tasks = new Task[Environment.ProcessorCount];
+        for (var i = 0; i < tasks.Length; i++)
+        {
+            tasks[i] = RunUpdatesOn(queue);
+        } 
+        
+        await Task.WhenAll(tasks).ConfigureAwait(false);
+    }
+
+    private async Task RunUpdatesOn(ConcurrentQueue<ICommand<HttpStatusCode>> commandQueue)
+    {
+        while (commandQueue.TryDequeue(out var command))
+        {
+            await _commonServices.Commander.Call(command).ConfigureAwait(false);     
         }
     }
 }

@@ -56,13 +56,7 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
 
     [Column] public Instant BanExpireTime { get; set; }
 
-    [Column] public string UpdateJob { get; set; }
-
-    [Column] public Instant UpdateJobEndTime { get; set; }
-
-    [Column] public HttpStatusCode UpdateJobLastResult { get; set; }
-
-    //public ICollection<CharacterRecord> Characters { get; set; }
+    public BlizzardUpdateRecord UpdateRecord { get; set; }
 
     public AccountViewModel CreateViewModel(CommonServices commonServices, bool activeOrAdmin, Dictionary<int, AccountFollowingViewModel> followingViewModels, Dictionary<int, AccountFollowingViewModel> followersViewModels)
     {
@@ -89,7 +83,9 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
             BanExpireTime = BanExpireTime.ToUnixTimeMilliseconds(),
             FollowingViewModels = RemoveNoneStatus(followingViewModels),
             FollowersViewModels = RemoveNoneStatus(followersViewModels),
-            LastUpdateJobEndTime = UpdateJobEndTime.ToUnixTimeMilliseconds(),
+
+            UpdateJobLastResult = UpdateRecord?.UpdateJobLastResult ?? 0,
+            UpdateJobLastEndTime = UpdateRecord?.UpdateJobLastEndTime.ToUnixTimeMilliseconds() ?? 0
         };
 
         if (viewModel.BattleTagIsPublic || activeOrAdmin)

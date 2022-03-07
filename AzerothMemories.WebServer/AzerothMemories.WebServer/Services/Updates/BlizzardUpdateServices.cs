@@ -5,9 +5,36 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
 {
     private readonly CommonServices _commonServices;
 
+    private readonly IUpdateHandlerBase<AccountRecord>[] _accountHandlers;
+    private readonly IUpdateHandlerBase<CharacterRecord>[] _characterHandlers;
+    private readonly IUpdateHandlerBase<GuildRecord>[] _guildHandlers;
+
     public BlizzardUpdateServices(IServiceProvider services, CommonServices commonServices) : base(services)
     {
         _commonServices = commonServices;
+
+        _accountHandlers = new IUpdateHandlerBase<AccountRecord>[(int)BlizzardUpdateType.Account_Count];
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts(_commonServices));
+
+        _characterHandlers = new IUpdateHandlerBase<CharacterRecord>[(int)BlizzardUpdateType.Character_Count];
+        AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters(_commonServices));
+        AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters_Renders(_commonServices));
+        AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters_Achievements(_commonServices));
+
+        _guildHandlers = new IUpdateHandlerBase<GuildRecord>[(int)BlizzardUpdateType.Guild_Count];
+        AddUpdateHandler(ref _guildHandlers, new UpdateHandler_Guilds(_commonServices));
+        AddUpdateHandler(ref _guildHandlers, new UpdateHandler_Guilds_Roster(_commonServices));
+        AddUpdateHandler(ref _guildHandlers, new UpdateHandler_Guilds_Achievements(_commonServices));
+
+        void AddUpdateHandler<TRecord>(ref IUpdateHandlerBase<TRecord>[] array, IUpdateHandlerBase<TRecord> updateHandler) where TRecord : IBlizzardUpdateRecord
+        {
+            Exceptions.ThrowIf(array[(int)updateHandler.UpdateType] != null);
+            array[(int)updateHandler.UpdateType] = updateHandler;
+        }
+
+        Exceptions.ThrowIf(_accountHandlers.Any(x => x == null));
+        Exceptions.ThrowIf(_characterHandlers.Any(x => x == null));
+        Exceptions.ThrowIf(_guildHandlers.Any(x => x == null));
     }
 
     [CommandHandler]
@@ -33,87 +60,14 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         }
 
         await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        var record = await database.Accounts.FirstOrDefaultAsync(x => x.Id == command.AccountId, cancellationToken).ConfigureAwait(false);
+        var record = await database.Accounts.Include(x => x.UpdateRecord).ThenInclude(x => x.Children).FirstOrDefaultAsync(x => x.Id == command.AccountId, cancellationToken).ConfigureAwait(false);
         if (record == null)
         {
             return default;
         }
 
-        if (string.IsNullOrWhiteSpace(record.BattleNetToken) || SystemClock.Instance.GetCurrentInstant() >= record.BattleNetTokenExpiresAt.GetValueOrDefault(Instant.FromUnixTimeMilliseconds(0)))
-        {
-            record.UpdateJob = null;
-            record.UpdateJobEndTime = SystemClock.Instance.GetCurrentInstant();
-            record.UpdateJobLastResult = HttpStatusCode.Forbidden;
-
-            await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-            return record.UpdateJobLastResult;
-        }
-
-        using var client = _commonServices.WarcraftClientProvider.Get(record.BlizzardRegionId);
-        var characters = await database.Characters.Where(x => x.AccountId == command.AccountId).ToDictionaryAsync(x => x.MoaRef, x => x, cancellationToken).ConfigureAwait(false);
-        var accountSummaryResult = await client.GetAccountProfile(record.BattleNetToken).ConfigureAwait(false);
-        if (accountSummaryResult.IsSuccess)
-        {
-            var deletedCharactersSets = new Dictionary<string, CharacterRecord>(characters);
-
-            foreach (var account in accountSummaryResult.ResultData.WowAccounts)
-            {
-                foreach (var accountCharacter in account.Characters)
-                {
-                    var characterRef = MoaRef.GetCharacterRef(record.BlizzardRegionId, accountCharacter.Realm.Slug, accountCharacter.Name, accountCharacter.Id);
-                    if (!characters.TryGetValue(characterRef.Full, out var characterRecord))
-                    {
-                        characterRecord = await _commonServices.CharacterServices.GetOrCreateCharacterRecord(characterRef.Full).ConfigureAwait(false);
-
-                        database.Characters.Attach(characterRecord);
-                    }
-
-                    if (characterRecord.AccountId.HasValue)
-                    {
-                    }
-                    else
-                    {
-                        await database.Database.ExecuteSqlRawAsync($"UPDATE \"Characters_Achievements\" SET \"AccountId\" = {record.Id} WHERE \"CharacterId\" = {characterRecord.Id} AND \"AccountId\" IS NULL", cancellationToken).ConfigureAwait(false);
-                    }
-
-                    characterRecord.AccountId = record.Id;
-                    characterRecord.MoaRef = characterRef.Full;
-                    characterRecord.BlizzardId = accountCharacter.Id;
-                    //characterRecord.BlizzardAccountId = account.Id;
-                    characterRecord.BlizzardRegionId = characterRef.Region;
-                    characterRecord.CharacterStatus = CharacterStatus2.None;
-                    characterRecord.RealmId = accountCharacter.Realm.Id;
-                    characterRecord.Name = accountCharacter.Name;
-                    characterRecord.NameSearchable = DatabaseHelpers.GetSearchableName(accountCharacter.Name);
-                    characterRecord.Race = (byte)accountCharacter.PlayableRace.Id;
-                    characterRecord.Class = (byte)accountCharacter.PlayableClass.Id;
-                    characterRecord.Gender = accountCharacter.Gender.AsGender();
-                    characterRecord.Faction = accountCharacter.Faction.AsFaction();
-                    characterRecord.Level = (byte)accountCharacter.Level;
-
-                    deletedCharactersSets.Remove(characterRecord.MoaRef);
-                }
-            }
-
-            foreach (var character in deletedCharactersSets.Values)
-            {
-                character.CharacterStatus = CharacterStatus2.MaybeDeleted;
-            }
-        }
-        else if (accountSummaryResult.IsNotModified)
-        {
-        }
-
-        record.UpdateJob = null;
-        record.UpdateJobEndTime = SystemClock.Instance.GetCurrentInstant();
-        record.UpdateJobLastResult = accountSummaryResult.ResultCode;
-
-        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-        context.Operation().Items.Set(new Updates_UpdateAccountInvalidate(record.Id, record.FusionId, record.Username, characters.Values.Select(x => x.Id).ToHashSet()));
-
-        return accountSummaryResult.ResultCode;
+        var resultStatusCode = await RunUpdateHandlers(_accountHandlers, context, database, record).ConfigureAwait(false);
+        return resultStatusCode;
     }
 
     [CommandHandler]
@@ -142,164 +96,17 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         }
 
         await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        var record = await database.Characters.FirstOrDefaultAsync(x => x.Id == command.CharacterId, cancellationToken).ConfigureAwait(false);
+        var record = await database.Characters.Include(x => x.UpdateRecord).ThenInclude(x => x.Children).FirstOrDefaultAsync(x => x.Id == command.CharacterId, cancellationToken).ConfigureAwait(false);
         if (record == null)
         {
             return default;
         }
 
-        var updateResult = await TryCharacterUpdateInternal(command.CharacterId, database, record).ConfigureAwait(false);
-
-        record.UpdateJob = null;
-        record.UpdateJobEndTime = SystemClock.Instance.GetCurrentInstant();
-        record.UpdateJobLastResult = updateResult;
-
-        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-        if (record.AccountId.HasValue)
-        {
-            await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
-            {
-                AccountId = record.AccountId.Value,
-                Type = AccountHistoryType.CharacterUpdated,
-                TargetId = record.Id
-            }, cancellationToken).ConfigureAwait(false);
-        }
+        var resultStatusCode = await RunUpdateHandlers(_characterHandlers, context, database, record).ConfigureAwait(false);
 
         context.Operation().Items.Set(new Character_InvalidateCharacterRecord(record.Id, record.AccountId.GetValueOrDefault()));
 
-        return updateResult;
-    }
-
-    private async Task<HttpStatusCode> TryCharacterUpdateInternal(int id, AppDbContext database, CharacterRecord record)
-    {
-        var characterRef = new MoaRef(record.MoaRef);
-        using var client = _commonServices.WarcraftClientProvider.Get(record.BlizzardRegionId);
-        var characterSummary = await client.GetCharacterProfileSummaryAsync(characterRef.Realm, characterRef.Name, record.BlizzardProfileLastModified).ConfigureAwait(false);
-        if (characterSummary.IsSuccess)
-        {
-            await OnCharacterUpdate(database, record, characterSummary.ResultData, characterSummary.ResultLastModifiedMs).ConfigureAwait(false);
-        }
-        else if (characterSummary.IsNotModified)
-        {
-        }
-        else
-        {
-            return characterSummary.ResultCode;
-        }
-
-        var characterRenders = await client.GetCharacterRendersAsync(characterRef.Realm, characterRef.Name, record.BlizzardRendersLastModified).ConfigureAwait(false);
-        if (characterRenders.IsSuccess)
-        {
-            await OnCharacterRendersUpdate(database, record, characterRenders.ResultData, characterRenders.ResultLastModifiedMs).ConfigureAwait(false);
-        }
-        else if (characterRenders.IsNotModified)
-        {
-        }
-        else
-        {
-            return characterRenders.ResultCode;
-        }
-
-        var achievementsSummary = await client.GetCharacterAchievementsSummaryAsync(characterRef.Realm, characterRef.Name, record.BlizzardAchievementsLastModified).ConfigureAwait(false);
-        if (achievementsSummary.IsSuccess)
-        {
-            await OnAchievementsUpdate(database, record, achievementsSummary).ConfigureAwait(false);
-        }
-        else if (achievementsSummary.IsNotModified)
-        {
-        }
-        else
-        {
-            return achievementsSummary.ResultCode;
-        }
-
-        return HttpStatusCode.OK;
-    }
-
-    private async Task OnCharacterUpdate(AppDbContext database, CharacterRecord record, CharacterProfileSummary character, Instant lastModifiedTime)
-    {
-        record.RealmId = character.Realm.Id;
-        record.Name = character.Name;
-        record.NameSearchable = DatabaseHelpers.GetSearchableName(record.Name);
-        record.Class = (byte)character.CharacterClass.Id;
-        record.Race = (byte)character.Race.Id;
-        record.Level = (byte)character.Level;
-        record.Faction = character.Faction.AsFaction();
-        record.Gender = character.Gender.AsGender();
-
-        var guildData = character.Guild;
-        //long newGuildId = 0;
-        string newGuildName = null;
-        GuildRecord guildRecord = null;
-
-        if (guildData != null)
-        {
-            //newGuildId = guildData.Id;
-            newGuildName = guildData.Name;
-            var newGuildRef = MoaRef.GetGuildRef(record.BlizzardRegionId, guildData.Realm.Slug, newGuildName).Full;
-            guildRecord = await _commonServices.GuildServices.GetOrCreate(newGuildRef).ConfigureAwait(false);
-            //newGuildId = guildRecord.BlizzardId;
-        }
-
-        //record.BlizzardGuildId = newGuildId;
-        record.BlizzardGuildName = newGuildName;
-        record.GuildRef = guildRecord?.MoaRef;
-        record.GuildId = guildRecord?.Id;
-        record.BlizzardProfileLastModified = lastModifiedTime;
-    }
-
-    private Task OnCharacterRendersUpdate(AppDbContext database, CharacterRecord record, CharacterMediaSummary media, Instant lastModifiedTime)
-    {
-        var assets = media.Assets;
-        var characterAvatarRender = record.AvatarLink;
-        if (assets != null)
-        {
-            var avatar = assets.FirstOrDefault(x => x.Key == "avatar");
-            characterAvatarRender = avatar?.Value.AbsoluteUri;
-        }
-
-        record.AvatarLink = characterAvatarRender;
-        record.BlizzardRendersLastModified = lastModifiedTime;
-
-        return Task.CompletedTask;
-    }
-
-    private async Task OnAchievementsUpdate(AppDbContext database, CharacterRecord record, RequestResult<CharacterAchievementsSummary> achievementsSummary)
-    {
-        Exceptions.ThrowIf(record.Id == 0);
-
-        var achievementData = achievementsSummary.ResultData;
-        var currentAchievements = await database.CharacterAchievements.Where(x => x.CharacterId == record.Id).ToDictionaryAsync(x => x.AchievementId, x => x).ConfigureAwait(false);
-
-        var accountId = record.AccountId;
-        foreach (var achievement in achievementData.Achievements)
-        {
-            var timeStamp = achievement.CompletedTimestamp.GetValueOrDefault(0);
-            if (timeStamp <= 0)
-            {
-                continue;
-            }
-
-            if (!currentAchievements.TryGetValue(achievement.Id, out var achievementRecord))
-            {
-                achievementRecord = new CharacterAchievementRecord
-                {
-                    AccountId = accountId,
-                    CharacterId = record.Id,
-                    AchievementId = achievement.Id,
-                };
-
-                database.CharacterAchievements.Add(achievementRecord);
-            }
-
-            achievementRecord.AchievementTimeStamp = Instant.FromUnixTimeMilliseconds(timeStamp);
-            achievementRecord.CompletedByCharacter = achievement.Criteria == null || achievement.Criteria != null && achievement.Criteria.IsCompleted;
-        }
-
-        record.AchievementTotalPoints = achievementData.TotalPoints;
-        record.AchievementTotalQuantity = achievementData.TotalQuantity;
-        record.BlizzardAchievementsLastModified = achievementsSummary.ResultLastModifiedMs;
+        return resultStatusCode;
     }
 
     [CommandHandler]
@@ -323,19 +130,13 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         }
 
         await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        var record = await database.Guilds.FirstOrDefaultAsync(x => x.Id == command.GuildId, cancellationToken).ConfigureAwait(false);
+        var record = await database.Guilds.Include(x => x.UpdateRecord).ThenInclude(x => x.Children).FirstOrDefaultAsync(x => x.Id == command.GuildId, cancellationToken).ConfigureAwait(false);
         if (record == null)
         {
             return default;
         }
 
-        var updateResult = await TryUpdateGuildInternal(command.GuildId, database, record).ConfigureAwait(false);
-
-        record.UpdateJob = null;
-        record.UpdateJobEndTime = SystemClock.Instance.GetCurrentInstant();
-        record.UpdateJobLastResult = updateResult;
-
-        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        var resultStatusCode = await RunUpdateHandlers(_guildHandlers, context, database, record).ConfigureAwait(false);
 
         var characterQuery = from r in database.Characters
                              where r.GuildId == r.Id
@@ -345,102 +146,68 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
 
         context.Operation().Items.Set(new Guild_InvalidateGuildRecord(record.Id, characterIds.ToHashSet()));
 
-        return updateResult;
+        return resultStatusCode;
     }
 
-    private async Task<HttpStatusCode> TryUpdateGuildInternal(int id, AppDbContext database, GuildRecord record)
+    private async Task<HttpStatusCode> RunUpdateHandlers<TRecord>(IUpdateHandlerBase<TRecord>[] allHandlers, CommandContext context, AppDbContext database, TRecord record) where TRecord : IBlizzardUpdateRecord
     {
-        var guildRef = new MoaRef(record.MoaRef);
-        using var client = _commonServices.WarcraftClientProvider.Get(guildRef.Region);
-        var guildSummary = await client.GetGuildProfileSummaryAsync(guildRef.Realm, guildRef.Name, record.BlizzardProfileLastModified).ConfigureAwait(false);
-        if (guildSummary.IsSuccess)
+#if DEBUG
+        if (typeof(TRecord) != _commonServices.BlizzardUpdateHandler.ValidRecordTypes[(int)record.UpdateRecord.UpdatePriority])
         {
-            record.BlizzardId = guildSummary.ResultData.Id;
-            record.Name = guildSummary.ResultData.Name;
-            record.NameSearchable = DatabaseHelpers.GetSearchableName(record.Name);
-            record.RealmId = guildSummary.ResultData.Realm.Id;
-            record.BlizzardCreatedTimestamp = Instant.FromUnixTimeMilliseconds(guildSummary.ResultData.CreatedTimestamp);
-            record.MemberCount = guildSummary.ResultData.MemberCount;
-            record.AchievementPoints = guildSummary.ResultData.AchievementPoints;
-            record.Faction = guildSummary.ResultData.Faction.AsFaction();
-            record.BlizzardProfileLastModified = guildSummary.ResultLastModifiedMs;
-
-            Exceptions.ThrowIf(new MoaRef(record.MoaRef).Id != 0);
+            throw new NotImplementedException();
         }
-        else if (guildSummary.IsNotModified)
+#endif
+        if (!_commonServices.BlizzardUpdateHandler.RecordRequiresUpdate(record.UpdateRecord, record.UpdateRecord.UpdatePriority, true))
         {
-        }
-        else
-        {
-            return guildSummary.ResultCode;
+            return record.UpdateRecord.UpdateJobLastResult;
         }
 
-        Exceptions.ThrowIf(record.Id == 0);
-
-        var guildAchievements = await client.GetGuildAchievementsAsync(guildRef.Realm, guildRef.Name, record.BlizzardAchievementsLastModified).ConfigureAwait(false);
-        if (guildAchievements.IsSuccess)
+        var requiredChildrenCount = _commonServices.BlizzardUpdateHandler.RequiredChildrenCount[(int)record.UpdateRecord.UpdatePriority];
+        var sortedRecords = new BlizzardUpdateChildRecord[requiredChildrenCount];
+        foreach (var childRecord in record.UpdateRecord.Children)
         {
-            await OnGuildGuildAchievementsUpdate(database, record, guildAchievements.ResultLastModifiedMs).ConfigureAwait(false);
-        }
-        else if (guildAchievements.IsNotModified)
-        {
-        }
-        else
-        {
-            return guildAchievements.ResultCode;
+            sortedRecords[(int)childRecord.UpdateType] = childRecord;
         }
 
-        var guildRoster = await client.GetGuildRosterAsync(guildRef.Realm, guildRef.Name, record.BlizzardRosterLastModified).ConfigureAwait(false);
-        if (guildRoster.IsSuccess)
+        for (var i = 0; i < sortedRecords.Length; i++)
         {
-            foreach (var guildMember in guildRoster.ResultData.Members)
+            if (sortedRecords[i] == null)
             {
-                var characterId = guildMember.Character.Id;
-                var characterName = guildMember.Character.Name;
-                var characterRealm = guildMember.Character.Realm.Slug;
-                var characterRef = MoaRef.GetCharacterRef(record.BlizzardRegionId, characterRealm, characterName, characterId);
-                var characterRecord = await _commonServices.CharacterServices.GetOrCreateCharacterRecord(characterRef.Full, BlizzardUpdatePriority.CharacterLow).ConfigureAwait(false);
-                if (characterRecord.BlizzardId != guildMember.Character.Id)
-                {
-                    throw new NotImplementedException();
-                }
-
-                database.Attach(characterRecord);
-                characterRecord.GuildId = record.Id;
-                characterRecord.GuildRef = guildRef.Full;
-                //characterRecord.BlizzardGuildId = record.BlizzardId;
-                characterRecord.BlizzardGuildName = guildRoster.ResultData.Guild.Name;
-                characterRecord.Name = guildMember.Character.Name;
-                characterRecord.NameSearchable = DatabaseHelpers.GetSearchableName(guildMember.Character.Name);
-                characterRecord.RealmId = guildMember.Character.Realm.Id;
-                characterRecord.Class = (byte)guildMember.Character.PlayableClass.Id;
-                characterRecord.Race = (byte)guildMember.Character.PlayableRace.Id;
-                characterRecord.BlizzardGuildRank = (byte)guildMember.Rank;
-                characterRecord.Level = (byte)guildMember.Character.Level;
+                sortedRecords[i] = new BlizzardUpdateChildRecord { UpdateType = (BlizzardUpdateType)i };
+                record.UpdateRecord.Children.Add(sortedRecords[i]);
             }
-
-            record.BlizzardRosterLastModified = guildRoster.ResultLastModifiedMs;
         }
-        else if (guildRoster.IsNotModified)
+
+        var updateStatusCode = HttpStatusCode.OK;
+        for (var i = 0; i < allHandlers.Length; i++)
         {
+            var updateHandler = allHandlers[i];
+            var updateChildRecord = sortedRecords[i];
+
+            Exceptions.ThrowIf(updateChildRecord.UpdateType != updateHandler.UpdateType);
+
+            updateStatusCode = await updateHandler.ExecuteOn(context, database, record, updateChildRecord).ConfigureAwait(false);
+
+            if (updateStatusCode.IsSuccess())
+            {
+            }
+            else if (updateStatusCode == HttpStatusCode.NotModified)
+            {
+            }
+            else
+            {
+                break;
+            }
         }
-        else
-        {
-            return guildRoster.ResultCode;
-        }
 
-        //var guildModifiedTime = guildSummary.ResultLastModified.ToUnixTimeMilliseconds();
-        //var achievementsModifiedTime = guildAchievements.ResultLastModified.ToUnixTimeMilliseconds();
-        //var rosterModifiedTime = guildRoster.ResultLastModified.ToUnixTimeMilliseconds();
-        //await grain.SetLastModifiedTimes(new[] { guildModifiedTime, achievementsModifiedTime, rosterModifiedTime });
+        record.UpdateRecord.UpdateJobLastResult = updateStatusCode;
+        record.UpdateRecord.UpdateLastModified = SystemClock.Instance.GetCurrentInstant();
+        record.UpdateRecord.UpdateJobLastEndTime = record.UpdateRecord.UpdateLastModified;
+        record.UpdateRecord.UpdateStatus = BlizzardUpdateStatus.None;
+        record.UpdateRecord.UpdatePriority = BlizzardUpdatePriority.None;
 
-        return HttpStatusCode.OK;
-    }
+        await database.SaveChangesAsync().ConfigureAwait(false);
 
-    private Task OnGuildGuildAchievementsUpdate(AppDbContext database, GuildRecord record, Instant lastModifiedTime)
-    {
-        record.BlizzardAchievementsLastModified = lastModifiedTime;
-
-        return Task.CompletedTask;
+        return updateStatusCode;
     }
 }
