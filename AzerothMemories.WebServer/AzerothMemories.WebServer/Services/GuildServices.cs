@@ -38,6 +38,12 @@ public class GuildServices : DbServiceBase<AppDbContext>, IGuildServices
     }
 
     [ComputeMethod]
+    public virtual Task<GuildMembersViewModel> TryGetGuildMembers(Session session, int guildId, int pageIndex)
+    {
+        return TryGetGuildMembers(guildId, pageIndex);
+    }
+
+    [ComputeMethod]
     public virtual async Task<GuildRecord> GetOrCreate(string refFull)
     {
         var moaRef = new MoaRef(refFull);
@@ -81,16 +87,20 @@ public class GuildServices : DbServiceBase<AppDbContext>, IGuildServices
             return null;
         }
 
-        await using var database = CreateDbContext();
+        var characters = await TryGetGuildMembers(guildId, 0).ConfigureAwait(false);
+        return guildRecord.CreateViewModel(characters);
+    }
 
-        var characterQuery = from characterRecord in database.Characters
-                             where characterRecord.GuildId == guildId
-                             orderby characterRecord.BlizzardGuildRank
-                             select characterRecord.Id;
+
+    [ComputeMethod]
+    protected virtual async Task<GuildMembersViewModel> TryGetGuildMembers(int guildId, int pageIndex)
+    {
+        var membersPerPage = 50;
+        var allIds = await TryGetAllMemberIds(guildId).ConfigureAwait(false);
+        var currentSet = allIds.Skip(membersPerPage * pageIndex).Take(membersPerPage);
 
         var characters = new HashSet<CharacterViewModel>();
-        var characterIds = await characterQuery.ToArrayAsync().ConfigureAwait(false);
-        foreach (var id in characterIds)
+        foreach (var id in currentSet)
         {
             var character = await _commonServices.CharacterServices.TryGetCharacterRecord(id).ConfigureAwait(false);
             if (character != null)
@@ -99,7 +109,31 @@ public class GuildServices : DbServiceBase<AppDbContext>, IGuildServices
             }
         }
 
-        return guildRecord.CreateViewModel(characters);
+        return new GuildMembersViewModel
+        {
+            Index = pageIndex,
+            TotalCount = allIds.Length,
+            CharactersArray = characters.ToArray()
+        };
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<int[]> TryGetAllMemberIds(int guildId)
+    {
+        var guildRecord = await TryGetGuildRecord(guildId).ConfigureAwait(false);
+        if (guildRecord == null)
+        {
+            return Array.Empty<int>();
+        }
+
+        await using var database = CreateDbContext();
+
+        var characterQuery = from characterRecord in database.Characters
+                             where characterRecord.GuildId == guildId
+                             orderby characterRecord.BlizzardGuildRank
+                             select characterRecord.Id;
+
+        return await characterQuery.ToArrayAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod]

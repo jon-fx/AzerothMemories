@@ -8,6 +8,10 @@ public interface IGuildServices
     Task<GuildViewModel> TryGetGuild(Session session, [Path] int guildId);
 
     [ComputeMethod]
+    [Get(nameof(TryGetGuildMembers) + "/{guildId}/{pageIndex}")]
+    Task<GuildMembersViewModel> TryGetGuildMembers(Session o, [Path] int guildId, [Path] int pageIndex);
+
+    [ComputeMethod]
     [Get(nameof(TryGetGuild) + "/{region}/{realmSlug}/{guildName}")]
     Task<GuildViewModel> TryGetGuild(Session session, [Path] BlizzardRegion region, [Path] string realmSlug, [Path] string guildName);
 

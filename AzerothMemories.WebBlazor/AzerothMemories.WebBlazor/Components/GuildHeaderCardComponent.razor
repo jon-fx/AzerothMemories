@@ -1,4 +1,5 @@
-﻿@if (GuildViewModel == null)
+﻿@using _Imports = AzerothMemories.WebBlazor._Imports
+@if (GuildViewModel == null)
 {
 
 }
@@ -30,36 +31,30 @@ else
         </MudCardHeader>
     </MudCard>
 
-    var characters = GuildViewModel.GetCharactersSafe();
-    if (characters.Length > 0)
+    var characters = GetCharactersSafe();
+    if (characters.Count > 0)
     {
         <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
             <MudCardContent Class="@ClassPresets.CardContent">
                 @{
-                    var counter = 0;
-                    var remainingCharacters = characters.Length;
+                    var remainingCharacters = GuildViewModel.MembersViewModel.TotalCount;
                     foreach (var character in characters)
                     {
-                        if (counter > _maxCharacterCount)
-                        {
-                            break;
-                        }
-
-                        counter++;
                         remainingCharacters--;
+
                         <CharacterLinkButton @key="character" BlizzardStringLocalizer="@Services.ClientServices.BlizzardStringLocalizer" CharacterViewModel="@character" />
                     }
-
+                    
                     if (remainingCharacters > 0)
                     {
                         <MudTooltip Placement="Placement.Bottom" Color="Color.Dark">
                             <ChildContent>
-                                <MudButton Variant="Variant.Filled" OnClick="() => _maxCharacterCount += 25">
+                                <MudButton Variant="Variant.Filled" OnClick="LoadMoreCharacters">
                                     <MudAvatar Size="Size.Medium">...</MudAvatar>
                                 </MudButton>
                             </ChildContent>
                             <TooltipContent>
-                                <MudText Typo="Typo.body1">Show more... (@remainingCharacters.ToString("N0"))</MudText>
+                                <MudText Typo="Typo.body1">Load more... (@remainingCharacters.ToString("N0"))</MudText>
                             </TooltipContent>
                         </MudTooltip>
                     }
@@ -71,9 +66,47 @@ else
 
 @code
 {
-    private int _maxCharacterCount = 25;
+    private int _guildMemberPageIndex = 0;
+    private List<CharacterViewModel> _guildMembers;
 
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired] public GuildViewModel GuildViewModel { get; init; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        _guildMembers = null;
+        _guildMemberPageIndex = 1;
+    }
+
+    private async Task LoadMoreCharacters()
+    {
+        if (_guildMembers == null)
+        {
+            return;
+        }
+
+        var currentSet = await Services.ComputeServices.GuildServices.TryGetGuildMembers(null, GuildViewModel.Id, _guildMemberPageIndex++);
+        foreach (var characterViewModel in currentSet.CharactersArray)
+        {
+            _guildMembers.Add(characterViewModel);
+        }
+    }
+
+    private List<CharacterViewModel> GetCharactersSafe()
+    {
+        if (Services == null || GuildViewModel == null || GuildViewModel.MembersViewModel == null)
+        {
+            return new List<CharacterViewModel>();
+        }
+
+        if (_guildMembers == null)
+        {
+            _guildMembers = new List<CharacterViewModel>(GuildViewModel.MembersViewModel.CharactersArray);
+        }
+
+        return _guildMembers;
+    }
 }
