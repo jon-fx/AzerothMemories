@@ -15,7 +15,6 @@ public sealed class ClientServices
         TagHelpers = serviceProvider.GetRequiredService<TagHelpers>();
         TimeProvider = serviceProvider.GetRequiredService<TimeProvider>();
         BlizzardStringLocalizer = serviceProvider.GetRequiredService<IStringLocalizer<BlizzardResources>>();
-        CookieHelper = serviceProvider.GetRequiredService<CookieHelper>();
         PersistentComponentState = serviceProvider.GetRequiredService<PersistentComponentState>();
     }
 
@@ -34,8 +33,6 @@ public sealed class ClientServices
     public TagHelpers TagHelpers { get; }
 
     public TimeProvider TimeProvider { get; }
-
-    public CookieHelper CookieHelper { get; }
 
     public IStringLocalizer<BlizzardResources> BlizzardStringLocalizer { get; }
 

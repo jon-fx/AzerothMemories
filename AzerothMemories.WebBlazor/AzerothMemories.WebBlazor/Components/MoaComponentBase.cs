@@ -45,15 +45,10 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
         return base.OnParametersSetAsync();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await base.OnAfterRenderAsync(firstRender);
-
-        if (firstRender || _accountChanged)
-        {
-            await ClientServices.CookieHelper.Initialize(ClientServices.JsRuntime);
-        }
-    }
+    //protected override Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    return base.OnAfterRenderAsync(firstRender);
+    //}
 
     protected virtual void OnParametersChanged()
     {

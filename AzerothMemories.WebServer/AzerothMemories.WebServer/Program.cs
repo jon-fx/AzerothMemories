@@ -34,11 +34,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHostedService<BlizzardUpdateHostedService>();
 
+#if DEBUG
 builder.Services.AddDbContextFactory<AppDbContextBase>(optionsBuilder =>
 {
     //optionsBuilder.EnableSensitiveDataLogging();
     optionsBuilder.UseNpgsql(config.DatabaseConnectionString, o => o.UseNodaTime());
 });
+#endif
+
 builder.Services.AddDbContextFactory<AppDbContext>(optionsBuilder =>
 {
     //optionsBuilder.EnableSensitiveDataLogging();
