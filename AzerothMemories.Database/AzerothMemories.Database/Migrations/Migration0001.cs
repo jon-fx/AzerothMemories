@@ -55,7 +55,15 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(GuildRecord.MemberCount)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(GuildRecord.AchievementPoints)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(GuildRecord.CreatedDateTime)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
-            .WithColumn(nameof(GuildRecord.BlizzardCreatedTimestamp)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
+            .WithColumn(nameof(GuildRecord.BlizzardCreatedTimestamp)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
+            .WithColumn(nameof(GuildRecord.AchievementTotalPoints)).AsInt32().WithDefaultValue(0)
+            .WithColumn(nameof(GuildRecord.AchievementTotalQuantity)).AsInt32().WithDefaultValue(0);
+
+        Create.Table(GuildAchievementRecord.TableName)
+            .WithColumn(nameof(GuildAchievementRecord.Id)).AsInt32().PrimaryKey().Identity()
+            .WithColumn(nameof(GuildAchievementRecord.GuildId)).AsInt32().ForeignKey(GuildRecord.TableName, "Id").OnDelete(Rule.Cascade)
+            .WithColumn(nameof(GuildAchievementRecord.AchievementId)).AsInt32().WithDefaultValue(0)
+            .WithColumn(nameof(GuildAchievementRecord.AchievementTimeStamp)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
 
         Create.Table(CharacterRecord.TableName)
             .WithColumn(nameof(CharacterRecord.Id)).AsInt32().PrimaryKey().Identity()
@@ -87,8 +95,7 @@ public sealed class Migration0001 : Migration
             .WithColumn(nameof(CharacterAchievementRecord.AccountId)).AsInt32().ForeignKey(AccountRecord.TableName, "Id").OnDelete(Rule.SetNull).Nullable()
             .WithColumn(nameof(CharacterAchievementRecord.CharacterId)).AsInt32().ForeignKey(CharacterRecord.TableName, "Id").OnDelete(Rule.Cascade)
             .WithColumn(nameof(CharacterAchievementRecord.AchievementId)).AsInt32().WithDefaultValue(0)
-            .WithColumn(nameof(CharacterAchievementRecord.AchievementTimeStamp)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch)
-            .WithColumn(nameof(CharacterAchievementRecord.CompletedByCharacter)).AsBoolean().WithDefaultValue(false);
+            .WithColumn(nameof(CharacterAchievementRecord.AchievementTimeStamp)).AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
 
         if (ConfigHelpers.IncludeBlizzardData)
         {
@@ -290,6 +297,15 @@ public sealed class Migration0001 : Migration
         Create.Index().OnTable(GuildRecord.TableName)
             .OnColumn(nameof(GuildRecord.NameSearchable));
 
+        Create.Index().OnTable(GuildAchievementRecord.TableName)
+            .OnColumn(nameof(GuildAchievementRecord.GuildId));
+
+        Create.Index().OnTable(GuildAchievementRecord.TableName)
+            .OnColumn(nameof(GuildAchievementRecord.AchievementId));
+
+        Create.Index().OnTable(GuildAchievementRecord.TableName)
+            .OnColumn(nameof(GuildAchievementRecord.AchievementTimeStamp));
+
         Create.Index().OnTable(BlizzardUpdateChildRecord.TableName)
             .OnColumn(nameof(BlizzardUpdateChildRecord.ParentId));
 
@@ -388,6 +404,7 @@ public sealed class Migration0001 : Migration
         Delete.Table(CharacterAchievementRecord.TableName);
         Delete.Table(CharacterRecord.TableName);
 
+        Delete.Table(GuildAchievementRecord.TableName);
         Delete.Table(GuildRecord.TableName);
 
         Delete.Table(AccountFollowingRecord.TableName);
