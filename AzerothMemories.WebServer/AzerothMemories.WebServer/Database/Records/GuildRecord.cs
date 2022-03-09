@@ -32,6 +32,10 @@ public sealed class GuildRecord : IBlizzardUpdateRecord
 
     [Column] public Instant BlizzardCreatedTimestamp { get; set; }
 
+    [Column] public int AchievementTotalQuantity { get; set; }
+
+    [Column] public int AchievementTotalPoints { get; set; }
+
     public BlizzardUpdateRecord UpdateRecord { get; set; }
 
     public GuildViewModel CreateViewModel(GuildMembersViewModel memberViewModels)

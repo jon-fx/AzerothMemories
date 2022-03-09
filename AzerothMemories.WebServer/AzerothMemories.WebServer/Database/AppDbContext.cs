@@ -29,6 +29,8 @@ public class AppDbContext : DbContextBase
 
     public DbSet<GuildRecord> Guilds { get; protected set; } = null!;
 
+    public DbSet<GuildAchievementRecord> GuildAchievements { get; protected set; } = null!;
+
     public DbSet<PostRecord> Posts { get; protected set; } = null!;
 
     public DbSet<PostTagRecord> PostTags { get; protected set; } = null!;

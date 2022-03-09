@@ -38,7 +38,7 @@ internal sealed class UpdateHandler_Characters_Achievements : UpdateHandlerBase<
             }
 
             achievementRecord.AchievementTimeStamp = Instant.FromUnixTimeMilliseconds(timeStamp);
-            achievementRecord.CompletedByCharacter = achievement.Criteria == null || achievement.Criteria != null && achievement.Criteria.IsCompleted;
+            //achievementRecord.CompletedByCharacter = achievement.Criteria == null || achievement.Criteria != null && achievement.Criteria.IsCompleted;
         }
 
         record.AchievementTotalPoints = requestResult.TotalPoints;
