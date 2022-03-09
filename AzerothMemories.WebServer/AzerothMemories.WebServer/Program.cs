@@ -62,7 +62,8 @@ builder.Services.AddDbContextServices<AppDbContext>(dbContext =>
     dbContext.AddAuthentication<string>();
 });
 
-builder.Services.AddSingleton(new Publisher.Options { Id = "p-67567567" });
+var generator = new Stl.Generators.RandomSymbolGenerator("p-", 12, "0123456789");
+builder.Services.AddSingleton(new Publisher.Options { Id = generator.Next() });
 
 var fusion = builder.Services.AddFusion();
 var fusionServer = fusion.AddWebServer();
@@ -130,13 +131,13 @@ builder.Services.AddHttpClient("Blizzard", x =>
 
 builder.Services.UseRegisterAttributeScanner().RegisterFrom(typeof(CommonServices).Assembly);
 
-builder.Services.AddAntiforgery(options =>
-{
-    options.HeaderName = TokenDelegatingHandler.HeaderName;
-    options.Cookie.Name = TokenDelegatingHandler.CookieName;
-    //options.Cookie.SameSite = SameSiteMode.Strict;
-    //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-});
+//builder.Services.AddAntiforgery(options =>
+//{
+//    options.HeaderName = TokenDelegatingHandler.HeaderName;
+//    options.Cookie.Name = TokenDelegatingHandler.CookieName;
+//    //options.Cookie.SameSite = SameSiteMode.Strict;
+//    //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+//});
 
 var app = builder.Build();
 app.Services.GetRequiredService<CommonServices>().Initialize();

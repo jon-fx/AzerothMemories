@@ -1,7 +1,7 @@
 namespace AzerothMemories.WebServer.Controllers;
 
 [ApiController, JsonifyErrors]
-[AutoValidateAntiforgeryToken]
+//[AutoValidateAntiforgeryToken]
 [Route("api/[controller]/[action]")]
 public sealed class TagController : ControllerBase, ITagServices
 {

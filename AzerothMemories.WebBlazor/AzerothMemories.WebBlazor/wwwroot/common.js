@@ -16,16 +16,6 @@ function SetImage(id, type, data) {
     );
 }
 
-function GetAntiForgeryToken() {
-    var elements = document.getElementsByName('__RequestVerificationToken');
-    if (elements.length > 0) {
-        return elements[0].value;
-    }
-
-    console.warn('no anti forgery token found!');
-    return null;
-}
-
 function OpenImageEditor(id, dotNetHelper) {
     Painterro({
         toolbarHeightPx: 54,

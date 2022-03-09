@@ -2,7 +2,6 @@
 @using Stl.Fusion.Server.Authentication
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @inject ServerAuthHelper _serverAuthHelper
-@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery _antiforgery;
 @{
     await _serverAuthHelper.UpdateAuthState(HttpContext).ConfigureAwait(true);
     var authSchemas = await _serverAuthHelper.GetSchemas(HttpContext).ConfigureAwait(true);
@@ -58,13 +57,13 @@
 
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-G4QYXHL15Y"></script>
         <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag() {
-              dataLayer.push(arguments);
-          }
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
 
-          gtag('js', new Date());
-          gtag('config', 'G-G4QYXHL15Y', { 'anonymize_ip': true, 'send_page_view': false });
+            gtag('js', new Date());
+            gtag('config', 'G-G4QYXHL15Y', { 'anonymize_ip': true, 'send_page_view': false });
         </script>
     }
 </head>
@@ -103,9 +102,6 @@
 
         <script src="_framework/blazor.webassembly.js"></script>
         <script src="_content/MudBlazor/MudBlazor.min.js"></script>
-        
-        var requestToken = _antiforgery.GetAndStoreTokens(HttpContext).RequestToken;
-        <input name="__RequestVerificationToken" type="hidden" value="@requestToken"/>
     }
 </body>
 </html>

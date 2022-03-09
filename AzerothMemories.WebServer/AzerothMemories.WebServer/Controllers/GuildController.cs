@@ -1,7 +1,7 @@
 namespace AzerothMemories.WebServer.Controllers;
 
 [ApiController, JsonifyErrors]
-[AutoValidateAntiforgeryToken]
+//[AutoValidateAntiforgeryToken]
 [Route("api/[controller]/[action]")]
 public sealed class GuildController : ControllerBase, IGuildServices
 {
@@ -17,7 +17,7 @@ public sealed class GuildController : ControllerBase, IGuildServices
     {
         return _commonServices.GuildServices.TryGetGuild(session, guildId);
     }
-    
+
     [HttpGet("{guildId}/{pageIndex}"), Publish]
     public Task<GuildMembersViewModel> TryGetGuildMembers(Session session, int guildId, int pageIndex)
     {
