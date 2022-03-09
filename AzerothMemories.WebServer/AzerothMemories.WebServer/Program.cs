@@ -34,6 +34,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHostedService<BlizzardUpdateHostedService>();
 
+builder.Services.AddDbContextFactory<AppDbContextBase>(optionsBuilder =>
+{
+    //optionsBuilder.EnableSensitiveDataLogging();
+    optionsBuilder.UseNpgsql(config.DatabaseConnectionString, o => o.UseNodaTime());
+});
 builder.Services.AddDbContextFactory<AppDbContext>(optionsBuilder =>
 {
     //optionsBuilder.EnableSensitiveDataLogging();
@@ -125,7 +130,7 @@ builder.Services.UseRegisterAttributeScanner().RegisterFrom(typeof(CommonService
 builder.Services.AddAntiforgery(options =>
 {
     options.HeaderName = TokenDelegatingHandler.HeaderName;
-    options.Cookie.Name = "X-XSRF-TOKEN";
+    options.Cookie.Name = TokenDelegatingHandler.CookieName;
     //options.Cookie.SameSite = SameSiteMode.Strict;
     //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
@@ -153,11 +158,6 @@ else
 app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
-
-if (app.Environment.IsDevelopment())
-{
-}
-
 app.UseWebSockets(new WebSocketOptions
 {
     KeepAliveInterval = TimeSpan.FromSeconds(30),
