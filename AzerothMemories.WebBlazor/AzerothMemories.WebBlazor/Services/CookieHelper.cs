@@ -8,10 +8,7 @@ public sealed class CookieHelper
 
     public async Task Initialize(IJSRuntime jsRuntime)
     {
-        if (string.IsNullOrWhiteSpace(_token))
-        {
-            _token = await jsRuntime.InvokeAsync<string>("GetAntiForgeryToken");
-        }
+        _token = await jsRuntime.InvokeAsync<string>("GetAntiForgeryToken");
     }
 
     public string GetAntiForgeryToken()

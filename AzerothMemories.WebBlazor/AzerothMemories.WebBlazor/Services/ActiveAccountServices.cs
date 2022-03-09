@@ -57,8 +57,10 @@ public sealed class ActiveAccountServices
         return AccountViewModel.Id == accountId;
     }
 
-    public async Task ComputeState()
+    public async Task<bool> ComputeState()
     {
+        var previousAccountId = AccountViewModel?.Id;
+
         AccountViewModel = await _accountServices.TryGetActiveAccount(null);
 
         if (AccountViewModel == null)
@@ -96,6 +98,8 @@ public sealed class ActiveAccountServices
             AccountHistoryViewModels = newHistory.ViewModels;
             AccountHistoryViewModels ??= Array.Empty<AccountHistoryViewModel>();
         }
+
+        return previousAccountId != AccountViewModel?.Id;
     }
 
     public Dictionary<int, string> GetUserTagList()

@@ -2,6 +2,8 @@
 
 public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TViewModel>, IMoaServices, IDisposable where TViewModel : ViewModelBase, new()
 {
+    private bool _accountChanged;
+
     protected MoaComponentBase()
     {
         ViewModel = new TViewModel
@@ -47,7 +49,7 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
     {
         await base.OnAfterRenderAsync(firstRender);
 
-        if (firstRender)
+        if (firstRender || _accountChanged)
         {
             await ClientServices.CookieHelper.Initialize(ClientServices.JsRuntime);
         }
@@ -59,7 +61,7 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
 
     protected override sealed async Task<TViewModel> ComputeState(CancellationToken cancellationToken)
     {
-        await ClientServices.ActiveAccountServices.ComputeState();
+        _accountChanged = await ClientServices.ActiveAccountServices.ComputeState();
 
         await ViewModel.ComputeState(cancellationToken);
 
