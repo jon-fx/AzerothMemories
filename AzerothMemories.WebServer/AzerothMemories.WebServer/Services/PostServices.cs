@@ -25,6 +25,12 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
+    public virtual Task<int> DependsOnPost(int postId)
+    {
+        return Task.FromResult(postId);
+    }
+
+    [ComputeMethod]
     public virtual Task<int> DependsOnPostsBy(int accountId)
     {
         return Task.FromResult(accountId);
@@ -40,6 +46,8 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     protected virtual async Task<bool> CanAccountSeePost(int activeAccountId, PostRecord postRecord)
     {
         Exceptions.ThrowIf(postRecord == null);
+
+        await DependsOnPost(postRecord.Id).ConfigureAwait(false);
 
         if (postRecord.PostVisibility == 0)
         {
@@ -507,7 +515,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)
             {
-                _ = TryGetPostRecord(invPost.PostId);
+                _ = DependsOnPost(invPost.PostId);
                 _ = TryGetPostReactions(invPost.PostId);
             }
 
@@ -1053,7 +1061,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)
             {
-                _ = TryGetPostRecord(invPost.PostId);
+                _ = DependsOnPost(invPost.PostId);
                 _ = TryGetAllPostComments(invPost.PostId);
             }
 
@@ -1382,7 +1390,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)
             {
-                _ = TryGetPostRecord(invPost.PostId);
+                _ = DependsOnPost(invPost.PostId);
             }
 
             var invRecentPosts = context.Operation().Items.Get<Post_InvalidateRecentPost>();
@@ -1440,7 +1448,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)
             {
-                _ = TryGetPostRecord(invPost.PostId);
+                _ = DependsOnPost(invPost.PostId);
             }
 
             var invAccount = context.Operation().Items.Get<Post_InvalidateAccount>();
@@ -1880,7 +1888,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)
             {
-                _ = TryGetPostRecord(invPost.PostId);
+                _ = DependsOnPost(invPost.PostId);
                 _ = GetAllPostTags(invPost.PostId);
             }
 
@@ -2048,6 +2056,8 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     [ComputeMethod]
     public virtual async Task<PostRecord> TryGetPostRecord(int postId)
     {
+        await DependsOnPost(postId).ConfigureAwait(false);
+
         await using var database = CreateDbContext();
 
         return await database.Posts.FirstOrDefaultAsync(p => p.DeletedTimeStamp == 0 && p.Id == postId).ConfigureAwait(false);

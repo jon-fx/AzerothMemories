@@ -276,7 +276,7 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
                 {
                     foreach (var postId in invRecord.PostIds)
                     {
-                        _ = _commonServices.PostServices.TryGetPostRecord(postId);
+                        _ = _commonServices.PostServices.DependsOnPost(postId);
                         _ = _commonServices.PostServices.GetAllPostTags(postId);
                     }
                 }
