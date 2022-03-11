@@ -16,7 +16,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
     {
         if (accountId == 0)
         {
-            return null;
+            return new Dictionary<int, AccountFollowingViewModel>();
         }
 
         await using var database = CreateDbContext();
@@ -42,7 +42,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
     {
         if (accountId == 0)
         {
-            return null;
+            return new Dictionary<int, AccountFollowingViewModel>();
         }
 
         await using var database = CreateDbContext();
@@ -93,11 +93,6 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
         }
 
         var followingViewModels = await TryGetAccountFollowing(activeAccount.Id).ConfigureAwait(false);
-        if (followingViewModels == null)
-        {
-            return null;
-        }
-
         await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
 
         var otherAccountViewModel = await _commonServices.AccountServices.TryGetAccountRecord(otherAccountId).ConfigureAwait(false);
@@ -199,11 +194,6 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
         }
 
         var followingViewModels = await TryGetAccountFollowing(activeAccount.Id).ConfigureAwait(false);
-        if (followingViewModels == null)
-        {
-            return null;
-        }
-
         if (!followingViewModels.TryGetValue(otherAccountId, out var viewModel))
         {
             return null;
@@ -260,11 +250,6 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
         }
 
         var followersViewModels = await TryGetAccountFollowers(activeAccount.Id).ConfigureAwait(false);
-        if (followersViewModels == null)
-        {
-            return null;
-        }
-
         if (!followersViewModels.TryGetValue(otherAccountId, out var viewModel))
         {
             return null;
@@ -329,11 +314,6 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
         }
 
         var followersViewModels = await TryGetAccountFollowers(activeAccount.Id).ConfigureAwait(false);
-        if (followersViewModels == null)
-        {
-            return null;
-        }
-
         if (!followersViewModels.TryGetValue(otherAccountId, out var viewModel))
         {
             return null;

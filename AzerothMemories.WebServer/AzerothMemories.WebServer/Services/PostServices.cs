@@ -43,7 +43,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<bool> CanAccountSeePost(int activeAccountId, PostRecord postRecord)
+    public virtual async Task<bool> CanAccountSeePost(int activeAccountId, PostRecord postRecord)
     {
         Exceptions.ThrowIf(postRecord == null);
 
@@ -78,11 +78,6 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         var following = await _commonServices.FollowingServices.TryGetAccountFollowing(activeAccountId).ConfigureAwait(false);
-        if (following == null || following.Count == 0)
-        {
-            return false;
-        }
-
         if (!following.TryGetValue(postRecord.AccountId, out var viewModel))
         {
             return false;

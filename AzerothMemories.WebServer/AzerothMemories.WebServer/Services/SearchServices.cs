@@ -653,11 +653,6 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     protected virtual async Task<int[]> TryGetRecentPosts(int accountId)
     {
         var following = await _commonServices.FollowingServices.TryGetAccountFollowing(accountId).ConfigureAwait(false);
-        if (following == null || following.Count == 0)
-        {
-            return Array.Empty<int>();
-        }
-
         var allFollowingIds = new HashSet<int> { accountId };
         foreach (var kvp in following)
         {
