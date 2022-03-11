@@ -7,5 +7,5 @@ public enum MediaSize
     Md,
     Lg,
     Xl,
-    Xxl,
+    True,
 }

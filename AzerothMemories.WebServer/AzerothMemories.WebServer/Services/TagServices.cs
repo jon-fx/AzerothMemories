@@ -163,7 +163,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
         }
         else if (!string.IsNullOrEmpty(record.Media))
         {
-            record.Media = $"{ZExtensions.BlobMediaStoragePath}{record.Media}";
+            record.Media = $"{ZExtensions.BlobStaticMediaStoragePath}{record.Media}";
         }
 
         var name = ServerLocaleHelpers.GetName(locale, record.Name);

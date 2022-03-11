@@ -55,7 +55,7 @@ internal sealed class MoaImageUploader
 
                 try
                 {
-                    var blobClient = new Azure.Storage.Blobs.BlobClient(_commonConfig.BlobStorageConnectionString, ZExtensions.BlobMedia, fileName);
+                    var blobClient = new Azure.Storage.Blobs.BlobClient(_commonConfig.BlobStorageConnectionString, ZExtensions.BlobStaticMedia, fileName);
                     var result = await blobClient.UploadAsync(new BinaryData(buffer), true).ConfigureAwait(false);
                     if (result.Value == null)
                     {

@@ -18,21 +18,21 @@ namespace AzerothMemories.WebServer.Controllers
 
         [HttpGet]
         [Route("~/media/{container}/{fileName}")]
-        public async Task<IActionResult> Get(Session session, [FromRoute] string container, [FromRoute] string fileName, [FromQuery] MediaSize size = MediaSize.Xxl)
+        public async Task<IActionResult> Get(Session session, [FromRoute] string container, [FromRoute] string fileName, [FromQuery] MediaSize size = MediaSize.True)
         {
             MediaResult results = null;
-            if (container.ToLowerInvariant() == ZExtensions.BlobMedia)
+            if (container.ToLowerInvariant() == ZExtensions.BlobStaticMedia)
             {
-                results = await _commonServices.MediaServices.TryGetMedia(session, fileName).ConfigureAwait(false);
+                results = await _commonServices.MediaServices.TryGetStaticMedia(session, fileName).ConfigureAwait(false);
             }
-            else if (container.ToLowerInvariant() == ZExtensions.BlobAvatars)
+            else if (container.ToLowerInvariant() == ZExtensions.BlobUserAvatars)
             {
-                results = await _commonServices.MediaServices.TryGetAvatar(session, fileName).ConfigureAwait(false);
+                results = await _commonServices.MediaServices.TryGetUserAvatar(session, fileName).ConfigureAwait(false);
             }
-            else if (container.ToLowerInvariant() == ZExtensions.BlobImages)
+            else if (container.ToLowerInvariant() == ZExtensions.BlobUserUploads)
             {
-                size = (MediaSize)Math.Clamp((byte)size, (byte)0, (byte)MediaSize.Xxl);
-                results = await _commonServices.MediaServices.TryGetUserMedia(session, fileName, size).ConfigureAwait(false);
+                size = (MediaSize)Math.Clamp((byte)size, (byte)0, (byte)MediaSize.True);
+                results = await _commonServices.MediaServices.TryGetUserUpload(session, fileName, size).ConfigureAwait(false);
             }
 
             if (results != null)

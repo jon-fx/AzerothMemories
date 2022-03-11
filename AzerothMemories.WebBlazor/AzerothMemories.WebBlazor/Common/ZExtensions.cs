@@ -5,9 +5,9 @@ namespace AzerothMemories.WebBlazor.Common;
 public static class ZExtensions
 {
     public static readonly string DefaultSocialImage = "header-banner.png";
-    public static readonly string BlobMediaStoragePath = $"media/{BlobMedia}/";
-    public static readonly string BlobImageStoragePath = $"media/{BlobImages}/";
-    public static readonly string BlobAvatarStoragePath = $"media/{BlobAvatars}/";
+    public static readonly string BlobStaticMediaStoragePath = $"media/{BlobStaticMedia}/";
+    public static readonly string BlobUserUploadsStoragePath = $"media/{BlobUserUploads}/";
+    public static readonly string BlobUserAvatarsStoragePath = $"media/{BlobUserAvatars}/";
 
     public static readonly List<string> ValidUploadExtensions = new() { ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".bmp" };
     public static readonly string UploadAcceptExtensions = "image/*";
@@ -19,13 +19,13 @@ public static class ZExtensions
     public static readonly int MaxPostScreenShots = 5;
     public static readonly int MaxAddMemoryFileSizeInBytes = (int)10.Megabytes().Bytes;
     public static readonly int MaxAvatarFileSizeInBytes = (int)5.Megabytes().Bytes;
-    
-    public const string BlobMedia = "media";
-    public const string BlobImages = "images";
-    public const string BlobAvatars = "avatars";
+
+    public const string BlobStaticMedia = "media";
+    public const string BlobUserUploads = "images";
+    public const string BlobUserAvatars = "avatars";
 
     public const string AvatarBlobFilePrefix = "UserAvatar-";
-    public static readonly string CustomAvatarPathPrefix = $"{BlobAvatarStoragePath}{AvatarBlobFilePrefix}";
+    public static readonly string CustomUserAvatarPathPrefix = $"{BlobUserAvatarsStoragePath}{AvatarBlobFilePrefix}";
 
     public static readonly (int Min, int Max)[] TagCountsPerPost;
     public static readonly Instant MinPostTime = Instant.FromUnixTimeMilliseconds(946684800000);//Sat Jan 01 2000 00:00:00 GMT+0000

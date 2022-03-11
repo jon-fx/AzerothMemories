@@ -580,8 +580,8 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             if (invRecord != null)
             {
                 _ = DependsOnAccountRecord(invRecord.Id);
-                _ = _commonServices.MediaServices.TryGetAvatar($"{ZExtensions.AvatarBlobFilePrefix}{invRecord.Id}-0.jpg");
-                _ = _commonServices.MediaServices.TryGetAvatar($"{ZExtensions.AvatarBlobFilePrefix}{invRecord.Id}-1.jpg");
+                _ = _commonServices.MediaServices.TryGetUserAvatar($"{ZExtensions.AvatarBlobFilePrefix}{invRecord.Id}-0.jpg");
+                _ = _commonServices.MediaServices.TryGetUserAvatar($"{ZExtensions.AvatarBlobFilePrefix}{invRecord.Id}-1.jpg");
             }
 
             return default;
@@ -614,7 +614,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         {
             newAvatar = null;
         }
-        else if (newAvatar.StartsWith($"{ZExtensions.CustomAvatarPathPrefix}{accountViewModel.Id}-"))
+        else if (newAvatar.StartsWith($"{ZExtensions.CustomUserAvatarPathPrefix}{accountViewModel.Id}-"))
         {
         }
         else if (newAvatar.StartsWith("https://render") && newAvatar.Contains(".worldofwarcraft.com"))
@@ -726,7 +726,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             var blobName = $"{ZExtensions.AvatarBlobFilePrefix}{accountViewModel.Id}-{avatarIndex}.jpg";
             if (_commonServices.Config.UploadToBlobStorage && dataToUpload != null)
             {
-                var blobClient = new Azure.Storage.Blobs.BlobClient(_commonServices.Config.BlobStorageConnectionString, ZExtensions.BlobAvatars, blobName);
+                var blobClient = new Azure.Storage.Blobs.BlobClient(_commonServices.Config.BlobStorageConnectionString, ZExtensions.BlobUserAvatars, blobName);
                 var result = await blobClient.UploadAsync(dataToUpload, true, cancellationToken).ConfigureAwait(false);
                 if (result.Value == null)
                 {
@@ -734,7 +734,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
                 }
             }
 
-            newAvatar = $"{ZExtensions.BlobAvatarStoragePath}{blobName}";
+            newAvatar = $"{ZExtensions.BlobUserAvatarsStoragePath}{blobName}";
         }
         catch (Exception)
         {

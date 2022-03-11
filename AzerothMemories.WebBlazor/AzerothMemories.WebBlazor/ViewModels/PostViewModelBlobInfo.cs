@@ -30,7 +30,7 @@ public sealed record PostViewModelBlobInfo
                 continue;
             }
 
-            var imageSource = $"{ZExtensions.BlobImageStoragePath}{imageBlobName}";
+            var imageSource = $"{ZExtensions.BlobUserUploadsStoragePath}{imageBlobName}";
 
             results.Add(new PostViewModelBlobInfo { Title = title, Description = description, Source = imageSource });
         }

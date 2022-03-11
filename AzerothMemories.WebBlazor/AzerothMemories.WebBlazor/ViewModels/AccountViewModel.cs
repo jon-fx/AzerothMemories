@@ -149,6 +149,6 @@ public sealed class AccountViewModel
             return false;
         }
 
-        return Avatar.StartsWith(ZExtensions.CustomAvatarPathPrefix);
+        return Avatar.StartsWith(ZExtensions.CustomUserAvatarPathPrefix);
     }
 }

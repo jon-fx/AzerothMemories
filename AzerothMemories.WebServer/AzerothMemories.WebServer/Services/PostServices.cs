@@ -441,7 +441,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
                 var blobName = $"{accountViewModel.Id}-{Guid.NewGuid()}.{extension}";
                 if (_commonServices.Config.UploadToBlobStorage)
                 {
-                    var blobClient = new Azure.Storage.Blobs.BlobClient(_commonServices.Config.BlobStorageConnectionString, ZExtensions.BlobImages, blobName);
+                    var blobClient = new Azure.Storage.Blobs.BlobClient(_commonServices.Config.BlobStorageConnectionString, ZExtensions.BlobUserUploads, blobName);
                     var result = await blobClient.UploadAsync(blobData).ConfigureAwait(false);
                     if (result.Value == null)
                     {

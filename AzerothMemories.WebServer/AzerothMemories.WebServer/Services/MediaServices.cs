@@ -18,15 +18,15 @@ public class MediaServices : DbServiceBase<AppDbContext>
     }
 
     [ComputeMethod]
-    public virtual Task<MediaResult> TryGetMedia(Session session, string fileName)
+    public virtual Task<MediaResult> TryGetStaticMedia(Session session, string fileName)
     {
-        return TryGetMedia(fileName);
+        return TryGetStaticMedia(fileName);
     }
 
     [ComputeMethod]
-    public virtual async Task<MediaResult> TryGetMedia(string fileName)
+    public virtual async Task<MediaResult> TryGetStaticMedia(string fileName)
     {
-        var result = await TryGetBlobData(ZExtensions.BlobMedia, fileName).ConfigureAwait(false);
+        var result = await TryGetBlobData(ZExtensions.BlobStaticMedia, fileName).ConfigureAwait(false);
         if (result != null)
         {
             return result;
@@ -38,19 +38,19 @@ public class MediaServices : DbServiceBase<AppDbContext>
     [ComputeMethod]
     protected virtual Task<MediaResult> TryGetMedia_Default()
     {
-        return TryGetBlobData(ZExtensions.BlobMedia, "inv_misc_questionmark.jpg");
+        return TryGetBlobData(ZExtensions.BlobStaticMedia, "inv_misc_questionmark.jpg");
     }
 
     [ComputeMethod]
-    public virtual Task<MediaResult> TryGetAvatar(Session session, string fileName)
+    public virtual Task<MediaResult> TryGetUserAvatar(Session session, string fileName)
     {
-        return TryGetAvatar(fileName);
+        return TryGetUserAvatar(fileName);
     }
 
     [ComputeMethod]
-    public virtual async Task<MediaResult> TryGetAvatar(string fileName)
+    public virtual async Task<MediaResult> TryGetUserAvatar(string fileName)
     {
-        var result = await TryGetBlobData(ZExtensions.BlobAvatars, fileName).ConfigureAwait(false);
+        var result = await TryGetBlobData(ZExtensions.BlobUserAvatars, fileName).ConfigureAwait(false);
         if (result != null)
         {
             return result;
@@ -66,7 +66,7 @@ public class MediaServices : DbServiceBase<AppDbContext>
     }
 
     [ComputeMethod]
-    public virtual async Task<MediaResult> TryGetUserMedia(Session session, string fileName, MediaSize size)
+    public virtual async Task<MediaResult> TryGetUserUpload(Session session, string fileName, MediaSize size)
     {
         var accountId = 0;
         var account = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
@@ -75,25 +75,30 @@ public class MediaServices : DbServiceBase<AppDbContext>
             accountId = account.Id;
         }
 
-        return await TryGetUserMedia(accountId, fileName, size).ConfigureAwait(false);
+        var result = await TryGetUserUpload(accountId, fileName, size).ConfigureAwait(false);
+        if (result == null)
+        {
+        }
+
+        return result;
     }
 
     [ComputeMethod]
-    public virtual async Task<MediaResult> TryGetUserMedia(int accountId, string fileName, MediaSize size)
+    public virtual async Task<MediaResult> TryGetUserUpload(int accountId, string fileName, MediaSize size)
     {
-        var blobData = await TryGetBlobData(ZExtensions.BlobImages, fileName, size).ConfigureAwait(false);
+        var blobData = await TryGetUserUpload(fileName, size).ConfigureAwait(false);
         if (blobData == null)
         {
             return null;
         }
 
-        return new MediaResult(blobData.LastModified, blobData.ETag, blobData.MediaType, blobData.MediaBytes);
+        return blobData;
     }
 
     [ComputeMethod]
-    protected virtual async Task<MediaResult> TryGetBlobData(string container, string fileName, MediaSize size)
+    protected virtual async Task<MediaUserResult> TryGetUserUpload(string fileName, MediaSize size)
     {
-        var blobData = await TryGetBlobData(ZExtensions.BlobImages, fileName).ConfigureAwait(false);
+        var blobData = await TryGetUserMediaBlobData(fileName).ConfigureAwait(false);
         if (blobData == null)
         {
             return null;
@@ -110,11 +115,36 @@ public class MediaServices : DbServiceBase<AppDbContext>
                 await using var memoryStream = new MemoryStream();
                 await image.SaveAsJpegAsync(memoryStream).ConfigureAwait(false);
 
-                return new MediaResult(blobData.LastModified, blobData.ETag, blobData.MediaType, memoryStream.ToArray());
+                return new MediaUserResult(blobData.LastModified, blobData.ETag, blobData.MediaType, memoryStream.ToArray(), blobData.PostId, blobData.PostAccountId);
             }
         }
 
-        return new MediaResult(blobData.LastModified, blobData.ETag, blobData.MediaType, blobData.MediaBytes);
+        return blobData;
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<MediaUserResult> TryGetUserMediaBlobData(string fileName)
+    {
+        var blobData = await TryGetBlobData(ZExtensions.BlobUserUploads, fileName).ConfigureAwait(false);
+        if (blobData == null)
+        {
+            return null;
+        }
+
+        await using var database = CreateDbContext();
+
+        var postRecord = await database.UploadLogs.Where(x => x.BlobName == fileName).FirstOrDefaultAsync().ConfigureAwait(false);
+        if (postRecord == null)
+        {
+            return null;
+        }
+
+        if (postRecord.UploadStatus == AccountUploadLogStatus.Deleted || postRecord.UploadStatus == AccountUploadLogStatus.DeletePending)
+        {
+            return null;
+        }
+
+        return new MediaUserResult(blobData.LastModified, blobData.ETag, blobData.MediaType, blobData.MediaBytes, postRecord.PostId.GetValueOrDefault(), postRecord.AccountId);
     }
 
     [ComputeMethod]
