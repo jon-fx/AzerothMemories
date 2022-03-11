@@ -140,8 +140,8 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                 EndTimeMs = currentActivitySet.StartTime.ToUnixTimeMilliseconds(),
             };
 
-            var dailyTopAchievemnts = currentActivitySet.AchievementCounts.OrderByDescending(x => x.Value).Take(topValueCount);
-            foreach (var kvp in dailyTopAchievemnts)
+            var dailyTopAchievements = currentActivitySet.AchievementCounts.OrderByDescending(x => x.Value).Take(topValueCount);
+            foreach (var kvp in dailyTopAchievements)
             {
                 var tag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, kvp.Key, null, locale).ConfigureAwait(false);
                 daily.TopAchievements.Add(tag);
