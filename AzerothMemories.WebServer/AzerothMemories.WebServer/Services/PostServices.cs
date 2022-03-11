@@ -1297,7 +1297,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        var commentRecord = database.PostComments.First(x => x.Id == postId);
+        var commentRecord = database.PostComments.First(x => x.Id == commentId);
 
         var newReaction = command.NewReaction;
         var reactionRecord = await database.PostCommentReactions.FirstOrDefaultAsync(x => x.AccountId == activeAccount.Id && x.CommentId == commentId, cancellationToken).ConfigureAwait(false);
@@ -1580,7 +1580,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         }
 
         await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        var commentRecord = await database.PostComments.FirstAsync(x => x.Id == commentId, cancellationToken: cancellationToken).ConfigureAwait(false);
+        var commentRecord = await database.PostComments.FirstAsync(x => x.Id == commentId, cancellationToken).ConfigureAwait(false);
         commentRecord.DeletedTimeStamp = now;
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
