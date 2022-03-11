@@ -1,7 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Channels;
-using NodaTime.Extensions;
 
 namespace AzerothMemories.WebServer.Services.Updates;
 
@@ -161,7 +158,7 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
             {
                 continue;
             }
-            
+
             record.UpdateStatus = BlizzardUpdateStatus.Progress;
             record.UpdateLastModified = SystemClock.Instance.GetCurrentInstant();
 
@@ -169,13 +166,13 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
         }
 
         await database.SaveChangesAsync().ConfigureAwait(false);
-        
+
         var tasks = new Task[Environment.ProcessorCount];
         for (var i = 0; i < tasks.Length; i++)
         {
             tasks[i] = RunUpdatesOn(queue);
-        } 
-        
+        }
+
         await Task.WhenAll(tasks).ConfigureAwait(false);
     }
 
@@ -183,7 +180,7 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
     {
         while (commandQueue.TryDequeue(out var command))
         {
-            await _commonServices.Commander.Call(command).ConfigureAwait(false);     
+            await _commonServices.Commander.Call(command).ConfigureAwait(false);
         }
     }
 }

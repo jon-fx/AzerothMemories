@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+namespace AzerothMemories.WebServer.Database.Records;
+
 [Table(TableName)]
 public sealed class BlizzardUpdateRecord : IDatabaseRecord
 {

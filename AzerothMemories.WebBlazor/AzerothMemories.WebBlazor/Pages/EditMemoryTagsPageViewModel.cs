@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebBlazor.Pages;
 
-public sealed class EditMemoryTagsPageeViewModel : ViewModelBase
+public sealed class EditMemoryTagsPageViewModel : ViewModelBase
 {
     private PostPageViewModelHelper _postPageHelper;
     private string _accountString;

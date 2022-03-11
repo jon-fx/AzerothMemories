@@ -2,8 +2,6 @@
 
 public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TViewModel>, IMoaServices, IDisposable where TViewModel : ViewModelBase, new()
 {
-    private bool _accountChanged;
-
     protected MoaComponentBase()
     {
         ViewModel = new TViewModel
@@ -56,7 +54,7 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
 
     protected override sealed async Task<TViewModel> ComputeState(CancellationToken cancellationToken)
     {
-        _accountChanged = await ClientServices.ActiveAccountServices.ComputeState();
+        await ClientServices.ActiveAccountServices.ComputeState();
 
         await ViewModel.ComputeState(cancellationToken);
 
