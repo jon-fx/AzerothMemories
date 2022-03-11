@@ -4,19 +4,19 @@
     {
         public static void WriteWithColors(ConsoleColor background, ConsoleColor foreground, string message)
         {
-            var prevBackground = Console.BackgroundColor;
+            //var prevBackground = Console.BackgroundColor;
             var prevForeground = Console.ForegroundColor;
 
-            Console.BackgroundColor = background;
+            //Console.BackgroundColor = background;
             Console.ForegroundColor = foreground;
 
             Console.WriteLine(message);
 
-            Console.BackgroundColor = prevBackground;
+            //Console.BackgroundColor = prevBackground;
             Console.ForegroundColor = prevForeground;
         }
 
-        public static bool SaftyCheck(string message)
+        public static bool SafetyCheck(string message)
         {
             WriteWithColors(ConsoleColor.White, ConsoleColor.Red, message);
 

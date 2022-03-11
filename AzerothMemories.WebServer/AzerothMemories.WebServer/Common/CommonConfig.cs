@@ -6,13 +6,11 @@ public sealed class CommonConfig
     {
 #if DEBUG
         DatabaseConnectionString = "***REMOVED***";
-        //HangfireConnectionString = "***REMOVED***";
 
         UploadToBlobStorage = false;
         UpdateSkipCharactersOnLowPriority = true;
 #else
         DatabaseConnectionString = "***REMOVED***";
-        //HangfireConnectionString = "***REMOVED***";
 
         UploadToBlobStorage = true;
         UpdateSkipCharactersOnLowPriority = true;
@@ -20,8 +18,6 @@ public sealed class CommonConfig
     }
 
     public string DatabaseConnectionString { get; init; }
-
-    //public string HangfireConnectionString { get; init; }
 
     public string BlobStorageConnectionString { get; } = "***REMOVED***";
 

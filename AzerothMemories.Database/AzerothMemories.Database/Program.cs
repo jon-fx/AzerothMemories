@@ -15,7 +15,7 @@ services.AddFluentMigratorCore()
 
 if (config.DatabaseConnectionString.Contains("azure"))
 {
-    if (ConfigHelpers.SaftyCheck("DO YOU REALLY WANT TO MODIFY AN AZURE DATABASE?!"))
+    if (ConfigHelpers.SafetyCheck("DO YOU REALLY WANT TO MODIFY AN AZURE DATABASE?!"))
     {
     }
     else
@@ -29,17 +29,17 @@ var serviceProvider = services.BuildServiceProvider(true);
 using var scope = serviceProvider.CreateScope();
 var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
 
-if (ConfigHelpers.SaftyCheck("DELETE ABSOLUTELY EVERYTHING?!"))
+if (ConfigHelpers.SafetyCheck("DELETE ABSOLUTELY EVERYTHING?!"))
 {
     runner.MigrateDown(Migration0001_EntiyFramework.MigrationId - 1);
 
     runner.Processor.Execute("DELETE FROM \"VersionInfo\"");
 }
-else if (ConfigHelpers.SaftyCheck("DELETE BLIZZARD DATA AND ACCOUNTS?!"))
+else if (ConfigHelpers.SafetyCheck("DELETE BLIZZARD DATA AND ACCOUNTS?!"))
 {
     runner.MigrateDown(Migration0002_BlizzardData.MigrationId - 1);
 }
-else if (ConfigHelpers.SaftyCheck("DELETE ACCOUNT DATA?!"))
+else if (ConfigHelpers.SafetyCheck("DELETE ACCOUNT DATA?!"))
 {
     runner.MigrateDown(Migration0003_AccountData.MigrationId - 1);
 }
