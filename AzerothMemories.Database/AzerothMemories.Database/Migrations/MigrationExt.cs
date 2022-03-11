@@ -5,6 +5,16 @@ namespace AzerothMemories.Database.Migrations;
 
 public static class MigrationExt
 {
+    public static ICreateTableColumnOptionOrWithColumnSyntax AsText(this ICreateTableColumnAsTypeSyntax createTableColumnAsTypeSyntax)
+    {
+        return createTableColumnAsTypeSyntax.AsCustom("Text");
+    }
+
+    public static ICreateTableColumnOptionOrWithColumnSyntax AsDateTimeOffsetWithDefault(this ICreateTableColumnAsTypeSyntax createTableColumnAsTypeSyntax)
+    {
+        return createTableColumnAsTypeSyntax.AsDateTimeOffset().NotNullable().WithDefaultValue(DateTimeOffset.UnixEpoch);
+    }
+
     public static ICreateTableWithColumnSyntax WithReactionInfo(this ICreateTableWithColumnSyntax table)
     {
         return table

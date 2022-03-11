@@ -2,11 +2,6 @@
 {
     internal static class ConfigHelpers
     {
-        public static bool IncludeBlizzardData = true;
-
-        public static readonly bool MigrateDown = true;
-        public static readonly bool ClearVersionDatabase = true;
-
         public static void WriteWithColors(ConsoleColor background, ConsoleColor foreground, string message)
         {
             var prevBackground = Console.BackgroundColor;
@@ -21,13 +16,8 @@
             Console.ForegroundColor = prevForeground;
         }
 
-        public static bool SaftyCheck(bool option, string message)
+        public static bool SaftyCheck(string message)
         {
-            if (!option)
-            {
-                return false;
-            }
-
             WriteWithColors(ConsoleColor.White, ConsoleColor.Red, message);
 
             var readLine = Console.ReadLine();
