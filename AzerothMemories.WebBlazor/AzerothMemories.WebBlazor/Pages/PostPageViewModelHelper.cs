@@ -5,6 +5,7 @@ public sealed class PostPageViewModelHelper
     private readonly IMoaServices _services;
 
     private bool _scrollToFocus;
+    private int _lastScrollToFocusId;
     private PostCommentTreeNode _focusedNode;
 
     private Dictionary<int, PostCommentTreeNode> _allCommentTreeNodes = new();
@@ -204,7 +205,7 @@ public sealed class PostPageViewModelHelper
             }
         }
 
-        if (currentPage == 0 && _focusedNode != null)
+        if (currentPage == 0 && _focusedNode != null && _lastScrollToFocusId != _focusedNode.Id)
         {
             var parentNode = _focusedNode.Parent;
             while (parentNode != null)
@@ -214,6 +215,7 @@ public sealed class PostPageViewModelHelper
             }
 
             _scrollToFocus = true;
+            _lastScrollToFocusId = _focusedNode.Id;
         }
 
         Page = PostCommentPageViewModel.Page;

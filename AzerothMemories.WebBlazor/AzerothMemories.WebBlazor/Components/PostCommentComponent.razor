@@ -20,7 +20,7 @@
                 <a href="@accountLink">
                     <MudText Class="cardLinkText" Typo="Typo.body1">@username</MudText>
                 </a>
-                <MudText Typo="Typo.body2">@Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(comment.CreatedTime, true)</MudText>
+                <TimeAsLocalStringAgoComponent Typo="Typo.body2" Inline="true" Time="comment.CreatedTime" TimeProvider="@Services.ClientServices.TimeProvider"/>
             </CardHeaderContent>
             <CardHeaderActions>
                 <MudMenu Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Dense="true">

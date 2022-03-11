@@ -23,7 +23,7 @@ else
                     <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="25">
                         <MudCardContent Class="@ClassPresets.CardContent">
                             <MudText Typo="Typo.button">@str</MudText>
-                            <MudText Typo="Typo.body2" Class="mud-text-secondary">@ClientServices.TimeProvider.GetTimeAsLocalStringAgo(viewModel.CreatedTime, true)}</MudText>
+                            <TimeAsLocalStringAgoComponent Typo="Typo.body2" Class="mud-text-secondary" Time="viewModel.CreatedTime" TimeProvider="@ClientServices.TimeProvider"/>
                         </MudCardContent>
                     </MudCard>
                 </MudTimelineItem>

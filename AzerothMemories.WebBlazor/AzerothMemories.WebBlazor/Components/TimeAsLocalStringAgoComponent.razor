@@ -1,0 +1,86 @@
+﻿@implements IDisposable
+
+<MudText Typo="@Typo" Inline="@Inline" Class="@Class">@TimeProvider.GetTimeAsLocalStringAgo(Time, true)</MudText>
+
+@code
+{
+    private Timer _timer;
+    private Duration _timerTick;
+
+    [Parameter] public string Class { get; init; }
+
+    [Parameter] public bool Inline { get; init; }
+
+    [Parameter, EditorRequired] public Typo Typo { get; init; }
+
+    [Parameter, EditorRequired] public long Time { get; init; }
+
+    [Parameter, EditorRequired] public TimeProvider TimeProvider { get; init; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        TrySetTimer();
+    }
+
+    private void TrySetTimer()
+    {
+        if (Time <= 0)
+        {
+            return;
+        }
+
+        var diff = SystemClock.Instance.GetCurrentInstant() - Instant.FromUnixTimeMilliseconds(Time);
+        if (diff <= Duration.Zero)
+        {
+            return;
+        }
+
+        var timerTick = Duration.Zero;
+        if (diff.TotalSeconds < 60)
+        {
+            timerTick = Duration.FromSeconds(1);
+        }
+        else if (diff.TotalMinutes < 60)
+        {
+            timerTick = Duration.FromMinutes(1);
+        }
+        else if (diff.TotalHours < 24)
+        {
+            timerTick = Duration.FromHours(1);
+        }
+
+        if (timerTick == Duration.Zero)
+        {
+            return;
+        }
+
+        if (_timerTick == timerTick)
+        {
+            return;
+        }
+
+        _timerTick = timerTick;
+
+        if (_timer == null)
+        {
+            _timer = new Timer(OnTimerTick, null, 0, (long)_timerTick.TotalMilliseconds);        }
+        else
+        {
+            _timer.Change(0, (long)_timerTick.TotalMilliseconds);
+        }
+    }
+
+    private void OnTimerTick(object state)
+    {
+        TrySetTimer();
+        InvokeAsync(StateHasChanged).AndForget();
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+        _timer = null;
+    }
+}
