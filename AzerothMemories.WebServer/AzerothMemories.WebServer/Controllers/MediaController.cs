@@ -36,7 +36,7 @@ namespace AzerothMemories.WebServer.Controllers
                 results = await _commonServices.MediaServices.TryGetUserUpload(session, fileName, size).ConfigureAwait(false);
             }
 
-            if (results != null)
+            if (results?.MediaBytes != null)
             {
                 return File(results.MediaBytes, results.MediaType, results.LastModified.ToDateTimeOffset(), EntityTagHeaderValue.Any);
             }
