@@ -36,9 +36,10 @@ public class MediaServices : DbServiceBase<AppDbContext>
     }
 
     [ComputeMethod]
-    protected virtual Task<MediaResult> TryGetMedia_Default()
+    protected virtual async Task<MediaResult> TryGetMedia_Default()
     {
-        return TryGetBlobData(ZExtensions.BlobStaticMedia, "inv_misc_questionmark.jpg");
+        var result = await TryGetBlobData(ZExtensions.BlobStaticMedia, "inv_misc_questionmark.jpg").ConfigureAwait(false);
+        return result with { IsDefault = true };
     }
 
     [ComputeMethod]
@@ -62,7 +63,7 @@ public class MediaServices : DbServiceBase<AppDbContext>
     [ComputeMethod]
     protected virtual Task<MediaResult> TryGetAvatar_Default()
     {
-        return Task.FromResult((MediaResult)null);
+        return Task.FromResult(new MediaResult());
     }
 
     [ComputeMethod]
@@ -76,20 +77,44 @@ public class MediaServices : DbServiceBase<AppDbContext>
         }
 
         var result = await TryGetUserUpload(accountId, fileName, size).ConfigureAwait(false);
-        if (result == null)
+        if (result.IsDefault)
         {
+            return result;
         }
 
+        //TODO:
+
         return result;
+    }
+
+    [ComputeMethod]
+    protected virtual Task<MediaUserResult> TryGetUserUpload_Default()
+    {
+        return Task.FromResult(new MediaUserResult());
     }
 
     [ComputeMethod]
     public virtual async Task<MediaResult> TryGetUserUpload(int accountId, string fileName, MediaSize size)
     {
         var blobData = await TryGetUserUpload(fileName, size).ConfigureAwait(false);
-        if (blobData == null)
+        if (blobData.IsDefault)
         {
-            return null;
+            return blobData;
+        }
+
+        var postRecord = await _commonServices.PostServices.TryGetPostRecord(blobData.PostId).ConfigureAwait(false);
+        if (postRecord.PostVisibility > 0)
+        {
+            if (accountId == 0)
+            {
+                return await TryGetUserUpload_Default().ConfigureAwait(false);
+            }
+
+            var canSeePost = await _commonServices.PostServices.CanAccountSeePost(accountId, postRecord).ConfigureAwait(false);
+            if (!canSeePost)
+            {
+                return await TryGetUserUpload_Default().ConfigureAwait(false);
+            }
         }
 
         return blobData;
@@ -98,10 +123,10 @@ public class MediaServices : DbServiceBase<AppDbContext>
     [ComputeMethod]
     protected virtual async Task<MediaUserResult> TryGetUserUpload(string fileName, MediaSize size)
     {
-        var blobData = await TryGetUserMediaBlobData(fileName).ConfigureAwait(false);
-        if (blobData == null)
+        var blobData = await TryGetUserUploadBlobData(fileName).ConfigureAwait(false);
+        if (blobData.IsDefault)
         {
-            return null;
+            return blobData;
         }
 
         var width = _imageSizes[(int)size];
@@ -123,12 +148,12 @@ public class MediaServices : DbServiceBase<AppDbContext>
     }
 
     [ComputeMethod]
-    protected virtual async Task<MediaUserResult> TryGetUserMediaBlobData(string fileName)
+    protected virtual async Task<MediaUserResult> TryGetUserUploadBlobData(string fileName)
     {
         var blobData = await TryGetBlobData(ZExtensions.BlobUserUploads, fileName).ConfigureAwait(false);
         if (blobData == null)
         {
-            return null;
+            return await TryGetUserUpload_Default().ConfigureAwait(false);
         }
 
         await using var database = CreateDbContext();
@@ -136,12 +161,12 @@ public class MediaServices : DbServiceBase<AppDbContext>
         var postRecord = await database.UploadLogs.Where(x => x.BlobName == fileName).FirstOrDefaultAsync().ConfigureAwait(false);
         if (postRecord == null)
         {
-            return null;
+            return await TryGetUserUpload_Default().ConfigureAwait(false);
         }
 
         if (postRecord.UploadStatus == AccountUploadLogStatus.Deleted || postRecord.UploadStatus == AccountUploadLogStatus.DeletePending)
         {
-            return null;
+            return await TryGetUserUpload_Default().ConfigureAwait(false);
         }
 
         return new MediaUserResult(blobData.LastModified, blobData.ETag, blobData.MediaType, blobData.MediaBytes, postRecord.PostId.GetValueOrDefault(), postRecord.AccountId);

@@ -21,15 +21,16 @@ namespace AzerothMemories.WebServer.Controllers
         public async Task<IActionResult> Get(Session session, [FromRoute] string container, [FromRoute] string fileName, [FromQuery] MediaSize size = MediaSize.True)
         {
             MediaResult results = null;
-            if (container.ToLowerInvariant() == ZExtensions.BlobStaticMedia)
+            container = container.ToLowerInvariant();
+            if (container == ZExtensions.BlobStaticMedia)
             {
                 results = await _commonServices.MediaServices.TryGetStaticMedia(session, fileName).ConfigureAwait(false);
             }
-            else if (container.ToLowerInvariant() == ZExtensions.BlobUserAvatars)
+            else if (container == ZExtensions.BlobUserAvatars)
             {
                 results = await _commonServices.MediaServices.TryGetUserAvatar(session, fileName).ConfigureAwait(false);
             }
-            else if (container.ToLowerInvariant() == ZExtensions.BlobUserUploads)
+            else if (container == ZExtensions.BlobUserUploads)
             {
                 size = (MediaSize)Math.Clamp((byte)size, (byte)0, (byte)MediaSize.True);
                 results = await _commonServices.MediaServices.TryGetUserUpload(session, fileName, size).ConfigureAwait(false);
