@@ -6,11 +6,14 @@ public sealed class CommonConfig
     {
 #if DEBUG
         DatabaseConnectionString = "***REMOVED***";
+        //DatabaseConnectionString = "***REMOVED***";
+        BlobStorageConnectionString = "***REMOVED***";
 
         UploadToBlobStorage = false;
         UpdateSkipCharactersOnLowPriority = true;
 #else
-        DatabaseConnectionString = "***REMOVED***";
+        DatabaseConnectionString = Environment.GetEnvironmentVariable("AZURE_POSTGRESQL_CONNECTIONSTRING");
+        BlobStorageConnectionString = Environment.GetEnvironmentVariable("AZURE_BLOB_CONNECTIONSTRING");
 
         UploadToBlobStorage = true;
         UpdateSkipCharactersOnLowPriority = true;
@@ -19,7 +22,7 @@ public sealed class CommonConfig
 
     public string DatabaseConnectionString { get; init; }
 
-    public string BlobStorageConnectionString { get; } = "***REMOVED***";
+    public string BlobStorageConnectionString { get; }
 
     public Duration UpdateAccountDelay { get; } = Duration.FromHours(1);
 
@@ -31,7 +34,7 @@ public sealed class CommonConfig
 
     public Duration UpdateGuildDelay { get; } = Duration.FromDays(1);
 
-    public Duration UsernameChangeDelay { get; set; } = Duration.FromDays(30);
+    public Duration UsernameChangeDelay { get; set; } = Duration.FromDays(7);
 
     public bool UploadToBlobStorage { get; set; }
 

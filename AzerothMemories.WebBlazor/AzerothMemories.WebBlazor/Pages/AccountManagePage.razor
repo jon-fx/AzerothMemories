@@ -16,7 +16,7 @@
                 </CardHeaderContent>
             </MudCardHeader>
             <MudCardContent Class="@ClassPresets.CardContent">
-                <MudGrid>
+                <MudGrid Class="d-flex align-baseline">
                     <MudItem xs="8" sm="3">
                         @{ var key = "usernameTextBox"; }
                         <MudTextField @key="@key"
@@ -31,10 +31,16 @@
                                       ValueChanged="@ViewModel.OnNewUsernameTextChanged"
                                       MaxLength="49" />
                     </MudItem>
-                    <MudItem xs="4" Class="my-auto">
+                    <MudItem xs="4">
                         @if (ViewModel.ChangeUsernameButtonVisible)
                         {
                             <MudButton Variant="Variant.Filled" Disabled="!ViewModel.NewUsernameValid" FullWidth="true" OnClick="ViewModel.OnChangeUsernameClicked">Change Username</MudButton>
+                        }
+
+                        @if (!ViewModel.AccountViewModel.CanChangeUsername)
+                        {
+                            var tooltip = ClientServices.TimeProvider.GetTimeAsLocalStringAgo(ViewModel.AccountViewModel.NextUsernameChangedTime, true);
+                            <MudIcon Icon="@Icons.Outlined.Info" Title="@tooltip" />
                         }
                     </MudItem>
                     <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
@@ -43,7 +49,7 @@
                     <MudItem xs="8" sm="3">
                         <MudTextField T="string" Label="Battle Tag" @bind-Value="@ViewModel.AccountViewModel.BattleTag" Disabled="true" MaxLength="49" />
                     </MudItem>
-                    <MudItem xs="4" Class="my-auto">
+                    <MudItem xs="4">
                         <MudSwitch T="bool" Checked="@ViewModel.AccountViewModel.BattleTagIsPublic" Color="Color.Primary" Label="Public" CheckedChanged="ViewModel.OnBattleTagVisibilityChanged" />
                     </MudItem>
                     <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
