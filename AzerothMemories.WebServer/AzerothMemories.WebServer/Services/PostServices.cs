@@ -222,9 +222,16 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             return new AddMemoryResult(AddMemoryResultCode.SessionCanNotInteract);
         }
 
-        if (!_commonServices.TagServices.GetCommentText(command.Comment, activeAccount.GetUserTagList(), out var commentText, out var accountsTaggedInComment, out var hashTagsTaggedInComment))
+        if (!TagServices.GetCommentText(command.Comment, activeAccount.GetUserTagList(), out var commentText, out var accountsTaggedInComment, out var hashTagsTaggedInComment, out var linksInComment))
         {
             return new AddMemoryResult(AddMemoryResultCode.ParseCommentFailed);
+        }
+
+        var linkStringBuilder = new StringBuilder();
+        foreach (var link in linksInComment)
+        {
+            linkStringBuilder.Append(link);
+            linkStringBuilder.Append('|');
         }
 
         var tagRecords = new HashSet<PostTagRecord>();
@@ -234,6 +241,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             PostAvatar = command.AvatarTag,
             PostComment = commentText,
             PostTime = dateTime,
+            PostCommentLinks = linkStringBuilder.ToString().TrimEnd('|'),
             PostCreatedTime = SystemClock.Instance.GetCurrentInstant(),
             PostEditedTime = SystemClock.Instance.GetCurrentInstant(),
             PostVisibility = command.IsPrivate ? (byte)1 : (byte)0,
@@ -1134,7 +1142,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             usersThatCanBeTagged.TryAdd(parentComment.AccountId, parentComment.AccountUsername);
         }
 
-        if (!_commonServices.TagServices.GetCommentText(commentText, usersThatCanBeTagged, out commentText, out var accountsTaggedInComment, out var hashTagsTaggedInComment))
+        if (!TagServices.GetCommentText(commentText, usersThatCanBeTagged, out commentText, out var accountsTaggedInComment, out var hashTagsTaggedInComment, out var linksInComment))
         {
             return 0;
         }
@@ -1166,6 +1174,13 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         {
             return 0;
         }
+        
+        var linkStringBuilder = new StringBuilder();
+        foreach (var link in linksInComment)
+        {
+            linkStringBuilder.Append(link);
+            linkStringBuilder.Append('|');
+        }
 
         await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(postRecord);
@@ -1176,7 +1191,8 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             PostId = postId,
             ParentId = parentComment?.Id,
             PostComment = commentText,
-            CreatedTime = SystemClock.Instance.GetCurrentInstant()
+            CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            PostCommentLinks = linkStringBuilder.ToString().TrimEnd('|')
         };
 
         foreach (var tagRecord in tagRecords)

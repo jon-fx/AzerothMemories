@@ -18,6 +18,8 @@ public sealed class PostCommentRecord : IDatabaseRecord
 
     [Column] public string PostComment { get; set; }
 
+    [Column] public string PostCommentLinks { get; set; }
+
     [Column] public int ReactionCount1 { get; set; }
 
     [Column] public int ReactionCount2 { get; set; }
@@ -57,6 +59,7 @@ public sealed class PostCommentRecord : IDatabaseRecord
             AccountUsername = username,
             AccountAvatar = avatar,
             PostComment = PostComment,
+            PostCommentLinks = PostCommentLinks.Split('|'),
             CreatedTime = CreatedTime.ToUnixTimeMilliseconds(),
             DeletedTimeStamp = DeletedTimeStamp,
             //ReactionId = reaction?.Id ?? 0,

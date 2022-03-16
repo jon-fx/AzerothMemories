@@ -11,6 +11,7 @@ public sealed class PostCommentViewModel
     [JsonInclude] public int ParentId;
 
     [JsonInclude] public string PostComment;
+    [JsonInclude] public string[] PostCommentLinks;
     [JsonInclude] public int[] ReactionCounters;
     [JsonInclude] public int TotalReactionCount;
 

@@ -14,6 +14,8 @@ public sealed class PostRecord : IDatabaseRecord
 
     [Column] public string PostComment { get; set; }
 
+    [Column] public string PostCommentLinks { get; set; }
+    
     [Column] public string PostAvatar { get; set; }
 
     [Column] public byte PostVisibility { get; set; }
@@ -72,6 +74,7 @@ public sealed class PostRecord : IDatabaseRecord
             PostCreatedTime = PostCreatedTime.ToUnixTimeMilliseconds(),
             PostEditedTime = PostEditedTime.ToUnixTimeMilliseconds(),
             ImageBlobNames = BlobNames.Split('|'),
+            PostCommentLinks = PostCommentLinks.Split('|'),
             ReactionId = reactionRecord?.Id ?? 0,
             Reaction = reactionRecord?.Reaction ?? 0,
             ReactionCounters = new[]
