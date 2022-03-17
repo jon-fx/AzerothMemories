@@ -26,6 +26,7 @@ public sealed class CommonServices
         PostServices = _serviceProvider.GetRequiredService<PostServices>();
         SearchServices = _serviceProvider.GetRequiredService<SearchServices>();
         MediaServices = _serviceProvider.GetRequiredService<MediaServices>();
+        MarkdownServices = _serviceProvider.GetRequiredService<MarkdownServices>();
     }
 
     internal IAuth Auth { get; private set; }
@@ -55,4 +56,6 @@ public sealed class CommonServices
     internal MediaServices MediaServices { get; private set; }
 
     internal BlizzardUpdateHandler BlizzardUpdateHandler { get; private set; }
+
+    internal MarkdownServices MarkdownServices { get; private set; }
 }

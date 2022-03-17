@@ -30,8 +30,6 @@ public sealed class PostViewModel
 
     [JsonInclude] public string[] ImageBlobNames;
 
-    [JsonInclude] public string[] PostCommentLinks;
-
     [JsonInclude] public PostTagInfo[] SystemTags;
 
     [JsonInclude] public int ReactionId;

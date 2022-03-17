@@ -86,6 +86,9 @@ var sessionMiddlewareSettings = SessionMiddleware.DefaultSettings with
 {
 };
 
+var sessionFactory = new SessionFactory(new Stl.Generators.RandomStringGenerator(32));
+builder.Services.AddSingleton<ISessionFactory>(sessionFactory);
+
 var fusionAuth = fusion.AddAuthentication().AddServer(_ => sessionMiddlewareSettings, _ => authHelperSettings, _ => signInControllerSettings);
 var authenticationBuilder = builder.Services.AddAuthentication(options =>
 {
@@ -120,6 +123,7 @@ fusionAuth.AddBlazor(_ => { });
 
 builder.Services.AddSingleton(config);
 builder.Services.AddSingleton<CommonServices>();
+builder.Services.AddSingleton<MarkdownServices>();
 builder.Services.AddSingleton<BlizzardUpdateHandler>();
 builder.Services.AddSingleton<WarcraftClientProvider>();
 
