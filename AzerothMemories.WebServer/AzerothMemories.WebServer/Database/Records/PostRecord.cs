@@ -12,7 +12,9 @@ public sealed class PostRecord : IDatabaseRecord
 
     [Column] public int AccountId { get; set; }
 
-    [Column] public string PostComment { get; set; }
+    [Column] public string PostCommentRaw { get; set; }
+
+    [Column] public string PostCommentMark { get; set; }
 
     [Column] public string PostAvatar { get; set; }
 
@@ -66,7 +68,7 @@ public sealed class PostRecord : IDatabaseRecord
             AccountId = AccountId,
             AccountUsername = accountViewModel.Username,
             AccountAvatar = accountViewModel.Avatar,
-            PostComment = PostComment,
+            PostComment = PostCommentMark,
             PostVisibility = PostVisibility,
             PostTime = PostTime.ToUnixTimeMilliseconds(),
             PostCreatedTime = PostCreatedTime.ToUnixTimeMilliseconds(),

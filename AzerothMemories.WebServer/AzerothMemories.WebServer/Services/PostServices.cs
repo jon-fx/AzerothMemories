@@ -239,7 +239,8 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         {
             AccountId = activeAccount.Id,
             PostAvatar = command.AvatarTag,
-            PostComment = commentText,
+            PostCommentRaw = command.Comment,
+            PostCommentMark = commentText,
             PostTime = dateTime,
             PostCreatedTime = SystemClock.Instance.GetCurrentInstant(),
             PostEditedTime = SystemClock.Instance.GetCurrentInstant(),
@@ -1189,7 +1190,8 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             AccountId = activeAccount.Id,
             PostId = postId,
             ParentId = parentComment?.Id,
-            PostComment = commentText,
+            PostCommentRaw = command.CommentText,
+            PostCommentMark = commentText,
             CreatedTime = SystemClock.Instance.GetCurrentInstant(),
         };
 

@@ -10,18 +10,18 @@ public sealed record PostViewModelBlobInfo
     {
         var results = new List<PostViewModelBlobInfo>();
         var title = $"{username}'s memory";
-        var description = "false";
-        if (string.IsNullOrWhiteSpace(comment))
-        {
-        }
-        else if (comment.Length > 50)
-        {
-            description = $"{comment[..50]}...";
-        }
-        else
-        {
-            description = comment;
-        }
+        var description = comment;
+        //if (string.IsNullOrWhiteSpace(comment))
+        //{
+        //}
+        //else if (comment.Length > 50)
+        //{
+        //    description = $"{comment[..50]}...";
+        //}
+        //else
+        //{
+        //    description = comment;
+        //}
 
         foreach (var imageBlobName in blobNames)
         {

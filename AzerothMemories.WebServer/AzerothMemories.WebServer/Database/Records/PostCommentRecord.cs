@@ -16,8 +16,9 @@ public sealed class PostCommentRecord : IDatabaseRecord
 
     [Column] public int? ParentId { get; set; }
 
-    [Column] public string PostComment { get; set; }
+    [Column] public string PostCommentRaw { get; set; }
 
+    [Column] public string PostCommentMark { get; set; }
 
     [Column] public int ReactionCount1 { get; set; }
 
@@ -57,7 +58,7 @@ public sealed class PostCommentRecord : IDatabaseRecord
             ParentId = ParentId.GetValueOrDefault(),
             AccountUsername = username,
             AccountAvatar = avatar,
-            PostComment = PostComment,
+            PostComment = PostCommentMark,
             CreatedTime = CreatedTime.ToUnixTimeMilliseconds(),
             DeletedTimeStamp = DeletedTimeStamp,
             //ReactionId = reaction?.Id ?? 0,
