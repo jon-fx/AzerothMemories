@@ -65,7 +65,8 @@
 
         if (_timer == null)
         {
-            _timer = new Timer(OnTimerTick, null, 0, (long)_timerTick.TotalMilliseconds);        }
+            _timer = new Timer(OnTimerTick, null, 0, (long)_timerTick.TotalMilliseconds);
+        }
         else
         {
             _timer.Change(0, (long)_timerTick.TotalMilliseconds);
