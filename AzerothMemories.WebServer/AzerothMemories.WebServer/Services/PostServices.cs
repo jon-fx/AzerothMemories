@@ -791,6 +791,8 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
 
         foreach (var kvp in allCommentNodes)
         {
+            await _commonServices.AccountServices.DependsOnAccountUsername(kvp.Value.AccountId);
+
             if (kvp.Value.ParentId == 0)
             {
                 kvp.Value.CommentPage = rootCommentNodes.Count / CommonConfig.CommentsPerPage + 1;

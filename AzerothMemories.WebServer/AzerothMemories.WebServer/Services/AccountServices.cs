@@ -197,6 +197,12 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
     }
 
     [ComputeMethod]
+    public virtual Task<int> DependsOnAccountUsername(int accountId)
+    {
+        return Task.FromResult(accountId);
+    }
+
+    [ComputeMethod]
     public virtual Task<int> DependsOnAccountAchievements(int accountId)
     {
         return Task.FromResult(accountId);
@@ -255,6 +261,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         {
             await DependsOnAccountRecord(accountRecord.Id).ConfigureAwait(false);
         }
+
         return accountRecord;
     }
 
@@ -267,6 +274,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         {
             await DependsOnAccountRecord(accountRecord.Id).ConfigureAwait(false);
         }
+
         return accountRecord;
     }
 
@@ -427,6 +435,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             if (invRecord != null)
             {
                 _ = DependsOnAccountRecord(invRecord.Id);
+                _ = DependsOnAccountUsername(invRecord.Id);
 
                 var username = invRecord.Username;
                 if (!string.IsNullOrWhiteSpace(username))
