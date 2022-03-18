@@ -58,7 +58,7 @@ function SetUpTagTextBox(textBoxName, userTags) {
         collection: [
             {
                 lookup: 'key',
-                fillAttr: 'key',
+                fillAttr: 'value',
                 values: userTags,
                 spaceSelectsMatch: true,
                 containerClass: 'mud-popover mud-popover-open mud-paper mud-elevation-8',

@@ -16,6 +16,8 @@ public sealed class PostRecord : IDatabaseRecord
 
     [Column] public string PostCommentMark { get; set; }
 
+    [Column] public string PostCommentUserMap { get; set; }
+
     [Column] public string PostAvatar { get; set; }
 
     [Column] public byte PostVisibility { get; set; }

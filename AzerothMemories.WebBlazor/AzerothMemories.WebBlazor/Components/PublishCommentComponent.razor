@@ -74,16 +74,24 @@
 
         if (firstRender)
         {
-            var jsArray = (from userTag in FullTagsList
-                select new { key = userTag.Value }).ToArray();
+            var jsArray = new List<object>();
+            foreach (var userTag in FullTagsList)
+            {
+                jsArray.Add(new { key = userTag.Value, value = userTag.Value });
+            }
 
-            await JsRuntime.InvokeVoidAsync("SetUpTagTextBox", "mudTextField", jsArray);
+            await JsRuntime.InvokeVoidAsync("SetUpTagTextBox", "mudTextField", jsArray.ToArray());
         }
     }
 
     public void SetText(string text)
     {
         _currentTextFieldText = text;
+    }
+
+    public void SetReplyText(int userId, string username)
+    {
+        _currentTextFieldText = $"@{username}";
     }
 
     public void Reset()

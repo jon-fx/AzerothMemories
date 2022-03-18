@@ -20,6 +20,8 @@ public sealed class PostCommentRecord : IDatabaseRecord
 
     [Column] public string PostCommentMark { get; set; }
 
+    [Column] public string PostCommentUserMap { get; set; }
+
     [Column] public int ReactionCount1 { get; set; }
 
     [Column] public int ReactionCount2 { get; set; }

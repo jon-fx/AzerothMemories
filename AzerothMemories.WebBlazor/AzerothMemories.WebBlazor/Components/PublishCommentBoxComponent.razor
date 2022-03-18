@@ -28,7 +28,6 @@
 </div>
 
 @code {
-    private string _prefixText;
     private bool _isFirstRenderDone;
     private bool _isCommentBoxDisabled;
     private PublishCommentComponent _commentComponent;
@@ -53,9 +52,8 @@
 
             if (_commentComponent != null && ReplyToUserId > 0 && !string.IsNullOrEmpty(ReplyToUsername))
             {
-                _prefixText = $"@{ReplyToUsername} ";
                 _commentComponent.ExtraTags.TryAdd(ReplyToUserId, ReplyToUsername);
-                _commentComponent.SetText(_prefixText);
+                _commentComponent.SetReplyText(ReplyToUserId, ReplyToUsername);
 
                 StateHasChanged();
             }

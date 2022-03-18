@@ -227,12 +227,12 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             return new AddMemoryResult(AddMemoryResultCode.ParseCommentFailed);
         }
 
-        var linkStringBuilder = new StringBuilder();
-        foreach (var link in contextHelper.LinksInComment)
-        {
-            linkStringBuilder.Append(link);
-            linkStringBuilder.Append('|');
-        }
+        //var linkStringBuilder = new StringBuilder();
+        //foreach (var link in contextHelper.LinksInComment)
+        //{
+        //    linkStringBuilder.Append(link);
+        //    linkStringBuilder.Append('|');
+        //}
 
         var tagRecords = new HashSet<PostTagRecord>();
         var postRecord = new PostRecord
@@ -241,6 +241,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             PostAvatar = command.AvatarTag,
             PostCommentRaw = command.Comment,
             PostCommentMark = commentText,
+            PostCommentUserMap = contextHelper.AccountsTaggedInCommentMap.ToString().TrimEnd('|'),
             PostTime = dateTime,
             PostCreatedTime = SystemClock.Instance.GetCurrentInstant(),
             PostEditedTime = SystemClock.Instance.GetCurrentInstant(),
@@ -1175,12 +1176,12 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             return 0;
         }
 
-        var linkStringBuilder = new StringBuilder();
-        foreach (var link in contextHelper.LinksInComment)
-        {
-            linkStringBuilder.Append(link);
-            linkStringBuilder.Append('|');
-        }
+        //var linkStringBuilder = new StringBuilder();
+        //foreach (var link in contextHelper.LinksInComment)
+        //{
+        //    linkStringBuilder.Append(link);
+        //    linkStringBuilder.Append('|');
+        //}
 
         await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(postRecord);
@@ -1192,6 +1193,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             ParentId = parentComment?.Id,
             PostCommentRaw = command.CommentText,
             PostCommentMark = commentText,
+            PostCommentUserMap = contextHelper.AccountsTaggedInCommentMap.ToString().TrimEnd('|'),
             CreatedTime = SystemClock.Instance.GetCurrentInstant(),
         };
 
