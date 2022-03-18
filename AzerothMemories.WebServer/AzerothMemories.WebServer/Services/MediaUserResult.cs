@@ -4,7 +4,7 @@ namespace AzerothMemories.WebServer.Services;
 
 public record MediaUserResult : MediaResult
 {
-    public MediaUserResult() : base()
+    public MediaUserResult()
     {
     }
 

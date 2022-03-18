@@ -487,9 +487,9 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
     private string CreateHashString(byte[] hashBytes)
     {
         var sb = new StringBuilder();
-        for (var i = 0; i < hashBytes.Length; i++)
+        foreach (var hashByte in hashBytes)
         {
-            sb.Append(hashBytes[i].ToString("X2"));
+            sb.Append(hashByte.ToString("X2"));
         }
         return sb.ToString();
     }
@@ -792,7 +792,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
 
         foreach (var kvp in allCommentNodes)
         {
-            await _commonServices.AccountServices.DependsOnAccountUsername(kvp.Value.AccountId);
+            await _commonServices.AccountServices.DependsOnAccountUsername(kvp.Value.AccountId).ConfigureAwait(false);
 
             if (kvp.Value.ParentId == 0)
             {
