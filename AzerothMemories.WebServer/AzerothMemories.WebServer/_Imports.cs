@@ -2,6 +2,7 @@
 global using AzerothMemories.WebBlazor.Common;
 global using AzerothMemories.WebBlazor.Services;
 global using AzerothMemories.WebBlazor.Services.Commands;
+global using AzerothMemories.WebBlazor.Services.Markdown;
 global using AzerothMemories.WebBlazor.ViewModels;
 global using AzerothMemories.WebServer.Blizzard;
 global using AzerothMemories.WebServer.Blizzard.Data;

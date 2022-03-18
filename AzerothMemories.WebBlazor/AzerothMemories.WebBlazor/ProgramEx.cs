@@ -20,6 +20,7 @@ public static class ProgramEx
         services.AddLocalization();
 
         services.AddSingleton<ComputeServices>();
+        services.AddSingleton<MarkdownServices>();
 
         services.AddSingleton<TagHelpers>();
         services.AddSingleton<TimeProvider>();

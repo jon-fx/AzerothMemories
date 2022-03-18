@@ -123,7 +123,6 @@ fusionAuth.AddBlazor(_ => { });
 
 builder.Services.AddSingleton(config);
 builder.Services.AddSingleton<CommonServices>();
-builder.Services.AddSingleton<MarkdownServices>();
 builder.Services.AddSingleton<BlizzardUpdateHandler>();
 builder.Services.AddSingleton<WarcraftClientProvider>();
 

@@ -15,6 +15,8 @@
                           AutoFocus="@AutoFocus"
                           MaxLength="@MaxLength"
                           Immediate="true"
+                          DebounceInterval="500"
+                          OnDebounceIntervalElapsed="HandleIntervalElapsed"
                           autocomplete="off">
             </MudTextField>
         </MudItem>
@@ -30,6 +32,13 @@
                                OnClick="Submit" />
             </MudItem>
         }
+
+        <MudItem xs="12">
+            <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+                <MudText Typo="Typo.body2" Style="overflow-wrap: break-word;">@(new MarkupString(_currentTextFieldMarkdown))</MudText>
+            </MudPaper>
+        </MudItem>
+
     </MudGrid>
 </form>
 
@@ -37,6 +46,7 @@
 {
     private MudTextField<string> _textField;
     private string _currentTextFieldText;
+    private string _currentTextFieldMarkdown = string.Empty;
 
     [Parameter] public int Lines { get; init; } = 1;
 
@@ -51,6 +61,8 @@
     [Parameter] public EventCallback<string> OnSingleLineSubmit { get; init; }
 
     [Inject] public IJSRuntime JsRuntime { get; init; }
+
+    [Inject] public MarkdownServices MarkdownServices{ get; init; }
 
     public Dictionary<int, string> ExtraTags { get; } = new();
 
@@ -122,5 +134,25 @@
         }
 
         return commentText;
+    }
+
+    private void HandleIntervalElapsed()
+    {
+        if (string.IsNullOrWhiteSpace(_currentTextFieldText))
+        {
+            _currentTextFieldMarkdown = string.Empty;
+            
+            return;
+        }
+
+        var result = MarkdownServices.GetCommentText(_currentTextFieldText, TagsList);
+        if (result.ResultCode == MarkdownParserResultCode.Success)
+        {
+            _currentTextFieldMarkdown = result.CommentTextMarkdown;
+        }
+        else
+        {
+            _currentTextFieldMarkdown = "Error";
+        }
     }
 }

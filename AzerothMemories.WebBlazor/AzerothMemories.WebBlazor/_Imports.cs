@@ -4,6 +4,7 @@ global using AzerothMemories.WebBlazor.Components;
 global using AzerothMemories.WebBlazor.Resources;
 global using AzerothMemories.WebBlazor.Services;
 global using AzerothMemories.WebBlazor.Services.Commands;
+global using AzerothMemories.WebBlazor.Services.Markdown;
 global using AzerothMemories.WebBlazor.ViewModels;
 global using Humanizer;
 global using Microsoft.AspNetCore.Components;

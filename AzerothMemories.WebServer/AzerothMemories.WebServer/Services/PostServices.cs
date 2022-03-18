@@ -222,7 +222,8 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             return new AddMemoryResult(AddMemoryResultCode.SessionCanNotInteract);
         }
 
-        if (!_commonServices.MarkdownServices.GetCommentText(command.Comment, activeAccount.GetUserTagList(), out var commentText, out var contextHelper))
+        var parseResult = _commonServices.MarkdownServices.GetCommentText(command.Comment, activeAccount.GetUserTagList());
+        if (parseResult.ResultCode != MarkdownParserResultCode.Success)
         {
             return new AddMemoryResult(AddMemoryResultCode.ParseCommentFailed);
         }
@@ -239,9 +240,9 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         {
             AccountId = activeAccount.Id,
             PostAvatar = command.AvatarTag,
-            PostCommentRaw = command.Comment,
-            PostCommentMark = commentText,
-            PostCommentUserMap = contextHelper.AccountsTaggedInCommentMap.ToString().TrimEnd('|'),
+            PostCommentRaw = parseResult.CommentText,
+            PostCommentMark = parseResult.CommentTextMarkdown,
+            PostCommentUserMap = parseResult.AccountsTaggedInCommentMap,
             PostTime = dateTime,
             PostCreatedTime = SystemClock.Instance.GetCurrentInstant(),
             PostEditedTime = SystemClock.Instance.GetCurrentInstant(),
@@ -254,7 +255,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             return new AddMemoryResult(buildSystemTagsResult);
         }
 
-        var addCommentTagResult = await AddCommentTags(postRecord, contextHelper.AccountsTaggedInComment, contextHelper.HashTagsTaggedInComment, tagRecords).ConfigureAwait(false);
+        var addCommentTagResult = await AddCommentTags(postRecord, parseResult.AccountsTaggedInComment, parseResult.HashTagsTaggedInComment, tagRecords).ConfigureAwait(false);
         if (addCommentTagResult != AddMemoryResultCode.Success)
         {
             return new AddMemoryResult(addCommentTagResult);
@@ -289,7 +290,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             TargetPostId = postRecord.Id
         }, cancellationToken).ConfigureAwait(false);
 
-        foreach (var userTag in contextHelper.AccountsTaggedInComment)
+        foreach (var userTag in parseResult.AccountsTaggedInComment)
         {
             await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
             {
@@ -1145,13 +1146,14 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             usersThatCanBeTagged.TryAdd(parentComment.AccountId, parentComment.AccountUsername);
         }
 
-        if (!_commonServices.MarkdownServices.GetCommentText(commentText, usersThatCanBeTagged, out commentText, out var contextHelper))
+        var parseResult = _commonServices.MarkdownServices.GetCommentText(commentText, activeAccount.GetUserTagList());
+        if (parseResult.ResultCode != MarkdownParserResultCode.Success)
         {
             return 0;
         }
 
         var tagRecords = new HashSet<PostTagRecord>();
-        foreach (var accountId in contextHelper.AccountsTaggedInComment)
+        foreach (var accountId in parseResult.AccountsTaggedInComment)
         {
             var tagRecord = await _commonServices.TagServices.TryCreateTagRecord(postRecord, PostTagType.Account, accountId, PostTagKind.UserComment).ConfigureAwait(false);
             if (tagRecord == null)
@@ -1162,7 +1164,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             tagRecords.Add(tagRecord);
         }
 
-        foreach (var hashTag in contextHelper.HashTagsTaggedInComment)
+        foreach (var hashTag in parseResult.HashTagsTaggedInComment)
         {
             var tagRecord = await _commonServices.TagServices.GetHashTagRecord(hashTag, PostTagKind.UserComment).ConfigureAwait(false);
             if (tagRecord == null)
@@ -1193,9 +1195,9 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             AccountId = activeAccount.Id,
             PostId = postId,
             ParentId = parentComment?.Id,
-            PostCommentRaw = command.CommentText,
-            PostCommentMark = commentText,
-            PostCommentUserMap = contextHelper.AccountsTaggedInCommentMap.ToString().TrimEnd('|'),
+            PostCommentRaw = parseResult.CommentText,
+            PostCommentMark = parseResult.CommentTextMarkdown,
+            PostCommentUserMap = parseResult.AccountsTaggedInCommentMap,
             CreatedTime = SystemClock.Instance.GetCurrentInstant(),
         };
 
@@ -1236,7 +1238,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             }, cancellationToken).ConfigureAwait(false);
         }
 
-        foreach (var userTag in contextHelper.AccountsTaggedInComment)
+        foreach (var userTag in parseResult.AccountsTaggedInComment)
         {
             await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
             {
