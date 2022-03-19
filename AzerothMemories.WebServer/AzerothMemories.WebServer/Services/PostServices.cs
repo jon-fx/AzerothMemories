@@ -342,6 +342,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         foreach (var kvp in allCommentNodes)
         {
             await _commonServices.AccountServices.DependsOnAccountUsername(kvp.Value.AccountId).ConfigureAwait(false);
+            await _commonServices.AccountServices.DependsOnAccountAvatar(kvp.Value.AccountId).ConfigureAwait(false);
 
             if (kvp.Value.ParentId == 0)
             {

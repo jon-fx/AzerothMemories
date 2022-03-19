@@ -203,6 +203,12 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
     }
 
     [ComputeMethod]
+    public virtual Task<int> DependsOnAccountAvatar(int accountId)
+    {
+        return Task.FromResult(accountId);
+    }
+
+    [ComputeMethod]
     public virtual Task<int> DependsOnAccountAchievements(int accountId)
     {
         return Task.FromResult(accountId);
@@ -596,6 +602,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             if (invRecord != null)
             {
                 _ = DependsOnAccountRecord(invRecord.Id);
+                _ = DependsOnAccountAvatar(invRecord.Id);
                 _ = _commonServices.MediaServices.TryGetUserAvatar($"{ZExtensions.AvatarBlobFilePrefix}{invRecord.Id}-0.jpg");
                 _ = _commonServices.MediaServices.TryGetUserAvatar($"{ZExtensions.AvatarBlobFilePrefix}{invRecord.Id}-1.jpg");
             }
@@ -697,6 +704,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             if (invRecord != null)
             {
                 _ = DependsOnAccountRecord(invRecord.Id);
+                _ = DependsOnAccountAvatar(invRecord.Id);
             }
 
             return default;
