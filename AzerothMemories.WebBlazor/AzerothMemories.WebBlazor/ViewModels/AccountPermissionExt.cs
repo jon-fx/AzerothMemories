@@ -15,7 +15,7 @@ public static class AccountPermissionExt
         return accountViewModel.AccountType >= AccountType.Admin;
     }
 
-    public static bool CanModifyFollowing(this AccountViewModel accountViewModel)
+    public static bool CanChangeFollowing(this AccountViewModel accountViewModel)
     {
         if (accountViewModel == null)
         {
@@ -25,7 +25,7 @@ public static class AccountPermissionExt
         return accountViewModel.CanInteract;
     }
 
-    public static bool CanModifyAvatar(this AccountViewModel accountViewModel)
+    public static bool CanChangeAvatar(this AccountViewModel accountViewModel)
     {
         if (accountViewModel == null)
         {
@@ -168,5 +168,15 @@ public static class AccountPermissionExt
         }
 
         return accountViewModel.IsAdmin();
+    }
+
+    public static bool CanReport(this AccountViewModel accountViewModel)
+    {
+        if (accountViewModel == null)
+        {
+            return false;
+        }
+
+        return accountViewModel.CanInteract;
     }
 }

@@ -609,7 +609,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             return null;
         }
 
-        if (!activeAccountViewModel.CanModifyAvatar())
+        if (!activeAccountViewModel.CanChangeAvatar())
         {
             return null;
         }

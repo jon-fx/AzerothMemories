@@ -71,7 +71,7 @@ public sealed class EditMemoryTagsPageViewModel : ViewModelBase
 
     public async Task Submit()
     {
-        if (!Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract)
+        if (!Services.ClientServices.ActiveAccountServices.AccountViewModel.CanUpdateSystemTags())
         {
             return;
         }
@@ -82,7 +82,7 @@ public sealed class EditMemoryTagsPageViewModel : ViewModelBase
             return;
         }
 
-        if (Services.ClientServices.ActiveAccountServices.IsActiveAccount(postViewModel.AccountId) || Services.ClientServices.ActiveAccountServices.IsAdmin)
+        if (Services.ClientServices.ActiveAccountServices.IsActiveAccount(postViewModel.AccountId) || Services.ClientServices.ActiveAccountServices.AccountViewModel.IsAdmin())
         {
             var result = await SharedData.SubmitOnEditingPost(Helper.PostViewModel);
             if (result == AddMemoryResultCode.Success)

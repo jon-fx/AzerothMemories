@@ -30,7 +30,7 @@
                         </MudTooltip>
                     </MudMenuItem>
 
-                    @if (Services.ClientServices.ActiveAccountServices.IsActiveAccount(comment.AccountId) || Services.ClientServices.ActiveAccountServices.IsAdmin)
+                    @if (Services.ClientServices.ActiveAccountServices.IsActiveAccount(comment.AccountId) || Services.ClientServices.ActiveAccountServices.AccountViewModel.IsAdmin())
                     {
                         <MudMenuItem OnClick="@OnDeleteComment" Disabled="@(comment.DeletedTimeStamp != 0)">
                             <MudTooltip Text="Delete" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
@@ -39,7 +39,7 @@
                         </MudMenuItem>
                     }
 
-                    @if (Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract && !Services.ClientServices.ActiveAccountServices.IsActiveAccount(comment.AccountId))
+                    @if (Services.ClientServices.ActiveAccountServices.AccountViewModel.CanReport() && !Services.ClientServices.ActiveAccountServices.IsActiveAccount(comment.AccountId))
                     {
                         <MudMenuItem OnClick="@OnReportComment">
                             <MudTooltip Text="Report" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
@@ -53,6 +53,9 @@
 
         @if (comment.DeletedTimeStamp == 0)
         {
+            var reactIsDisabled = !Services.ClientServices.ActiveAccountServices.AccountViewModel.CanReactToComment() || Comment.Comment.DeletedTimeStamp != 0;
+            var commentIsDisabled = !Services.ClientServices.ActiveAccountServices.AccountViewModel.CanPublishComment() || Comment.Comment.DeletedTimeStamp != 0;
+
             <MudCardContent Class="@ClassPresets.CardContent">
                 <MudText Typo="Typo.body2" Style="overflow-wrap: break-word;">@(new MarkupString(comment.PostComment))</MudText>
                 <MudText Class="cardLinkText" Typo="Typo.body2" @onclick="OnReactionLinkClicked">@ZExtensions.BuildReactionString(comment.TotalReactionCount, comment.ReactionCounters)</MudText>
@@ -60,8 +63,8 @@
 
             <MudCardActions Class="@ClassPresets.CardActions">
                 <MudButtonGroup OverrideStyles="true" Variant="Variant.Text" Size="Size.Small">
-                    <MudButton StartIcon="@Icons.Material.Filled.Favorite" IconColor="@(item.Reaction == PostReaction.None ? Color.Default : Color.Secondary)" Disabled="@(IsDisabled || _userReacting)" OnClick="() => OnReactButtonClicked(item.Reaction)">@item.Reaction.Humanize()</MudButton>
-                    <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Disabled="@(IsDisabled || _userReacting)" Direction="Direction.Bottom" OffsetY="true">
+                    <MudButton StartIcon="@Icons.Material.Filled.Favorite" IconColor="@(item.Reaction == PostReaction.None ? Color.Default : Color.Secondary)" Disabled="@(reactIsDisabled || _userReacting)" OnClick="() => OnReactButtonClicked(item.Reaction)">@item.Reaction.Humanize()</MudButton>
+                    <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Disabled="@(reactIsDisabled || _userReacting)" Direction="Direction.Bottom" OffsetY="true">
                         <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction1)">@PostReaction.Reaction1.Humanize()</MudMenuItem>
                         <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction2)">@PostReaction.Reaction2.Humanize()</MudMenuItem>
                         <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction3)">@PostReaction.Reaction3.Humanize()</MudMenuItem>
@@ -69,7 +72,7 @@
                         <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction5)">@PostReaction.Reaction5.Humanize()</MudMenuItem>
                         <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction6)">@PostReaction.Reaction6.Humanize()</MudMenuItem>
                     </MudMenu>
-                    <MudButton OnClick="() => ReplyToComment(item)" Disabled="@IsDisabled">Reply</MudButton>
+                    <MudButton OnClick="() => ReplyToComment(item)" Disabled="@commentIsDisabled">Reply</MudButton>
                 </MudButtonGroup>
             </MudCardActions>
         }
@@ -139,7 +142,7 @@
 {
     private bool _userReacting;
 
-    public bool IsDisabled => !Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract || Comment.Comment.DeletedTimeStamp != 0;
+    //public bool IsDisabled => !Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract || Comment.Comment.DeletedTimeStamp != 0;
 
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
 

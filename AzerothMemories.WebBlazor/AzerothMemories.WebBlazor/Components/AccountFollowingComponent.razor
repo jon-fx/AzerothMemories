@@ -54,7 +54,7 @@ else
 
     [Parameter, EditorRequired] public bool ButtonFullWidth { get; init; }
 
-    public bool IsDisabled => !Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract;
+    public bool IsDisabled => !Services.ClientServices.ActiveAccountServices.AccountViewModel.CanChangeFollowing();
 
     public bool IsActiveAccount => ActiveAccountViewModel != null && ActiveAccountViewModel.Id == OtherAccountId;
 

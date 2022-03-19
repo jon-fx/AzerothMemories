@@ -47,7 +47,7 @@ else
                         </MudTooltip>
                     </MudMenuItem>
 
-                    @if (Services.ClientServices.ActiveAccountServices.IsActiveAccount(Post.AccountId) || Services.ClientServices.ActiveAccountServices.IsAdmin)
+                    @if (Services.ClientServices.ActiveAccountServices.IsActiveAccount(Post.AccountId) || Services.ClientServices.ActiveAccountServices.AccountViewModel.IsAdmin())
                     {
                         <MudMenuItem OnClick="@OnTogglePostVisibility">
                             <MudTooltip Text="Toggle Visibility" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
@@ -68,7 +68,7 @@ else
                         </MudMenuItem>
                     }
 
-                    @if (Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract && !Services.ClientServices.ActiveAccountServices.IsActiveAccount(Post.AccountId))
+                    @if (Services.ClientServices.ActiveAccountServices.AccountViewModel.CanReport() && !Services.ClientServices.ActiveAccountServices.IsActiveAccount(Post.AccountId))
                     {
                         <MudMenuItem OnClick="@OnReportPostTags">
                             <MudTooltip Text="Report Tags" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
@@ -145,32 +145,38 @@ else
                 }
             }
         </MudCardContent>
+        
+        @{
+            var reactIsDisabled = !Services.ClientServices.ActiveAccountServices.AccountViewModel.CanReactToPost() || DoseNotHavePermission;
+            var restoreIsDisabled = !Services.ClientServices.ActiveAccountServices.AccountViewModel.CanRestoreMemory() || DoseNotHavePermission;
+            var commentIsDisabled = !Services.ClientServices.ActiveAccountServices.AccountViewModel.CanPublishComment() || DoseNotHavePermission;
+            
+            <MudCardActions Class="@ClassPresets.CardActions">
+                <MudButtonGroup OverrideStyles="true" Class="pa-0 ma-2" Variant="Variant.Filled" Size="Size.Small">
+                    <MudButton StartIcon="@Icons.Material.Filled.Favorite" IconColor="@(Post.Reaction == PostReaction.None ? Color.Default : Color.Secondary)" Disabled="@(reactIsDisabled || _userReacting)" OnClick="() => OnReactButtonClicked(Post.Reaction)">@Post.Reaction.Humanize()</MudButton>
+                    <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Disabled="@(reactIsDisabled || _userReacting)" Direction="Direction.Bottom" OffsetY="true">
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction1)">@PostReaction.Reaction1.Humanize()</MudMenuItem>
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction2)">@PostReaction.Reaction2.Humanize()</MudMenuItem>
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction3)">@PostReaction.Reaction3.Humanize()</MudMenuItem>
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction4)">@PostReaction.Reaction4.Humanize()</MudMenuItem>
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction5)">@PostReaction.Reaction5.Humanize()</MudMenuItem>
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction6)">@PostReaction.Reaction6.Humanize()</MudMenuItem>
+                    </MudMenu>
+                    <MudButton StartIcon="@Icons.Material.Filled.Comment" Disabled="@commentIsDisabled" OnClick="OnCommentButtonClicked">Comments</MudButton>
+                    <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+                        <MudButton StartIcon="@Icons.Material.Filled.Share" Disabled="@(restoreIsDisabled || _isChangingTags)" OnClick="() => _showTagMenu = !_showTagMenu">Restore Memory</MudButton>
+                    </MudHidden>
+                </MudButtonGroup>
+            </MudCardActions>
 
-        <MudCardActions Class="@ClassPresets.CardActions">
-            <MudButtonGroup OverrideStyles="true" Class="pa-0 ma-2" Variant="Variant.Filled" Size="Size.Small">
-                <MudButton StartIcon="@Icons.Material.Filled.Favorite" IconColor="@(Post.Reaction == PostReaction.None ? Color.Default : Color.Secondary)" Disabled="@(IsDisabled || _userReacting)" OnClick="() => OnReactButtonClicked(Post.Reaction)">@Post.Reaction.Humanize()</MudButton>
-                <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Disabled="@(IsDisabled || _userReacting)" Direction="Direction.Bottom" OffsetY="true">
-                    <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction1)">@PostReaction.Reaction1.Humanize()</MudMenuItem>
-                    <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction2)">@PostReaction.Reaction2.Humanize()</MudMenuItem>
-                    <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction3)">@PostReaction.Reaction3.Humanize()</MudMenuItem>
-                    <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction4)">@PostReaction.Reaction4.Humanize()</MudMenuItem>
-                    <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction5)">@PostReaction.Reaction5.Humanize()</MudMenuItem>
-                    <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction6)">@PostReaction.Reaction6.Humanize()</MudMenuItem>
-                </MudMenu>
-                <MudButton StartIcon="@Icons.Material.Filled.Comment" Disabled="@IsDisabled" OnClick="OnCommentButtonClicked">Comments</MudButton>
-                <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
-                    <MudButton StartIcon="@Icons.Material.Filled.Share" Disabled="@(IsDisabled || _isChangingTags)" OnClick="() => _showTagMenu = !_showTagMenu">Restore Memory</MudButton>
+            if (Services.ClientServices.ActiveAccountServices.AccountViewModel.CanRestoreMemory())
+            {
+                <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
+                    <MudCardActions Class="@ClassPresets.CardActions">
+                        <MudButton StartIcon="@Icons.Material.Filled.Share" FullWidth=true Variant="Variant.Filled" Size="Size.Small" Disabled="@(restoreIsDisabled || _isChangingTags)" OnClick="() => _showTagMenu = !_showTagMenu">Restore Memory</MudButton>
+                    </MudCardActions>
                 </MudHidden>
-            </MudButtonGroup>
-        </MudCardActions>
-
-        @if (Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract)
-        {
-            <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
-                <MudCardActions Class="@ClassPresets.CardActions">
-                    <MudButton StartIcon="@Icons.Material.Filled.Share" FullWidth=true Variant="Variant.Filled" Size="Size.Small" Disabled="@(IsDisabled || _isChangingTags)" OnClick="() => _showTagMenu = !_showTagMenu">Restore Memory</MudButton>
-                </MudCardActions>
-            </MudHidden>
+            }
         }
     </MudCard>
 
@@ -305,7 +311,7 @@ else
 
     public bool DoseNotHavePermission => Post.PostVisibility == 255;
 
-    public bool IsDisabled => !Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract || DoseNotHavePermission;
+    //public bool IsDisabled => !Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract || DoseNotHavePermission;
 
     protected override async Task OnParametersSetAsync()
     {

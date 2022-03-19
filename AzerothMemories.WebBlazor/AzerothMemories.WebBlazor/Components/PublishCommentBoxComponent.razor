@@ -1,5 +1,5 @@
 ﻿<div class="postIndent">
-    @if (!Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract)
+    @if (!Services.ClientServices.ActiveAccountServices.AccountViewModel.CanPublishComment())
     {
         <CardInfoComponent Message="Insufficient permissions." />
     }
