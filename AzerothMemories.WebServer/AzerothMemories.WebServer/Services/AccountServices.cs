@@ -602,6 +602,11 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             return null;
         }
 
+        if (!activeAccountViewModel.CanInteract)
+        {
+            return null;
+        }
+
         var accountViewModel = activeAccountViewModel;
         if (activeAccountViewModel.AccountType >= AccountType.Admin && command.AccountId > 0)
         {
@@ -692,6 +697,11 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
 
         var accountViewModel = await TryGetActiveAccount(command.Session).ConfigureAwait(false);
         if (accountViewModel == null)
+        {
+            return null;
+        }
+
+        if (!accountViewModel.CanInteract)
         {
             return null;
         }
