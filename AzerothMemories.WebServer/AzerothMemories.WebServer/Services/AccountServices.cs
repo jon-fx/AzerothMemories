@@ -308,7 +308,10 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             return null;
         }
 
-        return await CreateAccountViewModel(accountRecord, sessionAccount != null && sessionAccount.AccountType >= AccountType.Admin).ConfigureAwait(false);
+        var isAdmin = sessionAccount != null && sessionAccount.IsAdmin();
+        var isActive = sessionAccount != null && sessionAccount.Id == accountRecord.Id;
+
+        return await CreateAccountViewModel(accountRecord, isActive || isAdmin).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -326,8 +329,12 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             return null;
         }
 
+        var isAdmin = sessionAccount != null && sessionAccount.IsAdmin();
+        var isActive = sessionAccount != null && sessionAccount.Id == accountRecord.Id;
+
         await DependsOnAccountRecord(accountRecord.Id).ConfigureAwait(false);
-        return await CreateAccountViewModel(accountRecord, sessionAccount != null && sessionAccount.AccountType >= AccountType.Admin).ConfigureAwait(false);
+
+        return await CreateAccountViewModel(accountRecord, isActive || isAdmin).ConfigureAwait(false);
     }
 
     public async Task<bool> TryEnqueueUpdate(Session session)
