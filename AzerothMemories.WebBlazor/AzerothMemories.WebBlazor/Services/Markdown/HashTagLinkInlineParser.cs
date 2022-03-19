@@ -55,7 +55,7 @@ internal sealed class HashTagLinkInlineParser : InlineParser
         };
 
         processor.Inline = link;
-        contextHelper.HashTagsTaggedInComment.Add(hashSliceString);
+        contextHelper.HashTagsTaggedInComment.Add($"HashTag-{hashSliceString}");
 
         return true;
     }

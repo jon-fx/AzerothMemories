@@ -269,6 +269,8 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
 
     public Task<PostTagRecord> GetHashTagRecord(string hashTag, PostTagKind tagKind)
     {
+        Exceptions.ThrowIf(!hashTag.StartsWith("HashTag"));
+
         var result = new PostTagRecord
         {
             CreatedTime = SystemClock.Instance.GetCurrentInstant(),
