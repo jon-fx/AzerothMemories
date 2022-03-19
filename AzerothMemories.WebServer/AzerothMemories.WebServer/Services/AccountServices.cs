@@ -602,13 +602,13 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             return null;
         }
 
-        if (!activeAccountViewModel.CanInteract)
+        if (!activeAccountViewModel.CanModifyAvatar())
         {
             return null;
         }
 
         var accountViewModel = activeAccountViewModel;
-        if (activeAccountViewModel.AccountType >= AccountType.Admin && command.AccountId > 0)
+        if (activeAccountViewModel.CanChangeAnyUsersAvatar() && command.AccountId > 0)
         {
             accountViewModel = await TryGetAccountById(command.Session, command.AccountId).ConfigureAwait(false);
         }
@@ -701,12 +701,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
             return null;
         }
 
-        if (!accountViewModel.CanInteract)
-        {
-            return null;
-        }
-
-        if (accountViewModel.AccountType < ZExtensions.Permission_CanUploadAvatar)
+        if (!accountViewModel.CanUploadAvatar())
         {
             return null;
         }
@@ -800,7 +795,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         }
 
         var newValue = command.NewValue;
-        if (!string.IsNullOrWhiteSpace(newValue) && accountRecord.AccountType < ZExtensions.Permission_CanChangeSocialLinks)
+        if (!string.IsNullOrWhiteSpace(newValue) && accountRecord.AccountType < AccountPermissionExt.Permission_CanChangeSocialLinks)
         {
             return null;
         }

@@ -81,7 +81,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             return null;
         }
 
-        if (!activeAccount.CanInteract)
+        if (!activeAccount.CanModifyFollowing())
         {
             return null;
         }
@@ -181,8 +181,8 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
         {
             return null;
         }
-
-        if (!activeAccount.CanInteract)
+        
+        if (!activeAccount.CanModifyFollowing())
         {
             return null;
         }
@@ -237,8 +237,8 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
         {
             return null;
         }
-
-        if (!activeAccount.CanInteract)
+        
+        if (!activeAccount.CanModifyFollowing())
         {
             return null;
         }
@@ -301,8 +301,8 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
         {
             return null;
         }
-
-        if (!activeAccount.CanInteract)
+        
+        if (!activeAccount.CanModifyFollowing())
         {
             return null;
         }

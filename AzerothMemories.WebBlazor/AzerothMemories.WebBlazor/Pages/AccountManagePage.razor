@@ -61,7 +61,7 @@
 
                     @foreach (var link in SocialHelpers.All)
                     {
-                        if (!string.IsNullOrWhiteSpace(ViewModel.SocialLinks[link.LinkId]) || ViewModel.AccountViewModel.AccountType >= ZExtensions.Permission_CanChangeSocialLinks)
+                        if (!string.IsNullOrWhiteSpace(ViewModel.SocialLinks[link.LinkId]) || ViewModel.AccountViewModel.CanChangeSocialLinks())
                         {
                             <MudItem xs="12" sm="8" md="4" Class="d-flex align-baseline">
                                 <img src="@link.SocialIconLink" width="18" height="18" />
@@ -140,7 +140,7 @@
                         </MudTooltip>
                     }
 
-                    @if (ViewModel.AccountViewModel.AccountType >= ZExtensions.Permission_CanUploadAvatar)
+                    @if (ViewModel.AccountViewModel.CanUploadAvatar())
                     {
                         <InputFile id="fileInput" OnChange="ViewModel.UploadCustomAvatar" hidden accept="@ZExtensions.UploadAcceptExtensions" />
                         <MudButton Class="ma-2" HtmlTag="label" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Filled.CloudUpload" for="fileInput">Upload Image</MudButton>

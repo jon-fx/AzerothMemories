@@ -217,7 +217,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             return new AddMemoryResult(AddMemoryResultCode.SessionNotFound);
         }
 
-        if (!activeAccount.CanInteract)
+        if (!activeAccount.CanAddMemory())
         {
             return new AddMemoryResult(AddMemoryResultCode.SessionCanNotInteract);
         }
@@ -539,7 +539,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             return 0;
         }
 
-        if (!activeAccount.CanInteract)
+        if (!activeAccount.CanReactToPost())
         {
             return 0;
         }
@@ -891,7 +891,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             return false;
         }
 
-        if (!activeAccount.CanInteract)
+        if (!activeAccount.CanRestoreMemory())
         {
             return false;
         }
@@ -1087,7 +1087,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             return 0;
         }
 
-        if (!activeAccount.CanInteract)
+        if (!activeAccount.CanPublishComment())
         {
             return 0;
         }
@@ -1287,7 +1287,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             return 0;
         }
 
-        if (!activeAccount.CanInteract)
+        if (!activeAccount.CanReactToComment())
         {
             return 0;
         }
@@ -1434,7 +1434,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         if (activeAccount.Id == postRecord.AccountId)
         {
         }
-        else if (activeAccount.AccountType >= AccountType.Admin)
+        else if (activeAccount.CanChangeAnyPostVisibility())
         {
         }
         else
@@ -1501,7 +1501,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         if (activeAccount.Id == postRecord.AccountId)
         {
         }
-        else if (activeAccount.AccountType >= AccountType.Admin)
+        else if (activeAccount.CanDeleteAnyPost())
         {
             now = -now;
         }
@@ -1587,7 +1587,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
         if (activeAccount.Id == commentViewModel.AccountId)
         {
         }
-        else if (activeAccount.AccountType >= AccountType.Admin)
+        else if (activeAccount.CanDeleteAnyComment())
         {
             now = -now;
         }
@@ -1927,7 +1927,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
             return AddMemoryResultCode.SessionNotFound;
         }
 
-        if (!activeAccount.CanInteract)
+        if (!activeAccount.CanUpdateSystemTags())
         {
             return AddMemoryResultCode.SessionCanNotInteract;
         }
@@ -1941,7 +1941,8 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
 
         var deletedTagKind = PostTagKind.DeletedByPoster;
         var accountViewModel = activeAccount;
-        if (activeAccount.AccountType >= AccountType.Admin)
+        var isAdmin = activeAccount.CanUpdateSystemTagsOnAnyPost();
+        if (isAdmin)
         {
             deletedTagKind = PostTagKind.DeletedByAdmin;
             accountViewModel = await _commonServices.AccountServices.TryGetAccountById(command.Session, cachedPostRecord.AccountId).ConfigureAwait(false);
@@ -1997,7 +1998,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices
                     postRecord.PostTags.Add(newRecord);
                 }
 
-                if (activeAccount.AccountType >= AccountType.Admin)
+                if (isAdmin)
                 {
                 }
                 else if (newRecord.TagKind == PostTagKind.DeletedByAdmin)
