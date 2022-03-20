@@ -76,7 +76,7 @@ internal sealed class PostServices_TryPostMemory_Handler : IMoaCommandHandler<Po
             return new AddMemoryResult(AddMemoryResultCode.SessionCanNotInteract);
         }
 
-        var parseResult = _commonServices.MarkdownServices.GetCommentText(command.Comment, activeAccount.GetUserTagList());
+        var parseResult = _commonServices.MarkdownServices.GetCommentText(command.Comment, activeAccount.GetUserTagList(), true);
         if (parseResult.ResultCode != MarkdownParserResultCode.Success)
         {
             return new AddMemoryResult(AddMemoryResultCode.ParseCommentFailed);

@@ -34,25 +34,26 @@
         }
 
         <MudItem xs="12">
-            <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
-                @if (_parserResult == null)
-                {
+            @if (_parserResult == null)
+            {
 
-                }
-                else if (_parserResult.ResultCode == MarkdownParserResultCode.Success)
+            }
+            else if (_parserResult.ResultCode == MarkdownParserResultCode.Success)
+            {
+                if (!string.IsNullOrWhiteSpace(_parserResult.CommentTextMarkdown))
                 {
-                    if (!string.IsNullOrWhiteSpace(_parserResult.CommentTextMarkdown))
-                    {
+                    <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
                         <MudText Typo="Typo.body2" Style="overflow-wrap: break-word;">@(new MarkupString(_parserResult.CommentTextMarkdown))</MudText>
-                    }
+                    </MudPaper>
                 }
-                else
-                {
+            }
+            else
+            {
+                <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
                     <CardInfoComponent Message="Error." />
-                }
-            </MudPaper>
+                </MudPaper>
+            }
         </MudItem>
-
     </MudGrid>
 </form>
 
@@ -77,7 +78,7 @@
 
     [Inject] public IJSRuntime JsRuntime { get; init; }
 
-    [Inject] public MarkdownServices MarkdownServices{ get; init; }
+    [Inject] public MarkdownServices MarkdownServices { get; init; }
 
     public Dictionary<int, string> ExtraTags { get; } = new();
 
@@ -172,7 +173,7 @@
         }
         else
         {
-            _parserResult = MarkdownServices.GetCommentText(_currentTextFieldText, TagsList);
+            _parserResult = MarkdownServices.GetCommentText(_currentTextFieldText, TagsList, Lines != 1);
         }
 
         InvokeAsync(StateHasChanged).AndForget();

@@ -97,7 +97,7 @@ internal sealed class PostServices_TryPublishComment_Handler : IMoaCommandHandle
             usersThatCanBeTagged.TryAdd(parentComment.AccountId, parentComment.AccountUsername);
         }
 
-        var parseResult = _commonServices.MarkdownServices.GetCommentText(commentText, activeAccount.GetUserTagList());
+        var parseResult = _commonServices.MarkdownServices.GetCommentText(commentText, activeAccount.GetUserTagList(), false);
         if (parseResult.ResultCode != MarkdownParserResultCode.Success)
         {
             return 0;
