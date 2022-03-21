@@ -9,7 +9,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     private readonly CommonServices _commonServices;
 
     private readonly int _startYear = 2000;
-    private readonly int _endYear = 2022;
+    private readonly int _endYear = 2023;
     private readonly int _totalYearValue = 0;
 
     public SearchServices(IServiceProvider services, CommonServices commonServices) : base(services)
