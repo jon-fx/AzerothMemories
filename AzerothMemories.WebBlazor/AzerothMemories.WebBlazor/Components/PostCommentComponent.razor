@@ -6,9 +6,10 @@
     var username = comment.GetAccountUsernameSafe();
     var accountLink = $"account/{comment.AccountId}";
     var headerId = $"moa-top-comment-{item.Id}";
+    var divClass = Indent ? "postIndent" : string.Empty;
 }
 
-<div id="@headerId" class="postIndent">
+<div id="@headerId" class="@divClass">
     <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
         <MudCardHeader Class="@(item.IsFocused ? "pt-2 pb-2 mud-theme-primary" : "pt-2 pb-2")">
             <CardHeaderAvatar >
@@ -80,6 +81,12 @@
         {
             <MudCardContent Class="@ClassPresets.CardContent">
                 <MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Center">Deleted by @(comment.DeletedTimeStamp > 0 ? "user" : "admin").</MudAlert>
+                
+                @if (Services.ClientServices.ActiveAccountServices.AccountViewModel.IsAdmin())
+                {
+                    <MudText Typo="Typo.body2" Style="overflow-wrap: break-word;">@(new MarkupString(comment.PostComment))</MudText>
+                    <MudText Class="cardLinkText" Typo="Typo.body2" @onclick="OnReactionLinkClicked">@ZExtensions.BuildReactionString(comment.TotalReactionCount, comment.ReactionCounters)</MudText>
+                }
             </MudCardContent>
         }
     </MudCard>
@@ -148,6 +155,8 @@
 
     [Parameter, EditorRequired] public PostCommentTreeNode Comment { get; init; }
 
+    [Parameter] public bool Indent { get; init; } = true;
+
     private async Task OnReactButtonClicked(PostReaction newReaction)
     {
         if (_userReacting)
@@ -171,7 +180,7 @@
 
         _userReacting = true;
 
-        var result = await Services.ClientServices.CommandRunner.Run(new Post_TryReactToPostComment(null, postId, commentId, newReaction));
+        var result = await Services.ClientServices.CommandRunner.Run(new Post_TryReactToPostComment(Session.Default, postId, commentId, newReaction));
         if (result.Result > 0)
         {
             node.ReactionId = result.Result;
@@ -207,7 +216,7 @@
             var postId = comment.PostId;
             var commentId = comment.Id;
 
-            var result = await Services.ClientServices.CommandRunner.Run(new Post_TryDeleteComment(null, postId, commentId));
+            var result = await Services.ClientServices.CommandRunner.Run(new Post_TryDeleteComment(Session.Default, postId, commentId));
 
             comment.DeletedTimeStamp = result.Result;
 

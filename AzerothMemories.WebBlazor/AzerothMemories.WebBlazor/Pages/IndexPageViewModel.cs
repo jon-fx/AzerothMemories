@@ -8,7 +8,7 @@ public sealed class IndexPageViewModel : PersistentStateViewModel
 
     public IndexPageViewModel()
     {
-        AddPersistentState(() => AccountViewModel, x => AccountViewModel = x, () => Services.ComputeServices.AccountServices.TryGetActiveAccount(null));
+        AddPersistentState(() => AccountViewModel, x => AccountViewModel = x, () => Services.ComputeServices.AccountServices.TryGetActiveAccount(Session.Default));
         AddPersistentState(() => OnThisDay, x => OnThisDay = x, TryUpdateOnThisDay);
         AddPersistentState(() => RecentPostsHelper.SearchResults, x => RecentPostsHelper.SetSearchResults(x), () => RecentPostsHelper.ComputeState(_currentPageString, _sortModeString, _postTypeString));
     }
@@ -38,7 +38,7 @@ public sealed class IndexPageViewModel : PersistentStateViewModel
         await base.ComputeState(cancellationToken);
 
         OnThisDay = await TryUpdateOnThisDay();
-        AccountViewModel = await Services.ComputeServices.AccountServices.TryGetActiveAccount(null);
+        AccountViewModel = await Services.ComputeServices.AccountServices.TryGetActiveAccount(Session.Default);
 
         await RecentPostsHelper.ComputeState(_currentPageString, _sortModeString, _postTypeString);
     }
@@ -48,6 +48,6 @@ public sealed class IndexPageViewModel : PersistentStateViewModel
         var timeZone = Services.ClientServices.TimeProvider.GetCurrentTimeZone();
         var inZone = SystemClock.Instance.GetCurrentInstant().InZone(timeZone).Date;
 
-        return Services.ComputeServices.SearchServices.TryGetDailyActivity(null, timeZone.Id, (byte)inZone.Day, (byte)inZone.Month, ServerSideLocaleExt.GetServerSideLocale());
+        return Services.ComputeServices.SearchServices.TryGetDailyActivity(Session.Default, timeZone.Id, (byte)inZone.Day, (byte)inZone.Month, ServerSideLocaleExt.GetServerSideLocale());
     }
 }

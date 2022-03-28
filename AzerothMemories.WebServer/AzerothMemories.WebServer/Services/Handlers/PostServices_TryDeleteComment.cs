@@ -1,17 +1,8 @@
 ﻿namespace AzerothMemories.WebServer.Services.Handlers;
 
-internal sealed class PostServices_TryDeleteComment_Handler : IMoaCommandHandler<Post_TryDeleteComment, long>
+internal static class PostServices_TryDeleteComment
 {
-    private readonly CommonServices _commonServices;
-    private readonly Func<Task<AppDbContext>> _databaseContextGenerator;
-
-    public PostServices_TryDeleteComment_Handler(CommonServices commonServices, Func<Task<AppDbContext>> databaseContextGenerator)
-    {
-        _commonServices = commonServices;
-        _databaseContextGenerator = databaseContextGenerator;
-    }
-
-    public async Task<long> TryHandle(Post_TryDeleteComment command)
+    public static async Task<long> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryDeleteComment command)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -19,27 +10,33 @@ internal sealed class PostServices_TryDeleteComment_Handler : IMoaCommandHandler
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)
             {
-                _ = _commonServices.PostServices.TryGetAllPostComments(invPost.PostId);
+                _ = commonServices.PostServices.TryGetAllPostComments(invPost.PostId);
+            }
+
+            var invalidateReports = context.Operation().Items.Get<Admin_InvalidateReports>();
+            if (invalidateReports != null)
+            {
+                _ = commonServices.PostServices.DependsOnPostCommentReports();
             }
 
             return default;
         }
 
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
+        var activeAccount = await commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
         if (activeAccount == null)
         {
             return 0;
         }
 
         var postId = command.PostId;
-        var postRecord = await _commonServices.PostServices.TryGetPostRecord(postId).ConfigureAwait(false);
+        var postRecord = await commonServices.PostServices.TryGetPostRecord(postId).ConfigureAwait(false);
         if (postRecord == null)
         {
             return 0;
         }
 
         var commentId = command.CommentId;
-        var allCommentPages = await _commonServices.PostServices.TryGetAllPostComments(postId).ConfigureAwait(false);
+        var allCommentPages = await commonServices.PostServices.TryGetAllPostComments(postId).ConfigureAwait(false);
         var allComments = allCommentPages[0].AllComments;
         if (!allComments.TryGetValue(commentId, out var commentViewModel))
         {
@@ -59,13 +56,19 @@ internal sealed class PostServices_TryDeleteComment_Handler : IMoaCommandHandler
             return 0;
         }
 
-        await using var database = await _databaseContextGenerator().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
         var commentRecord = await database.PostComments.FirstAsync(x => x.Id == commentId).ConfigureAwait(false);
         commentRecord.DeletedTimeStamp = now;
 
+        var reports = await database.PostCommentReports.Where(x => x.CommentId == command.CommentId).ToArrayAsync().ConfigureAwait(false);
+        foreach (var report in reports)
+        {
+            report.ResolvedByAccountId = activeAccount.Id;
+        }
+
         await database.SaveChangesAsync().ConfigureAwait(false);
 
-        await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
             AccountId = postRecord.AccountId,
             Type = AccountHistoryType.CommentDeleted,
@@ -74,6 +77,11 @@ internal sealed class PostServices_TryDeleteComment_Handler : IMoaCommandHandler
             TargetCommentId = commentId,
             OtherAccountId = activeAccount.Id,
         }).ConfigureAwait(false);
+
+        if (reports.Length > 0)
+        {
+            context.Operation().Items.Set(new Admin_InvalidateReports(true));
+        }
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
 

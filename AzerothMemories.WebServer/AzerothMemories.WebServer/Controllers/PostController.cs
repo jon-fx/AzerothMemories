@@ -1,17 +1,17 @@
 namespace AzerothMemories.WebServer.Controllers;
 
-[ApiController, JsonifyErrors]
+[ApiController]
+[JsonifyErrors]
+[UseDefaultSession]
 //[AutoValidateAntiforgeryToken]
 [Route("api/[controller]/[action]")]
 public sealed class PostController : ControllerBase, IPostServices
 {
     private readonly CommonServices _commonServices;
-    private readonly ISessionResolver _sessionResolver;
 
-    public PostController(CommonServices commonServices, ISessionResolver sessionResolver)
+    public PostController(CommonServices commonServices)
     {
         _commonServices = commonServices;
-        _sessionResolver = sessionResolver;
     }
 
     [HttpPost]
@@ -38,7 +38,6 @@ public sealed class PostController : ControllerBase, IPostServices
     [HttpPost]
     public Task<int> TryReactToPost([FromBody] Post_TryReactToPost command, CancellationToken cancellationToken = default)
     {
-        command.UseDefaultSession(_sessionResolver);
         return _commonServices.PostServices.TryReactToPost(command, cancellationToken);
     }
 
@@ -69,70 +68,60 @@ public sealed class PostController : ControllerBase, IPostServices
     [HttpPost]
     public Task<bool> TryRestoreMemory([FromBody] Post_TryRestoreMemory command, CancellationToken cancellationToken = default)
     {
-        command.UseDefaultSession(_sessionResolver);
         return _commonServices.PostServices.TryRestoreMemory(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<int> TryPublishComment([FromBody] Post_TryPublishComment command, CancellationToken cancellationToken = default)
     {
-        command.UseDefaultSession(_sessionResolver);
         return _commonServices.PostServices.TryPublishComment(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<int> TryReactToPostComment([FromBody] Post_TryReactToPostComment command, CancellationToken cancellationToken = default)
     {
-        command.UseDefaultSession(_sessionResolver);
         return _commonServices.PostServices.TryReactToPostComment(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<byte?> TrySetPostVisibility([FromBody] Post_TrySetPostVisibility command, CancellationToken cancellationToken = default)
     {
-        command.UseDefaultSession(_sessionResolver);
         return _commonServices.PostServices.TrySetPostVisibility(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<long> TryDeletePost([FromBody] Post_TryDeletePost command, CancellationToken cancellationToken = default)
     {
-        command.UseDefaultSession(_sessionResolver);
         return _commonServices.PostServices.TryDeletePost(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<long> TryDeleteComment([FromBody] Post_TryDeleteComment command, CancellationToken cancellationToken = default)
     {
-        command.UseDefaultSession(_sessionResolver);
         return _commonServices.PostServices.TryDeleteComment(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<bool> TryReportPost([FromBody] Post_TryReportPost command, CancellationToken cancellationToken = default)
     {
-        command.UseDefaultSession(_sessionResolver);
         return _commonServices.PostServices.TryReportPost(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<bool> TryReportPostComment([FromBody] Post_TryReportPostComment command, CancellationToken cancellationToken = default)
     {
-        command.UseDefaultSession(_sessionResolver);
         return _commonServices.PostServices.TryReportPostComment(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<bool> TryReportPostTags([FromBody] Post_TryReportPostTags command, CancellationToken cancellationToken = default)
     {
-        command.UseDefaultSession(_sessionResolver);
         return _commonServices.PostServices.TryReportPostTags(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<AddMemoryResultCode> TryUpdateSystemTags([FromBody] Post_TryUpdateSystemTags command, CancellationToken cancellationToken = default)
     {
-        command.UseDefaultSession(_sessionResolver);
         return _commonServices.PostServices.TryUpdateSystemTags(command, cancellationToken);
     }
 }

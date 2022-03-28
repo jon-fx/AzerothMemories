@@ -1,47 +1,46 @@
 ﻿using Microsoft.Net.Http.Headers;
 
-namespace AzerothMemories.WebServer.Controllers
+namespace AzerothMemories.WebServer.Controllers;
+
+[ApiController]
+[JsonifyErrors]
+[UseDefaultSession]
+//[AutoValidateAntiforgeryToken]
+[Route("api/[controller]/[action]")]
+public sealed class MediaController : ControllerBase
 {
-    [ApiController, JsonifyErrors]
-    //[AutoValidateAntiforgeryToken]
-    [Route("api/[controller]/[action]")]
-    public sealed class MediaController : ControllerBase
+    private readonly CommonServices _commonServices;
+
+    public MediaController(CommonServices commonServices)
     {
-        private readonly CommonServices _commonServices;
-        private readonly ISessionResolver _sessionResolver;
+        _commonServices = commonServices;
+    }
 
-        public MediaController(CommonServices commonServices, ISessionResolver sessionResolver)
+    [HttpGet]
+    [Route("~/media/{container}/{fileName}")]
+    public async Task<IActionResult> Get(Session session, [FromRoute] string container, [FromRoute] string fileName, [FromQuery] MediaSize size = MediaSize.True)
+    {
+        MediaResult results = null;
+        container = container.ToLowerInvariant();
+        if (container == ZExtensions.BlobStaticMedia)
         {
-            _commonServices = commonServices;
-            _sessionResolver = sessionResolver;
+            results = await _commonServices.MediaServices.TryGetStaticMedia(session, fileName).ConfigureAwait(false);
+        }
+        else if (container == ZExtensions.BlobUserAvatars)
+        {
+            results = await _commonServices.MediaServices.TryGetUserAvatar(session, fileName).ConfigureAwait(false);
+        }
+        else if (container == ZExtensions.BlobUserUploads)
+        {
+            size = (MediaSize)Math.Clamp((byte)size, (byte)0, (byte)MediaSize.True);
+            results = await _commonServices.MediaServices.TryGetUserUpload(session, fileName, size).ConfigureAwait(false);
         }
 
-        [HttpGet]
-        [Route("~/media/{container}/{fileName}")]
-        public async Task<IActionResult> Get(Session session, [FromRoute] string container, [FromRoute] string fileName, [FromQuery] MediaSize size = MediaSize.True)
+        if (results?.MediaBytes != null)
         {
-            MediaResult results = null;
-            container = container.ToLowerInvariant();
-            if (container == ZExtensions.BlobStaticMedia)
-            {
-                results = await _commonServices.MediaServices.TryGetStaticMedia(session, fileName).ConfigureAwait(false);
-            }
-            else if (container == ZExtensions.BlobUserAvatars)
-            {
-                results = await _commonServices.MediaServices.TryGetUserAvatar(session, fileName).ConfigureAwait(false);
-            }
-            else if (container == ZExtensions.BlobUserUploads)
-            {
-                size = (MediaSize)Math.Clamp((byte)size, (byte)0, (byte)MediaSize.True);
-                results = await _commonServices.MediaServices.TryGetUserUpload(session, fileName, size).ConfigureAwait(false);
-            }
-
-            if (results?.MediaBytes != null)
-            {
-                return File(results.MediaBytes, results.MediaType, results.LastModified.ToDateTimeOffset(), EntityTagHeaderValue.Any);
-            }
-
-            return NotFound();
+            return File(results.MediaBytes, results.MediaType, results.LastModified.ToDateTimeOffset(), EntityTagHeaderValue.Any);
         }
+
+        return NotFound();
     }
 }

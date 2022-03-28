@@ -1,6 +1,8 @@
 namespace AzerothMemories.WebServer.Controllers;
 
-[ApiController, JsonifyErrors]
+[ApiController]
+[JsonifyErrors]
+[UseDefaultSession]
 //[AutoValidateAntiforgeryToken]
 [Route("api/[controller]/[action]")]
 public sealed class SearchController : ControllerBase, ISearchServices

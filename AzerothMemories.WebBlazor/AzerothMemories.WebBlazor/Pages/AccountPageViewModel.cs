@@ -51,11 +51,11 @@ public sealed class AccountPageViewModel : PersistentStateViewModel
         var accountViewModel = AccountViewModel;
         if (accountId > 0)
         {
-            accountViewModel = await Services.ComputeServices.AccountServices.TryGetAccountById(null, accountId);
+            accountViewModel = await Services.ComputeServices.AccountServices.TryGetAccountById(Session.Default, accountId);
         }
         else if (!string.IsNullOrWhiteSpace(_accountIdString))
         {
-            accountViewModel = await Services.ComputeServices.AccountServices.TryGetAccountByUsername(null, _accountIdString);
+            accountViewModel = await Services.ComputeServices.AccountServices.TryGetAccountByUsername(Session.Default, _accountIdString);
         }
 
         if (accountViewModel == null)

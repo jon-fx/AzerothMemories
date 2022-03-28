@@ -1,0 +1,11 @@
+﻿<MudPaper Class="@ClassPresets.Card">
+    <MudStack Justify="Justify.Center">
+        <MudText Typo="Typo.h6" Color="Color.Default" Align="Align.Center">@Text</MudText>
+        <MudText Typo="Typo.h3" Color="Color.Primary" Align="Align.Center">@Value</MudText>
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter, EditorRequired] public string Text { get; init; }
+    [Parameter, EditorRequired] public string Value { get; init; }
+}

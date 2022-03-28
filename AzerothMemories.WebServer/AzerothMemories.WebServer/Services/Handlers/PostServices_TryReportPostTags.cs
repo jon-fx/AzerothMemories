@@ -1,44 +1,37 @@
 ﻿namespace AzerothMemories.WebServer.Services.Handlers;
 
-internal sealed class PostServices_TryReportPostTags_Handler : IMoaCommandHandler<Post_TryReportPostTags, bool>
+internal static class PostServices_TryReportPostTags
 {
-    private readonly CommonServices _commonServices;
-    private readonly Func<Task<AppDbContext>> _databaseContextGenerator;
-
-    public PostServices_TryReportPostTags_Handler(CommonServices commonServices, Func<Task<AppDbContext>> databaseContextGenerator)
-    {
-        _commonServices = commonServices;
-        _databaseContextGenerator = databaseContextGenerator;
-    }
-
-    public async Task<bool> TryHandle(Post_TryReportPostTags command)
+    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryReportPostTags command)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
         {
+            _ = commonServices.PostServices.DependsOnPostTagReports();
+
             return default;
         }
 
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
+        var activeAccount = await commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
         if (activeAccount == null)
         {
             return false;
         }
 
         var postId = command.PostId;
-        var postRecord = await _commonServices.PostServices.TryGetPostRecord(postId).ConfigureAwait(false);
+        var postRecord = await commonServices.PostServices.TryGetPostRecord(postId).ConfigureAwait(false);
         if (postRecord == null)
         {
             return false;
         }
 
-        var canSeePost = await _commonServices.PostServices.CanAccountSeePost(activeAccount.Id, postRecord).ConfigureAwait(false);
+        var canSeePost = await commonServices.PostServices.CanAccountSeePost(activeAccount.Id, postRecord).ConfigureAwait(false);
         if (!canSeePost)
         {
             return false;
         }
 
-        var allTagRecords = await _commonServices.PostServices.GetAllPostTags(postId).ConfigureAwait(false);
+        var allTagRecords = await commonServices.PostServices.GetAllPostTags(postId).ConfigureAwait(false);
         if (allTagRecords == null || allTagRecords.Length == 0)
         {
             return false;
@@ -61,11 +54,11 @@ internal sealed class PostServices_TryReportPostTags_Handler : IMoaCommandHandle
             return false;
         }
 
-        await using var database = await _databaseContextGenerator().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
 
         var reportQuery = from r in database.PostTagReports
-            where r.PostId == postRecord.Id && r.AccountId == activeAccount.Id
-            select r.TagId;
+                          where r.PostId == postRecord.Id && r.AccountId == activeAccount.Id
+                          select r.TagId;
 
         var alreadyReported = await reportQuery.ToArrayAsync().ConfigureAwait(false);
         var alreadyReportedSet = alreadyReported.ToHashSet();
@@ -90,7 +83,7 @@ internal sealed class PostServices_TryReportPostTags_Handler : IMoaCommandHandle
             }
         }
 
-        await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
             AccountId = activeAccount.Id,
             //CreatedTime = SystemClock.Instance.GetCurrentInstant(),

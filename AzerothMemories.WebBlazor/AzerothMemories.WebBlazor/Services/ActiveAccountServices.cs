@@ -61,7 +61,7 @@ public sealed class ActiveAccountServices
     {
         var previousAccountId = AccountViewModel?.Id;
 
-        AccountViewModel = await _accountServices.TryGetActiveAccount(null);
+        AccountViewModel = await _accountServices.TryGetActiveAccount(Session.Default);
 
         if (AccountViewModel == null)
         {
@@ -69,7 +69,7 @@ public sealed class ActiveAccountServices
         }
         else
         {
-            var newHistory = await _accountServices.TryGetAccountHistory(null);
+            var newHistory = await _accountServices.TryGetAccountHistory(Session.Default);
             var oldHistory = AccountHistoryViewModels;
 
             if (oldHistory != null && oldHistory.Length != 0)

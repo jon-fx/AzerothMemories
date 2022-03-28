@@ -4,6 +4,7 @@ global using AzerothMemories.WebBlazor.Services;
 global using AzerothMemories.WebBlazor.Services.Commands;
 global using AzerothMemories.WebBlazor.Services.Markdown;
 global using AzerothMemories.WebBlazor.ViewModels;
+global using AzerothMemories.WebServer;
 global using AzerothMemories.WebServer.Blizzard;
 global using AzerothMemories.WebServer.Blizzard.Data;
 global using AzerothMemories.WebServer.Blizzard.Models.ProfileApi;

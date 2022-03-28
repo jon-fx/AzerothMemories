@@ -46,6 +46,8 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
             var invRecord = context.Operation().Items.Get<Updates_UpdateAccountInvalidate>();
             if (invRecord != null)
             {
+                _ = _commonServices.AdminServices.GetAccountCount();
+
                 _ = _commonServices.AccountServices.DependsOnAccountRecord(invRecord.AccountId);
                 _ = _commonServices.AccountServices.DependsOnAccountAchievements(invRecord.AccountId);
                 _ = _commonServices.CharacterServices.TryGetAllAccountCharacters(invRecord.AccountId);
@@ -79,6 +81,8 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
             var invRecord = context.Operation().Items.Get<Character_InvalidateCharacterRecord>();
             if (invRecord != null)
             {
+                _ = _commonServices.AdminServices.GetCharacterCount();
+
                 if (invRecord.CharacterId > 0)
                 {
                     _ = _commonServices.CharacterServices.DependsOnCharacterRecord(invRecord.CharacterId);
@@ -118,6 +122,9 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
             var invRecord = context.Operation().Items.Get<Guild_InvalidateGuildRecord>();
             if (invRecord != null)
             {
+                _ = _commonServices.AdminServices.GetGuildCount();
+                _ = _commonServices.AdminServices.GetCharacterCount();
+
                 _ = _commonServices.GuildServices.DependsOnGuildRecord(invRecord.GuildId);
 
                 foreach (var characterId in invRecord.CharacterIds)

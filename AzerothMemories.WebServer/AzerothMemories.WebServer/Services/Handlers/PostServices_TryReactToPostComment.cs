@@ -1,17 +1,8 @@
 ﻿namespace AzerothMemories.WebServer.Services.Handlers;
 
-internal sealed class PostServices_TryReactToPostComment_Handler : IMoaCommandHandler<Post_TryReactToPostComment, int>
+internal static class PostServices_TryReactToPostComment
 {
-    private readonly CommonServices _commonServices;
-    private readonly Func<Task<AppDbContext>> _databaseContextGenerator;
-
-    public PostServices_TryReactToPostComment_Handler(CommonServices commonServices, Func<Task<AppDbContext>> databaseContextGenerator)
-    {
-        _commonServices = commonServices;
-        _databaseContextGenerator = databaseContextGenerator;
-    }
-
-    public async Task<int> TryHandle(Post_TryReactToPostComment command)
+    public static async Task<int> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryReactToPostComment command)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -19,21 +10,26 @@ internal sealed class PostServices_TryReactToPostComment_Handler : IMoaCommandHa
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)
             {
-                _ = _commonServices.PostServices.TryGetAllPostComments(invPost.PostId);
-                _ = _commonServices.PostServices.TryGetPostCommentReactions(invPost.PostId);
+                _ = commonServices.PostServices.TryGetAllPostComments(invPost.PostId);
+                _ = commonServices.PostServices.TryGetPostCommentReactions(invPost.PostId);
             }
 
             var invAccount = context.Operation().Items.Get<Post_InvalidateAccount>();
             if (invAccount != null && invAccount.AccountId > 0)
             {
-                _ = _commonServices.PostServices.TryGetMyCommentReactions(invAccount.AccountId, invPost?.PostId ?? 0);
-                _ = _commonServices.AccountServices.GetReactionCount(invAccount.AccountId);
+                _ = commonServices.PostServices.TryGetMyCommentReactions(invAccount.AccountId, invPost?.PostId ?? 0);
+                _ = commonServices.AccountServices.GetReactionCount(invAccount.AccountId);
             }
 
             return default;
         }
 
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
+        if (!Enum.IsDefined(command.NewReaction))
+        {
+            return 0;
+        }
+
+        var activeAccount = await commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
         if (activeAccount == null)
         {
             return 0;
@@ -45,27 +41,27 @@ internal sealed class PostServices_TryReactToPostComment_Handler : IMoaCommandHa
         }
 
         var postId = command.PostId;
-        var postRecord = await _commonServices.PostServices.TryGetPostRecord(postId).ConfigureAwait(false);
+        var postRecord = await commonServices.PostServices.TryGetPostRecord(postId).ConfigureAwait(false);
         if (postRecord == null)
         {
             return 0;
         }
 
-        var canSeePost = await _commonServices.PostServices.CanAccountSeePost(activeAccount.Id, postRecord).ConfigureAwait(false);
+        var canSeePost = await commonServices.PostServices.CanAccountSeePost(activeAccount.Id, postRecord).ConfigureAwait(false);
         if (!canSeePost)
         {
             return 0;
         }
 
         var commentId = command.CommentId;
-        var allCommentPages = await _commonServices.PostServices.TryGetAllPostComments(postId).ConfigureAwait(false);
+        var allCommentPages = await commonServices.PostServices.TryGetAllPostComments(postId).ConfigureAwait(false);
         var allComments = allCommentPages[0].AllComments;
         if (!allComments.TryGetValue(commentId, out var commentViewModel))
         {
             return 0;
         }
 
-        await using var database = await _databaseContextGenerator().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
         var commentRecord = database.PostComments.First(x => x.Id == commentId);
 
         var newReaction = command.NewReaction;
@@ -116,7 +112,7 @@ internal sealed class PostServices_TryReactToPostComment_Handler : IMoaCommandHa
 
         if (newReaction != PostReaction.None)
         {
-            await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+            await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
             {
                 AccountId = activeAccount.Id,
                 OtherAccountId = commentViewModel.AccountId,
@@ -129,7 +125,7 @@ internal sealed class PostServices_TryReactToPostComment_Handler : IMoaCommandHa
 
             if (activeAccount.Id != commentViewModel.AccountId)
             {
-                await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+                await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
                 {
                     AccountId = commentViewModel.AccountId,
                     OtherAccountId = activeAccount.Id,

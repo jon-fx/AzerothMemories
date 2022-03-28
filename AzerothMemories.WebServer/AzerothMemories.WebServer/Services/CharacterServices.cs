@@ -1,8 +1,10 @@
-﻿namespace AzerothMemories.WebServer.Services;
+﻿using AzerothMemories.WebServer.Services.Handlers;
+
+namespace AzerothMemories.WebServer.Services;
 
 [RegisterComputeService]
 [RegisterAlias(typeof(ICharacterServices))]
-public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
+public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices, IDatabaseContextProvider
 {
     private readonly CommonServices _commonServices;
 
@@ -110,43 +112,7 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
     [CommandHandler]
     public virtual async Task<bool> TryChangeCharacterAccountSync(Character_TryChangeCharacterAccountSync command, CancellationToken cancellationToken = default)
     {
-        var context = CommandContext.GetCurrent();
-        if (Computed.IsInvalidating())
-        {
-            var invRecord = context.Operation().Items.Get<Character_InvalidateCharacterRecord>();
-            if (invRecord != null)
-            {
-                _ = DependsOnCharacterRecord(invRecord.CharacterId);
-            }
-
-            return default;
-        }
-
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
-        if (activeAccount == null)
-        {
-            return false;
-        }
-
-        var characterRecord = await _commonServices.CharacterServices.TryGetCharacterRecord(command.CharacterId).ConfigureAwait(false);
-        if (characterRecord.AccountId != activeAccount.Id)
-        {
-            return false;
-        }
-
-        if (characterRecord.AccountSync == command.NewValue)
-        {
-            return characterRecord.AccountSync;
-        }
-
-        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        database.Attach(characterRecord);
-        characterRecord.AccountSync = command.NewValue;
-        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-        context.Operation().Items.Set(new Character_InvalidateCharacterRecord(command.CharacterId, activeAccount.Id));
-
-        return command.NewValue;
+        return await CharacterServices_TryChangeCharacterAccountSync.TryHandle(_commonServices, this, command).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -216,132 +182,13 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
     [CommandHandler]
     public virtual async Task<bool> TrySetCharacterDeleted(Character_TrySetCharacterDeleted command, CancellationToken cancellationToken = default)
     {
-        var context = CommandContext.GetCurrent();
-        if (Computed.IsInvalidating())
-        {
-            var invRecord = context.Operation().Items.Get<Character_InvalidateCharacterRecord>();
-            if (invRecord != null)
-            {
-                _ = DependsOnCharacterRecord(invRecord.CharacterId);
-            }
-
-            return default;
-        }
-
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
-        if (activeAccount == null)
-        {
-            return false;
-        }
-
-        var characterRecord = await TryGetCharacterRecord(command.CharacterId).ConfigureAwait(false);
-        if (characterRecord == null)
-        {
-            return false;
-        }
-
-        if (characterRecord.AccountId != activeAccount.Id)
-        {
-            return false;
-        }
-
-        if (characterRecord.CharacterStatus != CharacterStatus2.MaybeDeleted)
-        {
-            return false;
-        }
-
-        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        database.Attach(characterRecord);
-        characterRecord.CharacterStatus = CharacterStatus2.DeletePending;
-        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-        context.Operation().Items.Set(new Character_InvalidateCharacterRecord(command.CharacterId, characterRecord.AccountId.GetValueOrDefault()));
-
-        return true;
+        return await CharacterServices_TrySetCharacterDeleted.TryHandle(_commonServices, this, command).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> TrySetCharacterRenamedOrTransferred(Character_TrySetCharacterRenamedOrTransferred command, CancellationToken cancellationToken = default)
     {
-        var context = CommandContext.GetCurrent();
-        if (Computed.IsInvalidating())
-        {
-            var invRecord = context.Operation().Items.Get<Character_TrySetCharacterRenamedOrTransferredInvalidate>();
-            if (invRecord != null)
-            {
-                _ = DependsOnCharacterRecord(invRecord.OldCharacterId);
-                _ = DependsOnCharacterRecord(invRecord.NewCharacterId);
-
-                if (invRecord.PostIds != null)
-                {
-                    foreach (var postId in invRecord.PostIds)
-                    {
-                        _ = _commonServices.PostServices.DependsOnPost(postId);
-                        _ = _commonServices.PostServices.GetAllPostTags(postId);
-                    }
-                }
-            }
-
-            return default;
-        }
-
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
-        if (activeAccount == null)
-        {
-            return false;
-        }
-
-        var oldCharacterRecord = await TryGetCharacterRecord(command.OldCharacterId).ConfigureAwait(false);
-        if (oldCharacterRecord == null || oldCharacterRecord.AccountId != activeAccount.Id)
-        {
-            return false;
-        }
-
-        var newCharacterRecord = await TryGetCharacterRecord(command.NewCharacterId).ConfigureAwait(false);
-        if (newCharacterRecord == null || newCharacterRecord.AccountId != activeAccount.Id)
-        {
-            return false;
-        }
-
-        if (oldCharacterRecord.AccountId != newCharacterRecord.AccountId)
-        {
-            return false;
-        }
-
-        if (oldCharacterRecord.Class != newCharacterRecord.Class)
-        {
-            return false;
-        }
-
-        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        database.Attach(oldCharacterRecord);
-        oldCharacterRecord.CharacterStatus = CharacterStatus2.RenamedOrTransferred;
-
-        var oldTag = PostTagInfo.GetTagString(PostTagType.Character, oldCharacterRecord.Id);
-        var newTag = PostTagInfo.GetTagString(PostTagType.Character, newCharacterRecord.Id);
-
-        var allPosts = await database.Posts.Where(x => x.PostAvatar == oldTag).ToArrayAsync(cancellationToken).ConfigureAwait(false);
-        foreach (var post in allPosts)
-        {
-            post.PostAvatar = newTag;
-        }
-
-        var allPostTags = await database.PostTags.Where(x => x.TagString == oldTag).ToArrayAsync(cancellationToken).ConfigureAwait(false);
-        foreach (var postTag in allPostTags)
-        {
-            postTag.TagId = newCharacterRecord.Id;
-            postTag.TagString = newTag;
-        }
-
-        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-        var hashSet = new HashSet<int>(allPosts.Select(x => x.Id).ToHashSet());
-        hashSet.UnionWith(allPostTags.Select(x => x.PostId));
-
-        var item = new Character_TrySetCharacterRenamedOrTransferredInvalidate(oldCharacterRecord.AccountId.GetValueOrDefault(), oldCharacterRecord.Id, newCharacterRecord.AccountId.GetValueOrDefault(), newCharacterRecord.Id, hashSet);
-        context.Operation().Items.Set(item);
-
-        return true;
+        return await CharacterServices_TrySetCharacterRenamedOrTransferred.TryHandle(_commonServices, this, command).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -368,5 +215,10 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
         }
 
         return null;
+    }
+
+    public Task<AppDbContext> CreateCommandDbContext()
+    {
+        return CreateCommandDbContext(true);
     }
 }

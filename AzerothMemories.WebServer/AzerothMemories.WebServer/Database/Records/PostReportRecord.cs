@@ -21,4 +21,6 @@ public sealed class PostReportRecord : IDatabaseRecord
     [Column] public Instant CreatedTime { get; set; }
 
     [Column] public Instant ModifiedTime { get; set; }
+
+    [Column] public int? ResolvedByAccountId { get; set; }
 }

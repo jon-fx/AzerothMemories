@@ -183,7 +183,8 @@ public sealed class Migration0003_AccountData : Migration
             .WithColumn(nameof(PostReportRecord.Reason)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(PostReportRecord.ReasonText)).AsText().Nullable()
             .WithColumn(nameof(PostReportRecord.CreatedTime)).AsDateTimeOffsetWithDefault()
-            .WithColumn(nameof(PostReportRecord.ModifiedTime)).AsDateTimeOffsetWithDefault();
+            .WithColumn(nameof(PostReportRecord.ModifiedTime)).AsDateTimeOffsetWithDefault()
+            .WithColumn(nameof(PostReportRecord.ResolvedByAccountId)).AsInt32().ForeignKey(AccountRecord.TableName, Id).OnDelete(Rule.SetNull).Nullable();
 
         Create.Table(PostCommentReportRecord.TableName)
             .WithColumn(nameof(PostCommentReportRecord.Id)).AsInt32().PrimaryKey().Identity()
@@ -192,14 +193,16 @@ public sealed class Migration0003_AccountData : Migration
             .WithColumn(nameof(PostCommentReportRecord.Reason)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(PostCommentReportRecord.ReasonText)).AsText().Nullable()
             .WithColumn(nameof(PostCommentReportRecord.CreatedTime)).AsDateTimeOffsetWithDefault()
-            .WithColumn(nameof(PostCommentReportRecord.ModifiedTime)).AsDateTimeOffsetWithDefault();
+            .WithColumn(nameof(PostCommentReportRecord.ModifiedTime)).AsDateTimeOffsetWithDefault()
+            .WithColumn(nameof(PostCommentReportRecord.ResolvedByAccountId)).AsInt32().ForeignKey(AccountRecord.TableName, Id).OnDelete(Rule.SetNull).Nullable();
 
         Create.Table(PostTagReportRecord.TableName)
             .WithColumn(nameof(PostTagReportRecord.Id)).AsInt32().PrimaryKey().Identity()
             .WithColumn(nameof(PostTagReportRecord.AccountId)).AsInt32().ForeignKey(AccountRecord.TableName, Id).OnDelete(Rule.Cascade)
             .WithColumn(nameof(PostTagReportRecord.PostId)).AsInt32().WithDefaultValue(0).ForeignKey(PostRecord.TableName, Id).OnDelete(Rule.Cascade)
             .WithColumn(nameof(PostTagReportRecord.TagId)).AsInt32().WithDefaultValue(0).ForeignKey(PostTagRecord.TableName, Id).OnDelete(Rule.Cascade)
-            .WithColumn(nameof(PostTagReportRecord.CreatedTime)).AsDateTimeOffsetWithDefault();
+            .WithColumn(nameof(PostTagReportRecord.CreatedTime)).AsDateTimeOffsetWithDefault()
+            .WithColumn(nameof(PostTagReportRecord.ResolvedByAccountId)).AsInt32().ForeignKey(AccountRecord.TableName, Id).OnDelete(Rule.SetNull).Nullable();
 
         Create.Table(AccountHistoryRecord.TableName)
             .WithColumn(nameof(AccountHistoryRecord.Id)).AsInt32().PrimaryKey().Identity()

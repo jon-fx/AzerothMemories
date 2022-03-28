@@ -1,24 +1,15 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using Humanizer;
+﻿using Humanizer;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Gif;
 using SixLabors.ImageSharp.Formats.Jpeg;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace AzerothMemories.WebServer.Services.Handlers;
 
-internal sealed class PostServices_TryPostMemory_Handler : IMoaCommandHandler<Post_TryPostMemory, AddMemoryResult>
+internal static class PostServices_TryPostMemory
 {
-    private readonly CommonServices _commonServices;
-    private readonly Func<Task<AppDbContext>> _databaseContextGenerator;
-
-    public PostServices_TryPostMemory_Handler(CommonServices commonServices, Func<Task<AppDbContext>> databaseContextGenerator)
-    {
-        _commonServices = commonServices;
-        _databaseContextGenerator = databaseContextGenerator;
-    }
-
-    public async Task<AddMemoryResult> TryHandle(Post_TryPostMemory command)
+    public static async Task<AddMemoryResult> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryPostMemory command)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -26,14 +17,14 @@ internal sealed class PostServices_TryPostMemory_Handler : IMoaCommandHandler<Po
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)
             {
-                _ = _commonServices.AccountServices.GetPostCount(invPost.PostId);
+                _ = commonServices.PostServices.DependsOnPost(invPost.PostId);
             }
 
             var invAccount = context.Operation().Items.Get<Post_InvalidateAccount>();
             if (invAccount != null && invAccount.AccountId > 0)
             {
-                _ = _commonServices.PostServices.DependsOnPostsBy(invAccount.AccountId);
-                _ = _commonServices.AccountServices.GetPostCount(invAccount.AccountId);
+                _ = commonServices.PostServices.DependsOnPostsBy(invAccount.AccountId);
+                _ = commonServices.AccountServices.GetPostCount(invAccount.AccountId);
             }
 
             var invTags = context.Operation().Items.Get<Post_InvalidateTags>();
@@ -41,20 +32,26 @@ internal sealed class PostServices_TryPostMemory_Handler : IMoaCommandHandler<Po
             {
                 foreach (var tagString in invTags.TagStrings)
                 {
-                    _ = _commonServices.PostServices.DependsOnPostsWithTagString(tagString);
+                    _ = commonServices.PostServices.DependsOnPostsWithTagString(tagString);
                 }
             }
 
             var invRecentPosts = context.Operation().Items.Get<Post_InvalidateRecentPost>();
             if (invRecentPosts != null)
             {
-                _ = _commonServices.PostServices.DependsOnNewPosts();
+                _ = commonServices.PostServices.DependsOnNewPosts();
             }
 
             return default;
         }
 
-        if (command.Comment.Length >= ZExtensions.MaxPostCommentLength)
+        var commenText = command.Comment;
+        if (string.IsNullOrWhiteSpace(commenText))
+        {
+            commenText = string.Empty;
+        }
+
+        if (commenText.Length >= ZExtensions.MaxPostCommentLength)
         {
             return new AddMemoryResult(AddMemoryResultCode.CommentTooLong);
         }
@@ -65,7 +62,7 @@ internal sealed class PostServices_TryPostMemory_Handler : IMoaCommandHandler<Po
             return new AddMemoryResult(AddMemoryResultCode.InvalidTime);
         }
 
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
+        var activeAccount = await commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
         if (activeAccount == null)
         {
             return new AddMemoryResult(AddMemoryResultCode.SessionNotFound);
@@ -76,7 +73,7 @@ internal sealed class PostServices_TryPostMemory_Handler : IMoaCommandHandler<Po
             return new AddMemoryResult(AddMemoryResultCode.SessionCanNotInteract);
         }
 
-        var parseResult = _commonServices.MarkdownServices.GetCommentText(command.Comment, activeAccount.GetUserTagList(), true);
+        var parseResult = commonServices.MarkdownServices.GetCommentText(commenText, activeAccount.GetUserTagList(), true);
         if (parseResult.ResultCode != MarkdownParserResultCode.Success)
         {
             return new AddMemoryResult(AddMemoryResultCode.ParseCommentFailed);
@@ -103,26 +100,36 @@ internal sealed class PostServices_TryPostMemory_Handler : IMoaCommandHandler<Po
             PostVisibility = command.IsPrivate ? (byte)1 : (byte)0,
         };
 
-        var buildSystemTagsResult = await CreateSystemTags(postRecord, activeAccount, command.SystemTags, tagRecords).ConfigureAwait(false);
+        var buildSystemTagsResult = await CreateSystemTags(commonServices, postRecord, activeAccount, command.SystemTags, tagRecords).ConfigureAwait(false);
         if (buildSystemTagsResult != AddMemoryResultCode.Success)
         {
             return new AddMemoryResult(buildSystemTagsResult);
         }
 
-        var addCommentTagResult = await AddCommentTags(postRecord, parseResult.AccountsTaggedInComment, parseResult.HashTagsTaggedInComment, tagRecords).ConfigureAwait(false);
+        var addCommentTagResult = await AddCommentTags(commonServices, postRecord, parseResult.AccountsTaggedInComment, parseResult.HashTagsTaggedInComment, tagRecords).ConfigureAwait(false);
         if (addCommentTagResult != AddMemoryResultCode.Success)
         {
             return new AddMemoryResult(addCommentTagResult);
         }
 
-        if (!PostTagRecord.ValidateTagCounts(tagRecords))
+        if (tagRecords.FirstOrDefault(x => x.TagString == PostTagInfo.GetTagString(PostTagType.Account, activeAccount.Id)) == null)
         {
-            return new AddMemoryResult(AddMemoryResultCode.TooManyTags);
+            return new AddMemoryResult(AddMemoryResultCode.InvalidTags);
         }
 
-        await using var database = await _databaseContextGenerator().ConfigureAwait(false);
+        if (tagRecords.FirstOrDefault(x => x.TagString == PostTagInfo.GetTagString(PostTagType.Region, activeAccount.RegionId.ToValue())) == null)
+        {
+            return new AddMemoryResult(AddMemoryResultCode.InvalidTags);
+        }
 
-        var uploadAndSortResult = await UploadAndSortImages(database, activeAccount, postRecord, command.ImageData).ConfigureAwait(false);
+        if (!PostTagRecord.ValidateTagCounts(tagRecords))
+        {
+            return new AddMemoryResult(AddMemoryResultCode.InvalidTags);
+        }
+
+        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+
+        var uploadAndSortResult = await UploadAndSortImages(commonServices, database, activeAccount, postRecord, command.ImageData).ConfigureAwait(false);
         if (uploadAndSortResult != AddMemoryResultCode.Success)
         {
             return new AddMemoryResult(uploadAndSortResult);
@@ -135,7 +142,7 @@ internal sealed class PostServices_TryPostMemory_Handler : IMoaCommandHandler<Po
         await database.Posts.AddAsync(postRecord).ConfigureAwait(false);
         await database.SaveChangesAsync().ConfigureAwait(false);
 
-        await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
             AccountId = activeAccount.Id,
             //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
@@ -146,7 +153,7 @@ internal sealed class PostServices_TryPostMemory_Handler : IMoaCommandHandler<Po
 
         foreach (var userTag in parseResult.AccountsTaggedInComment)
         {
-            await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+            await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
             {
                 AccountId = userTag,
                 OtherAccountId = activeAccount.Id,
@@ -157,6 +164,7 @@ internal sealed class PostServices_TryPostMemory_Handler : IMoaCommandHandler<Po
             }).ConfigureAwait(false);
         }
 
+        context.Operation().Items.Set(new Post_InvalidatePost(postRecord.Id));
         context.Operation().Items.Set(new Post_InvalidateAccount(activeAccount.Id));
         context.Operation().Items.Set(new Post_InvalidateTags(postRecord.PostTags.Select(x => x.TagString).ToHashSet()));
 
@@ -168,7 +176,7 @@ internal sealed class PostServices_TryPostMemory_Handler : IMoaCommandHandler<Po
         return new AddMemoryResult(AddMemoryResultCode.Success, postRecord.AccountId, postRecord.Id);
     }
 
-    private async Task<AddMemoryResultCode> CreateSystemTags(PostRecord postRecord, AccountViewModel accountViewModel, HashSet<string> systemTags, HashSet<PostTagRecord> tagRecords)
+    private static async Task<AddMemoryResultCode> CreateSystemTags(CommonServices commonServices, PostRecord postRecord, AccountViewModel accountViewModel, HashSet<string> systemTags, HashSet<PostTagRecord> tagRecords)
     {
         if (!string.IsNullOrWhiteSpace(postRecord.PostAvatar) && !systemTags.Contains(postRecord.PostAvatar))
         {
@@ -177,7 +185,7 @@ internal sealed class PostServices_TryPostMemory_Handler : IMoaCommandHandler<Po
 
         foreach (var systemTag in systemTags)
         {
-            var tagRecord = await _commonServices.TagServices.TryCreateTagRecord(systemTag, postRecord, accountViewModel, PostTagKind.Post).ConfigureAwait(false);
+            var tagRecord = await commonServices.TagServices.TryCreateTagRecord(systemTag, postRecord, accountViewModel, PostTagKind.Post).ConfigureAwait(false);
             if (tagRecord == null)
             {
                 return AddMemoryResultCode.InvalidTags;
@@ -190,11 +198,11 @@ internal sealed class PostServices_TryPostMemory_Handler : IMoaCommandHandler<Po
         return AddMemoryResultCode.Success;
     }
 
-    private async Task<AddMemoryResultCode> AddCommentTags(PostRecord postRecord, HashSet<int> accountsTaggedInComment, HashSet<string> hashTagsTaggedInComment, HashSet<PostTagRecord> tagRecords)
+    private static async Task<AddMemoryResultCode> AddCommentTags(CommonServices commonServices, PostRecord postRecord, HashSet<int> accountsTaggedInComment, HashSet<string> hashTagsTaggedInComment, HashSet<PostTagRecord> tagRecords)
     {
         foreach (var accountId in accountsTaggedInComment)
         {
-            var tagRecord = await _commonServices.TagServices.TryCreateTagRecord(postRecord, PostTagType.Account, accountId, PostTagKind.PostComment).ConfigureAwait(false);
+            var tagRecord = await commonServices.TagServices.TryCreateTagRecord(postRecord, PostTagType.Account, accountId, PostTagKind.PostComment).ConfigureAwait(false);
             if (tagRecord == null)
             {
                 return AddMemoryResultCode.InvalidTags;
@@ -205,7 +213,7 @@ internal sealed class PostServices_TryPostMemory_Handler : IMoaCommandHandler<Po
 
         foreach (var hashTag in hashTagsTaggedInComment)
         {
-            var tagRecord = await _commonServices.TagServices.GetHashTagRecord(hashTag, PostTagKind.PostComment).ConfigureAwait(false);
+            var tagRecord = await commonServices.TagServices.GetHashTagRecord(hashTag, PostTagKind.PostComment).ConfigureAwait(false);
             if (tagRecord == null)
             {
                 return AddMemoryResultCode.InvalidTags;
@@ -217,16 +225,16 @@ internal sealed class PostServices_TryPostMemory_Handler : IMoaCommandHandler<Po
         return AddMemoryResultCode.Success;
     }
 
-    private async Task<AddMemoryResultCode> UploadAndSortImages(AppDbContext database, AccountViewModel accountViewModel, PostRecord postRecord, List<byte[]> imageDataList)
+    private static async Task<AddMemoryResultCode> UploadAndSortImages(CommonServices commonServices, AppDbContext database, AccountViewModel accountViewModel, PostRecord postRecord, List<byte[]> imageDataList)
     {
         if (imageDataList.Count > ZExtensions.MaxPostScreenShots)
         {
             return AddMemoryResultCode.UploadFailed;
         }
 
-        var timeAgo = SystemClock.Instance.GetCurrentInstant() - _commonServices.Config.UploadsInTheLastXDuration;
+        var timeAgo = SystemClock.Instance.GetCurrentInstant() - commonServices.Config.UploadsInTheLastXDuration;
         var uploadsInTheLastX = database.UploadLogs.Count(x => x.AccountId == accountViewModel.Id && x.UploadTime > timeAgo);
-        if (uploadsInTheLastX > _commonServices.Config.UploadsInTheLastXCount)
+        if (uploadsInTheLastX > commonServices.Config.UploadsInTheLastXCount)
         {
             return AddMemoryResultCode.UploadFailedQuota;
         }
@@ -285,7 +293,7 @@ internal sealed class PostServices_TryPostMemory_Handler : IMoaCommandHandler<Po
         foreach (var valueTuple in dataToUpload)
         {
             var count = database.UploadLogs.Count(x => x.AccountId == accountViewModel.Id && x.BlobHash == valueTuple.BlobHash);
-            if (count > _commonServices.Config.MaxUploadsWithTheSameHash)
+            if (count > commonServices.Config.MaxUploadsWithTheSameHash)
             {
                 return AddMemoryResultCode.UploadFailedHash;
             }
@@ -293,14 +301,19 @@ internal sealed class PostServices_TryPostMemory_Handler : IMoaCommandHandler<Po
 
         try
         {
+            if (dataToUpload.Length == 0)
+            {
+                return AddMemoryResultCode.UploadFailed;
+            }
+
             var imageNameBuilder = new StringBuilder();
             var postUploadLogs = new List<AccountUploadLog>();
             foreach (var (extension, blobData, blobHash) in dataToUpload)
             {
                 var blobName = $"{accountViewModel.Id}-{Guid.NewGuid()}.{extension}";
-                if (_commonServices.Config.UploadToBlobStorage)
+                if (commonServices.Config.UploadToBlobStorage)
                 {
-                    var blobClient = new Azure.Storage.Blobs.BlobClient(_commonServices.Config.BlobStorageConnectionString, ZExtensions.BlobUserUploads, blobName);
+                    var blobClient = new Azure.Storage.Blobs.BlobClient(commonServices.Config.BlobStorageConnectionString, ZExtensions.BlobUserUploads, blobName);
                     var result = await blobClient.UploadAsync(blobData).ConfigureAwait(false);
                     if (result.Value == null)
                     {
@@ -338,7 +351,7 @@ internal sealed class PostServices_TryPostMemory_Handler : IMoaCommandHandler<Po
         }
     }
 
-    private string CreateHashString(byte[] hashBytes)
+    private static string CreateHashString(byte[] hashBytes)
     {
         var sb = new StringBuilder();
         foreach (var hashByte in hashBytes)

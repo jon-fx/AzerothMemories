@@ -1,17 +1,8 @@
 ﻿namespace AzerothMemories.WebServer.Services.Handlers;
 
-internal sealed class PostServices_TryUpdateSystemTags_Handler : IMoaCommandHandler<Post_TryUpdateSystemTags, AddMemoryResultCode>
+internal static class PostServices_TryUpdateSystemTags
 {
-    private readonly CommonServices _commonServices;
-    private readonly Func<Task<AppDbContext>> _databaseContextGenerator;
-
-    public PostServices_TryUpdateSystemTags_Handler(CommonServices commonServices, Func<Task<AppDbContext>> databaseContextGenerator)
-    {
-        _commonServices = commonServices;
-        _databaseContextGenerator = databaseContextGenerator;
-    }
-
-    public async Task<AddMemoryResultCode> TryHandle(Post_TryUpdateSystemTags command)
+    public static async Task<AddMemoryResultCode> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryUpdateSystemTags command)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -19,8 +10,8 @@ internal sealed class PostServices_TryUpdateSystemTags_Handler : IMoaCommandHand
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)
             {
-                _ = _commonServices.PostServices.DependsOnPost(invPost.PostId);
-                _ = _commonServices.PostServices.GetAllPostTags(invPost.PostId);
+                _ = commonServices.PostServices.DependsOnPost(invPost.PostId);
+                _ = commonServices.PostServices.GetAllPostTags(invPost.PostId);
             }
 
             var invTags = context.Operation().Items.Get<Post_InvalidateTags>();
@@ -28,14 +19,20 @@ internal sealed class PostServices_TryUpdateSystemTags_Handler : IMoaCommandHand
             {
                 foreach (var tagString in invTags.TagStrings)
                 {
-                    _ = _commonServices.PostServices.DependsOnPostsWithTagString(tagString);
+                    _ = commonServices.PostServices.DependsOnPostsWithTagString(tagString);
                 }
+            }
+
+            var invalidateReports = context.Operation().Items.Get<Admin_InvalidateReports>();
+            if (invalidateReports != null)
+            {
+                _ = commonServices.PostServices.DependsOnPostReports();
             }
 
             return default;
         }
 
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
+        var activeAccount = await commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
         if (activeAccount == null)
         {
             return AddMemoryResultCode.SessionNotFound;
@@ -47,7 +44,7 @@ internal sealed class PostServices_TryUpdateSystemTags_Handler : IMoaCommandHand
         }
 
         var postId = command.PostId;
-        var cachedPostRecord = await _commonServices.PostServices.TryGetPostRecord(postId).ConfigureAwait(false);
+        var cachedPostRecord = await commonServices.PostServices.TryGetPostRecord(postId).ConfigureAwait(false);
         if (cachedPostRecord == null)
         {
             return AddMemoryResultCode.Failed;
@@ -59,7 +56,7 @@ internal sealed class PostServices_TryUpdateSystemTags_Handler : IMoaCommandHand
         if (isAdmin)
         {
             deletedTagKind = PostTagKind.DeletedByAdmin;
-            accountViewModel = await _commonServices.AccountServices.TryGetAccountById(command.Session, cachedPostRecord.AccountId).ConfigureAwait(false);
+            accountViewModel = await commonServices.AccountServices.TryGetAccountById(command.Session, cachedPostRecord.AccountId).ConfigureAwait(false);
         }
         else if (activeAccount.Id != cachedPostRecord.AccountId)
         {
@@ -71,7 +68,7 @@ internal sealed class PostServices_TryUpdateSystemTags_Handler : IMoaCommandHand
             return AddMemoryResultCode.SessionNotFound;
         }
 
-        await using var database = await _databaseContextGenerator().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
 
         var postRecord = await database.Posts.Include(x => x.PostTags).FirstOrDefaultAsync(p => p.DeletedTimeStamp == 0 && p.Id == postId).ConfigureAwait(false);
         if (postRecord == null)
@@ -79,6 +76,7 @@ internal sealed class PostServices_TryUpdateSystemTags_Handler : IMoaCommandHand
             return AddMemoryResultCode.Failed;
         }
 
+        var shouldInvalidateReports = false;
         var allCurrentTags = postRecord.PostTags.Where(x => x.IsPostTag).ToDictionary(x => x.TagString, x => x);
         var allActiveTags = allCurrentTags.Where(x => !x.Value.IsDeleted).Select(x => x.Key).ToHashSet();
 
@@ -97,7 +95,7 @@ internal sealed class PostServices_TryUpdateSystemTags_Handler : IMoaCommandHand
         {
             foreach (var systemTag in addedSet)
             {
-                var newRecord = await _commonServices.TagServices.TryCreateTagRecord(systemTag, postRecord, accountViewModel, PostTagKind.Post).ConfigureAwait(false);
+                var newRecord = await commonServices.TagServices.TryCreateTagRecord(systemTag, postRecord, accountViewModel, PostTagKind.Post).ConfigureAwait(false);
                 if (newRecord == null)
                 {
                     return AddMemoryResultCode.InvalidTags;
@@ -136,6 +134,17 @@ internal sealed class PostServices_TryUpdateSystemTags_Handler : IMoaCommandHand
                     else
                     {
                         tagRecord.TagKind = deletedTagKind;
+
+                        var reports = await database.PostTagReports.Where(x => x.TagId == tagRecord.Id).ToArrayAsync().ConfigureAwait(false);
+                        foreach (var report in reports)
+                        {
+                            report.ResolvedByAccountId = activeAccount.Id;
+                        }
+
+                        if (reports.Length > 0)
+                        {
+                            shouldInvalidateReports = true;
+                        }
                     }
                 }
                 else
@@ -146,11 +155,16 @@ internal sealed class PostServices_TryUpdateSystemTags_Handler : IMoaCommandHand
 
             if (!PostTagRecord.ValidateTagCounts(postRecord.PostTags.ToHashSet()))
             {
-                return AddMemoryResultCode.TooManyTags;
+                return AddMemoryResultCode.InvalidTags;
             }
         }
 
         var avatar = command.Avatar;
+        if (avatar == Post_TryUpdateSystemTags.DefaultAvatar)
+        {
+            avatar = postRecord.PostAvatar;
+        }
+
         var activeTags = postRecord.PostTags.Where(x => x.IsPostTag && !x.IsDeleted).Select(x => x.TagString).ToHashSet();
         if (!string.IsNullOrWhiteSpace(avatar) && !activeTags.Contains(avatar))
         {
@@ -165,6 +179,11 @@ internal sealed class PostServices_TryUpdateSystemTags_Handler : IMoaCommandHand
         postRecord.PostAvatar = avatar;
 
         await database.SaveChangesAsync().ConfigureAwait(false);
+
+        if (shouldInvalidateReports)
+        {
+            context.Operation().Items.Set(new Admin_InvalidateReports(true));
+        }
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
         context.Operation().Items.Set(new Post_InvalidateTags(postRecord.PostTags.Select(x => x.TagString).ToHashSet()));

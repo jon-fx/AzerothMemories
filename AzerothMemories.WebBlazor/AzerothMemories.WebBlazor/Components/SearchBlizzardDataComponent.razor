@@ -43,7 +43,7 @@
             return Enumerable.Empty<PostTagInfo>();
         }
 
-        var results = await Services.ComputeServices.TagServices.Search(null, searchString, ServerSideLocaleExt.GetServerSideLocale());
+        var results = await Services.ComputeServices.TagServices.Search(Session.Default, searchString, ServerSideLocaleExt.GetServerSideLocale());
         return results;
     }
 

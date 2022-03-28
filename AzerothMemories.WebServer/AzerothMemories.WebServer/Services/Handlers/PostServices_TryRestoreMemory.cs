@@ -1,17 +1,8 @@
 ﻿namespace AzerothMemories.WebServer.Services.Handlers;
 
-internal sealed class PostServices_TryRestoreMemory_Handler : IMoaCommandHandler<Post_TryRestoreMemory, bool>
+internal static class PostServices_TryRestoreMemory
 {
-    private readonly CommonServices _commonServices;
-    private readonly Func<Task<AppDbContext>> _databaseContextGenerator;
-
-    public PostServices_TryRestoreMemory_Handler(CommonServices commonServices, Func<Task<AppDbContext>> databaseContextGenerator)
-    {
-        _commonServices = commonServices;
-        _databaseContextGenerator = databaseContextGenerator;
-    }
-
-    public async Task<bool> TryHandle(Post_TryRestoreMemory command)
+    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryRestoreMemory command)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -19,19 +10,19 @@ internal sealed class PostServices_TryRestoreMemory_Handler : IMoaCommandHandler
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)
             {
-                _ = _commonServices.PostServices.GetAllPostTags(invPost.PostId);
+                _ = commonServices.PostServices.GetAllPostTags(invPost.PostId);
             }
 
             var invAccount = context.Operation().Items.Get<Post_InvalidateAccount>();
             if (invAccount != null && invAccount.AccountId > 0)
             {
-                _ = _commonServices.AccountServices.GetMemoryCount(invAccount.AccountId);
+                _ = commonServices.AccountServices.GetMemoryCount(invAccount.AccountId);
             }
 
             return default;
         }
 
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
+        var activeAccount = await commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
         if (activeAccount == null)
         {
             return false;
@@ -43,13 +34,13 @@ internal sealed class PostServices_TryRestoreMemory_Handler : IMoaCommandHandler
         }
 
         var postId = command.PostId;
-        var postRecord = await _commonServices.PostServices.TryGetPostRecord(postId).ConfigureAwait(false);
+        var postRecord = await commonServices.PostServices.TryGetPostRecord(postId).ConfigureAwait(false);
         if (postRecord == null)
         {
             return false;
         }
 
-        var canSeePost = await _commonServices.PostServices.CanAccountSeePost(activeAccount.Id, postRecord).ConfigureAwait(false);
+        var canSeePost = await commonServices.PostServices.CanAccountSeePost(activeAccount.Id, postRecord).ConfigureAwait(false);
         if (!canSeePost)
         {
             return false;
@@ -80,7 +71,7 @@ internal sealed class PostServices_TryRestoreMemory_Handler : IMoaCommandHandler
             return false;
         }
 
-        await using var database = await _databaseContextGenerator().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
 
         if (accountTagToRemove != null)
         {
@@ -174,7 +165,7 @@ internal sealed class PostServices_TryRestoreMemory_Handler : IMoaCommandHandler
             }
         }
 
-        await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
             AccountId = activeAccount.Id,
             OtherAccountId = postRecord.AccountId,
@@ -186,7 +177,7 @@ internal sealed class PostServices_TryRestoreMemory_Handler : IMoaCommandHandler
 
         if (activeAccount.Id != postRecord.AccountId)
         {
-            await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+            await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
             {
                 AccountId = postRecord.AccountId,
                 OtherAccountId = activeAccount.Id,

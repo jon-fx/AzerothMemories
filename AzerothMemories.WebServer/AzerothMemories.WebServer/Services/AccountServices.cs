@@ -1,12 +1,10 @@
-﻿using Humanizer;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats.Jpeg;
+﻿using AzerothMemories.WebServer.Services.Handlers;
 
 namespace AzerothMemories.WebServer.Services;
 
 [RegisterComputeService]
 [RegisterAlias(typeof(IAccountServices))]
-public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
+public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, IDatabaseContextProvider
 {
     private readonly CommonServices _commonServices;
     private readonly IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> _sessionRepo;
@@ -20,174 +18,19 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
     [CommandHandler(IsFilter = true, Priority = 1)]
     protected virtual async Task OnSignInCommand(SignInCommand command, CancellationToken cancellationToken)
     {
-        var context = CommandContext.GetCurrent();
-
-        if (Computed.IsInvalidating())
-        {
-            await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
-
-            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
-            if (invRecord != null)
-            {
-                _ = DependsOnAccountRecord(invRecord.Id);
-                _ = TryGetAccountRecordUsername(invRecord.Username);
-                _ = TryGetAccountRecordFusionId(invRecord.FusionId);
-            }
-
-            return;
-        }
-
-        if (command.AuthenticatedIdentity.Schema.StartsWith("BattleNet-"))
-        {
-            var regionStr = command.AuthenticatedIdentity.Schema.Replace("BattleNet-", "");
-            var blizzardRegion = BlizzardRegionExt.FromName(regionStr);
-
-            if (!command.User.Claims.TryGetValue("BattleNet-Id", out var blizzardIdClaim))
-            {
-                throw new NotImplementedException();
-            }
-
-            if (!long.TryParse(blizzardIdClaim, out var blizzardId))
-            {
-                throw new NotImplementedException();
-            }
-
-            if (!command.User.Claims.TryGetValue("BattleNet-Tag", out var battleTag))
-            {
-                throw new NotImplementedException();
-            }
-
-            if (!command.User.Claims.TryGetValue("BattleNet-Token", out var battleNetToken))
-            {
-                throw new NotImplementedException();
-            }
-
-            if (!command.User.Claims.TryGetValue("BattleNet-TokenExpires", out var battleNetTokenExpiresStr) || !long.TryParse(battleNetTokenExpiresStr, out var battleNetTokenExpires))
-            {
-                throw new NotImplementedException();
-            }
-
-            await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-
-            var dbSessionInfo = await _sessionRepo.Get(database, command.Session.Id, false, cancellationToken).ConfigureAwait(false);
-            if (dbSessionInfo != null)
-            {
-                var tempAccount = await TryGetAccountRecordFusionId(dbSessionInfo.UserId).ConfigureAwait(false);
-                if (tempAccount != null && tempAccount.BlizzardRegionId != BlizzardRegion.None && tempAccount.BlizzardRegionId != blizzardRegion)
-                {
-                    return;
-                }
-            }
-
-            await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
-
-            var sessionInfo = context.Operation().Items.Get<SessionInfo>();
-            if (sessionInfo == null)
-            {
-                throw new NotImplementedException();
-            }
-
-            var userId = sessionInfo.UserId;
-
-            var accountRecord = await GetOrCreateAccount(userId).ConfigureAwait(false);
-
-            database.Attach(accountRecord);
-
-            accountRecord.BlizzardId = blizzardId;
-            accountRecord.BlizzardRegionId = blizzardRegion;
-            accountRecord.BattleTag = battleTag;
-            accountRecord.BattleNetToken = battleNetToken;
-            accountRecord.BattleNetTokenExpiresAt = Instant.FromUnixTimeMilliseconds(battleNetTokenExpires);
-
-            if (string.IsNullOrWhiteSpace(accountRecord.Username))
-            {
-                var newUsername = $"User-{accountRecord.Id}";
-
-                accountRecord.Username = newUsername;
-                accountRecord.UsernameSearchable = DatabaseHelpers.GetSearchableName(newUsername);
-            }
-
-            accountRecord.TryUpdateLoginConsecutiveDaysCount();
-
-            await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-            context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
-        }
-        else if (command.AuthenticatedIdentity.Schema.StartsWith("ToDo-"))
-        {
-            await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
-
-            throw new NotImplementedException();
-        }
-        else
-        {
-            await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
-
-            throw new NotImplementedException();
-        }
+        await AccountServices_OnSignInCommand.TryHandle(_commonServices, _sessionRepo, this, command).ConfigureAwait(false);
     }
 
     [CommandHandler(IsFilter = true, Priority = 1)]
     protected virtual async Task OnSignOutCommand(SignOutCommand command, CancellationToken cancellationToken)
     {
-        var context = CommandContext.GetCurrent();
-        await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
-
-        if (Computed.IsInvalidating())
-        {
-            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
-            if (invRecord != null)
-            {
-                _ = DependsOnAccountRecord(invRecord.Id);
-                _ = TryGetAccountRecordUsername(invRecord.Username);
-                _ = TryGetAccountRecordFusionId(invRecord.FusionId);
-            }
-
-            return;
-        }
-
-        var accountRecord = await TryGetActiveAccountRecord(command.Session).ConfigureAwait(false);
-        if (accountRecord == null)
-        {
-            return;
-        }
-
-        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+        await AccountServices_OnSignOutCommand.TryHandle(_commonServices, command).ConfigureAwait(false);
     }
 
     [CommandHandler(IsFilter = true, Priority = 1)]
     protected virtual async Task OnSetupSessionCommand(SetupSessionCommand command, CancellationToken cancellationToken)
     {
-        var context = CommandContext.GetCurrent();
-        await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
-
-        if (Computed.IsInvalidating())
-        {
-            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
-            if (invRecord != null)
-            {
-                _ = DependsOnAccountRecord(invRecord.Id);
-                _ = TryGetAccountRecordUsername(invRecord.Username);
-                _ = TryGetAccountRecordFusionId(invRecord.FusionId);
-            }
-
-            return;
-        }
-
-        var accountRecord = await TryGetActiveAccountRecord(command.Session).ConfigureAwait(false);
-        if (accountRecord == null)
-        {
-            return;
-        }
-
-        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        database.Attach(accountRecord);
-
-        accountRecord.TryUpdateLoginConsecutiveDaysCount();
-
-        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+        await AccountServices_OnSetupSessionCommand.TryHandle(_commonServices, this, command).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -215,7 +58,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<AccountRecord> GetOrCreateAccount(string userId)
+    public virtual async Task<AccountRecord> GetOrCreateAccount(string userId)
     {
         var accountRecord = await TryGetAccountRecordFusionId(userId).ConfigureAwait(false);
         if (accountRecord == null)
@@ -421,7 +264,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<bool> CheckIsValidUsername(string username)
+    public virtual async Task<bool> CheckIsValidUsername(string username)
     {
         if (!DatabaseHelpers.IsValidAccountName(username))
         {
@@ -439,235 +282,27 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
     }
 
     [CommandHandler]
-    public virtual async Task<bool> TryChangeUsername(Account_TryChangeUsername command, CancellationToken cancellationToken)
+    public virtual async Task<bool> TryChangeUsername(Account_TryChangeUsername command, CancellationToken cancellationToken = default)
     {
-        var context = CommandContext.GetCurrent();
-        if (Computed.IsInvalidating())
-        {
-            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
-            if (invRecord != null)
-            {
-                _ = DependsOnAccountRecord(invRecord.Id);
-                _ = DependsOnAccountUsername(invRecord.Id);
-
-                var username = invRecord.Username;
-                if (!string.IsNullOrWhiteSpace(username))
-                {
-                    _ = CheckIsValidUsername(username);
-                }
-            }
-
-            var invPreviousUsername = context.Operation().Items.Get<string>();
-            if (!string.IsNullOrWhiteSpace(invPreviousUsername))
-            {
-                _ = CheckIsValidUsername(invPreviousUsername);
-                _ = TryGetAccountRecordUsername(invPreviousUsername);
-            }
-
-            return default;
-        }
-
-        var activeAccountRecord = await TryGetActiveAccountRecord(command.Session).ConfigureAwait(false);
-        if (activeAccountRecord == null)
-        {
-            return false;
-        }
-
-        var newUsername = command.NewUsername;
-        var accountRecord = activeAccountRecord;
-        if (activeAccountRecord.AccountType >= AccountType.Admin && command.AccountId > 0)
-        {
-            if (!DatabaseHelpers.IsValidAccountName(newUsername))
-            {
-                newUsername = $"User-{command.AccountId}";
-            }
-
-            accountRecord = await TryGetAccountRecord(command.AccountId).ConfigureAwait(false);
-        }
-        else if (!DatabaseHelpers.IsValidAccountName(newUsername))
-        {
-            return false;
-        }
-        else if (accountRecord.Username.StartsWith("User-"))
-        {
-        }
-        else if (accountRecord.UsernameChangedTime + _commonServices.Config.UsernameChangeDelay > SystemClock.Instance.GetCurrentInstant())
-        {
-            return false;
-        }
-
-        if (accountRecord == null)
-        {
-            return false;
-        }
-
-        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        var usernameExists = await database.Accounts.AnyAsync(x => x.Username == newUsername, cancellationToken).ConfigureAwait(false);
-        if (usernameExists)
-        {
-            return false;
-        }
-
-        var previousUsername = accountRecord.Username;
-        database.Attach(accountRecord);
-        accountRecord.Username = newUsername;
-        accountRecord.UsernameSearchable = DatabaseHelpers.GetSearchableName(newUsername);
-        accountRecord.UsernameChangedTime = SystemClock.Instance.GetCurrentInstant();
-
-        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-        await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
-        {
-            AccountId = accountRecord.Id,
-            Type = AccountHistoryType.UsernameChanged
-            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-        }, cancellationToken).ConfigureAwait(false);
-
-        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
-        context.Operation().Items.Set(previousUsername);
-
-        return true;
+        return await AccountServices_TryChangeUsername.TryHandle(_commonServices, this, command).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> TryChangeIsPrivate(Account_TryChangeIsPrivate command, CancellationToken cancellationToken = default)
     {
-        var context = CommandContext.GetCurrent();
-        if (Computed.IsInvalidating())
-        {
-            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
-            if (invRecord != null)
-            {
-                _ = DependsOnAccountRecord(invRecord.Id);
-            }
-
-            return default;
-        }
-
-        var accountRecord = await TryGetActiveAccountRecord(command.Session).ConfigureAwait(false);
-        if (accountRecord == null)
-        {
-            return false;
-        }
-
-        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        database.Attach(accountRecord);
-        accountRecord.IsPrivate = command.NewValue;
-        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
-
-        return command.NewValue;
+        return await AccountServices_TryChangeIsPrivate.TryHandle(_commonServices, this, command).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> TryChangeBattleTagVisibility(Account_TryChangeBattleTagVisibility command, CancellationToken cancellationToken = default)
     {
-        var context = CommandContext.GetCurrent();
-        if (Computed.IsInvalidating())
-        {
-            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
-            if (invRecord != null)
-            {
-                _ = DependsOnAccountRecord(invRecord.Id);
-            }
-
-            return default;
-        }
-
-        var accountRecord = await TryGetActiveAccountRecord(command.Session).ConfigureAwait(false);
-        if (accountRecord == null)
-        {
-            return false;
-        }
-
-        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        database.Attach(accountRecord);
-        accountRecord.BattleTagIsPublic = command.NewValue;
-
-        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
-
-        return command.NewValue;
+        return await AccountServices_TryChangeBattleTagVisibility.TryHandle(_commonServices, this, command).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<string> TryChangeAvatar(Account_TryChangeAvatar command, CancellationToken cancellationToken = default)
     {
-        var context = CommandContext.GetCurrent();
-        if (Computed.IsInvalidating())
-        {
-            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
-            if (invRecord != null)
-            {
-                _ = DependsOnAccountRecord(invRecord.Id);
-                _ = DependsOnAccountAvatar(invRecord.Id);
-                _ = _commonServices.MediaServices.TryGetUserAvatar($"{ZExtensions.AvatarBlobFilePrefix}{invRecord.Id}-0.jpg");
-                _ = _commonServices.MediaServices.TryGetUserAvatar($"{ZExtensions.AvatarBlobFilePrefix}{invRecord.Id}-1.jpg");
-            }
-
-            return default;
-        }
-
-        var activeAccountViewModel = await TryGetActiveAccount(command.Session).ConfigureAwait(false);
-        if (activeAccountViewModel == null)
-        {
-            return null;
-        }
-
-        if (!activeAccountViewModel.CanChangeAvatar())
-        {
-            return null;
-        }
-
-        var accountViewModel = activeAccountViewModel;
-        if (activeAccountViewModel.CanChangeAnyUsersAvatar() && command.AccountId > 0)
-        {
-            accountViewModel = await TryGetAccountById(command.Session, command.AccountId).ConfigureAwait(false);
-        }
-
-        if (accountViewModel == null)
-        {
-            return null;
-        }
-
-        var newAvatar = command.NewAvatar;
-        if (accountViewModel.Avatar == newAvatar)
-        {
-            return accountViewModel.Avatar;
-        }
-
-        if (string.IsNullOrWhiteSpace(newAvatar))
-        {
-            newAvatar = null;
-        }
-        else if (newAvatar.StartsWith($"{ZExtensions.CustomUserAvatarPathPrefix}{accountViewModel.Id}-"))
-        {
-        }
-        else if (newAvatar.StartsWith("https://render") && newAvatar.Contains(".worldofwarcraft.com"))
-        {
-            var character = accountViewModel.GetAllCharactersSafe().FirstOrDefault(x => x.AvatarLink == newAvatar);
-            if (character == null)
-            {
-                return null;
-            }
-        }
-        else
-        {
-            return null;
-        }
-
-        var accountRecord = await TryGetActiveAccountRecord(command.Session).ConfigureAwait(false);
-        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        database.Attach(accountRecord);
-        accountRecord.Avatar = newAvatar;
-
-        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
-
-        return newAvatar;
+        return await AccountServices_TryChangeAvatar.TryHandle(_commonServices, this, command).ConfigureAwait(false);
     }
 
     public Task<string> TryChangeAvatarUpload(Session session, byte[] buffer)
@@ -697,204 +332,19 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
     [CommandHandler]
     public virtual async Task<string> TryChangeAvatarUpload(Account_TryChangeAvatarUpload command, CancellationToken cancellationToken = default)
     {
-        var context = CommandContext.GetCurrent();
-        if (Computed.IsInvalidating())
-        {
-            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
-            if (invRecord != null)
-            {
-                _ = DependsOnAccountRecord(invRecord.Id);
-                _ = DependsOnAccountAvatar(invRecord.Id);
-            }
-
-            return default;
-        }
-
-        var accountViewModel = await TryGetActiveAccount(command.Session).ConfigureAwait(false);
-        if (accountViewModel == null)
-        {
-            return null;
-        }
-
-        if (!accountViewModel.CanUploadAvatar())
-        {
-            return null;
-        }
-
-        var newAvatar = accountViewModel.Avatar;
-        var avatarIndex = accountViewModel.AccountFlags.HasFlag(AccountFlags.SecondAvatarIndex) ? 1 : 0;
-        try
-        {
-            var buffer = command.ImageData;
-            var bufferCount = buffer.Length;
-            if (bufferCount == 0 || bufferCount > ZExtensions.MaxAvatarFileSizeInBytes)
-            {
-                return newAvatar;
-            }
-
-            await using var memoryStream = new MemoryStream();
-            using var image = Image.Load(buffer);
-            image.Metadata.ExifProfile = null;
-
-            var encoder = new JpegEncoder();
-
-            await image.SaveAsJpegAsync(memoryStream, encoder, cancellationToken).ConfigureAwait(false);
-            memoryStream.Position = 0;
-
-            BinaryData dataToUpload = null;
-            if (memoryStream.Length > 1.Megabytes().Bytes)
-            {
-                encoder.Quality = accountViewModel.GetUploadQuality();
-
-                await image.SaveAsJpegAsync(memoryStream, encoder, cancellationToken).ConfigureAwait(false);
-                memoryStream.Position = 0;
-
-                dataToUpload = new BinaryData(memoryStream.ToArray());
-            }
-
-            var blobName = $"{ZExtensions.AvatarBlobFilePrefix}{accountViewModel.Id}-{avatarIndex}.jpg";
-            if (_commonServices.Config.UploadToBlobStorage && dataToUpload != null)
-            {
-                var blobClient = new Azure.Storage.Blobs.BlobClient(_commonServices.Config.BlobStorageConnectionString, ZExtensions.BlobUserAvatars, blobName);
-                var result = await blobClient.UploadAsync(dataToUpload, true, cancellationToken).ConfigureAwait(false);
-                if (result.Value == null)
-                {
-                    return newAvatar;
-                }
-            }
-
-            newAvatar = $"{ZExtensions.BlobUserAvatarsStoragePath}{blobName}";
-        }
-        catch (Exception)
-        {
-            return newAvatar;
-        }
-
-        if (accountViewModel.Avatar == newAvatar)
-        {
-            return accountViewModel.Avatar;
-        }
-
-        var accountRecord = await TryGetActiveAccountRecord(command.Session).ConfigureAwait(false);
-        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        database.Attach(accountRecord);
-        accountRecord.Avatar = newAvatar;
-        accountRecord.AccountFlags = avatarIndex == 0 ? accountRecord.AccountFlags | AccountFlags.SecondAvatarIndex : accountRecord.AccountFlags & ~AccountFlags.SecondAvatarIndex;
-
-        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
-
-        return newAvatar;
+        return await AccountServices_TryChangeAvatarUpload.TryHandle(_commonServices, this, command).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<string> TryChangeSocialLink(Account_TryChangeSocialLink command, CancellationToken cancellationToken = default)
     {
-        var context = CommandContext.GetCurrent();
-        if (Computed.IsInvalidating())
-        {
-            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
-            if (invRecord != null)
-            {
-                _ = DependsOnAccountRecord(invRecord.Id);
-            }
-
-            return default;
-        }
-
-        var accountRecord = await TryGetActiveAccountRecord(command.Session).ConfigureAwait(false);
-        if (accountRecord == null)
-        {
-            return null;
-        }
-
-        var newValue = command.NewValue;
-        if (!string.IsNullOrWhiteSpace(newValue) && accountRecord.AccountType < AccountPermissionExt.Permission_CanChangeSocialLinks)
-        {
-            return null;
-        }
-
-        if (accountRecord.AccountType >= AccountType.Admin && command.AccountId > 0)
-        {
-            accountRecord = await TryGetAccountRecord(command.AccountId).ConfigureAwait(false);
-        }
-
-        var helper = SocialHelpers.All[command.LinkId];
-        var previous = ServerSocialHelpers.GetterFunc[helper.LinkId](accountRecord);
-        if (!string.IsNullOrWhiteSpace(newValue) && !helper.ValidatorFunc(newValue))
-        {
-            return previous;
-        }
-
-        if (previous == newValue)
-        {
-            return previous;
-        }
-
-        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        database.Attach(accountRecord);
-
-        ServerSocialHelpers.SetterFunc[helper.LinkId](accountRecord, newValue);
-
-        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
-
-        return newValue;
+        return await AccountServices_TryChangeSocialLink.TryHandle(_commonServices, this, command).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> AddNewHistoryItem(Account_AddNewHistoryItem command, CancellationToken cancellationToken = default)
     {
-        var context = CommandContext.GetCurrent();
-        if (Computed.IsInvalidating())
-        {
-            var invRecord = context.Operation().Items.Get<Account_InvalidateFollowing>();
-            if (invRecord != null)
-            {
-                _ = TryGetAccountHistory(invRecord.AccountId, invRecord.Page);
-            }
-
-            return default;
-        }
-
-        if (command.AccountId == 0)
-        {
-            throw new NotImplementedException();
-        }
-
-        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        var query = from r in database.AccountHistory
-                    where r.AccountId == command.AccountId &&
-                          r.OtherAccountId == command.OtherAccountId &&
-                          r.Type == command.Type &&
-                          r.TargetId == command.TargetId &&
-                          r.TargetPostId == command.TargetPostId &&
-                          r.TargetCommentId == command.TargetCommentId
-                    select r;
-
-        var record = await query.FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
-        if (record == null)
-        {
-            record = new AccountHistoryRecord();
-
-            database.AccountHistory.Add(record);
-        }
-
-        record.Type = command.Type;
-        record.AccountId = command.AccountId;
-        record.OtherAccountId = command.OtherAccountId;
-        record.TargetId = command.TargetId;
-        record.TargetPostId = command.TargetPostId;
-        record.TargetCommentId = command.TargetCommentId;
-        record.CreatedTime = SystemClock.Instance.GetCurrentInstant();
-
-        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-        context.Operation().Items.Set(new Account_InvalidateFollowing(record.AccountId, 1));
-
-        return true;
+        return await AccountServices_AddNewHistoryItem.TryHandle(_commonServices, this, command).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -1000,7 +450,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<AccountRecord> TryGetActiveAccountRecord(Session session)
+    public virtual async Task<AccountRecord> TryGetActiveAccountRecord(Session session)
     {
         if (session == null)
         {
@@ -1022,5 +472,10 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices
         await DependsOnAccountRecord(accountRecord.Id).ConfigureAwait(false);
 
         return accountRecord;
+    }
+
+    public Task<AppDbContext> CreateCommandDbContext()
+    {
+        return CreateCommandDbContext(true);
     }
 }

@@ -1,23 +1,22 @@
 namespace AzerothMemories.WebServer.Controllers;
 
-[ApiController, JsonifyErrors]
+[ApiController]
+[JsonifyErrors]
+[UseDefaultSession]
 //[AutoValidateAntiforgeryToken]
 [Route("api/[controller]/[action]")]
 public sealed class CharacterController : ControllerBase, ICharacterServices
 {
     private readonly CommonServices _commonServices;
-    private readonly ISessionResolver _sessionResolver;
 
-    public CharacterController(CommonServices commonServices, ISessionResolver sessionResolver)
+    public CharacterController(CommonServices commonServices)
     {
         _commonServices = commonServices;
-        _sessionResolver = sessionResolver;
     }
 
     [HttpPost]
     public Task<bool> TryChangeCharacterAccountSync(Character_TryChangeCharacterAccountSync command, CancellationToken cancellationToken = default)
     {
-        command.UseDefaultSession(_sessionResolver);
         return _commonServices.CharacterServices.TryChangeCharacterAccountSync(command, cancellationToken);
     }
 
@@ -42,14 +41,12 @@ public sealed class CharacterController : ControllerBase, ICharacterServices
     [HttpPost]
     public Task<bool> TrySetCharacterDeleted(Character_TrySetCharacterDeleted command, CancellationToken cancellationToken = default)
     {
-        command.UseDefaultSession(_sessionResolver);
         return _commonServices.CharacterServices.TrySetCharacterDeleted(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<bool> TrySetCharacterRenamedOrTransferred(Character_TrySetCharacterRenamedOrTransferred command, CancellationToken cancellationToken = default)
     {
-        command.UseDefaultSession(_sessionResolver);
         return _commonServices.CharacterServices.TrySetCharacterRenamedOrTransferred(command, cancellationToken);
     }
 }

@@ -5,14 +5,12 @@
 @{
     await _serverAuthHelper.UpdateAuthState(HttpContext).ConfigureAwait(true);
     var authSchemas = await _serverAuthHelper.GetSchemas(HttpContext).ConfigureAwait(true);
-    var sessionId = _serverAuthHelper.Session.Id.Value;
     var isCloseWindowRequest = _serverAuthHelper.IsCloseWindowRequest(HttpContext, out var closeWindowFlowName);
     Layout = null;
 }
 
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -30,7 +28,6 @@
         <script src="_content/Stl.Fusion.Blazor/scripts/fusionAuth.js"></script>
         <script>
             window.FusionAuth.schemas = "@authSchemas";
-            window.FusionAuth.sessionId = "@sessionId";
         </script>
 
         <link rel="apple-touch-icon" sizes="76x76" href="/fav/apple-touch-icon.png">

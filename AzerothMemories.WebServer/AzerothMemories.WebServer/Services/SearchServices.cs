@@ -137,7 +137,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                 Year = year,
                 ZoneId = timeZoneId,
                 StartTimeMs = currentActivitySet.StartTime.ToUnixTimeMilliseconds(),
-                EndTimeMs = currentActivitySet.StartTime.ToUnixTimeMilliseconds(),
+                EndTimeMs = currentActivitySet.EndTime.ToUnixTimeMilliseconds(),
             };
 
             var dailyTopAchievements = currentActivitySet.AchievementCounts.OrderByDescending(x => x.Value).Take(topValueCount);
@@ -373,7 +373,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                 Year = year,
                 ZoneId = timeZoneId,
                 StartTimeMs = currentActivitySet.StartTime.ToUnixTimeMilliseconds(),
-                EndTimeMs = currentActivitySet.StartTime.ToUnixTimeMilliseconds(),
+                EndTimeMs = currentActivitySet.EndTime.ToUnixTimeMilliseconds(),
             };
 
             foreach (var achievement in currentActivitySet.Achievements)
@@ -417,6 +417,9 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     [ComputeMethod(AutoInvalidateTime = 60 * 10)]
     protected virtual async Task<Dictionary<int, ActivitySetUser>> TryGetUserActivitySetFull(int accountId, string timeZoneId, int inZoneDay, int inZoneMonth)
     {
+        await _commonServices.PostServices.DependsOnPostsBy(accountId).ConfigureAwait(false);
+        await _commonServices.AccountServices.DependsOnAccountAchievements(accountId).ConfigureAwait(false);
+
         var results = new Dictionary<int, ActivitySetUser>();
         var totals = new ActivitySetUser { Year = _totalYearValue };
         results.Add(totals.Year, totals);
@@ -431,7 +434,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
             {
                 Year = year,
                 StartTime = timeZone.AtStartOfDay(new LocalDate(year, inZoneMonth, inZoneDay)).ToInstant(),
-                EndTime = timeZone.AtStartOfDay(new LocalDate(year, inZoneMonth, inZoneDay)).ToInstant(),
+                EndTime = timeZone.AtStartOfDay(new LocalDate(year, inZoneMonth, inZoneDay).PlusDays(1)).ToInstant(),
             };
 
             results[year] = set;
@@ -470,8 +473,8 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
             if (itemZonedDateTime.Day == inZoneDay && itemZonedDateTime.Month == inZoneMonth)
             {
                 var activitySet = results[itemZonedDateTime.Year];
-                activitySet.Achievements.Add(firstAchievement.AchievementId);
-                totals.Achievements.Add(firstAchievement.AchievementId);
+                activitySet.FirstAchievements.Add(firstAchievement.AchievementId);
+                totals.FirstAchievements.Add(firstAchievement.AchievementId);
             }
         }
 

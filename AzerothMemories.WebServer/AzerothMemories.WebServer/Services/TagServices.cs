@@ -52,6 +52,11 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
                 throw new NotImplementedException();
             }
 
+            if (hashTagText.Contains('-'))
+            {
+                hashTagText = hashTagText.Split('-')[1];
+            }
+
             return new PostTagInfo(tagType, tagId, hashTagText, null);
         }
 

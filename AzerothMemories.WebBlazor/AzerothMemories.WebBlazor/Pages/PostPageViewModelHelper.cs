@@ -44,11 +44,11 @@ public sealed class PostPageViewModelHelper
 
         if (accountId > 0)
         {
-            AccountViewModel = await _services.ComputeServices.AccountServices.TryGetAccountById(null, accountId);
+            AccountViewModel = await _services.ComputeServices.AccountServices.TryGetAccountById(Session.Default, accountId);
         }
         else if (!string.IsNullOrWhiteSpace(accountString))
         {
-            AccountViewModel = await _services.ComputeServices.AccountServices.TryGetAccountByUsername(null, accountString);
+            AccountViewModel = await _services.ComputeServices.AccountServices.TryGetAccountByUsername(Session.Default, accountString);
         }
 
         if (AccountViewModel == null)
@@ -72,7 +72,7 @@ public sealed class PostPageViewModelHelper
 
         if (AccountViewModel != null)
         {
-            PostViewModel = await _services.ComputeServices.PostServices.TryGetPostViewModel(null, AccountViewModel.Id, postId, ServerSideLocaleExt.GetServerSideLocale());
+            PostViewModel = await _services.ComputeServices.PostServices.TryGetPostViewModel(Session.Default, AccountViewModel.Id, postId, ServerSideLocaleExt.GetServerSideLocale());
 
             if (PostViewModel == null)
             {
@@ -110,8 +110,8 @@ public sealed class PostPageViewModelHelper
             focusedCommentId = 0;
         }
 
-        CommentReactions = await _services.ComputeServices.PostServices.TryGetMyCommentReactions(null, PostViewModel.Id);
-        PostCommentPageViewModel = await _services.ComputeServices.PostServices.TryGetCommentsPage(null, PostViewModel.Id, currentPage, focusedCommentId);
+        CommentReactions = await _services.ComputeServices.PostServices.TryGetMyCommentReactions(Session.Default, PostViewModel.Id);
+        PostCommentPageViewModel = await _services.ComputeServices.PostServices.TryGetCommentsPage(Session.Default, PostViewModel.Id, currentPage, focusedCommentId);
 
         await UpdatePostCommentPageViewModel(pageString, focusedCommentIdString);
 

@@ -57,7 +57,7 @@ public sealed class GuildPageViewModel : PersistentStateViewModel
 
         if (id > 0)
         {
-            guildViewModel = await Services.ComputeServices.GuildServices.TryGetGuild(null, id);
+            guildViewModel = await Services.ComputeServices.GuildServices.TryGetGuild(Session.Default, id);
         }
         else
         {
@@ -92,7 +92,7 @@ public sealed class GuildPageViewModel : PersistentStateViewModel
                 return null;
             }
 
-            guildViewModel = await Services.ComputeServices.GuildServices.TryGetGuild(null, regionInfo.Region, _realm, _name);
+            guildViewModel = await Services.ComputeServices.GuildServices.TryGetGuild(Session.Default, regionInfo.Region, _realm, _name);
         }
 
         if (guildViewModel == null)

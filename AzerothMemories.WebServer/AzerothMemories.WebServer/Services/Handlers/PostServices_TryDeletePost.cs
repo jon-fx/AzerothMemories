@@ -1,17 +1,8 @@
 ﻿namespace AzerothMemories.WebServer.Services.Handlers;
 
-internal sealed class PostServices_TryDeletePost_Handler : IMoaCommandHandler<Post_TryDeletePost, long>
+internal static class PostServices_TryDeletePost
 {
-    private readonly CommonServices _commonServices;
-    private readonly Func<Task<AppDbContext>> _databaseContextGenerator;
-
-    public PostServices_TryDeletePost_Handler(CommonServices commonServices, Func<Task<AppDbContext>> databaseContextGenerator)
-    {
-        _commonServices = commonServices;
-        _databaseContextGenerator = databaseContextGenerator;
-    }
-
-    public async Task<long> TryHandle(Post_TryDeletePost command)
+    public static async Task<long> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryDeletePost command)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -19,33 +10,39 @@ internal sealed class PostServices_TryDeletePost_Handler : IMoaCommandHandler<Po
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)
             {
-                _ = _commonServices.PostServices.DependsOnPost(invPost.PostId);
+                _ = commonServices.PostServices.DependsOnPost(invPost.PostId);
             }
 
             var invAccount = context.Operation().Items.Get<Post_InvalidateAccount>();
             if (invAccount != null && invAccount.AccountId > 0)
             {
-                _ = _commonServices.PostServices.DependsOnPostsBy(invAccount.AccountId);
-                _ = _commonServices.AccountServices.GetPostCount(invAccount.AccountId);
+                _ = commonServices.PostServices.DependsOnPostsBy(invAccount.AccountId);
+                _ = commonServices.AccountServices.GetPostCount(invAccount.AccountId);
             }
 
             var invRecentPosts = context.Operation().Items.Get<Post_InvalidateRecentPost>();
             if (invRecentPosts != null)
             {
-                _ = _commonServices.PostServices.DependsOnNewPosts();
+                _ = commonServices.PostServices.DependsOnNewPosts();
+            }
+
+            var invalidateReports = context.Operation().Items.Get<Admin_InvalidateReports>();
+            if (invalidateReports != null)
+            {
+                _ = commonServices.PostServices.DependsOnPostReports();
             }
 
             return default;
         }
 
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
+        var activeAccount = await commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
         if (activeAccount == null)
         {
             return 0;
         }
 
         var postId = command.PostId;
-        var postRecord = await _commonServices.PostServices.TryGetPostRecord(postId).ConfigureAwait(false);
+        var postRecord = await commonServices.PostServices.TryGetPostRecord(postId).ConfigureAwait(false);
         if (postRecord == null)
         {
             return 0;
@@ -64,7 +61,7 @@ internal sealed class PostServices_TryDeletePost_Handler : IMoaCommandHandler<Po
             return 0;
         }
 
-        await using var database = await _databaseContextGenerator().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
         database.Attach(postRecord);
         postRecord.DeletedTimeStamp = now;
 
@@ -78,9 +75,15 @@ internal sealed class PostServices_TryDeletePost_Handler : IMoaCommandHandler<Po
             }
         }
 
+        var reports = await database.PostReports.Where(x => x.PostId == command.PostId).ToArrayAsync().ConfigureAwait(false);
+        foreach (var report in reports)
+        {
+            report.ResolvedByAccountId = activeAccount.Id;
+        }
+
         await database.SaveChangesAsync().ConfigureAwait(false);
 
-        await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
             AccountId = postRecord.AccountId,
             //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
@@ -92,6 +95,11 @@ internal sealed class PostServices_TryDeletePost_Handler : IMoaCommandHandler<Po
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
         context.Operation().Items.Set(new Post_InvalidateAccount(postRecord.AccountId));
+
+        if (reports.Length > 0)
+        {
+            context.Operation().Items.Set(new Admin_InvalidateReports(true));
+        }
 
         if (postRecord.PostVisibility == 0)
         {

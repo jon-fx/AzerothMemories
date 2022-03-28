@@ -26,7 +26,7 @@ internal abstract class UpdateHandlerBase<TRecord, TRequestResult> : IUpdateHand
 
             await InternalExecute(context, database, record, requestResult.ResultData).ConfigureAwait(false);
         }
-        else
+        else if (updateChildRecord.UpdateFailCounter < byte.MaxValue)
         {
             updateChildRecord.UpdateFailCounter++;
         }

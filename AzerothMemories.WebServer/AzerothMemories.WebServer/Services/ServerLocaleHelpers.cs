@@ -58,6 +58,6 @@ public static class ServerLocaleHelpers
 
     public static IQueryable<BlizzardDataRecord> GetSearchQuery(AppDbContext database, ServerSideLocale locale, string searchString)
     {
-        return _searchFunc[(int) locale](database, searchString);
+        return _searchFunc[(int)locale](database, searchString);
     }
 }

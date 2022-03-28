@@ -78,12 +78,12 @@ else
         AccountFollowingStatus? result;
         if (newStatus == AccountFollowingStatus.None)
         {
-            var result2 = await Services.ClientServices.CommandRunner.Run(new Following_TryStopFollowing { OtherAccountId = OtherAccountId});
+            var result2 = await Services.ClientServices.CommandRunner.Run(new Following_TryStopFollowing(Session.Default, OtherAccountId));
             result = result2.Result;
         }
         else
         {
-            var result2 = await Services.ClientServices.CommandRunner.Run(new Following_TryStartFollowing { OtherAccountId = OtherAccountId});
+            var result2 = await Services.ClientServices.CommandRunner.Run(new Following_TryStartFollowing(Session.Default, OtherAccountId));
             result = result2.Result;
         }
 
@@ -107,7 +107,7 @@ else
 
         Exceptions.ThrowIf(viewModel.FollowerId != OtherAccountId);
 
-        var result = await Services.ClientServices.CommandRunner.Run(new Following_TryAcceptFollower { OtherAccountId = viewModel.FollowerId});
+        var result = await Services.ClientServices.CommandRunner.Run(new Following_TryAcceptFollower(Session.Default, viewModel.FollowerId));
         if (result.Result != null)
         {
             viewModel.Status = _followerStatus = result.Result.Value;
@@ -121,7 +121,7 @@ else
             return;
         }
 
-        var result = await Services.ClientServices.CommandRunner.Run(new Following_TryRemoveFollower { OtherAccountId = viewModel.FollowerId});
+        var result = await Services.ClientServices.CommandRunner.Run(new Following_TryRemoveFollower(Session.Default, viewModel.FollowerId));
         if (result.Result != null)
         {
             viewModel.Status = _followerStatus = result.Result.Value;

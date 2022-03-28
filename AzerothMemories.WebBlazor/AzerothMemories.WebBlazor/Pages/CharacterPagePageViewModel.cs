@@ -60,7 +60,7 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel
 
         if (id > 0)
         {
-            var results = await Services.ComputeServices.CharacterServices.TryGetCharacter(null, id);
+            var results = await Services.ComputeServices.CharacterServices.TryGetCharacter(Session.Default, id);
             if (results == null || results.CharacterViewModel == null)
             {
                 ErrorMessage = "Invalid Character";
@@ -102,7 +102,7 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel
             return null;
         }
 
-        var viewModel = await Services.ComputeServices.CharacterServices.TryGetCharacter(null, regionInfo.Region, _realm, _name);
+        var viewModel = await Services.ComputeServices.CharacterServices.TryGetCharacter(Session.Default, regionInfo.Region, _realm, _name);
         if (viewModel == null || viewModel.CharacterViewModel == null)
         {
             ErrorMessage = "Invalid Character";

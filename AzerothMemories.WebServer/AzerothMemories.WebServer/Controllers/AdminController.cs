@@ -1,16 +1,64 @@
 namespace AzerothMemories.WebServer.Controllers;
 
-[ApiController, JsonifyErrors]
+[ApiController]
+[JsonifyErrors]
+[UseDefaultSession]
 //[AutoValidateAntiforgeryToken]
 [Route("api/[controller]/[action]")]
 public sealed class AdminController : ControllerBase, IAdminServices
 {
     private readonly CommonServices _commonServices;
-    private readonly ISessionResolver _sessionResolver;
 
-    public AdminController(CommonServices commonServices, ISessionResolver sessionResolver)
+    public AdminController(CommonServices commonServices)
     {
         _commonServices = commonServices;
-        _sessionResolver = sessionResolver;
+    }
+
+    [HttpGet, Publish]
+    public Task<AdminCountersViewModel> TryGetUserCounts(Session session)
+    {
+        return _commonServices.AdminServices.TryGetUserCounts(session);
+    }
+
+    [HttpGet, Publish]
+    public Task<ReportedPostViewModel[]> TryGetReportedPosts(Session session)
+    {
+        return _commonServices.AdminServices.TryGetReportedPosts(session);
+    }
+
+    [HttpGet, Publish]
+    public Task<ReportedPostCommentsViewModel[]> TryGetReportedComments(Session session)
+    {
+        return _commonServices.AdminServices.TryGetReportedComments(session);
+    }
+
+    [HttpGet, Publish]
+    public Task<ReportedPostTagsViewModel[]> TryGetReportedTags(Session session)
+    {
+        return _commonServices.AdminServices.TryGetReportedTags(session);
+    }
+
+    [HttpPost]
+    public Task<bool> SetPostReportResolved([FromBody] Admin_SetPostReportResolved command, CancellationToken cancellationToken = default)
+    {
+        return _commonServices.AdminServices.SetPostReportResolved(command, cancellationToken);
+    }
+
+    [HttpPost]
+    public Task<bool> SetPostCommentReportResolved([FromBody] Admin_SetPostCommentReportResolved command, CancellationToken cancellationToken = default)
+    {
+        return _commonServices.AdminServices.SetPostCommentReportResolved(command, cancellationToken);
+    }
+
+    [HttpPost]
+    public Task<bool> SetPostTagReportResolved([FromBody] Admin_SetPostTagReportResolved command, CancellationToken cancellationToken = default)
+    {
+        return _commonServices.AdminServices.SetPostTagReportResolved(command, cancellationToken);
+    }
+
+    [HttpPost]
+    public Task<bool> TryBanUser([FromBody] Admin_TryBanUser command, CancellationToken cancellationToken = default)
+    {
+        return _commonServices.AdminServices.TryBanUser(command, cancellationToken);
     }
 }

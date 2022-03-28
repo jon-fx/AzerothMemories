@@ -39,25 +39,68 @@ else
                 }
             </CardHeaderContent>
             <CardHeaderActions>
-                @foreach (var socialHelper in SocialHelpers.All)
-                {
-                    var suffix = AccountViewModel.SocialLinks[socialHelper.LinkId];
-                    if (string.IsNullOrWhiteSpace(suffix))
+                <MudStack Row="true" AlignItems="AlignItems.Center">
+                    @foreach (var socialHelper in SocialHelpers.All)
                     {
-                        continue;
+                        var suffix = AccountViewModel.SocialLinks[socialHelper.LinkId];
+                        if (string.IsNullOrWhiteSpace(suffix))
+                        {
+                            continue;
+                        }
+
+                        if (string.IsNullOrWhiteSpace(socialHelper.LinkPrefix))
+                        {
+                            continue;
+                        }
+
+                        var fullLink = $"{socialHelper.LinkPrefix}{suffix}";
+
+                        <a href="@fullLink" target="_blank">
+                            <MudAvatar Class="ma-1" Style="background-color: transparent" Size="Size.Small" Square="true" Image="@socialHelper.SocialIconLink"/>
+                        </a>
                     }
+                    <MudMenu Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Dense="true">
+                        <MudMenuItem Link="@($"/account/{AccountViewModel.Id}")">
+                            <MudTooltip Text="Link" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
+                                <MudIcon Icon="@Icons.Material.Filled.AddLink" Size="Size.Small" />
+                            </MudTooltip>
+                        </MudMenuItem>
+                            
+                            @if (Services.ClientServices.ActiveAccountServices.AccountViewModel.IsAdmin())
+                            {
+                                <MudMenuItem Link="@($"/admin")">
+                                    <MudTooltip Text="Admin" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
+                                        <MudIcon Icon="@Icons.Material.Filled.AdminPanelSettings" Size="Size.Small" />
+                                    </MudTooltip>
+                                </MudMenuItem>
 
-                    if (string.IsNullOrWhiteSpace(socialHelper.LinkPrefix))
-                    {
-                        continue;
-                    }
+                                <MudMenuItem OnClick="@ResetUsername">
+                                    <MudTooltip Text="Reset Username" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
+                                        <MudIcon Icon="@Icons.Material.Filled.ChangeCircle" Size="Size.Small" />
+                                    </MudTooltip>
+                                </MudMenuItem>
 
-                    var fullLink = $"{socialHelper.LinkPrefix}{suffix}";
+                                <MudMenuItem OnClick="@ResetAvatar">
+                                    <MudTooltip Text="Reset Avatar" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
+                                        <MudIcon Icon="@Icons.Material.Filled.ImageNotSupported" Size="Size.Small" />
+                                    </MudTooltip>
+                                </MudMenuItem>
 
-                    <a href="@fullLink">
-                        <MudAvatar Class="ma-1" Style="background-color: transparent" Size="Size.Small" Square="true" Image="@socialHelper.SocialIconLink" />
-                    </a>
-                }
+                                <MudMenuItem OnClick="@ResetSocialLinks">
+                                    <MudTooltip Text="Reset Social Links" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
+                                        <MudIcon Icon="@Icons.Custom.Brands.Discord" Size="Size.Small" />
+                                    </MudTooltip>
+                                </MudMenuItem>
+
+                                <MudMenuItem OnClick="@(() => BanUser(Duration.FromDays(1)))">
+                                    <MudTooltip Text="1 Day Ban" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
+                                        <MudIcon Icon="@Icons.Material.Filled.BackHand" Size="Size.Small" />
+                                    </MudTooltip>
+                                </MudMenuItem>
+                            }
+
+                    </MudMenu>
+                </MudStack>
             </CardHeaderActions>
         </MudCardHeader>
 
@@ -174,8 +217,27 @@ else
             }
         }
     }
+    
+    private async Task ResetUsername()
+    {
+        await Services.ClientServices.CommandRunner.Run(new Account_TryChangeUsername(Session.Default, AccountViewModel.Id, null));
+    }
+    
+    private async Task ResetAvatar()
+    {
+        await Services.ClientServices.CommandRunner.Run(new Account_TryChangeAvatar(Session.Default, AccountViewModel.Id, null));
+    }
 
-    //public bool IsDisabled => !Services.ActiveAccountServices.IsAccountActive;
+    private async Task ResetSocialLinks()
+    {
+        for (var i = 0; i < (int) SocialLinks.Count; i++)
+        {
+            await Services.ClientServices.CommandRunner.Run(new Account_TryChangeSocialLink(Session.Default, AccountViewModel.Id, i, null));
+        }
+    }
 
-    //public bool IsActiveAccount => Services.ActiveAccountServices.IsAccountActive && Services.ActiveAccountServices.IsActiveAccount(AccountViewModel.Id);
+    private async Task BanUser(Duration duration)
+    {
+        await Services.ClientServices.CommandRunner.Run(new Admin_TryBanUser(Session.Default, AccountViewModel.Id, (int)duration.TotalMilliseconds));
+    }
 }

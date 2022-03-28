@@ -61,8 +61,10 @@ public sealed class TimeProvider
         var dateFormat = zoned.LocalDateTime.ToString(shortDate ? culture.DateTimeFormat.ShortDatePattern : culture.DateTimeFormat.LongDatePattern, culture);
         var timeFormat = zoned.LocalDateTime.ToString(culture.DateTimeFormat.LongTimePattern, culture);
 
-        var nowZoned = SystemClock.Instance.GetCurrentInstant().InZone(timeZone);
-        var humanized = zoned.LocalDateTime.ToDateTimeUnspecified().Humanize(dateToCompareAgainst: nowZoned.LocalDateTime.ToDateTimeUnspecified());
+        //var nowZoned = now.InZone(timeZone);
+        //var humanized = zoned.LocalDateTime.ToDateTimeUnspecified().Humanize(dateToCompareAgainst: nowZoned.LocalDateTime.ToDateTimeUnspecified());
+        var nowMs = SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds();
+        var humanized = DateTimeOffset.FromUnixTimeMilliseconds(instant.ToUnixTimeMilliseconds()).Humanize(DateTimeOffset.FromUnixTimeMilliseconds(nowMs));
 
         var timeString = $"{dateFormat} {timeFormat} ({humanized}) ({timeZone.Id})";
         return timeString;

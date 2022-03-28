@@ -1,6 +1,6 @@
 ﻿@implements IDisposable
 
-<MudText Typo="@Typo" Inline="@Inline" Class="@Class">@TimeProvider.GetTimeAsLocalStringAgo(Time, true)</MudText>
+<MudText Typo="@Typo" Inline="@Inline" Align="Align" Color="Color" Class="@Class">@TimeProvider.GetTimeAsLocalStringAgo(Time, true)</MudText>
 
 @code
 {
@@ -10,6 +10,10 @@
     [Parameter] public string Class { get; init; }
 
     [Parameter] public bool Inline { get; init; }
+
+    [Parameter] public Align Align { get; init; } = Align.Inherit;
+
+    [Parameter] public Color Color { get; init; } = Color.Inherit;
 
     [Parameter, EditorRequired] public Typo Typo { get; init; }
 

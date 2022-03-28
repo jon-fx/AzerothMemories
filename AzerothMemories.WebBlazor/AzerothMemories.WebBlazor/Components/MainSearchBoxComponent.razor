@@ -65,7 +65,7 @@
             return Enumerable.Empty<MainSearchResult>();
         }
 
-        var results = await SearchServices.TrySearch(null, SearchType, searchString);
+        var results = await SearchServices.TrySearch(Session.Default, SearchType, searchString);
         return results;
     }
 

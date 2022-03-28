@@ -1,45 +1,38 @@
 ﻿namespace AzerothMemories.WebServer.Services.Handlers;
 
-internal sealed class PostServices_TryReportPostComment_Handler : IMoaCommandHandler<Post_TryReportPostComment, bool>
+internal static class PostServices_TryReportPostComment
 {
-    private readonly CommonServices _commonServices;
-    private readonly Func<Task<AppDbContext>> _databaseContextGenerator;
-
-    public PostServices_TryReportPostComment_Handler(CommonServices commonServices, Func<Task<AppDbContext>> databaseContextGenerator)
-    {
-        _commonServices = commonServices;
-        _databaseContextGenerator = databaseContextGenerator;
-    }
-
-    public async Task<bool> TryHandle(Post_TryReportPostComment command)
+    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryReportPostComment command)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
         {
+            _ = commonServices.PostServices.DependsOnPostCommentReports();
+
             return default;
         }
 
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
+        var activeAccount = await commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
         if (activeAccount == null)
         {
             return false;
         }
 
         var postId = command.PostId;
-        var postRecord = await _commonServices.PostServices.TryGetPostRecord(postId).ConfigureAwait(false);
+        var postRecord = await commonServices.PostServices.TryGetPostRecord(postId).ConfigureAwait(false);
         if (postRecord == null)
         {
             return false;
         }
 
-        var canSeePost = await _commonServices.PostServices.CanAccountSeePost(activeAccount.Id, postRecord).ConfigureAwait(false);
+        var canSeePost = await commonServices.PostServices.CanAccountSeePost(activeAccount.Id, postRecord).ConfigureAwait(false);
         if (!canSeePost)
         {
             return false;
         }
 
         var commentId = command.CommentId;
-        var allCommentPages = await _commonServices.PostServices.TryGetAllPostComments(postId).ConfigureAwait(false);
+        var allCommentPages = await commonServices.PostServices.TryGetAllPostComments(postId).ConfigureAwait(false);
         var allComments = allCommentPages[0].AllComments;
         if (!allComments.TryGetValue(commentId, out var commentViewModel))
         {
@@ -64,7 +57,7 @@ internal sealed class PostServices_TryReportPostComment_Handler : IMoaCommandHan
             reasonText = reasonText[..ZExtensions.MaxPostCommentLength];
         }
 
-        await using var database = await _databaseContextGenerator().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
 
         var reportQueryResult = await database.PostCommentReports.FirstOrDefaultAsync(r => r.CommentId == commentId && r.AccountId == activeAccount.Id).ConfigureAwait(false);
         if (reportQueryResult == null)
@@ -89,11 +82,12 @@ internal sealed class PostServices_TryReportPostComment_Handler : IMoaCommandHan
             reportQueryResult.Reason = reason;
             reportQueryResult.ReasonText = reasonText;
             reportQueryResult.ModifiedTime = SystemClock.Instance.GetCurrentInstant();
+            reportQueryResult.ResolvedByAccountId = null;
         }
 
         await database.SaveChangesAsync().ConfigureAwait(false);
 
-        await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
             AccountId = activeAccount.Id,
             //CreatedTime = SystemClock.Instance.GetCurrentInstant(),

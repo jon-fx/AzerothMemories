@@ -45,7 +45,7 @@ public sealed class PostCommentTreeNode
 
         ShowReactionIsLoading = true;
 
-        var reactionData = await services.ComputeServices.PostServices.TryGetCommentReactionData(null, PostId, Id);
+        var reactionData = await services.ComputeServices.PostServices.TryGetCommentReactionData(Session.Default, PostId, Id);
         if (reactionData == null)
         {
             ReactionData = null;

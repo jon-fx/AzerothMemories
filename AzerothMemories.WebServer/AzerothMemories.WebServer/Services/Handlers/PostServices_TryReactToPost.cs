@@ -1,17 +1,8 @@
 ﻿namespace AzerothMemories.WebServer.Services.Handlers;
 
-internal sealed class PostServices_TryReactToPost_Handler : IMoaCommandHandler<Post_TryReactToPost, int>
+internal static class PostServices_TryReactToPost
 {
-    private readonly CommonServices _commonServices;
-    private readonly Func<Task<AppDbContext>> _databaseContextGenerator;
-
-    public PostServices_TryReactToPost_Handler(CommonServices commonServices, Func<Task<AppDbContext>> databaseContextGenerator)
-    {
-        _commonServices = commonServices;
-        _databaseContextGenerator = databaseContextGenerator;
-    }
-
-    public async Task<int> TryHandle(Post_TryReactToPost command)
+    public static async Task<int> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryReactToPost command)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -19,20 +10,25 @@ internal sealed class PostServices_TryReactToPost_Handler : IMoaCommandHandler<P
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)
             {
-                _ = _commonServices.PostServices.DependsOnPost(invPost.PostId);
-                _ = _commonServices.PostServices.TryGetPostReactions(invPost.PostId);
+                _ = commonServices.PostServices.DependsOnPost(invPost.PostId);
+                _ = commonServices.PostServices.TryGetPostReactions(invPost.PostId);
             }
 
             var invAccount = context.Operation().Items.Get<Post_InvalidateAccount>();
             if (invAccount != null && invAccount.AccountId > 0)
             {
-                _ = _commonServices.AccountServices.GetReactionCount(invAccount.AccountId);
+                _ = commonServices.AccountServices.GetReactionCount(invAccount.AccountId);
             }
 
             return default;
         }
 
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
+        if (!Enum.IsDefined(command.NewReaction))
+        {
+            return 0;
+        }
+
+        var activeAccount = await commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
         if (activeAccount == null)
         {
             return 0;
@@ -44,19 +40,19 @@ internal sealed class PostServices_TryReactToPost_Handler : IMoaCommandHandler<P
         }
 
         var postId = command.PostId;
-        var postRecord = await _commonServices.PostServices.TryGetPostRecord(postId).ConfigureAwait(false);
+        var postRecord = await commonServices.PostServices.TryGetPostRecord(postId).ConfigureAwait(false);
         if (postRecord == null)
         {
             return 0;
         }
 
-        var canSeePost = await _commonServices.PostServices.CanAccountSeePost(activeAccount.Id, postRecord).ConfigureAwait(false);
+        var canSeePost = await commonServices.PostServices.CanAccountSeePost(activeAccount.Id, postRecord).ConfigureAwait(false);
         if (!canSeePost)
         {
             return 0;
         }
 
-        await using var database = await _databaseContextGenerator().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
         database.Attach(postRecord);
 
         var newReaction = command.NewReaction;
@@ -105,7 +101,7 @@ internal sealed class PostServices_TryReactToPost_Handler : IMoaCommandHandler<P
 
         if (newReaction != PostReaction.None)
         {
-            await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+            await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
             {
                 AccountId = activeAccount.Id,
                 OtherAccountId = postRecord.AccountId,
@@ -117,7 +113,7 @@ internal sealed class PostServices_TryReactToPost_Handler : IMoaCommandHandler<P
 
             if (activeAccount.Id != postRecord.AccountId)
             {
-                await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+                await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
                 {
                     AccountId = postRecord.AccountId,
                     OtherAccountId = activeAccount.Id,

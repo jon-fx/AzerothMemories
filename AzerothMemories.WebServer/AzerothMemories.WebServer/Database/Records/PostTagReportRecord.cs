@@ -17,4 +17,8 @@ public sealed class PostTagReportRecord : IDatabaseRecord
     [Column] public int TagId { get; set; }
 
     [Column] public Instant CreatedTime { get; set; }
+
+    [Column] public PostTagRecord Tag { get; set; }
+
+    [Column] public int? ResolvedByAccountId { get; set; }
 }

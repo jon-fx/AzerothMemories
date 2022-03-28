@@ -1,17 +1,8 @@
 ﻿namespace AzerothMemories.WebServer.Services.Handlers;
 
-internal sealed class PostServices_TryPublishComment_Handler : IMoaCommandHandler<Post_TryPublishComment, int>
+internal static class PostServices_TryPublishComment
 {
-    private readonly CommonServices _commonServices;
-    private readonly Func<Task<AppDbContext>> _databaseContextGenerator;
-
-    public PostServices_TryPublishComment_Handler(CommonServices commonServices, Func<Task<AppDbContext>> databaseContextGenerator)
-    {
-        _commonServices = commonServices;
-        _databaseContextGenerator = databaseContextGenerator;
-    }
-
-    public async Task<int> TryHandle(Post_TryPublishComment command)
+    public static async Task<int> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryPublishComment command)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -19,20 +10,22 @@ internal sealed class PostServices_TryPublishComment_Handler : IMoaCommandHandle
             var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)
             {
-                _ = _commonServices.PostServices.DependsOnPost(invPost.PostId);
-                _ = _commonServices.PostServices.TryGetAllPostComments(invPost.PostId);
+                _ = commonServices.PostServices.DependsOnPost(invPost.PostId);
+                _ = commonServices.PostServices.TryGetAllPostComments(invPost.PostId);
             }
 
             var invAccount = context.Operation().Items.Get<Post_InvalidateAccount>();
             if (invAccount != null && invAccount.AccountId > 0)
             {
-                _ = _commonServices.AccountServices.GetCommentCount(invAccount.AccountId);
+                _ = commonServices.AccountServices.GetCommentCount(invAccount.AccountId);
             }
+
+            _ = commonServices.PostServices.DependsOnNewComments();
 
             return default;
         }
 
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
+        var activeAccount = await commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
         if (activeAccount == null)
         {
             return 0;
@@ -44,13 +37,13 @@ internal sealed class PostServices_TryPublishComment_Handler : IMoaCommandHandle
         }
 
         var postId = command.PostId;
-        var postRecord = await _commonServices.PostServices.TryGetPostRecord(postId).ConfigureAwait(false);
+        var postRecord = await commonServices.PostServices.TryGetPostRecord(postId).ConfigureAwait(false);
         if (postRecord == null)
         {
             return 0;
         }
 
-        var canSeePost = await _commonServices.PostServices.CanAccountSeePost(activeAccount.Id, postRecord).ConfigureAwait(false);
+        var canSeePost = await commonServices.PostServices.CanAccountSeePost(activeAccount.Id, postRecord).ConfigureAwait(false);
         if (!canSeePost)
         {
             return 0;
@@ -69,7 +62,7 @@ internal sealed class PostServices_TryPublishComment_Handler : IMoaCommandHandle
 
         PostCommentViewModel parentComment = null;
         var parentCommentId = command.ParentCommentId;
-        var allCommentPages = await _commonServices.PostServices.TryGetAllPostComments(postId).ConfigureAwait(false);
+        var allCommentPages = await commonServices.PostServices.TryGetAllPostComments(postId).ConfigureAwait(false);
         var allComments = allCommentPages[0].AllComments;
         if (parentCommentId > 0 && !allComments.TryGetValue(parentCommentId, out parentComment))
         {
@@ -97,7 +90,7 @@ internal sealed class PostServices_TryPublishComment_Handler : IMoaCommandHandle
             usersThatCanBeTagged.TryAdd(parentComment.AccountId, parentComment.AccountUsername);
         }
 
-        var parseResult = _commonServices.MarkdownServices.GetCommentText(commentText, activeAccount.GetUserTagList(), false);
+        var parseResult = commonServices.MarkdownServices.GetCommentText(commentText, usersThatCanBeTagged, false);
         if (parseResult.ResultCode != MarkdownParserResultCode.Success)
         {
             return 0;
@@ -106,7 +99,7 @@ internal sealed class PostServices_TryPublishComment_Handler : IMoaCommandHandle
         var tagRecords = new HashSet<PostTagRecord>();
         foreach (var accountId in parseResult.AccountsTaggedInComment)
         {
-            var tagRecord = await _commonServices.TagServices.TryCreateTagRecord(postRecord, PostTagType.Account, accountId, PostTagKind.UserComment).ConfigureAwait(false);
+            var tagRecord = await commonServices.TagServices.TryCreateTagRecord(postRecord, PostTagType.Account, accountId, PostTagKind.UserComment).ConfigureAwait(false);
             if (tagRecord == null)
             {
                 return 0;
@@ -117,7 +110,7 @@ internal sealed class PostServices_TryPublishComment_Handler : IMoaCommandHandle
 
         foreach (var hashTag in parseResult.HashTagsTaggedInComment)
         {
-            var tagRecord = await _commonServices.TagServices.GetHashTagRecord(hashTag, PostTagKind.UserComment).ConfigureAwait(false);
+            var tagRecord = await commonServices.TagServices.GetHashTagRecord(hashTag, PostTagKind.UserComment).ConfigureAwait(false);
             if (tagRecord == null)
             {
                 return 0;
@@ -138,7 +131,7 @@ internal sealed class PostServices_TryPublishComment_Handler : IMoaCommandHandle
         //    linkStringBuilder.Append('|');
         //}
 
-        await using var database = await _databaseContextGenerator().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
         database.Attach(postRecord);
 
         var commentRecord = new PostCommentRecord
@@ -164,7 +157,7 @@ internal sealed class PostServices_TryPublishComment_Handler : IMoaCommandHandle
         await database.PostComments.AddAsync(commentRecord).ConfigureAwait(false);
         await database.SaveChangesAsync().ConfigureAwait(false);
 
-        await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
             AccountId = activeAccount.Id,
             OtherAccountId = postRecord.AccountId,
@@ -177,7 +170,7 @@ internal sealed class PostServices_TryPublishComment_Handler : IMoaCommandHandle
 
         if (activeAccount.Id != postRecord.AccountId)
         {
-            await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+            await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
             {
                 AccountId = postRecord.AccountId,
                 OtherAccountId = activeAccount.Id,
@@ -191,7 +184,7 @@ internal sealed class PostServices_TryPublishComment_Handler : IMoaCommandHandle
 
         foreach (var userTag in parseResult.AccountsTaggedInComment)
         {
-            await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+            await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
             {
                 AccountId = userTag,
                 OtherAccountId = activeAccount.Id,
