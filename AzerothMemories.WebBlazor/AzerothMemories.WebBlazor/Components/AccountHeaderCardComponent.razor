@@ -79,7 +79,7 @@ else
                             
                             @if (Services.ClientServices.ActiveAccountServices.AccountViewModel.IsAdmin())
                             {
-                                <MudMenuItem Link="@($"/admin")">
+                                <MudMenuItem Link="@("/admin")">
                                     <MudTooltip Text="Admin" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
                                         <MudIcon Icon="@Icons.Material.Filled.AdminPanelSettings" Size="Size.Small" />
                                     </MudTooltip>
@@ -100,6 +100,12 @@ else
                                 <MudMenuItem OnClick="@ResetSocialLinks">
                                     <MudTooltip Text="Reset Social Links" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
                                         <MudIcon Icon="@Icons.Custom.Brands.Discord" Size="Size.Small" />
+                                    </MudTooltip>
+                                </MudMenuItem>
+
+                                <MudMenuItem OnClick="@(() => BanUser(Duration.FromMilliseconds(0)))">
+                                    <MudTooltip Text="Remove Ban" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
+                                        <MudIcon Icon="@Icons.Material.Filled.Remove" Size="Size.Small" />
                                     </MudTooltip>
                                 </MudMenuItem>
 
