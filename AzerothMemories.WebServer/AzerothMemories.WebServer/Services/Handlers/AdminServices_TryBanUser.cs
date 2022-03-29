@@ -2,8 +2,36 @@
 
 internal static class AdminServices_TryBanUser
 {
-    public static Task<bool> TryHandle(CommonServices commonServices, AdminServices adminServices, Admin_TryBanUser command)
+    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Admin_TryBanUser command)
     {
-        throw new NotImplementedException();
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
+            if (invRecord != null)
+            {
+                _ = commonServices.AccountServices.DependsOnAccountRecord(invRecord.Id);
+            }
+
+            return default;
+        }
+
+        
+        var activeAccount = await commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
+        if (!activeAccount.IsAdmin())
+        {
+            return false;
+        }
+
+        var accountRecord = await commonServices.AccountServices.TryGetAccountRecord(command.AccountId).ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+        database.Attach(accountRecord);
+        accountRecord.BanExpireTime = SystemClock.Instance.GetCurrentInstant().Plus(Duration.FromSeconds(60));
+
+        await database.SaveChangesAsync().ConfigureAwait(false);
+
+        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+
+        return true;
     }
 }

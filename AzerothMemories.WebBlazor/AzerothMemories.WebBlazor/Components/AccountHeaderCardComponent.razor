@@ -9,9 +9,20 @@ else
                 <MudAvatar Size="Size.Large" Image="@AccountViewModel.Avatar">@AccountViewModel.GetAvatarText()</MudAvatar>
             </CardHeaderAvatar>
             <CardHeaderContent>
-                <a href="@($"/account/{AccountViewModel.Id}")" tabindex="-1">
-                    <MudText Inline="true" Typo="Typo.h6">@AccountViewModel.GetDisplayName()</MudText>
-                </a>
+                <MudStack Row="true" AlignItems="AlignItems.Center">
+                    <a href="@($"/account/{AccountViewModel.Id}")" tabindex="-1">
+                        <MudText Inline="true" Typo="Typo.h6">@AccountViewModel.GetDisplayName()</MudText>
+                    </a>
+                    
+                    @if (AccountViewModel.IsBanned())
+                    {
+                        <MudTooltip Text="Banned" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
+                            <MudIcon Icon="@Icons.Material.Filled.WarningAmber" Size="Size.Small" />
+                        </MudTooltip>
+                    }
+
+                </MudStack>
+
                 @{
                     if (string.IsNullOrWhiteSpace(AccountViewModel.BattleTag))
                     {

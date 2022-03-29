@@ -1,0 +1,48 @@
+﻿@inherits MoaComponentBase<AccountBannedHeaderViewModel>
+@{
+    var viewModel = ClientServices.ActiveAccountServices.AccountViewModel;
+    if (viewModel.IsBanned())
+    {
+        <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
+            <MudCardHeader Class="@ClassPresets.CardHeader">
+                <CardHeaderContent>
+                    <MudAlert Severity="Severity.Error" Icon="false" ContentAlignment="HorizontalAlignment.Center">
+
+                        <MudText Typo="Typo.h6" Align="Align.Center">Account Banned</MudText>
+                        <MudText Typo="Typo.h6" Align="Align.Center">@viewModel.BanReason</MudText>
+
+                        <MudText Typo="@Typo.h6" Align="Align.Center">@ClientServices.TimeProvider.GetTimeAsLocalStringAgo(viewModel.BanExpireTime, false)</MudText>
+                    </MudAlert>
+                </CardHeaderContent>
+            </MudCardHeader>
+        </MudCard>
+    }
+}
+
+@code
+{
+    private TimeAsLocalStringAgoHelper _helper;
+
+    protected override async Task OnComputeState(CancellationToken cancellationToken)
+    {
+        await base.OnComputeState(cancellationToken);
+
+        var viewModel = ClientServices.ActiveAccountServices.AccountViewModel;
+        if (viewModel.IsBanned())
+        {
+            _helper ??= new TimeAsLocalStringAgoHelper(() => InvokeAsync(StateHasChanged).AndForget());
+            _helper.TrySetTimer(viewModel.BanExpireTime);
+        }
+        else
+        {
+            _helper?.Dispose();
+        }
+    }
+
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+
+        _helper?.Dispose();
+    }
+}
