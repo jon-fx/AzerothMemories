@@ -23,10 +23,15 @@ internal static class AdminServices_TryBanUser
             return false;
         }
 
+        if (activeAccount.Id == command.AccountId)
+        {
+            return false;
+        }
+
         var accountRecord = await commonServices.AccountServices.TryGetAccountRecord(command.AccountId).ConfigureAwait(false);
         await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
         database.Attach(accountRecord);
-        accountRecord.BanExpireTime = SystemClock.Instance.GetCurrentInstant().Plus(Duration.FromSeconds(60));
+        accountRecord.BanExpireTime = SystemClock.Instance.GetCurrentInstant().Plus(Duration.FromMilliseconds(command.Duration));
 
         await database.SaveChangesAsync().ConfigureAwait(false);
 
