@@ -67,7 +67,7 @@ internal static class AccountServices_TryChangeAvatar
             return null;
         }
 
-        var accountRecord = await commonServices.AccountServices.TryGetActiveAccountRecord(command.Session).ConfigureAwait(false);
+        var accountRecord = await commonServices.AccountServices.TryGetAccountRecord(accountViewModel.Id).ConfigureAwait(false);
         await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
         database.Attach(accountRecord);
         accountRecord.Avatar = newAvatar;

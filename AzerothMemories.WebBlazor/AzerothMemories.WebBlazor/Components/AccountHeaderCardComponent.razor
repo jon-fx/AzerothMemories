@@ -85,33 +85,9 @@ else
                                     </MudTooltip>
                                 </MudMenuItem>
 
-                                <MudMenuItem OnClick="@ResetUsername">
-                                    <MudTooltip Text="Reset Username" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
+                                <MudMenuItem OnClick="@OnShowAdminDialog">
+                                    <MudTooltip Text="User Admin" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
                                         <MudIcon Icon="@Icons.Material.Filled.ChangeCircle" Size="Size.Small" />
-                                    </MudTooltip>
-                                </MudMenuItem>
-
-                                <MudMenuItem OnClick="@ResetAvatar">
-                                    <MudTooltip Text="Reset Avatar" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
-                                        <MudIcon Icon="@Icons.Material.Filled.ImageNotSupported" Size="Size.Small" />
-                                    </MudTooltip>
-                                </MudMenuItem>
-
-                                <MudMenuItem OnClick="@ResetSocialLinks">
-                                    <MudTooltip Text="Reset Social Links" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
-                                        <MudIcon Icon="@Icons.Custom.Brands.Discord" Size="Size.Small" />
-                                    </MudTooltip>
-                                </MudMenuItem>
-
-                                <MudMenuItem OnClick="@(() => BanUser(Duration.FromMilliseconds(0)))">
-                                    <MudTooltip Text="Remove Ban" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
-                                        <MudIcon Icon="@Icons.Material.Filled.Remove" Size="Size.Small" />
-                                    </MudTooltip>
-                                </MudMenuItem>
-
-                                <MudMenuItem OnClick="@(() => BanUser(Duration.FromDays(1)))">
-                                    <MudTooltip Text="1 Day Ban" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
-                                        <MudIcon Icon="@Icons.Material.Filled.BackHand" Size="Size.Small" />
                                     </MudTooltip>
                                 </MudMenuItem>
                             }
@@ -235,26 +211,9 @@ else
         }
     }
     
-    private async Task ResetUsername()
-    {
-        await Services.ClientServices.CommandRunner.Run(new Account_TryChangeUsername(Session.Default, AccountViewModel.Id, null));
-    }
-    
-    private async Task ResetAvatar()
-    {
-        await Services.ClientServices.CommandRunner.Run(new Account_TryChangeAvatar(Session.Default, AccountViewModel.Id, null));
-    }
 
-    private async Task ResetSocialLinks()
+    private async Task OnShowAdminDialog()
     {
-        for (var i = 0; i < (int) SocialLinks.Count; i++)
-        {
-            await Services.ClientServices.CommandRunner.Run(new Account_TryChangeSocialLink(Session.Default, AccountViewModel.Id, i, null));
-        }
-    }
-
-    private async Task BanUser(Duration duration)
-    {
-        await Services.ClientServices.CommandRunner.Run(new Admin_TryBanUser(Session.Default, AccountViewModel.Id, (int)duration.TotalMilliseconds));
+        await Services.ClientServices.DialogService.ShowAdminUserDialog($"User Admin: {AccountViewModel.Username} ({AccountViewModel.Id})", AccountViewModel.Id);
     }
 }

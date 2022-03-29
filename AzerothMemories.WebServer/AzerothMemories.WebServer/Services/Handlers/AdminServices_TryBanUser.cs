@@ -16,7 +16,15 @@ internal static class AdminServices_TryBanUser
             return default;
         }
 
-        
+        var reason = command.BanReason;
+        if (string.IsNullOrWhiteSpace(reason))
+        {
+        }
+        else if (reason.Length > 200)
+        {
+            return false;
+        }
+
         var activeAccount = await commonServices.AccountServices.TryGetActiveAccount(command.Session).ConfigureAwait(false);
         if (!activeAccount.IsAdmin())
         {
@@ -32,6 +40,7 @@ internal static class AdminServices_TryBanUser
         await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
         database.Attach(accountRecord);
         accountRecord.BanExpireTime = SystemClock.Instance.GetCurrentInstant().Plus(Duration.FromMilliseconds(command.Duration));
+        accountRecord.BanReason = reason;
 
         await database.SaveChangesAsync().ConfigureAwait(false);
 

@@ -98,6 +98,24 @@ public sealed class DialogHelperService
         return result;
     }
 
+    public async Task<DialogResult> ShowAdminUserDialog(string title, int accountId)
+    {
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true,
+            CloseButton = true
+        };
+
+        var parameters = new DialogParameters
+        {
+            ["accountId"] = accountId,
+        };
+
+        var result = await ShowDialog<AdminUserDialog>(title, parameters, options);
+        return result;
+    }
+
     public async Task<bool?> ShowMessageBox(string title, string message = null, string yesText = null, string noText = null, string cancelText = null, DialogOptions options = null)
     {
         var result = await _dialogService.ShowMessageBox(title, message, yesText, noText, cancelText, options);

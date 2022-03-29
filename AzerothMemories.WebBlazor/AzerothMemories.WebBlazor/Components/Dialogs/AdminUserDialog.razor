@@ -1,0 +1,68 @@
+﻿@inherits MoaComponentBase<AdminUserDialogViewModel>
+
+<MudDialog>
+    <DialogContent>
+        @{
+            var accountViewModel = ViewModel.AccountViewModel;
+            if (accountViewModel != null)
+            {
+                <AccountHeaderCardComponent Services="@this" AccountViewModel="@accountViewModel"/>
+
+                <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+                    <MudCardContent Class="@ClassPresets.CardContent">
+                        <MudButton Variant="Variant.Filled" FullWidth="true" OnClick="ViewModel.ResetUsername" Disabled="accountViewModel.Username.Contains('-')">Reset Username (@accountViewModel.Username)</MudButton>
+                        <MudButton Variant="Variant.Filled" FullWidth="true" OnClick="ViewModel.ResetAvatar" Disabled="accountViewModel.Avatar == null">Reset Avatar (@accountViewModel.Avatar)</MudButton>
+                    </MudCardContent>
+                </MudCard>
+
+                <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+                    <MudCardContent Class="@ClassPresets.CardContent">
+                    
+                        <MudStack AlignItems="AlignItems.Center" Row="true" Justify="Justify.Center">
+                            @foreach (var socialHelper in SocialHelpers.All)
+                            {
+                                var current = accountViewModel.SocialLinks[socialHelper.LinkId];
+                                if (current == null)
+                                {
+
+                                }
+                                else
+                                {
+                                    <MudButton Variant="Variant.Filled" OnClick="() => ViewModel.ResetSocialLink(socialHelper.LinkId)">Reset @socialHelper.Name</MudButton>
+                                }
+                            }
+                        </MudStack>
+                    </MudCardContent>
+                </MudCard>
+
+                <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+                    <MudCardContent Class="@ClassPresets.CardContent">
+                    
+                        <MudTextField @bind-Value="@ViewModel.BanReasonText" Lines="3" MaxLength="200" Variant="Variant.Outlined"></MudTextField>
+                        
+                        <MudStack AlignItems="AlignItems.Center" Row="true" Justify="Justify.Center">
+                            @foreach (var (text, time) in ViewModel.BanTimers)
+                            {
+                                <MudButton Variant="Variant.Filled" OnClick="() => ViewModel.BanUser(time)">@text</MudButton>
+                            }
+                        </MudStack>
+                    </MudCardContent>
+                </MudCard>
+            }
+        }
+    </DialogContent>
+</MudDialog>
+
+@code
+{
+    [Parameter] public int AccountId { get; init; }
+
+    [CascadingParameter] public MudDialogInstance MudDialog { get; init; }
+
+    protected override void OnParametersChanged()
+    {
+        base.OnParametersChanged();
+
+        ViewModel.OnParametersChanged(AccountId);
+    }
+}
