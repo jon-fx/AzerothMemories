@@ -120,8 +120,25 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
         return results;
     }
 
+    public bool ShouldUpdateLoginConsecutiveDays()
+    {
+        var lastSeen = LastLoginTime.InUtc();
+        var timeNow = SystemClock.Instance.GetCurrentInstant().InUtc();
+        if (timeNow - lastSeen < Duration.FromMinutes(10))
+        {
+            return timeNow.DayOfYear != lastSeen.DayOfYear;
+        }
+
+        return true;
+    }
+
     public void TryUpdateLoginConsecutiveDaysCount()
     {
+        if (!ShouldUpdateLoginConsecutiveDays())
+        {
+            return;
+        }
+
         var lastSeen = LastLoginTime.InUtc();
         var timeNow = SystemClock.Instance.GetCurrentInstant().InUtc();
         if (timeNow.Year == lastSeen.Year)

@@ -29,12 +29,15 @@ internal static class AccountServices_OnSetupSessionCommand
             return;
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
-        database.Attach(accountRecord);
+        if (accountRecord.ShouldUpdateLoginConsecutiveDays())
+        {
+            await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+            database.Attach(accountRecord);
 
-        accountRecord.TryUpdateLoginConsecutiveDaysCount();
+            accountRecord.TryUpdateLoginConsecutiveDaysCount();
 
-        await database.SaveChangesAsync().ConfigureAwait(false);
+            await database.SaveChangesAsync().ConfigureAwait(false);
+        }
 
         context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
     }
