@@ -108,20 +108,26 @@ else
             @{
                 var totalPostCount = AccountViewModel.TotalPostCount;
                 var totalMemoriesCount = AccountViewModel.TotalPostCount + AccountViewModel.TotalMemoriesCount;
+                var postText = "Post";
+                var memoriesText = "Memory";
 
                 if (totalPostCount > 0)
                 {
+                    if (totalPostCount > 1)  postText = postText.Pluralize();
+
                     <div class="d-flex align-baseline">
                         <MudIcon Class="mr-1" Icon="@Icons.Filled.PostAdd" Size="Size.Small" />
-                        <MudText Typo="Typo.body1" Class="my-auto"><b>@totalPostCount.ToMetric()</b> Posts</MudText>
+                        <MudText Typo="Typo.body1" Class="my-auto"><b>@totalPostCount.ToMetric()</b> @postText</MudText>
                     </div>
                 }
 
                 if (totalMemoriesCount > 0)
                 {
+                    if (totalMemoriesCount > 1)  memoriesText = memoriesText.Pluralize();
+
                     <div class="d-flex align-baseline">
                         <MudIcon Class="mr-1" Icon="@Icons.Filled.LinkedCamera" Size="Size.Small" />
-                        <MudText Typo="Typo.body1" Class="my-auto"><b>@totalMemoriesCount.ToMetric()</b> Memories</MudText>
+                        <MudText Typo="Typo.body1" Class="my-auto"><b>@totalMemoriesCount.ToMetric()</b> @memoriesText</MudText>
                     </div>
                 }
             }
