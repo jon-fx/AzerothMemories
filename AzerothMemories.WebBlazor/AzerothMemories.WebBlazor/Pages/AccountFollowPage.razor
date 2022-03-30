@@ -1,4 +1,4 @@
-﻿@page "/follow/{Id:long}"
+﻿@page "/follow/{Id}"
 @inherits MoaComponentBase<AccountFollowPageViewModel>
 
 @if (!string.IsNullOrWhiteSpace(ViewModel.ErrorMessage))
@@ -21,12 +21,14 @@ else
 }
 
 @code {
-    [Parameter] public int Id { get; init; }
+    [Parameter] public string Id { get; init; }
 
     protected override void OnParametersChanged()
     {
         base.OnParametersChanged();
 
-        ViewModel.OnParametersChanged(Id);
+        int.TryParse(Id, out var id);
+
+        ViewModel.OnParametersChanged(id);
     }
 }
