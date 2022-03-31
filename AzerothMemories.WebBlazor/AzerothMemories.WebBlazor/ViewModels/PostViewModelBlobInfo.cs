@@ -10,7 +10,7 @@ public sealed record PostViewModelBlobInfo
     {
         var results = new List<PostViewModelBlobInfo>();
         var title = $"{username}'s memory";
-        var description = comment;
+        var description = string.Empty;//comment;
         //if (string.IsNullOrWhiteSpace(comment))
         //{
         //}
