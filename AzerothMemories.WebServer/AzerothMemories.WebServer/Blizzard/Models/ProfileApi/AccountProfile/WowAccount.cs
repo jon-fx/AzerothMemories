@@ -9,7 +9,7 @@ public record WowAccount
     /// Gets the ID of the World of Warcraft account.
     /// </summary>
     [JsonPropertyName("id")]
-    public int Id { get; init; }
+    public long Id { get; init; }
 
     /// <summary>
     /// Gets the characters associated with the World of Warcraft account.

@@ -73,6 +73,7 @@ public sealed class Migration0003_AccountData : Migration
             .WithColumn(nameof(CharacterRecord.Id)).AsInt32().PrimaryKey().Identity()
             .WithColumn(nameof(CharacterRecord.MoaRef)).AsText().Unique().NotNullable()
             .WithColumn(nameof(CharacterRecord.BlizzardId)).AsInt64().WithDefaultValue(0)
+            .WithColumn(nameof(CharacterRecord.BlizzardAccountId)).AsInt64().WithDefaultValue(0)
             .WithColumn(nameof(CharacterRecord.BlizzardRegionId)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(CharacterRecord.Name)).AsText().Nullable()
             .WithColumn(nameof(CharacterRecord.NameSearchable)).AsText().Nullable()

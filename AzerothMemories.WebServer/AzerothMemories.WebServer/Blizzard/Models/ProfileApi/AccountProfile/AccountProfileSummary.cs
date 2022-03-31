@@ -15,7 +15,7 @@ public record AccountProfileSummary
     /// Gets the ID of the profile summary for the account.
     /// </summary>
     [JsonPropertyName("id")]
-    public int Id { get; init; }
+    public long Id { get; init; }
 
     /// <summary>
     /// Gets the World of Warcraft accounts associated with the account profile.

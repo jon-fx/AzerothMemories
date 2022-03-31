@@ -45,7 +45,7 @@ internal sealed class UpdateHandler_Accounts : UpdateHandlerBase<AccountRecord, 
                 characterRecord.AccountId = record.Id;
                 characterRecord.MoaRef = characterRef.Full;
                 characterRecord.BlizzardId = accountCharacter.Id;
-                //characterRecord.BlizzardAccountId = account.Id;
+                characterRecord.BlizzardAccountId = account.Id;
                 characterRecord.BlizzardRegionId = characterRef.Region;
                 characterRecord.CharacterStatus = CharacterStatus2.None;
                 characterRecord.RealmId = accountCharacter.Realm.Id;

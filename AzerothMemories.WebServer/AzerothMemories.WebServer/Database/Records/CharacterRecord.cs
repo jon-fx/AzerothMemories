@@ -13,6 +13,8 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord
     [Column] public string MoaRef { get; set; }
 
     [Column] public long BlizzardId { get; set; }
+    
+    [Column] public long BlizzardAccountId{ get; set; }
 
     [Column] public BlizzardRegion BlizzardRegionId { get; set; }
 

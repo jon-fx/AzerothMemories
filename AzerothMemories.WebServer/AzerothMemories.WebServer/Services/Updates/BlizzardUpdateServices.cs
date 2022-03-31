@@ -68,7 +68,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
             return default;
         }
 
-        var resultStatusCode = await RunUpdateHandlers(_accountHandlers, context, database, record).ConfigureAwait(false);
+        var resultStatusCode = await RunUpdateHandlers(_accountHandlers, context, database, record, cancellationToken).ConfigureAwait(false);
         return resultStatusCode;
     }
 
@@ -106,7 +106,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
             return default;
         }
 
-        var resultStatusCode = await RunUpdateHandlers(_characterHandlers, context, database, record).ConfigureAwait(false);
+        var resultStatusCode = await RunUpdateHandlers(_characterHandlers, context, database, record, cancellationToken).ConfigureAwait(false);
 
         context.Operation().Items.Set(new Character_InvalidateCharacterRecord(record.Id, record.AccountId.GetValueOrDefault()));
 
@@ -143,7 +143,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
             return default;
         }
 
-        var resultStatusCode = await RunUpdateHandlers(_guildHandlers, context, database, record).ConfigureAwait(false);
+        var resultStatusCode = await RunUpdateHandlers(_guildHandlers, context, database, record, cancellationToken).ConfigureAwait(false);
 
         var characterQuery = from r in database.Characters
                              where r.GuildId == r.Id
@@ -156,7 +156,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         return resultStatusCode;
     }
 
-    private async Task<HttpStatusCode> RunUpdateHandlers<TRecord>(IUpdateHandlerBase<TRecord>[] allHandlers, CommandContext context, AppDbContext database, TRecord record) where TRecord : IBlizzardUpdateRecord
+    private async Task<HttpStatusCode> RunUpdateHandlers<TRecord>(IUpdateHandlerBase<TRecord>[] allHandlers, CommandContext context, AppDbContext database, TRecord record, CancellationToken cancellationToken) where TRecord : IBlizzardUpdateRecord
     {
 #if DEBUG
         if (typeof(TRecord) != _commonServices.BlizzardUpdateHandler.ValidRecordTypes[(int)record.UpdateRecord.UpdatePriority])
@@ -213,7 +213,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         record.UpdateRecord.UpdateStatus = BlizzardUpdateStatus.None;
         record.UpdateRecord.UpdatePriority = BlizzardUpdatePriority.None;
 
-        await database.SaveChangesAsync().ConfigureAwait(false);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         return updateStatusCode;
     }
