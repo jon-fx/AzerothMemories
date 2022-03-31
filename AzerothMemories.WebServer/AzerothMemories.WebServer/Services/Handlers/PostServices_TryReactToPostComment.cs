@@ -2,7 +2,7 @@
 
 internal static class PostServices_TryReactToPostComment
 {
-    public static async Task<int> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryReactToPostComment command)
+    public static async Task<int> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryReactToPostComment command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -61,11 +61,11 @@ internal static class PostServices_TryReactToPostComment
             return 0;
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
         var commentRecord = database.PostComments.First(x => x.Id == commentId);
 
         var newReaction = command.NewReaction;
-        var reactionRecord = await database.PostCommentReactions.FirstOrDefaultAsync(x => x.AccountId == activeAccount.Id && x.CommentId == commentId).ConfigureAwait(false);
+        var reactionRecord = await database.PostCommentReactions.FirstOrDefaultAsync(x => x.AccountId == activeAccount.Id && x.CommentId == commentId, cancellationToken).ConfigureAwait(false);
         if (reactionRecord == null)
         {
             if (newReaction == PostReaction.None)
@@ -81,7 +81,7 @@ internal static class PostServices_TryReactToPostComment
                 LastUpdateTime = SystemClock.Instance.GetCurrentInstant()
             };
 
-            await database.PostCommentReactions.AddAsync(reactionRecord).ConfigureAwait(false);
+            await database.PostCommentReactions.AddAsync(reactionRecord, cancellationToken).ConfigureAwait(false);
 
             ModifyPostCommentWithReaction(commentRecord, newReaction, +1, true);
         }
@@ -121,7 +121,7 @@ internal static class PostServices_TryReactToPostComment
                 TargetId = postRecord.AccountId,
                 TargetPostId = postRecord.Id,
                 TargetCommentId = commentId
-            }).ConfigureAwait(false);
+            }, cancellationToken).ConfigureAwait(false);
 
             if (activeAccount.Id != commentViewModel.AccountId)
             {
@@ -134,11 +134,11 @@ internal static class PostServices_TryReactToPostComment
                     TargetId = postRecord.AccountId,
                     TargetPostId = postRecord.Id,
                     TargetCommentId = commentId
-                }).ConfigureAwait(false);
+                }, cancellationToken).ConfigureAwait(false);
             }
         }
 
-        await database.SaveChangesAsync().ConfigureAwait(false);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
         context.Operation().Items.Set(new Post_InvalidateAccount(activeAccount.Id));

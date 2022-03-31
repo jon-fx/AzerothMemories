@@ -9,7 +9,7 @@ namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class PostServices_TryPostMemory
 {
-    public static async Task<AddMemoryResult> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryPostMemory command)
+    public static async Task<AddMemoryResult> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryPostMemory command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -127,9 +127,9 @@ internal static class PostServices_TryPostMemory
             return new AddMemoryResult(AddMemoryResultCode.InvalidTags);
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
 
-        var uploadAndSortResult = await UploadAndSortImages(commonServices, database, activeAccount, postRecord, command.ImageData).ConfigureAwait(false);
+        var uploadAndSortResult = await UploadAndSortImages(commonServices, database, activeAccount, postRecord, command.ImageData, cancellationToken).ConfigureAwait(false);
         if (uploadAndSortResult != AddMemoryResultCode.Success)
         {
             return new AddMemoryResult(uploadAndSortResult);
@@ -139,8 +139,8 @@ internal static class PostServices_TryPostMemory
 
         postRecord.PostTags = tagRecords;
 
-        await database.Posts.AddAsync(postRecord).ConfigureAwait(false);
-        await database.SaveChangesAsync().ConfigureAwait(false);
+        await database.Posts.AddAsync(postRecord, cancellationToken).ConfigureAwait(false);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
@@ -149,7 +149,7 @@ internal static class PostServices_TryPostMemory
             Type = AccountHistoryType.MemoryRestored,
             TargetId = postRecord.AccountId,
             TargetPostId = postRecord.Id
-        }).ConfigureAwait(false);
+        }, cancellationToken).ConfigureAwait(false);
 
         foreach (var userTag in parseResult.AccountsTaggedInComment)
         {
@@ -161,7 +161,7 @@ internal static class PostServices_TryPostMemory
                 //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
                 TargetId = postRecord.AccountId,
                 TargetPostId = postRecord.Id
-            }).ConfigureAwait(false);
+            }, cancellationToken).ConfigureAwait(false);
         }
 
         context.Operation().Items.Set(new Post_InvalidatePost(postRecord.Id));
@@ -225,7 +225,7 @@ internal static class PostServices_TryPostMemory
         return AddMemoryResultCode.Success;
     }
 
-    private static async Task<AddMemoryResultCode> UploadAndSortImages(CommonServices commonServices, AppDbContext database, AccountViewModel accountViewModel, PostRecord postRecord, List<byte[]> imageDataList)
+    private static async Task<AddMemoryResultCode> UploadAndSortImages(CommonServices commonServices, AppDbContext database, AccountViewModel accountViewModel, PostRecord postRecord, List<byte[]> imageDataList, CancellationToken cancellationToken)
     {
         if (imageDataList.Count > ZExtensions.MaxPostScreenShots)
         {
@@ -260,7 +260,7 @@ internal static class PostServices_TryPostMemory
                 {
                     var encoder = new GifEncoder();
 
-                    await image.SaveAsGifAsync(memoryStream, encoder).ConfigureAwait(false);
+                    await image.SaveAsGifAsync(memoryStream, encoder, cancellationToken: cancellationToken).ConfigureAwait(false);
                     memoryStream.Position = 0;
                     extension = "gif";
                 }
@@ -268,14 +268,14 @@ internal static class PostServices_TryPostMemory
                 {
                     var encoder = new JpegEncoder();
 
-                    await image.SaveAsJpegAsync(memoryStream, encoder).ConfigureAwait(false);
+                    await image.SaveAsJpegAsync(memoryStream, encoder, cancellationToken: cancellationToken).ConfigureAwait(false);
                     memoryStream.Position = 0;
 
                     if (memoryStream.Length > 1.Megabytes().Bytes)
                     {
                         encoder.Quality = accountViewModel.GetUploadQuality();
 
-                        await image.SaveAsJpegAsync(memoryStream, encoder).ConfigureAwait(false);
+                        await image.SaveAsJpegAsync(memoryStream, encoder, cancellationToken: cancellationToken).ConfigureAwait(false);
                         memoryStream.Position = 0;
                     }
                 }
@@ -314,7 +314,7 @@ internal static class PostServices_TryPostMemory
                 if (commonServices.Config.UploadToBlobStorage)
                 {
                     var blobClient = new Azure.Storage.Blobs.BlobClient(commonServices.Config.BlobStorageConnectionString, ZExtensions.BlobUserUploads, blobName);
-                    var result = await blobClient.UploadAsync(blobData).ConfigureAwait(false);
+                    var result = await blobClient.UploadAsync(blobData, cancellationToken).ConfigureAwait(false);
                     if (result.Value == null)
                     {
                         return AddMemoryResultCode.UploadFailed;

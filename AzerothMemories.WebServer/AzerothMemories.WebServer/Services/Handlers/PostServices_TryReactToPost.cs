@@ -2,7 +2,7 @@
 
 internal static class PostServices_TryReactToPost
 {
-    public static async Task<int> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryReactToPost command)
+    public static async Task<int> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryReactToPost command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -52,11 +52,11 @@ internal static class PostServices_TryReactToPost
             return 0;
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
         database.Attach(postRecord);
 
         var newReaction = command.NewReaction;
-        var reactionRecord = await database.PostReactions.FirstOrDefaultAsync(x => x.AccountId == activeAccount.Id && x.PostId == postId).ConfigureAwait(false);
+        var reactionRecord = await database.PostReactions.FirstOrDefaultAsync(x => x.AccountId == activeAccount.Id && x.PostId == postId, cancellationToken).ConfigureAwait(false);
         if (reactionRecord == null)
         {
             if (newReaction == PostReaction.None)
@@ -72,7 +72,7 @@ internal static class PostServices_TryReactToPost
                 LastUpdateTime = SystemClock.Instance.GetCurrentInstant()
             };
 
-            await database.PostReactions.AddAsync(reactionRecord).ConfigureAwait(false);
+            await database.PostReactions.AddAsync(reactionRecord, cancellationToken).ConfigureAwait(false);
 
             ModifyPostWithReaction(postRecord, newReaction, +1, true);
         }
@@ -109,7 +109,7 @@ internal static class PostServices_TryReactToPost
                 Type = AccountHistoryType.ReactedToPost1,
                 TargetId = postRecord.AccountId,
                 TargetPostId = postRecord.Id
-            }).ConfigureAwait(false);
+            }, cancellationToken).ConfigureAwait(false);
 
             if (activeAccount.Id != postRecord.AccountId)
             {
@@ -121,11 +121,11 @@ internal static class PostServices_TryReactToPost
                     Type = AccountHistoryType.ReactedToPost2,
                     TargetId = postRecord.AccountId,
                     TargetPostId = postRecord.Id
-                }).ConfigureAwait(false);
+                }, cancellationToken).ConfigureAwait(false);
             }
         }
 
-        await database.SaveChangesAsync().ConfigureAwait(false);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
         context.Operation().Items.Set(new Post_InvalidateAccount(activeAccount.Id));

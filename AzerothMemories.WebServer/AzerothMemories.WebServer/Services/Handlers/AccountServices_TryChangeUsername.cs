@@ -2,7 +2,7 @@
 
 internal static class AccountServices_TryChangeUsername
 {
-    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Account_TryChangeUsername command)
+    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Account_TryChangeUsername command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -64,8 +64,8 @@ internal static class AccountServices_TryChangeUsername
             return false;
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
-        var usernameExists = await database.Accounts.AnyAsync(x => x.Username == newUsername).ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
+        var usernameExists = await database.Accounts.AnyAsync(x => x.Username == newUsername, cancellationToken).ConfigureAwait(false);
         if (usernameExists)
         {
             return false;
@@ -77,13 +77,13 @@ internal static class AccountServices_TryChangeUsername
         accountRecord.UsernameSearchable = DatabaseHelpers.GetSearchableName(newUsername);
         accountRecord.UsernameChangedTime = SystemClock.Instance.GetCurrentInstant();
 
-        await database.SaveChangesAsync().ConfigureAwait(false);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
             AccountId = accountRecord.Id,
             Type = AccountHistoryType.UsernameChanged
-        }).ConfigureAwait(false);
+        }, cancellationToken).ConfigureAwait(false);
 
         context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
         context.Operation().Items.Set(previousUsername);

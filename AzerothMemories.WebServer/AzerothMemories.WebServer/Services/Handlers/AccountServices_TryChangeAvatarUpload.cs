@@ -6,7 +6,7 @@ namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class AccountServices_TryChangeAvatarUpload
 {
-    public static async Task<string> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Account_TryChangeAvatarUpload command)
+    public static async Task<string> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Account_TryChangeAvatarUpload command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -51,7 +51,7 @@ internal static class AccountServices_TryChangeAvatarUpload
 
             var encoder = new JpegEncoder();
 
-            await image.SaveAsJpegAsync(memoryStream, encoder).ConfigureAwait(false);
+            await image.SaveAsJpegAsync(memoryStream, encoder, cancellationToken).ConfigureAwait(false);
             memoryStream.Position = 0;
 
             BinaryData dataToUpload = null;
@@ -59,7 +59,7 @@ internal static class AccountServices_TryChangeAvatarUpload
             {
                 encoder.Quality = accountViewModel.GetUploadQuality();
 
-                await image.SaveAsJpegAsync(memoryStream, encoder).ConfigureAwait(false);
+                await image.SaveAsJpegAsync(memoryStream, encoder, cancellationToken).ConfigureAwait(false);
                 memoryStream.Position = 0;
 
                 dataToUpload = new BinaryData(memoryStream.ToArray());
@@ -69,7 +69,7 @@ internal static class AccountServices_TryChangeAvatarUpload
             if (commonServices.Config.UploadToBlobStorage && dataToUpload != null)
             {
                 var blobClient = new Azure.Storage.Blobs.BlobClient(commonServices.Config.BlobStorageConnectionString, ZExtensions.BlobUserAvatars, blobName);
-                var result = await blobClient.UploadAsync(dataToUpload, true).ConfigureAwait(false);
+                var result = await blobClient.UploadAsync(dataToUpload, true, cancellationToken).ConfigureAwait(false);
                 if (result.Value == null)
                 {
                     return newAvatar;
@@ -89,12 +89,12 @@ internal static class AccountServices_TryChangeAvatarUpload
         }
 
         var accountRecord = await commonServices.AccountServices.TryGetActiveAccountRecord(command.Session).ConfigureAwait(false);
-        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
         database.Attach(accountRecord);
         accountRecord.Avatar = newAvatar;
         accountRecord.AccountFlags = avatarIndex == 0 ? accountRecord.AccountFlags | AccountFlags.SecondAvatarIndex : accountRecord.AccountFlags & ~AccountFlags.SecondAvatarIndex;
 
-        await database.SaveChangesAsync().ConfigureAwait(false);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
 

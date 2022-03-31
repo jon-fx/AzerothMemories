@@ -2,13 +2,13 @@
 
 internal static class AccountServices_OnSignInCommand
 {
-    public static async Task TryHandle(CommonServices commonServices, IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> sessionRepo, IDatabaseContextProvider databaseContextProvider, SignInCommand command)
+    public static async Task TryHandle(CommonServices commonServices, IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> sessionRepo, IDatabaseContextProvider databaseContextProvider, SignInCommand command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
 
         if (Computed.IsInvalidating())
         {
-            await context.InvokeRemainingHandlers().ConfigureAwait(false);
+            await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
 
             var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
             if (invRecord != null)
@@ -54,9 +54,9 @@ internal static class AccountServices_OnSignInCommand
                 throw new NotImplementedException();
             }
 
-            await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+            await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
 
-            var dbSessionInfo = await sessionRepo.Get(database, command.Session.Id, false).ConfigureAwait(false);
+            var dbSessionInfo = await sessionRepo.Get(database, command.Session.Id, false, cancellationToken).ConfigureAwait(false);
             if (dbSessionInfo != null)
             {
                 var tempAccount = await commonServices.AccountServices.TryGetAccountRecordFusionId(dbSessionInfo.UserId).ConfigureAwait(false);
@@ -66,40 +66,40 @@ internal static class AccountServices_OnSignInCommand
                 }
             }
 
-            await context.InvokeRemainingHandlers().ConfigureAwait(false);
+            await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
 
-            await OnSignIn(commonServices.AccountServices, context, database, blizzardId, blizzardRegion, battleTag, battleNetToken, Instant.FromUnixTimeMilliseconds(battleNetTokenExpires)).ConfigureAwait(false);
+            await OnSignIn(commonServices.AccountServices, context, database, blizzardId, blizzardRegion, battleTag, battleNetToken, Instant.FromUnixTimeMilliseconds(battleNetTokenExpires), cancellationToken).ConfigureAwait(false);
         }
         else if (command.AuthenticatedIdentity.Schema.StartsWith("ToDo-"))
         {
-            await context.InvokeRemainingHandlers().ConfigureAwait(false);
+            await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
 
             throw new NotImplementedException();
         }
 #if DEBUG
         else if (command.AuthenticatedIdentity.Schema.StartsWith("Default"))
         {
-            await context.InvokeRemainingHandlers().ConfigureAwait(false);
+            await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
 
             command.User.Claims.TryGetValue("BattleNet-Id", out var blizzardIdClaim);
             command.User.Claims.TryGetValue("BattleNet-Tag", out var battleTag);
 
             long.TryParse(blizzardIdClaim, out var blizzardId);
 
-            await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+            await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
 
-            await OnSignIn(commonServices.AccountServices, context, database, blizzardId, BlizzardRegion.Europe, battleTag, null, Instant.FromUnixTimeMilliseconds(0)).ConfigureAwait(false);
+            await OnSignIn(commonServices.AccountServices, context, database, blizzardId, BlizzardRegion.Europe, battleTag, null, Instant.FromUnixTimeMilliseconds(0), cancellationToken).ConfigureAwait(false);
         }
 #endif
         else
         {
-            await context.InvokeRemainingHandlers().ConfigureAwait(false);
+            await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
 
             throw new NotImplementedException();
         }
     }
 
-    private static async Task OnSignIn(AccountServices accountServices, CommandContext context, AppDbContext database, long blizzardId, BlizzardRegion blizzardRegion, string battleTag, string battleNetToken, Instant battleNetTokenExpires)
+    private static async Task OnSignIn(AccountServices accountServices, CommandContext context, AppDbContext database, long blizzardId, BlizzardRegion blizzardRegion, string battleTag, string battleNetToken, Instant battleNetTokenExpires, CancellationToken cancellationToken)
     {
         var sessionInfo = context.Operation().Items.Get<SessionInfo>();
         if (sessionInfo == null)
@@ -128,7 +128,7 @@ internal static class AccountServices_OnSignInCommand
 
         accountRecord.TryUpdateLoginConsecutiveDaysCount();
 
-        await database.SaveChangesAsync().ConfigureAwait(false);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
     }

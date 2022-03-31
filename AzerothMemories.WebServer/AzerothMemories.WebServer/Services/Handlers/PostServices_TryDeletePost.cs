@@ -2,7 +2,7 @@
 
 internal static class PostServices_TryDeletePost
 {
-    public static async Task<long> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryDeletePost command)
+    public static async Task<long> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryDeletePost command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -61,27 +61,27 @@ internal static class PostServices_TryDeletePost
             return 0;
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
         database.Attach(postRecord);
         postRecord.DeletedTimeStamp = now;
 
         var imageBlobNames = postRecord.BlobNames.Split('|');
         foreach (var blobName in imageBlobNames)
         {
-            var record = await database.UploadLogs.FirstOrDefaultAsync(x => x.AccountId == postRecord.AccountId && x.BlobName == blobName).ConfigureAwait(false);
+            var record = await database.UploadLogs.FirstOrDefaultAsync(x => x.AccountId == postRecord.AccountId && x.BlobName == blobName, cancellationToken).ConfigureAwait(false);
             if (record != null)
             {
                 record.UploadStatus = AccountUploadLogStatus.DeletePending;
             }
         }
 
-        var reports = await database.PostReports.Where(x => x.PostId == command.PostId).ToArrayAsync().ConfigureAwait(false);
+        var reports = await database.PostReports.Where(x => x.PostId == command.PostId).ToArrayAsync(cancellationToken).ConfigureAwait(false);
         foreach (var report in reports)
         {
             report.ResolvedByAccountId = activeAccount.Id;
         }
 
-        await database.SaveChangesAsync().ConfigureAwait(false);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
@@ -91,7 +91,7 @@ internal static class PostServices_TryDeletePost
             TargetId = postRecord.AccountId,
             TargetPostId = postRecord.Id,
             OtherAccountId = activeAccount.Id,
-        }).ConfigureAwait(false);
+        }, cancellationToken).ConfigureAwait(false);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
         context.Operation().Items.Set(new Post_InvalidateAccount(postRecord.AccountId));

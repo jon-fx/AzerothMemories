@@ -2,7 +2,7 @@
 
 internal static class PostServices_TryReportPost
 {
-    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryReportPost command)
+    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryReportPost command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -49,10 +49,10 @@ internal static class PostServices_TryReportPost
             reasonText = reasonText[..ZExtensions.ReportPostCommentMaxLength];
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
         database.Attach(postRecord);
 
-        var reportQueryResult = await database.PostReports.FirstOrDefaultAsync(r => r.PostId == postRecord.Id && r.AccountId == activeAccount.Id).ConfigureAwait(false);
+        var reportQueryResult = await database.PostReports.FirstOrDefaultAsync(r => r.PostId == postRecord.Id && r.AccountId == activeAccount.Id, cancellationToken).ConfigureAwait(false);
         if (reportQueryResult == null)
         {
             reportQueryResult = new PostReportRecord
@@ -84,9 +84,9 @@ internal static class PostServices_TryReportPost
             TargetId = postRecord.AccountId,
             TargetPostId = postRecord.Id,
             OtherAccountId = postRecord.AccountId,
-        }).ConfigureAwait(false);
+        }, cancellationToken).ConfigureAwait(false);
 
-        await database.SaveChangesAsync().ConfigureAwait(false);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         return true;
     }

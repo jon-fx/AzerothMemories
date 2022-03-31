@@ -2,10 +2,10 @@
 
 internal static class AccountServices_OnSetupSessionCommand
 {
-    public static async Task TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, SetupSessionCommand command)
+    public static async Task TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, SetupSessionCommand command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
-        await context.InvokeRemainingHandlers().ConfigureAwait(false);
+        await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
 
         if (Computed.IsInvalidating())
         {
@@ -31,12 +31,12 @@ internal static class AccountServices_OnSetupSessionCommand
 
         if (accountRecord.ShouldUpdateLoginConsecutiveDays())
         {
-            await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+            await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
             database.Attach(accountRecord);
 
             accountRecord.TryUpdateLoginConsecutiveDaysCount();
 
-            await database.SaveChangesAsync().ConfigureAwait(false);
+            await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
         context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));

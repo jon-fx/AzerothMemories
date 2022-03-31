@@ -18,19 +18,19 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, ID
     [CommandHandler(IsFilter = true, Priority = 1)]
     protected virtual async Task OnSignInCommand(SignInCommand command, CancellationToken cancellationToken)
     {
-        await AccountServices_OnSignInCommand.TryHandle(_commonServices, _sessionRepo, this, command).ConfigureAwait(false);
+        await AccountServices_OnSignInCommand.TryHandle(_commonServices, _sessionRepo, this, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler(IsFilter = true, Priority = 1)]
     protected virtual async Task OnSignOutCommand(SignOutCommand command, CancellationToken cancellationToken)
     {
-        await AccountServices_OnSignOutCommand.TryHandle(_commonServices, command).ConfigureAwait(false);
+        await AccountServices_OnSignOutCommand.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler(IsFilter = true, Priority = 1)]
     protected virtual async Task OnSetupSessionCommand(SetupSessionCommand command, CancellationToken cancellationToken)
     {
-        await AccountServices_OnSetupSessionCommand.TryHandle(_commonServices, this, command).ConfigureAwait(false);
+        await AccountServices_OnSetupSessionCommand.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -284,25 +284,25 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, ID
     [CommandHandler]
     public virtual async Task<bool> TryChangeUsername(Account_TryChangeUsername command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_TryChangeUsername.TryHandle(_commonServices, this, command).ConfigureAwait(false);
+        return await AccountServices_TryChangeUsername.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> TryChangeIsPrivate(Account_TryChangeIsPrivate command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_TryChangeIsPrivate.TryHandle(_commonServices, this, command).ConfigureAwait(false);
+        return await AccountServices_TryChangeIsPrivate.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> TryChangeBattleTagVisibility(Account_TryChangeBattleTagVisibility command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_TryChangeBattleTagVisibility.TryHandle(_commonServices, this, command).ConfigureAwait(false);
+        return await AccountServices_TryChangeBattleTagVisibility.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<string> TryChangeAvatar(Account_TryChangeAvatar command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_TryChangeAvatar.TryHandle(_commonServices, this, command).ConfigureAwait(false);
+        return await AccountServices_TryChangeAvatar.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
     }
 
     public Task<string> TryChangeAvatarUpload(Session session, byte[] buffer)
@@ -332,19 +332,19 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, ID
     [CommandHandler]
     public virtual async Task<string> TryChangeAvatarUpload(Account_TryChangeAvatarUpload command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_TryChangeAvatarUpload.TryHandle(_commonServices, this, command).ConfigureAwait(false);
+        return await AccountServices_TryChangeAvatarUpload.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<string> TryChangeSocialLink(Account_TryChangeSocialLink command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_TryChangeSocialLink.TryHandle(_commonServices, this, command).ConfigureAwait(false);
+        return await AccountServices_TryChangeSocialLink.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> AddNewHistoryItem(Account_AddNewHistoryItem command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_AddNewHistoryItem.TryHandle(_commonServices, this, command).ConfigureAwait(false);
+        return await AccountServices_AddNewHistoryItem.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -474,8 +474,8 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, ID
         return accountRecord;
     }
 
-    public Task<AppDbContext> CreateCommandDbContext()
+    public Task<AppDbContext> CreateCommandDbContextNow(CancellationToken cancellationToken)
     {
-        return CreateCommandDbContext(true);
+        return CreateCommandDbContext(true, cancellationToken);
     }
 }

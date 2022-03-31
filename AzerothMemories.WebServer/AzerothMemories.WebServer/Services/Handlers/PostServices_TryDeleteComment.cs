@@ -2,7 +2,7 @@
 
 internal static class PostServices_TryDeleteComment
 {
-    public static async Task<long> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryDeleteComment command)
+    public static async Task<long> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryDeleteComment command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -56,17 +56,17 @@ internal static class PostServices_TryDeleteComment
             return 0;
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
-        var commentRecord = await database.PostComments.FirstAsync(x => x.Id == commentId).ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
+        var commentRecord = await database.PostComments.FirstAsync(x => x.Id == commentId, cancellationToken).ConfigureAwait(false);
         commentRecord.DeletedTimeStamp = now;
 
-        var reports = await database.PostCommentReports.Where(x => x.CommentId == command.CommentId).ToArrayAsync().ConfigureAwait(false);
+        var reports = await database.PostCommentReports.Where(x => x.CommentId == command.CommentId).ToArrayAsync(cancellationToken).ConfigureAwait(false);
         foreach (var report in reports)
         {
             report.ResolvedByAccountId = activeAccount.Id;
         }
 
-        await database.SaveChangesAsync().ConfigureAwait(false);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
@@ -76,7 +76,7 @@ internal static class PostServices_TryDeleteComment
             TargetPostId = postRecord.Id,
             TargetCommentId = commentId,
             OtherAccountId = activeAccount.Id,
-        }).ConfigureAwait(false);
+        }, cancellationToken).ConfigureAwait(false);
 
         if (reports.Length > 0)
         {

@@ -2,5 +2,5 @@
 
 internal interface IDatabaseContextProvider
 {
-    Task<AppDbContext> CreateCommandDbContext();
+    Task<AppDbContext> CreateCommandDbContextNow(CancellationToken cancellationToken);
 }

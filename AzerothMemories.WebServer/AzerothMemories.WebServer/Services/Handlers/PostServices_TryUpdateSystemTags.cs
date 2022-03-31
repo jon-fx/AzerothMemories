@@ -2,7 +2,7 @@
 
 internal static class PostServices_TryUpdateSystemTags
 {
-    public static async Task<AddMemoryResultCode> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryUpdateSystemTags command)
+    public static async Task<AddMemoryResultCode> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryUpdateSystemTags command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -68,9 +68,9 @@ internal static class PostServices_TryUpdateSystemTags
             return AddMemoryResultCode.SessionNotFound;
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
 
-        var postRecord = await database.Posts.Include(x => x.PostTags).FirstOrDefaultAsync(p => p.DeletedTimeStamp == 0 && p.Id == postId).ConfigureAwait(false);
+        var postRecord = await database.Posts.Include(x => x.PostTags).FirstOrDefaultAsync(p => p.DeletedTimeStamp == 0 && p.Id == postId, cancellationToken).ConfigureAwait(false);
         if (postRecord == null)
         {
             return AddMemoryResultCode.Failed;
@@ -135,7 +135,7 @@ internal static class PostServices_TryUpdateSystemTags
                     {
                         tagRecord.TagKind = deletedTagKind;
 
-                        var reports = await database.PostTagReports.Where(x => x.TagId == tagRecord.Id).ToArrayAsync().ConfigureAwait(false);
+                        var reports = await database.PostTagReports.Where(x => x.TagId == tagRecord.Id).ToArrayAsync(cancellationToken).ConfigureAwait(false);
                         foreach (var report in reports)
                         {
                             report.ResolvedByAccountId = activeAccount.Id;
@@ -178,7 +178,7 @@ internal static class PostServices_TryUpdateSystemTags
 
         postRecord.PostAvatar = avatar;
 
-        await database.SaveChangesAsync().ConfigureAwait(false);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         if (shouldInvalidateReports)
         {

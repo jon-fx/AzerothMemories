@@ -2,7 +2,7 @@
 
 internal static class CharacterServices_TrySetCharacterRenamedOrTransferred
 {
-    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Character_TrySetCharacterRenamedOrTransferred command)
+    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Character_TrySetCharacterRenamedOrTransferred command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -54,27 +54,27 @@ internal static class CharacterServices_TrySetCharacterRenamedOrTransferred
             return false;
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
         database.Attach(oldCharacterRecord);
         oldCharacterRecord.CharacterStatus = CharacterStatus2.RenamedOrTransferred;
 
         var oldTag = PostTagInfo.GetTagString(PostTagType.Character, oldCharacterRecord.Id);
         var newTag = PostTagInfo.GetTagString(PostTagType.Character, newCharacterRecord.Id);
 
-        var allPosts = await database.Posts.Where(x => x.PostAvatar == oldTag).ToArrayAsync().ConfigureAwait(false);
+        var allPosts = await database.Posts.Where(x => x.PostAvatar == oldTag).ToArrayAsync(cancellationToken).ConfigureAwait(false);
         foreach (var post in allPosts)
         {
             post.PostAvatar = newTag;
         }
 
-        var allPostTags = await database.PostTags.Where(x => x.TagString == oldTag).ToArrayAsync().ConfigureAwait(false);
+        var allPostTags = await database.PostTags.Where(x => x.TagString == oldTag).ToArrayAsync(cancellationToken).ConfigureAwait(false);
         foreach (var postTag in allPostTags)
         {
             postTag.TagId = newCharacterRecord.Id;
             postTag.TagString = newTag;
         }
 
-        await database.SaveChangesAsync().ConfigureAwait(false);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         var hashSet = new HashSet<int>(allPosts.Select(x => x.Id).ToHashSet());
         hashSet.UnionWith(allPostTags.Select(x => x.PostId));

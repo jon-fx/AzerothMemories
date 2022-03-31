@@ -2,7 +2,7 @@
 
 internal static class PostServices_TryReportPostTags
 {
-    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryReportPostTags command)
+    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryReportPostTags command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -54,13 +54,13 @@ internal static class PostServices_TryReportPostTags
             return false;
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
 
         var reportQuery = from r in database.PostTagReports
                           where r.PostId == postRecord.Id && r.AccountId == activeAccount.Id
                           select r.TagId;
 
-        var alreadyReported = await reportQuery.ToArrayAsync().ConfigureAwait(false);
+        var alreadyReported = await reportQuery.ToArrayAsync(cancellationToken).ConfigureAwait(false);
         var alreadyReportedSet = alreadyReported.ToHashSet();
 
         foreach (var tagRecord in tagRecords)
@@ -79,7 +79,7 @@ internal static class PostServices_TryReportPostTags
                     PostId = postRecord.Id,
                     TagId = tagRecord.Id,
                     CreatedTime = SystemClock.Instance.GetCurrentInstant()
-                }).ConfigureAwait(false);
+                }, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -91,9 +91,9 @@ internal static class PostServices_TryReportPostTags
             TargetId = postRecord.AccountId,
             TargetPostId = postRecord.Id,
             OtherAccountId = postRecord.AccountId,
-        }).ConfigureAwait(false);
+        }, cancellationToken).ConfigureAwait(false);
 
-        await database.SaveChangesAsync().ConfigureAwait(false);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         return true;
     }

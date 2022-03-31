@@ -2,7 +2,7 @@
 
 internal static class AccountServices_AddNewHistoryItem
 {
-    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Account_AddNewHistoryItem command)
+    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Account_AddNewHistoryItem command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -21,7 +21,7 @@ internal static class AccountServices_AddNewHistoryItem
             throw new NotImplementedException();
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
         var query = from r in database.AccountHistory
                     where r.AccountId == command.AccountId &&
                           r.OtherAccountId == command.OtherAccountId &&
@@ -31,7 +31,7 @@ internal static class AccountServices_AddNewHistoryItem
                           r.TargetCommentId == command.TargetCommentId
                     select r;
 
-        var record = await query.FirstOrDefaultAsync().ConfigureAwait(false);
+        var record = await query.FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
         if (record == null)
         {
             record = new AccountHistoryRecord();
@@ -47,7 +47,7 @@ internal static class AccountServices_AddNewHistoryItem
         record.TargetCommentId = command.TargetCommentId;
         record.CreatedTime = SystemClock.Instance.GetCurrentInstant();
 
-        await database.SaveChangesAsync().ConfigureAwait(false);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         context.Operation().Items.Set(new Account_InvalidateFollowing(record.AccountId, 1));
 

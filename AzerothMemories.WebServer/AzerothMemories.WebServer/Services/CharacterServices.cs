@@ -112,7 +112,7 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
     [CommandHandler]
     public virtual async Task<bool> TryChangeCharacterAccountSync(Character_TryChangeCharacterAccountSync command, CancellationToken cancellationToken = default)
     {
-        return await CharacterServices_TryChangeCharacterAccountSync.TryHandle(_commonServices, this, command).ConfigureAwait(false);
+        return await CharacterServices_TryChangeCharacterAccountSync.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -182,13 +182,13 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
     [CommandHandler]
     public virtual async Task<bool> TrySetCharacterDeleted(Character_TrySetCharacterDeleted command, CancellationToken cancellationToken = default)
     {
-        return await CharacterServices_TrySetCharacterDeleted.TryHandle(_commonServices, this, command).ConfigureAwait(false);
+        return await CharacterServices_TrySetCharacterDeleted.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> TrySetCharacterRenamedOrTransferred(Character_TrySetCharacterRenamedOrTransferred command, CancellationToken cancellationToken = default)
     {
-        return await CharacterServices_TrySetCharacterRenamedOrTransferred.TryHandle(_commonServices, this, command).ConfigureAwait(false);
+        return await CharacterServices_TrySetCharacterRenamedOrTransferred.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -216,9 +216,9 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
 
         return null;
     }
-
-    public Task<AppDbContext> CreateCommandDbContext()
+    
+    public Task<AppDbContext> CreateCommandDbContextNow(CancellationToken cancellationToken)
     {
-        return CreateCommandDbContext(true);
+        return CreateCommandDbContext(true, cancellationToken);
     }
 }

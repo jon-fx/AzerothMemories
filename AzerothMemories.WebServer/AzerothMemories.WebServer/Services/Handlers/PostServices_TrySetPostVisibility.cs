@@ -2,7 +2,7 @@
 
 internal static class PostServices_TrySetPostVisibility
 {
-    public static async Task<byte?> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TrySetPostVisibility command)
+    public static async Task<byte?> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TrySetPostVisibility command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -48,11 +48,11 @@ internal static class PostServices_TrySetPostVisibility
 
         var newVisibility = Math.Clamp(command.NewVisibility, (byte)0, (byte)1);
 
-        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
         database.Attach(postRecord);
         postRecord.PostVisibility = newVisibility;
 
-        await database.SaveChangesAsync().ConfigureAwait(false);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
         context.Operation().Items.Set(new Post_InvalidateRecentPost(true));

@@ -68,25 +68,25 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
     [CommandHandler]
     public virtual async Task<AccountFollowingStatus?> TryStartFollowing(Following_TryStartFollowing command, CancellationToken cancellationToken = default)
     {
-        return await FollowingServices_TryStartFollowing.TryHandle(_commonServices, this, command).ConfigureAwait(false);
+        return await FollowingServices_TryStartFollowing.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<AccountFollowingStatus?> TryStopFollowing(Following_TryStopFollowing command, CancellationToken cancellationToken = default)
     {
-        return await FollowingServices_TryStopFollowing.TryHandle(_commonServices, this, command).ConfigureAwait(false);
+        return await FollowingServices_TryStopFollowing.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<AccountFollowingStatus?> TryAcceptFollower(Following_TryAcceptFollower command, CancellationToken cancellationToken = default)
     {
-        return await FollowingServices_TryAcceptFollower.TryHandle(_commonServices, this, command).ConfigureAwait(false);
+        return await FollowingServices_TryAcceptFollower.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<AccountFollowingStatus?> TryRemoveFollower(Following_TryRemoveFollower command, CancellationToken cancellationToken = default)
     {
-        return await FollowingServices_TryRemoveFollower.TryHandle(_commonServices, this, command).ConfigureAwait(false);
+        return await FollowingServices_TryRemoveFollower.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
     }
 
     public void InvalidateFollowing(Following_InvalidateRecord record)
@@ -108,9 +108,9 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             _ = TryGetAccountFollowers(record.OtherAccountId);
         }
     }
-
-    public Task<AppDbContext> CreateCommandDbContext()
+    
+    public Task<AppDbContext> CreateCommandDbContextNow(CancellationToken cancellationToken)
     {
-        return CreateCommandDbContext(true);
+        return CreateCommandDbContext(true, cancellationToken);
     }
 }

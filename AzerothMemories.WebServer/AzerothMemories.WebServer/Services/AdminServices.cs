@@ -336,29 +336,29 @@ public class AdminServices : DbServiceBase<AppDbContext>, IAdminServices, IDatab
     [CommandHandler]
     public virtual async Task<bool> SetPostReportResolved(Admin_SetPostReportResolved command, CancellationToken cancellationToken = default)
     {
-        return await AdminServices_SetPostReportResolved.TryHandle(_commonServices, this, command).ConfigureAwait(false);
+        return await AdminServices_SetPostReportResolved.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> SetPostCommentReportResolved(Admin_SetPostCommentReportResolved command, CancellationToken cancellationToken = default)
     {
-        return await AdminServices_SetPostCommentReportResolved.TryHandle(_commonServices, this, command).ConfigureAwait(false);
+        return await AdminServices_SetPostCommentReportResolved.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> SetPostTagReportResolved(Admin_SetPostTagReportResolved command, CancellationToken cancellationToken = default)
     {
-        return await AdminServices_SetPostTagReportResolved.TryHandle(_commonServices, this, command).ConfigureAwait(false);
+        return await AdminServices_SetPostTagReportResolved.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> TryBanUser(Admin_TryBanUser command, CancellationToken cancellationToken = default)
     {
-        return await AdminServices_TryBanUser.TryHandle(_commonServices, this, command).ConfigureAwait(false);
+        return await AdminServices_TryBanUser.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
     }
-
-    public Task<AppDbContext> CreateCommandDbContext()
+    
+    public Task<AppDbContext> CreateCommandDbContextNow(CancellationToken cancellationToken)
     {
-        return CreateCommandDbContext(true);
+        return CreateCommandDbContext(true, cancellationToken);
     }
 }

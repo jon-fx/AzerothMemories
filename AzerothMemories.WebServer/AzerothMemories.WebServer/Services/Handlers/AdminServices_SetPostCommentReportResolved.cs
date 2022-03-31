@@ -2,7 +2,7 @@
 
 internal static class AdminServices_SetPostCommentReportResolved
 {
-    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Admin_SetPostCommentReportResolved command)
+    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Admin_SetPostCommentReportResolved command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -25,20 +25,20 @@ internal static class AdminServices_SetPostCommentReportResolved
         var result = false;
         if (command.Delete)
         {
-            var deletedTime = await commonServices.PostServices.TryDeleteComment(new Post_TryDeleteComment(command.Session, command.PostId, command.CommentId)).ConfigureAwait(false);
+            var deletedTime = await commonServices.PostServices.TryDeleteComment(new Post_TryDeleteComment(command.Session, command.PostId, command.CommentId), cancellationToken).ConfigureAwait(false);
             result = deletedTime != 0;
         }
         else
         {
-            await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+            await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
 
-            var reports = await database.PostCommentReports.Where(x => x.CommentId == command.CommentId).ToArrayAsync().ConfigureAwait(false);
+            var reports = await database.PostCommentReports.Where(x => x.CommentId == command.CommentId).ToArrayAsync(cancellationToken).ConfigureAwait(false);
             foreach (var report in reports)
             {
                 report.ResolvedByAccountId = account.Id;
             }
 
-            await database.SaveChangesAsync().ConfigureAwait(false);
+            await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
         //if (result)

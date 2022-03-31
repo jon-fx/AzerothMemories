@@ -2,7 +2,7 @@
 
 internal static class PostServices_TryPublishComment
 {
-    public static async Task<int> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryPublishComment command)
+    public static async Task<int> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryPublishComment command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -131,7 +131,7 @@ internal static class PostServices_TryPublishComment
         //    linkStringBuilder.Append('|');
         //}
 
-        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
         database.Attach(postRecord);
 
         var commentRecord = new PostCommentRecord
@@ -154,8 +154,8 @@ internal static class PostServices_TryPublishComment
         postRecord.TotalCommentCount++;
         commentRecord.CommentTags = tagRecords;
 
-        await database.PostComments.AddAsync(commentRecord).ConfigureAwait(false);
-        await database.SaveChangesAsync().ConfigureAwait(false);
+        await database.PostComments.AddAsync(commentRecord, cancellationToken).ConfigureAwait(false);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
@@ -166,7 +166,7 @@ internal static class PostServices_TryPublishComment
             TargetId = postRecord.AccountId,
             TargetPostId = postId,
             TargetCommentId = commentRecord.Id
-        }).ConfigureAwait(false);
+        }, cancellationToken).ConfigureAwait(false);
 
         if (activeAccount.Id != postRecord.AccountId)
         {
@@ -179,7 +179,7 @@ internal static class PostServices_TryPublishComment
                 TargetId = postRecord.AccountId,
                 TargetPostId = postId,
                 TargetCommentId = commentRecord.Id
-            }).ConfigureAwait(false);
+            }, cancellationToken).ConfigureAwait(false);
         }
 
         foreach (var userTag in parseResult.AccountsTaggedInComment)
@@ -193,7 +193,7 @@ internal static class PostServices_TryPublishComment
                 TargetId = postRecord.AccountId,
                 TargetPostId = postRecord.Id,
                 TargetCommentId = commentRecord.Id
-            }).ConfigureAwait(false);
+            }, cancellationToken).ConfigureAwait(false);
         }
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));

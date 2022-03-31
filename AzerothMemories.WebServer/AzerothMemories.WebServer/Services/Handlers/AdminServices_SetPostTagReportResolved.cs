@@ -2,7 +2,7 @@
 
 internal static class AdminServices_SetPostTagReportResolved
 {
-    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Admin_SetPostTagReportResolved command)
+    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Admin_SetPostTagReportResolved command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -37,22 +37,22 @@ internal static class AdminServices_SetPostTagReportResolved
             }
 
             var newTagStrings = postTagsStrings.Keys.ToHashSet();
-            var updateSystemTagResult = await commonServices.PostServices.TryUpdateSystemTags(new Post_TryUpdateSystemTags(command.Session, command.PostId, Post_TryUpdateSystemTags.DefaultAvatar, newTagStrings)).ConfigureAwait(false);
+            var updateSystemTagResult = await commonServices.PostServices.TryUpdateSystemTags(new Post_TryUpdateSystemTags(command.Session, command.PostId, Post_TryUpdateSystemTags.DefaultAvatar, newTagStrings), cancellationToken).ConfigureAwait(false);
             if (updateSystemTagResult == AddMemoryResultCode.Success)
             {
             }
         }
         else
         {
-            await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+            await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
 
-            var reports = await database.PostTagReports.Where(x => x.TagId == command.ReportedTagId).ToArrayAsync().ConfigureAwait(false);
+            var reports = await database.PostTagReports.Where(x => x.TagId == command.ReportedTagId).ToArrayAsync(cancellationToken).ConfigureAwait(false);
             foreach (var report in reports)
             {
                 report.ResolvedByAccountId = account.Id;
             }
 
-            await database.SaveChangesAsync().ConfigureAwait(false);
+            await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
         context.Operation().Items.Set(new Admin_InvalidateReports(true));

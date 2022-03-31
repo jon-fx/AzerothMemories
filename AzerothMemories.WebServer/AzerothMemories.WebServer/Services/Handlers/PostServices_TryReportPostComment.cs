@@ -2,7 +2,7 @@
 
 internal static class PostServices_TryReportPostComment
 {
-    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryReportPostComment command)
+    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryReportPostComment command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -57,9 +57,9 @@ internal static class PostServices_TryReportPostComment
             reasonText = reasonText[..ZExtensions.MaxPostCommentLength];
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
 
-        var reportQueryResult = await database.PostCommentReports.FirstOrDefaultAsync(r => r.CommentId == commentId && r.AccountId == activeAccount.Id).ConfigureAwait(false);
+        var reportQueryResult = await database.PostCommentReports.FirstOrDefaultAsync(r => r.CommentId == commentId && r.AccountId == activeAccount.Id, cancellationToken).ConfigureAwait(false);
         if (reportQueryResult == null)
         {
             reportQueryResult = new PostCommentReportRecord
@@ -74,7 +74,7 @@ internal static class PostServices_TryReportPostComment
 
             database.PostCommentReports.Add(reportQueryResult);
 
-            var commentRecord = await database.PostComments.FirstAsync(x => x.Id == commentId).ConfigureAwait(false);
+            var commentRecord = await database.PostComments.FirstAsync(x => x.Id == commentId, cancellationToken).ConfigureAwait(false);
             commentRecord.TotalReportCount++;
         }
         else
@@ -85,7 +85,7 @@ internal static class PostServices_TryReportPostComment
             reportQueryResult.ResolvedByAccountId = null;
         }
 
-        await database.SaveChangesAsync().ConfigureAwait(false);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
         {
@@ -96,7 +96,7 @@ internal static class PostServices_TryReportPostComment
             TargetPostId = postRecord.Id,
             TargetCommentId = commentId,
             OtherAccountId = commentViewModel.AccountId,
-        }).ConfigureAwait(false);
+        }, cancellationToken).ConfigureAwait(false);
 
         return true;
     }

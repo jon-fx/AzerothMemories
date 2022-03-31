@@ -2,7 +2,7 @@
 
 internal static class AccountServices_TryChangeAvatar
 {
-    public static async Task<string> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Account_TryChangeAvatar command)
+    public static async Task<string> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Account_TryChangeAvatar command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -68,11 +68,11 @@ internal static class AccountServices_TryChangeAvatar
         }
 
         var accountRecord = await commonServices.AccountServices.TryGetAccountRecord(accountViewModel.Id).ConfigureAwait(false);
-        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
         database.Attach(accountRecord);
         accountRecord.Avatar = newAvatar;
 
-        await database.SaveChangesAsync().ConfigureAwait(false);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
 

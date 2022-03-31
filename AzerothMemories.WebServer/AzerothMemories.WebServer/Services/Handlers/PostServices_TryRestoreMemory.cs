@@ -2,7 +2,7 @@
 
 internal static class PostServices_TryRestoreMemory
 {
-    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryRestoreMemory command)
+    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryRestoreMemory command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -71,12 +71,12 @@ internal static class PostServices_TryRestoreMemory
             return false;
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContext().ConfigureAwait(false);
+        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
 
         if (accountTagToRemove != null)
         {
             var tagString = PostTagInfo.GetTagString(PostTagType.Account, accountTagToRemove.Value);
-            var myAccountTag = await database.PostTags.FirstOrDefaultAsync(x => x.PostId == postId && x.TagString == tagString).ConfigureAwait(false);
+            var myAccountTag = await database.PostTags.FirstOrDefaultAsync(x => x.PostId == postId && x.TagString == tagString, cancellationToken).ConfigureAwait(false);
             if (myAccountTag == null)
             {
             }
@@ -95,7 +95,7 @@ internal static class PostServices_TryRestoreMemory
         if (accountTagToAdd != null)
         {
             var tagString = PostTagInfo.GetTagString(PostTagType.Account, accountTagToAdd.Value);
-            var newAccountTag = await database.PostTags.FirstOrDefaultAsync(x => x.PostId == postId && x.TagString == tagString).ConfigureAwait(false);
+            var newAccountTag = await database.PostTags.FirstOrDefaultAsync(x => x.PostId == postId && x.TagString == tagString, cancellationToken).ConfigureAwait(false);
             if (newAccountTag == null)
             {
                 newAccountTag = new PostTagRecord
@@ -108,7 +108,7 @@ internal static class PostServices_TryRestoreMemory
                     TagKind = newTagKind
                 };
 
-                await database.PostTags.AddAsync(newAccountTag).ConfigureAwait(false);
+                await database.PostTags.AddAsync(newAccountTag, cancellationToken).ConfigureAwait(false);
             }
             else if (newTagKind == PostTagKind.PostRestored && newAccountTag.TagKind == PostTagKind.DeletedByPoster)
             {
@@ -121,7 +121,7 @@ internal static class PostServices_TryRestoreMemory
         }
 
         var characterTagStrings = accountCharacters.Select(x => x.TagString).ToList();
-        var myCharacterTags = await database.PostTags.Where(x => x.PostId == postId && characterTagStrings.Contains(x.TagString)).ToListAsync().ConfigureAwait(false);
+        var myCharacterTags = await database.PostTags.Where(x => x.PostId == postId && characterTagStrings.Contains(x.TagString)).ToListAsync(cancellationToken).ConfigureAwait(false);
         foreach (var characterTag in myCharacterTags)
         {
             if (newTagKind == PostTagKind.PostRestored && characterTag.TagKind == PostTagKind.DeletedByPoster)
@@ -140,7 +140,7 @@ internal static class PostServices_TryRestoreMemory
         if (characterTagToAdd != null)
         {
             var tagString = PostTagInfo.GetTagString(PostTagType.Character, characterTagToAdd.Value);
-            var newCharacterTag = await database.PostTags.FirstOrDefaultAsync(x => x.PostId == postId && x.TagString == tagString).ConfigureAwait(false);
+            var newCharacterTag = await database.PostTags.FirstOrDefaultAsync(x => x.PostId == postId && x.TagString == tagString, cancellationToken).ConfigureAwait(false);
             if (newCharacterTag == null)
             {
                 newCharacterTag = new PostTagRecord
@@ -153,7 +153,7 @@ internal static class PostServices_TryRestoreMemory
                     TagKind = newTagKind
                 };
 
-                await database.PostTags.AddAsync(newCharacterTag).ConfigureAwait(false);
+                await database.PostTags.AddAsync(newCharacterTag, cancellationToken).ConfigureAwait(false);
             }
             else if (newTagKind == PostTagKind.PostRestored && newCharacterTag.TagKind == PostTagKind.DeletedByPoster)
             {
@@ -173,7 +173,7 @@ internal static class PostServices_TryRestoreMemory
             Type = AccountHistoryType.MemoryRestoredExternal1,
             TargetId = postRecord.AccountId,
             TargetPostId = postRecord.Id
-        }).ConfigureAwait(false);
+        }, cancellationToken).ConfigureAwait(false);
 
         if (activeAccount.Id != postRecord.AccountId)
         {
@@ -185,10 +185,10 @@ internal static class PostServices_TryRestoreMemory
                 Type = AccountHistoryType.MemoryRestoredExternal2,
                 TargetId = postRecord.AccountId,
                 TargetPostId = postRecord.Id
-            }).ConfigureAwait(false);
+            }, cancellationToken).ConfigureAwait(false);
         }
 
-        await database.SaveChangesAsync().ConfigureAwait(false);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));
         context.Operation().Items.Set(new Post_InvalidateAccount(activeAccount.Id));
