@@ -28,7 +28,7 @@ internal static class ConfigHelpers
         }
         else
         {
-            WriteWithColors(ConsoleColor.White, ConsoleColor.DarkBlue, $"{message} == FALSE");
+            WriteWithColors(ConsoleColor.White, ConsoleColor.Yellow, $"{message} == FALSE");
         }
 
         return result;
