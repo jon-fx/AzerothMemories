@@ -177,6 +177,7 @@ internal static class PostServices_TryUpdateSystemTags
         }
 
         postRecord.PostAvatar = avatar;
+        postRecord.PostEditedTime = SystemClock.Instance.GetCurrentInstant();
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
