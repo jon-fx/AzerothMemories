@@ -4,6 +4,7 @@ public sealed class BlizzardRegionInfo
 {
     public static readonly BlizzardRegionInfo[] AllById = new BlizzardRegionInfo[(int)BlizzardRegion.Count];
     public static readonly Dictionary<string, BlizzardRegionInfo> AllByName = new();
+    public static readonly Dictionary<string, BlizzardRegionInfo> AllByTwoLetters = new(StringComparer.OrdinalIgnoreCase);
 
     public static readonly BlizzardRegionInfo China = new(BlizzardRegion.China, "cn", "CN")
     {
@@ -27,6 +28,7 @@ public sealed class BlizzardRegionInfo
 
         AllById[(int)region] = this;
         AllByName[Name] = this;
+        AllByTwoLetters[TwoLettersLower] = this;
 
         Exceptions.ThrowIf(!twoLettersLower.Equals(twoLettersUpper, StringComparison.OrdinalIgnoreCase));
     }

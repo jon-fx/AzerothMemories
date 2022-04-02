@@ -79,8 +79,7 @@ public sealed class GuildPageViewModel : PersistentStateViewModel
                 return null;
             }
 
-            var regionInfo = BlizzardRegionInfo.AllByName.Values.FirstOrDefault(x => string.Equals(x.TwoLettersLower, _region, StringComparison.InvariantCultureIgnoreCase));
-            if (regionInfo == null)
+            if (!BlizzardRegionInfo.AllByTwoLetters.TryGetValue(_region, out var regionInfo))
             {
                 ErrorMessage = "Invalid Region";
                 return null;
