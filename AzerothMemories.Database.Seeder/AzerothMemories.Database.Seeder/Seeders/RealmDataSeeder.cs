@@ -13,9 +13,9 @@ internal sealed class RealmDataSeeder : GenericBase<RealmDataSeeder>
         foreach (var region in regions)
         {
             using var client = WarcraftClientProvider.Get(region);
-            var twoLetters = region.ToInfo().TwoLetters.ToUpper();
+            var twoLetters = region.ToInfo().TwoLettersUpper;
 
-            var allRealmSearchResults = await ResourceCache.GetOrRequestData($"RealmData-{region.ToInfo().TwoLetters}", async k => await client.GetRealmData());
+            var allRealmSearchResults = await ResourceCache.GetOrRequestData($"RealmData-{region.ToInfo().TwoLettersUpper}", async k => await client.GetRealmData());
             if (allRealmSearchResults != null)
             {
                 foreach (var realmData in allRealmSearchResults.Realms)
@@ -30,7 +30,7 @@ internal sealed class RealmDataSeeder : GenericBase<RealmDataSeeder>
                 }
             }
 
-            var connectedRealmData = await ResourceCache.GetOrRequestData($"RealmConnectedData-{region.ToInfo().TwoLetters}", async k => await client.GetConnectedRealmData());
+            var connectedRealmData = await ResourceCache.GetOrRequestData($"RealmConnectedData-{region.ToInfo().TwoLettersUpper}", async k => await client.GetConnectedRealmData());
             if (connectedRealmData != null)
             {
             }

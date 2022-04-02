@@ -79,14 +79,14 @@ public sealed class GuildPageViewModel : PersistentStateViewModel
                 return null;
             }
 
-            var regionInfo = BlizzardRegionInfo.AllByName.Values.FirstOrDefault(x => string.Equals(x.TwoLetters, _region, StringComparison.InvariantCultureIgnoreCase));
+            var regionInfo = BlizzardRegionInfo.AllByName.Values.FirstOrDefault(x => string.Equals(x.TwoLettersLower, _region, StringComparison.InvariantCultureIgnoreCase));
             if (regionInfo == null)
             {
                 ErrorMessage = "Invalid Region";
                 return null;
             }
 
-            if (!Services.ClientServices.TagHelpers.GetRealmId(_realm, out _) && !Services.ClientServices.TagHelpers.GetRealmSlug($"{regionInfo.TwoLetters}-{_realm}", out _realm))
+            if (!Services.ClientServices.TagHelpers.GetRealmId(_realm, out _) && !Services.ClientServices.TagHelpers.GetRealmSlug($"{regionInfo.TwoLettersLower}-{_realm}", out _realm))
             {
                 ErrorMessage = "Invalid Realm";
                 return null;

@@ -25,7 +25,7 @@ public sealed class MainSearchResult
             var region = moaRef.Region.ToInfo();
             var realmSlug = moaRef.Realm;
 
-            return $@"character\{region.TwoLetters}\{realmSlug}\{moaRef.Name}";
+            return $@"character\{region.TwoLettersLower}\{realmSlug}\{moaRef.Name}";
         }
 
         if (Type == MainSearchType.Guild)
@@ -34,7 +34,7 @@ public sealed class MainSearchResult
             var region = moaRef.Region.ToInfo();
             var realmSlug = moaRef.Realm;
 
-            return $@"guild\{region.TwoLetters}\{realmSlug}\{moaRef.Name}";
+            return $@"guild\{region.TwoLettersLower}\{realmSlug}\{moaRef.Name}";
         }
 
         throw new NotImplementedException();
@@ -60,13 +60,14 @@ public sealed class MainSearchResult
         throw new NotImplementedException();
     }
 
-    public static MainSearchResult CreateAccount(int id, string name, string avatar)
+    public static MainSearchResult CreateAccount(int id, string name, string avatar, BlizzardRegion blizzardRegion)
     {
         return new MainSearchResult
         {
             Id = id,
             Name = name,
             Avatar = avatar,
+            RealmId = (int) blizzardRegion,
             Type = MainSearchType.Account
         };
     }

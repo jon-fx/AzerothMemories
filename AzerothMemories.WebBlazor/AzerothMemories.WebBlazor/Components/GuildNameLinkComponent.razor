@@ -3,13 +3,13 @@
 
 @if (GuildRealmId > 0)
 {
-    <a href="guild\@GuildRegionInfo.TwoLetters\@_stringLocalizer[$"RealmSlug-{GuildRealmId}"]\@GuildName">
+    <a href="guild\@GuildRegionInfo.TwoLettersLower\@_stringLocalizer[$"RealmSlug-{GuildRealmId}"]\@GuildName">
         <MudText Typo="@Typo" Inline="true">@GuildName</MudText>
     </a>
 }
 else if (!string.IsNullOrWhiteSpace(GuildRealmSlug))
 {
-    <a href="guild\@GuildRegionInfo.TwoLetters\@GuildRealmSlug\@GuildName">
+    <a href="guild\@GuildRegionInfo.TwoLettersLower\@GuildRealmSlug\@GuildName">
         <MudText Typo="@Typo" Inline="true">@GuildName</MudText>
     </a>
 }

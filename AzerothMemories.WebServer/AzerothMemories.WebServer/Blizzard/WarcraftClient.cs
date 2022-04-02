@@ -66,7 +66,7 @@ public sealed class WarcraftClient : IDisposable
 
         extra ??= string.Empty;
         accessToken ??= await _clientProvider.GetAccessToken(client).ConfigureAwait(false);
-        requestUri = $"{_regionInfo.Host}{requestUri.ToLower()}?namespace={blizzardNamespace}-{_regionInfo.TwoLetters}{extra}";
+        requestUri = $"{_regionInfo.Host}{requestUri.ToLower()}?namespace={blizzardNamespace}-{_regionInfo.TwoLettersLower}{extra}";
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
         var lastModifiedNotNull = Instant.FromUnixTimeMilliseconds(0);

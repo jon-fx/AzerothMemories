@@ -5,7 +5,10 @@
     <CardHeaderContent>
         @if (Result.Type == MainSearchType.Account)
         {
+            var region = BlizzardRegionInfo.AllById[Result.RealmId];
+
             <MudText>@Result.Name</MudText>
+            <MudText Typo="@Typo.caption" Inline="true">@region.TwoLettersUpper-Account</MudText>
         }
         else if (Result.Type == MainSearchType.Character)
         {

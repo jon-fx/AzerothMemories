@@ -572,7 +572,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         var query = from r in database.Accounts
                     where r.UsernameSearchable.StartsWith(searchString)
                     orderby r.UsernameSearchable.Length
-                    select MainSearchResult.CreateAccount(r.Id, r.Username, r.Avatar);
+                    select MainSearchResult.CreateAccount(r.Id, r.Username, r.Avatar, r.BlizzardRegionId);
 
         var results = await query.Take(50).ToArrayAsync().ConfigureAwait(false);
         return results;
