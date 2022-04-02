@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AzerothMemories.WebServer.Database.Records;
 
 [Table(TableName)]
-public sealed class PostTagReportRecord : IDatabaseRecord
+public sealed class PostTagReportRecord : IDatabaseRecordWithVersion
 {
     public const string TableName = "Posts_Reports_Tags";
 
@@ -21,4 +21,6 @@ public sealed class PostTagReportRecord : IDatabaseRecord
     [Column] public PostTagRecord Tag { get; set; }
 
     [Column] public int? ResolvedByAccountId { get; set; }
+
+    public uint RowVersion { get; set; }
 }

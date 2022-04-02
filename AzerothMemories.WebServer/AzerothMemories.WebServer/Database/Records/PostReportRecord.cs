@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AzerothMemories.WebServer.Database.Records;
 
 [Table(TableName)]
-public sealed class PostReportRecord : IDatabaseRecord
+public sealed class PostReportRecord : IDatabaseRecordWithVersion
 {
     public const string TableName = "Posts_Reports";
 
@@ -23,4 +23,6 @@ public sealed class PostReportRecord : IDatabaseRecord
     [Column] public Instant ModifiedTime { get; set; }
 
     [Column] public int? ResolvedByAccountId { get; set; }
+
+    public uint RowVersion { get; set; }
 }

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AzerothMemories.WebServer.Database.Records;
 
 [Table(TableName)]
-public sealed class PostTagRecord : IDatabaseRecord
+public sealed class PostTagRecord : IDatabaseRecordWithVersion
 {
     public const string TableName = "Posts_Tags";
 
@@ -29,6 +29,8 @@ public sealed class PostTagRecord : IDatabaseRecord
     [Column] public int TotalReportCount { get; set; }
 
     [Column] public Instant CreatedTime { get; set; }
+
+    public uint RowVersion { get; set; }
 
     [NotMapped] public bool IsPostTag => TagKind != PostTagKind.UserComment;
 

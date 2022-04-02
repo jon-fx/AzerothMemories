@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AzerothMemories.WebServer.Database.Records;
 
 [Table(TableName)]
-public sealed class GuildAchievementRecord : IDatabaseRecord
+public sealed class GuildAchievementRecord : IDatabaseRecordWithVersion
 {
     public const string TableName = "Guilds_Achievements";
 
@@ -15,4 +15,6 @@ public sealed class GuildAchievementRecord : IDatabaseRecord
     [Column] public int AchievementId { get; set; }
 
     [Column] public Instant AchievementTimeStamp { get; set; }
+
+    public uint RowVersion { get; set; }
 }

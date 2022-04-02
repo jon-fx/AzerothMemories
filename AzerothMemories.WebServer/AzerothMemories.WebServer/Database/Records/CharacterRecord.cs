@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AzerothMemories.WebServer.Database.Records;
 
 [Table(TableName)]
-public sealed class CharacterRecord : IBlizzardUpdateRecord
+public sealed class CharacterRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVersion
 {
     public const string TableName = "Characters";
 
@@ -57,6 +57,8 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord
     [Column] public string BlizzardGuildName { get; set; }
 
     public BlizzardUpdateRecord UpdateRecord { get; set; }
+
+    public uint RowVersion { get; set; }
 
     public CharacterViewModel CreateViewModel()
     {

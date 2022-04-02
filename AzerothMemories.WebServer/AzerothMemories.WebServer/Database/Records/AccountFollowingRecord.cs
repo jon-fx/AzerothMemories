@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AzerothMemories.WebServer.Database.Records;
 
 [Table(TableName)]
-public sealed class AccountFollowingRecord : IDatabaseRecord
+public sealed class AccountFollowingRecord : IDatabaseRecordWithVersion
 {
     public const string TableName = "Accounts_Following";
 
@@ -19,4 +19,6 @@ public sealed class AccountFollowingRecord : IDatabaseRecord
     [Column] public Instant LastUpdateTime { get; set; }
 
     [Column] public Instant CreatedTime { get; set; }
+
+    public uint RowVersion { get; set; }
 }

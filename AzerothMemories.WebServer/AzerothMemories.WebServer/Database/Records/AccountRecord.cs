@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AzerothMemories.WebServer.Database.Records;
 
 [Table(TableName)]
-public sealed class AccountRecord : IBlizzardUpdateRecord
+public sealed class AccountRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVersion
 {
     public const string TableName = "Accounts";
 
@@ -57,6 +57,8 @@ public sealed class AccountRecord : IBlizzardUpdateRecord
     [Column] public Instant BanExpireTime { get; set; }
 
     public BlizzardUpdateRecord UpdateRecord { get; set; }
+
+    public uint RowVersion { get; set; }
 
     public AccountViewModel CreateViewModel(CommonServices commonServices, bool activeOrAdmin, Dictionary<int, AccountFollowingViewModel> followingViewModels, Dictionary<int, AccountFollowingViewModel> followersViewModels)
     {

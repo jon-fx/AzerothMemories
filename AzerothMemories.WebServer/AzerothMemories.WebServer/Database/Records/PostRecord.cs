@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AzerothMemories.WebServer.Database.Records;
 
 [Table(TableName)]
-public sealed class PostRecord : IDatabaseRecord
+public sealed class PostRecord : IDatabaseRecordWithVersion
 {
     public const string TableName = "Posts";
 
@@ -57,6 +57,8 @@ public sealed class PostRecord : IDatabaseRecord
     [Column] public int TotalReportCount { get; set; }
 
     [Column] public long DeletedTimeStamp { get; set; }
+
+    public uint RowVersion { get; set; }
 
     public ICollection<PostTagRecord> PostTags { get; set; }
 

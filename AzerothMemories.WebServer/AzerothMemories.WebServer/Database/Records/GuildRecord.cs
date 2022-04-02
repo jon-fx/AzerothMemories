@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AzerothMemories.WebServer.Database.Records;
 
 [Table(TableName)]
-public sealed class GuildRecord : IBlizzardUpdateRecord
+public sealed class GuildRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVersion
 {
     public const string TableName = "Guilds";
 
@@ -37,6 +37,8 @@ public sealed class GuildRecord : IBlizzardUpdateRecord
     [Column] public int AchievementTotalPoints { get; set; }
 
     public BlizzardUpdateRecord UpdateRecord { get; set; }
+
+    public uint RowVersion { get; set; }
 
     public GuildViewModel CreateViewModel(GuildMembersViewModel memberViewModels)
     {

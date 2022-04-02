@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AzerothMemories.WebServer.Database.Records;
 
 [Table(TableName)]
-public sealed class AccountHistoryRecord : IDatabaseRecord
+public sealed class AccountHistoryRecord : IDatabaseRecordWithVersion
 {
     public const string TableName = "Accounts_History";
 
@@ -23,4 +23,6 @@ public sealed class AccountHistoryRecord : IDatabaseRecord
     [Column] public int? TargetCommentId { get; set; }
 
     [Column] public Instant CreatedTime { get; set; }
+    
+    public uint RowVersion { get; set; }
 }

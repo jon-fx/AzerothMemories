@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AzerothMemories.WebServer.Database.Records;
 
 [Table(TableName)]
-public sealed class AccountUploadLog : IDatabaseRecord
+public sealed class AccountUploadLog : IDatabaseRecordWithVersion
 {
     public const string TableName = "Accounts_UploadLog";
 
@@ -23,4 +23,6 @@ public sealed class AccountUploadLog : IDatabaseRecord
     [Column] public int? PostId { get; set; }
 
     [Column] public PostRecord Post { get; set; }
+
+    public uint RowVersion { get; set; }
 }

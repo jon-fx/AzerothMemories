@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AzerothMemories.WebServer.Database.Records;
 
 [Table(TableName)]
-public sealed class PostCommentReactionRecord : IDatabaseRecord
+public sealed class PostCommentReactionRecord : IDatabaseRecordWithVersion
 {
     public const string TableName = "Posts_Comments_Reactions";
 
@@ -17,6 +17,8 @@ public sealed class PostCommentReactionRecord : IDatabaseRecord
     [Column] public PostReaction Reaction { get; set; }
 
     [Column] public Instant LastUpdateTime { get; set; }
+
+    public uint RowVersion { get; set; }
 
     public PostCommentReactionViewModel CreatePostCommentReactionViewModel(string username)
     {

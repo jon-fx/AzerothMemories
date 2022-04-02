@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AzerothMemories.WebServer.Database.Records;
 
 [Table(TableName)]
-public sealed class PostCommentRecord : IDatabaseRecord
+public sealed class PostCommentRecord : IDatabaseRecordWithVersion
 {
     public const string TableName = "Posts_Comments";
 
@@ -47,6 +47,8 @@ public sealed class PostCommentRecord : IDatabaseRecord
     [Column] public Instant CreatedTime { get; set; }
 
     [Column] public long DeletedTimeStamp { get; set; }
+
+    public uint RowVersion { get; set; }
 
     public ICollection<PostTagRecord> CommentTags { get; set; }
 
