@@ -2,6 +2,15 @@
 
 public class AppDbContext : AppDbContextBase
 {
+    private static readonly Type[] _recordTypesWithRowVersion;
+
+    static AppDbContext()
+    {
+        _recordTypesWithRowVersion = typeof(IDatabaseRecordWithVersion).Assembly.GetTypes()
+            .Where(x => typeof(IDatabaseRecordWithVersion).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
+            .ToArray();
+    }
+
     public DbSet<AccountRecord> Accounts { get; protected set; } = null!;
 
     public DbSet<AccountFollowingRecord> AccountFollowing { get; protected set; } = null!;
@@ -52,34 +61,13 @@ public class AppDbContext : AppDbContextBase
         modelBuilder.Entity<CharacterRecord>().Navigation(e => e.UpdateRecord).AutoInclude();
         modelBuilder.Entity<GuildRecord>().Navigation(e => e.UpdateRecord).AutoInclude();
 
-        WithRowVersion<AccountRecord>(modelBuilder);
-        WithRowVersion<AccountFollowingRecord>(modelBuilder);
-        WithRowVersion<AccountHistoryRecord>(modelBuilder);
-        WithRowVersion<AccountUploadLog>(modelBuilder);
-        
-        WithRowVersion<CharacterRecord>(modelBuilder);
-        WithRowVersion<CharacterAchievementRecord>(modelBuilder);
-        
-        WithRowVersion<GuildRecord>(modelBuilder);
-        WithRowVersion<GuildAchievementRecord>(modelBuilder);
-
-        WithRowVersion<PostRecord>(modelBuilder);
-        WithRowVersion<PostTagRecord>(modelBuilder);
-        WithRowVersion<PostReactionRecord>(modelBuilder);
-        WithRowVersion<PostReportRecord>(modelBuilder);
-        WithRowVersion<PostTagReportRecord>(modelBuilder);
-
-        WithRowVersion<PostCommentRecord>(modelBuilder);
-        WithRowVersion<PostCommentReactionRecord>(modelBuilder);
-        WithRowVersion<PostCommentReportRecord>(modelBuilder);
-    }
-
-    private void WithRowVersion<TRecord>(ModelBuilder modelBuilder) where TRecord : class, IDatabaseRecordWithVersion
-    {
-        modelBuilder.Entity<TRecord>().Property(x => x.RowVersion)
-                                      .HasColumnName("xmin")
-                                      .HasColumnType("xid")
-                                      .ValueGeneratedOnAddOrUpdate()
-                                      .IsConcurrencyToken();
+        foreach (var type in _recordTypesWithRowVersion)
+        {
+            modelBuilder.Entity(type).Property(nameof(IDatabaseRecordWithVersion.RowVersion))
+                .HasColumnName("xmin")
+                .HasColumnType("xid")
+                .ValueGeneratedOnAddOrUpdate()
+                .IsConcurrencyToken();
+        }
     }
 }

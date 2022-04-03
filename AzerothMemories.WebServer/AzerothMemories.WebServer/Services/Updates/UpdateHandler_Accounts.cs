@@ -2,8 +2,11 @@
 
 internal sealed class UpdateHandler_Accounts : UpdateHandlerBase<AccountRecord, AccountProfileSummary>
 {
-    public UpdateHandler_Accounts(CommonServices commonServices) : base(BlizzardUpdateType.Account, commonServices)
+    private readonly BlizzardUpdateServices _blizzardUpdateServices;
+
+    public UpdateHandler_Accounts(CommonServices commonServices, BlizzardUpdateServices blizzardUpdateServices) : base(BlizzardUpdateType.Account, commonServices)
     {
+        _blizzardUpdateServices = blizzardUpdateServices;
     }
 
     protected override async Task<RequestResult<AccountProfileSummary>> TryExecuteRequest(AccountRecord record, Instant blizzardLastModified)
@@ -39,7 +42,7 @@ internal sealed class UpdateHandler_Accounts : UpdateHandlerBase<AccountRecord, 
                 }
                 else
                 {
-                    await database.Database.ExecuteSqlRawAsync($"UPDATE \"Characters_Achievements\" SET \"AccountId\" = {record.Id} WHERE \"CharacterId\" = {characterRecord.Id} AND \"AccountId\" IS NULL").ConfigureAwait(false);
+                    await _blizzardUpdateServices.ExecuteHandlersOnFirstLogin(context, database, record, characterRecord).ConfigureAwait(false);
                 }
 
                 characterRecord.AccountId = record.Id;

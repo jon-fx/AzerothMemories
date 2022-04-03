@@ -14,7 +14,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         _commonServices = commonServices;
 
         _accountHandlers = new IUpdateHandlerBase<AccountRecord>[(int)BlizzardUpdateType.Account_Count];
-        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts(_commonServices));
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts(_commonServices, this));
 
         _characterHandlers = new IUpdateHandlerBase<CharacterRecord>[(int)BlizzardUpdateType.Character_Count];
         AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters(_commonServices));
@@ -35,6 +35,17 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         Exceptions.ThrowIf(_accountHandlers.Any(x => x == null));
         Exceptions.ThrowIf(_characterHandlers.Any(x => x == null));
         Exceptions.ThrowIf(_guildHandlers.Any(x => x == null));
+    }
+
+    public async Task ExecuteHandlersOnFirstLogin(CommandContext context, AppDbContext database, AccountRecord accountRecord, CharacterRecord characterRecord)
+    {
+        foreach (var characterHandler in _characterHandlers)
+        {
+            if (characterHandler is IRequiresExecuteOnFirstLogin handler)
+            {
+                await handler.OnFirstLogin(context, database, accountRecord, characterRecord).ConfigureAwait(false);
+            }
+        }
     }
 
     [CommandHandler]
