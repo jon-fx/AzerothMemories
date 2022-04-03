@@ -2,6 +2,7 @@
 using System.Text;
 using AzerothMemories.WebBlazor;
 using Stl.Fusion.EntityFramework.Npgsql;
+using Stl.Fusion.Operations.Reprocessing;
 using Stl.Fusion.Server.Authentication;
 using Stl.Fusion.Server.Controllers;
 
@@ -63,6 +64,9 @@ public abstract class ProgramHelper
 
         _fusion = _services.AddFusion();
         _fusionServer = _fusion.AddWebServer();
+
+        _services.AddSingleton<ITransientFailureDetector>(new CustomTransientFailureDetector());
+        _fusion.AddOperationReprocessor();
 
         var signInControllerSettings = SignInController.DefaultSettings with
         {
