@@ -57,6 +57,6 @@ public sealed class CommonConfig
     };
 
     public const int PostsPerPage = 10;
-    public const int CommentsPerPage = 25;
+    public const int CommentsPerPage = 20;
     public const int HistoryItemsPerPage = 50;
 }
