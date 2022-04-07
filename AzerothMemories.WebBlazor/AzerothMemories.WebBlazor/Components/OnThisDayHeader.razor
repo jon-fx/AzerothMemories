@@ -84,17 +84,17 @@ else
                             var link = $"post/{memory.AccountId}/{memory.PostId}";
 
                             <a href="@link">
-                                <MudText Typo="Typo.body2">@Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(memory.PostTime, true)</MudText>
+                                <MudText Class="@ClassPresets.DefaultPadding" Typo="Typo.body2">@Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(memory.PostTime, true)</MudText>
                             </a>
 
-                            <MudGrid>
+                            <MudGrid Class="@ClassPresets.DefaultPadding">
                                 @foreach (var blobInfo in memory.BlobInfo)
                                 {
                                     var index = _allBlobInfos.Count;
 
                                     _allBlobInfos.Add(blobInfo);
 
-                                    <MudItem xs="12" sm="4">
+                                    <MudItem xs="12" sm="3">
                                         <MudImage ObjectFit="ObjectFit.Cover" Fluid="true" Src="@blobInfo.Source" @onclick="() => OnImageClicked(index)" />
                                     </MudItem>
                                 }

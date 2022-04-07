@@ -11,7 +11,7 @@ public sealed class AddMemoryPageViewModel : ViewModelBase
 
     public List<AddMemoryImageData> UploadedImages { get; }
 
-    public bool MaxUploadReached => UploadedImages.Count > ZExtensions.MaxPostScreenShots;
+    public bool MaxUploadReached => UploadedImages.Count >= ZExtensions.MaxPostScreenShots;
 
     public PublishCommentComponent PublishCommentComponent { get; set; }
 

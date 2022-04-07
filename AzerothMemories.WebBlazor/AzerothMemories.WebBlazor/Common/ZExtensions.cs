@@ -16,7 +16,7 @@ public static class ZExtensions
     public static readonly int MaxPostCommentLength = 2048;
     public static readonly int MaxCommentLength = 2048;
     public static readonly int ReportPostCommentMaxLength = 200;
-    public static readonly int MaxPostScreenShots = 5;
+    public static readonly int MaxPostScreenShots = 8;
     public static readonly int MaxAddMemoryFileSizeInBytes = (int)10.Megabytes().Bytes;
     public static readonly int MaxAvatarFileSizeInBytes = (int)5.Megabytes().Bytes;
 
