@@ -4,6 +4,7 @@ using SixLabors.ImageSharp.Formats.Gif;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using System.Security.Cryptography;
 using System.Text;
+using Azure.Storage.Blobs;
 
 namespace AzerothMemories.WebServer.Services.Handlers;
 
@@ -322,7 +323,16 @@ internal static class PostServices_TryPostMemory
                 var blobName = $"{accountViewModel.Id}-{Guid.NewGuid()}.{extension}";
                 if (commonServices.Config.UploadToBlobStorage)
                 {
-                    var blobClient = new Azure.Storage.Blobs.BlobClient(commonServices.Config.BlobStorageConnectionString, ZExtensions.BlobUserUploads, blobName);
+                    bool blobExists;
+                    BlobClient blobClient;
+                    do
+                    {
+                        blobName = $"{accountViewModel.Id}-{Guid.NewGuid()}.{extension}";
+                        blobClient = new BlobClient(commonServices.Config.BlobStorageConnectionString, ZExtensions.BlobUserUploads, blobName);
+                        blobExists = await blobClient.ExistsAsync(cancellationToken).ConfigureAwait(false);
+
+                    } while (blobExists);
+
                     var result = await blobClient.UploadAsync(blobData, cancellationToken).ConfigureAwait(false);
                     if (result.Value == null)
                     {
