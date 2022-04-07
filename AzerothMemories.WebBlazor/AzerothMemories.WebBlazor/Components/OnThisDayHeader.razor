@@ -81,24 +81,49 @@ else
 
                         @foreach (var memory in userData.MyMemories)
                         {
-                            var link = $"post/{memory.AccountId}/{memory.PostId}";
+                            <MudGrid Class="@ClassPresets.DefaultPadding" Justify="Justify.Center">
+                                @{
+                                    var link = $"post/{memory.AccountId}/{memory.PostId}";
+                                    var postTimeString = Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(memory.PostTime, true);
+                                    var postCreatedTimeString = Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(memory.PostCreatedTime, true);
+                                    var blobPreviewInfo = memory.GetBlobPreviewInfo(postTimeString);
+                                }
+                                
+                                <MudItem xs="12">
+                                    <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center">
+                                        <a href="@link">
+                                            <MudText Typo="Typo.h6" Align="Align.Center">@postTimeString</MudText>
+                                        </a>
+                                        
+                                        <a href="@link">
+                                            <MudText Typo="Typo.caption" Align="Align.Center">@postCreatedTimeString</MudText>
+                                        </a>
+                                    </MudStack>
+                                </MudItem>
 
-                            <a href="@link">
-                                <MudText Class="@ClassPresets.DefaultPadding" Typo="Typo.body2">@Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(memory.PostTime, true)</MudText>
-                            </a>
-
-                            <MudGrid Class="@ClassPresets.DefaultPadding">
-                                @foreach (var blobInfo in memory.BlobInfo)
+                                @if (blobPreviewInfo.Length == 0)
                                 {
-                                    var index = _allBlobInfos.Count;
-
-                                    _allBlobInfos.Add(blobInfo);
-
-                                    <MudItem xs="12" sm="3">
-                                        <MudImage ObjectFit="ObjectFit.Cover" Fluid="true" Src="@blobInfo.Source" @onclick="() => OnImageClicked(index)" />
+                                    <MudItem xs="12">
+                                        <MudText Typo="Typo.body2" Align="Align.Center">No Images.</MudText>
                                     </MudItem>
                                 }
+                                else
+                                {
+                                    @for (var i = 0; i < blobPreviewInfo.Length; i++)
+                                    {
+                                        var index = i;
+                                        var blobInfo = blobPreviewInfo[index];
+                                        var blobIndex = _allBlobInfos.Count;
+
+                                        _allBlobInfos.Add(blobInfo);
+
+                                        <MudItem xs="12" sm="3">
+                                            <MudImage ObjectFit="ObjectFit.Cover" Fluid="true" Src="@blobInfo.Source" @onclick="() => OnImageClicked(blobIndex)"/>
+                                        </MudItem>
+                                    }
+                                }
                             </MudGrid>
+
                         }
                     </MudPaper>
                 }

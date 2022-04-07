@@ -483,7 +483,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                             join post in database.Posts
                                 on tag.PostId equals post.Id
                             where tag.TagString == accountString && post.DeletedTimeStamp == 0 && (tag.TagKind == PostTagKind.Post || tag.TagKind == PostTagKind.PostRestored)
-                            select new { post.Id, post.AccountId, post.PostTime, post.PostCommentMark, post.BlobNames };
+                            select new { post.Id, post.AccountId, post.PostTime, post.PostCreatedTime, post.PostCommentMark, post.BlobNames };
 
         var memories = await memoriesQuery.ToArrayAsync().ConfigureAwait(false);
         var memoriesById = new HashSet<int>();
@@ -516,6 +516,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                 PostId = memory.Id,
                 AccountId = memory.AccountId,
                 PostTime = memory.PostTime.ToUnixTimeMilliseconds(),
+                PostCreatedTime = memory.PostCreatedTime.ToUnixTimeMilliseconds(),
                 BlobInfo = PostViewModelBlobInfo.CreateBlobInfo(userTagInfo.Name, memory.PostCommentMark, blobNames),
             });
         }
