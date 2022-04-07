@@ -121,7 +121,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices, IDatabas
             return null;
         }
 
-        if (activeAccountId > 0)
+        if (canSeePost && activeAccountId > 0)
         {
             var timeStampNow = SystemClock.Instance.GetCurrentInstant();
             var timeStampNowMs = timeStampNow.ToUnixTimeMilliseconds();
