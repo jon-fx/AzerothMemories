@@ -136,6 +136,7 @@ public sealed class Migration0003_AccountData : Migration
             .WithColumn(nameof(PostRecord.PostCreatedTime)).AsDateTimeOffsetWithDefault()
             .WithReactionInfo()
             .WithColumn(nameof(PostRecord.TotalCommentCount)).AsInt32().WithDefaultValue(0)
+            .WithColumn(nameof(PostRecord.TotalViewCount)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(PostRecord.TotalReportCount)).AsInt32().WithDefaultValue(0)
             .WithColumn(nameof(PostRecord.DeletedTimeStamp)).AsInt64().WithDefaultValue(0);
 

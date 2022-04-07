@@ -54,6 +54,8 @@ public sealed class PostRecord : IDatabaseRecordWithVersion
 
     [Column] public int TotalCommentCount { get; set; }
 
+    [Column] public int TotalViewCount { get; set; }
+
     [Column] public int TotalReportCount { get; set; }
 
     [Column] public long DeletedTimeStamp { get; set; }
