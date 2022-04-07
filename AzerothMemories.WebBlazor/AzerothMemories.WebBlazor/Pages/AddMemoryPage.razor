@@ -44,13 +44,12 @@
         }
         else if (result.Result == AddMemoryResultCode.Canceled)
         {
+            _skipAddImage = false;
         }
         else
         {
             await ClientServices.DialogService.ShowNotificationDialog(false, $"{result.Result}");
         }
-
-        _skipAddImage = false;
 
         StateHasChanged();
     }

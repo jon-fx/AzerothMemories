@@ -45,13 +45,13 @@ internal static class PostServices_TryPostMemory
             return default;
         }
 
-        var commenText = command.Comment;
-        if (string.IsNullOrWhiteSpace(commenText))
+        var commentText = command.Comment;
+        if (string.IsNullOrWhiteSpace(commentText))
         {
-            commenText = string.Empty;
+            commentText = string.Empty;
         }
 
-        if (commenText.Length >= ZExtensions.MaxPostCommentLength)
+        if (commentText.Length >= ZExtensions.MaxPostCommentLength)
         {
             return new AddMemoryResult(AddMemoryResultCode.CommentTooLong);
         }
@@ -73,7 +73,7 @@ internal static class PostServices_TryPostMemory
             return new AddMemoryResult(AddMemoryResultCode.SessionCanNotInteract);
         }
 
-        var parseResult = commonServices.MarkdownServices.GetCommentText(commenText, activeAccount.GetUserTagList(), true);
+        var parseResult = commonServices.MarkdownServices.GetCommentText(commentText, activeAccount.GetUserTagList(), true);
         if (parseResult.ResultCode != MarkdownParserResultCode.Success)
         {
             return new AddMemoryResult(AddMemoryResultCode.ParseCommentFailed);
@@ -133,6 +133,19 @@ internal static class PostServices_TryPostMemory
         if (uploadAndSortResult != AddMemoryResultCode.Success)
         {
             return new AddMemoryResult(uploadAndSortResult);
+        }
+
+        if (postRecord.Uploads == null || postRecord.Uploads.Count == 0)
+        {
+            if (string.IsNullOrWhiteSpace(postRecord.PostCommentRaw))
+            {
+                return new AddMemoryResult(AddMemoryResultCode.NoImageMustContainText);
+            }
+
+            if (string.IsNullOrWhiteSpace(postRecord.PostCommentMark))
+            {
+                return new AddMemoryResult(AddMemoryResultCode.NoImageMustContainText);
+            }
         }
 
         command.ImageData.Clear();
@@ -260,7 +273,7 @@ internal static class PostServices_TryPostMemory
                 {
                     var encoder = new GifEncoder();
 
-                    await image.SaveAsGifAsync(memoryStream, encoder, cancellationToken: cancellationToken).ConfigureAwait(false);
+                    await image.SaveAsGifAsync(memoryStream, encoder, cancellationToken).ConfigureAwait(false);
                     memoryStream.Position = 0;
                     extension = "gif";
                 }
@@ -268,14 +281,14 @@ internal static class PostServices_TryPostMemory
                 {
                     var encoder = new JpegEncoder();
 
-                    await image.SaveAsJpegAsync(memoryStream, encoder, cancellationToken: cancellationToken).ConfigureAwait(false);
+                    await image.SaveAsJpegAsync(memoryStream, encoder, cancellationToken).ConfigureAwait(false);
                     memoryStream.Position = 0;
 
                     if (memoryStream.Length > 1.Megabytes().Bytes)
                     {
                         encoder.Quality = accountViewModel.GetUploadQuality();
 
-                        await image.SaveAsJpegAsync(memoryStream, encoder, cancellationToken: cancellationToken).ConfigureAwait(false);
+                        await image.SaveAsJpegAsync(memoryStream, encoder, cancellationToken).ConfigureAwait(false);
                         memoryStream.Position = 0;
                     }
                 }
@@ -301,13 +314,9 @@ internal static class PostServices_TryPostMemory
 
         try
         {
-            if (dataToUpload.Length == 0)
-            {
-                return AddMemoryResultCode.UploadFailed;
-            }
-
             var imageNameBuilder = new StringBuilder();
             var postUploadLogs = new List<AccountUploadLog>();
+
             foreach (var (extension, blobData, blobHash) in dataToUpload)
             {
                 var blobName = $"{accountViewModel.Id}-{Guid.NewGuid()}.{extension}";
