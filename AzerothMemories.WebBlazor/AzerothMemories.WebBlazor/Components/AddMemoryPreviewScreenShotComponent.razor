@@ -19,6 +19,14 @@ else
                 <MudText Typo="Typo.body1">@timeStr</MudText>
             </CardHeaderContent>
             <CardHeaderActions>
+                <MudTooltip Text="Move Up" Color="Color.Dark">
+                    <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward" Color="Color.Success" OnClick="() => MoveImage(-1)" Disabled="@(ViewModel.UploadedImages.IndexOf(UploadedImage) == 0)" />
+                </MudTooltip>
+                
+                <MudTooltip Text="Move Down" Color="Color.Dark">
+                    <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Color="Color.Success" OnClick="() => MoveImage(1)" Disabled="@(ViewModel.UploadedImages.IndexOf(UploadedImage) == ViewModel.UploadedImages.Count - 1)" />
+                </MudTooltip>
+
                 <MudTooltip Text="Use Image Time" Color="Color.Dark">
                     <MudIconButton Icon="@Icons.Material.Filled.MoreTime" Color="Color.Success" OnClick="UseImageTime" Disabled="@(UploadedImage.FileTimeStamp == 0 || Instant.FromUnixTimeMilliseconds(UploadedImage.FileTimeStamp) == ViewModel.SharedData.PostTimeStamp)" />
                 </MudTooltip>
@@ -67,6 +75,20 @@ else
         await Services.ClientServices.JsRuntime.InvokeVoidAsync("SetImage", GetImageId, UploadedImage.ContentType, UploadedImage.FileContent);
     }
 
+    private Task MoveImage(int change)
+    {
+        var viewModel = UploadedImage;
+        var currentIndex = ViewModel.UploadedImages.IndexOf(viewModel);
+        currentIndex += change;
+
+        ViewModel.UploadedImages.Remove(viewModel);
+        ViewModel.UploadedImages.Insert(currentIndex, viewModel);
+
+        ViewModel.OnViewModelChanged?.Invoke();
+
+        return Task.CompletedTask;
+    }
+
     private async Task DeleteImage()
     {
         ViewModel.UploadedImages.Remove(UploadedImage);
@@ -96,7 +118,7 @@ else
     {
         UploadedImage.EditedFileContent = buffer;
 
-        return Task.CompletedTask;
+        return InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()
