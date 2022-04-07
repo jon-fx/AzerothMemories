@@ -6,7 +6,7 @@
         @if (ViewModel == null)
         {
         }
-        else if (ViewModel.UploadedImages.Count > 0)
+        else if (ViewModel.UploadedImages.Count > 0 || _skipAddImage)
         {
             <AddMemoryComponent Services="@this" ViewModel="@ViewModel" OnPostMemoryResult="@OnPostMemoryCallback" />
         }
@@ -15,7 +15,8 @@
             <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
                 <MudCardContent Class="@ClassPresets.CardContent">
                     <InputFile id="fileInput" OnChange="ViewModel.Initialize" hidden accept="@ZExtensions.UploadAcceptExtensions" />
-                    <MudButton HtmlTag="label" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Filled.CloudUpload" for="fileInput">Upload Image</MudButton>
+                    <MudButton Class="@ClassPresets.DefaultPadding" HtmlTag="label" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Filled.CloudUpload" for="fileInput">Upload Image</MudButton>
+                    <MudButton Class="@ClassPresets.DefaultPadding" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Filled.ImageNotSupported" OnClick="OnSkipClicked">Continue</MudButton>
                 </MudCardContent>
             </MudCard>
         }
@@ -24,6 +25,17 @@
 
 @code
 {
+    private bool _skipAddImage;
+
+    private async Task OnSkipClicked()
+    {
+        _skipAddImage = true;
+
+        await ViewModel.Initialize(null);
+
+        StateHasChanged();
+    }
+
     private async Task OnPostMemoryCallback(AddMemoryResult result)
     {
         if (result.Result == AddMemoryResultCode.Success)
@@ -37,6 +49,8 @@
         {
             await ClientServices.DialogService.ShowNotificationDialog(false, $"{result.Result}");
         }
+
+        _skipAddImage = false;
 
         StateHasChanged();
     }

@@ -33,8 +33,8 @@ else if (Helper.PostViewModel.DeletedTimeStamp == 0)
         {
             <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
                 <MudCardContent Class="@ClassPresets.CardContent">
-                    <MudText Class="pa-2 ma-2" Align="Align.Center" Typo="Typo.body2">No comments</MudText>
-                    <MudButton Class="pa-2 ma-2" FullWidth="true" Variant="Variant.Filled" Disabled="!Services.ClientServices.ActiveAccountServices.AccountViewModel.CanPublishComment()" OnClick="AddComment">Add comment</MudButton>
+                    <MudText Class="@ClassPresets.DefaultPadding" Align="Align.Center" Typo="Typo.body2">No comments</MudText>
+                    <MudButton Class="@ClassPresets.DefaultPadding" FullWidth="true" Variant="Variant.Filled" Disabled="!Services.ClientServices.ActiveAccountServices.AccountViewModel.CanPublishComment()" OnClick="AddComment">Add comment</MudButton>
                 </MudCardContent>
             </MudCard>
         }
@@ -59,13 +59,13 @@ else if (Helper.PostViewModel.DeletedTimeStamp == 0)
             <div class="postIndent">
                 <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
                     <MudCardContent Class="@ClassPresets.CardContent">
-                        <MudButton Class="pa-2 ma-2" FullWidth="true" Variant="Variant.Filled" Disabled="!Services.ClientServices.ActiveAccountServices.AccountViewModel.CanPublishComment()" OnClick="AddComment">Add comment</MudButton>
+                        <MudButton Class="@ClassPresets.DefaultPadding" FullWidth="true" Variant="Variant.Filled" Disabled="!Services.ClientServices.ActiveAccountServices.AccountViewModel.CanPublishComment()" OnClick="AddComment">Add comment</MudButton>
                     </MudCardContent>
                 </MudCard>
             </div>
         }
 
-        <div class="d-flex justify-center pa-2 ma-2">
+        <div class="d-flex justify-center @ClassPresets.DefaultPadding">
             <MudPagination Selected="@Helper.Page" SelectedChanged="OnPageChanged" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@Helper.TotalPages" />
         </div>
     }

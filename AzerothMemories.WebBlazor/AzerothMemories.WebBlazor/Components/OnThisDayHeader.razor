@@ -64,8 +64,8 @@ else
                 {
                     @if (items.Count > 0)
                     {
-                        <MudPaper Outlined="true" Class="ma-2 pa-2">
-                            <MudText Class="ma-2" Typo="Typo.body2"><b>@text</b></MudText>
+                        <MudPaper Outlined="true" Class="@ClassPresets.DefaultPadding">
+                            <MudText Class="@ClassPresets.DefaultPadding" Typo="Typo.body2"><b>@text</b></MudText>
                             @foreach (var postTagInfo in items)
                             {
                                 <PostTagChipComponent TagInfo="postTagInfo" OnClick="() => OnMainTagClicked(postTagInfo)" />
@@ -76,8 +76,8 @@ else
 
                 if (userData.MyMemories.Count > 0)
                 {
-                    <MudPaper Outlined="true" Class="ma-2 pa-2">
-                        <MudText Class="ma-2" Typo="Typo.body2"><b>My Memories</b></MudText>
+                    <MudPaper Outlined="true" Class="@ClassPresets.DefaultPadding">
+                        <MudText Class="@ClassPresets.DefaultPadding" Typo="Typo.body2"><b>My Memories</b></MudText>
 
                         @foreach (var memory in userData.MyMemories)
                         {

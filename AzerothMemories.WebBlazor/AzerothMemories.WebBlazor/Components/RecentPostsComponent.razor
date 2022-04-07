@@ -1,5 +1,5 @@
 ﻿<MudCard id="moa-top-header" Class="@ClassPresets.Card" Outlined="true" Elevation="10">
-    <MudCardContent Class="@ClassPresets.CardContentNone">
+    <MudCardContent Class="@ClassPresets.PaddingNone">
         <MudSwitch T="bool" Checked="@(RecentPostsHelper.CurrentType != RecentPostsType.Default)" Color="Color.Primary" Class="d-flex justify-end" Label="" Disabled="AccountViewModel == null || RecentPostsHelper == null" CheckedChanged="RecentPostsHelper.OnShowAllChanged" />
     </MudCardContent>
 </MudCard>
@@ -25,7 +25,7 @@ else
         </div>
     }
 
-    <div class="d-flex justify-center pa-2 ma-2">
+    <div class="d-flex justify-center @ClassPresets.DefaultPadding">
         <MudPagination Selected="@RecentPostsHelper.CurrentPage" SelectedChanged="@RecentPostsHelper.TryChangePage" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@RecentPostsHelper.TotalPages" />
     </div>
 }

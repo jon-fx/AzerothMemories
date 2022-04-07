@@ -23,19 +23,26 @@ public sealed class AddMemoryPageViewModel : ViewModelBase
 
         await SharedData.InitializeAccount(() => Services.ClientServices.ActiveAccountServices.AccountViewModel);
 
-        foreach (var file in arg.GetMultipleFiles())
+        if (arg != null)
         {
-            await TryAddFile(file);
+            foreach (var file in arg.GetMultipleFiles())
+            {
+                await TryAddFile(file);
+            }
         }
 
-        if (UploadedImages.Count > 0)
+        if (UploadedImages.Count == 0)
+        {
+            await SharedData.SetPostTimeStamp(SystemClock.Instance.GetCurrentInstant());
+        }
+        else
         {
             var currentFileTimeStamp = UploadedImages[0].FileTimeStamp;
 
             await SharedData.SetPostTimeStamp(Instant.FromUnixTimeMilliseconds(currentFileTimeStamp));
-
-            OnViewModelChanged?.Invoke();
         }
+
+        OnViewModelChanged?.Invoke();
     }
 
     public async Task UploadMoreImages(InputFileChangeEventArgs arg)

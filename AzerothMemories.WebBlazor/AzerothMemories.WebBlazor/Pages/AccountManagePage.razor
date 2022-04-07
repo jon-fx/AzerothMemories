@@ -143,7 +143,7 @@
                     @if (ViewModel.AccountViewModel.CanUploadAvatar())
                     {
                         <InputFile id="fileInput" OnChange="ViewModel.UploadCustomAvatar" hidden accept="@ZExtensions.UploadAcceptExtensions" />
-                        <MudButton Class="ma-2" HtmlTag="label" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Filled.CloudUpload" for="fileInput">Upload Image</MudButton>
+                        <MudButton Class="@ClassPresets.DefaultPadding" HtmlTag="label" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Filled.CloudUpload" for="fileInput">Upload Image</MudButton>
                     }
                 </MudCardContent>
             </MudCard>
@@ -184,7 +184,7 @@
                         </CardHeaderContent>
                     </MudCardHeader>
                     <MudCardActions Class="@ClassPresets.CardActions">
-                        <MudButtonGroup OverrideStyles="true" Class="pa-2 ma-2" Variant="Variant.Filled" Size="Size.Small">
+                        <MudButtonGroup OverrideStyles="true" Class="@ClassPresets.DefaultPadding" Variant="Variant.Filled" Size="Size.Small">
                             <MudButton StartIcon="@Icons.Material.Filled.DeleteForever" OnClick="() => ViewModel.OnCharacterDeletedClicked(character)">Deleted</MudButton>
                             <MudButton StartIcon="@Icons.Material.Filled.Transform" Disabled="@(possibleCharacters.Length == 0)">Transferred / Renamed</MudButton>
                             <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Direction="Direction.Bottom" OffsetY="true">
