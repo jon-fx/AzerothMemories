@@ -1,6 +1,4 @@
-﻿using AzerothMemories.WebServer.Services.Handlers;
-
-namespace AzerothMemories.WebServer.Services;
+﻿namespace AzerothMemories.WebServer.Services;
 
 [RegisterComputeService]
 [RegisterAlias(typeof(IAdminServices))]

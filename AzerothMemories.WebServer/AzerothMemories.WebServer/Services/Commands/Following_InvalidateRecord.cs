@@ -1,4 +1,4 @@
-﻿namespace AzerothMemories.WebBlazor.Services.Commands;
+﻿namespace AzerothMemories.WebServer.Services.Commands;
 
 public record Following_InvalidateRecord(int AccountId, int OtherAccountId)
 {

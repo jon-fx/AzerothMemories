@@ -12,6 +12,8 @@ global using AzerothMemories.WebServer.Common;
 global using AzerothMemories.WebServer.Database;
 global using AzerothMemories.WebServer.Database.Records;
 global using AzerothMemories.WebServer.Services;
+global using AzerothMemories.WebServer.Services.Commands;
+global using AzerothMemories.WebServer.Services.Handlers;
 global using AzerothMemories.WebServer.Services.Updates;
 global using Microsoft.AspNetCore.Authentication;
 global using Microsoft.AspNetCore.Authentication.Cookies;
