@@ -21,7 +21,7 @@ internal sealed class ProgramHeleprMain : ProgramHelper
             options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
         });
 
-        authenticationBuilder.AddPatreonAuth();
+        authenticationBuilder.AddPatreonAuth(Config);
         authenticationBuilder.AddBlizzardAuth(BlizzardRegion.Europe, Config);
         authenticationBuilder.AddBlizzardAuth(BlizzardRegion.Taiwan, Config);
         authenticationBuilder.AddBlizzardAuth(BlizzardRegion.Korea, Config);

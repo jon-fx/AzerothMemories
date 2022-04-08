@@ -26,69 +26,16 @@ internal static class AccountServices_OnSignInCommand
 
         if (command.AuthenticatedIdentity.Schema.StartsWith("BattleNet-"))
         {
-            var regionStr = command.AuthenticatedIdentity.Schema.Replace("BattleNet-", "");
-            var blizzardRegion = BlizzardRegionExt.FromName(regionStr);
-
-            if (!command.User.Claims.TryGetValue("BattleNet-Id", out var blizzardIdClaim))
-            {
-                throw new NotImplementedException();
-            }
-
-            if (!long.TryParse(blizzardIdClaim, out var blizzardId))
-            {
-                throw new NotImplementedException();
-            }
-
-            if (!command.User.Claims.TryGetValue("BattleNet-Tag", out var battleTag))
-            {
-                throw new NotImplementedException();
-            }
-
-            if (!command.User.Claims.TryGetValue("BattleNet-Token", out var battleNetToken))
-            {
-                throw new NotImplementedException();
-            }
-
-            if (!command.User.Claims.TryGetValue("BattleNet-TokenExpires", out var battleNetTokenExpiresStr) || !long.TryParse(battleNetTokenExpiresStr, out var battleNetTokenExpires))
-            {
-                throw new NotImplementedException();
-            }
-
-            await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
-
-            var dbSessionInfo = await sessionRepo.Get(database, command.Session.Id, false, cancellationToken).ConfigureAwait(false);
-            if (dbSessionInfo != null)
-            {
-                var tempAccount = await commonServices.AccountServices.TryGetAccountRecordFusionId(dbSessionInfo.UserId).ConfigureAwait(false);
-                if (tempAccount != null && tempAccount.BlizzardRegionId != BlizzardRegion.None && tempAccount.BlizzardRegionId != blizzardRegion)
-                {
-                    return;
-                }
-            }
-
-            await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
-
-            await OnSignIn(commonServices.AccountServices, context, database, blizzardId, blizzardRegion, battleTag, battleNetToken, Instant.FromUnixTimeMilliseconds(battleNetTokenExpires), cancellationToken).ConfigureAwait(false);
+            await OnBlizzardSignIn(commonServices, sessionRepo, context, command, cancellationToken).ConfigureAwait(false);
         }
-        else if (command.AuthenticatedIdentity.Schema.StartsWith("ToDo-"))
-        {
-            await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
-
+        else if (command.AuthenticatedIdentity.Schema.StartsWith("Patreon"))
+        { 
             throw new NotImplementedException();
         }
 #if DEBUG
         else if (command.AuthenticatedIdentity.Schema.StartsWith("Default"))
         {
-            await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
-
-            command.User.Claims.TryGetValue("BattleNet-Id", out var blizzardIdClaim);
-            command.User.Claims.TryGetValue("BattleNet-Tag", out var battleTag);
-
-            long.TryParse(blizzardIdClaim, out var blizzardId);
-
-            await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
-
-            await OnSignIn(commonServices.AccountServices, context, database, blizzardId, BlizzardRegion.Europe, battleTag, null, Instant.FromUnixTimeMilliseconds(0), cancellationToken).ConfigureAwait(false);
+            await OnBlizzardSignIn(commonServices, sessionRepo, context, command, cancellationToken).ConfigureAwait(false);
         }
 #endif
         else
@@ -99,8 +46,65 @@ internal static class AccountServices_OnSignInCommand
         }
     }
 
-    private static async Task OnSignIn(AccountServices accountServices, CommandContext context, AppDbContext database, long blizzardId, BlizzardRegion blizzardRegion, string battleTag, string battleNetToken, Instant battleNetTokenExpires, CancellationToken cancellationToken)
+    private static bool GetTokensFromClaims(SignInCommand command, string prefix, out long id, out string name, out string token, out Instant tokenExpiresAt)
     {
+        id = -1;
+        name = null;
+        token = null;
+        tokenExpiresAt = Instant.FromUnixTimeMilliseconds(0);
+
+        if (!command.User.Claims.TryGetValue($"{prefix}-Id", out var blizzardIdClaim))
+        {
+            return false;
+        }
+
+        if (!long.TryParse(blizzardIdClaim, out id))
+        {
+            return false;
+        }
+
+        if (!command.User.Claims.TryGetValue($"{prefix}-Tag", out name))
+        {
+        }
+
+        if (!command.User.Claims.TryGetValue($"{prefix}-Token", out token))
+        {
+            return false;
+        }
+
+        if (!command.User.Claims.TryGetValue($"{prefix}-TokenExpires", out var battleNetTokenExpiresStr) || !long.TryParse(battleNetTokenExpiresStr, out var battleNetTokenExpires))
+        {
+            return false;
+        }
+
+        tokenExpiresAt = Instant.FromUnixTimeMilliseconds(battleNetTokenExpires);
+
+        return true;
+    }
+
+    private static async Task OnBlizzardSignIn(CommonServices commonServices, IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> sessionRepo, CommandContext context, SignInCommand command, CancellationToken cancellationToken)
+    {
+        var regionStr = command.AuthenticatedIdentity.Schema.Split('-');
+        var blizzardRegion = BlizzardRegion.Europe;
+        if (regionStr.Length > 1)
+        {
+            blizzardRegion = BlizzardRegionExt.FromName(regionStr[1]);
+        }
+
+        if (!GetTokensFromClaims(command, "BattleNet", out var blizzardId, out var battleTag, out var battleNetToken, out var battleNetTokenExpires))
+        {
+            throw new NotImplementedException();
+        }
+
+        await using var database = await commonServices.AccountServices.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
+        var tempAccount = await GetCurrentAccount(database, command.Session, sessionRepo, commonServices.AccountServices, cancellationToken).ConfigureAwait(false);
+        if (tempAccount != null && tempAccount.BlizzardRegionId != BlizzardRegion.None && tempAccount.BlizzardRegionId != blizzardRegion)
+        {
+            return;
+        }
+        
+        await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
+
         var sessionInfo = context.Operation().Items.Get<SessionInfo>();
         if (sessionInfo == null)
         {
@@ -108,7 +112,7 @@ internal static class AccountServices_OnSignInCommand
         }
 
         var userId = sessionInfo.UserId;
-        var accountRecord = await accountServices.GetOrCreateAccount(userId).ConfigureAwait(false);
+        var accountRecord = await commonServices.AccountServices.GetOrCreateAccount(userId).ConfigureAwait(false);
 
         database.Attach(accountRecord);
 
@@ -131,5 +135,16 @@ internal static class AccountServices_OnSignInCommand
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+    }
+
+    private static async Task<AccountRecord> GetCurrentAccount(AppDbContext database, Session session, IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> sessionRepo, AccountServices accountServices, CancellationToken cancellationToken)
+    {
+        var dbSessionInfo = await sessionRepo.Get(database, session.Id, false, cancellationToken).ConfigureAwait(false);
+        if (dbSessionInfo != null)
+        {
+            return await accountServices.TryGetAccountRecordFusionId(dbSessionInfo.UserId).ConfigureAwait(false);
+        }
+
+        return null;
     }
 }

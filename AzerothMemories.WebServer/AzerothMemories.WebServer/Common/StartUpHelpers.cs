@@ -5,11 +5,6 @@ namespace AzerothMemories.WebServer.Common;
 
 internal static class StartUpHelpers
 {
-    public static AuthenticationBuilder AddPatreonAuth(this AuthenticationBuilder builder)
-    {
-        return builder;
-    }
-
     public static AuthenticationBuilder AddBlizzardAuth(this AuthenticationBuilder builder, BlizzardRegion region, CommonConfig commonConfig)
     {
         var regionInfo = region.ToInfo();
@@ -44,6 +39,18 @@ internal static class StartUpHelpers
         });
     }
 
+    private static Task OnBlizzardCreatingTicket(OAuthCreatingTicketContext context)
+    {
+        if (context.Identity == null)
+        {
+            throw new NotImplementedException();
+        }
+
+        AddTokens("BattleNet", context);
+
+        return Task.CompletedTask;
+    }
+
     private static Task OnBlizzardTicketReceived(TicketReceivedContext arg)
     {
         return Task.CompletedTask;
@@ -58,23 +65,25 @@ internal static class StartUpHelpers
     {
         return Task.CompletedTask;
     }
-
-    private static Task OnBlizzardCreatingTicket(OAuthCreatingTicketContext context)
+    
+    private static void AddTokens(string schema, OAuthCreatingTicketContext context)
     {
         if (context.Identity == null)
         {
-            throw new NotImplementedException();
+            return;
         }
 
         var token = context.AccessToken ?? string.Empty;
         var tokenExpiresAt = (SystemClock.Instance.GetCurrentInstant() + context.ExpiresIn.GetValueOrDefault().ToDuration()).ToUnixTimeMilliseconds();
 
-        context.Identity.AddClaim(new Claim("BattleNet-Token", token));
-        context.Identity.AddClaim(new Claim("BattleNet-TokenExpires", tokenExpiresAt.ToString()));
-
-        return Task.CompletedTask;
+        context.Identity.AddClaim(new Claim($"{schema}-Token", token));
+        context.Identity.AddClaim(new Claim($"{schema}-TokenExpires", tokenExpiresAt.ToString()));
     }
 
+    public static AuthenticationBuilder AddPatreonAuth(this AuthenticationBuilder builder, CommonConfig commonConfig)
+    {
+        return builder;
+    }
     public static HeaderPolicyCollection GetHeaderPolicyCollection()
     {
         var policy = new HeaderPolicyCollection()
