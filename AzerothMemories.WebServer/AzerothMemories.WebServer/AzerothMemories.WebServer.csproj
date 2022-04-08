@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <PackageReference Include="Azure.Storage.Blobs" Version="12.11.0" />
+        <PackageReference Include="BlazorWasmAntivirusProtection" Version="1.6.0" />
         <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="6.1.2" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.3" />
         <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="6.0.3" />
