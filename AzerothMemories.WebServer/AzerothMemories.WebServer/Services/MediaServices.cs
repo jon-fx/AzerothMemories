@@ -61,9 +61,10 @@ public class MediaServices : DbServiceBase<AppDbContext>
     }
 
     [ComputeMethod]
-    protected virtual Task<MediaResult> TryGetAvatar_Default()
+    protected virtual async Task<MediaResult> TryGetAvatar_Default()
     {
-        return Task.FromResult(new MediaResult());
+        var result = await TryGetBlobData(ZExtensions.BlobStaticMedia, "inv_misc_questionmark.jpg").ConfigureAwait(false);
+        return result with { IsDefault = true };
     }
 
     [ComputeMethod]
@@ -88,9 +89,10 @@ public class MediaServices : DbServiceBase<AppDbContext>
     }
 
     [ComputeMethod]
-    protected virtual Task<MediaUserResult> TryGetUserUpload_Default()
+    protected virtual async Task<MediaUserResult> TryGetUserUpload_Default()
     {
-        return Task.FromResult(new MediaUserResult());
+        var blobData = await TryGetBlobData(ZExtensions.BlobStaticMedia, "inv_misc_questionmark.jpg").ConfigureAwait(false);
+        return new MediaUserResult(blobData.LastModified, blobData.ETag, blobData.MediaType, blobData.MediaBytes, 0, 0) { IsDefault = true };
     }
 
     [ComputeMethod]
