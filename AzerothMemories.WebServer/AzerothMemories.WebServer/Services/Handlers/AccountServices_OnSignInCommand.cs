@@ -2,7 +2,7 @@
 
 internal static class AccountServices_OnSignInCommand
 {
-    public static async Task TryHandle(CommonServices commonServices, IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> sessionRepo, IDatabaseContextProvider databaseContextProvider, SignInCommand command, CancellationToken cancellationToken)
+    public static async Task TryHandle(CommonServices commonServices, IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> sessionRepo, SignInCommand command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
 
@@ -82,6 +82,17 @@ internal static class AccountServices_OnSignInCommand
         return true;
     }
 
+    private static async Task<AccountRecord> GetCurrentAccount(AppDbContext database, Session session, IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> sessionRepo, AccountServices accountServices, CancellationToken cancellationToken)
+    {
+        var dbSessionInfo = await sessionRepo.Get(database, session.Id, false, cancellationToken).ConfigureAwait(false);
+        if (dbSessionInfo != null)
+        {
+            return await accountServices.TryGetAccountRecordFusionId(dbSessionInfo.UserId).ConfigureAwait(false);
+        }
+
+        return null;
+    }
+
     private static async Task OnBlizzardSignIn(CommonServices commonServices, IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> sessionRepo, CommandContext context, SignInCommand command, CancellationToken cancellationToken)
     {
         var regionStr = command.AuthenticatedIdentity.Schema.Split('-');
@@ -135,16 +146,5 @@ internal static class AccountServices_OnSignInCommand
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
-    }
-
-    private static async Task<AccountRecord> GetCurrentAccount(AppDbContext database, Session session, IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> sessionRepo, AccountServices accountServices, CancellationToken cancellationToken)
-    {
-        var dbSessionInfo = await sessionRepo.Get(database, session.Id, false, cancellationToken).ConfigureAwait(false);
-        if (dbSessionInfo != null)
-        {
-            return await accountServices.TryGetAccountRecordFusionId(dbSessionInfo.UserId).ConfigureAwait(false);
-        }
-
-        return null;
     }
 }

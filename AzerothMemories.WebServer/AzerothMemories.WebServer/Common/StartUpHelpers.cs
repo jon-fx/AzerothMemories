@@ -84,6 +84,7 @@ internal static class StartUpHelpers
     {
         return builder;
     }
+
     public static HeaderPolicyCollection GetHeaderPolicyCollection()
     {
         var policy = new HeaderPolicyCollection()

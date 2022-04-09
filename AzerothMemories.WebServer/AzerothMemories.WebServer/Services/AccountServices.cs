@@ -16,7 +16,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, ID
     [CommandHandler(IsFilter = true, Priority = 1)]
     protected virtual async Task OnSignInCommand(SignInCommand command, CancellationToken cancellationToken)
     {
-        await AccountServices_OnSignInCommand.TryHandle(_commonServices, _sessionRepo, this, command, cancellationToken).ConfigureAwait(false);
+        await AccountServices_OnSignInCommand.TryHandle(_commonServices, _sessionRepo, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler(IsFilter = true, Priority = 1)]

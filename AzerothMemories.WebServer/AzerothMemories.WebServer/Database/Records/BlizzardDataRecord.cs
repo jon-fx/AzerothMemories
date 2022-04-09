@@ -18,7 +18,7 @@ public sealed class BlizzardDataRecord : IDatabaseRecord
 
     [Column] public string Media { get; set; }
 
-    [Column] public BlizzardDataRecordLocal Name { get; set; }
+    [Column, Required] public BlizzardDataRecordLocal Name { get; set; }
 
     [Column] public Instant MinTagTime { get; set; }
 

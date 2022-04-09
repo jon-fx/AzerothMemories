@@ -1,12 +1,12 @@
 ﻿namespace AzerothMemories.WebServer.Blizzard;
 
-public sealed class WarcraftClientProvider
+public sealed class HttpClientProvider
 {
     private readonly IHttpClientFactory _clientFactory;
     private readonly CommonConfig _commonConfig;
     private readonly WarcraftClientProviderInternal[] _internalProviders;
 
-    public WarcraftClientProvider(IHttpClientFactory clientFactory, CommonConfig commonConfig)
+    public HttpClientProvider(IHttpClientFactory clientFactory, CommonConfig commonConfig)
     {
         _clientFactory = clientFactory;
         _commonConfig = commonConfig;
@@ -22,7 +22,7 @@ public sealed class WarcraftClientProvider
         }
     }
 
-    public WarcraftClient Get(BlizzardRegion region)
+    public WarcraftClient GetWarcraftClient(BlizzardRegion region)
     {
         return _internalProviders[region.ToValue()].GetClient();
     }
