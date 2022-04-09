@@ -16,7 +16,7 @@ internal sealed class UpdateHandler_Accounts : UpdateHandlerBase<AccountRecord, 
             return new RequestResult<AccountProfileSummary>(HttpStatusCode.Forbidden, null, blizzardLastModified, null);
         }
 
-        using var client = CommonServices.WarcraftClientProvider.Get(record.BlizzardRegionId);
+        using var client = CommonServices.HttpClientProvider.GetWarcraftClient(record.BlizzardRegionId);
         return await client.GetAccountProfile(record.BattleNetToken, blizzardLastModified).ConfigureAwait(false);
     }
 

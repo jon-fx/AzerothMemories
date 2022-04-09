@@ -17,7 +17,7 @@ services.AddSingleton<WowTools>();
 services.AddSingleton<MoaResourceCache>();
 services.AddSingleton<MoaResourceWriter>();
 services.AddSingleton<MoaImageUploader>();
-services.AddSingleton<WarcraftClientProvider>();
+services.AddSingleton<HttpClientProvider>();
 
 services.AddDbContextFactory<AppDbContext>(optionsBuilder =>
 {

@@ -2,7 +2,7 @@
 
 internal sealed class RealmDataSeeder : GenericBase<RealmDataSeeder>
 {
-    public RealmDataSeeder(ILogger<RealmDataSeeder> logger, WarcraftClientProvider clientProvider, MoaResourceCache resourceCache, MoaResourceWriter resourceWriter) : base(logger, clientProvider, resourceCache, resourceWriter)
+    public RealmDataSeeder(ILogger<RealmDataSeeder> logger, HttpClientProvider clientProvider, MoaResourceCache resourceCache, MoaResourceWriter resourceWriter) : base(logger, clientProvider, resourceCache, resourceWriter)
     {
     }
 
@@ -12,7 +12,7 @@ internal sealed class RealmDataSeeder : GenericBase<RealmDataSeeder>
 
         foreach (var region in regions)
         {
-            using var client = WarcraftClientProvider.Get(region);
+            using var client = HttpClientProvider.GetWarcraftClient(region);
             var twoLetters = region.ToInfo().TwoLettersUpper;
 
             var allRealmSearchResults = await ResourceCache.GetOrRequestData($"RealmData-{region.ToInfo().TwoLettersUpper}", async k => await client.GetRealmData());

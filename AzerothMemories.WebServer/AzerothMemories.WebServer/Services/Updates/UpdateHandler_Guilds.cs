@@ -9,7 +9,7 @@ internal sealed class UpdateHandler_Guilds : UpdateHandlerBase<GuildRecord, Guil
     protected override async Task<RequestResult<Guild>> TryExecuteRequest(GuildRecord record, Instant blizzardLastModified)
     {
         var guildRef = new MoaRef(record.MoaRef);
-        using var client = CommonServices.WarcraftClientProvider.Get(guildRef.Region);
+        using var client = CommonServices.HttpClientProvider.GetWarcraftClient(guildRef.Region);
         return await client.GetGuildProfileSummaryAsync(guildRef.Realm, guildRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
 

@@ -2,7 +2,7 @@
 
 internal sealed class ZoneDataSeeder : GenericBase<ZoneDataSeeder>
 {
-    public ZoneDataSeeder(ILogger<ZoneDataSeeder> logger, WarcraftClientProvider clientProvider, MoaResourceCache resourceCache, MoaResourceWriter resourceWriter) : base(logger, clientProvider, resourceCache, resourceWriter)
+    public ZoneDataSeeder(ILogger<ZoneDataSeeder> logger, HttpClientProvider clientProvider, MoaResourceCache resourceCache, MoaResourceWriter resourceWriter) : base(logger, clientProvider, resourceCache, resourceWriter)
     {
     }
 

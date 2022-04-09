@@ -18,7 +18,7 @@ internal sealed class UpdateHandler_Characters_Achievements : UpdateHandlerBase<
     protected override async Task<RequestResult<CharacterAchievementsSummary>> TryExecuteRequest(CharacterRecord record, Instant blizzardLastModified)
     {
         var characterRef = new MoaRef(record.MoaRef);
-        using var client = CommonServices.WarcraftClientProvider.Get(record.BlizzardRegionId);
+        using var client = CommonServices.HttpClientProvider.GetWarcraftClient(record.BlizzardRegionId);
         return await client.GetCharacterAchievementsSummaryAsync(characterRef.Realm, characterRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
 

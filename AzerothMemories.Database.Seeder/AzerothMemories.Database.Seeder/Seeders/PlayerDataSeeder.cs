@@ -2,13 +2,13 @@
 
 internal sealed class PlayerDataSeeder : GenericBase<PlayerDataSeeder>
 {
-    public PlayerDataSeeder(ILogger<PlayerDataSeeder> logger, WarcraftClientProvider clientProvider, MoaResourceCache resourceCache, MoaResourceWriter resourceWriter) : base(logger, clientProvider, resourceCache, resourceWriter)
+    public PlayerDataSeeder(ILogger<PlayerDataSeeder> logger, HttpClientProvider clientProvider, MoaResourceCache resourceCache, MoaResourceWriter resourceWriter) : base(logger, clientProvider, resourceCache, resourceWriter)
     {
     }
 
     protected override async Task DoSomething()
     {
-        using var client = WarcraftClientProvider.Get(BlizzardRegion.Europe);
+        using var client = HttpClientProvider.GetWarcraftClient(BlizzardRegion.Europe);
         var classIndex = await ResourceCache.GetOrRequestData("ClassIndex", async k => await client.GetPlayableClassIndex());
         if (classIndex != null)
         {

@@ -95,7 +95,7 @@ public abstract class ProgramHelper
         _services.AddSingleton(_config);
         _services.AddSingleton<CommonServices>();
         _services.AddSingleton<BlizzardUpdateHandler>();
-        _services.AddSingleton<WarcraftClientProvider>();
+        _services.AddSingleton<HttpClientProvider>();
 
         _services.AddHttpClient("Blizzard", x =>
         {

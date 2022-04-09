@@ -2,7 +2,7 @@
 
 internal sealed class PetDataSeeder : GenericBase<PetDataSeeder>
 {
-    public PetDataSeeder(ILogger<PetDataSeeder> logger, WarcraftClientProvider clientProvider, MoaResourceCache resourceCache, MoaResourceWriter resourceWriter) : base(logger, clientProvider, resourceCache, resourceWriter)
+    public PetDataSeeder(ILogger<PetDataSeeder> logger, HttpClientProvider clientProvider, MoaResourceCache resourceCache, MoaResourceWriter resourceWriter) : base(logger, clientProvider, resourceCache, resourceWriter)
     {
     }
 

@@ -2,7 +2,7 @@
 
 internal sealed class QuestDataSeeder : GenericBase<QuestDataSeeder>
 {
-    public QuestDataSeeder(ILogger<QuestDataSeeder> logger, WarcraftClientProvider clientProvider, MoaResourceCache resourceCache, MoaResourceWriter resourceWriter) : base(logger, clientProvider, resourceCache, resourceWriter)
+    public QuestDataSeeder(ILogger<QuestDataSeeder> logger, HttpClientProvider clientProvider, MoaResourceCache resourceCache, MoaResourceWriter resourceWriter) : base(logger, clientProvider, resourceCache, resourceWriter)
     {
     }
 

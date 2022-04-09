@@ -2,7 +2,7 @@
 
 internal sealed class AchievementDataSeeder : GenericBase<AchievementDataSeeder>
 {
-    public AchievementDataSeeder(ILogger<AchievementDataSeeder> logger, WarcraftClientProvider clientProvider, MoaResourceCache resourceCache, MoaResourceWriter resourceWriter) : base(logger, clientProvider, resourceCache, resourceWriter)
+    public AchievementDataSeeder(ILogger<AchievementDataSeeder> logger, HttpClientProvider clientProvider, MoaResourceCache resourceCache, MoaResourceWriter resourceWriter) : base(logger, clientProvider, resourceCache, resourceWriter)
     {
     }
 

@@ -205,7 +205,7 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
             return new MoaRef(result.MoaRef);
         }
 
-        using var client = _commonServices.WarcraftClientProvider.Get(region);
+        using var client = _commonServices.HttpClientProvider.GetWarcraftClient(region);
         var statusResult = await client.GetCharacterStatusAsync(realmSlug, characterName).ConfigureAwait(false);
         if (statusResult.IsSuccess && statusResult.ResultData != null && statusResult.ResultData.IsValid && statusResult.ResultData.Id > 0)
         {
