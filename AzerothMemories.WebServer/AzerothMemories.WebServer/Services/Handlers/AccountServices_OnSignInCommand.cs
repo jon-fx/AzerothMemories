@@ -29,7 +29,7 @@ internal static class AccountServices_OnSignInCommand
             await OnBlizzardSignIn(commonServices, sessionRepo, context, command, cancellationToken).ConfigureAwait(false);
         }
         else if (command.AuthenticatedIdentity.Schema.StartsWith("Patreon"))
-        { 
+        {
             throw new NotImplementedException();
         }
 #if DEBUG
