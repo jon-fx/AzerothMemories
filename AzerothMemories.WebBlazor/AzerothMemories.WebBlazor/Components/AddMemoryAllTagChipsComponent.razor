@@ -1,20 +1,20 @@
 ﻿<MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
     @{
-        foreach (var chip in SharedData.SelectedTypeTags)
+        foreach (var tagObj in SharedData.SelectedTypeTags)
         {
-            var tagInfo = (PostTagInfo)chip;
+            var tagInfo = (PostTagInfo)tagObj;
             <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClose="SharedData.OnSelectedMainTagChipClose" />
         }
 
-        foreach (var chip in SharedData.SelectedRegionTags)
+        foreach (var tagObj in SharedData.SelectedRegionTags)
         {
-            var tagInfo = (PostTagInfo)chip;
+            var tagInfo = (PostTagInfo)tagObj;
             <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClose="SharedData.OnSelectedMainTagChipClose" />
         }
 
-        foreach (var chip in SharedData.SelectedCommonTags)
+        foreach (var tagObj in SharedData.SelectedCommonTags)
         {
-            var tagInfo = (PostTagInfo)chip;
+            var tagInfo = (PostTagInfo)tagObj;
             <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClose="SharedData.OnSelectedCommonTagChipClose" />
         }
 
@@ -23,9 +23,9 @@
             <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClose="SharedData.OnSelectedExtraTagChipClose" />
         }
 
-        foreach (var chip in SharedData.SelectedAchievementTags)
+        foreach (var tagObj in SharedData.SelectedAchievementTags)
         {
-            if (chip is PostTagInfo tagInfo)
+            if (tagObj is PostTagInfo tagInfo)
             {
                 <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClose="SharedData.OnSelectedAchievementTagChipClose" />
             }

@@ -130,7 +130,7 @@ public sealed class AddMemoryComponentSharedData
             var regionTag = RegionTags.FirstOrDefault(x => PostTagInfo.EqualityComparer1.Equals(x, tagInfo));
             if (regionTag != null)
             {
-                _selectedTypeTags.Add(regionTag);
+                _selectedRegionTags.Add(regionTag);
                 continue;
             }
 
