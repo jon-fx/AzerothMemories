@@ -49,6 +49,11 @@ internal static class CharacterServices_TrySetCharacterRenamedOrTransferred
             return false;
         }
 
+        if (oldCharacterRecord.BlizzardRegionId != newCharacterRecord.BlizzardRegionId)
+        {
+            return false;
+        }
+
         if (oldCharacterRecord.Class != newCharacterRecord.Class)
         {
             return false;

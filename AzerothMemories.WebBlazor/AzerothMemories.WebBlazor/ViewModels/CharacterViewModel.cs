@@ -22,12 +22,6 @@ public sealed class CharacterViewModel
 
     [JsonInclude] public CharacterStatus2 CharacterStatus;
 
-    //[JsonInclude] public CharacterFaction Faction;
-
-    //[JsonInclude] public int AchievementTotalPoints;
-
-    //[JsonInclude] public int AchievementTotalQuantity;
-
     [JsonInclude] public bool AccountSync;
 
     [JsonInclude] public string AvatarLink;
@@ -36,15 +30,11 @@ public sealed class CharacterViewModel
 
     [JsonInclude] public string GuildName;
 
-    //[JsonInclude] public byte GuildRank;
-
-    [JsonInclude] public long UpdateJobLastEndTime;
-
-    [JsonInclude] public HttpStatusCode UpdateJobLastResult;
+    [JsonInclude] public BlizzardUpdateViewModel UpdateJobLastResults;
 
     [JsonIgnore] public string AvatarLinkWithFallBack => GetAvatarStringWithFallBack(AvatarLink, Race, Gender);
 
-    [JsonIgnore] public bool IsLoadingFromArmory => UpdateJobLastResult == 0 || UpdateJobLastEndTime == 0 || Class == 0 || RealmId == 0;
+    [JsonIgnore] public bool IsLoadingFromArmory => UpdateJobLastResults == null || UpdateJobLastResults.IsLoadingFromArmory || Class == 0 || RealmId == 0;
 
     [JsonIgnore] public string TagString => PostTagInfo.GetTagString(PostTagType.Character, Id);
 

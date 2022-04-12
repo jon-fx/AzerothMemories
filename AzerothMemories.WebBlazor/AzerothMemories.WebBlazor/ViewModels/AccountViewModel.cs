@@ -16,8 +16,6 @@ public sealed class AccountViewModel
 
     [JsonInclude] public bool BattleTagIsPublic;
 
-    [JsonInclude] public BlizzardRegion RegionId;
-
     [JsonInclude] public bool IsPrivate;
 
     [JsonInclude] public string Avatar;
@@ -34,9 +32,7 @@ public sealed class AccountViewModel
 
     [JsonInclude] public int TotalReactionsCount;
 
-    [JsonInclude] public long UpdateJobLastEndTime;
-
-    [JsonInclude] public HttpStatusCode UpdateJobLastResult;
+    [JsonInclude] public BlizzardUpdateViewModel UpdateJobLastResults;
 
     [JsonInclude] public string BanReason;
 

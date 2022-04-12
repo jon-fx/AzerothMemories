@@ -20,13 +20,11 @@ public sealed class GuildViewModel
 
     [JsonInclude] public long BlizzardCreatedTimestamp;
 
-    [JsonInclude] public long UpdateJobLastEndTime;
+    [JsonInclude] public BlizzardUpdateViewModel UpdateJobLastResults;
 
     [JsonInclude] public GuildMembersViewModel MembersViewModel;
 
-    [JsonInclude] public HttpStatusCode UpdateJobLastResult;
-
-    [JsonIgnore] public bool IsLoadingFromArmory => UpdateJobLastResult == 0 || UpdateJobLastEndTime == 0 || RealmId == 0;
+    [JsonIgnore] public bool IsLoadingFromArmory => UpdateJobLastResults == null || UpdateJobLastResults.IsLoadingFromArmory || RealmId == 0;
 
     public string GetPageTitle()
     {

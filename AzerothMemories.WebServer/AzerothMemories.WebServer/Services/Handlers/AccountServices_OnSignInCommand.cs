@@ -24,62 +24,113 @@ internal static class AccountServices_OnSignInCommand
             return;
         }
 
-        if (command.AuthenticatedIdentity.Schema.StartsWith("BattleNet-"))
+        await using var database = await commonServices.AccountServices.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
+        var accountRecord = await GetCurrentAccount(database, command.Session, sessionRepo, commonServices.AccountServices, cancellationToken).ConfigureAwait(false);
+
+        var authKey = command.AuthenticatedIdentity.Id.Value;
+        var authRecord = await database.AuthTokens.FirstOrDefaultAsync(x => x.Key == authKey, cancellationToken).ConfigureAwait(false);
+
+        bool canSignInResult;
+        if (command.AuthenticatedIdentity.Schema.StartsWith("BattleNet"))
         {
-            await OnBlizzardSignIn(commonServices, sessionRepo, context, command, cancellationToken).ConfigureAwait(false);
+            canSignInResult = CanBlizzardAccountSignIn(command, accountRecord, authRecord);
         }
         else if (command.AuthenticatedIdentity.Schema.StartsWith("Patreon"))
         {
-            throw new NotImplementedException();
+            canSignInResult = CanPatreonAccountSignIn(command, accountRecord, authRecord);
         }
-#if DEBUG
         else if (command.AuthenticatedIdentity.Schema.StartsWith("Default"))
         {
-            await OnBlizzardSignIn(commonServices, sessionRepo, context, command, cancellationToken).ConfigureAwait(false);
+            canSignInResult = CanBlizzardAccountSignIn(command, accountRecord, authRecord);
         }
-#endif
         else
+        {
+            throw new NotImplementedException();
+        }
+
+        if (canSignInResult)
         {
             await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
 
-            throw new NotImplementedException();
+            if (accountRecord == null)
+            {
+                var sessionInfo = context.Operation().Items.Get<SessionInfo>();
+                if (sessionInfo == null)
+                {
+                    throw new NotImplementedException();
+                }
+
+                accountRecord = await GetOrCreateAccount(commonServices.AccountServices, database, sessionInfo.UserId).ConfigureAwait(false);
+            }
+
+            if (string.IsNullOrWhiteSpace(accountRecord.Username))
+            {
+                var newUsername = $"User-{accountRecord.Id}";
+
+                accountRecord.Username = newUsername;
+                accountRecord.UsernameSearchable = DatabaseHelpers.GetSearchableName(newUsername);
+            }
+
+            if (authRecord != null)
+            {
+                if (authRecord.AccountId == null)
+                {
+                    authRecord.AccountId = accountRecord.Id;
+                    accountRecord.AuthTokens.Add(authRecord);
+                }
+                else if (authRecord.AccountId != accountRecord.Id)
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            accountRecord.TryUpdateLoginConsecutiveDaysCount();
+
+            var blizzardToken = accountRecord.AuthTokens.FirstOrDefault(x => x.IsBlizzardAuthToken);
+            if (blizzardToken != null)
+            {
+                Exceptions.ThrowIf(accountRecord.BlizzardId > 0 && accountRecord.BlizzardId != blizzardToken.IdLong);
+
+                accountRecord.BlizzardId = blizzardToken.IdLong;
+                accountRecord.BattleTag = blizzardToken.Name;
+            }
+
+            var patreonToken = accountRecord.AuthTokens.FirstOrDefault(x => x.IsPatreon);
+            if (patreonToken != null)
+            {
+            }
+
+            await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+            context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
         }
     }
 
-    private static bool GetTokensFromClaims(SignInCommand command, string prefix, out long id, out string name, out string token, out Instant tokenExpiresAt)
+    private static async Task<AccountRecord> GetOrCreateAccount(AccountServices accountServices, AppDbContext database, string userId)
     {
-        id = -1;
-        name = null;
-        token = null;
-        tokenExpiresAt = Instant.FromUnixTimeMilliseconds(0);
-
-        if (!command.User.Claims.TryGetValue($"{prefix}-Id", out var blizzardIdClaim))
+        var accountRecord = await database.Accounts.FirstOrDefaultAsync(a => a.FusionId == userId).ConfigureAwait(false);
+        if (accountRecord == null)
         {
-            return false;
+            accountRecord = new AccountRecord
+            {
+                FusionId = userId,
+                AccountFlags = AccountFlags.AlphaUser,
+                CreatedDateTime = SystemClock.Instance.GetCurrentInstant(),
+            };
+
+            await database.Accounts.AddAsync(accountRecord).ConfigureAwait(false);
+            await database.SaveChangesAsync().ConfigureAwait(false);
+
+            await accountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+            {
+                AccountId = accountRecord.Id,
+                Type = AccountHistoryType.AccountCreated
+            }).ConfigureAwait(false);
         }
 
-        if (!long.TryParse(blizzardIdClaim, out id))
-        {
-            return false;
-        }
+        Exceptions.ThrowIf(accountRecord.Id == 0);
 
-        if (!command.User.Claims.TryGetValue($"{prefix}-Tag", out name))
-        {
-        }
-
-        if (!command.User.Claims.TryGetValue($"{prefix}-Token", out token))
-        {
-            return false;
-        }
-
-        if (!command.User.Claims.TryGetValue($"{prefix}-TokenExpires", out var battleNetTokenExpiresStr) || !long.TryParse(battleNetTokenExpiresStr, out var battleNetTokenExpires))
-        {
-            return false;
-        }
-
-        tokenExpiresAt = Instant.FromUnixTimeMilliseconds(battleNetTokenExpires);
-
-        return true;
+        return accountRecord;
     }
 
     private static async Task<AccountRecord> GetCurrentAccount(AppDbContext database, Session session, IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> sessionRepo, AccountServices accountServices, CancellationToken cancellationToken)
@@ -87,64 +138,19 @@ internal static class AccountServices_OnSignInCommand
         var dbSessionInfo = await sessionRepo.Get(database, session.Id, false, cancellationToken).ConfigureAwait(false);
         if (dbSessionInfo != null)
         {
-            return await accountServices.TryGetAccountRecordFusionId(dbSessionInfo.UserId).ConfigureAwait(false);
+            return await database.Accounts.FirstOrDefaultAsync(a => a.FusionId == dbSessionInfo.UserId, cancellationToken).ConfigureAwait(false);
         }
 
         return null;
     }
 
-    private static async Task OnBlizzardSignIn(CommonServices commonServices, IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> sessionRepo, CommandContext context, SignInCommand command, CancellationToken cancellationToken)
+    private static bool CanBlizzardAccountSignIn(SignInCommand command, AccountRecord tempAccount, AuthTokenRecord authToken)
     {
-        var regionStr = command.AuthenticatedIdentity.Schema.Split('-');
-        var blizzardRegion = BlizzardRegion.Europe;
-        if (regionStr.Length > 1)
-        {
-            blizzardRegion = BlizzardRegionExt.FromName(regionStr[1]);
-        }
+        return tempAccount == null;
+    }
 
-        if (!GetTokensFromClaims(command, "BattleNet", out var blizzardId, out var battleTag, out var battleNetToken, out var battleNetTokenExpires))
-        {
-            throw new NotImplementedException();
-        }
-
-        await using var database = await commonServices.AccountServices.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
-        var tempAccount = await GetCurrentAccount(database, command.Session, sessionRepo, commonServices.AccountServices, cancellationToken).ConfigureAwait(false);
-        if (tempAccount != null && tempAccount.BlizzardRegionId != BlizzardRegion.None && tempAccount.BlizzardRegionId != blizzardRegion)
-        {
-            return;
-        }
-        
-        await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
-
-        var sessionInfo = context.Operation().Items.Get<SessionInfo>();
-        if (sessionInfo == null)
-        {
-            throw new NotImplementedException();
-        }
-
-        var userId = sessionInfo.UserId;
-        var accountRecord = await commonServices.AccountServices.GetOrCreateAccount(userId).ConfigureAwait(false);
-
-        database.Attach(accountRecord);
-
-        accountRecord.BlizzardId = blizzardId;
-        accountRecord.BlizzardRegionId = blizzardRegion;
-        accountRecord.BattleTag = battleTag;
-        accountRecord.BattleNetToken = battleNetToken;
-        accountRecord.BattleNetTokenExpiresAt = battleNetTokenExpires;
-
-        if (string.IsNullOrWhiteSpace(accountRecord.Username))
-        {
-            var newUsername = $"User-{accountRecord.Id}";
-
-            accountRecord.Username = newUsername;
-            accountRecord.UsernameSearchable = DatabaseHelpers.GetSearchableName(newUsername);
-        }
-
-        accountRecord.TryUpdateLoginConsecutiveDaysCount();
-
-        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+    private static bool CanPatreonAccountSignIn(SignInCommand command, AccountRecord tempAccount, AuthTokenRecord authToken)
+    {
+        return tempAccount != null && tempAccount.BlizzardId != 0;
     }
 }

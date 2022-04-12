@@ -5,32 +5,27 @@ namespace AzerothMemories.WebServer.Common;
 
 internal static class StartUpHelpers
 {
-    public static AuthenticationBuilder AddBlizzardAuth(this AuthenticationBuilder builder, BlizzardRegion region, CommonConfig commonConfig)
+    public static AuthenticationBuilder AddBlizzardAuth(this AuthenticationBuilder builder, CommonConfig commonConfig)
     {
-        var regionInfo = region.ToInfo();
-        var clientInfo = commonConfig.BlizzardClientInfo[(int)region];
+        var clientInfo = commonConfig.BlizzardClientInfo[(int)BlizzardRegion.Europe];
         if (!clientInfo.HasValue)
         {
             return builder;
         }
 
-        var schema = $"BattleNet-{regionInfo.Name}";
-        return builder.AddBattleNet(schema, $"Battle Net - {regionInfo.Name}", options =>
+        return builder.AddBattleNet("BattleNet", "Battle Net", options =>
         {
-            options.ClaimsIssuer = schema;
+            options.ClaimsIssuer = "BattleNet";
             options.ClientId = clientInfo.Value.Id;
             options.ClientSecret = clientInfo.Value.Secret;
-            options.CallbackPath = $"/authorization-code/callback/{regionInfo.Name.ToLower()}";
-            options.TokenEndpoint = regionInfo.TokenEndpoint;
-            options.AuthorizationEndpoint = regionInfo.AuthorizationEndpoint;
-            options.UserInformationEndpoint = regionInfo.UserInformationEndpoint;
-            //options.CorrelationCookie.SameSite = SameSiteMode.Lax;
-            //options.SaveTokens = true;
-            options.Scope.Add("openid");
-            options.Scope.Add("wow.profile");
+            options.CallbackPath = "/authorization-code/callback/battlenet";
+            options.TokenEndpoint = "https://oauth.battle.net/oauth/token";
+            options.AuthorizationEndpoint = "https://oauth.battle.net/oauth/authorize";
+            options.UserInformationEndpoint = "https://oauth.battle.net/oauth/userinfo";
 
-            options.ClaimActions.MapJsonKey("BattleNet-Id", "id");
-            options.ClaimActions.MapJsonKey("BattleNet-Tag", "battletag");
+            //options.SaveTokens = false;
+            //options.Scope.Add("openid");
+            options.Scope.Add("wow.profile");
 
             options.Events.OnCreatingTicket += OnBlizzardCreatingTicket;
             options.Events.OnTicketReceived += OnBlizzardTicketReceived;
@@ -39,16 +34,29 @@ internal static class StartUpHelpers
         });
     }
 
-    private static Task OnBlizzardCreatingTicket(OAuthCreatingTicketContext context)
+    private static async Task OnBlizzardCreatingTicket(OAuthCreatingTicketContext context)
     {
-        if (context.Identity == null)
+        await OnCreatingTicket(context).ConfigureAwait(false);
+    }
+
+    private static async Task OnCreatingTicket(OAuthCreatingTicketContext context)
+    {
+        Exceptions.ThrowIf(context.Identity == null);
+
+        var authenticationType = context.Identity.AuthenticationType;
+        var id = context.Identity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var name = context.Identity.FindFirst(ClaimTypes.Name)?.Value;
+
+        var accountServices = context.HttpContext.RequestServices.GetRequiredService<AccountServices>();
+        await accountServices.TryUpdateAuthToken(new Account_TryUpdateAuthToken
         {
-            throw new NotImplementedException();
-        }
-
-        AddTokens("BattleNet", context);
-
-        return Task.CompletedTask;
+            Id = id,
+            Name = name,
+            Type = authenticationType,
+            AccessToken = context.AccessToken,
+            RefreshToken = context.RefreshToken,
+            TokenExpiresAt = (SystemClock.Instance.GetCurrentInstant() + context.ExpiresIn.GetValueOrDefault().ToDuration()).ToUnixTimeMilliseconds()
+        }).ConfigureAwait(false);
     }
 
     private static Task OnBlizzardTicketReceived(TicketReceivedContext arg)
@@ -65,24 +73,50 @@ internal static class StartUpHelpers
     {
         return Task.CompletedTask;
     }
-    
-    private static void AddTokens(string schema, OAuthCreatingTicketContext context)
-    {
-        if (context.Identity == null)
-        {
-            return;
-        }
-
-        var token = context.AccessToken ?? string.Empty;
-        var tokenExpiresAt = (SystemClock.Instance.GetCurrentInstant() + context.ExpiresIn.GetValueOrDefault().ToDuration()).ToUnixTimeMilliseconds();
-
-        context.Identity.AddClaim(new Claim($"{schema}-Token", token));
-        context.Identity.AddClaim(new Claim($"{schema}-TokenExpires", tokenExpiresAt.ToString()));
-    }
 
     public static AuthenticationBuilder AddPatreonAuth(this AuthenticationBuilder builder, CommonConfig commonConfig)
     {
-        return builder;
+        if (commonConfig.PatreonClientId == null || commonConfig.PatreonClientSecret == null)
+        {
+            return builder;
+        }
+
+        return builder.AddPatreon("Patreon", options =>
+        {
+            options.ClaimsIssuer = "Patreon";
+            options.ClientId = commonConfig.PatreonClientId;
+            options.ClientSecret = commonConfig.PatreonClientSecret;
+            options.CallbackPath = "/authorization-code/callback/patreon";
+
+            //options.SaveTokens = false;
+            //options.ClaimActions.MapJsonKey("Patreon-Id", "id");
+            //options.ClaimActions.MapJsonSubKey("Patreon-Tag", "attributes", "full_name");
+
+            options.Events.OnCreatingTicket += OnPatreonCreatingTicket;
+            options.Events.OnTicketReceived += OnPatreonTicketReceived;
+            options.Events.OnAccessDenied += OnPatreonAccessDenied;
+            options.Events.OnRemoteFailure += OnPatreonRemoteFailure;
+        });
+    }
+
+    private static async Task OnPatreonCreatingTicket(OAuthCreatingTicketContext context)
+    {
+        await OnCreatingTicket(context).ConfigureAwait(false);
+    }
+
+    private static Task OnPatreonTicketReceived(TicketReceivedContext arg)
+    {
+        return Task.CompletedTask;
+    }
+
+    private static Task OnPatreonAccessDenied(AccessDeniedContext arg)
+    {
+        return Task.CompletedTask;
+    }
+
+    private static Task OnPatreonRemoteFailure(RemoteFailureContext arg)
+    {
+        return Task.CompletedTask;
     }
 
     public static HeaderPolicyCollection GetHeaderPolicyCollection()

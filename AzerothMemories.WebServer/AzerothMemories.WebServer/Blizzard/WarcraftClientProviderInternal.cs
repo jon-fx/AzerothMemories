@@ -66,7 +66,7 @@ internal sealed class WarcraftClientProviderInternal
     private async Task<AuthAccessToken> GetOAuthToken(HttpClient client)
     {
         var credentials = $"{_clientId}:{_clientSecret}";
-        var oauthHost = _blizzardRegionInfo.TokenEndpoint;
+        var oauthHost = "https://oauth.battle.net/oauth/token";//_blizzardRegionInfo.TokenEndpoint;
 
         client.DefaultRequestHeaders.Accept.Clear();
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

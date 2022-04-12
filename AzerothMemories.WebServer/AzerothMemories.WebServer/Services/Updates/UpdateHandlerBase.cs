@@ -1,41 +1,40 @@
-﻿namespace AzerothMemories.WebServer.Services.Updates;
+﻿using System.Runtime.CompilerServices;
 
-internal abstract class UpdateHandlerBase<TRecord, TRequestResult> : IUpdateHandlerBase<TRecord> where TRecord : IBlizzardUpdateRecord where TRequestResult : class
+namespace AzerothMemories.WebServer.Services.Updates;
+
+internal class UpdateHandlerBase<TRecord> where TRecord : IBlizzardUpdateRecord
 {
     private readonly BlizzardUpdateType _updateType;
     private readonly CommonServices _commonServices;
+    private readonly string _updateTypeString;
 
-    protected UpdateHandlerBase(BlizzardUpdateType updateType, CommonServices commonServices)
+    public UpdateHandlerBase(BlizzardUpdateType updateType, CommonServices commonServices, [CallerArgumentExpression("updateType")] string updateTypeString = null)
     {
         _updateType = updateType;
         _commonServices = commonServices;
+
+        Exceptions.ThrowIf(string.IsNullOrWhiteSpace(updateTypeString));
+        Exceptions.ThrowIf(!updateTypeString.StartsWith("BlizzardUpdateType."));
+
+        _updateTypeString = updateTypeString.Replace("BlizzardUpdateType.", "");
+
+        Exceptions.ThrowIf(!Enum.TryParse<BlizzardUpdateType>(_updateTypeString, out var updateEnum));
+        Exceptions.ThrowIf(updateEnum != updateType);
     }
 
     public BlizzardUpdateType UpdateType => _updateType;
 
+    public string UpdateTypeString => _updateTypeString;
+
     public CommonServices CommonServices => _commonServices;
 
-    protected abstract Task<RequestResult<TRequestResult>> TryExecuteRequest(TRecord record, Instant blizzardLastModified);
-
-    public async Task<HttpStatusCode> ExecuteOn(CommandContext context, AppDbContext database, TRecord record, BlizzardUpdateChildRecord updateChildRecord)
+    public Task<HttpStatusCode> ExecuteOn(CommandContext context, AppDbContext database, TRecord record, BlizzardUpdateChildRecord childRecord)
     {
-        var requestResult = await TryExecuteRequest(record, updateChildRecord.BlizzardLastModified).ConfigureAwait(false);
-        if (requestResult.IsSuccess)
-        {
-            updateChildRecord.UpdateFailCounter = 0;
-
-            await InternalExecute(context, database, record, requestResult.ResultData).ConfigureAwait(false);
-        }
-        else if (updateChildRecord.UpdateFailCounter < byte.MaxValue)
-        {
-            updateChildRecord.UpdateFailCounter++;
-        }
-
-        updateChildRecord.UpdateJobLastResult = requestResult.ResultCode;
-        updateChildRecord.BlizzardLastModified = requestResult.ResultLastModified;
-
-        return requestResult.ResultCode;
+        return InternalExecuteOn(context, database, record, childRecord);
     }
 
-    protected abstract Task InternalExecute(CommandContext context, AppDbContext database, TRecord record, TRequestResult requestResult);
+    protected virtual Task<HttpStatusCode> InternalExecuteOn(CommandContext context, AppDbContext database, TRecord record, BlizzardUpdateChildRecord childRecord)
+    {
+        return Task.FromResult(HttpStatusCode.OK);
+    }
 }

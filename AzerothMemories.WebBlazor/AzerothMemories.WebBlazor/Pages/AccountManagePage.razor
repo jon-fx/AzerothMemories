@@ -309,9 +309,7 @@
                                         </MudTd>
 
                                         <MudTd DataLabel="Result">
-                                            <MudTooltip Text="@ClientServices.TimeProvider.GetTimeAsLocalStringAgo(row.UpdateJobLastEndTime, true)" Color="Color.Dark">
-                                                @row.UpdateJobLastResult
-                                            </MudTooltip>
+                                            <LastUpdateInfoComponent TimeProvider="@ClientServices.TimeProvider" UpdateViewModel="@row.UpdateJobLastResults"/>
                                         </MudTd>
                                     </tr>
                                 }

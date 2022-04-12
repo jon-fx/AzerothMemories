@@ -22,10 +22,7 @@ internal sealed class ProgramHeleprMain : ProgramHelper
         });
 
         authenticationBuilder.AddPatreonAuth(Config);
-        authenticationBuilder.AddBlizzardAuth(BlizzardRegion.Europe, Config);
-        authenticationBuilder.AddBlizzardAuth(BlizzardRegion.Taiwan, Config);
-        authenticationBuilder.AddBlizzardAuth(BlizzardRegion.Korea, Config);
-        authenticationBuilder.AddBlizzardAuth(BlizzardRegion.UnitedStates, Config);
+        authenticationBuilder.AddBlizzardAuth(Config);
 
         authenticationBuilder.AddCookie(options =>
         {

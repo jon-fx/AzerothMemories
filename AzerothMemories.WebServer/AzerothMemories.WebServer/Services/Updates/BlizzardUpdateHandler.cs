@@ -15,7 +15,7 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
         _commonServices = commonServices;
 
         _validRecordTypes = new Type[(int)BlizzardUpdatePriority.Count];
-        _validRecordTypes[(int)BlizzardUpdatePriority.Account] = typeof(AccountRecord);
+        _validRecordTypes[(int)BlizzardUpdatePriority.Account] = typeof(AuthTokenRecord);
         _validRecordTypes[(int)BlizzardUpdatePriority.CharacterHigh] = typeof(CharacterRecord);
         _validRecordTypes[(int)BlizzardUpdatePriority.CharacterMed] = typeof(CharacterRecord);
         _validRecordTypes[(int)BlizzardUpdatePriority.CharacterLow] = typeof(CharacterRecord);
@@ -39,6 +39,22 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
     public Type[] ValidRecordTypes => _validRecordTypes;
 
     public int[] RequiredChildrenCount => _requiredChildrenCount;
+
+    public async Task TryUpdate(AccountRecord accountRecord)
+    {
+        if (accountRecord?.AuthTokens == null)
+        {
+            return;
+        }
+
+        foreach (var authToken in accountRecord.AuthTokens)
+        {
+            if (authToken.IsBlizzardAuthToken)
+            {
+                await TryUpdate(authToken, BlizzardUpdatePriority.Account).ConfigureAwait(false);
+            }
+        }
+    }
 
     public async Task TryUpdate<TRecord>(TRecord record, BlizzardUpdatePriority updatePriority) where TRecord : class, IBlizzardUpdateRecord, new()
     {
@@ -90,10 +106,10 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
         var duration = _durationsBetweenUpdates[(int)updatePriority];
         if (updateRecord.UpdateStatus == BlizzardUpdateStatus.None)
         {
-            if (updateRecord.UpdateJobLastResult.IsFailure())
-            {
-                duration /= 2;
-            }
+            //if (updateRecord.UpdateJobLastResult.IsFailure())
+            //{
+            //    duration /= 2;
+            //}
 
             if (now > updateRecord.UpdateJobLastEndTime + duration)
             {

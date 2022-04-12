@@ -16,6 +16,8 @@ public sealed class BlizzardUpdateChildRecord : IDatabaseRecord
 
     [Column] public BlizzardUpdateType UpdateType { get; set; }
 
+    [Column] public string UpdateTypeString { get; set; }
+
     [Column] public byte UpdateFailCounter { get; set; }
 
     [Column] public Instant BlizzardLastModified { get; set; }

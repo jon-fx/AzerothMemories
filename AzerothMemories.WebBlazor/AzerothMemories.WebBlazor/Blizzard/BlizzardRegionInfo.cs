@@ -9,12 +9,12 @@ public sealed class BlizzardRegionInfo
     public static readonly BlizzardRegionInfo China = new(BlizzardRegion.China, "cn", "CN")
     {
         Host = "https://gateway.battlenet.com.cn",
-        Authorization = "https://www.battlenet.com.cn"
+        //Authorization = "https://www.battlenet.com.cn"
     };
 
     public static readonly BlizzardRegionInfo Europe = new(BlizzardRegion.Europe, "eu", "EU");
-    public static readonly BlizzardRegionInfo Korea = new(BlizzardRegion.Korea, "kr", "KR") { Authorization = "https://apac.battle.net" };
-    public static readonly BlizzardRegionInfo Taiwan = new(BlizzardRegion.Taiwan, "tw", "TW") { Authorization = "https://apac.battle.net" };
+    public static readonly BlizzardRegionInfo Korea = new(BlizzardRegion.Korea, "kr", "KR");// { Authorization = "https://apac.battle.net" };
+    public static readonly BlizzardRegionInfo Taiwan = new(BlizzardRegion.Taiwan, "tw", "TW");// { Authorization = "https://apac.battle.net" };
     public static readonly BlizzardRegionInfo UnitedStates = new(BlizzardRegion.UnitedStates, "us", "US");
 
     private BlizzardRegionInfo(BlizzardRegion region, string twoLettersLower, string twoLettersUpper)
@@ -24,7 +24,7 @@ public sealed class BlizzardRegionInfo
         TwoLettersLower = twoLettersLower;
         TwoLettersUpper = twoLettersUpper;
         Host = $"https://{twoLettersLower}.api.blizzard.com";
-        Authorization = $"https://{twoLettersLower}.battle.net";
+        //Authorization = $"https://{twoLettersLower}.battle.net";
 
         AllById[(int)region] = this;
         AllByName[Name] = this;
@@ -43,11 +43,11 @@ public sealed class BlizzardRegionInfo
 
     public string TwoLettersUpper { get; }
 
-    public string Authorization { get; private init; }
+    //public string Authorization { get; private init; }
 
-    public string TokenEndpoint => $"{Authorization}/oauth/token";
+    //public string TokenEndpoint => $"{Authorization}/oauth/token";
 
-    public string AuthorizationEndpoint => $"{Authorization}/oauth/authorize";
+    //public string AuthorizationEndpoint => $"{Authorization}/oauth/authorize";
 
-    public string UserInformationEndpoint => $"{Authorization}/oauth/userinfo";
+    //public string UserInformationEndpoint => $"{Authorization}/oauth/userinfo";
 }

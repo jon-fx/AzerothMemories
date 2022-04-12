@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebServer.Services.Updates;
 
-internal sealed class UpdateHandler_Characters_Renders : UpdateHandlerBase<CharacterRecord, CharacterMediaSummary>
+internal sealed class UpdateHandler_Characters_Renders : UpdateHandlerBaseResult<CharacterRecord, CharacterMediaSummary>
 {
     public UpdateHandler_Characters_Renders(CommonServices commonServices) : base(BlizzardUpdateType.Character_Renders, commonServices)
     {
@@ -13,7 +13,7 @@ internal sealed class UpdateHandler_Characters_Renders : UpdateHandlerBase<Chara
         return await client.GetCharacterRendersAsync(characterRef.Realm, characterRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
 
-    protected override Task InternalExecute(CommandContext context, AppDbContext database, CharacterRecord record, CharacterMediaSummary requestResult)
+    protected override Task InternalExecuteWithResult(CommandContext context, AppDbContext database, CharacterRecord record, CharacterMediaSummary requestResult)
     {
         var assets = requestResult.Assets;
         var characterAvatarRender = record.AvatarLink;

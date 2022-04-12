@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AzerothMemories.WebServer.Database.Records;
 
 [Table(TableName)]
-public sealed class AccountRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVersion
+public sealed class AccountRecord : IDatabaseRecordWithVersion
 {
     public const string TableName = "Accounts";
 
@@ -20,15 +20,9 @@ public sealed class AccountRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVe
 
     [Column] public long BlizzardId { get; set; }
 
-    [Column] public BlizzardRegion BlizzardRegionId { get; set; }
-
     [Column] public string BattleTag { get; set; }
 
     [Column] public bool BattleTagIsPublic { get; set; }
-
-    [Column] public string BattleNetToken { get; set; }
-
-    [Column] public Instant? BattleNetTokenExpiresAt { get; set; }
 
     [Column] public string Username { get; set; }
 
@@ -56,12 +50,15 @@ public sealed class AccountRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVe
 
     [Column] public Instant BanExpireTime { get; set; }
 
-    public BlizzardUpdateRecord UpdateRecord { get; set; }
+    public ICollection<AuthTokenRecord> AuthTokens { get; set; } = new List<AuthTokenRecord>();
 
     public uint RowVersion { get; set; }
 
     public AccountViewModel CreateViewModel(CommonServices commonServices, bool activeOrAdmin, Dictionary<int, AccountFollowingViewModel> followingViewModels, Dictionary<int, AccountFollowingViewModel> followersViewModels)
     {
+        var blizzardAuth = AuthTokens.FirstOrDefault(x => x.IsBlizzardAuthToken);
+        var blizzardUpdate = blizzardAuth?.UpdateRecord;
+
         var viewModel = new AccountViewModel
         {
             Id = Id,
@@ -69,7 +66,6 @@ public sealed class AccountRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVe
             AccountFlags = AccountFlags,
             Username = Username,
             AccountType = AccountType,
-            RegionId = BlizzardRegionId,
             BattleTag = BattleTag,
             BattleTagIsPublic = BattleTagIsPublic,
             CreatedDateTime = CreatedDateTime.ToUnixTimeMilliseconds(),
@@ -86,8 +82,7 @@ public sealed class AccountRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVe
             FollowingViewModels = RemoveNoneStatus(followingViewModels),
             FollowersViewModels = RemoveNoneStatus(followersViewModels),
 
-            UpdateJobLastResult = UpdateRecord?.UpdateJobLastResult ?? 0,
-            UpdateJobLastEndTime = UpdateRecord?.UpdateJobLastEndTime.ToUnixTimeMilliseconds() ?? 0
+            UpdateJobLastResults = blizzardUpdate?.GetUpdateJobResults(),
         };
 
         if (viewModel.BattleTagIsPublic || activeOrAdmin)

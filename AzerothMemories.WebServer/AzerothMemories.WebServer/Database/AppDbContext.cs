@@ -13,6 +13,8 @@ public class AppDbContext : AppDbContextBase
 
     public DbSet<AccountRecord> Accounts { get; protected set; } = null!;
 
+    public DbSet<AuthTokenRecord> AuthTokens { get; protected set; } = null!;
+
     public DbSet<AccountFollowingRecord> AccountFollowing { get; protected set; } = null!;
 
     public DbSet<AccountHistoryRecord> AccountHistory { get; protected set; } = null!;
@@ -57,9 +59,16 @@ public class AppDbContext : AppDbContextBase
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<AccountRecord>().Navigation(e => e.UpdateRecord).AutoInclude();
+        modelBuilder.Entity<AccountRecord>().Navigation(e => e.AuthTokens).AutoInclude();
+        modelBuilder.Entity<AuthTokenRecord>().Navigation(e => e.Account).AutoInclude();
+        modelBuilder.Entity<AuthTokenRecord>().Navigation(e => e.UpdateRecord).AutoInclude();
         modelBuilder.Entity<CharacterRecord>().Navigation(e => e.UpdateRecord).AutoInclude();
         modelBuilder.Entity<GuildRecord>().Navigation(e => e.UpdateRecord).AutoInclude();
+
+        modelBuilder.Entity<BlizzardUpdateRecord>().Navigation(e => e.Account).AutoInclude();
+        modelBuilder.Entity<BlizzardUpdateRecord>().Navigation(e => e.Character).AutoInclude();
+        modelBuilder.Entity<BlizzardUpdateRecord>().Navigation(e => e.Guild).AutoInclude();
+        modelBuilder.Entity<BlizzardUpdateRecord>().Navigation(e => e.Children).AutoInclude();
 
         foreach (var type in _recordTypesWithRowVersion)
         {

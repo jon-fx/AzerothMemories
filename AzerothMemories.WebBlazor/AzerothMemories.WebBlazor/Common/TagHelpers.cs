@@ -2,7 +2,8 @@
 
 public sealed class TagHelpers
 {
-    public PostTagInfo[] MainTags { get; }
+    public PostTagInfo[] TypeTags { get; }
+    public PostTagInfo[] RegionTags { get; }
     public PostTagInfo[] CommonTags { get; }
 
     private readonly Dictionary<string, int> _realmSlugsToId;
@@ -18,13 +19,9 @@ public sealed class TagHelpers
 
         var allTypeTags = stringLocalizer.GetAllStrings().Where(x => x.Name.StartsWith("Type-")).ToDictionary(x => GetId(x.Name), x => x.Value);
         var allCommonTags = stringLocalizer.GetAllStrings().Where(x => x.Name.StartsWith("Main-")).ToDictionary(x => GetId(x.Name), x => x.Value);
+        var allRegionTags = stringLocalizer.GetAllStrings().Where(x => x.Name.StartsWith("Region-")).ToDictionary(x => GetId(x.Name), x => x.Value);
 
-        if (allTypeTags.Count == 0)
-        {
-            throw new NotImplementedException();
-        }
-
-        if (allCommonTags.Count == 0)
+        if (allTypeTags.Count == 0 || allCommonTags.Count == 0 || allRegionTags.Count == 0)
         {
             throw new NotImplementedException();
         }
@@ -42,7 +39,8 @@ public sealed class TagHelpers
             return array;
         }
 
-        MainTags = GetArray(PostTagType.Type, allTypeTags, false);
+        TypeTags = GetArray(PostTagType.Type, allTypeTags, false);
+        RegionTags = GetArray(PostTagType.Region, allRegionTags, false);
         CommonTags = GetArray(PostTagType.Main, allCommonTags, true);
 
         var allRealmNames = stringLocalizer.GetAllStrings().Where(x => x.Name.StartsWith("Realm-")).ToDictionary(x => GetId(x.Name), x => x.Value);

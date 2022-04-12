@@ -3,11 +3,15 @@
 public sealed class MainSearchResult
 {
     [JsonInclude] public int Id { get; init; }
+
     [JsonInclude] public string RefStr { get; init; }
+
     [JsonInclude] public string Name { get; init; }
 
     [JsonInclude] public string Avatar { get; init; }
+
     [JsonInclude] public byte CharacterClass { get; init; }
+
     [JsonInclude] public int RealmId { get; init; }
 
     [JsonInclude] public MainSearchType Type { get; init; }
@@ -60,14 +64,13 @@ public sealed class MainSearchResult
         throw new NotImplementedException();
     }
 
-    public static MainSearchResult CreateAccount(int id, string name, string avatar, BlizzardRegion blizzardRegion)
+    public static MainSearchResult CreateAccount(int id, string name, string avatar)
     {
         return new MainSearchResult
         {
             Id = id,
             Name = name,
             Avatar = avatar,
-            RealmId = (int) blizzardRegion,
             Type = MainSearchType.Account
         };
     }

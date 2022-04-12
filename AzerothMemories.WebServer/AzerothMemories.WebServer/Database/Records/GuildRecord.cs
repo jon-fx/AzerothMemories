@@ -16,6 +16,10 @@ public sealed class GuildRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVers
 
     [Column] public BlizzardRegion BlizzardRegionId { get; set; }
 
+    [Column] public int? UpdateRecordId { get; set; }
+
+    [Column] public BlizzardUpdateRecord UpdateRecord { get; set; }
+
     [Column] public string Name { get; set; }
 
     [Column] public string NameSearchable { get; set; }
@@ -36,8 +40,6 @@ public sealed class GuildRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVers
 
     [Column] public int AchievementTotalPoints { get; set; }
 
-    public BlizzardUpdateRecord UpdateRecord { get; set; }
-
     public uint RowVersion { get; set; }
 
     public GuildViewModel CreateViewModel(GuildMembersViewModel memberViewModels)
@@ -53,8 +55,7 @@ public sealed class GuildRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVers
             CreatedDateTime = CreatedDateTime.ToUnixTimeMilliseconds(),
             BlizzardCreatedTimestamp = BlizzardCreatedTimestamp.ToUnixTimeMilliseconds(),
 
-            UpdateJobLastResult = UpdateRecord?.UpdateJobLastResult ?? 0,
-            UpdateJobLastEndTime = UpdateRecord?.UpdateJobLastEndTime.ToUnixTimeMilliseconds() ?? 0,
+            UpdateJobLastResults = UpdateRecord?.GetUpdateJobResults(),
 
             MembersViewModel = memberViewModels
         };

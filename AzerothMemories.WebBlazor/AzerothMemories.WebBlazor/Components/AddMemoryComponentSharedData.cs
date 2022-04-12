@@ -5,7 +5,8 @@ public sealed class AddMemoryComponentSharedData
     private readonly ViewModelBase _viewModel;
 
     private PostTagInfo[] _achievementTags;
-    private HashSet<object> _selectedMainTags;
+    private HashSet<object> _selectedTypeTags;
+    private HashSet<object> _selectedRegionTags;
     private HashSet<object> _selectedCommonTags;
     private HashSet<object> _selectedAchievementTags;
     private HashSet<PostTagInfo> _selectedExtraTags;
@@ -17,14 +18,16 @@ public sealed class AddMemoryComponentSharedData
     {
         _viewModel = viewModel;
 
-        MainTags = _viewModel.Services.ClientServices.TagHelpers.MainTags;
+        TypeTags = _viewModel.Services.ClientServices.TagHelpers.TypeTags;
+        RegionTags = _viewModel.Services.ClientServices.TagHelpers.RegionTags;
         CommonTags = _viewModel.Services.ClientServices.TagHelpers.CommonTags;
 
         SelectedPostAvatarImage = 0;
         PostAvatarImages = new List<(PostTagInfo Tag, string ImageLink, string ImageText, string ToolTipText)>();
 
         _achievementTags = Array.Empty<PostTagInfo>();
-        _selectedMainTags = new HashSet<object>(PostTagInfo.EqualityComparer2);
+        _selectedTypeTags = new HashSet<object>(PostTagInfo.EqualityComparer2);
+        _selectedRegionTags = new HashSet<object>(PostTagInfo.EqualityComparer2);
         _selectedCommonTags = new HashSet<object>(PostTagInfo.EqualityComparer2);
         _selectedAchievementTags = new HashSet<object>(PostTagInfo.EqualityComparer2);
         _selectedExtraTags = new HashSet<PostTagInfo>(PostTagInfo.EqualityComparer2);
@@ -34,13 +37,17 @@ public sealed class AddMemoryComponentSharedData
 
     public Instant PostTimeStamp { get; private set; }
 
-    public PostTagInfo[] MainTags { get; }
+    public PostTagInfo[] TypeTags { get; }
+
+    public PostTagInfo[] RegionTags { get; }
 
     public PostTagInfo[] CommonTags { get; }
 
     public PostTagInfo[] AchievementTags => _achievementTags;
 
-    public ICollection<object> SelectedMainTags => _selectedMainTags;
+    public ICollection<object> SelectedTypeTags => _selectedTypeTags;
+
+    public ICollection<object> SelectedRegionTags => _selectedRegionTags;
 
     public ICollection<object> SelectedCommonTags => _selectedCommonTags;
 
@@ -70,10 +77,10 @@ public sealed class AddMemoryComponentSharedData
 
         PostAvatarImages.Add((null, accountViewModel.Avatar, accountViewModel.GetAvatarText(), "Default"));
 
-        var accountRegion = accountViewModel.RegionId.ToInfo();
+        //var accountRegion = accountViewModel.RegionId.ToInfo();
 
         _selectedExtraTags.Add(new PostTagInfo(PostTagType.Account, accountViewModel.Id, accountViewModel.GetDisplayName(), null) { IsChipClosable = false });
-        _selectedExtraTags.Add(new PostTagInfo(PostTagType.Region, (int)accountRegion.Region, accountRegion.Name, null) { IsChipClosable = false });
+        //_selectedExtraTags.Add(new PostTagInfo(PostTagType.Region, (int)accountRegion.Region, accountRegion.Name, null) { IsChipClosable = false });
 
         OnTagsChanged?.Invoke();
 
@@ -113,10 +120,17 @@ public sealed class AddMemoryComponentSharedData
     {
         foreach (var tagInfo in currentPost.SystemTags)
         {
-            var mainTag = MainTags.FirstOrDefault(x => PostTagInfo.EqualityComparer1.Equals(x, tagInfo));
+            var mainTag = TypeTags.FirstOrDefault(x => PostTagInfo.EqualityComparer1.Equals(x, tagInfo));
             if (mainTag != null)
             {
-                _selectedMainTags.Add(mainTag);
+                _selectedTypeTags.Add(mainTag);
+                continue;
+            }
+
+            var regionTag = RegionTags.FirstOrDefault(x => PostTagInfo.EqualityComparer1.Equals(x, tagInfo));
+            if (regionTag != null)
+            {
+                _selectedTypeTags.Add(regionTag);
                 continue;
             }
 
@@ -234,34 +248,40 @@ public sealed class AddMemoryComponentSharedData
 
     private HashSet<string> GetSystemHashTags()
     {
-        var isRetailSelected = _selectedMainTags.FirstOrDefault() == MainTags[0];
+        var isRetailSelected = _selectedTypeTags.FirstOrDefault() == TypeTags[0];
         if (!isRetailSelected)
         {
             _selectedExtraTags.RemoveWhere(x => x.Type.IsRetailOnlyTag());
         }
 
         var allTags = new List<PostTagInfo>();
-        foreach (var mudChip in _selectedMainTags)
+        foreach (var tagObj in _selectedTypeTags)
         {
-            var tag = (PostTagInfo)mudChip;
-            allTags.Add(tag);
+            var tagInfo = (PostTagInfo)tagObj;
+            allTags.Add(tagInfo);
         }
 
-        foreach (var mudChip in _selectedCommonTags)
+        foreach (var tagObj in _selectedRegionTags)
         {
-            var tag = (PostTagInfo)mudChip;
-            allTags.Add(tag);
+            var tagInfo = (PostTagInfo)tagObj;
+            allTags.Add(tagInfo);
         }
 
-        foreach (var mudChip in _selectedAchievementTags)
+        foreach (var tagObj in _selectedCommonTags)
         {
-            var tag = (PostTagInfo)mudChip;
-            allTags.Add(tag);
+            var tagInfo = (PostTagInfo)tagObj;
+            allTags.Add(tagInfo);
         }
 
-        foreach (var tag in _selectedExtraTags)
+        foreach (var tagObj in _selectedAchievementTags)
         {
-            allTags.Add(tag);
+            var tagInfo = (PostTagInfo)tagObj;
+            allTags.Add(tagInfo);
+        }
+
+        foreach (var tagInfo in _selectedExtraTags)
+        {
+            allTags.Add(tagInfo);
         }
 
         var tagsAsTags = new HashSet<string>();
@@ -272,18 +292,25 @@ public sealed class AddMemoryComponentSharedData
 
         return tagsAsTags;
     }
-
+    
     public void SelectedMainTagsChanged(ICollection<object> collection)
     {
-        _selectedMainTags = collection.ToHashSet();
+        _selectedTypeTags = collection.ToHashSet();
 
-        var isRetailSelected = _selectedMainTags.FirstOrDefault() == MainTags[0];
+        var isRetailSelected = _selectedTypeTags.FirstOrDefault() == TypeTags[0];
         if (!isRetailSelected)
         {
             TryRemoveSelectedCharacterInfo();
 
             _selectedExtraTags.RemoveWhere(x => x.Type.IsRetailOnlyTag());
         }
+
+        OnTagsChanged?.Invoke();
+    }
+
+    public void SelectedRegionTagsChanged(ICollection<object> collection)
+    {
+        _selectedRegionTags = collection.ToHashSet();
 
         OnTagsChanged?.Invoke();
     }
@@ -336,6 +363,17 @@ public sealed class AddMemoryComponentSharedData
             var characterName = $"{_selectedCharacter.Name} ({stringLocalizer[$"Realm-{_selectedCharacter.RealmId}"]})";
             var characterNameTag = new PostTagInfo(PostTagType.Character, _selectedCharacter.Id, characterName, _selectedCharacter.AvatarLinkWithFallBack);
             var characterRealmTag = new PostTagInfo(PostTagType.Realm, _selectedCharacter.RealmId, stringLocalizer[$"Realm-{_selectedCharacter.RealmId}"], null);
+
+            var selectedRegionTags = (PostTagInfo)_selectedRegionTags.First();
+            if (selectedRegionTags.Id == 0)
+            {
+                var characterRegionId = _selectedCharacter.RegionId.ToValue();
+                var characterRegionTag = RegionTags.FirstOrDefault(x => x.Id == characterRegionId);
+                if (characterRegionTag != null)
+                {
+                    _selectedRegionTags = new HashSet<object> { characterRegionTag };
+                }
+            }
 
             _selectedExtraTags.Add(characterNameTag);
             _selectedExtraTags.Add(characterRealmTag);
@@ -458,7 +496,7 @@ public sealed class AddMemoryComponentSharedData
     public void OnSelectedMainTagChipClose(MudChip mudChip)
     {
         var postTagInfo = (PostTagInfo)mudChip.Value;
-        _selectedMainTags.Remove(postTagInfo);
+        _selectedTypeTags.Remove(postTagInfo);
 
         RemoveImageFromSelection(postTagInfo);
 
@@ -522,16 +560,23 @@ public sealed class AddMemoryComponentSharedData
         }
 
         var allTags = new List<PostTagInfo>();
-        foreach (var chip in SelectedMainTags)
+        foreach (var tag in SelectedTypeTags)
         {
-            var tagInfo = (PostTagInfo)chip;
+            var tagInfo = (PostTagInfo)tag;
             allTagCounters[(int)tagInfo.Type]++;
             allTags.Add(tagInfo);
         }
 
-        foreach (var chip in SelectedCommonTags)
+        foreach (var tag in SelectedRegionTags)
         {
-            var tagInfo = (PostTagInfo)chip;
+            var tagInfo = (PostTagInfo)tag;
+            allTagCounters[(int)tagInfo.Type]++;
+            allTags.Add(tagInfo);
+        }
+
+        foreach (var tag in SelectedCommonTags)
+        {
+            var tagInfo = (PostTagInfo)tag;
             allTagCounters[(int)tagInfo.Type]++;
             allTags.Add(tagInfo);
         }
@@ -542,9 +587,9 @@ public sealed class AddMemoryComponentSharedData
             allTags.Add(tagInfo);
         }
 
-        foreach (var chip in SelectedAchievementTags)
+        foreach (var tag in SelectedAchievementTags)
         {
-            if (chip is PostTagInfo tagInfo)
+            if (tag is PostTagInfo tagInfo)
             {
                 allTagCounters[(int)tagInfo.Type]++;
                 allTags.Add(tagInfo);

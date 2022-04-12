@@ -13,6 +13,12 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, ID
         _sessionRepo = services.GetRequiredService<IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string>>();
     }
 
+    [CommandHandler]
+    public virtual async Task<bool> TryUpdateAuthToken(Account_TryUpdateAuthToken command, CancellationToken cancellationToken = default)
+    {
+        return await AccountServices_TryUpdateAuthToken.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+    }
+
     [CommandHandler(IsFilter = true, Priority = 1)]
     protected virtual async Task OnSignInCommand(SignInCommand command, CancellationToken cancellationToken)
     {
@@ -53,39 +59,6 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, ID
     public virtual Task<int> DependsOnAccountAchievements(int accountId)
     {
         return Task.FromResult(accountId);
-    }
-
-    [ComputeMethod]
-    public virtual async Task<AccountRecord> GetOrCreateAccount(string userId)
-    {
-        var accountRecord = await TryGetAccountRecordFusionId(userId).ConfigureAwait(false);
-        if (accountRecord == null)
-        {
-            accountRecord = new AccountRecord
-            {
-                FusionId = userId,
-                AccountFlags = AccountFlags.AlphaUser,
-                CreatedDateTime = SystemClock.Instance.GetCurrentInstant(),
-            };
-
-            await using var database = CreateDbContext(true);
-            await database.Accounts.AddAsync(accountRecord).ConfigureAwait(false);
-            await database.SaveChangesAsync().ConfigureAwait(false);
-
-            //await DependsOnAccountRecord(accountRecord.Id);
-
-            await AddNewHistoryItem(new Account_AddNewHistoryItem
-            {
-                AccountId = accountRecord.Id,
-                Type = AccountHistoryType.AccountCreated
-            }).ConfigureAwait(false);
-
-            //InvalidateAccountRecord(accountRecord);
-        }
-
-        Exceptions.ThrowIf(accountRecord.Id == 0);
-
-        return accountRecord;
     }
 
     [ComputeMethod]
@@ -192,7 +165,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, ID
             return false;
         }
 
-        await _commonServices.BlizzardUpdateHandler.TryUpdate(accountRecord, BlizzardUpdatePriority.Account).ConfigureAwait(false);
+        await _commonServices.BlizzardUpdateHandler.TryUpdate(accountRecord).ConfigureAwait(false);
 
         return true;
     }
@@ -202,7 +175,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, ID
     {
         await DependsOnAccountRecord(accountRecord.Id).ConfigureAwait(false);
 
-        await _commonServices.BlizzardUpdateHandler.TryUpdate(accountRecord, BlizzardUpdatePriority.Account).ConfigureAwait(false);
+        await _commonServices.BlizzardUpdateHandler.TryUpdate(accountRecord).ConfigureAwait(false);
 
         var characters = await _commonServices.CharacterServices.TryGetAllAccountCharacters(accountRecord.Id).ConfigureAwait(false);
         var followingViewModels = await _commonServices.FollowingServices.TryGetAccountFollowing(accountRecord.Id).ConfigureAwait(false);

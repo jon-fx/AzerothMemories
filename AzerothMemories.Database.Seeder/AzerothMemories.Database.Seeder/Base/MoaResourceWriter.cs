@@ -264,6 +264,7 @@ internal sealed class MoaResourceWriter
 
         var typeTags = await database.BlizzardData.Where(x => x.TagType == PostTagType.Type).OrderBy(x => x.TagId).ToListAsync();
         var mainTags = await database.BlizzardData.Where(x => x.TagType == PostTagType.Main).OrderBy(x => x.TagId).ToListAsync();
+        var regionTags = await database.BlizzardData.Where(x => x.TagType == PostTagType.Region).OrderBy(x => x.TagId).ToListAsync();
 
         var realmData = await database.BlizzardData.Where(x => x.TagType == PostTagType.Realm).OrderBy(x => x.TagId).ToListAsync();
         var characterClassData = await database.BlizzardData.Where(x => x.TagType == PostTagType.CharacterClass).OrderBy(x => x.TagId).ToListAsync();
@@ -275,12 +276,18 @@ internal sealed class MoaResourceWriter
         {
             {"None", noneDict}
         };
-
+        
         noneDict.AddRange(typeTags.Select(x => new KeyValuePair<string, string>(x.Key, x.Key)));
+        noneDict.AddRange(regionTags.Select(x => new KeyValuePair<string, string>(x.Key, x.Key)));
         noneDict.AddRange(mainTags.Select(x => new KeyValuePair<string, string>(x.Key, x.Key)));
         noneDict.AddRange(realmData.Select(x => new KeyValuePair<string, string>($"RealmSlug-{x.TagId}", x.Media)).Where(x => !string.IsNullOrEmpty(x.Value)));
 
         foreach (var record in realmData)
+        {
+            SetExtensions.Update(record.Key, record.Name, clientSideDataDict);
+        }
+        
+        foreach (var record in regionTags)
         {
             SetExtensions.Update(record.Key, record.Name, clientSideDataDict);
         }

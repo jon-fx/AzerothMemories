@@ -1,0 +1,44 @@
+﻿@if (UpdateViewModel == null || UpdateViewModel.IsLoadingFromArmory)
+{
+    <MudText>No Data</MudText>
+}
+else
+{
+    var main = GetIconAndColor(UpdateViewModel.Children.All(x => x.UpdateJobLastResult.IsSuccess()));
+    var endTimeAsString = TimeProvider.GetTimeAsLocalStringAgo(UpdateViewModel.UpdateJobLastEndTime, true);
+
+    <MudTooltip Color="Color.Dark">
+        <ChildContent>
+            <MudIconButton Icon="@main.Icon" Color="@main.IconColor" />
+        </ChildContent>
+        <TooltipContent>
+            @endTimeAsString
+
+            @foreach (var child in UpdateViewModel.Children)
+            {
+                var row = GetIconAndColor(child.UpdateJobLastResult.IsSuccess());
+
+                <div class="d-flex align-center">
+                    <MudIconButton Icon="@row.Icon" Color="@row.IconColor" />
+                    @child.Id: @child.UpdateTypeString @child.UpdateJobLastResult (@((int)child.UpdateJobLastResult))
+                </div>
+            }
+        </TooltipContent>
+    </MudTooltip>
+}
+
+@code {
+    [Parameter,EditorRequired] public TimeProvider TimeProvider { get; init; }
+    
+    [Parameter,EditorRequired] public BlizzardUpdateViewModel UpdateViewModel { get; init; }
+
+    private (string Icon, Color IconColor) GetIconAndColor(bool isSuccess)
+    {
+        if (isSuccess)
+        {
+            return (Icons.Material.Filled.Check, Color.Success);
+        }
+
+        return (Icons.Material.Filled.Warning, Color.Warning);
+    }
+}

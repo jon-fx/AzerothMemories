@@ -1,32 +1,39 @@
-﻿namespace AzerothMemories.WebServer.Services.Updates;
+﻿using System.Text;
+
+namespace AzerothMemories.WebServer.Services.Updates;
 
 [RegisterComputeService]
 public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
 {
     private readonly CommonServices _commonServices;
 
-    private readonly IUpdateHandlerBase<AccountRecord>[] _accountHandlers;
-    private readonly IUpdateHandlerBase<CharacterRecord>[] _characterHandlers;
-    private readonly IUpdateHandlerBase<GuildRecord>[] _guildHandlers;
+    private readonly UpdateHandlerBase<AuthTokenRecord>[] _accountHandlers;
+    private readonly UpdateHandlerBase<CharacterRecord>[] _characterHandlers;
+    private readonly UpdateHandlerBase<GuildRecord>[] _guildHandlers;
 
     public BlizzardUpdateServices(IServiceProvider services, CommonServices commonServices) : base(services)
     {
         _commonServices = commonServices;
 
-        _accountHandlers = new IUpdateHandlerBase<AccountRecord>[(int)BlizzardUpdateType.Account_Count];
-        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts(_commonServices, this));
+        _accountHandlers = new UpdateHandlerBase<AuthTokenRecord>[(int)BlizzardUpdateType.Account_Count];
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandlerBase<AuthTokenRecord>(BlizzardUpdateType.Account, _commonServices));
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts(BlizzardUpdateType.Account_China, _commonServices, this));
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts(BlizzardUpdateType.Account_Europe, _commonServices, this));
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts(BlizzardUpdateType.Account_Korea, _commonServices, this));
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts(BlizzardUpdateType.Account_Taiwan, _commonServices, this));
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts(BlizzardUpdateType.Account_UnitedStates, _commonServices, this));
 
-        _characterHandlers = new IUpdateHandlerBase<CharacterRecord>[(int)BlizzardUpdateType.Character_Count];
+        _characterHandlers = new UpdateHandlerBase<CharacterRecord>[(int)BlizzardUpdateType.Character_Count];
         AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters(_commonServices));
         AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters_Renders(_commonServices));
         AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters_Achievements(_commonServices));
 
-        _guildHandlers = new IUpdateHandlerBase<GuildRecord>[(int)BlizzardUpdateType.Guild_Count];
+        _guildHandlers = new UpdateHandlerBase<GuildRecord>[(int)BlizzardUpdateType.Guild_Count];
         AddUpdateHandler(ref _guildHandlers, new UpdateHandler_Guilds(_commonServices));
         AddUpdateHandler(ref _guildHandlers, new UpdateHandler_Guilds_Roster(_commonServices));
         AddUpdateHandler(ref _guildHandlers, new UpdateHandler_Guilds_Achievements(_commonServices));
 
-        void AddUpdateHandler<TRecord>(ref IUpdateHandlerBase<TRecord>[] array, IUpdateHandlerBase<TRecord> updateHandler) where TRecord : IBlizzardUpdateRecord
+        void AddUpdateHandler<TRecord>(ref UpdateHandlerBase<TRecord>[] array, UpdateHandlerBase<TRecord> updateHandler) where TRecord : IBlizzardUpdateRecord
         {
             Exceptions.ThrowIf(array[(int)updateHandler.UpdateType] != null);
             array[(int)updateHandler.UpdateType] = updateHandler;
@@ -37,7 +44,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         Exceptions.ThrowIf(_guildHandlers.Any(x => x == null));
     }
 
-    public async Task ExecuteHandlersOnFirstLogin(CommandContext context, AppDbContext database, AccountRecord accountRecord, CharacterRecord characterRecord)
+    public async Task ExecuteHandlersOnFirstLogin(CommandContext context, AppDbContext database, AuthTokenRecord accountRecord, CharacterRecord characterRecord)
     {
         foreach (var characterHandler in _characterHandlers)
         {
@@ -73,7 +80,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         }
 
         await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        var record = await database.Accounts.Include(x => x.UpdateRecord).ThenInclude(x => x.Children).FirstOrDefaultAsync(x => x.Id == command.AccountId, cancellationToken).ConfigureAwait(false);
+        var record = await database.AuthTokens.FirstOrDefaultAsync(x => x.Id == command.AccountId, cancellationToken).ConfigureAwait(false);
         if (record == null)
         {
             return default;
@@ -111,13 +118,23 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         }
 
         await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        var record = await database.Characters.Include(x => x.UpdateRecord).ThenInclude(x => x.Children).FirstOrDefaultAsync(x => x.Id == command.CharacterId, cancellationToken).ConfigureAwait(false);
+        var record = await database.Characters.FirstOrDefaultAsync(x => x.Id == command.CharacterId, cancellationToken).ConfigureAwait(false);
         if (record == null)
         {
             return default;
         }
 
         var resultStatusCode = await RunUpdateHandlers(_characterHandlers, context, database, record, cancellationToken).ConfigureAwait(false);
+
+        if (record.AccountId.HasValue)
+        {
+            await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+            {
+                AccountId = record.AccountId.Value,
+                Type = AccountHistoryType.CharacterUpdated,
+                TargetId = record.Id
+            }, cancellationToken).ConfigureAwait(false);
+        }
 
         context.Operation().Items.Set(new Character_InvalidateCharacterRecord(record.Id, record.AccountId.GetValueOrDefault()));
 
@@ -148,7 +165,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         }
 
         await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        var record = await database.Guilds.Include(x => x.UpdateRecord).ThenInclude(x => x.Children).FirstOrDefaultAsync(x => x.Id == command.GuildId, cancellationToken).ConfigureAwait(false);
+        var record = await database.Guilds.FirstOrDefaultAsync(x => x.Id == command.GuildId, cancellationToken).ConfigureAwait(false);
         if (record == null)
         {
             return default;
@@ -167,7 +184,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         return resultStatusCode;
     }
 
-    private async Task<HttpStatusCode> RunUpdateHandlers<TRecord>(IUpdateHandlerBase<TRecord>[] allHandlers, CommandContext context, AppDbContext database, TRecord record, CancellationToken cancellationToken) where TRecord : IBlizzardUpdateRecord
+    private async Task<HttpStatusCode> RunUpdateHandlers<TRecord>(UpdateHandlerBase<TRecord>[] allHandlers, CommandContext context, AppDbContext database, TRecord record, CancellationToken cancellationToken) where TRecord : IBlizzardUpdateRecord
     {
 #if DEBUG
         if (typeof(TRecord) != _commonServices.BlizzardUpdateHandler.ValidRecordTypes[(int)record.UpdateRecord.UpdatePriority])
@@ -177,7 +194,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
 #endif
         if (!_commonServices.BlizzardUpdateHandler.RecordRequiresUpdate(record.UpdateRecord, record.UpdateRecord.UpdatePriority, true))
         {
-            return record.UpdateRecord.UpdateJobLastResult;
+            return HttpStatusCode.LoopDetected;
         }
 
         var requiredChildrenCount = _commonServices.BlizzardUpdateHandler.RequiredChildrenCount[(int)record.UpdateRecord.UpdatePriority];
@@ -191,7 +208,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         {
             if (sortedRecords[i] == null)
             {
-                sortedRecords[i] = new BlizzardUpdateChildRecord { UpdateType = (BlizzardUpdateType)i };
+                sortedRecords[i] = new BlizzardUpdateChildRecord { UpdateType = allHandlers[i].UpdateType, UpdateTypeString = allHandlers[i].UpdateTypeString, };
                 record.UpdateRecord.Children.Add(sortedRecords[i]);
             }
         }
@@ -212,13 +229,8 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
             else if (updateStatusCode == HttpStatusCode.NotModified)
             {
             }
-            else
-            {
-                break;
-            }
         }
 
-        record.UpdateRecord.UpdateJobLastResult = updateStatusCode;
         record.UpdateRecord.UpdateLastModified = SystemClock.Instance.GetCurrentInstant();
         record.UpdateRecord.UpdateJobLastEndTime = record.UpdateRecord.UpdateLastModified;
         record.UpdateRecord.UpdateStatus = BlizzardUpdateStatus.None;

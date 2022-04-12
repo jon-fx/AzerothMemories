@@ -11,10 +11,7 @@
     </Authorized>
     <NotAuthorized>
         <MudMenu EndIcon="@Icons.Filled.KeyboardArrowDown" Label="Account" Color="Color.Inherit" Dense="true" Direction="Direction.Right" OffsetY="true">
-            <MudMenuItem OnClick=@(x => TrySignIn(x, "BattleNet-Europe"))>Log In - EU</MudMenuItem>
-            <MudMenuItem OnClick=@(x => TrySignIn(x, "BattleNet-UnitedStates"))>Log In - US</MudMenuItem>
-            <MudMenuItem OnClick=@(x => TrySignIn(x, "BattleNet-Taiwan"))>Log In - TW</MudMenuItem>
-            <MudMenuItem OnClick=@(x => TrySignIn(x, "BattleNet-Korea"))>Log In - KR</MudMenuItem>
+            <MudMenuItem OnClick=@(x => TrySignIn(x, "BattleNet"))>Log In</MudMenuItem>
         </MudMenu>
     </NotAuthorized>
     <Authorizing>

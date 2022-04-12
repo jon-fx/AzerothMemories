@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebServer.Services.Updates;
 
-internal sealed class UpdateHandler_Guilds_Achievements : UpdateHandlerBase<GuildRecord, GuildAchievements>
+internal sealed class UpdateHandler_Guilds_Achievements : UpdateHandlerBaseResult<GuildRecord, GuildAchievements>
 {
     public UpdateHandler_Guilds_Achievements(CommonServices commonServices) : base(BlizzardUpdateType.Guild_Achievements, commonServices)
     {
@@ -13,7 +13,7 @@ internal sealed class UpdateHandler_Guilds_Achievements : UpdateHandlerBase<Guil
         return await client.GetGuildAchievementsAsync(guildRef.Realm, guildRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
 
-    protected override async Task InternalExecute(CommandContext context, AppDbContext database, GuildRecord record, GuildAchievements requestResult)
+    protected override async Task InternalExecuteWithResult(CommandContext context, AppDbContext database, GuildRecord record, GuildAchievements requestResult)
     {
         var currentAchievements = await database.GuildAchievements.Where(x => x.GuildId == record.Id).ToDictionaryAsync(x => x.AchievementId, x => x).ConfigureAwait(false);
 

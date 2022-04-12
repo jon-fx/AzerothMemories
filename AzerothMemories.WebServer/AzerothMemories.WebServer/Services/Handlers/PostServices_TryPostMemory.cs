@@ -118,10 +118,10 @@ internal static class PostServices_TryPostMemory
             return new AddMemoryResult(AddMemoryResultCode.InvalidTags);
         }
 
-        if (tagRecords.FirstOrDefault(x => x.TagString == PostTagInfo.GetTagString(PostTagType.Region, activeAccount.RegionId.ToValue())) == null)
-        {
-            return new AddMemoryResult(AddMemoryResultCode.InvalidTags);
-        }
+        //if (tagRecords.FirstOrDefault(x => x.TagString == PostTagInfo.GetTagString(PostTagType.Region, activeAccount.RegionId.ToValue())) == null)
+        //{
+        //    return new AddMemoryResult(AddMemoryResultCode.InvalidTags);
+        //}
 
         if (!PostTagRecord.ValidateTagCounts(tagRecords))
         {

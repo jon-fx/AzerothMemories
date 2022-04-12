@@ -10,23 +10,15 @@ public sealed class BlizzardUpdateRecord : IDatabaseRecord
 
     [Key] public int Id { get; set; }
 
-    [Column] public int? AccountId { get; set; }
+    public AuthTokenRecord Account { get; set; }
 
-    [Column] public AccountRecord Account { get; set; }
+    public CharacterRecord Character { get; set; }
 
-    [Column] public int? CharacterId { get; set; }
-
-    [Column] public CharacterRecord Character { get; set; }
-
-    [Column] public int? GuildId { get; set; }
-
-    [Column] public GuildRecord Guild { get; set; }
+    public GuildRecord Guild { get; set; }
 
     [Column] public Instant UpdateLastModified { get; set; }
 
     [Column] public Instant UpdateJobLastEndTime { get; set; }
-
-    [Column] public HttpStatusCode UpdateJobLastResult { get; set; }
 
     [Column] public BlizzardUpdateStatus UpdateStatus { get; set; }
 
@@ -36,21 +28,44 @@ public sealed class BlizzardUpdateRecord : IDatabaseRecord
 
     public ICommand<HttpStatusCode> GetUpdateCommand()
     {
-        if (AccountId != null)
+        if (Account != null)
         {
-            return new Updates_UpdateAccountCommand(AccountId.Value);
+            return new Updates_UpdateAccountCommand(Account.Id);
         }
 
-        if (CharacterId != null)
+        if (Character != null)
         {
-            return new Updates_UpdateCharacterCommand(CharacterId.Value);
+            return new Updates_UpdateCharacterCommand(Character.Id);
         }
 
-        if (GuildId != null)
+        if (Guild != null)
         {
-            return new Updates_UpdateGuildCommand(GuildId.Value);
+            return new Updates_UpdateGuildCommand(Guild.Id);
         }
 
         throw new NotImplementedException();
+    }
+
+    public BlizzardUpdateViewModel GetUpdateJobResults()
+    {
+        if (Children == null)
+        {
+            return null;
+        }
+
+        var children = Children.Select(x => new BlizzardUpdateViewModelChild()
+        {
+            Id = x.Id,
+            UpdateType = (byte) x.UpdateType,
+            UpdateTypeString = x.UpdateTypeString,
+            UpdateJobLastResult = x.UpdateJobLastResult,
+        });
+
+        return new BlizzardUpdateViewModel
+        {
+            Children = children.OrderBy(x => x.UpdateType).ToArray(),
+            UpdateLastModified = UpdateLastModified.ToUnixTimeMilliseconds(),
+            UpdateJobLastEndTime = UpdateJobLastEndTime.ToUnixTimeMilliseconds(),
+        };
     }
 }

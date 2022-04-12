@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebServer.Services.Updates;
 
-internal sealed class UpdateHandler_Guilds_Roster : UpdateHandlerBase<GuildRecord, GuildRoster>
+internal sealed class UpdateHandler_Guilds_Roster : UpdateHandlerBaseResult<GuildRecord, GuildRoster>
 {
     public UpdateHandler_Guilds_Roster(CommonServices commonServices) : base(BlizzardUpdateType.Guild_Roster, commonServices)
     {
@@ -13,7 +13,7 @@ internal sealed class UpdateHandler_Guilds_Roster : UpdateHandlerBase<GuildRecor
         return await client.GetGuildRosterAsync(guildRef.Realm, guildRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
 
-    protected override async Task InternalExecute(CommandContext context, AppDbContext database, GuildRecord record, GuildRoster requestResult)
+    protected override async Task InternalExecuteWithResult(CommandContext context, AppDbContext database, GuildRecord record, GuildRoster requestResult)
     {
         foreach (var guildMember in requestResult.Members)
         {

@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebServer.Services.Updates;
 
-internal sealed class UpdateHandler_Guilds : UpdateHandlerBase<GuildRecord, Guild>
+internal sealed class UpdateHandler_Guilds : UpdateHandlerBaseResult<GuildRecord, Guild>
 {
     public UpdateHandler_Guilds(CommonServices commonServices) : base(BlizzardUpdateType.Guild, commonServices)
     {
@@ -13,7 +13,7 @@ internal sealed class UpdateHandler_Guilds : UpdateHandlerBase<GuildRecord, Guil
         return await client.GetGuildProfileSummaryAsync(guildRef.Realm, guildRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
 
-    protected override Task InternalExecute(CommandContext context, AppDbContext database, GuildRecord record, Guild requestResult)
+    protected override Task InternalExecuteWithResult(CommandContext context, AppDbContext database, GuildRecord record, Guild requestResult)
     {
         record.BlizzardId = requestResult.Id;
         record.Name = requestResult.Name;

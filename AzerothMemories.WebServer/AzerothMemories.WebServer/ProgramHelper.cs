@@ -86,6 +86,8 @@ public abstract class ProgramHelper
         {
         };
 
+        _services.AddScoped<ServerAuthHelper, CustomServerAuthHelper>();
+
         var sessionFactory = new SessionFactory(new Stl.Generators.RandomStringGenerator(32));
         _services.AddSingleton<ISessionFactory>(sessionFactory);
         _fusionAuth = _fusion.AddAuthentication().AddServer(_ => sessionMiddlewareSettings, _ => authHelperSettings, _ => signInControllerSettings);

@@ -34,16 +34,16 @@ internal static class SetExtensions
 
     public static void Update(string key, BlizzardDataRecordLocal record, Dictionary<string, Dictionary<string, string>> clientSideResourcesByLocal)
     {
-        var fields = typeof(BlizzardDataRecordLocal).GetFields(BindingFlags.Public | BindingFlags.Instance);
+        var fields = typeof(BlizzardDataRecordLocal).GetProperties(BindingFlags.Public | BindingFlags.Instance);
         foreach (var field in fields)
         {
             var fieldName = field.Name.ToLower();
-            if (fieldName.Length != 5)
+            if (fieldName.Length != 4)
             {
                 continue;
             }
 
-            var fieldInfo = typeof(BlizzardDataRecordLocal).GetField(fieldName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+            var fieldInfo = typeof(BlizzardDataRecordLocal).GetProperty(fieldName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
             var fieldValue = fieldInfo.GetValue(record) as string;
             if (string.IsNullOrWhiteSpace(fieldValue))
             {
@@ -72,7 +72,7 @@ internal static class SetExtensions
         foreach (var field in fields)
         {
             var fieldName = field.Name.ToLower();
-            if (fieldName.Length != 5)
+            if (fieldName.Length != 4)
             {
                 continue;
             }

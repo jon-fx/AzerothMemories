@@ -1,6 +1,12 @@
 ﻿<MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
     @{
-        foreach (var chip in SharedData.SelectedMainTags)
+        foreach (var chip in SharedData.SelectedTypeTags)
+        {
+            var tagInfo = (PostTagInfo)chip;
+            <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClose="SharedData.OnSelectedMainTagChipClose" />
+        }
+
+        foreach (var chip in SharedData.SelectedRegionTags)
         {
             var tagInfo = (PostTagInfo)chip;
             <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClose="SharedData.OnSelectedMainTagChipClose" />
