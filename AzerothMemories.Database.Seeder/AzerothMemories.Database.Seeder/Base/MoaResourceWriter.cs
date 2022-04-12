@@ -338,12 +338,16 @@ internal sealed class MoaResourceWriter
         if (key == "None")
         {
         }
-        else if (key.Contains("_"))
+        else if (key.Length == 4)
         {
-            var localeText = key.Replace('_', '-');
+            var localeText = $"{key[0]}{key[1]}-{key[2]}{key[3]}";
             var locale = new CultureInfo(localeText);
 
             filePath += $"{locale.Name}.";
+        }
+        else
+        {
+            throw new NotImplementedException();
         }
 
         filePath += "resx";

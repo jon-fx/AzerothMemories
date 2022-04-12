@@ -53,11 +53,14 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.1.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.1.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Realm-0" xml:space="preserve">
+    <value>Unknown Realm</value>
+  </data>
   <data name="Realm-1" xml:space="preserve">
     <value>US-Lightbringer</value>
   </data>
@@ -1726,6 +1729,24 @@
   <data name="Realm-3738" xml:space="preserve">
     <value>US-Saurfang US9</value>
   </data>
+  <data name="Region-0" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="Region-1" xml:space="preserve">
+    <value>China</value>
+  </data>
+  <data name="Region-2" xml:space="preserve">
+    <value>Europe</value>
+  </data>
+  <data name="Region-3" xml:space="preserve">
+    <value>Korea</value>
+  </data>
+  <data name="Region-4" xml:space="preserve">
+    <value>Taiwan</value>
+  </data>
+  <data name="Region-5" xml:space="preserve">
+    <value>UnitedStates</value>
+  </data>
   <data name="Type-0" xml:space="preserve">
     <value>Retail</value>
   </data>
@@ -1764,6 +1785,9 @@
   </data>
   <data name="Main-9" xml:space="preserve">
     <value>Pets</value>
+  </data>
+  <data name="CharacterRace-0" xml:space="preserve">
+    <value>Unknown Race</value>
   </data>
   <data name="CharacterRace-1" xml:space="preserve">
     <value>Человек</value>
@@ -1840,6 +1864,9 @@
   <data name="CharacterRace-37" xml:space="preserve">
     <value>Механогном</value>
   </data>
+  <data name="CharacterClass-0" xml:space="preserve">
+    <value>Unknown Class</value>
+  </data>
   <data name="CharacterClass-1" xml:space="preserve">
     <value>Воин</value>
   </data>
@@ -1875,6 +1902,9 @@
   </data>
   <data name="CharacterClass-12" xml:space="preserve">
     <value>Охотник на демонов</value>
+  </data>
+  <data name="CharacterClassSpecialization-0" xml:space="preserve">
+    <value>Unknown Specialization</value>
   </data>
   <data name="CharacterClassSpecialization-62" xml:space="preserve">
     <value>Тайная магия (Маг)</value>

@@ -58,1960 +58,1729 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Realm-0" xml:space="preserve">
-    <value>Unknown Realm</value>
-  </data>
-  <data name="Realm-1" xml:space="preserve">
-    <value>US-Lightbringer</value>
-  </data>
-  <data name="Realm-2" xml:space="preserve">
-    <value>US-Cenarius</value>
-  </data>
-  <data name="Realm-3" xml:space="preserve">
-    <value>US-Uther</value>
-  </data>
-  <data name="Realm-4" xml:space="preserve">
-    <value>US-Kilrogg</value>
-  </data>
-  <data name="Realm-5" xml:space="preserve">
-    <value>US-Proudmoore</value>
-  </data>
-  <data name="Realm-6" xml:space="preserve">
-    <value>US-Hyjal</value>
-  </data>
-  <data name="Realm-7" xml:space="preserve">
-    <value>US-Frostwolf</value>
-  </data>
-  <data name="Realm-8" xml:space="preserve">
-    <value>US-Ner'zhul</value>
-  </data>
-  <data name="Realm-9" xml:space="preserve">
-    <value>US-Kil'jaeden</value>
-  </data>
-  <data name="Realm-10" xml:space="preserve">
-    <value>US-Blackrock</value>
-  </data>
-  <data name="Realm-11" xml:space="preserve">
-    <value>US-Tichondrius</value>
-  </data>
-  <data name="Realm-12" xml:space="preserve">
-    <value>US-Silver Hand</value>
-  </data>
-  <data name="Realm-13" xml:space="preserve">
-    <value>US-Doomhammer</value>
-  </data>
-  <data name="Realm-14" xml:space="preserve">
-    <value>US-Icecrown</value>
-  </data>
-  <data name="Realm-15" xml:space="preserve">
-    <value>US-Deathwing</value>
-  </data>
-  <data name="Realm-16" xml:space="preserve">
-    <value>US-Kel'Thuzad</value>
-  </data>
-  <data name="Realm-47" xml:space="preserve">
-    <value>US-Eitrigg</value>
-  </data>
-  <data name="Realm-51" xml:space="preserve">
-    <value>US-Garona</value>
-  </data>
-  <data name="Realm-52" xml:space="preserve">
-    <value>US-Alleria</value>
-  </data>
-  <data name="Realm-53" xml:space="preserve">
-    <value>US-Hellscream</value>
-  </data>
-  <data name="Realm-54" xml:space="preserve">
-    <value>US-Blackhand</value>
-  </data>
-  <data name="Realm-55" xml:space="preserve">
-    <value>US-Whisperwind</value>
-  </data>
-  <data name="Realm-56" xml:space="preserve">
-    <value>US-Archimonde</value>
-  </data>
-  <data name="Realm-57" xml:space="preserve">
-    <value>US-Illidan</value>
-  </data>
-  <data name="Realm-58" xml:space="preserve">
-    <value>US-Stormreaver</value>
-  </data>
-  <data name="Realm-59" xml:space="preserve">
-    <value>US-Mal'Ganis</value>
-  </data>
-  <data name="Realm-60" xml:space="preserve">
-    <value>US-Stormrage</value>
-  </data>
-  <data name="Realm-61" xml:space="preserve">
-    <value>US-Zul'jin</value>
-  </data>
-  <data name="Realm-62" xml:space="preserve">
-    <value>US-Medivh</value>
-  </data>
-  <data name="Realm-63" xml:space="preserve">
-    <value>US-Durotan</value>
-  </data>
-  <data name="Realm-64" xml:space="preserve">
-    <value>US-Bloodhoof</value>
-  </data>
-  <data name="Realm-65" xml:space="preserve">
-    <value>US-Khadgar</value>
-  </data>
-  <data name="Realm-66" xml:space="preserve">
-    <value>US-Dalaran</value>
-  </data>
-  <data name="Realm-67" xml:space="preserve">
-    <value>US-Elune</value>
-  </data>
-  <data name="Realm-68" xml:space="preserve">
-    <value>US-Lothar</value>
-  </data>
-  <data name="Realm-69" xml:space="preserve">
-    <value>US-Arthas</value>
-  </data>
-  <data name="Realm-70" xml:space="preserve">
-    <value>US-Mannoroth</value>
-  </data>
-  <data name="Realm-71" xml:space="preserve">
-    <value>US-Warsong</value>
-  </data>
-  <data name="Realm-72" xml:space="preserve">
-    <value>US-Shattered Hand</value>
-  </data>
-  <data name="Realm-73" xml:space="preserve">
-    <value>US-Bleeding Hollow</value>
-  </data>
-  <data name="Realm-74" xml:space="preserve">
-    <value>US-Skullcrusher</value>
-  </data>
-  <data name="Realm-75" xml:space="preserve">
-    <value>US-Argent Dawn</value>
-  </data>
-  <data name="Realm-76" xml:space="preserve">
-    <value>US-Sargeras</value>
-  </data>
-  <data name="Realm-77" xml:space="preserve">
-    <value>US-Azgalor</value>
-  </data>
-  <data name="Realm-78" xml:space="preserve">
-    <value>US-Magtheridon</value>
-  </data>
-  <data name="Realm-79" xml:space="preserve">
-    <value>US-Destromath</value>
-  </data>
-  <data name="Realm-80" xml:space="preserve">
-    <value>US-Gorgonnash</value>
-  </data>
-  <data name="Realm-81" xml:space="preserve">
-    <value>US-Dethecus</value>
-  </data>
-  <data name="Realm-82" xml:space="preserve">
-    <value>US-Spinebreaker</value>
-  </data>
-  <data name="Realm-83" xml:space="preserve">
-    <value>US-Bonechewer</value>
-  </data>
-  <data name="Realm-84" xml:space="preserve">
-    <value>US-Dragonmaw</value>
-  </data>
-  <data name="Realm-85" xml:space="preserve">
-    <value>US-Shadowsong</value>
-  </data>
-  <data name="Realm-86" xml:space="preserve">
-    <value>US-Silvermoon</value>
-  </data>
-  <data name="Realm-87" xml:space="preserve">
-    <value>US-Windrunner</value>
-  </data>
-  <data name="Realm-88" xml:space="preserve">
-    <value>US-Cenarion Circle</value>
-  </data>
-  <data name="Realm-89" xml:space="preserve">
-    <value>US-Nathrezim</value>
-  </data>
-  <data name="Realm-90" xml:space="preserve">
-    <value>US-Terenas</value>
-  </data>
-  <data name="Realm-91" xml:space="preserve">
-    <value>US-Burning Blade</value>
-  </data>
-  <data name="Realm-92" xml:space="preserve">
-    <value>US-Gorefiend</value>
-  </data>
-  <data name="Realm-93" xml:space="preserve">
-    <value>US-Eredar</value>
-  </data>
-  <data name="Realm-94" xml:space="preserve">
-    <value>US-Shadowmoon</value>
-  </data>
-  <data name="Realm-95" xml:space="preserve">
-    <value>US-Lightning's Blade</value>
-  </data>
-  <data name="Realm-96" xml:space="preserve">
-    <value>US-Eonar</value>
-  </data>
-  <data name="Realm-97" xml:space="preserve">
-    <value>US-Gilneas</value>
-  </data>
-  <data name="Realm-98" xml:space="preserve">
-    <value>US-Kargath</value>
-  </data>
-  <data name="Realm-99" xml:space="preserve">
-    <value>US-Llane</value>
-  </data>
-  <data name="Realm-100" xml:space="preserve">
-    <value>US-Earthen Ring</value>
-  </data>
-  <data name="Realm-101" xml:space="preserve">
-    <value>US-Laughing Skull</value>
-  </data>
-  <data name="Realm-102" xml:space="preserve">
-    <value>US-Burning Legion</value>
-  </data>
-  <data name="Realm-103" xml:space="preserve">
-    <value>US-Thunderlord</value>
-  </data>
-  <data name="Realm-104" xml:space="preserve">
-    <value>US-Malygos</value>
-  </data>
-  <data name="Realm-105" xml:space="preserve">
-    <value>US-Thunderhorn</value>
-  </data>
-  <data name="Realm-106" xml:space="preserve">
-    <value>US-Aggramar</value>
-  </data>
-  <data name="Realm-107" xml:space="preserve">
-    <value>US-Crushridge</value>
-  </data>
-  <data name="Realm-108" xml:space="preserve">
-    <value>US-Stonemaul</value>
-  </data>
-  <data name="Realm-109" xml:space="preserve">
-    <value>US-Daggerspine</value>
-  </data>
-  <data name="Realm-110" xml:space="preserve">
-    <value>US-Stormscale</value>
-  </data>
-  <data name="Realm-111" xml:space="preserve">
-    <value>US-Dunemaul</value>
-  </data>
-  <data name="Realm-112" xml:space="preserve">
-    <value>US-Boulderfist</value>
-  </data>
-  <data name="Realm-113" xml:space="preserve">
-    <value>US-Suramar</value>
-  </data>
-  <data name="Realm-114" xml:space="preserve">
-    <value>US-Dragonblight</value>
-  </data>
-  <data name="Realm-115" xml:space="preserve">
-    <value>US-Draenor</value>
-  </data>
-  <data name="Realm-116" xml:space="preserve">
-    <value>US-Uldum</value>
-  </data>
-  <data name="Realm-117" xml:space="preserve">
-    <value>US-Bronzebeard</value>
-  </data>
-  <data name="Realm-118" xml:space="preserve">
-    <value>US-Feathermoon</value>
-  </data>
-  <data name="Realm-119" xml:space="preserve">
-    <value>US-Bloodscalp</value>
-  </data>
-  <data name="Realm-120" xml:space="preserve">
-    <value>US-Darkspear</value>
-  </data>
-  <data name="Realm-121" xml:space="preserve">
-    <value>US-Azjol-Nerub</value>
-  </data>
-  <data name="Realm-122" xml:space="preserve">
-    <value>US-Perenolde</value>
-  </data>
-  <data name="Realm-123" xml:space="preserve">
-    <value>US-Eldre'Thalas</value>
-  </data>
-  <data name="Realm-124" xml:space="preserve">
-    <value>US-Spirestone</value>
-  </data>
-  <data name="Realm-125" xml:space="preserve">
-    <value>US-Shadow Council</value>
-  </data>
-  <data name="Realm-126" xml:space="preserve">
-    <value>US-Scarlet Crusade</value>
-  </data>
-  <data name="Realm-127" xml:space="preserve">
-    <value>US-Firetree</value>
-  </data>
-  <data name="Realm-128" xml:space="preserve">
-    <value>US-Frostmane</value>
-  </data>
-  <data name="Realm-129" xml:space="preserve">
-    <value>US-Gurubashi</value>
-  </data>
-  <data name="Realm-130" xml:space="preserve">
-    <value>US-Smolderthorn</value>
-  </data>
-  <data name="Realm-131" xml:space="preserve">
-    <value>US-Skywall</value>
-  </data>
-  <data name="Realm-151" xml:space="preserve">
-    <value>US-Runetotem</value>
-  </data>
-  <data name="Realm-153" xml:space="preserve">
-    <value>US-Moonrunner</value>
-  </data>
-  <data name="Realm-154" xml:space="preserve">
-    <value>US-Detheroc</value>
-  </data>
-  <data name="Realm-155" xml:space="preserve">
-    <value>US-Kalecgos</value>
-  </data>
-  <data name="Realm-156" xml:space="preserve">
-    <value>US-Ursin</value>
-  </data>
-  <data name="Realm-157" xml:space="preserve">
-    <value>US-Dark Iron</value>
-  </data>
-  <data name="Realm-158" xml:space="preserve">
-    <value>US-Greymane</value>
-  </data>
-  <data name="Realm-159" xml:space="preserve">
-    <value>US-Wildhammer</value>
-  </data>
-  <data name="Realm-160" xml:space="preserve">
-    <value>US-Staghelm</value>
-  </data>
-  <data name="Realm-162" xml:space="preserve">
-    <value>US-Emerald Dream</value>
-  </data>
-  <data name="Realm-163" xml:space="preserve">
-    <value>US-Maelstrom</value>
-  </data>
-  <data name="Realm-164" xml:space="preserve">
-    <value>US-Twisting Nether</value>
-  </data>
-  <data name="Realm-201" xml:space="preserve">
-    <value>KR-Burning Legion</value>
-  </data>
-  <data name="Realm-205" xml:space="preserve">
-    <value>KR-Azshara</value>
-  </data>
-  <data name="Realm-207" xml:space="preserve">
-    <value>KR-Dalaran</value>
-  </data>
-  <data name="Realm-210" xml:space="preserve">
-    <value>KR-Durotan</value>
-  </data>
-  <data name="Realm-211" xml:space="preserve">
-    <value>KR-Norgannon</value>
-  </data>
-  <data name="Realm-212" xml:space="preserve">
-    <value>KR-Garona</value>
-  </data>
-  <data name="Realm-214" xml:space="preserve">
-    <value>KR-Windrunner</value>
-  </data>
-  <data name="Realm-215" xml:space="preserve">
-    <value>KR-Gul'dan</value>
-  </data>
-  <data name="Realm-258" xml:space="preserve">
-    <value>KR-Alexstrasza</value>
-  </data>
-  <data name="Realm-264" xml:space="preserve">
-    <value>KR-Malfurion</value>
-  </data>
-  <data name="Realm-293" xml:space="preserve">
-    <value>KR-Hellscream</value>
-  </data>
-  <data name="Realm-500" xml:space="preserve">
-    <value>EU-Aggramar</value>
-  </data>
-  <data name="Realm-501" xml:space="preserve">
-    <value>EU-Arathor</value>
-  </data>
-  <data name="Realm-502" xml:space="preserve">
-    <value>EU-Aszune</value>
-  </data>
-  <data name="Realm-503" xml:space="preserve">
-    <value>EU-Azjol-Nerub</value>
-  </data>
-  <data name="Realm-504" xml:space="preserve">
-    <value>EU-Bloodhoof</value>
-  </data>
-  <data name="Realm-505" xml:space="preserve">
-    <value>EU-Doomhammer</value>
-  </data>
-  <data name="Realm-506" xml:space="preserve">
-    <value>EU-Draenor</value>
-  </data>
-  <data name="Realm-507" xml:space="preserve">
-    <value>EU-Dragonblight</value>
-  </data>
-  <data name="Realm-508" xml:space="preserve">
-    <value>EU-Emerald Dream</value>
-  </data>
-  <data name="Realm-509" xml:space="preserve">
-    <value>EU-Garona</value>
-  </data>
-  <data name="Realm-510" xml:space="preserve">
-    <value>EU-Vol'jin</value>
-  </data>
-  <data name="Realm-511" xml:space="preserve">
-    <value>EU-Sunstrider</value>
-  </data>
-  <data name="Realm-512" xml:space="preserve">
-    <value>EU-Arak-arahm</value>
-  </data>
-  <data name="Realm-513" xml:space="preserve">
-    <value>EU-Twilight's Hammer</value>
-  </data>
-  <data name="Realm-515" xml:space="preserve">
-    <value>EU-Zenedar</value>
-  </data>
-  <data name="Realm-516" xml:space="preserve">
-    <value>EU-Forscherliga</value>
-  </data>
-  <data name="Realm-517" xml:space="preserve">
-    <value>EU-Medivh</value>
-  </data>
-  <data name="Realm-518" xml:space="preserve">
-    <value>EU-Agamaggan</value>
-  </data>
-  <data name="Realm-519" xml:space="preserve">
-    <value>EU-Al'Akir</value>
-  </data>
-  <data name="Realm-521" xml:space="preserve">
-    <value>EU-Bladefist</value>
-  </data>
-  <data name="Realm-522" xml:space="preserve">
-    <value>EU-Bloodscalp</value>
-  </data>
-  <data name="Realm-523" xml:space="preserve">
-    <value>EU-Burning Blade</value>
-  </data>
-  <data name="Realm-524" xml:space="preserve">
-    <value>EU-Burning Legion</value>
-  </data>
-  <data name="Realm-525" xml:space="preserve">
-    <value>EU-Crushridge</value>
-  </data>
-  <data name="Realm-526" xml:space="preserve">
-    <value>EU-Daggerspine</value>
-  </data>
-  <data name="Realm-527" xml:space="preserve">
-    <value>EU-Deathwing</value>
-  </data>
-  <data name="Realm-528" xml:space="preserve">
-    <value>EU-Dragonmaw</value>
-  </data>
-  <data name="Realm-529" xml:space="preserve">
-    <value>EU-Dunemaul</value>
-  </data>
-  <data name="Realm-531" xml:space="preserve">
-    <value>EU-Dethecus</value>
-  </data>
-  <data name="Realm-533" xml:space="preserve">
-    <value>EU-Sinstralis</value>
-  </data>
-  <data name="Realm-535" xml:space="preserve">
-    <value>EU-Durotan</value>
-  </data>
-  <data name="Realm-536" xml:space="preserve">
-    <value>EU-Argent Dawn</value>
-  </data>
-  <data name="Realm-537" xml:space="preserve">
-    <value>EU-Kirin Tor</value>
-  </data>
-  <data name="Realm-538" xml:space="preserve">
-    <value>EU-Dalaran</value>
-  </data>
-  <data name="Realm-539" xml:space="preserve">
-    <value>EU-Archimonde</value>
-  </data>
-  <data name="Realm-540" xml:space="preserve">
-    <value>EU-Elune</value>
-  </data>
-  <data name="Realm-541" xml:space="preserve">
-    <value>EU-Illidan</value>
-  </data>
-  <data name="Realm-542" xml:space="preserve">
-    <value>EU-Hyjal</value>
-  </data>
-  <data name="Realm-543" xml:space="preserve">
-    <value>EU-Kael'thas</value>
-  </data>
-  <data name="Realm-544" xml:space="preserve">
-    <value>EU-Ner'zhul</value>
-  </data>
-  <data name="Realm-545" xml:space="preserve">
-    <value>EU-Cho'gall</value>
-  </data>
-  <data name="Realm-546" xml:space="preserve">
-    <value>EU-Sargeras</value>
-  </data>
-  <data name="Realm-547" xml:space="preserve">
-    <value>EU-Runetotem</value>
-  </data>
-  <data name="Realm-548" xml:space="preserve">
-    <value>EU-Shadowsong</value>
-  </data>
-  <data name="Realm-549" xml:space="preserve">
-    <value>EU-Silvermoon</value>
-  </data>
-  <data name="Realm-550" xml:space="preserve">
-    <value>EU-Stormrage</value>
-  </data>
-  <data name="Realm-551" xml:space="preserve">
-    <value>EU-Terenas</value>
-  </data>
-  <data name="Realm-552" xml:space="preserve">
-    <value>EU-Thunderhorn</value>
-  </data>
-  <data name="Realm-553" xml:space="preserve">
-    <value>EU-Turalyon</value>
-  </data>
-  <data name="Realm-554" xml:space="preserve">
-    <value>EU-Ravencrest</value>
-  </data>
-  <data name="Realm-556" xml:space="preserve">
-    <value>EU-Shattered Hand</value>
-  </data>
-  <data name="Realm-557" xml:space="preserve">
-    <value>EU-Skullcrusher</value>
-  </data>
-  <data name="Realm-558" xml:space="preserve">
-    <value>EU-Spinebreaker</value>
-  </data>
-  <data name="Realm-559" xml:space="preserve">
-    <value>EU-Stormreaver</value>
-  </data>
-  <data name="Realm-560" xml:space="preserve">
-    <value>EU-Stormscale</value>
-  </data>
-  <data name="Realm-561" xml:space="preserve">
-    <value>EU-Earthen Ring</value>
-  </data>
-  <data name="Realm-562" xml:space="preserve">
-    <value>EU-Alexstrasza</value>
-  </data>
-  <data name="Realm-563" xml:space="preserve">
-    <value>EU-Alleria</value>
-  </data>
-  <data name="Realm-564" xml:space="preserve">
-    <value>EU-Antonidas</value>
-  </data>
-  <data name="Realm-565" xml:space="preserve">
-    <value>EU-Baelgun</value>
-  </data>
-  <data name="Realm-566" xml:space="preserve">
-    <value>EU-Blackhand</value>
-  </data>
-  <data name="Realm-567" xml:space="preserve">
-    <value>EU-Gilneas</value>
-  </data>
-  <data name="Realm-568" xml:space="preserve">
-    <value>EU-Kargath</value>
-  </data>
-  <data name="Realm-569" xml:space="preserve">
-    <value>EU-Khaz'goroth</value>
-  </data>
-  <data name="Realm-570" xml:space="preserve">
-    <value>EU-Lothar</value>
-  </data>
-  <data name="Realm-571" xml:space="preserve">
-    <value>EU-Madmortem</value>
-  </data>
-  <data name="Realm-572" xml:space="preserve">
-    <value>EU-Malfurion</value>
-  </data>
-  <data name="Realm-573" xml:space="preserve">
-    <value>EU-Zuluhed</value>
-  </data>
-  <data name="Realm-574" xml:space="preserve">
-    <value>EU-Nozdormu</value>
-  </data>
-  <data name="Realm-575" xml:space="preserve">
-    <value>EU-Perenolde</value>
-  </data>
-  <data name="Realm-576" xml:space="preserve">
-    <value>EU-Die Silberne Hand</value>
-  </data>
-  <data name="Realm-577" xml:space="preserve">
-    <value>EU-Aegwynn</value>
-  </data>
-  <data name="Realm-578" xml:space="preserve">
-    <value>EU-Arthas</value>
-  </data>
-  <data name="Realm-579" xml:space="preserve">
-    <value>EU-Azshara</value>
-  </data>
-  <data name="Realm-580" xml:space="preserve">
-    <value>EU-Blackmoore</value>
-  </data>
-  <data name="Realm-581" xml:space="preserve">
-    <value>EU-Blackrock</value>
-  </data>
-  <data name="Realm-582" xml:space="preserve">
-    <value>EU-Destromath</value>
-  </data>
-  <data name="Realm-583" xml:space="preserve">
-    <value>EU-Eredar</value>
-  </data>
-  <data name="Realm-584" xml:space="preserve">
-    <value>EU-Frostmourne</value>
-  </data>
-  <data name="Realm-585" xml:space="preserve">
-    <value>EU-Frostwolf</value>
-  </data>
-  <data name="Realm-586" xml:space="preserve">
-    <value>EU-Gorgonnash</value>
-  </data>
-  <data name="Realm-587" xml:space="preserve">
-    <value>EU-Gul'dan</value>
-  </data>
-  <data name="Realm-588" xml:space="preserve">
-    <value>EU-Kel'Thuzad</value>
-  </data>
-  <data name="Realm-589" xml:space="preserve">
-    <value>EU-Kil'jaeden</value>
-  </data>
-  <data name="Realm-590" xml:space="preserve">
-    <value>EU-Mal'Ganis</value>
-  </data>
-  <data name="Realm-591" xml:space="preserve">
-    <value>EU-Mannoroth</value>
-  </data>
-  <data name="Realm-592" xml:space="preserve">
-    <value>EU-Zirkel des Cenarius</value>
-  </data>
-  <data name="Realm-593" xml:space="preserve">
-    <value>EU-Proudmoore</value>
-  </data>
-  <data name="Realm-594" xml:space="preserve">
-    <value>EU-Nathrezim</value>
-  </data>
-  <data name="Realm-600" xml:space="preserve">
-    <value>EU-Dun Morogh</value>
-  </data>
-  <data name="Realm-601" xml:space="preserve">
-    <value>EU-Aman'Thul</value>
-  </data>
-  <data name="Realm-602" xml:space="preserve">
-    <value>EU-Sen'jin</value>
-  </data>
-  <data name="Realm-604" xml:space="preserve">
-    <value>EU-Thrall</value>
-  </data>
-  <data name="Realm-605" xml:space="preserve">
-    <value>EU-Theradras</value>
-  </data>
-  <data name="Realm-606" xml:space="preserve">
-    <value>EU-Genjuros</value>
-  </data>
-  <data name="Realm-607" xml:space="preserve">
-    <value>EU-Balnazzar</value>
-  </data>
-  <data name="Realm-608" xml:space="preserve">
-    <value>EU-Anub'arak</value>
-  </data>
-  <data name="Realm-609" xml:space="preserve">
-    <value>EU-Wrathbringer</value>
-  </data>
-  <data name="Realm-610" xml:space="preserve">
-    <value>EU-Onyxia</value>
-  </data>
-  <data name="Realm-611" xml:space="preserve">
-    <value>EU-Nera'thor</value>
-  </data>
-  <data name="Realm-612" xml:space="preserve">
-    <value>EU-Nefarian</value>
-  </data>
-  <data name="Realm-613" xml:space="preserve">
-    <value>EU-Kult der Verdammten</value>
-  </data>
-  <data name="Realm-614" xml:space="preserve">
-    <value>EU-Das Syndikat</value>
-  </data>
-  <data name="Realm-615" xml:space="preserve">
-    <value>EU-Terrordar</value>
-  </data>
-  <data name="Realm-616" xml:space="preserve">
-    <value>EU-Krag'jin</value>
-  </data>
-  <data name="Realm-617" xml:space="preserve">
-    <value>EU-Der Rat von Dalaran</value>
-  </data>
-  <data name="Realm-618" xml:space="preserve">
-    <value>EU-Nordrassil</value>
-  </data>
-  <data name="Realm-619" xml:space="preserve">
-    <value>EU-Hellscream</value>
-  </data>
-  <data name="Realm-621" xml:space="preserve">
-    <value>EU-Laughing Skull</value>
-  </data>
-  <data name="Realm-622" xml:space="preserve">
-    <value>EU-Magtheridon</value>
-  </data>
-  <data name="Realm-623" xml:space="preserve">
-    <value>EU-Quel'Thalas</value>
-  </data>
-  <data name="Realm-624" xml:space="preserve">
-    <value>EU-Neptulon</value>
-  </data>
-  <data name="Realm-625" xml:space="preserve">
-    <value>EU-Twisting Nether</value>
-  </data>
-  <data name="Realm-626" xml:space="preserve">
-    <value>EU-Ragnaros</value>
-  </data>
-  <data name="Realm-627" xml:space="preserve">
-    <value>EU-The Maelstrom</value>
-  </data>
-  <data name="Realm-628" xml:space="preserve">
-    <value>EU-Sylvanas</value>
-  </data>
-  <data name="Realm-629" xml:space="preserve">
-    <value>EU-Vashj</value>
-  </data>
-  <data name="Realm-630" xml:space="preserve">
-    <value>EU-Bloodfeather</value>
-  </data>
-  <data name="Realm-631" xml:space="preserve">
-    <value>EU-Darksorrow</value>
-  </data>
-  <data name="Realm-632" xml:space="preserve">
-    <value>EU-Frostwhisper</value>
-  </data>
-  <data name="Realm-633" xml:space="preserve">
-    <value>EU-Kor'gall</value>
-  </data>
-  <data name="Realm-635" xml:space="preserve">
-    <value>EU-Defias Brotherhood</value>
-  </data>
-  <data name="Realm-636" xml:space="preserve">
-    <value>EU-The Venture Co</value>
-  </data>
-  <data name="Realm-637" xml:space="preserve">
-    <value>EU-Lightning's Blade</value>
-  </data>
-  <data name="Realm-638" xml:space="preserve">
-    <value>EU-Haomarush</value>
-  </data>
-  <data name="Realm-639" xml:space="preserve">
-    <value>EU-Xavius</value>
-  </data>
-  <data name="Realm-640" xml:space="preserve">
-    <value>EU-Khaz Modan</value>
-  </data>
-  <data name="Realm-641" xml:space="preserve">
-    <value>EU-Drek'Thar</value>
-  </data>
-  <data name="Realm-642" xml:space="preserve">
-    <value>EU-Rashgarroth</value>
-  </data>
-  <data name="Realm-643" xml:space="preserve">
-    <value>EU-Throk'Feroth</value>
-  </data>
-  <data name="Realm-644" xml:space="preserve">
-    <value>EU-Conseil des Ombres</value>
-  </data>
-  <data name="Realm-645" xml:space="preserve">
-    <value>EU-Varimathras</value>
-  </data>
-  <data name="Realm-646" xml:space="preserve">
-    <value>EU-Hakkar</value>
-  </data>
-  <data name="Realm-647" xml:space="preserve">
-    <value>EU-Les Sentinelles</value>
-  </data>
-  <data name="Realm-963" xml:space="preserve">
-    <value>TW-Shadowmoon</value>
-  </data>
-  <data name="Realm-964" xml:space="preserve">
-    <value>TW-Spirestone</value>
-  </data>
-  <data name="Realm-965" xml:space="preserve">
-    <value>TW-Stormscale</value>
-  </data>
-  <data name="Realm-966" xml:space="preserve">
-    <value>TW-Dragonmaw</value>
-  </data>
-  <data name="Realm-977" xml:space="preserve">
-    <value>TW-Frostmane</value>
-  </data>
-  <data name="Realm-978" xml:space="preserve">
-    <value>TW-Sundown Marsh</value>
-  </data>
-  <data name="Realm-979" xml:space="preserve">
-    <value>TW-Hellscream</value>
-  </data>
-  <data name="Realm-980" xml:space="preserve">
-    <value>TW-Skywall</value>
-  </data>
-  <data name="Realm-982" xml:space="preserve">
-    <value>TW-World Tree</value>
-  </data>
-  <data name="Realm-985" xml:space="preserve">
-    <value>TW-Crystalpine Stinger</value>
-  </data>
-  <data name="Realm-999" xml:space="preserve">
-    <value>TW-Zealot Blade</value>
-  </data>
-  <data name="Realm-1001" xml:space="preserve">
-    <value>TW-Chillwind Point</value>
-  </data>
-  <data name="Realm-1006" xml:space="preserve">
-    <value>TW-Menethil</value>
-  </data>
-  <data name="Realm-1023" xml:space="preserve">
-    <value>TW-Demon Fall Canyon</value>
-  </data>
-  <data name="Realm-1033" xml:space="preserve">
-    <value>TW-Whisperwind</value>
-  </data>
-  <data name="Realm-1037" xml:space="preserve">
-    <value>TW-Bleeding Hollow</value>
-  </data>
-  <data name="Realm-1038" xml:space="preserve">
-    <value>TW-Arygos</value>
-  </data>
-  <data name="Realm-1043" xml:space="preserve">
-    <value>TW-Nightsong</value>
-  </data>
-  <data name="Realm-1046" xml:space="preserve">
-    <value>TW-Light's Hope</value>
-  </data>
-  <data name="Realm-1048" xml:space="preserve">
-    <value>TW-Silverwing Hold</value>
-  </data>
-  <data name="Realm-1049" xml:space="preserve">
-    <value>TW-Wrathbringer</value>
-  </data>
-  <data name="Realm-1054" xml:space="preserve">
-    <value>TW-Arthas</value>
-  </data>
-  <data name="Realm-1056" xml:space="preserve">
-    <value>TW-Quel'dorei</value>
-  </data>
-  <data name="Realm-1057" xml:space="preserve">
-    <value>TW-Icecrown</value>
-  </data>
-  <data name="Realm-1067" xml:space="preserve">
-    <value>US-Cho'gall</value>
-  </data>
-  <data name="Realm-1068" xml:space="preserve">
-    <value>US-Gul'dan</value>
-  </data>
-  <data name="Realm-1069" xml:space="preserve">
-    <value>US-Kael'thas</value>
-  </data>
-  <data name="Realm-1070" xml:space="preserve">
-    <value>US-Alexstrasza</value>
-  </data>
-  <data name="Realm-1071" xml:space="preserve">
-    <value>US-Kirin Tor</value>
-  </data>
-  <data name="Realm-1072" xml:space="preserve">
-    <value>US-Ravencrest</value>
-  </data>
-  <data name="Realm-1075" xml:space="preserve">
-    <value>US-Balnazzar</value>
-  </data>
-  <data name="Realm-1080" xml:space="preserve">
-    <value>EU-Khadgar</value>
-  </data>
-  <data name="Realm-1081" xml:space="preserve">
-    <value>EU-Bronzebeard</value>
-  </data>
-  <data name="Realm-1082" xml:space="preserve">
-    <value>EU-Kul Tiras</value>
-  </data>
-  <data name="Realm-1083" xml:space="preserve">
-    <value>EU-Chromaggus</value>
-  </data>
-  <data name="Realm-1084" xml:space="preserve">
-    <value>EU-Dentarg</value>
-  </data>
-  <data name="Realm-1085" xml:space="preserve">
-    <value>EU-Moonglade</value>
-  </data>
-  <data name="Realm-1086" xml:space="preserve">
-    <value>EU-La Croisade écarlate</value>
-  </data>
-  <data name="Realm-1087" xml:space="preserve">
-    <value>EU-Executus</value>
-  </data>
-  <data name="Realm-1088" xml:space="preserve">
-    <value>EU-Trollbane</value>
-  </data>
-  <data name="Realm-1089" xml:space="preserve">
-    <value>EU-Mazrigos</value>
-  </data>
-  <data name="Realm-1090" xml:space="preserve">
-    <value>EU-Talnivarr</value>
-  </data>
-  <data name="Realm-1091" xml:space="preserve">
-    <value>EU-Emeriss</value>
-  </data>
-  <data name="Realm-1092" xml:space="preserve">
-    <value>EU-Drak'thul</value>
-  </data>
-  <data name="Realm-1093" xml:space="preserve">
-    <value>EU-Ahn'Qiraj</value>
-  </data>
-  <data name="Realm-1096" xml:space="preserve">
-    <value>EU-Scarshield Legion</value>
-  </data>
-  <data name="Realm-1097" xml:space="preserve">
-    <value>EU-Ysera</value>
-  </data>
-  <data name="Realm-1098" xml:space="preserve">
-    <value>EU-Malygos</value>
-  </data>
-  <data name="Realm-1099" xml:space="preserve">
-    <value>EU-Rexxar</value>
-  </data>
-  <data name="Realm-1104" xml:space="preserve">
-    <value>EU-Anetheron</value>
-  </data>
-  <data name="Realm-1105" xml:space="preserve">
-    <value>EU-Nazjatar</value>
-  </data>
-  <data name="Realm-1106" xml:space="preserve">
-    <value>EU-Tichondrius</value>
-  </data>
-  <data name="Realm-1117" xml:space="preserve">
-    <value>EU-Steamwheedle Cartel</value>
-  </data>
-  <data name="Realm-1118" xml:space="preserve">
-    <value>EU-Die ewige Wacht</value>
-  </data>
-  <data name="Realm-1119" xml:space="preserve">
-    <value>EU-Die Todeskrallen</value>
-  </data>
-  <data name="Realm-1121" xml:space="preserve">
-    <value>EU-Die Arguswacht</value>
-  </data>
-  <data name="Realm-1122" xml:space="preserve">
-    <value>EU-Uldaman</value>
-  </data>
-  <data name="Realm-1123" xml:space="preserve">
-    <value>EU-Eitrigg</value>
-  </data>
-  <data name="Realm-1127" xml:space="preserve">
-    <value>EU-Confrérie du Thorium</value>
-  </data>
-  <data name="Realm-1128" xml:space="preserve">
-    <value>US-Azshara</value>
-  </data>
-  <data name="Realm-1129" xml:space="preserve">
-    <value>US-Agamaggan</value>
-  </data>
-  <data name="Realm-1130" xml:space="preserve">
-    <value>US-Lightninghoof</value>
-  </data>
-  <data name="Realm-1131" xml:space="preserve">
-    <value>US-Nazjatar</value>
-  </data>
-  <data name="Realm-1132" xml:space="preserve">
-    <value>US-Malfurion</value>
-  </data>
-  <data name="Realm-1136" xml:space="preserve">
-    <value>US-Aegwynn</value>
-  </data>
-  <data name="Realm-1137" xml:space="preserve">
-    <value>US-Akama</value>
-  </data>
-  <data name="Realm-1138" xml:space="preserve">
-    <value>US-Chromaggus</value>
-  </data>
-  <data name="Realm-1139" xml:space="preserve">
-    <value>US-Draka</value>
-  </data>
-  <data name="Realm-1140" xml:space="preserve">
-    <value>US-Drak'thul</value>
-  </data>
-  <data name="Realm-1141" xml:space="preserve">
-    <value>US-Garithos</value>
-  </data>
-  <data name="Realm-1142" xml:space="preserve">
-    <value>US-Hakkar</value>
-  </data>
-  <data name="Realm-1143" xml:space="preserve">
-    <value>US-Khaz Modan</value>
-  </data>
-  <data name="Realm-1145" xml:space="preserve">
-    <value>US-Mug'thol</value>
-  </data>
-  <data name="Realm-1146" xml:space="preserve">
-    <value>US-Korgath</value>
-  </data>
-  <data name="Realm-1147" xml:space="preserve">
-    <value>US-Kul Tiras</value>
-  </data>
-  <data name="Realm-1148" xml:space="preserve">
-    <value>US-Malorne</value>
-  </data>
-  <data name="Realm-1151" xml:space="preserve">
-    <value>US-Rexxar</value>
-  </data>
-  <data name="Realm-1154" xml:space="preserve">
-    <value>US-Thorium Brotherhood</value>
-  </data>
-  <data name="Realm-1165" xml:space="preserve">
-    <value>US-Arathor</value>
-  </data>
-  <data name="Realm-1173" xml:space="preserve">
-    <value>US-Madoran</value>
-  </data>
-  <data name="Realm-1175" xml:space="preserve">
-    <value>US-Trollbane</value>
-  </data>
-  <data name="Realm-1182" xml:space="preserve">
-    <value>US-Muradin</value>
-  </data>
-  <data name="Realm-1184" xml:space="preserve">
-    <value>US-Vek'nilash</value>
-  </data>
-  <data name="Realm-1185" xml:space="preserve">
-    <value>US-Sen'jin</value>
-  </data>
-  <data name="Realm-1190" xml:space="preserve">
-    <value>US-Baelgun</value>
-  </data>
-  <data name="Realm-1258" xml:space="preserve">
-    <value>US-Duskwood</value>
-  </data>
-  <data name="Realm-1259" xml:space="preserve">
-    <value>US-Zuluhed</value>
-  </data>
-  <data name="Realm-1260" xml:space="preserve">
-    <value>US-Steamwheedle Cartel</value>
-  </data>
-  <data name="Realm-1262" xml:space="preserve">
-    <value>US-Norgannon</value>
-  </data>
-  <data name="Realm-1263" xml:space="preserve">
-    <value>US-Thrall</value>
-  </data>
-  <data name="Realm-1264" xml:space="preserve">
-    <value>US-Anetheron</value>
-  </data>
-  <data name="Realm-1265" xml:space="preserve">
-    <value>US-Turalyon</value>
-  </data>
-  <data name="Realm-1266" xml:space="preserve">
-    <value>US-Haomarush</value>
-  </data>
-  <data name="Realm-1267" xml:space="preserve">
-    <value>US-Scilla</value>
-  </data>
-  <data name="Realm-1268" xml:space="preserve">
-    <value>US-Ysondre</value>
-  </data>
-  <data name="Realm-1270" xml:space="preserve">
-    <value>US-Ysera</value>
-  </data>
-  <data name="Realm-1271" xml:space="preserve">
-    <value>US-Dentarg</value>
-  </data>
-  <data name="Realm-1276" xml:space="preserve">
-    <value>US-Andorhal</value>
-  </data>
-  <data name="Realm-1277" xml:space="preserve">
-    <value>US-Executus</value>
-  </data>
-  <data name="Realm-1278" xml:space="preserve">
-    <value>US-Dalvengyr</value>
-  </data>
-  <data name="Realm-1280" xml:space="preserve">
-    <value>US-Black Dragonflight</value>
-  </data>
-  <data name="Realm-1282" xml:space="preserve">
-    <value>US-Altar of Storms</value>
-  </data>
-  <data name="Realm-1283" xml:space="preserve">
-    <value>US-Uldaman</value>
-  </data>
-  <data name="Realm-1284" xml:space="preserve">
-    <value>US-Aerie Peak</value>
-  </data>
-  <data name="Realm-1285" xml:space="preserve">
-    <value>US-Onyxia</value>
-  </data>
-  <data name="Realm-1286" xml:space="preserve">
-    <value>US-Demon Soul</value>
-  </data>
-  <data name="Realm-1287" xml:space="preserve">
-    <value>US-Gnomeregan</value>
-  </data>
-  <data name="Realm-1288" xml:space="preserve">
-    <value>US-Anvilmar</value>
-  </data>
-  <data name="Realm-1289" xml:space="preserve">
-    <value>US-The Venture Co</value>
-  </data>
-  <data name="Realm-1290" xml:space="preserve">
-    <value>US-Sentinels</value>
-  </data>
-  <data name="Realm-1291" xml:space="preserve">
-    <value>US-Jaedenar</value>
-  </data>
-  <data name="Realm-1292" xml:space="preserve">
-    <value>US-Tanaris</value>
-  </data>
-  <data name="Realm-1293" xml:space="preserve">
-    <value>US-Alterac Mountains</value>
-  </data>
-  <data name="Realm-1294" xml:space="preserve">
-    <value>US-Undermine</value>
-  </data>
-  <data name="Realm-1295" xml:space="preserve">
-    <value>US-Lethon</value>
-  </data>
-  <data name="Realm-1296" xml:space="preserve">
-    <value>US-Blackwing Lair</value>
-  </data>
-  <data name="Realm-1297" xml:space="preserve">
-    <value>US-Arygos</value>
-  </data>
-  <data name="Realm-1298" xml:space="preserve">
-    <value>EU-Vek'nilash</value>
-  </data>
-  <data name="Realm-1299" xml:space="preserve">
-    <value>EU-Boulderfist</value>
-  </data>
-  <data name="Realm-1300" xml:space="preserve">
-    <value>EU-Frostmane</value>
-  </data>
-  <data name="Realm-1301" xml:space="preserve">
-    <value>EU-Outland</value>
-  </data>
-  <data name="Realm-1303" xml:space="preserve">
-    <value>EU-Grim Batol</value>
-  </data>
-  <data name="Realm-1304" xml:space="preserve">
-    <value>EU-Jaedenar</value>
-  </data>
-  <data name="Realm-1305" xml:space="preserve">
-    <value>EU-Kazzak</value>
-  </data>
-  <data name="Realm-1306" xml:space="preserve">
-    <value>EU-Tarren Mill</value>
-  </data>
-  <data name="Realm-1307" xml:space="preserve">
-    <value>EU-Chamber of Aspects</value>
-  </data>
-  <data name="Realm-1308" xml:space="preserve">
-    <value>EU-Ravenholdt</value>
-  </data>
-  <data name="Realm-1309" xml:space="preserve">
-    <value>EU-Pozzo dell'Eternità</value>
-  </data>
-  <data name="Realm-1310" xml:space="preserve">
-    <value>EU-Eonar</value>
-  </data>
-  <data name="Realm-1311" xml:space="preserve">
-    <value>EU-Kilrogg</value>
-  </data>
-  <data name="Realm-1312" xml:space="preserve">
-    <value>EU-Aerie Peak</value>
-  </data>
-  <data name="Realm-1313" xml:space="preserve">
-    <value>EU-Wildhammer</value>
-  </data>
-  <data name="Realm-1314" xml:space="preserve">
-    <value>EU-Saurfang</value>
-  </data>
-  <data name="Realm-1316" xml:space="preserve">
-    <value>EU-Nemesis</value>
-  </data>
-  <data name="Realm-1317" xml:space="preserve">
-    <value>EU-Darkmoon Faire</value>
-  </data>
-  <data name="Realm-1318" xml:space="preserve">
-    <value>EU-Vek'lor</value>
-  </data>
-  <data name="Realm-1319" xml:space="preserve">
-    <value>EU-Mug'thol</value>
-  </data>
-  <data name="Realm-1320" xml:space="preserve">
-    <value>EU-Taerar</value>
-  </data>
-  <data name="Realm-1321" xml:space="preserve">
-    <value>EU-Dalvengyr</value>
-  </data>
-  <data name="Realm-1322" xml:space="preserve">
-    <value>EU-Rajaxx</value>
-  </data>
-  <data name="Realm-1323" xml:space="preserve">
-    <value>EU-Ulduar</value>
-  </data>
-  <data name="Realm-1324" xml:space="preserve">
-    <value>EU-Malorne</value>
-  </data>
-  <data name="Realm-1326" xml:space="preserve">
-    <value>EU-Der abyssische Rat</value>
-  </data>
-  <data name="Realm-1327" xml:space="preserve">
-    <value>EU-Der Mithrilorden</value>
-  </data>
-  <data name="Realm-1328" xml:space="preserve">
-    <value>EU-Tirion</value>
-  </data>
-  <data name="Realm-1330" xml:space="preserve">
-    <value>EU-Ambossar</value>
-  </data>
-  <data name="Realm-1331" xml:space="preserve">
-    <value>EU-Suramar</value>
-  </data>
-  <data name="Realm-1332" xml:space="preserve">
-    <value>EU-Krasus</value>
-  </data>
-  <data name="Realm-1333" xml:space="preserve">
-    <value>EU-Die Nachtwache</value>
-  </data>
-  <data name="Realm-1334" xml:space="preserve">
-    <value>EU-Arathi</value>
-  </data>
-  <data name="Realm-1335" xml:space="preserve">
-    <value>EU-Ysondre</value>
-  </data>
-  <data name="Realm-1336" xml:space="preserve">
-    <value>EU-Eldre'Thalas</value>
-  </data>
-  <data name="Realm-1337" xml:space="preserve">
-    <value>EU-Culte de la Rive noire</value>
-  </data>
-  <data name="Realm-1342" xml:space="preserve">
-    <value>US-Echo Isles</value>
-  </data>
-  <data name="Realm-1344" xml:space="preserve">
-    <value>US-The Forgotten Coast</value>
-  </data>
-  <data name="Realm-1345" xml:space="preserve">
-    <value>US-Fenris</value>
-  </data>
-  <data name="Realm-1346" xml:space="preserve">
-    <value>US-Anub'arak</value>
-  </data>
-  <data name="Realm-1347" xml:space="preserve">
-    <value>US-Blackwater Raiders</value>
-  </data>
-  <data name="Realm-1348" xml:space="preserve">
-    <value>US-Vashj</value>
-  </data>
-  <data name="Realm-1349" xml:space="preserve">
-    <value>US-Korialstrasz</value>
-  </data>
-  <data name="Realm-1350" xml:space="preserve">
-    <value>US-Misha</value>
-  </data>
-  <data name="Realm-1351" xml:space="preserve">
-    <value>US-Darrowmere</value>
-  </data>
-  <data name="Realm-1352" xml:space="preserve">
-    <value>US-Ravenholdt</value>
-  </data>
-  <data name="Realm-1353" xml:space="preserve">
-    <value>US-Bladefist</value>
-  </data>
-  <data name="Realm-1354" xml:space="preserve">
-    <value>US-Shu'halo</value>
-  </data>
-  <data name="Realm-1355" xml:space="preserve">
-    <value>US-Winterhoof</value>
-  </data>
-  <data name="Realm-1356" xml:space="preserve">
-    <value>US-Sisters of Elune</value>
-  </data>
-  <data name="Realm-1357" xml:space="preserve">
-    <value>US-Maiev</value>
-  </data>
-  <data name="Realm-1358" xml:space="preserve">
-    <value>US-Rivendare</value>
-  </data>
-  <data name="Realm-1359" xml:space="preserve">
-    <value>US-Nordrassil</value>
-  </data>
-  <data name="Realm-1360" xml:space="preserve">
-    <value>US-Tortheldrin</value>
-  </data>
-  <data name="Realm-1361" xml:space="preserve">
-    <value>US-Cairne</value>
-  </data>
-  <data name="Realm-1362" xml:space="preserve">
-    <value>US-Drak'Tharon</value>
-  </data>
-  <data name="Realm-1363" xml:space="preserve">
-    <value>US-Antonidas</value>
-  </data>
-  <data name="Realm-1364" xml:space="preserve">
-    <value>US-Shandris</value>
-  </data>
-  <data name="Realm-1365" xml:space="preserve">
-    <value>US-Moon Guard</value>
-  </data>
-  <data name="Realm-1367" xml:space="preserve">
-    <value>US-Nazgrel</value>
-  </data>
-  <data name="Realm-1368" xml:space="preserve">
-    <value>US-Hydraxis</value>
-  </data>
-  <data name="Realm-1369" xml:space="preserve">
-    <value>US-Wyrmrest Accord</value>
-  </data>
-  <data name="Realm-1370" xml:space="preserve">
-    <value>US-Farstriders</value>
-  </data>
-  <data name="Realm-1371" xml:space="preserve">
-    <value>US-Borean Tundra</value>
-  </data>
-  <data name="Realm-1372" xml:space="preserve">
-    <value>US-Quel'dorei</value>
-  </data>
-  <data name="Realm-1373" xml:space="preserve">
-    <value>US-Garrosh</value>
-  </data>
-  <data name="Realm-1374" xml:space="preserve">
-    <value>US-Mok'Nathal</value>
-  </data>
-  <data name="Realm-1375" xml:space="preserve">
-    <value>US-Nesingwary</value>
-  </data>
-  <data name="Realm-1377" xml:space="preserve">
-    <value>US-Drenden</value>
-  </data>
-  <data name="Realm-1378" xml:space="preserve">
-    <value>EU-Dun Modr</value>
-  </data>
-  <data name="Realm-1379" xml:space="preserve">
-    <value>EU-Zul'jin</value>
-  </data>
-  <data name="Realm-1380" xml:space="preserve">
-    <value>EU-Uldum</value>
-  </data>
-  <data name="Realm-1381" xml:space="preserve">
-    <value>EU-C'Thun</value>
-  </data>
-  <data name="Realm-1382" xml:space="preserve">
-    <value>EU-Sanguino</value>
-  </data>
-  <data name="Realm-1383" xml:space="preserve">
-    <value>EU-Shen'dralar</value>
-  </data>
-  <data name="Realm-1384" xml:space="preserve">
-    <value>EU-Tyrande</value>
-  </data>
-  <data name="Realm-1385" xml:space="preserve">
-    <value>EU-Exodar</value>
-  </data>
-  <data name="Realm-1386" xml:space="preserve">
-    <value>EU-Minahonda</value>
-  </data>
-  <data name="Realm-1387" xml:space="preserve">
-    <value>EU-Los Errantes</value>
-  </data>
-  <data name="Realm-1388" xml:space="preserve">
-    <value>EU-Lightbringer</value>
-  </data>
-  <data name="Realm-1389" xml:space="preserve">
-    <value>EU-Darkspear</value>
-  </data>
-  <data name="Realm-1391" xml:space="preserve">
-    <value>EU-Alonsus</value>
-  </data>
-  <data name="Realm-1392" xml:space="preserve">
-    <value>EU-Burning Steppes</value>
-  </data>
-  <data name="Realm-1393" xml:space="preserve">
-    <value>EU-Bronze Dragonflight</value>
-  </data>
-  <data name="Realm-1394" xml:space="preserve">
-    <value>EU-Anachronos</value>
-  </data>
-  <data name="Realm-1395" xml:space="preserve">
-    <value>EU-Colinas Pardas</value>
-  </data>
-  <data name="Realm-1400" xml:space="preserve">
-    <value>EU-Un'Goro</value>
-  </data>
-  <data name="Realm-1401" xml:space="preserve">
-    <value>EU-Garrosh</value>
-  </data>
-  <data name="Realm-1404" xml:space="preserve">
-    <value>EU-Area 52</value>
-  </data>
-  <data name="Realm-1405" xml:space="preserve">
-    <value>EU-Todeswache</value>
-  </data>
-  <data name="Realm-1406" xml:space="preserve">
-    <value>EU-Arygos</value>
-  </data>
-  <data name="Realm-1407" xml:space="preserve">
-    <value>EU-Teldrassil</value>
-  </data>
-  <data name="Realm-1408" xml:space="preserve">
-    <value>EU-Norgannon</value>
-  </data>
-  <data name="Realm-1409" xml:space="preserve">
-    <value>EU-Lordaeron</value>
-  </data>
-  <data name="Realm-1413" xml:space="preserve">
-    <value>EU-Aggra (Português)</value>
-  </data>
-  <data name="Realm-1415" xml:space="preserve">
-    <value>EU-Terokkar</value>
-  </data>
-  <data name="Realm-1416" xml:space="preserve">
-    <value>EU-Blade's Edge</value>
-  </data>
-  <data name="Realm-1417" xml:space="preserve">
-    <value>EU-Azuremyst</value>
-  </data>
-  <data name="Realm-1425" xml:space="preserve">
-    <value>US-Drakkari</value>
-  </data>
-  <data name="Realm-1427" xml:space="preserve">
-    <value>US-Ragnaros</value>
-  </data>
-  <data name="Realm-1428" xml:space="preserve">
-    <value>US-Quel'Thalas</value>
-  </data>
-  <data name="Realm-1549" xml:space="preserve">
-    <value>US-Azuremyst</value>
-  </data>
-  <data name="Realm-1555" xml:space="preserve">
-    <value>US-Auchindoun</value>
-  </data>
-  <data name="Realm-1556" xml:space="preserve">
-    <value>US-Coilfang</value>
-  </data>
-  <data name="Realm-1557" xml:space="preserve">
-    <value>US-Shattered Halls</value>
-  </data>
-  <data name="Realm-1558" xml:space="preserve">
-    <value>US-Blood Furnace</value>
-  </data>
-  <data name="Realm-1559" xml:space="preserve">
-    <value>US-The Underbog</value>
-  </data>
-  <data name="Realm-1563" xml:space="preserve">
-    <value>US-Terokkar</value>
-  </data>
-  <data name="Realm-1564" xml:space="preserve">
-    <value>US-Blade's Edge</value>
-  </data>
-  <data name="Realm-1565" xml:space="preserve">
-    <value>US-Exodar</value>
-  </data>
-  <data name="Realm-1566" xml:space="preserve">
-    <value>US-Area 52</value>
-  </data>
-  <data name="Realm-1567" xml:space="preserve">
-    <value>US-Velen</value>
-  </data>
-  <data name="Realm-1570" xml:space="preserve">
-    <value>US-The Scryers</value>
-  </data>
-  <data name="Realm-1572" xml:space="preserve">
-    <value>US-Zangarmarsh</value>
-  </data>
-  <data name="Realm-1576" xml:space="preserve">
-    <value>US-Fizzcrank</value>
-  </data>
-  <data name="Realm-1578" xml:space="preserve">
-    <value>US-Ghostlands</value>
-  </data>
-  <data name="Realm-1579" xml:space="preserve">
-    <value>US-Grizzly Hills</value>
-  </data>
-  <data name="Realm-1581" xml:space="preserve">
-    <value>US-Galakrond</value>
-  </data>
-  <data name="Realm-1582" xml:space="preserve">
-    <value>US-Dawnbringer</value>
-  </data>
-  <data name="Realm-1587" xml:space="preserve">
-    <value>EU-Hellfire</value>
-  </data>
-  <data name="Realm-1588" xml:space="preserve">
-    <value>EU-Ghostlands</value>
-  </data>
-  <data name="Realm-1589" xml:space="preserve">
-    <value>EU-Nagrand</value>
-  </data>
-  <data name="Realm-1595" xml:space="preserve">
-    <value>EU-The Sha'tar</value>
-  </data>
-  <data name="Realm-1596" xml:space="preserve">
-    <value>EU-Karazhan</value>
-  </data>
-  <data name="Realm-1597" xml:space="preserve">
-    <value>EU-Auchindoun</value>
-  </data>
-  <data name="Realm-1598" xml:space="preserve">
-    <value>EU-Shattered Halls</value>
-  </data>
-  <data name="Realm-1602" xml:space="preserve">
-    <value>EU-Gordunni</value>
-  </data>
-  <data name="Realm-1603" xml:space="preserve">
-    <value>EU-Lich King</value>
-  </data>
-  <data name="Realm-1604" xml:space="preserve">
-    <value>EU-Soulflayer</value>
-  </data>
-  <data name="Realm-1605" xml:space="preserve">
-    <value>EU-Deathguard</value>
-  </data>
-  <data name="Realm-1606" xml:space="preserve">
-    <value>EU-Sporeggar</value>
-  </data>
-  <data name="Realm-1607" xml:space="preserve">
-    <value>EU-Nethersturm</value>
-  </data>
-  <data name="Realm-1608" xml:space="preserve">
-    <value>EU-Shattrath</value>
-  </data>
-  <data name="Realm-1609" xml:space="preserve">
-    <value>EU-Deepholm</value>
-  </data>
-  <data name="Realm-1610" xml:space="preserve">
-    <value>EU-Greymane</value>
-  </data>
-  <data name="Realm-1611" xml:space="preserve">
-    <value>EU-Festung der Stürme</value>
-  </data>
-  <data name="Realm-1612" xml:space="preserve">
-    <value>EU-Echsenkessel</value>
-  </data>
-  <data name="Realm-1613" xml:space="preserve">
-    <value>EU-Blutkessel</value>
-  </data>
-  <data name="Realm-1614" xml:space="preserve">
-    <value>EU-Galakrond</value>
-  </data>
-  <data name="Realm-1615" xml:space="preserve">
-    <value>EU-Howling Fjord</value>
-  </data>
-  <data name="Realm-1616" xml:space="preserve">
-    <value>EU-Razuvious</value>
-  </data>
-  <data name="Realm-1617" xml:space="preserve">
-    <value>EU-Deathweaver</value>
-  </data>
-  <data name="Realm-1618" xml:space="preserve">
-    <value>EU-Die Aldor</value>
-  </data>
-  <data name="Realm-1619" xml:space="preserve">
-    <value>EU-Das Konsortium</value>
-  </data>
-  <data name="Realm-1620" xml:space="preserve">
-    <value>EU-Chants éternels</value>
-  </data>
-  <data name="Realm-1621" xml:space="preserve">
-    <value>EU-Marécage de Zangar</value>
-  </data>
-  <data name="Realm-1622" xml:space="preserve">
-    <value>EU-Temple noir</value>
-  </data>
-  <data name="Realm-1623" xml:space="preserve">
-    <value>EU-Fordragon</value>
-  </data>
-  <data name="Realm-1624" xml:space="preserve">
-    <value>EU-Naxxramas</value>
-  </data>
-  <data name="Realm-1625" xml:space="preserve">
-    <value>EU-Borean Tundra</value>
-  </data>
-  <data name="Realm-1626" xml:space="preserve">
-    <value>EU-Les Clairvoyants</value>
-  </data>
-  <data name="Realm-1922" xml:space="preserve">
-    <value>EU-Azuregos</value>
-  </data>
-  <data name="Realm-1923" xml:space="preserve">
-    <value>EU-Ashenvale</value>
-  </data>
-  <data name="Realm-1924" xml:space="preserve">
-    <value>EU-Booty Bay</value>
-  </data>
-  <data name="Realm-1925" xml:space="preserve">
-    <value>EU-Eversong</value>
-  </data>
-  <data name="Realm-1926" xml:space="preserve">
-    <value>EU-Thermaplugg</value>
-  </data>
-  <data name="Realm-1927" xml:space="preserve">
-    <value>EU-Grom</value>
-  </data>
-  <data name="Realm-1928" xml:space="preserve">
-    <value>EU-Goldrinn</value>
-  </data>
-  <data name="Realm-1929" xml:space="preserve">
-    <value>EU-Blackscar</value>
-  </data>
-  <data name="Realm-2075" xml:space="preserve">
-    <value>TW-Order of the Cloud Serpent</value>
-  </data>
-  <data name="Realm-2079" xml:space="preserve">
-    <value>KR-Wildhammer</value>
-  </data>
-  <data name="Realm-2106" xml:space="preserve">
-    <value>KR-Rexxar</value>
-  </data>
-  <data name="Realm-2107" xml:space="preserve">
-    <value>KR-Hyjal</value>
-  </data>
-  <data name="Realm-2108" xml:space="preserve">
-    <value>KR-Deathwing</value>
-  </data>
-  <data name="Realm-2110" xml:space="preserve">
-    <value>KR-Cenarius</value>
-  </data>
-  <data name="Realm-2111" xml:space="preserve">
-    <value>KR-Stormrage</value>
-  </data>
-  <data name="Realm-2116" xml:space="preserve">
-    <value>KR-Zul'jin</value>
-  </data>
-  <data name="Realm-3207" xml:space="preserve">
-    <value>US-Goldrinn</value>
-  </data>
-  <data name="Realm-3208" xml:space="preserve">
-    <value>US-Nemesis</value>
-  </data>
-  <data name="Realm-3209" xml:space="preserve">
-    <value>US-Azralon</value>
-  </data>
-  <data name="Realm-3210" xml:space="preserve">
-    <value>US-Tol Barad</value>
-  </data>
-  <data name="Realm-3234" xml:space="preserve">
-    <value>US-Gallywix</value>
-  </data>
-  <data name="Realm-3721" xml:space="preserve">
-    <value>US-Caelestrasz</value>
-  </data>
-  <data name="Realm-3722" xml:space="preserve">
-    <value>US-Aman'Thul</value>
-  </data>
-  <data name="Realm-3723" xml:space="preserve">
-    <value>US-Barthilas</value>
-  </data>
-  <data name="Realm-3724" xml:space="preserve">
-    <value>US-Thaurissan</value>
-  </data>
-  <data name="Realm-3725" xml:space="preserve">
-    <value>US-Frostmourne</value>
-  </data>
-  <data name="Realm-3726" xml:space="preserve">
-    <value>US-Khaz'goroth</value>
-  </data>
-  <data name="Realm-3733" xml:space="preserve">
-    <value>US-Dreadmaul</value>
-  </data>
-  <data name="Realm-3734" xml:space="preserve">
-    <value>US-Nagrand</value>
-  </data>
-  <data name="Realm-3735" xml:space="preserve">
-    <value>US-Dath'Remar</value>
-  </data>
-  <data name="Realm-3736" xml:space="preserve">
-    <value>US-Jubei'Thos</value>
-  </data>
-  <data name="Realm-3737" xml:space="preserve">
-    <value>US-Gundrak</value>
-  </data>
-  <data name="Realm-3738" xml:space="preserve">
-    <value>US-Saurfang</value>
-  </data>
-  <data name="Region-0" xml:space="preserve">
-    <value>None</value>
-  </data>
-  <data name="Region-1" xml:space="preserve">
-    <value>China</value>
-  </data>
-  <data name="Region-2" xml:space="preserve">
-    <value>Europe</value>
-  </data>
-  <data name="Region-3" xml:space="preserve">
-    <value>Korea</value>
-  </data>
-  <data name="Region-4" xml:space="preserve">
-    <value>Taiwan</value>
-  </data>
-  <data name="Region-5" xml:space="preserve">
-    <value>UnitedStates</value>
-  </data>
   <data name="Type-0" xml:space="preserve">
-    <value>Retail</value>
+    <value>Type-0</value>
   </data>
   <data name="Type-1" xml:space="preserve">
-    <value>Classic</value>
+    <value>Type-1</value>
   </data>
   <data name="Type-2" xml:space="preserve">
-    <value>Season of Mastery</value>
+    <value>Type-2</value>
+  </data>
+  <data name="Region-0" xml:space="preserve">
+    <value>Region-0</value>
+  </data>
+  <data name="Region-1" xml:space="preserve">
+    <value>Region-1</value>
+  </data>
+  <data name="Region-2" xml:space="preserve">
+    <value>Region-2</value>
+  </data>
+  <data name="Region-3" xml:space="preserve">
+    <value>Region-3</value>
+  </data>
+  <data name="Region-4" xml:space="preserve">
+    <value>Region-4</value>
+  </data>
+  <data name="Region-5" xml:space="preserve">
+    <value>Region-5</value>
   </data>
   <data name="Main-0" xml:space="preserve">
-    <value>None</value>
+    <value>Main-0</value>
   </data>
   <data name="Main-1" xml:space="preserve">
-    <value>Dungeons</value>
+    <value>Main-1</value>
   </data>
   <data name="Main-2" xml:space="preserve">
-    <value>Raids</value>
+    <value>Main-2</value>
   </data>
   <data name="Main-3" xml:space="preserve">
-    <value>Arena</value>
+    <value>Main-3</value>
   </data>
   <data name="Main-4" xml:space="preserve">
-    <value>Battlegrounds</value>
+    <value>Main-4</value>
   </data>
   <data name="Main-5" xml:space="preserve">
-    <value>PvP</value>
+    <value>Main-5</value>
   </data>
   <data name="Main-6" xml:space="preserve">
-    <value>Achievements</value>
+    <value>Main-6</value>
   </data>
   <data name="Main-7" xml:space="preserve">
-    <value>Collections</value>
+    <value>Main-7</value>
   </data>
   <data name="Main-8" xml:space="preserve">
-    <value>Mounts</value>
+    <value>Main-8</value>
   </data>
   <data name="Main-9" xml:space="preserve">
-    <value>Pets</value>
+    <value>Main-9</value>
   </data>
-  <data name="CharacterRace-0" xml:space="preserve">
-    <value>Unknown Race</value>
+  <data name="RealmSlug-1" xml:space="preserve">
+    <value>lightbringer</value>
   </data>
-  <data name="CharacterRace-1" xml:space="preserve">
-    <value>Human</value>
+  <data name="RealmSlug-2" xml:space="preserve">
+    <value>cenarius</value>
   </data>
-  <data name="CharacterRace-2" xml:space="preserve">
-    <value>Orc</value>
+  <data name="RealmSlug-3" xml:space="preserve">
+    <value>uther</value>
   </data>
-  <data name="CharacterRace-3" xml:space="preserve">
-    <value>Dwarf</value>
+  <data name="RealmSlug-4" xml:space="preserve">
+    <value>kilrogg</value>
   </data>
-  <data name="CharacterRace-4" xml:space="preserve">
-    <value>Night Elf</value>
+  <data name="RealmSlug-5" xml:space="preserve">
+    <value>proudmoore</value>
   </data>
-  <data name="CharacterRace-5" xml:space="preserve">
-    <value>Undead</value>
+  <data name="RealmSlug-6" xml:space="preserve">
+    <value>hyjal</value>
   </data>
-  <data name="CharacterRace-6" xml:space="preserve">
-    <value>Tauren</value>
+  <data name="RealmSlug-7" xml:space="preserve">
+    <value>frostwolf</value>
   </data>
-  <data name="CharacterRace-7" xml:space="preserve">
-    <value>Gnome</value>
+  <data name="RealmSlug-8" xml:space="preserve">
+    <value>nerzhul</value>
   </data>
-  <data name="CharacterRace-8" xml:space="preserve">
-    <value>Troll</value>
+  <data name="RealmSlug-9" xml:space="preserve">
+    <value>kiljaeden</value>
   </data>
-  <data name="CharacterRace-9" xml:space="preserve">
-    <value>Goblin</value>
+  <data name="RealmSlug-10" xml:space="preserve">
+    <value>blackrock</value>
   </data>
-  <data name="CharacterRace-10" xml:space="preserve">
-    <value>Blood Elf</value>
+  <data name="RealmSlug-11" xml:space="preserve">
+    <value>tichondrius</value>
   </data>
-  <data name="CharacterRace-11" xml:space="preserve">
-    <value>Draenei</value>
+  <data name="RealmSlug-12" xml:space="preserve">
+    <value>silver-hand</value>
   </data>
-  <data name="CharacterRace-22" xml:space="preserve">
-    <value>Worgen</value>
+  <data name="RealmSlug-13" xml:space="preserve">
+    <value>doomhammer</value>
   </data>
-  <data name="CharacterRace-24" xml:space="preserve">
-    <value>Pandaren</value>
+  <data name="RealmSlug-14" xml:space="preserve">
+    <value>icecrown</value>
   </data>
-  <data name="CharacterRace-25" xml:space="preserve">
-    <value>Pandaren</value>
+  <data name="RealmSlug-15" xml:space="preserve">
+    <value>deathwing</value>
   </data>
-  <data name="CharacterRace-26" xml:space="preserve">
-    <value>Pandaren</value>
+  <data name="RealmSlug-16" xml:space="preserve">
+    <value>kelthuzad</value>
   </data>
-  <data name="CharacterRace-27" xml:space="preserve">
-    <value>Nightborne</value>
+  <data name="RealmSlug-47" xml:space="preserve">
+    <value>eitrigg</value>
   </data>
-  <data name="CharacterRace-28" xml:space="preserve">
-    <value>Highmountain Tauren</value>
+  <data name="RealmSlug-51" xml:space="preserve">
+    <value>garona</value>
   </data>
-  <data name="CharacterRace-29" xml:space="preserve">
-    <value>Void Elf</value>
+  <data name="RealmSlug-52" xml:space="preserve">
+    <value>alleria</value>
   </data>
-  <data name="CharacterRace-30" xml:space="preserve">
-    <value>Lightforged Draenei</value>
+  <data name="RealmSlug-53" xml:space="preserve">
+    <value>hellscream</value>
   </data>
-  <data name="CharacterRace-31" xml:space="preserve">
-    <value>Zandalari Troll</value>
+  <data name="RealmSlug-54" xml:space="preserve">
+    <value>blackhand</value>
   </data>
-  <data name="CharacterRace-32" xml:space="preserve">
-    <value>Kul Tiran</value>
+  <data name="RealmSlug-55" xml:space="preserve">
+    <value>whisperwind</value>
   </data>
-  <data name="CharacterRace-34" xml:space="preserve">
-    <value>Dark Iron Dwarf</value>
+  <data name="RealmSlug-56" xml:space="preserve">
+    <value>archimonde</value>
   </data>
-  <data name="CharacterRace-35" xml:space="preserve">
-    <value>Vulpera</value>
+  <data name="RealmSlug-57" xml:space="preserve">
+    <value>illidan</value>
   </data>
-  <data name="CharacterRace-36" xml:space="preserve">
-    <value>Mag'har Orc</value>
+  <data name="RealmSlug-58" xml:space="preserve">
+    <value>stormreaver</value>
   </data>
-  <data name="CharacterRace-37" xml:space="preserve">
-    <value>Mechagnome</value>
+  <data name="RealmSlug-59" xml:space="preserve">
+    <value>malganis</value>
   </data>
-  <data name="CharacterClass-0" xml:space="preserve">
-    <value>Unknown Class</value>
+  <data name="RealmSlug-60" xml:space="preserve">
+    <value>stormrage</value>
   </data>
-  <data name="CharacterClass-1" xml:space="preserve">
-    <value>Warrior</value>
+  <data name="RealmSlug-61" xml:space="preserve">
+    <value>zuljin</value>
   </data>
-  <data name="CharacterClass-2" xml:space="preserve">
-    <value>Paladin</value>
+  <data name="RealmSlug-62" xml:space="preserve">
+    <value>medivh</value>
   </data>
-  <data name="CharacterClass-3" xml:space="preserve">
-    <value>Hunter</value>
+  <data name="RealmSlug-63" xml:space="preserve">
+    <value>durotan</value>
   </data>
-  <data name="CharacterClass-4" xml:space="preserve">
-    <value>Rogue</value>
+  <data name="RealmSlug-64" xml:space="preserve">
+    <value>bloodhoof</value>
   </data>
-  <data name="CharacterClass-5" xml:space="preserve">
-    <value>Priest</value>
+  <data name="RealmSlug-65" xml:space="preserve">
+    <value>khadgar</value>
   </data>
-  <data name="CharacterClass-6" xml:space="preserve">
-    <value>Death Knight</value>
+  <data name="RealmSlug-66" xml:space="preserve">
+    <value>dalaran</value>
   </data>
-  <data name="CharacterClass-7" xml:space="preserve">
-    <value>Shaman</value>
+  <data name="RealmSlug-67" xml:space="preserve">
+    <value>elune</value>
   </data>
-  <data name="CharacterClass-8" xml:space="preserve">
-    <value>Mage</value>
+  <data name="RealmSlug-68" xml:space="preserve">
+    <value>lothar</value>
   </data>
-  <data name="CharacterClass-9" xml:space="preserve">
-    <value>Warlock</value>
+  <data name="RealmSlug-69" xml:space="preserve">
+    <value>arthas</value>
   </data>
-  <data name="CharacterClass-10" xml:space="preserve">
-    <value>Monk</value>
+  <data name="RealmSlug-70" xml:space="preserve">
+    <value>mannoroth</value>
   </data>
-  <data name="CharacterClass-11" xml:space="preserve">
-    <value>Druid</value>
+  <data name="RealmSlug-71" xml:space="preserve">
+    <value>warsong</value>
   </data>
-  <data name="CharacterClass-12" xml:space="preserve">
-    <value>Demon Hunter</value>
+  <data name="RealmSlug-72" xml:space="preserve">
+    <value>shattered-hand</value>
   </data>
-  <data name="CharacterClassSpecialization-0" xml:space="preserve">
-    <value>Unknown Specialization</value>
+  <data name="RealmSlug-73" xml:space="preserve">
+    <value>bleeding-hollow</value>
   </data>
-  <data name="CharacterClassSpecialization-62" xml:space="preserve">
-    <value>Arcane (Mage)</value>
+  <data name="RealmSlug-74" xml:space="preserve">
+    <value>skullcrusher</value>
   </data>
-  <data name="CharacterClassSpecialization-63" xml:space="preserve">
-    <value>Fire (Mage)</value>
+  <data name="RealmSlug-75" xml:space="preserve">
+    <value>argent-dawn</value>
   </data>
-  <data name="CharacterClassSpecialization-64" xml:space="preserve">
-    <value>Frost (Mage)</value>
+  <data name="RealmSlug-76" xml:space="preserve">
+    <value>sargeras</value>
   </data>
-  <data name="CharacterClassSpecialization-65" xml:space="preserve">
-    <value>Holy (Paladin)</value>
+  <data name="RealmSlug-77" xml:space="preserve">
+    <value>azgalor</value>
   </data>
-  <data name="CharacterClassSpecialization-66" xml:space="preserve">
-    <value>Protection (Paladin)</value>
+  <data name="RealmSlug-78" xml:space="preserve">
+    <value>magtheridon</value>
   </data>
-  <data name="CharacterClassSpecialization-70" xml:space="preserve">
-    <value>Retribution (Paladin)</value>
+  <data name="RealmSlug-79" xml:space="preserve">
+    <value>destromath</value>
   </data>
-  <data name="CharacterClassSpecialization-71" xml:space="preserve">
-    <value>Arms (Warrior)</value>
+  <data name="RealmSlug-80" xml:space="preserve">
+    <value>gorgonnash</value>
   </data>
-  <data name="CharacterClassSpecialization-72" xml:space="preserve">
-    <value>Fury (Warrior)</value>
+  <data name="RealmSlug-81" xml:space="preserve">
+    <value>dethecus</value>
   </data>
-  <data name="CharacterClassSpecialization-73" xml:space="preserve">
-    <value>Protection (Warrior)</value>
+  <data name="RealmSlug-82" xml:space="preserve">
+    <value>spinebreaker</value>
   </data>
-  <data name="CharacterClassSpecialization-102" xml:space="preserve">
-    <value>Balance (Druid)</value>
+  <data name="RealmSlug-83" xml:space="preserve">
+    <value>bonechewer</value>
   </data>
-  <data name="CharacterClassSpecialization-103" xml:space="preserve">
-    <value>Feral (Druid)</value>
+  <data name="RealmSlug-84" xml:space="preserve">
+    <value>dragonmaw</value>
   </data>
-  <data name="CharacterClassSpecialization-104" xml:space="preserve">
-    <value>Guardian (Druid)</value>
+  <data name="RealmSlug-85" xml:space="preserve">
+    <value>shadowsong</value>
   </data>
-  <data name="CharacterClassSpecialization-105" xml:space="preserve">
-    <value>Restoration (Druid)</value>
+  <data name="RealmSlug-86" xml:space="preserve">
+    <value>silvermoon</value>
   </data>
-  <data name="CharacterClassSpecialization-250" xml:space="preserve">
-    <value>Blood (Death Knight)</value>
+  <data name="RealmSlug-87" xml:space="preserve">
+    <value>windrunner</value>
   </data>
-  <data name="CharacterClassSpecialization-251" xml:space="preserve">
-    <value>Frost (Death Knight)</value>
+  <data name="RealmSlug-88" xml:space="preserve">
+    <value>cenarion-circle</value>
   </data>
-  <data name="CharacterClassSpecialization-252" xml:space="preserve">
-    <value>Unholy (Death Knight)</value>
+  <data name="RealmSlug-89" xml:space="preserve">
+    <value>nathrezim</value>
   </data>
-  <data name="CharacterClassSpecialization-253" xml:space="preserve">
-    <value>Beast Mastery (Hunter)</value>
+  <data name="RealmSlug-90" xml:space="preserve">
+    <value>terenas</value>
   </data>
-  <data name="CharacterClassSpecialization-254" xml:space="preserve">
-    <value>Marksmanship (Hunter)</value>
+  <data name="RealmSlug-91" xml:space="preserve">
+    <value>burning-blade</value>
   </data>
-  <data name="CharacterClassSpecialization-255" xml:space="preserve">
-    <value>Survival (Hunter)</value>
+  <data name="RealmSlug-92" xml:space="preserve">
+    <value>gorefiend</value>
   </data>
-  <data name="CharacterClassSpecialization-256" xml:space="preserve">
-    <value>Discipline (Priest)</value>
+  <data name="RealmSlug-93" xml:space="preserve">
+    <value>eredar</value>
   </data>
-  <data name="CharacterClassSpecialization-257" xml:space="preserve">
-    <value>Holy (Priest)</value>
+  <data name="RealmSlug-94" xml:space="preserve">
+    <value>shadowmoon</value>
   </data>
-  <data name="CharacterClassSpecialization-258" xml:space="preserve">
-    <value>Shadow (Priest)</value>
+  <data name="RealmSlug-95" xml:space="preserve">
+    <value>lightnings-blade</value>
   </data>
-  <data name="CharacterClassSpecialization-259" xml:space="preserve">
-    <value>Assassination (Rogue)</value>
+  <data name="RealmSlug-96" xml:space="preserve">
+    <value>eonar</value>
   </data>
-  <data name="CharacterClassSpecialization-260" xml:space="preserve">
-    <value>Outlaw (Rogue)</value>
+  <data name="RealmSlug-97" xml:space="preserve">
+    <value>gilneas</value>
   </data>
-  <data name="CharacterClassSpecialization-261" xml:space="preserve">
-    <value>Subtlety (Rogue)</value>
+  <data name="RealmSlug-98" xml:space="preserve">
+    <value>kargath</value>
   </data>
-  <data name="CharacterClassSpecialization-262" xml:space="preserve">
-    <value>Elemental (Shaman)</value>
+  <data name="RealmSlug-99" xml:space="preserve">
+    <value>llane</value>
   </data>
-  <data name="CharacterClassSpecialization-263" xml:space="preserve">
-    <value>Enhancement (Shaman)</value>
+  <data name="RealmSlug-100" xml:space="preserve">
+    <value>earthen-ring</value>
   </data>
-  <data name="CharacterClassSpecialization-264" xml:space="preserve">
-    <value>Restoration (Shaman)</value>
+  <data name="RealmSlug-101" xml:space="preserve">
+    <value>laughing-skull</value>
   </data>
-  <data name="CharacterClassSpecialization-265" xml:space="preserve">
-    <value>Affliction (Warlock)</value>
+  <data name="RealmSlug-102" xml:space="preserve">
+    <value>burning-legion</value>
   </data>
-  <data name="CharacterClassSpecialization-266" xml:space="preserve">
-    <value>Demonology (Warlock)</value>
+  <data name="RealmSlug-103" xml:space="preserve">
+    <value>thunderlord</value>
   </data>
-  <data name="CharacterClassSpecialization-267" xml:space="preserve">
-    <value>Destruction (Warlock)</value>
+  <data name="RealmSlug-104" xml:space="preserve">
+    <value>malygos</value>
   </data>
-  <data name="CharacterClassSpecialization-268" xml:space="preserve">
-    <value>Brewmaster (Monk)</value>
+  <data name="RealmSlug-105" xml:space="preserve">
+    <value>thunderhorn</value>
   </data>
-  <data name="CharacterClassSpecialization-269" xml:space="preserve">
-    <value>Windwalker (Monk)</value>
+  <data name="RealmSlug-106" xml:space="preserve">
+    <value>aggramar</value>
   </data>
-  <data name="CharacterClassSpecialization-270" xml:space="preserve">
-    <value>Mistweaver (Monk)</value>
+  <data name="RealmSlug-107" xml:space="preserve">
+    <value>crushridge</value>
   </data>
-  <data name="CharacterClassSpecialization-577" xml:space="preserve">
-    <value>Havoc (Demon Hunter)</value>
+  <data name="RealmSlug-108" xml:space="preserve">
+    <value>stonemaul</value>
   </data>
-  <data name="CharacterClassSpecialization-581" xml:space="preserve">
-    <value>Vengeance (Demon Hunter)</value>
+  <data name="RealmSlug-109" xml:space="preserve">
+    <value>daggerspine</value>
+  </data>
+  <data name="RealmSlug-110" xml:space="preserve">
+    <value>stormscale</value>
+  </data>
+  <data name="RealmSlug-111" xml:space="preserve">
+    <value>dunemaul</value>
+  </data>
+  <data name="RealmSlug-112" xml:space="preserve">
+    <value>boulderfist</value>
+  </data>
+  <data name="RealmSlug-113" xml:space="preserve">
+    <value>suramar</value>
+  </data>
+  <data name="RealmSlug-114" xml:space="preserve">
+    <value>dragonblight</value>
+  </data>
+  <data name="RealmSlug-115" xml:space="preserve">
+    <value>draenor</value>
+  </data>
+  <data name="RealmSlug-116" xml:space="preserve">
+    <value>uldum</value>
+  </data>
+  <data name="RealmSlug-117" xml:space="preserve">
+    <value>bronzebeard</value>
+  </data>
+  <data name="RealmSlug-118" xml:space="preserve">
+    <value>feathermoon</value>
+  </data>
+  <data name="RealmSlug-119" xml:space="preserve">
+    <value>bloodscalp</value>
+  </data>
+  <data name="RealmSlug-120" xml:space="preserve">
+    <value>darkspear</value>
+  </data>
+  <data name="RealmSlug-121" xml:space="preserve">
+    <value>azjolnerub</value>
+  </data>
+  <data name="RealmSlug-122" xml:space="preserve">
+    <value>perenolde</value>
+  </data>
+  <data name="RealmSlug-123" xml:space="preserve">
+    <value>eldrethalas</value>
+  </data>
+  <data name="RealmSlug-124" xml:space="preserve">
+    <value>spirestone</value>
+  </data>
+  <data name="RealmSlug-125" xml:space="preserve">
+    <value>shadow-council</value>
+  </data>
+  <data name="RealmSlug-126" xml:space="preserve">
+    <value>scarlet-crusade</value>
+  </data>
+  <data name="RealmSlug-127" xml:space="preserve">
+    <value>firetree</value>
+  </data>
+  <data name="RealmSlug-128" xml:space="preserve">
+    <value>frostmane</value>
+  </data>
+  <data name="RealmSlug-129" xml:space="preserve">
+    <value>gurubashi</value>
+  </data>
+  <data name="RealmSlug-130" xml:space="preserve">
+    <value>smolderthorn</value>
+  </data>
+  <data name="RealmSlug-131" xml:space="preserve">
+    <value>skywall</value>
+  </data>
+  <data name="RealmSlug-151" xml:space="preserve">
+    <value>runetotem</value>
+  </data>
+  <data name="RealmSlug-153" xml:space="preserve">
+    <value>moonrunner</value>
+  </data>
+  <data name="RealmSlug-154" xml:space="preserve">
+    <value>detheroc</value>
+  </data>
+  <data name="RealmSlug-155" xml:space="preserve">
+    <value>kalecgos</value>
+  </data>
+  <data name="RealmSlug-156" xml:space="preserve">
+    <value>ursin</value>
+  </data>
+  <data name="RealmSlug-157" xml:space="preserve">
+    <value>dark-iron</value>
+  </data>
+  <data name="RealmSlug-158" xml:space="preserve">
+    <value>greymane</value>
+  </data>
+  <data name="RealmSlug-159" xml:space="preserve">
+    <value>wildhammer</value>
+  </data>
+  <data name="RealmSlug-160" xml:space="preserve">
+    <value>staghelm</value>
+  </data>
+  <data name="RealmSlug-162" xml:space="preserve">
+    <value>emerald-dream</value>
+  </data>
+  <data name="RealmSlug-163" xml:space="preserve">
+    <value>maelstrom</value>
+  </data>
+  <data name="RealmSlug-164" xml:space="preserve">
+    <value>twisting-nether</value>
+  </data>
+  <data name="RealmSlug-201" xml:space="preserve">
+    <value>burning-legion</value>
+  </data>
+  <data name="RealmSlug-205" xml:space="preserve">
+    <value>azshara</value>
+  </data>
+  <data name="RealmSlug-207" xml:space="preserve">
+    <value>dalaran</value>
+  </data>
+  <data name="RealmSlug-210" xml:space="preserve">
+    <value>durotan</value>
+  </data>
+  <data name="RealmSlug-211" xml:space="preserve">
+    <value>norgannon</value>
+  </data>
+  <data name="RealmSlug-212" xml:space="preserve">
+    <value>garona</value>
+  </data>
+  <data name="RealmSlug-214" xml:space="preserve">
+    <value>windrunner</value>
+  </data>
+  <data name="RealmSlug-215" xml:space="preserve">
+    <value>guldan</value>
+  </data>
+  <data name="RealmSlug-258" xml:space="preserve">
+    <value>alexstrasza</value>
+  </data>
+  <data name="RealmSlug-264" xml:space="preserve">
+    <value>malfurion</value>
+  </data>
+  <data name="RealmSlug-293" xml:space="preserve">
+    <value>hellscream</value>
+  </data>
+  <data name="RealmSlug-500" xml:space="preserve">
+    <value>aggramar</value>
+  </data>
+  <data name="RealmSlug-501" xml:space="preserve">
+    <value>arathor</value>
+  </data>
+  <data name="RealmSlug-502" xml:space="preserve">
+    <value>aszune</value>
+  </data>
+  <data name="RealmSlug-503" xml:space="preserve">
+    <value>azjolnerub</value>
+  </data>
+  <data name="RealmSlug-504" xml:space="preserve">
+    <value>bloodhoof</value>
+  </data>
+  <data name="RealmSlug-505" xml:space="preserve">
+    <value>doomhammer</value>
+  </data>
+  <data name="RealmSlug-506" xml:space="preserve">
+    <value>draenor</value>
+  </data>
+  <data name="RealmSlug-507" xml:space="preserve">
+    <value>dragonblight</value>
+  </data>
+  <data name="RealmSlug-508" xml:space="preserve">
+    <value>emerald-dream</value>
+  </data>
+  <data name="RealmSlug-509" xml:space="preserve">
+    <value>garona</value>
+  </data>
+  <data name="RealmSlug-510" xml:space="preserve">
+    <value>voljin</value>
+  </data>
+  <data name="RealmSlug-511" xml:space="preserve">
+    <value>sunstrider</value>
+  </data>
+  <data name="RealmSlug-512" xml:space="preserve">
+    <value>arakarahm</value>
+  </data>
+  <data name="RealmSlug-513" xml:space="preserve">
+    <value>twilights-hammer</value>
+  </data>
+  <data name="RealmSlug-515" xml:space="preserve">
+    <value>zenedar</value>
+  </data>
+  <data name="RealmSlug-516" xml:space="preserve">
+    <value>forscherliga</value>
+  </data>
+  <data name="RealmSlug-517" xml:space="preserve">
+    <value>medivh</value>
+  </data>
+  <data name="RealmSlug-518" xml:space="preserve">
+    <value>agamaggan</value>
+  </data>
+  <data name="RealmSlug-519" xml:space="preserve">
+    <value>alakir</value>
+  </data>
+  <data name="RealmSlug-521" xml:space="preserve">
+    <value>bladefist</value>
+  </data>
+  <data name="RealmSlug-522" xml:space="preserve">
+    <value>bloodscalp</value>
+  </data>
+  <data name="RealmSlug-523" xml:space="preserve">
+    <value>burning-blade</value>
+  </data>
+  <data name="RealmSlug-524" xml:space="preserve">
+    <value>burning-legion</value>
+  </data>
+  <data name="RealmSlug-525" xml:space="preserve">
+    <value>crushridge</value>
+  </data>
+  <data name="RealmSlug-526" xml:space="preserve">
+    <value>daggerspine</value>
+  </data>
+  <data name="RealmSlug-527" xml:space="preserve">
+    <value>deathwing</value>
+  </data>
+  <data name="RealmSlug-528" xml:space="preserve">
+    <value>dragonmaw</value>
+  </data>
+  <data name="RealmSlug-529" xml:space="preserve">
+    <value>dunemaul</value>
+  </data>
+  <data name="RealmSlug-531" xml:space="preserve">
+    <value>dethecus</value>
+  </data>
+  <data name="RealmSlug-533" xml:space="preserve">
+    <value>sinstralis</value>
+  </data>
+  <data name="RealmSlug-535" xml:space="preserve">
+    <value>durotan</value>
+  </data>
+  <data name="RealmSlug-536" xml:space="preserve">
+    <value>argent-dawn</value>
+  </data>
+  <data name="RealmSlug-537" xml:space="preserve">
+    <value>kirin-tor</value>
+  </data>
+  <data name="RealmSlug-538" xml:space="preserve">
+    <value>dalaran</value>
+  </data>
+  <data name="RealmSlug-539" xml:space="preserve">
+    <value>archimonde</value>
+  </data>
+  <data name="RealmSlug-540" xml:space="preserve">
+    <value>elune</value>
+  </data>
+  <data name="RealmSlug-541" xml:space="preserve">
+    <value>illidan</value>
+  </data>
+  <data name="RealmSlug-542" xml:space="preserve">
+    <value>hyjal</value>
+  </data>
+  <data name="RealmSlug-543" xml:space="preserve">
+    <value>kaelthas</value>
+  </data>
+  <data name="RealmSlug-544" xml:space="preserve">
+    <value>nerzhul</value>
+  </data>
+  <data name="RealmSlug-545" xml:space="preserve">
+    <value>chogall</value>
+  </data>
+  <data name="RealmSlug-546" xml:space="preserve">
+    <value>sargeras</value>
+  </data>
+  <data name="RealmSlug-547" xml:space="preserve">
+    <value>runetotem</value>
+  </data>
+  <data name="RealmSlug-548" xml:space="preserve">
+    <value>shadowsong</value>
+  </data>
+  <data name="RealmSlug-549" xml:space="preserve">
+    <value>silvermoon</value>
+  </data>
+  <data name="RealmSlug-550" xml:space="preserve">
+    <value>stormrage</value>
+  </data>
+  <data name="RealmSlug-551" xml:space="preserve">
+    <value>terenas</value>
+  </data>
+  <data name="RealmSlug-552" xml:space="preserve">
+    <value>thunderhorn</value>
+  </data>
+  <data name="RealmSlug-553" xml:space="preserve">
+    <value>turalyon</value>
+  </data>
+  <data name="RealmSlug-554" xml:space="preserve">
+    <value>ravencrest</value>
+  </data>
+  <data name="RealmSlug-556" xml:space="preserve">
+    <value>shattered-hand</value>
+  </data>
+  <data name="RealmSlug-557" xml:space="preserve">
+    <value>skullcrusher</value>
+  </data>
+  <data name="RealmSlug-558" xml:space="preserve">
+    <value>spinebreaker</value>
+  </data>
+  <data name="RealmSlug-559" xml:space="preserve">
+    <value>stormreaver</value>
+  </data>
+  <data name="RealmSlug-560" xml:space="preserve">
+    <value>stormscale</value>
+  </data>
+  <data name="RealmSlug-561" xml:space="preserve">
+    <value>earthen-ring</value>
+  </data>
+  <data name="RealmSlug-562" xml:space="preserve">
+    <value>alexstrasza</value>
+  </data>
+  <data name="RealmSlug-563" xml:space="preserve">
+    <value>alleria</value>
+  </data>
+  <data name="RealmSlug-564" xml:space="preserve">
+    <value>antonidas</value>
+  </data>
+  <data name="RealmSlug-565" xml:space="preserve">
+    <value>baelgun</value>
+  </data>
+  <data name="RealmSlug-566" xml:space="preserve">
+    <value>blackhand</value>
+  </data>
+  <data name="RealmSlug-567" xml:space="preserve">
+    <value>gilneas</value>
+  </data>
+  <data name="RealmSlug-568" xml:space="preserve">
+    <value>kargath</value>
+  </data>
+  <data name="RealmSlug-569" xml:space="preserve">
+    <value>khazgoroth</value>
+  </data>
+  <data name="RealmSlug-570" xml:space="preserve">
+    <value>lothar</value>
+  </data>
+  <data name="RealmSlug-571" xml:space="preserve">
+    <value>madmortem</value>
+  </data>
+  <data name="RealmSlug-572" xml:space="preserve">
+    <value>malfurion</value>
+  </data>
+  <data name="RealmSlug-573" xml:space="preserve">
+    <value>zuluhed</value>
+  </data>
+  <data name="RealmSlug-574" xml:space="preserve">
+    <value>nozdormu</value>
+  </data>
+  <data name="RealmSlug-575" xml:space="preserve">
+    <value>perenolde</value>
+  </data>
+  <data name="RealmSlug-576" xml:space="preserve">
+    <value>die-silberne-hand</value>
+  </data>
+  <data name="RealmSlug-577" xml:space="preserve">
+    <value>aegwynn</value>
+  </data>
+  <data name="RealmSlug-578" xml:space="preserve">
+    <value>arthas</value>
+  </data>
+  <data name="RealmSlug-579" xml:space="preserve">
+    <value>azshara</value>
+  </data>
+  <data name="RealmSlug-580" xml:space="preserve">
+    <value>blackmoore</value>
+  </data>
+  <data name="RealmSlug-581" xml:space="preserve">
+    <value>blackrock</value>
+  </data>
+  <data name="RealmSlug-582" xml:space="preserve">
+    <value>destromath</value>
+  </data>
+  <data name="RealmSlug-583" xml:space="preserve">
+    <value>eredar</value>
+  </data>
+  <data name="RealmSlug-584" xml:space="preserve">
+    <value>frostmourne</value>
+  </data>
+  <data name="RealmSlug-585" xml:space="preserve">
+    <value>frostwolf</value>
+  </data>
+  <data name="RealmSlug-586" xml:space="preserve">
+    <value>gorgonnash</value>
+  </data>
+  <data name="RealmSlug-587" xml:space="preserve">
+    <value>guldan</value>
+  </data>
+  <data name="RealmSlug-588" xml:space="preserve">
+    <value>kelthuzad</value>
+  </data>
+  <data name="RealmSlug-589" xml:space="preserve">
+    <value>kiljaeden</value>
+  </data>
+  <data name="RealmSlug-590" xml:space="preserve">
+    <value>malganis</value>
+  </data>
+  <data name="RealmSlug-591" xml:space="preserve">
+    <value>mannoroth</value>
+  </data>
+  <data name="RealmSlug-592" xml:space="preserve">
+    <value>zirkel-des-cenarius</value>
+  </data>
+  <data name="RealmSlug-593" xml:space="preserve">
+    <value>proudmoore</value>
+  </data>
+  <data name="RealmSlug-594" xml:space="preserve">
+    <value>nathrezim</value>
+  </data>
+  <data name="RealmSlug-600" xml:space="preserve">
+    <value>dun-morogh</value>
+  </data>
+  <data name="RealmSlug-601" xml:space="preserve">
+    <value>amanthul</value>
+  </data>
+  <data name="RealmSlug-602" xml:space="preserve">
+    <value>senjin</value>
+  </data>
+  <data name="RealmSlug-604" xml:space="preserve">
+    <value>thrall</value>
+  </data>
+  <data name="RealmSlug-605" xml:space="preserve">
+    <value>theradras</value>
+  </data>
+  <data name="RealmSlug-606" xml:space="preserve">
+    <value>genjuros</value>
+  </data>
+  <data name="RealmSlug-607" xml:space="preserve">
+    <value>balnazzar</value>
+  </data>
+  <data name="RealmSlug-608" xml:space="preserve">
+    <value>anubarak</value>
+  </data>
+  <data name="RealmSlug-609" xml:space="preserve">
+    <value>wrathbringer</value>
+  </data>
+  <data name="RealmSlug-610" xml:space="preserve">
+    <value>onyxia</value>
+  </data>
+  <data name="RealmSlug-611" xml:space="preserve">
+    <value>nerathor</value>
+  </data>
+  <data name="RealmSlug-612" xml:space="preserve">
+    <value>nefarian</value>
+  </data>
+  <data name="RealmSlug-613" xml:space="preserve">
+    <value>kult-der-verdammten</value>
+  </data>
+  <data name="RealmSlug-614" xml:space="preserve">
+    <value>das-syndikat</value>
+  </data>
+  <data name="RealmSlug-615" xml:space="preserve">
+    <value>terrordar</value>
+  </data>
+  <data name="RealmSlug-616" xml:space="preserve">
+    <value>kragjin</value>
+  </data>
+  <data name="RealmSlug-617" xml:space="preserve">
+    <value>der-rat-von-dalaran</value>
+  </data>
+  <data name="RealmSlug-618" xml:space="preserve">
+    <value>nordrassil</value>
+  </data>
+  <data name="RealmSlug-619" xml:space="preserve">
+    <value>hellscream</value>
+  </data>
+  <data name="RealmSlug-621" xml:space="preserve">
+    <value>laughing-skull</value>
+  </data>
+  <data name="RealmSlug-622" xml:space="preserve">
+    <value>magtheridon</value>
+  </data>
+  <data name="RealmSlug-623" xml:space="preserve">
+    <value>quelthalas</value>
+  </data>
+  <data name="RealmSlug-624" xml:space="preserve">
+    <value>neptulon</value>
+  </data>
+  <data name="RealmSlug-625" xml:space="preserve">
+    <value>twisting-nether</value>
+  </data>
+  <data name="RealmSlug-626" xml:space="preserve">
+    <value>ragnaros</value>
+  </data>
+  <data name="RealmSlug-627" xml:space="preserve">
+    <value>the-maelstrom</value>
+  </data>
+  <data name="RealmSlug-628" xml:space="preserve">
+    <value>sylvanas</value>
+  </data>
+  <data name="RealmSlug-629" xml:space="preserve">
+    <value>vashj</value>
+  </data>
+  <data name="RealmSlug-630" xml:space="preserve">
+    <value>bloodfeather</value>
+  </data>
+  <data name="RealmSlug-631" xml:space="preserve">
+    <value>darksorrow</value>
+  </data>
+  <data name="RealmSlug-632" xml:space="preserve">
+    <value>frostwhisper</value>
+  </data>
+  <data name="RealmSlug-633" xml:space="preserve">
+    <value>korgall</value>
+  </data>
+  <data name="RealmSlug-635" xml:space="preserve">
+    <value>defias-brotherhood</value>
+  </data>
+  <data name="RealmSlug-636" xml:space="preserve">
+    <value>the-venture-co</value>
+  </data>
+  <data name="RealmSlug-637" xml:space="preserve">
+    <value>lightnings-blade</value>
+  </data>
+  <data name="RealmSlug-638" xml:space="preserve">
+    <value>haomarush</value>
+  </data>
+  <data name="RealmSlug-639" xml:space="preserve">
+    <value>xavius</value>
+  </data>
+  <data name="RealmSlug-640" xml:space="preserve">
+    <value>khaz-modan</value>
+  </data>
+  <data name="RealmSlug-641" xml:space="preserve">
+    <value>drekthar</value>
+  </data>
+  <data name="RealmSlug-642" xml:space="preserve">
+    <value>rashgarroth</value>
+  </data>
+  <data name="RealmSlug-643" xml:space="preserve">
+    <value>throkferoth</value>
+  </data>
+  <data name="RealmSlug-644" xml:space="preserve">
+    <value>conseil-des-ombres</value>
+  </data>
+  <data name="RealmSlug-645" xml:space="preserve">
+    <value>varimathras</value>
+  </data>
+  <data name="RealmSlug-646" xml:space="preserve">
+    <value>hakkar</value>
+  </data>
+  <data name="RealmSlug-647" xml:space="preserve">
+    <value>les-sentinelles</value>
+  </data>
+  <data name="RealmSlug-963" xml:space="preserve">
+    <value>shadowmoon</value>
+  </data>
+  <data name="RealmSlug-964" xml:space="preserve">
+    <value>spirestone</value>
+  </data>
+  <data name="RealmSlug-965" xml:space="preserve">
+    <value>stormscale</value>
+  </data>
+  <data name="RealmSlug-966" xml:space="preserve">
+    <value>dragonmaw</value>
+  </data>
+  <data name="RealmSlug-977" xml:space="preserve">
+    <value>frostmane</value>
+  </data>
+  <data name="RealmSlug-978" xml:space="preserve">
+    <value>sundown-marsh</value>
+  </data>
+  <data name="RealmSlug-979" xml:space="preserve">
+    <value>hellscream</value>
+  </data>
+  <data name="RealmSlug-980" xml:space="preserve">
+    <value>skywall</value>
+  </data>
+  <data name="RealmSlug-982" xml:space="preserve">
+    <value>world-tree</value>
+  </data>
+  <data name="RealmSlug-985" xml:space="preserve">
+    <value>crystalpine-stinger</value>
+  </data>
+  <data name="RealmSlug-999" xml:space="preserve">
+    <value>zealot-blade</value>
+  </data>
+  <data name="RealmSlug-1001" xml:space="preserve">
+    <value>chillwind-point</value>
+  </data>
+  <data name="RealmSlug-1006" xml:space="preserve">
+    <value>menethil</value>
+  </data>
+  <data name="RealmSlug-1023" xml:space="preserve">
+    <value>demon-fall-canyon</value>
+  </data>
+  <data name="RealmSlug-1033" xml:space="preserve">
+    <value>whisperwind</value>
+  </data>
+  <data name="RealmSlug-1037" xml:space="preserve">
+    <value>bleeding-hollow</value>
+  </data>
+  <data name="RealmSlug-1038" xml:space="preserve">
+    <value>arygos</value>
+  </data>
+  <data name="RealmSlug-1043" xml:space="preserve">
+    <value>nightsong</value>
+  </data>
+  <data name="RealmSlug-1046" xml:space="preserve">
+    <value>lights-hope</value>
+  </data>
+  <data name="RealmSlug-1048" xml:space="preserve">
+    <value>silverwing-hold</value>
+  </data>
+  <data name="RealmSlug-1049" xml:space="preserve">
+    <value>wrathbringer</value>
+  </data>
+  <data name="RealmSlug-1054" xml:space="preserve">
+    <value>arthas</value>
+  </data>
+  <data name="RealmSlug-1056" xml:space="preserve">
+    <value>queldorei</value>
+  </data>
+  <data name="RealmSlug-1057" xml:space="preserve">
+    <value>icecrown</value>
+  </data>
+  <data name="RealmSlug-1067" xml:space="preserve">
+    <value>chogall</value>
+  </data>
+  <data name="RealmSlug-1068" xml:space="preserve">
+    <value>guldan</value>
+  </data>
+  <data name="RealmSlug-1069" xml:space="preserve">
+    <value>kaelthas</value>
+  </data>
+  <data name="RealmSlug-1070" xml:space="preserve">
+    <value>alexstrasza</value>
+  </data>
+  <data name="RealmSlug-1071" xml:space="preserve">
+    <value>kirin-tor</value>
+  </data>
+  <data name="RealmSlug-1072" xml:space="preserve">
+    <value>ravencrest</value>
+  </data>
+  <data name="RealmSlug-1075" xml:space="preserve">
+    <value>balnazzar</value>
+  </data>
+  <data name="RealmSlug-1080" xml:space="preserve">
+    <value>khadgar</value>
+  </data>
+  <data name="RealmSlug-1081" xml:space="preserve">
+    <value>bronzebeard</value>
+  </data>
+  <data name="RealmSlug-1082" xml:space="preserve">
+    <value>kul-tiras</value>
+  </data>
+  <data name="RealmSlug-1083" xml:space="preserve">
+    <value>chromaggus</value>
+  </data>
+  <data name="RealmSlug-1084" xml:space="preserve">
+    <value>dentarg</value>
+  </data>
+  <data name="RealmSlug-1085" xml:space="preserve">
+    <value>moonglade</value>
+  </data>
+  <data name="RealmSlug-1086" xml:space="preserve">
+    <value>la-croisade-écarlate</value>
+  </data>
+  <data name="RealmSlug-1087" xml:space="preserve">
+    <value>executus</value>
+  </data>
+  <data name="RealmSlug-1088" xml:space="preserve">
+    <value>trollbane</value>
+  </data>
+  <data name="RealmSlug-1089" xml:space="preserve">
+    <value>mazrigos</value>
+  </data>
+  <data name="RealmSlug-1090" xml:space="preserve">
+    <value>talnivarr</value>
+  </data>
+  <data name="RealmSlug-1091" xml:space="preserve">
+    <value>emeriss</value>
+  </data>
+  <data name="RealmSlug-1092" xml:space="preserve">
+    <value>drakthul</value>
+  </data>
+  <data name="RealmSlug-1093" xml:space="preserve">
+    <value>ahnqiraj</value>
+  </data>
+  <data name="RealmSlug-1096" xml:space="preserve">
+    <value>scarshield-legion</value>
+  </data>
+  <data name="RealmSlug-1097" xml:space="preserve">
+    <value>ysera</value>
+  </data>
+  <data name="RealmSlug-1098" xml:space="preserve">
+    <value>malygos</value>
+  </data>
+  <data name="RealmSlug-1099" xml:space="preserve">
+    <value>rexxar</value>
+  </data>
+  <data name="RealmSlug-1104" xml:space="preserve">
+    <value>anetheron</value>
+  </data>
+  <data name="RealmSlug-1105" xml:space="preserve">
+    <value>nazjatar</value>
+  </data>
+  <data name="RealmSlug-1106" xml:space="preserve">
+    <value>tichondrius</value>
+  </data>
+  <data name="RealmSlug-1117" xml:space="preserve">
+    <value>steamwheedle-cartel</value>
+  </data>
+  <data name="RealmSlug-1118" xml:space="preserve">
+    <value>die-ewige-wacht</value>
+  </data>
+  <data name="RealmSlug-1119" xml:space="preserve">
+    <value>die-todeskrallen</value>
+  </data>
+  <data name="RealmSlug-1121" xml:space="preserve">
+    <value>die-arguswacht</value>
+  </data>
+  <data name="RealmSlug-1122" xml:space="preserve">
+    <value>uldaman</value>
+  </data>
+  <data name="RealmSlug-1123" xml:space="preserve">
+    <value>eitrigg</value>
+  </data>
+  <data name="RealmSlug-1127" xml:space="preserve">
+    <value>confrérie-du-thorium</value>
+  </data>
+  <data name="RealmSlug-1128" xml:space="preserve">
+    <value>azshara</value>
+  </data>
+  <data name="RealmSlug-1129" xml:space="preserve">
+    <value>agamaggan</value>
+  </data>
+  <data name="RealmSlug-1130" xml:space="preserve">
+    <value>lightninghoof</value>
+  </data>
+  <data name="RealmSlug-1131" xml:space="preserve">
+    <value>nazjatar</value>
+  </data>
+  <data name="RealmSlug-1132" xml:space="preserve">
+    <value>malfurion</value>
+  </data>
+  <data name="RealmSlug-1136" xml:space="preserve">
+    <value>aegwynn</value>
+  </data>
+  <data name="RealmSlug-1137" xml:space="preserve">
+    <value>akama</value>
+  </data>
+  <data name="RealmSlug-1138" xml:space="preserve">
+    <value>chromaggus</value>
+  </data>
+  <data name="RealmSlug-1139" xml:space="preserve">
+    <value>draka</value>
+  </data>
+  <data name="RealmSlug-1140" xml:space="preserve">
+    <value>drakthul</value>
+  </data>
+  <data name="RealmSlug-1141" xml:space="preserve">
+    <value>garithos</value>
+  </data>
+  <data name="RealmSlug-1142" xml:space="preserve">
+    <value>hakkar</value>
+  </data>
+  <data name="RealmSlug-1143" xml:space="preserve">
+    <value>khaz-modan</value>
+  </data>
+  <data name="RealmSlug-1145" xml:space="preserve">
+    <value>mugthol</value>
+  </data>
+  <data name="RealmSlug-1146" xml:space="preserve">
+    <value>korgath</value>
+  </data>
+  <data name="RealmSlug-1147" xml:space="preserve">
+    <value>kul-tiras</value>
+  </data>
+  <data name="RealmSlug-1148" xml:space="preserve">
+    <value>malorne</value>
+  </data>
+  <data name="RealmSlug-1151" xml:space="preserve">
+    <value>rexxar</value>
+  </data>
+  <data name="RealmSlug-1154" xml:space="preserve">
+    <value>thorium-brotherhood</value>
+  </data>
+  <data name="RealmSlug-1165" xml:space="preserve">
+    <value>arathor</value>
+  </data>
+  <data name="RealmSlug-1173" xml:space="preserve">
+    <value>madoran</value>
+  </data>
+  <data name="RealmSlug-1175" xml:space="preserve">
+    <value>trollbane</value>
+  </data>
+  <data name="RealmSlug-1182" xml:space="preserve">
+    <value>muradin</value>
+  </data>
+  <data name="RealmSlug-1184" xml:space="preserve">
+    <value>veknilash</value>
+  </data>
+  <data name="RealmSlug-1185" xml:space="preserve">
+    <value>senjin</value>
+  </data>
+  <data name="RealmSlug-1190" xml:space="preserve">
+    <value>baelgun</value>
+  </data>
+  <data name="RealmSlug-1258" xml:space="preserve">
+    <value>duskwood</value>
+  </data>
+  <data name="RealmSlug-1259" xml:space="preserve">
+    <value>zuluhed</value>
+  </data>
+  <data name="RealmSlug-1260" xml:space="preserve">
+    <value>steamwheedle-cartel</value>
+  </data>
+  <data name="RealmSlug-1262" xml:space="preserve">
+    <value>norgannon</value>
+  </data>
+  <data name="RealmSlug-1263" xml:space="preserve">
+    <value>thrall</value>
+  </data>
+  <data name="RealmSlug-1264" xml:space="preserve">
+    <value>anetheron</value>
+  </data>
+  <data name="RealmSlug-1265" xml:space="preserve">
+    <value>turalyon</value>
+  </data>
+  <data name="RealmSlug-1266" xml:space="preserve">
+    <value>haomarush</value>
+  </data>
+  <data name="RealmSlug-1267" xml:space="preserve">
+    <value>scilla</value>
+  </data>
+  <data name="RealmSlug-1268" xml:space="preserve">
+    <value>ysondre</value>
+  </data>
+  <data name="RealmSlug-1270" xml:space="preserve">
+    <value>ysera</value>
+  </data>
+  <data name="RealmSlug-1271" xml:space="preserve">
+    <value>dentarg</value>
+  </data>
+  <data name="RealmSlug-1276" xml:space="preserve">
+    <value>andorhal</value>
+  </data>
+  <data name="RealmSlug-1277" xml:space="preserve">
+    <value>executus</value>
+  </data>
+  <data name="RealmSlug-1278" xml:space="preserve">
+    <value>dalvengyr</value>
+  </data>
+  <data name="RealmSlug-1280" xml:space="preserve">
+    <value>black-dragonflight</value>
+  </data>
+  <data name="RealmSlug-1282" xml:space="preserve">
+    <value>altar-of-storms</value>
+  </data>
+  <data name="RealmSlug-1283" xml:space="preserve">
+    <value>uldaman</value>
+  </data>
+  <data name="RealmSlug-1284" xml:space="preserve">
+    <value>aerie-peak</value>
+  </data>
+  <data name="RealmSlug-1285" xml:space="preserve">
+    <value>onyxia</value>
+  </data>
+  <data name="RealmSlug-1286" xml:space="preserve">
+    <value>demon-soul</value>
+  </data>
+  <data name="RealmSlug-1287" xml:space="preserve">
+    <value>gnomeregan</value>
+  </data>
+  <data name="RealmSlug-1288" xml:space="preserve">
+    <value>anvilmar</value>
+  </data>
+  <data name="RealmSlug-1289" xml:space="preserve">
+    <value>the-venture-co</value>
+  </data>
+  <data name="RealmSlug-1290" xml:space="preserve">
+    <value>sentinels</value>
+  </data>
+  <data name="RealmSlug-1291" xml:space="preserve">
+    <value>jaedenar</value>
+  </data>
+  <data name="RealmSlug-1292" xml:space="preserve">
+    <value>tanaris</value>
+  </data>
+  <data name="RealmSlug-1293" xml:space="preserve">
+    <value>alterac-mountains</value>
+  </data>
+  <data name="RealmSlug-1294" xml:space="preserve">
+    <value>undermine</value>
+  </data>
+  <data name="RealmSlug-1295" xml:space="preserve">
+    <value>lethon</value>
+  </data>
+  <data name="RealmSlug-1296" xml:space="preserve">
+    <value>blackwing-lair</value>
+  </data>
+  <data name="RealmSlug-1297" xml:space="preserve">
+    <value>arygos</value>
+  </data>
+  <data name="RealmSlug-1298" xml:space="preserve">
+    <value>veknilash</value>
+  </data>
+  <data name="RealmSlug-1299" xml:space="preserve">
+    <value>boulderfist</value>
+  </data>
+  <data name="RealmSlug-1300" xml:space="preserve">
+    <value>frostmane</value>
+  </data>
+  <data name="RealmSlug-1301" xml:space="preserve">
+    <value>outland</value>
+  </data>
+  <data name="RealmSlug-1303" xml:space="preserve">
+    <value>grim-batol</value>
+  </data>
+  <data name="RealmSlug-1304" xml:space="preserve">
+    <value>jaedenar</value>
+  </data>
+  <data name="RealmSlug-1305" xml:space="preserve">
+    <value>kazzak</value>
+  </data>
+  <data name="RealmSlug-1306" xml:space="preserve">
+    <value>tarren-mill</value>
+  </data>
+  <data name="RealmSlug-1307" xml:space="preserve">
+    <value>chamber-of-aspects</value>
+  </data>
+  <data name="RealmSlug-1308" xml:space="preserve">
+    <value>ravenholdt</value>
+  </data>
+  <data name="RealmSlug-1309" xml:space="preserve">
+    <value>pozzo-delleternità</value>
+  </data>
+  <data name="RealmSlug-1310" xml:space="preserve">
+    <value>eonar</value>
+  </data>
+  <data name="RealmSlug-1311" xml:space="preserve">
+    <value>kilrogg</value>
+  </data>
+  <data name="RealmSlug-1312" xml:space="preserve">
+    <value>aerie-peak</value>
+  </data>
+  <data name="RealmSlug-1313" xml:space="preserve">
+    <value>wildhammer</value>
+  </data>
+  <data name="RealmSlug-1314" xml:space="preserve">
+    <value>saurfang</value>
+  </data>
+  <data name="RealmSlug-1316" xml:space="preserve">
+    <value>nemesis</value>
+  </data>
+  <data name="RealmSlug-1317" xml:space="preserve">
+    <value>darkmoon-faire</value>
+  </data>
+  <data name="RealmSlug-1318" xml:space="preserve">
+    <value>veklor</value>
+  </data>
+  <data name="RealmSlug-1319" xml:space="preserve">
+    <value>mugthol</value>
+  </data>
+  <data name="RealmSlug-1320" xml:space="preserve">
+    <value>taerar</value>
+  </data>
+  <data name="RealmSlug-1321" xml:space="preserve">
+    <value>dalvengyr</value>
+  </data>
+  <data name="RealmSlug-1322" xml:space="preserve">
+    <value>rajaxx</value>
+  </data>
+  <data name="RealmSlug-1323" xml:space="preserve">
+    <value>ulduar</value>
+  </data>
+  <data name="RealmSlug-1324" xml:space="preserve">
+    <value>malorne</value>
+  </data>
+  <data name="RealmSlug-1326" xml:space="preserve">
+    <value>der-abyssische-rat</value>
+  </data>
+  <data name="RealmSlug-1327" xml:space="preserve">
+    <value>der-mithrilorden</value>
+  </data>
+  <data name="RealmSlug-1328" xml:space="preserve">
+    <value>tirion</value>
+  </data>
+  <data name="RealmSlug-1330" xml:space="preserve">
+    <value>ambossar</value>
+  </data>
+  <data name="RealmSlug-1331" xml:space="preserve">
+    <value>suramar</value>
+  </data>
+  <data name="RealmSlug-1332" xml:space="preserve">
+    <value>krasus</value>
+  </data>
+  <data name="RealmSlug-1333" xml:space="preserve">
+    <value>die-nachtwache</value>
+  </data>
+  <data name="RealmSlug-1334" xml:space="preserve">
+    <value>arathi</value>
+  </data>
+  <data name="RealmSlug-1335" xml:space="preserve">
+    <value>ysondre</value>
+  </data>
+  <data name="RealmSlug-1336" xml:space="preserve">
+    <value>eldrethalas</value>
+  </data>
+  <data name="RealmSlug-1337" xml:space="preserve">
+    <value>culte-de-la-rive-noire</value>
+  </data>
+  <data name="RealmSlug-1342" xml:space="preserve">
+    <value>echo-isles</value>
+  </data>
+  <data name="RealmSlug-1344" xml:space="preserve">
+    <value>the-forgotten-coast</value>
+  </data>
+  <data name="RealmSlug-1345" xml:space="preserve">
+    <value>fenris</value>
+  </data>
+  <data name="RealmSlug-1346" xml:space="preserve">
+    <value>anubarak</value>
+  </data>
+  <data name="RealmSlug-1347" xml:space="preserve">
+    <value>blackwater-raiders</value>
+  </data>
+  <data name="RealmSlug-1348" xml:space="preserve">
+    <value>vashj</value>
+  </data>
+  <data name="RealmSlug-1349" xml:space="preserve">
+    <value>korialstrasz</value>
+  </data>
+  <data name="RealmSlug-1350" xml:space="preserve">
+    <value>misha</value>
+  </data>
+  <data name="RealmSlug-1351" xml:space="preserve">
+    <value>darrowmere</value>
+  </data>
+  <data name="RealmSlug-1352" xml:space="preserve">
+    <value>ravenholdt</value>
+  </data>
+  <data name="RealmSlug-1353" xml:space="preserve">
+    <value>bladefist</value>
+  </data>
+  <data name="RealmSlug-1354" xml:space="preserve">
+    <value>shuhalo</value>
+  </data>
+  <data name="RealmSlug-1355" xml:space="preserve">
+    <value>winterhoof</value>
+  </data>
+  <data name="RealmSlug-1356" xml:space="preserve">
+    <value>sisters-of-elune</value>
+  </data>
+  <data name="RealmSlug-1357" xml:space="preserve">
+    <value>maiev</value>
+  </data>
+  <data name="RealmSlug-1358" xml:space="preserve">
+    <value>rivendare</value>
+  </data>
+  <data name="RealmSlug-1359" xml:space="preserve">
+    <value>nordrassil</value>
+  </data>
+  <data name="RealmSlug-1360" xml:space="preserve">
+    <value>tortheldrin</value>
+  </data>
+  <data name="RealmSlug-1361" xml:space="preserve">
+    <value>cairne</value>
+  </data>
+  <data name="RealmSlug-1362" xml:space="preserve">
+    <value>draktharon</value>
+  </data>
+  <data name="RealmSlug-1363" xml:space="preserve">
+    <value>antonidas</value>
+  </data>
+  <data name="RealmSlug-1364" xml:space="preserve">
+    <value>shandris</value>
+  </data>
+  <data name="RealmSlug-1365" xml:space="preserve">
+    <value>moon-guard</value>
+  </data>
+  <data name="RealmSlug-1367" xml:space="preserve">
+    <value>nazgrel</value>
+  </data>
+  <data name="RealmSlug-1368" xml:space="preserve">
+    <value>hydraxis</value>
+  </data>
+  <data name="RealmSlug-1369" xml:space="preserve">
+    <value>wyrmrest-accord</value>
+  </data>
+  <data name="RealmSlug-1370" xml:space="preserve">
+    <value>farstriders</value>
+  </data>
+  <data name="RealmSlug-1371" xml:space="preserve">
+    <value>borean-tundra</value>
+  </data>
+  <data name="RealmSlug-1372" xml:space="preserve">
+    <value>queldorei</value>
+  </data>
+  <data name="RealmSlug-1373" xml:space="preserve">
+    <value>garrosh</value>
+  </data>
+  <data name="RealmSlug-1374" xml:space="preserve">
+    <value>moknathal</value>
+  </data>
+  <data name="RealmSlug-1375" xml:space="preserve">
+    <value>nesingwary</value>
+  </data>
+  <data name="RealmSlug-1377" xml:space="preserve">
+    <value>drenden</value>
+  </data>
+  <data name="RealmSlug-1378" xml:space="preserve">
+    <value>dun-modr</value>
+  </data>
+  <data name="RealmSlug-1379" xml:space="preserve">
+    <value>zuljin</value>
+  </data>
+  <data name="RealmSlug-1380" xml:space="preserve">
+    <value>uldum</value>
+  </data>
+  <data name="RealmSlug-1381" xml:space="preserve">
+    <value>cthun</value>
+  </data>
+  <data name="RealmSlug-1382" xml:space="preserve">
+    <value>sanguino</value>
+  </data>
+  <data name="RealmSlug-1383" xml:space="preserve">
+    <value>shendralar</value>
+  </data>
+  <data name="RealmSlug-1384" xml:space="preserve">
+    <value>tyrande</value>
+  </data>
+  <data name="RealmSlug-1385" xml:space="preserve">
+    <value>exodar</value>
+  </data>
+  <data name="RealmSlug-1386" xml:space="preserve">
+    <value>minahonda</value>
+  </data>
+  <data name="RealmSlug-1387" xml:space="preserve">
+    <value>los-errantes</value>
+  </data>
+  <data name="RealmSlug-1388" xml:space="preserve">
+    <value>lightbringer</value>
+  </data>
+  <data name="RealmSlug-1389" xml:space="preserve">
+    <value>darkspear</value>
+  </data>
+  <data name="RealmSlug-1391" xml:space="preserve">
+    <value>alonsus</value>
+  </data>
+  <data name="RealmSlug-1392" xml:space="preserve">
+    <value>burning-steppes</value>
+  </data>
+  <data name="RealmSlug-1393" xml:space="preserve">
+    <value>bronze-dragonflight</value>
+  </data>
+  <data name="RealmSlug-1394" xml:space="preserve">
+    <value>anachronos</value>
+  </data>
+  <data name="RealmSlug-1395" xml:space="preserve">
+    <value>colinas-pardas</value>
+  </data>
+  <data name="RealmSlug-1400" xml:space="preserve">
+    <value>ungoro</value>
+  </data>
+  <data name="RealmSlug-1401" xml:space="preserve">
+    <value>garrosh</value>
+  </data>
+  <data name="RealmSlug-1404" xml:space="preserve">
+    <value>area-52</value>
+  </data>
+  <data name="RealmSlug-1405" xml:space="preserve">
+    <value>todeswache</value>
+  </data>
+  <data name="RealmSlug-1406" xml:space="preserve">
+    <value>arygos</value>
+  </data>
+  <data name="RealmSlug-1407" xml:space="preserve">
+    <value>teldrassil</value>
+  </data>
+  <data name="RealmSlug-1408" xml:space="preserve">
+    <value>norgannon</value>
+  </data>
+  <data name="RealmSlug-1409" xml:space="preserve">
+    <value>lordaeron</value>
+  </data>
+  <data name="RealmSlug-1413" xml:space="preserve">
+    <value>aggra-português</value>
+  </data>
+  <data name="RealmSlug-1415" xml:space="preserve">
+    <value>terokkar</value>
+  </data>
+  <data name="RealmSlug-1416" xml:space="preserve">
+    <value>blades-edge</value>
+  </data>
+  <data name="RealmSlug-1417" xml:space="preserve">
+    <value>azuremyst</value>
+  </data>
+  <data name="RealmSlug-1425" xml:space="preserve">
+    <value>drakkari</value>
+  </data>
+  <data name="RealmSlug-1427" xml:space="preserve">
+    <value>ragnaros</value>
+  </data>
+  <data name="RealmSlug-1428" xml:space="preserve">
+    <value>quelthalas</value>
+  </data>
+  <data name="RealmSlug-1549" xml:space="preserve">
+    <value>azuremyst</value>
+  </data>
+  <data name="RealmSlug-1555" xml:space="preserve">
+    <value>auchindoun</value>
+  </data>
+  <data name="RealmSlug-1556" xml:space="preserve">
+    <value>coilfang</value>
+  </data>
+  <data name="RealmSlug-1557" xml:space="preserve">
+    <value>shattered-halls</value>
+  </data>
+  <data name="RealmSlug-1558" xml:space="preserve">
+    <value>blood-furnace</value>
+  </data>
+  <data name="RealmSlug-1559" xml:space="preserve">
+    <value>the-underbog</value>
+  </data>
+  <data name="RealmSlug-1563" xml:space="preserve">
+    <value>terokkar</value>
+  </data>
+  <data name="RealmSlug-1564" xml:space="preserve">
+    <value>blades-edge</value>
+  </data>
+  <data name="RealmSlug-1565" xml:space="preserve">
+    <value>exodar</value>
+  </data>
+  <data name="RealmSlug-1566" xml:space="preserve">
+    <value>area-52</value>
+  </data>
+  <data name="RealmSlug-1567" xml:space="preserve">
+    <value>velen</value>
+  </data>
+  <data name="RealmSlug-1570" xml:space="preserve">
+    <value>the-scryers</value>
+  </data>
+  <data name="RealmSlug-1572" xml:space="preserve">
+    <value>zangarmarsh</value>
+  </data>
+  <data name="RealmSlug-1576" xml:space="preserve">
+    <value>fizzcrank</value>
+  </data>
+  <data name="RealmSlug-1578" xml:space="preserve">
+    <value>ghostlands</value>
+  </data>
+  <data name="RealmSlug-1579" xml:space="preserve">
+    <value>grizzly-hills</value>
+  </data>
+  <data name="RealmSlug-1581" xml:space="preserve">
+    <value>galakrond</value>
+  </data>
+  <data name="RealmSlug-1582" xml:space="preserve">
+    <value>dawnbringer</value>
+  </data>
+  <data name="RealmSlug-1587" xml:space="preserve">
+    <value>hellfire</value>
+  </data>
+  <data name="RealmSlug-1588" xml:space="preserve">
+    <value>ghostlands</value>
+  </data>
+  <data name="RealmSlug-1589" xml:space="preserve">
+    <value>nagrand</value>
+  </data>
+  <data name="RealmSlug-1595" xml:space="preserve">
+    <value>the-shatar</value>
+  </data>
+  <data name="RealmSlug-1596" xml:space="preserve">
+    <value>karazhan</value>
+  </data>
+  <data name="RealmSlug-1597" xml:space="preserve">
+    <value>auchindoun</value>
+  </data>
+  <data name="RealmSlug-1598" xml:space="preserve">
+    <value>shattered-halls</value>
+  </data>
+  <data name="RealmSlug-1602" xml:space="preserve">
+    <value>gordunni</value>
+  </data>
+  <data name="RealmSlug-1603" xml:space="preserve">
+    <value>lich-king</value>
+  </data>
+  <data name="RealmSlug-1604" xml:space="preserve">
+    <value>soulflayer</value>
+  </data>
+  <data name="RealmSlug-1605" xml:space="preserve">
+    <value>deathguard</value>
+  </data>
+  <data name="RealmSlug-1606" xml:space="preserve">
+    <value>sporeggar</value>
+  </data>
+  <data name="RealmSlug-1607" xml:space="preserve">
+    <value>nethersturm</value>
+  </data>
+  <data name="RealmSlug-1608" xml:space="preserve">
+    <value>shattrath</value>
+  </data>
+  <data name="RealmSlug-1609" xml:space="preserve">
+    <value>deepholm</value>
+  </data>
+  <data name="RealmSlug-1610" xml:space="preserve">
+    <value>greymane</value>
+  </data>
+  <data name="RealmSlug-1611" xml:space="preserve">
+    <value>festung-der-stürme</value>
+  </data>
+  <data name="RealmSlug-1612" xml:space="preserve">
+    <value>echsenkessel</value>
+  </data>
+  <data name="RealmSlug-1613" xml:space="preserve">
+    <value>blutkessel</value>
+  </data>
+  <data name="RealmSlug-1614" xml:space="preserve">
+    <value>galakrond</value>
+  </data>
+  <data name="RealmSlug-1615" xml:space="preserve">
+    <value>howling-fjord</value>
+  </data>
+  <data name="RealmSlug-1616" xml:space="preserve">
+    <value>razuvious</value>
+  </data>
+  <data name="RealmSlug-1617" xml:space="preserve">
+    <value>deathweaver</value>
+  </data>
+  <data name="RealmSlug-1618" xml:space="preserve">
+    <value>die-aldor</value>
+  </data>
+  <data name="RealmSlug-1619" xml:space="preserve">
+    <value>das-konsortium</value>
+  </data>
+  <data name="RealmSlug-1620" xml:space="preserve">
+    <value>chants-éternels</value>
+  </data>
+  <data name="RealmSlug-1621" xml:space="preserve">
+    <value>marécage-de-zangar</value>
+  </data>
+  <data name="RealmSlug-1622" xml:space="preserve">
+    <value>temple-noir</value>
+  </data>
+  <data name="RealmSlug-1623" xml:space="preserve">
+    <value>fordragon</value>
+  </data>
+  <data name="RealmSlug-1624" xml:space="preserve">
+    <value>naxxramas</value>
+  </data>
+  <data name="RealmSlug-1625" xml:space="preserve">
+    <value>borean-tundra</value>
+  </data>
+  <data name="RealmSlug-1626" xml:space="preserve">
+    <value>les-clairvoyants</value>
+  </data>
+  <data name="RealmSlug-1922" xml:space="preserve">
+    <value>azuregos</value>
+  </data>
+  <data name="RealmSlug-1923" xml:space="preserve">
+    <value>ashenvale</value>
+  </data>
+  <data name="RealmSlug-1924" xml:space="preserve">
+    <value>booty-bay</value>
+  </data>
+  <data name="RealmSlug-1925" xml:space="preserve">
+    <value>eversong</value>
+  </data>
+  <data name="RealmSlug-1926" xml:space="preserve">
+    <value>thermaplugg</value>
+  </data>
+  <data name="RealmSlug-1927" xml:space="preserve">
+    <value>grom</value>
+  </data>
+  <data name="RealmSlug-1928" xml:space="preserve">
+    <value>goldrinn</value>
+  </data>
+  <data name="RealmSlug-1929" xml:space="preserve">
+    <value>blackscar</value>
+  </data>
+  <data name="RealmSlug-2075" xml:space="preserve">
+    <value>order-of-the-cloud-serpent</value>
+  </data>
+  <data name="RealmSlug-2079" xml:space="preserve">
+    <value>wildhammer</value>
+  </data>
+  <data name="RealmSlug-2106" xml:space="preserve">
+    <value>rexxar</value>
+  </data>
+  <data name="RealmSlug-2107" xml:space="preserve">
+    <value>hyjal</value>
+  </data>
+  <data name="RealmSlug-2108" xml:space="preserve">
+    <value>deathwing</value>
+  </data>
+  <data name="RealmSlug-2110" xml:space="preserve">
+    <value>cenarius</value>
+  </data>
+  <data name="RealmSlug-2111" xml:space="preserve">
+    <value>stormrage</value>
+  </data>
+  <data name="RealmSlug-2116" xml:space="preserve">
+    <value>zuljin</value>
+  </data>
+  <data name="RealmSlug-3207" xml:space="preserve">
+    <value>goldrinn</value>
+  </data>
+  <data name="RealmSlug-3208" xml:space="preserve">
+    <value>nemesis</value>
+  </data>
+  <data name="RealmSlug-3209" xml:space="preserve">
+    <value>azralon</value>
+  </data>
+  <data name="RealmSlug-3210" xml:space="preserve">
+    <value>tol-barad</value>
+  </data>
+  <data name="RealmSlug-3234" xml:space="preserve">
+    <value>gallywix</value>
+  </data>
+  <data name="RealmSlug-3721" xml:space="preserve">
+    <value>caelestrasz</value>
+  </data>
+  <data name="RealmSlug-3722" xml:space="preserve">
+    <value>amanthul</value>
+  </data>
+  <data name="RealmSlug-3723" xml:space="preserve">
+    <value>barthilas</value>
+  </data>
+  <data name="RealmSlug-3724" xml:space="preserve">
+    <value>thaurissan</value>
+  </data>
+  <data name="RealmSlug-3725" xml:space="preserve">
+    <value>frostmourne</value>
+  </data>
+  <data name="RealmSlug-3726" xml:space="preserve">
+    <value>khazgoroth</value>
+  </data>
+  <data name="RealmSlug-3733" xml:space="preserve">
+    <value>dreadmaul</value>
+  </data>
+  <data name="RealmSlug-3734" xml:space="preserve">
+    <value>nagrand</value>
+  </data>
+  <data name="RealmSlug-3735" xml:space="preserve">
+    <value>dathremar</value>
+  </data>
+  <data name="RealmSlug-3736" xml:space="preserve">
+    <value>jubeithos</value>
+  </data>
+  <data name="RealmSlug-3737" xml:space="preserve">
+    <value>gundrak</value>
+  </data>
+  <data name="RealmSlug-3738" xml:space="preserve">
+    <value>saurfang</value>
   </data>
 </root>
