@@ -86,7 +86,7 @@ public abstract class ProgramHelper
         {
         };
 
-        _services.AddScoped<ServerAuthHelper, CustomServerAuthHelper>();
+        //_services.AddScoped<ServerAuthHelper, CustomServerAuthHelper>();
 
         var sessionFactory = new SessionFactory(new Stl.Generators.RandomStringGenerator(32));
         _services.AddSingleton<ISessionFactory>(sessionFactory);

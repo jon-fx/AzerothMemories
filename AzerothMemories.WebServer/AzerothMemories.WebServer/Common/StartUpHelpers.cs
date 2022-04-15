@@ -1,5 +1,7 @@
 ﻿using NodaTime.Extensions;
 using System.Security.Claims;
+using AspNet.Security.OAuth.BattleNet;
+using AspNet.Security.OAuth.Patreon;
 
 namespace AzerothMemories.WebServer.Common;
 
@@ -13,7 +15,7 @@ internal static class StartUpHelpers
             return builder;
         }
 
-        return builder.AddBattleNet("BattleNet", "Battle Net", options =>
+        return builder.AddOAuth<BattleNetAuthenticationOptions, CustomBattleNetAuthenticationHandler>("BattleNet", "Battle Net", options =>
         {
             options.ClaimsIssuer = "BattleNet";
             options.ClientId = clientInfo.Value.Id;
@@ -36,10 +38,10 @@ internal static class StartUpHelpers
 
     private static async Task OnBlizzardCreatingTicket(OAuthCreatingTicketContext context)
     {
-        await OnCreatingTicket(context).ConfigureAwait(false);
+        await OnCreatingTicket(context, false).ConfigureAwait(false);
     }
 
-    private static async Task OnCreatingTicket(OAuthCreatingTicketContext context)
+    private static async Task OnCreatingTicket(OAuthCreatingTicketContext context, bool requiresIsAuthenticated)
     {
         Exceptions.ThrowIf(context.Identity == null);
 
@@ -47,16 +49,43 @@ internal static class StartUpHelpers
         var id = context.Identity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var name = context.Identity.FindFirst(ClaimTypes.Name)?.Value;
 
+        var session = context.HttpContext.RequestServices.GetRequiredService<ISessionResolver>().Session;
+        var sessionInfo = await context.HttpContext.RequestServices.GetRequiredService<IAuth>().GetSessionInfo(session).ConfigureAwait(false);
+
+        int? accountId = null;
+        var isAuthenticated = sessionInfo != null && sessionInfo.IsAuthenticated;
         var accountServices = context.HttpContext.RequestServices.GetRequiredService<AccountServices>();
-        await accountServices.TryUpdateAuthToken(new Account_TryUpdateAuthToken
+        var shouldThrowException = requiresIsAuthenticated != isAuthenticated;
+
+        if (requiresIsAuthenticated && isAuthenticated)
+        {
+            var userId = sessionInfo!.UserId;
+            var account = await accountServices.TryGetAccountRecordFusionId(userId).ConfigureAwait(false);
+            if (account == null)
+            {
+                shouldThrowException = true;
+            }
+            else
+            {
+                accountId = account.Id;
+            }
+        }
+
+        var updateResult = await accountServices.TryUpdateAuthToken(new Account_TryUpdateAuthToken
         {
             Id = id,
             Name = name,
             Type = authenticationType,
+            AccountId = accountId,
             AccessToken = context.AccessToken,
             RefreshToken = context.RefreshToken,
             TokenExpiresAt = (SystemClock.Instance.GetCurrentInstant() + context.ExpiresIn.GetValueOrDefault().ToDuration()).ToUnixTimeMilliseconds()
         }).ConfigureAwait(false);
+
+        if (shouldThrowException || !updateResult)
+        {
+            throw new CustomAuthException();
+        }
     }
 
     private static Task OnBlizzardTicketReceived(TicketReceivedContext arg)
@@ -81,7 +110,7 @@ internal static class StartUpHelpers
             return builder;
         }
 
-        return builder.AddPatreon("Patreon", options =>
+        return builder.AddOAuth<PatreonAuthenticationOptions, CustomPatreonAuthenticationHandler>("Patreon", options =>
         {
             options.ClaimsIssuer = "Patreon";
             options.ClientId = commonConfig.PatreonClientId;
@@ -101,7 +130,7 @@ internal static class StartUpHelpers
 
     private static async Task OnPatreonCreatingTicket(OAuthCreatingTicketContext context)
     {
-        await OnCreatingTicket(context).ConfigureAwait(false);
+        await OnCreatingTicket(context, true).ConfigureAwait(false);
     }
 
     private static Task OnPatreonTicketReceived(TicketReceivedContext arg)

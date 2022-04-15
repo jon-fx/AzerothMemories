@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AzerothMemories.WebServer.Database.Records;
 
 [Table(TableName)]
-public sealed class AccountRecord : IDatabaseRecordWithVersion
+public sealed class AccountRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVersion
 {
     public const string TableName = "Accounts";
 
@@ -50,14 +50,14 @@ public sealed class AccountRecord : IDatabaseRecordWithVersion
 
     [Column] public Instant BanExpireTime { get; set; }
 
+    public BlizzardUpdateRecord UpdateRecord { get; set; }
+
     public ICollection<AuthTokenRecord> AuthTokens { get; set; } = new List<AuthTokenRecord>();
 
     public uint RowVersion { get; set; }
 
     public AccountViewModel CreateViewModel(CommonServices commonServices, bool activeOrAdmin, Dictionary<int, AccountFollowingViewModel> followingViewModels, Dictionary<int, AccountFollowingViewModel> followersViewModels)
     {
-        var blizzardAuth = AuthTokens.FirstOrDefault(x => x.IsBlizzardAuthToken);
-        var blizzardUpdate = blizzardAuth?.UpdateRecord;
 
         var viewModel = new AccountViewModel
         {
@@ -82,7 +82,7 @@ public sealed class AccountRecord : IDatabaseRecordWithVersion
             FollowingViewModels = RemoveNoneStatus(followingViewModels),
             FollowersViewModels = RemoveNoneStatus(followersViewModels),
 
-            UpdateJobLastResults = blizzardUpdate?.GetUpdateJobResults(),
+            UpdateJobLastResults = UpdateRecord?.GetUpdateJobResults(),
         };
 
         if (viewModel.BattleTagIsPublic || activeOrAdmin)

@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Stl.Text;
 
 namespace AzerothMemories.WebServer.Database.Records;
 
 [Table(TableName)]
-public sealed class AuthTokenRecord : IBlizzardUpdateRecord
+public sealed class AuthTokenRecord : IDatabaseRecordWithVersion
 {
     public const string TableName = "Accounts_AuthTokens";
 
@@ -27,21 +26,19 @@ public sealed class AuthTokenRecord : IBlizzardUpdateRecord
 
     [Column] public Instant LastUpdateTime { get; set; }
 
-    [Column] public int? UpdateRecordId { get; set; }
-
-    [Column] public BlizzardUpdateRecord UpdateRecord { get; set; }
-
     public long IdLong => GetIdFrom(Key);
 
     public bool IsBlizzardAuthToken => Key.StartsWith("BattleNet");
 
     public bool IsPatreon => Key.StartsWith("Patreon");
 
+    public uint RowVersion { get; set; }
+
     //public BlizzardRegion GetBlizzardRegionId()
     //{
     //    var nameSplit = Key.Split('/');
     //    var providerSplit = nameSplit[0].Split('-');
-        
+
     //    return BlizzardRegionExt.FromName(providerSplit[1]);
     //}
 

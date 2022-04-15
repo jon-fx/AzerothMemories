@@ -2,31 +2,37 @@
 
 namespace AzerothMemories.WebServer.Services.Updates;
 
-internal sealed class UpdateHandler_Accounts : UpdateHandlerBaseResult<AuthTokenRecord, AccountProfileSummary>
+internal sealed class UpdateHandler_Accounts_Blizzard : UpdateHandlerBaseResult<AccountRecord, AccountProfileSummary>
 {
     private readonly BlizzardRegion _blizzardRegion;
     private readonly BlizzardUpdateServices _blizzardUpdateServices;
 
-    public UpdateHandler_Accounts(BlizzardUpdateType updateType, CommonServices commonServices, BlizzardUpdateServices blizzardUpdateServices, [CallerArgumentExpression("updateType")] string updateTypeString = null) : base(updateType, commonServices, updateTypeString)
+    public UpdateHandler_Accounts_Blizzard(BlizzardUpdateType updateType, CommonServices commonServices, BlizzardUpdateServices blizzardUpdateServices, [CallerArgumentExpression("updateType")] string updateTypeString = null) : base(updateType, commonServices, updateTypeString)
     {
         _blizzardRegion = (BlizzardRegion)updateType;
         _blizzardUpdateServices = blizzardUpdateServices;
     }
 
-    protected override async Task<RequestResult<AccountProfileSummary>> TryExecuteRequest(AuthTokenRecord record, Instant blizzardLastModified)
+    protected override bool ShouldExecuteOn(CommandContext context, AppDbContext database, AccountRecord record, out AuthTokenRecord authTokenRecord)
     {
-        if (string.IsNullOrWhiteSpace(record.Token) || SystemClock.Instance.GetCurrentInstant() >= record.TokenExpiresAt)
+        authTokenRecord = record.AuthTokens.FirstOrDefault(x => x.IsBlizzardAuthToken);
+        return authTokenRecord != null;
+    }
+
+    protected override async Task<RequestResult<AccountProfileSummary>> TryExecuteRequest(AccountRecord record, AuthTokenRecord authTokenRecord, Instant blizzardLastModified)
+    {
+        if (string.IsNullOrWhiteSpace(authTokenRecord.Token) || SystemClock.Instance.GetCurrentInstant() >= authTokenRecord.TokenExpiresAt)
         {
             return new RequestResult<AccountProfileSummary>(HttpStatusCode.Forbidden, null, blizzardLastModified, null);
         }
 
         using var client = CommonServices.HttpClientProvider.GetWarcraftClient(_blizzardRegion);
-        return await client.GetAccountProfile(record.Token, blizzardLastModified).ConfigureAwait(false);
+        return await client.GetAccountProfile(authTokenRecord.Token, blizzardLastModified).ConfigureAwait(false);
     }
 
-    protected override async Task InternalExecuteWithResult(CommandContext context, AppDbContext database, AuthTokenRecord record, AccountProfileSummary requestResult)
+    protected override async Task InternalExecuteWithResult(CommandContext context, AppDbContext database, AccountRecord record, AccountProfileSummary requestResult)
     {
-        var characters = await database.Characters.Where(x => x.AccountId == record.AccountId).ToDictionaryAsync(x => x.MoaRef, x => x).ConfigureAwait(false);
+        var characters = await database.Characters.Where(x => x.AccountId == record.Id).ToDictionaryAsync(x => x.MoaRef, x => x).ConfigureAwait(false);
         var deletedCharactersSets = new Dictionary<string, CharacterRecord>(characters);
 
         foreach (var account in requestResult.WowAccounts)
@@ -49,7 +55,7 @@ internal sealed class UpdateHandler_Accounts : UpdateHandlerBaseResult<AuthToken
                     await _blizzardUpdateServices.ExecuteHandlersOnFirstLogin(context, database, record, characterRecord).ConfigureAwait(false);
                 }
 
-                characterRecord.AccountId = record.AccountId;
+                characterRecord.AccountId = record.Id;
                 characterRecord.MoaRef = characterRef.Full;
                 characterRecord.BlizzardId = accountCharacter.Id;
                 characterRecord.BlizzardAccountId = account.Id;
@@ -73,6 +79,7 @@ internal sealed class UpdateHandler_Accounts : UpdateHandlerBaseResult<AuthToken
             character.CharacterStatus = CharacterStatus2.MaybeDeleted;
         }
 
-        context.Operation().Items.Set(new Updates_UpdateAccountInvalidate(record.Account.Id, record.Account.FusionId, record.Account.Username, characters.Values.Select(x => x.Id).ToHashSet()));
+        context.Operation().Items.Set(new Updates_UpdateAccountInvalidate(record.Id, record.FusionId, record.Username, characters.Values.Select(x => x.Id).ToHashSet()));
     }
+
 }

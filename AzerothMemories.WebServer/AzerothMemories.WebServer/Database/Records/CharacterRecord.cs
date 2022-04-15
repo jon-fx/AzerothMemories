@@ -18,10 +18,6 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord, IDatabaseRecordWith
 
     [Column] public BlizzardRegion BlizzardRegionId { get; set; }
 
-    [Column] public int? UpdateRecordId { get; set; }
-
-    [Column] public BlizzardUpdateRecord UpdateRecord { get; set; }
-
     [Column] public string Name { get; set; }
 
     [Column] public string NameSearchable { get; set; }
@@ -61,6 +57,8 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord, IDatabaseRecordWith
     [Column] public string BlizzardGuildName { get; set; }
 
     public uint RowVersion { get; set; }
+
+    public BlizzardUpdateRecord UpdateRecord { get; set; }
 
     public CharacterViewModel CreateViewModel()
     {

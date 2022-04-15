@@ -5,4 +5,5 @@ public enum BlizzardUpdateStatus
     None,
     Queued,
     Progress,
+    Required,
 }

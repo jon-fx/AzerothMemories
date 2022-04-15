@@ -6,16 +6,16 @@ internal sealed class UpdateHandler_Characters_Achievements : UpdateHandlerBaseR
     {
     }
 
-    public async Task OnFirstLogin(CommandContext context, AppDbContext database, AuthTokenRecord authTokenRecord, CharacterRecord characterRecord)
+    public async Task OnFirstLogin(CommandContext context, AppDbContext database, AccountRecord accountRecord, CharacterRecord characterRecord)
     {
         var records = await database.CharacterAchievements.Where(x => x.CharacterId == characterRecord.Id && x.AccountId == null).ToArrayAsync().ConfigureAwait(false);
         foreach (var record in records)
         {
-            record.AccountId = authTokenRecord.AccountId;
+            record.AccountId = accountRecord.Id;
         }
     }
 
-    protected override async Task<RequestResult<CharacterAchievementsSummary>> TryExecuteRequest(CharacterRecord record, Instant blizzardLastModified)
+    protected override async Task<RequestResult<CharacterAchievementsSummary>> TryExecuteRequest(CharacterRecord record, AuthTokenRecord authTokenRecord, Instant blizzardLastModified)
     {
         var characterRef = new MoaRef(record.MoaRef);
         using var client = CommonServices.HttpClientProvider.GetWarcraftClient(record.BlizzardRegionId);

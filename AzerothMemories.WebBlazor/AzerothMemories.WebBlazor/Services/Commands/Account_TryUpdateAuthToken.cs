@@ -8,6 +8,8 @@ public record Account_TryUpdateAuthToken : ICommand<bool>
 
     public string Type { get; init; }
 
+    public int? AccountId { get; init; }
+
     public string AccessToken { get; init; }
 
     public string RefreshToken { get; init; }

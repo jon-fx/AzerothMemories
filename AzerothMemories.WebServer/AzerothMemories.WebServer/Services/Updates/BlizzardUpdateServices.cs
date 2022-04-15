@@ -1,13 +1,11 @@
-﻿using System.Text;
-
-namespace AzerothMemories.WebServer.Services.Updates;
+﻿namespace AzerothMemories.WebServer.Services.Updates;
 
 [RegisterComputeService]
 public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
 {
     private readonly CommonServices _commonServices;
 
-    private readonly UpdateHandlerBase<AuthTokenRecord>[] _accountHandlers;
+    private readonly UpdateHandlerBase<AccountRecord>[] _accountHandlers;
     private readonly UpdateHandlerBase<CharacterRecord>[] _characterHandlers;
     private readonly UpdateHandlerBase<GuildRecord>[] _guildHandlers;
 
@@ -15,13 +13,14 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
     {
         _commonServices = commonServices;
 
-        _accountHandlers = new UpdateHandlerBase<AuthTokenRecord>[(int)BlizzardUpdateType.Account_Count];
-        AddUpdateHandler(ref _accountHandlers, new UpdateHandlerBase<AuthTokenRecord>(BlizzardUpdateType.Account, _commonServices));
-        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts(BlizzardUpdateType.Account_China, _commonServices, this));
-        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts(BlizzardUpdateType.Account_Europe, _commonServices, this));
-        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts(BlizzardUpdateType.Account_Korea, _commonServices, this));
-        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts(BlizzardUpdateType.Account_Taiwan, _commonServices, this));
-        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts(BlizzardUpdateType.Account_UnitedStates, _commonServices, this));
+        _accountHandlers = new UpdateHandlerBase<AccountRecord>[(int)BlizzardUpdateType.Account_Count];
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandlerBase<AccountRecord>(BlizzardUpdateType.Account, _commonServices));
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Blizzard(BlizzardUpdateType.Account_China, _commonServices, this));
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Blizzard(BlizzardUpdateType.Account_Europe, _commonServices, this));
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Blizzard(BlizzardUpdateType.Account_Korea, _commonServices, this));
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Blizzard(BlizzardUpdateType.Account_Taiwan, _commonServices, this));
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Blizzard(BlizzardUpdateType.Account_UnitedStates, _commonServices, this));
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Patreon(_commonServices));
 
         _characterHandlers = new UpdateHandlerBase<CharacterRecord>[(int)BlizzardUpdateType.Character_Count];
         AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters(_commonServices));
@@ -44,7 +43,13 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         Exceptions.ThrowIf(_guildHandlers.Any(x => x == null));
     }
 
-    public async Task ExecuteHandlersOnFirstLogin(CommandContext context, AppDbContext database, AuthTokenRecord accountRecord, CharacterRecord characterRecord)
+    public int AccountHandlerCount => _accountHandlers.Length;
+
+    public int CharacterHandlerCount => _characterHandlers.Length;
+
+    public int GuildHandlerCount => _guildHandlers.Length;
+
+    public async Task ExecuteHandlersOnFirstLogin(CommandContext context, AppDbContext database, AccountRecord accountRecord, CharacterRecord characterRecord)
     {
         foreach (var characterHandler in _characterHandlers)
         {
@@ -80,7 +85,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         }
 
         await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-        var record = await database.AuthTokens.FirstOrDefaultAsync(x => x.Id == command.AccountId, cancellationToken).ConfigureAwait(false);
+        var record = await database.Accounts.FirstOrDefaultAsync(x => x.Id == command.AccountId, cancellationToken).ConfigureAwait(false);
         if (record == null)
         {
             return default;
@@ -184,20 +189,14 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
         return resultStatusCode;
     }
 
-    private async Task<HttpStatusCode> RunUpdateHandlers<TRecord>(UpdateHandlerBase<TRecord>[] allHandlers, CommandContext context, AppDbContext database, TRecord record, CancellationToken cancellationToken) where TRecord : IBlizzardUpdateRecord
+    private async Task<HttpStatusCode> RunUpdateHandlers<TRecord>(UpdateHandlerBase<TRecord>[] allHandlers, CommandContext context, AppDbContext database, TRecord record, CancellationToken cancellationToken) where TRecord : class, IBlizzardUpdateRecord, new()
     {
-#if DEBUG
-        if (typeof(TRecord) != _commonServices.BlizzardUpdateHandler.ValidRecordTypes[(int)record.UpdateRecord.UpdatePriority])
-        {
-            throw new NotImplementedException();
-        }
-#endif
         if (!_commonServices.BlizzardUpdateHandler.RecordRequiresUpdate(record.UpdateRecord, record.UpdateRecord.UpdatePriority, true))
         {
             return HttpStatusCode.LoopDetected;
         }
 
-        var requiredChildrenCount = _commonServices.BlizzardUpdateHandler.RequiredChildrenCount[(int)record.UpdateRecord.UpdatePriority];
+        var requiredChildrenCount = allHandlers.Length;
         var sortedRecords = new BlizzardUpdateChildRecord[requiredChildrenCount];
         foreach (var childRecord in record.UpdateRecord.Children)
         {
@@ -221,7 +220,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
 
             Exceptions.ThrowIf(updateChildRecord.UpdateType != updateHandler.UpdateType);
 
-            updateStatusCode = await updateHandler.ExecuteOn(context, database, record, updateChildRecord).ConfigureAwait(false);
+            updateStatusCode = await updateHandler.TryExecuteOn(context, database, record, updateChildRecord).ConfigureAwait(false);
 
             if (updateStatusCode.IsSuccess())
             {

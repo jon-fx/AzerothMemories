@@ -362,4 +362,9 @@ public sealed class AccountManagePageViewModel : ViewModelBase
 
         var result = await Services.ClientServices.CommandRunner.Run(new Character_TrySetCharacterRenamedOrTransferred(Session.Default, oldCharacter.Id, newCharacter.Id));
     }
+
+    public async Task OnSignIn(ClientAuthHelper clientAuthHelper, string schema)
+    {
+        await clientAuthHelper.SignIn(schema);
+    }
 }

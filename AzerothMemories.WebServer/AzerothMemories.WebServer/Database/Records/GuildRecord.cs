@@ -16,10 +16,6 @@ public sealed class GuildRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVers
 
     [Column] public BlizzardRegion BlizzardRegionId { get; set; }
 
-    [Column] public int? UpdateRecordId { get; set; }
-
-    [Column] public BlizzardUpdateRecord UpdateRecord { get; set; }
-
     [Column] public string Name { get; set; }
 
     [Column] public string NameSearchable { get; set; }
@@ -39,6 +35,8 @@ public sealed class GuildRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVers
     [Column] public int AchievementTotalQuantity { get; set; }
 
     [Column] public int AchievementTotalPoints { get; set; }
+
+    public BlizzardUpdateRecord UpdateRecord { get; set; }
 
     public uint RowVersion { get; set; }
 

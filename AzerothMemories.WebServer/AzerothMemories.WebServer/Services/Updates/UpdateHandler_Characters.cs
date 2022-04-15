@@ -6,7 +6,7 @@ internal sealed class UpdateHandler_Characters : UpdateHandlerBaseResult<Charact
     {
     }
 
-    protected override async Task<RequestResult<CharacterProfileSummary>> TryExecuteRequest(CharacterRecord record, Instant blizzardLastModified)
+    protected override async Task<RequestResult<CharacterProfileSummary>> TryExecuteRequest(CharacterRecord record, AuthTokenRecord authTokenRecord, Instant blizzardLastModified)
     {
         var characterRef = new MoaRef(record.MoaRef);
         using var client = CommonServices.HttpClientProvider.GetWarcraftClient(record.BlizzardRegionId);

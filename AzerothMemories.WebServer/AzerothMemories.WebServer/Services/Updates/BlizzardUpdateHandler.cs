@@ -5,28 +5,13 @@ namespace AzerothMemories.WebServer.Services.Updates;
 internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
 {
     private readonly CommonServices _commonServices;
-
-    private readonly Type[] _validRecordTypes;
-    private readonly int[] _requiredChildrenCount;
+    private readonly BlizzardUpdateServices _blizzardUpdateServices;
     private readonly Duration[] _durationsBetweenUpdates;
 
-    public BlizzardUpdateHandler(IServiceProvider services, CommonServices commonServices) : base(services)
+    public BlizzardUpdateHandler(IServiceProvider services, CommonServices commonServices, BlizzardUpdateServices blizzardUpdateServices) : base(services)
     {
         _commonServices = commonServices;
-
-        _validRecordTypes = new Type[(int)BlizzardUpdatePriority.Count];
-        _validRecordTypes[(int)BlizzardUpdatePriority.Account] = typeof(AuthTokenRecord);
-        _validRecordTypes[(int)BlizzardUpdatePriority.CharacterHigh] = typeof(CharacterRecord);
-        _validRecordTypes[(int)BlizzardUpdatePriority.CharacterMed] = typeof(CharacterRecord);
-        _validRecordTypes[(int)BlizzardUpdatePriority.CharacterLow] = typeof(CharacterRecord);
-        _validRecordTypes[(int)BlizzardUpdatePriority.Guild] = typeof(GuildRecord);
-
-        _requiredChildrenCount = new int[(int)BlizzardUpdatePriority.Count];
-        _requiredChildrenCount[(int)BlizzardUpdatePriority.Account] = (int)BlizzardUpdateType.Account_Count;
-        _requiredChildrenCount[(int)BlizzardUpdatePriority.CharacterHigh] = (int)BlizzardUpdateType.Character_Count;
-        _requiredChildrenCount[(int)BlizzardUpdatePriority.CharacterMed] = (int)BlizzardUpdateType.Character_Count;
-        _requiredChildrenCount[(int)BlizzardUpdatePriority.CharacterLow] = (int)BlizzardUpdateType.Character_Count;
-        _requiredChildrenCount[(int)BlizzardUpdatePriority.Guild] = (int)BlizzardUpdateType.Guild_Count;
+        _blizzardUpdateServices = blizzardUpdateServices;
 
         _durationsBetweenUpdates = new Duration[(int)BlizzardUpdatePriority.Count];
         _durationsBetweenUpdates[(int)BlizzardUpdatePriority.Account] = _commonServices.Config.UpdateAccountDelay;
@@ -36,57 +21,54 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
         _durationsBetweenUpdates[(int)BlizzardUpdatePriority.Guild] = _commonServices.Config.UpdateGuildDelay;
     }
 
-    public Type[] ValidRecordTypes => _validRecordTypes;
-
-    public int[] RequiredChildrenCount => _requiredChildrenCount;
-
     public async Task TryUpdate(AccountRecord accountRecord)
     {
-        if (accountRecord?.AuthTokens == null)
+        if (accountRecord.UpdateRecord != null && accountRecord.UpdateRecord.UpdateStatus == BlizzardUpdateStatus.None && accountRecord.AuthTokens != null && accountRecord.AuthTokens.Count > 0)
         {
-            return;
-        }
-
-        foreach (var authToken in accountRecord.AuthTokens)
-        {
-            if (authToken.IsBlizzardAuthToken)
+            var mostRecentlyChanged = accountRecord.AuthTokens.Max(x => x.LastUpdateTime);
+            var authTokensChanged = mostRecentlyChanged > accountRecord.UpdateRecord.UpdateJobLastEndTime;
+            if (authTokensChanged)
             {
-                await TryUpdate(authToken, BlizzardUpdatePriority.Account).ConfigureAwait(false);
+                accountRecord.UpdateRecord.UpdateStatus = BlizzardUpdateStatus.Required;
             }
         }
+
+        await TryUpdate(accountRecord, BlizzardUpdatePriority.Account, _blizzardUpdateServices.AccountHandlerCount).ConfigureAwait(false);
     }
 
-    public async Task TryUpdate<TRecord>(TRecord record, BlizzardUpdatePriority updatePriority) where TRecord : class, IBlizzardUpdateRecord, new()
+    public async Task TryUpdate(CharacterRecord characterRecord, BlizzardUpdatePriority updatePriority)
+    {
+        await TryUpdate(characterRecord, updatePriority, _blizzardUpdateServices.CharacterHandlerCount).ConfigureAwait(false);
+    }
+
+    public async Task TryUpdate(GuildRecord guildRecord, BlizzardUpdatePriority updatePriority)
+    {
+        await TryUpdate(guildRecord, updatePriority, _blizzardUpdateServices.GuildHandlerCount).ConfigureAwait(false);
+    }
+
+    private async Task TryUpdate<TRecord>(TRecord record, BlizzardUpdatePriority updatePriority, int requiredChildrenCount) where TRecord : class, IBlizzardUpdateRecord, new()
     {
         if (record == null)
         {
             return;
         }
 
-#if DEBUG
-        if (typeof(TRecord) != _validRecordTypes[(int)updatePriority])
+        var requiresUpdate = record.UpdateRecord == null || record.UpdateRecord.Children == null || record.UpdateRecord.Children.Count < requiredChildrenCount;
+        if (requiresUpdate)
         {
-            throw new NotImplementedException();
+            
         }
-#endif
-
-        await using var database = CreateDbContext(true);
-        database.Attach(record);
-
-        var requiresUpdate = false;
-        if (record.UpdateRecord == null)
-        {
-            requiresUpdate = true;
-            record.UpdateRecord = new BlizzardUpdateRecord();
-        }
-
-        if (!requiresUpdate)
+        else
         {
             requiresUpdate = RecordRequiresUpdate(record.UpdateRecord, updatePriority, false);
         }
 
         if (requiresUpdate)
         {
+            await using var database = CreateDbContext(true);
+            database.Attach(record);
+
+            record.UpdateRecord ??= new BlizzardUpdateRecord();
             record.UpdateRecord.UpdatePriority = updatePriority;
             record.UpdateRecord.UpdateStatus = BlizzardUpdateStatus.Queued;
             record.UpdateRecord.UpdateLastModified = SystemClock.Instance.GetCurrentInstant();
@@ -102,14 +84,19 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
             return false;
         }
 
+        if (updateRecord.UpdateStatus == BlizzardUpdateStatus.Required)
+        {
+            return true;
+        }
+
         var now = SystemClock.Instance.GetCurrentInstant();
         var duration = _durationsBetweenUpdates[(int)updatePriority];
         if (updateRecord.UpdateStatus == BlizzardUpdateStatus.None)
         {
-            //if (updateRecord.UpdateJobLastResult.IsFailure())
-            //{
-            //    duration /= 2;
-            //}
+            if (updateRecord.Children != null && updateRecord.Children.Count > 0 && updateRecord.Children.Any(x => !x.UpdateJobLastResult.IsSuccess()))
+            {
+                duration /= 2;
+            }
 
             if (now > updateRecord.UpdateJobLastEndTime + duration)
             {

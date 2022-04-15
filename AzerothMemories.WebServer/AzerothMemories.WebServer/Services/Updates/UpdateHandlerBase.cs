@@ -2,7 +2,7 @@
 
 namespace AzerothMemories.WebServer.Services.Updates;
 
-internal class UpdateHandlerBase<TRecord> where TRecord : IBlizzardUpdateRecord
+public class UpdateHandlerBase<TRecord> where TRecord : IBlizzardUpdateRecord
 {
     private readonly BlizzardUpdateType _updateType;
     private readonly CommonServices _commonServices;
@@ -28,12 +28,23 @@ internal class UpdateHandlerBase<TRecord> where TRecord : IBlizzardUpdateRecord
 
     public CommonServices CommonServices => _commonServices;
 
-    public Task<HttpStatusCode> ExecuteOn(CommandContext context, AppDbContext database, TRecord record, BlizzardUpdateChildRecord childRecord)
+    protected virtual bool ShouldExecuteOn(CommandContext context, AppDbContext database, TRecord record, out AuthTokenRecord authTokenRecord)
     {
-        return InternalExecuteOn(context, database, record, childRecord);
+        authTokenRecord = null;
+        return true;
     }
 
-    protected virtual Task<HttpStatusCode> InternalExecuteOn(CommandContext context, AppDbContext database, TRecord record, BlizzardUpdateChildRecord childRecord)
+    public async Task<HttpStatusCode> TryExecuteOn(CommandContext context, AppDbContext database, TRecord record, BlizzardUpdateChildRecord childRecord)
+    {
+        if (ShouldExecuteOn(context, database, record, out var authTokenRecord))
+        {
+            return await InternalExecuteOn(context, database, record, authTokenRecord, childRecord).ConfigureAwait(false);
+        }
+
+        return HttpStatusCode.OK;
+    }
+
+    protected virtual Task<HttpStatusCode> InternalExecuteOn(CommandContext context, AppDbContext database, TRecord record, AuthTokenRecord authTokenRecord, BlizzardUpdateChildRecord childRecord)
     {
         return Task.FromResult(HttpStatusCode.OK);
     }

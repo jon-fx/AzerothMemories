@@ -10,6 +10,7 @@ public enum BlizzardUpdateType
     Account_Korea = BlizzardRegion.Korea,
     Account_Taiwan = BlizzardRegion.Taiwan,
     Account_UnitedStates = BlizzardRegion.UnitedStates,
+    Account_Patreon,
 
     Account_Count,
 

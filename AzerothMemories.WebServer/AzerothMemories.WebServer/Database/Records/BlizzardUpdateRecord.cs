@@ -10,11 +10,17 @@ public sealed class BlizzardUpdateRecord : IDatabaseRecord
 
     [Key] public int Id { get; set; }
 
-    public AuthTokenRecord Account { get; set; }
+    [Column] public int? AccountId { get; set; }
 
-    public CharacterRecord Character { get; set; }
+    [Column] public AccountRecord Account { get; set; }
 
-    public GuildRecord Guild { get; set; }
+    [Column] public int? CharacterId { get; set; }
+
+    [Column] public CharacterRecord Character { get; set; }
+
+    [Column] public int? GuildId { get; set; }
+
+    [Column] public GuildRecord Guild { get; set; }
 
     [Column] public Instant UpdateLastModified { get; set; }
 
@@ -28,19 +34,19 @@ public sealed class BlizzardUpdateRecord : IDatabaseRecord
 
     public ICommand<HttpStatusCode> GetUpdateCommand()
     {
-        if (Account != null)
+        if (AccountId != null)
         {
-            return new Updates_UpdateAccountCommand(Account.Id);
+            return new Updates_UpdateAccountCommand(AccountId.Value);
         }
 
-        if (Character != null)
+        if (CharacterId != null)
         {
-            return new Updates_UpdateCharacterCommand(Character.Id);
+            return new Updates_UpdateCharacterCommand(CharacterId.Value);
         }
 
-        if (Guild != null)
+        if (GuildId != null)
         {
-            return new Updates_UpdateGuildCommand(Guild.Id);
+            return new Updates_UpdateGuildCommand(GuildId.Value);
         }
 
         throw new NotImplementedException();

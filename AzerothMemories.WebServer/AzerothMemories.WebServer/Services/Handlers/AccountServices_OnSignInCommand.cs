@@ -48,62 +48,61 @@ internal static class AccountServices_OnSignInCommand
             throw new NotImplementedException();
         }
 
-        if (canSignInResult)
+        Exceptions.ThrowIf(!canSignInResult);
+
+        await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
+
+        if (accountRecord == null)
         {
-            await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
-
-            if (accountRecord == null)
+            var sessionInfo = context.Operation().Items.Get<SessionInfo>();
+            if (sessionInfo == null)
             {
-                var sessionInfo = context.Operation().Items.Get<SessionInfo>();
-                if (sessionInfo == null)
-                {
-                    throw new NotImplementedException();
-                }
-
-                accountRecord = await GetOrCreateAccount(commonServices.AccountServices, database, sessionInfo.UserId).ConfigureAwait(false);
+                throw new NotImplementedException();
             }
 
-            if (string.IsNullOrWhiteSpace(accountRecord.Username))
-            {
-                var newUsername = $"User-{accountRecord.Id}";
-
-                accountRecord.Username = newUsername;
-                accountRecord.UsernameSearchable = DatabaseHelpers.GetSearchableName(newUsername);
-            }
-
-            if (authRecord != null)
-            {
-                if (authRecord.AccountId == null)
-                {
-                    authRecord.AccountId = accountRecord.Id;
-                    accountRecord.AuthTokens.Add(authRecord);
-                }
-                else if (authRecord.AccountId != accountRecord.Id)
-                {
-                    throw new NotImplementedException();
-                }
-            }
-
-            accountRecord.TryUpdateLoginConsecutiveDaysCount();
-
-            var blizzardToken = accountRecord.AuthTokens.FirstOrDefault(x => x.IsBlizzardAuthToken);
-            if (blizzardToken != null)
-            {
-                Exceptions.ThrowIf(accountRecord.BlizzardId > 0 && accountRecord.BlizzardId != blizzardToken.IdLong);
-
-                accountRecord.BlizzardId = blizzardToken.IdLong;
-                accountRecord.BattleTag = blizzardToken.Name;
-            }
-
-            var patreonToken = accountRecord.AuthTokens.FirstOrDefault(x => x.IsPatreon);
-            if (patreonToken != null)
-            {
-            }
-
-            await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-            context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+            accountRecord = await GetOrCreateAccount(commonServices.AccountServices, database, sessionInfo.UserId).ConfigureAwait(false);
         }
+
+        if (string.IsNullOrWhiteSpace(accountRecord.Username))
+        {
+            var newUsername = $"User-{accountRecord.Id}";
+
+            accountRecord.Username = newUsername;
+            accountRecord.UsernameSearchable = DatabaseHelpers.GetSearchableName(newUsername);
+        }
+
+        if (authRecord != null)
+        {
+            if (authRecord.AccountId == null)
+            {
+                authRecord.AccountId = accountRecord.Id;
+                accountRecord.AuthTokens.Add(authRecord);
+            }
+            else if (authRecord.AccountId != accountRecord.Id)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        accountRecord.TryUpdateLoginConsecutiveDaysCount();
+
+        var blizzardToken = accountRecord.AuthTokens.FirstOrDefault(x => x.IsBlizzardAuthToken);
+        if (blizzardToken != null)
+        {
+            Exceptions.ThrowIf(accountRecord.BlizzardId > 0 && accountRecord.BlizzardId != blizzardToken.IdLong);
+
+            accountRecord.BlizzardId = blizzardToken.IdLong;
+            accountRecord.BattleTag = blizzardToken.Name;
+        }
+
+        var patreonToken = accountRecord.AuthTokens.FirstOrDefault(x => x.IsPatreon);
+        if (patreonToken != null)
+        {
+        }
+
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
     }
 
     private static async Task<AccountRecord> GetOrCreateAccount(AccountServices accountServices, AppDbContext database, string userId)
@@ -146,11 +145,56 @@ internal static class AccountServices_OnSignInCommand
 
     private static bool CanBlizzardAccountSignIn(SignInCommand command, AccountRecord tempAccount, AuthTokenRecord authToken)
     {
-        return tempAccount == null;
+        if (tempAccount == null)
+        {
+            return true;
+        }
+
+        if (authToken == null)
+        {
+            return false;
+        }
+
+        if (authToken.AccountId == null)
+        {
+            return true;
+        }
+
+        if (authToken.AccountId == tempAccount.Id)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     private static bool CanPatreonAccountSignIn(SignInCommand command, AccountRecord tempAccount, AuthTokenRecord authToken)
     {
-        return tempAccount != null && tempAccount.BlizzardId != 0;
+        if (tempAccount == null)
+        {
+            return false;
+        }
+
+        if (authToken == null)
+        {
+            return false;
+        }
+
+        if (tempAccount.BlizzardId == 0)
+        {
+            return false;
+        }
+
+        if (authToken.AccountId == null)
+        {
+            return true;
+        }
+
+        if (authToken.AccountId == tempAccount.Id)
+        {
+            return true;
+        }
+
+        return false;
     }
 }

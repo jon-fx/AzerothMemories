@@ -12,12 +12,12 @@
         <PackageReference Include="Azure.Storage.Blobs" Version="12.11.0" />
         <PackageReference Include="BlazorWasmAntivirusProtection" Version="1.6.0" />
         <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="6.1.2" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.3" />
-        <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="6.0.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.4" />
+        <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="6.0.4" />
         <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.16.1" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.3" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="6.0.3" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.3">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.4">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -29,7 +29,7 @@
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
         <PackageReference Include="AspNet.Security.OAuth.BattleNet" Version="6.0.5" />
         <PackageReference Include="AspNet.Security.OAuth.Patreon" Version="6.0.5" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.4" />
     </ItemGroup>
 
     <ItemGroup>

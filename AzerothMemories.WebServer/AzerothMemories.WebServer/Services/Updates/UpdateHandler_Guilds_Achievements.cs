@@ -6,7 +6,7 @@ internal sealed class UpdateHandler_Guilds_Achievements : UpdateHandlerBaseResul
     {
     }
 
-    protected override async Task<RequestResult<GuildAchievements>> TryExecuteRequest(GuildRecord record, Instant blizzardLastModified)
+    protected override async Task<RequestResult<GuildAchievements>> TryExecuteRequest(GuildRecord record, AuthTokenRecord authTokenRecord, Instant blizzardLastModified)
     {
         var guildRef = new MoaRef(record.MoaRef);
         using var client = CommonServices.HttpClientProvider.GetWarcraftClient(guildRef.Region);

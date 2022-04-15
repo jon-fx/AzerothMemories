@@ -7,16 +7,11 @@ internal static class AccountServices_TryUpdateAuthToken
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
         {
-            //var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
-            //if (invRecord != null)
-            //{
-            //    _ = commonServices.AccountServices.DependsOnAccountRecord(invRecord.Id);
-            //    _ = commonServices.AccountServices.TryGetAccountRecordUsername(invRecord.Username);
-            //    _ = commonServices.AccountServices.TryGetAccountRecordFusionId(invRecord.FusionId);
-
-            //    _ = commonServices.AdminServices.GetAccountCount();
-            //    _ = commonServices.AdminServices.GetSessionCount();
-            //}
+            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
+            if (invRecord != null)
+            {
+                _ = commonServices.AccountServices.DependsOnAccountRecord(invRecord.Id);
+            }
 
             return default;
         }
@@ -35,6 +30,7 @@ internal static class AccountServices_TryUpdateAuthToken
         }
 
         record.Name = command.Name;
+        record.AccountId ??= command.AccountId;
         record.Token = command.AccessToken;
         record.RefreshToken = command.RefreshToken;
         record.TokenExpiresAt = Instant.FromUnixTimeMilliseconds(command.TokenExpiresAt);
@@ -42,6 +38,12 @@ internal static class AccountServices_TryUpdateAuthToken
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        return true;
+        if (record.AccountId.HasValue)
+        {
+            context.Operation().Items.Set(new Account_InvalidateAccountRecord(record.AccountId.Value, null, null));
+        }
+
+        var result = !command.AccountId.HasValue || command.AccountId == record.AccountId;
+        return result;
     }
 }
