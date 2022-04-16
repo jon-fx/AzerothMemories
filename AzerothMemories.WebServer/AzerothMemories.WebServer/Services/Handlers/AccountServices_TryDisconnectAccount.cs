@@ -34,10 +34,17 @@ internal static class AccountServices_TryDisconnectAccount
         }
 
         await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
-        database.Attach(authToken);
+        database.Attach(accountRecord);
+
+        if (authToken.IsPatreon && accountRecord.AccountType >= AccountType.Tier1 && accountRecord.AccountType <= AccountType.Tier3)
+        {
+            accountRecord.AccountType = AccountType.Default;
+        }
 
         authToken.Account = null;
         authToken.AccountId = null;
+
+        accountRecord.AuthTokens.Remove(authToken);
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
