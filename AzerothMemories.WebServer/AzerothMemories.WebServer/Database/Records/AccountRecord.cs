@@ -77,6 +77,7 @@ public sealed class AccountRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVe
                SocialTwitch,
                SocialYouTube,
             },
+            LinkedLogins = GetLinkedLogins(activeOrAdmin),
             BanReason = BanReason,
             BanExpireTime = BanExpireTime.ToUnixTimeMilliseconds(),
             FollowingViewModels = RemoveNoneStatus(followingViewModels),
@@ -99,6 +100,20 @@ public sealed class AccountRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVe
         }
 
         return viewModel;
+    }
+
+    private AccountViewModelLinks[] GetLinkedLogins(bool activeOrAdmin)
+    {
+        var results = new List<AccountViewModelLinks>();
+        foreach (var authToken in AuthTokens)
+        {
+            if (authToken.IsPatreon && activeOrAdmin)
+            {
+                results.Add(new AccountViewModelLinks { Id = authToken.Id, Name = authToken.Name, Key = authToken.Key});
+            }
+            
+        }
+        return results.ToArray();
     }
 
     private static Dictionary<int, AccountFollowingViewModel> RemoveNoneStatus(Dictionary<int, AccountFollowingViewModel> viewModels)

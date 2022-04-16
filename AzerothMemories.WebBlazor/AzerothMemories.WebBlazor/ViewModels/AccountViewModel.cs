@@ -44,6 +44,8 @@ public sealed class AccountViewModel
 
     [JsonInclude] public Dictionary<int, AccountFollowingViewModel> FollowersViewModels = new();
 
+    [JsonInclude] public AccountViewModelLinks[] LinkedLogins { get; set; }
+
     [JsonIgnore] public bool CanInteract => SystemClock.Instance.GetCurrentInstant() > Instant.FromUnixTimeMilliseconds(BanExpireTime);
 
     [JsonIgnore] public bool CanChangeUsername => Username.Contains('-') || SystemClock.Instance.GetCurrentInstant() > Instant.FromUnixTimeMilliseconds(NextUsernameChangedTime);

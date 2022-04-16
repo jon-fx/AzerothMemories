@@ -45,6 +45,10 @@ public interface IAccountServices
     [Post(nameof(TryChangeSocialLink))]
     Task<string> TryChangeSocialLink([Body] Account_TryChangeSocialLink command, CancellationToken cancellationToken = default);
 
+    [CommandHandler]
+    [Post(nameof(TryDisconnectAccount))]
+    Task<bool> TryDisconnectAccount([Body] Account_TryDisconnectAccount command, CancellationToken cancellationToken = default);
+
     [ComputeMethod]
     [Get(nameof(TryGetAchievementsByTime) + "/{timeStamp}/{diffInSeconds}")]
     Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, [Path] long timeStamp, [Path] int diffInSeconds, [Query] ServerSideLocale locale);

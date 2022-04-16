@@ -313,6 +313,12 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, ID
     }
 
     [CommandHandler]
+    public virtual async Task<bool> TryDisconnectAccount(Account_TryDisconnectAccount command, CancellationToken cancellationToken = default)
+    {
+        return await AccountServices_TryDisconnectAccount.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+    }
+
+    [CommandHandler]
     public virtual async Task<bool> AddNewHistoryItem(Account_AddNewHistoryItem command, CancellationToken cancellationToken = default)
     {
         return await AccountServices_AddNewHistoryItem.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);

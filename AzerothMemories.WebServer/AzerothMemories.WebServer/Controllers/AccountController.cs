@@ -89,6 +89,12 @@ public sealed class AccountController : ControllerBase, IAccountServices
         return _commonServices.AccountServices.TryChangeSocialLink(command, cancellationToken);
     }
 
+    [HttpPost]
+    public Task<bool> TryDisconnectAccount([FromBody] Account_TryDisconnectAccount command, CancellationToken cancellationToken = default)
+    {
+        return _commonServices.AccountServices.TryDisconnectAccount(command, cancellationToken);
+    }
+
     [HttpGet("{timeStamp}/{diffInSeconds}"), Publish]
     public Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, [FromRoute] long timeStamp, [FromRoute] int diffInSeconds, [FromQuery] ServerSideLocale locale)
     {

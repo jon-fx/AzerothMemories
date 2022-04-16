@@ -63,10 +63,23 @@
                         <MudItem xs="12">
                             <MudSwitch T="bool" Checked="@ViewModel.AccountViewModel.IsPrivate" Color="Color.Primary" Label="Private" CheckedChanged="ViewModel.OnIsPrivateChanged " />
                         </MudItem>
-
-                        <MudItem xs="12">
-                            <MudButton Variant="Variant.Filled" FullWidth="true" OnClick="@(_ => ViewModel.OnSignIn(_clientAuthHelper, "Patreon"))">Connect Patreon</MudButton>
-                        </MudItem>
+                        
+                        @foreach(var info in @ViewModel.SocialLogins)
+                        {
+                            var current = ViewModel.AccountViewModel.LinkedLogins.FirstOrDefault(x => x.Key.StartsWith($"{info}/"));
+                            if (current == null)
+                            {
+                                <MudItem xs="12">
+                                    <MudButton Variant="Variant.Filled" FullWidth="true" OnClick="@(_ => ViewModel.OnConnect(_clientAuthHelper, info))">Connect Patreon</MudButton>
+                                </MudItem>
+                            }
+                            else
+                            {
+                                <MudItem xs="12">
+                                    <MudButton Variant="Variant.Filled" FullWidth="true" OnClick="@(_ => ViewModel.OnDisconnect(_clientAuthHelper, info, current.Key))">Disconnect Patreon (@current.Id - @current.Name)</MudButton>
+                                </MudItem>
+                            }
+                        }
 
                         @foreach (var link in SocialHelpers.All)
                         {

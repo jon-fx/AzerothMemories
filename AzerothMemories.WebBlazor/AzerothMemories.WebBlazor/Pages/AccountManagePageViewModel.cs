@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
+﻿using System.Collections;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace AzerothMemories.WebBlazor.Pages;
 
@@ -25,6 +26,8 @@ public sealed class AccountManagePageViewModel : ViewModelBase
     public string AvatarLink { get; private set; }
 
     public string CustomAvatarLink { get; private set; }
+
+    public List<string> SocialLogins { get; } = new() { "Patreon" };
 
     public override async Task ComputeState(CancellationToken cancellationToken)
     {
@@ -363,8 +366,13 @@ public sealed class AccountManagePageViewModel : ViewModelBase
         var result = await Services.ClientServices.CommandRunner.Run(new Character_TrySetCharacterRenamedOrTransferred(Session.Default, oldCharacter.Id, newCharacter.Id));
     }
 
-    public async Task OnSignIn(ClientAuthHelper clientAuthHelper, string schema)
+    public async Task OnConnect(ClientAuthHelper clientAuthHelper, string schema)
     {
         await clientAuthHelper.SignIn(schema);
+    }
+
+    public async Task OnDisconnect(ClientAuthHelper clientAuthHelper, string schema, string key)
+    {
+        await Services.ClientServices.CommandRunner.Run(new Account_TryDisconnectAccount(Session.Default, schema, key));
     }
 }
