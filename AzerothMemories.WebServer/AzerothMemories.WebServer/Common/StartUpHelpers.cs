@@ -25,8 +25,6 @@ internal static class StartUpHelpers
             options.AuthorizationEndpoint = "https://oauth.battle.net/oauth/authorize";
             options.UserInformationEndpoint = "https://oauth.battle.net/oauth/userinfo";
 
-            //options.SaveTokens = false;
-            //options.Scope.Add("openid");
             options.Scope.Add("wow.profile");
 
             options.Events.OnCreatingTicket += OnBlizzardCreatingTicket;
@@ -116,10 +114,6 @@ internal static class StartUpHelpers
             options.ClientId = commonConfig.PatreonClientId;
             options.ClientSecret = commonConfig.PatreonClientSecret;
             options.CallbackPath = "/authorization-code/callback/patreon";
-
-            //options.SaveTokens = false;
-            //options.ClaimActions.MapJsonKey("Patreon-Id", "id");
-            //options.ClaimActions.MapJsonSubKey("Patreon-Tag", "attributes", "full_name");
 
             options.Events.OnCreatingTicket += OnPatreonCreatingTicket;
             options.Events.OnTicketReceived += OnPatreonTicketReceived;
