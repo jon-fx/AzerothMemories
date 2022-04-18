@@ -1,4 +1,5 @@
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("AzerothMemories.WebServer.Tests")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("AzerothMemories.WebServer.TestsFake")]
 
 var config = new CommonConfig();
 var builder = WebApplication.CreateBuilder(args);

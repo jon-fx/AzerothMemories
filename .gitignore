@@ -260,4 +260,4 @@ paket-files/
 __pycache__/
 *.pyc
 /AzerothMemories.WebBlazor/AzerothMemories.WebBlazor/wwwroot/Media
-/AzerothMemories.WebServer.Tests
+/AzerothMemories.X-DoNotCommit

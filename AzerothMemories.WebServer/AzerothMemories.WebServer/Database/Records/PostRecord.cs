@@ -102,7 +102,7 @@ public sealed class PostRecord : IDatabaseRecordWithVersion
 
         if (PostAvatar != null)
         {
-            viewModel.PostAvatar = viewModel.SystemTags.First(x => x.TagString == PostAvatar).Image;
+            viewModel.PostAvatar = viewModel.SystemTags.FirstOrDefault(x => x.TagString == PostAvatar)?.Image;
         }
 
         if (!canSeePost)

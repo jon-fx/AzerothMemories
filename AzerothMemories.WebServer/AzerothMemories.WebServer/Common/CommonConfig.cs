@@ -59,6 +59,8 @@ public sealed class CommonConfig
     public string PatreonClientId { get; set; } = "***REMOVED***";
 
     public string PatreonClientSecret { get; set; } = "***REMOVED***";
+    
+    public string PatreonCreatorsAccessToken { get; set; } = "***REMOVED***";
 
     public const int PostsPerPage = 10;
     public const int CommentsPerPage = 20;

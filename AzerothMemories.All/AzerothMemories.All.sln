@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzerothMemories.WebServer",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzerothMemories.Database", "..\AzerothMemories.Database\AzerothMemories.Database\AzerothMemories.Database.csproj", "{CC515ADE-1436-4204-ADC7-D393729E984C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzerothMemories.WebServer.Tests", "..\AzerothMemories.WebServer.Tests\AzerothMemories.WebServer.Tests\AzerothMemories.WebServer.Tests.csproj", "{9DC25E22-3285-487D-9DB6-0D7BF2D38F1A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzerothMemories.WebServer.TestsFake", "..\AzerothMemories.WebServer.TestsFake\AzerothMemories.WebServer.TestsFake\AzerothMemories.WebServer.TestsFake.csproj", "{6F436C62-46C5-46F5-BB85-6CAF75E222FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{CC515ADE-1436-4204-ADC7-D393729E984C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC515ADE-1436-4204-ADC7-D393729E984C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC515ADE-1436-4204-ADC7-D393729E984C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DC25E22-3285-487D-9DB6-0D7BF2D38F1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DC25E22-3285-487D-9DB6-0D7BF2D38F1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DC25E22-3285-487D-9DB6-0D7BF2D38F1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DC25E22-3285-487D-9DB6-0D7BF2D38F1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F436C62-46C5-46F5-BB85-6CAF75E222FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F436C62-46C5-46F5-BB85-6CAF75E222FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F436C62-46C5-46F5-BB85-6CAF75E222FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F436C62-46C5-46F5-BB85-6CAF75E222FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
