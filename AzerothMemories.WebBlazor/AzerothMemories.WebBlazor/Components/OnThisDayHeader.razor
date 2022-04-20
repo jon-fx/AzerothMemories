@@ -81,14 +81,12 @@ else
 
                         @foreach (var memory in userData.MyMemories)
                         {
+                            var link = $"post/{memory.AccountId}/{memory.PostId}";
+                            var postTimeString = Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(memory.PostTime, true);
+                            var postCreatedTimeString = Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(memory.PostCreatedTime, true);
+                            var blobPreviewInfo = memory.GetBlobPreviewInfo(postTimeString);
+
                             <MudGrid Class="@ClassPresets.DefaultPadding" Justify="Justify.Center">
-                                @{
-                                    var link = $"post/{memory.AccountId}/{memory.PostId}";
-                                    var postTimeString = Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(memory.PostTime, true);
-                                    var postCreatedTimeString = Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(memory.PostCreatedTime, true);
-                                    var blobPreviewInfo = memory.GetBlobPreviewInfo(postTimeString);
-                                }
-                                
                                 <MudItem xs="12">
                                     <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center">
                                         <a href="@link">
@@ -117,8 +115,8 @@ else
 
                                         _allBlobInfos.Add(blobInfo);
 
-                                        <MudItem xs="12" sm="3">
-                                            <MudImage ObjectFit="ObjectFit.Cover" Fluid="true" Src="@blobInfo.Source" @onclick="() => OnImageClicked(blobIndex)"/>
+                                        <MudItem xs="12" sm="3" Class="d-flex justify-center">
+                                            <MudImage ObjectFit="ObjectFit.Cover" ObjectPosition="ObjectPosition.Center" Fluid="true" Src="@blobInfo.Source" @onclick="() => OnImageClicked(blobIndex)"/>
                                         </MudItem>
                                     }
                                 }
