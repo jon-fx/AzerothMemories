@@ -2,11 +2,11 @@
 
 [RegisterComputeService]
 [RegisterAlias(typeof(IPostServices))]
-public class PostServices : DbServiceBase<AppDbContext>, IPostServices, IDatabaseContextProvider
+public class PostServices : IPostServices
 {
     private readonly CommonServices _commonServices;
 
-    public PostServices(IServiceProvider services, CommonServices commonServices) : base(services)
+    public PostServices(CommonServices commonServices)
     {
         _commonServices = commonServices;
     }
@@ -149,7 +149,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices, IDatabas
     [CommandHandler]
     public virtual async Task<PostRecord> TryUpdatePostViewCount(Post_UpdateViewCount command, CancellationToken cancellationToken = default)
     {
-        return await PostServices_UpdateViewCount.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await PostServices_UpdateViewCount.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     public Task<AddMemoryResult> TryPostMemory(Session session, byte[] buffer)
@@ -206,7 +206,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices, IDatabas
     [CommandHandler]
     public virtual async Task<AddMemoryResult> TryPostMemory(Post_TryPostMemory command, CancellationToken cancellationToken = default)
     {
-        return await PostServices_TryPostMemory.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await PostServices_TryPostMemory.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -229,13 +229,13 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices, IDatabas
     [CommandHandler]
     public virtual async Task<int> TryReactToPost(Post_TryReactToPost command, CancellationToken cancellationToken = default)
     {
-        return await PostServices_TryReactToPost.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await PostServices_TryReactToPost.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [ComputeMethod]
     public virtual async Task<Dictionary<int, PostReactionViewModel>> TryGetPostReactions(int postId)
     {
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var query = from r in database.PostReactions
                     where r.PostId == postId && r.Reaction != PostReaction.None
@@ -256,7 +256,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices, IDatabas
     [ComputeMethod]
     public virtual async Task<Dictionary<int, PostReactionViewModel>> TryGetPostCommentReactions(int commentId)
     {
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var query = from r in database.PostCommentReactions
                     where r.CommentId == commentId && r.Reaction != PostReaction.None
@@ -346,7 +346,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices, IDatabas
     [ComputeMethod]
     protected virtual async Task<PostCommentPageViewModel> TryGetPostCommentsByPage(int postId, int page, int focusedCommentId)
     {
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var allCommentPages = await TryGetAllPostComments(postId).ConfigureAwait(false);
         if (allCommentPages.Length == 1)
@@ -370,7 +370,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices, IDatabas
     [ComputeMethod]
     public virtual async Task<PostCommentPageViewModel[]> TryGetAllPostComments(int postId)
     {
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var query = from c in database.PostComments
                     from a in database.Accounts.Where(r => r.Id == c.AccountId)
@@ -462,67 +462,67 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices, IDatabas
     [CommandHandler]
     public virtual async Task<bool> TryRestoreMemory(Post_TryRestoreMemory command, CancellationToken cancellationToken = default)
     {
-        return await PostServices_TryRestoreMemory.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await PostServices_TryRestoreMemory.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<int> TryPublishComment(Post_TryPublishComment command, CancellationToken cancellationToken = default)
     {
-        return await PostServices_TryPublishComment.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await PostServices_TryPublishComment.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<int> TryReactToPostComment(Post_TryReactToPostComment command, CancellationToken cancellationToken = default)
     {
-        return await PostServices_TryReactToPostComment.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await PostServices_TryReactToPostComment.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<byte?> TrySetPostVisibility(Post_TrySetPostVisibility command, CancellationToken cancellationToken = default)
     {
-        return await PostServices_TrySetPostVisibility.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await PostServices_TrySetPostVisibility.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<long> TryDeletePost(Post_TryDeletePost command, CancellationToken cancellationToken = default)
     {
-        return await PostServices_TryDeletePost.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await PostServices_TryDeletePost.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<long> TryDeleteComment(Post_TryDeleteComment command, CancellationToken cancellationToken = default)
     {
-        return await PostServices_TryDeleteComment.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await PostServices_TryDeleteComment.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> TryReportPost(Post_TryReportPost command, CancellationToken cancellationToken = default)
     {
-        return await PostServices_TryReportPost.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await PostServices_TryReportPost.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> TryReportPostComment(Post_TryReportPostComment command, CancellationToken cancellationToken = default)
     {
-        return await PostServices_TryReportPostComment.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await PostServices_TryReportPostComment.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> TryReportPostTags(Post_TryReportPostTags command, CancellationToken cancellationToken = default)
     {
-        return await PostServices_TryReportPostTags.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await PostServices_TryReportPostTags.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<AddMemoryResultCode> TryUpdateSystemTags(Post_TryUpdateSystemTags command, CancellationToken cancellationToken = default)
     {
-        return await PostServices_TryUpdateSystemTags.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await PostServices_TryUpdateSystemTags.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [ComputeMethod]
     public virtual async Task<Dictionary<int, PostCommentReactionViewModel>> TryGetMyCommentReactions(int activeAccountId, int postId)
     {
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var query = from reaction in database.PostCommentReactions
                     from comment in database.PostComments.Where(pr => pr.Id == reaction.CommentId)
@@ -537,7 +537,7 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices, IDatabas
     {
         await DependsOnPost(postId).ConfigureAwait(false);
 
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         return await database.Posts.FirstOrDefaultAsync(p => p.DeletedTimeStamp == 0 && p.Id == postId).ConfigureAwait(false);
     }
@@ -567,17 +567,12 @@ public class PostServices : DbServiceBase<AppDbContext>, IPostServices, IDatabas
     [ComputeMethod]
     public virtual async Task<PostTagRecord[]> GetAllPostTags(int postId)
     {
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var allTags = from tag in database.PostTags
                       where tag.PostId == postId && (tag.TagKind == PostTagKind.Post || tag.TagKind == PostTagKind.PostComment || tag.TagKind == PostTagKind.PostRestored)
                       select tag;
 
         return await allTags.ToArrayAsync().ConfigureAwait(false);
-    }
-    
-    public Task<AppDbContext> CreateCommandDbContextNow(CancellationToken cancellationToken)
-    {
-        return CreateCommandDbContext(true, cancellationToken);
     }
 }

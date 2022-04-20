@@ -1,16 +1,16 @@
-﻿using Humanizer;
+﻿using Azure.Storage.Blobs;
+using Humanizer;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Gif;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using System.Security.Cryptography;
 using System.Text;
-using Azure.Storage.Blobs;
 
 namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class PostServices_TryPostMemory
 {
-    public static async Task<AddMemoryResult> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryPostMemory command, CancellationToken cancellationToken)
+    public static async Task<AddMemoryResult> TryHandle(CommonServices commonServices, Post_TryPostMemory command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -128,7 +128,7 @@ internal static class PostServices_TryPostMemory
             return new AddMemoryResult(AddMemoryResultCode.InvalidTags);
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
 
         var uploadAndSortResult = await UploadAndSortImages(commonServices, database, activeAccount, postRecord, command.ImageData, cancellationToken).ConfigureAwait(false);
         if (uploadAndSortResult != AddMemoryResultCode.Success)
@@ -330,7 +330,6 @@ internal static class PostServices_TryPostMemory
                         blobName = $"{accountViewModel.Id}-{Guid.NewGuid()}.{extension}";
                         blobClient = new BlobClient(commonServices.Config.BlobStorageConnectionString, ZExtensions.BlobUserUploads, blobName);
                         blobExists = await blobClient.ExistsAsync(cancellationToken).ConfigureAwait(false);
-
                     } while (blobExists);
 
                     var result = await blobClient.UploadAsync(blobData, cancellationToken).ConfigureAwait(false);

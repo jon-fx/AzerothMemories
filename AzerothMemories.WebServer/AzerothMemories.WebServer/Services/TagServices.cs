@@ -2,11 +2,11 @@
 
 [RegisterComputeService]
 [RegisterAlias(typeof(ITagServices))]
-public class TagServices : DbServiceBase<AppDbContext>, ITagServices
+public class TagServices : ITagServices
 {
     private readonly CommonServices _commonServices;
 
-    public TagServices(IServiceProvider services, CommonServices commonServices) : base(services)
+    public TagServices(CommonServices commonServices)
     {
         _commonServices = commonServices;
     }
@@ -21,7 +21,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
     [ComputeMethod]
     protected virtual async Task<HashSet<string>> GetAllRealmSlugs()
     {
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var query = from r in database.BlizzardData
                     where r.TagType == PostTagType.Realm
@@ -60,7 +60,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
             return new PostTagInfo(tagType, tagId, hashTagText, null);
         }
 
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var tagString = PostTagInfo.GetTagString(tagType, tagId);
         //var record = await database.BlizzardData.FirstOrDefaultAsync(r => r.TagType == tagType && r.TagId == tagId);
@@ -76,7 +76,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
     [ComputeMethod]
     public virtual async Task<PostTagInfo> TryGetUserTagInfo(PostTagType tagType, int tagId)
     {
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         if (tagType == PostTagType.Account)
         {
@@ -143,7 +143,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
     [ComputeMethod]
     protected virtual async Task<PostTagInfo[]> Search(string searchString, ServerSideLocale locale)
     {
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var query = ServerLocaleHelpers.GetSearchQuery(database, locale, searchString);
         var records = await query.ToArrayAsync().ConfigureAwait(false);
@@ -290,7 +290,7 @@ public class TagServices : DbServiceBase<AppDbContext>, ITagServices
     [ComputeMethod]
     protected virtual async Task<(bool Exists, Instant MinTagTime)> IsValidTagIdWithBlizzardDataSanityChecks(PostTagType tagType, int tagId)
     {
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var tagString = PostTagInfo.GetTagString(tagType, tagId);
         var query = from record in database.BlizzardData

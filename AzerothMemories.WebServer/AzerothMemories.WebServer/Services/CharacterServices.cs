@@ -2,11 +2,11 @@
 
 [RegisterComputeService]
 [RegisterAlias(typeof(ICharacterServices))]
-public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices, IDatabaseContextProvider
+public class CharacterServices : ICharacterServices
 {
     private readonly CommonServices _commonServices;
 
-    public CharacterServices(IServiceProvider services, CommonServices commonServices) : base(services)
+    public CharacterServices(CommonServices commonServices) : base()
     {
         _commonServices = commonServices;
     }
@@ -20,7 +20,7 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
     [ComputeMethod]
     public virtual async Task<CharacterRecord> TryGetCharacterRecord(int id)
     {
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
         var record = await database.Characters.FirstOrDefaultAsync(a => a.Id == id).ConfigureAwait(false);
 
         if (record != null)
@@ -44,7 +44,7 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
         Exceptions.ThrowIf(moaRef.IsWildCard);
         Exceptions.ThrowIf(!moaRef.IsValidCharacter);
 
-        await using var database = CreateDbContext(true);
+        await using var database = _commonServices.DatabaseHub.CreateDbContext(true);
         var characterRecord = await (from r in database.Characters
                                      where r.MoaRef == moaRef.Full
                                      select r).FirstOrDefaultAsync().ConfigureAwait(false);
@@ -92,7 +92,7 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
     {
         //await _commonServices.AccountServices.DependsOnAccountRecord(accountId);
 
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var allCharacters = await database.Characters.Where(x => x.AccountId == accountId).ToArrayAsync().ConfigureAwait(false);
         var results = new Dictionary<int, CharacterViewModel>();
@@ -110,7 +110,7 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
     [CommandHandler]
     public virtual async Task<bool> TryChangeCharacterAccountSync(Character_TryChangeCharacterAccountSync command, CancellationToken cancellationToken = default)
     {
-        return await CharacterServices_TryChangeCharacterAccountSync.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await CharacterServices_TryChangeCharacterAccountSync.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -180,19 +180,19 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
     [CommandHandler]
     public virtual async Task<bool> TrySetCharacterDeleted(Character_TrySetCharacterDeleted command, CancellationToken cancellationToken = default)
     {
-        return await CharacterServices_TrySetCharacterDeleted.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await CharacterServices_TrySetCharacterDeleted.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> TrySetCharacterRenamedOrTransferred(Character_TrySetCharacterRenamedOrTransferred command, CancellationToken cancellationToken = default)
     {
-        return await CharacterServices_TrySetCharacterRenamedOrTransferred.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await CharacterServices_TrySetCharacterRenamedOrTransferred.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [ComputeMethod]
     protected virtual async Task<MoaRef> GetFullCharacterRef(BlizzardRegion region, string realmSlug, string characterName)
     {
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var moaRef = MoaRef.GetCharacterRef(region, realmSlug, characterName, -1);
         var query = from r in database.Characters
@@ -213,10 +213,5 @@ public class CharacterServices : DbServiceBase<AppDbContext>, ICharacterServices
         }
 
         return null;
-    }
-    
-    public Task<AppDbContext> CreateCommandDbContextNow(CancellationToken cancellationToken)
-    {
-        return CreateCommandDbContext(true, cancellationToken);
     }
 }

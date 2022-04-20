@@ -6,7 +6,7 @@ namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class AccountServices_TryChangeAvatarUpload
 {
-    public static async Task<string> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Account_TryChangeAvatarUpload command, CancellationToken cancellationToken)
+    public static async Task<string> TryHandle(CommonServices commonServices, Account_TryChangeAvatarUpload command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -89,7 +89,7 @@ internal static class AccountServices_TryChangeAvatarUpload
         }
 
         var accountRecord = await commonServices.AccountServices.TryGetActiveAccountRecord(command.Session).ConfigureAwait(false);
-        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(accountRecord);
         accountRecord.Avatar = newAvatar;
         accountRecord.AccountFlags = avatarIndex == 0 ? accountRecord.AccountFlags | AccountFlags.SecondAvatarIndex : accountRecord.AccountFlags & ~AccountFlags.SecondAvatarIndex;

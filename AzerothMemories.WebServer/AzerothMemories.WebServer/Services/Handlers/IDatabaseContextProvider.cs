@@ -1,6 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Services.Handlers;
+﻿//namespace AzerothMemories.WebServer.Services.Handlers;
 
-internal interface IDatabaseContextProvider
-{
-    Task<AppDbContext> CreateCommandDbContextNow(CancellationToken cancellationToken);
-}
+//internal interface IDatabaseContextProvider
+//{
+//    Task<AppDbContext> CreateCommandDbContextNow(CancellationToken cancellationToken);
+//}

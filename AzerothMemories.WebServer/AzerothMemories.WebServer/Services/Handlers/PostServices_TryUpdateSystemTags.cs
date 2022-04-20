@@ -2,7 +2,7 @@
 
 internal static class PostServices_TryUpdateSystemTags
 {
-    public static async Task<AddMemoryResultCode> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryUpdateSystemTags command, CancellationToken cancellationToken)
+    public static async Task<AddMemoryResultCode> TryHandle(CommonServices commonServices, Post_TryUpdateSystemTags command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -68,7 +68,7 @@ internal static class PostServices_TryUpdateSystemTags
             return AddMemoryResultCode.SessionNotFound;
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
 
         var postRecord = await database.Posts.Include(x => x.PostTags).FirstOrDefaultAsync(p => p.DeletedTimeStamp == 0 && p.Id == postId, cancellationToken).ConfigureAwait(false);
         if (postRecord == null)

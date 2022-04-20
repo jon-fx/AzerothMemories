@@ -2,11 +2,11 @@
 
 [RegisterComputeService]
 [RegisterAlias(typeof(IFollowingServices))]
-public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices, IDatabaseContextProvider
+public class FollowingServices : IFollowingServices
 {
     private readonly CommonServices _commonServices;
 
-    public FollowingServices(IServiceProvider services, CommonServices commonServices) : base(services)
+    public FollowingServices(CommonServices commonServices)
     {
         _commonServices = commonServices;
     }
@@ -19,7 +19,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             return new Dictionary<int, AccountFollowingViewModel>();
         }
 
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var followingQuery = from record in database.AccountFollowing
                              where record.AccountId == accountId
@@ -45,7 +45,7 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             return new Dictionary<int, AccountFollowingViewModel>();
         }
 
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var followersQuery = from record in database.AccountFollowing
                              where record.FollowerId == accountId
@@ -66,25 +66,25 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
     [CommandHandler]
     public virtual async Task<AccountFollowingStatus?> TryStartFollowing(Following_TryStartFollowing command, CancellationToken cancellationToken = default)
     {
-        return await FollowingServices_TryStartFollowing.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await FollowingServices_TryStartFollowing.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<AccountFollowingStatus?> TryStopFollowing(Following_TryStopFollowing command, CancellationToken cancellationToken = default)
     {
-        return await FollowingServices_TryStopFollowing.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await FollowingServices_TryStopFollowing.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<AccountFollowingStatus?> TryAcceptFollower(Following_TryAcceptFollower command, CancellationToken cancellationToken = default)
     {
-        return await FollowingServices_TryAcceptFollower.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await FollowingServices_TryAcceptFollower.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<AccountFollowingStatus?> TryRemoveFollower(Following_TryRemoveFollower command, CancellationToken cancellationToken = default)
     {
-        return await FollowingServices_TryRemoveFollower.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await FollowingServices_TryRemoveFollower.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     public void InvalidateFollowing(Following_InvalidateRecord record)
@@ -105,10 +105,5 @@ public class FollowingServices : DbServiceBase<AppDbContext>, IFollowingServices
             _ = TryGetAccountFollowing(record.OtherAccountId);
             _ = TryGetAccountFollowers(record.OtherAccountId);
         }
-    }
-    
-    public Task<AppDbContext> CreateCommandDbContextNow(CancellationToken cancellationToken)
-    {
-        return CreateCommandDbContext(true, cancellationToken);
     }
 }

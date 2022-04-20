@@ -2,7 +2,7 @@
 
 internal static class PostServices_TryReportPostComment
 {
-    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryReportPostComment command, CancellationToken cancellationToken)
+    public static async Task<bool> TryHandle(CommonServices commonServices, Post_TryReportPostComment command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -57,7 +57,7 @@ internal static class PostServices_TryReportPostComment
             reasonText = reasonText[..ZExtensions.MaxPostCommentLength];
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
 
         var reportQueryResult = await database.PostCommentReports.FirstOrDefaultAsync(r => r.CommentId == commentId && r.AccountId == activeAccount.Id, cancellationToken).ConfigureAwait(false);
         if (reportQueryResult == null)

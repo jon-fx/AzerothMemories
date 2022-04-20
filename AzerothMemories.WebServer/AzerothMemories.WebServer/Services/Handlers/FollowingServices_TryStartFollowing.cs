@@ -2,7 +2,7 @@
 
 internal static class FollowingServices_TryStartFollowing
 {
-    public static async Task<AccountFollowingStatus?> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Following_TryStartFollowing command, CancellationToken cancellationToken)
+    public static async Task<AccountFollowingStatus?> TryHandle(CommonServices commonServices, Following_TryStartFollowing command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -31,7 +31,7 @@ internal static class FollowingServices_TryStartFollowing
         }
 
         var followingViewModels = await commonServices.FollowingServices.TryGetAccountFollowing(activeAccount.Id).ConfigureAwait(false);
-        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
 
         var otherAccountViewModel = await commonServices.AccountServices.TryGetAccountRecord(otherAccountId).ConfigureAwait(false);
         if (otherAccountViewModel == null)

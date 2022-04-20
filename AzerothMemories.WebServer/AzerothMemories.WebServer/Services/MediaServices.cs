@@ -6,12 +6,12 @@ using SixLabors.ImageSharp.Processing;
 namespace AzerothMemories.WebServer.Services;
 
 [RegisterComputeService]
-public class MediaServices : DbServiceBase<AppDbContext>
+public class MediaServices
 {
     private readonly CommonServices _commonServices;
     private readonly int[] _imageSizes;
 
-    public MediaServices(IServiceProvider services, CommonServices commonServices) : base(services)
+    public MediaServices(CommonServices commonServices)
     {
         _commonServices = commonServices;
         _imageSizes = new[] { 600, 960, 1280, 1920, 2560, 0 };
@@ -158,7 +158,7 @@ public class MediaServices : DbServiceBase<AppDbContext>
             return await TryGetUserUpload_Default().ConfigureAwait(false);
         }
 
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var postRecord = await database.UploadLogs.Where(x => x.BlobName == fileName).FirstOrDefaultAsync().ConfigureAwait(false);
         if (postRecord == null)

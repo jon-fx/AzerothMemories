@@ -2,7 +2,7 @@
 
 internal static class FollowingServices_TryRemoveFollower
 {
-    public static async Task<AccountFollowingStatus?> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Following_TryRemoveFollower command, CancellationToken cancellationToken)
+    public static async Task<AccountFollowingStatus?> TryHandle(CommonServices commonServices, Following_TryRemoveFollower command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -36,7 +36,7 @@ internal static class FollowingServices_TryRemoveFollower
             return null;
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
 
         var currentRecord = await database.AccountFollowing.FirstAsync(x => x.Id == viewModel.Id, cancellationToken).ConfigureAwait(false);
         currentRecord.Status = viewModel.Status = AccountFollowingStatus.None;

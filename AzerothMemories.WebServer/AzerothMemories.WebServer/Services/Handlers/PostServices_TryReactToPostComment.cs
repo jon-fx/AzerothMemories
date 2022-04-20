@@ -2,7 +2,7 @@
 
 internal static class PostServices_TryReactToPostComment
 {
-    public static async Task<int> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryReactToPostComment command, CancellationToken cancellationToken)
+    public static async Task<int> TryHandle(CommonServices commonServices, Post_TryReactToPostComment command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -61,7 +61,7 @@ internal static class PostServices_TryReactToPostComment
             return 0;
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         var commentRecord = database.PostComments.First(x => x.Id == commentId);
 
         var newReaction = command.NewReaction;

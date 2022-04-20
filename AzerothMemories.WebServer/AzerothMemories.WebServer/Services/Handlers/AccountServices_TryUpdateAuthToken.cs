@@ -2,7 +2,7 @@
 
 internal static class AccountServices_TryUpdateAuthToken
 {
-    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Account_TryUpdateAuthToken command, CancellationToken cancellationToken)
+    public static async Task<bool> TryHandle(CommonServices commonServices, Account_TryUpdateAuthToken command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -17,7 +17,7 @@ internal static class AccountServices_TryUpdateAuthToken
         }
 
         var key = $"{command.Type}/{command.Id}";
-        var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
+        var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         var record = await database.AuthTokens.FirstOrDefaultAsync(x => x.Key == key, cancellationToken).ConfigureAwait(false);
         if (record == null)
         {

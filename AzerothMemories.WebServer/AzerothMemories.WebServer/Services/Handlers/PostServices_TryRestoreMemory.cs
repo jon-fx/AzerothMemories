@@ -2,7 +2,7 @@
 
 internal static class PostServices_TryRestoreMemory
 {
-    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryRestoreMemory command, CancellationToken cancellationToken)
+    public static async Task<bool> TryHandle(CommonServices commonServices, Post_TryRestoreMemory command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -71,7 +71,7 @@ internal static class PostServices_TryRestoreMemory
             return false;
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
 
         if (accountTagToRemove != null)
         {

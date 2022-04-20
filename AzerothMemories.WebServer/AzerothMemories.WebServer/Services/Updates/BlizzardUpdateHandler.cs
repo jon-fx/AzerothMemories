@@ -2,13 +2,13 @@
 
 namespace AzerothMemories.WebServer.Services.Updates;
 
-internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
+internal sealed class BlizzardUpdateHandler
 {
     private readonly CommonServices _commonServices;
     private readonly BlizzardUpdateServices _blizzardUpdateServices;
     private readonly Duration[] _durationsBetweenUpdates;
 
-    public BlizzardUpdateHandler(IServiceProvider services, CommonServices commonServices, BlizzardUpdateServices blizzardUpdateServices) : base(services)
+    public BlizzardUpdateHandler(CommonServices commonServices, BlizzardUpdateServices blizzardUpdateServices)
     {
         _commonServices = commonServices;
         _blizzardUpdateServices = blizzardUpdateServices;
@@ -56,7 +56,6 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
         var requiresUpdate = record.UpdateRecord == null || record.UpdateRecord.Children == null || record.UpdateRecord.Children.Count < requiredChildrenCount;
         if (requiresUpdate)
         {
-            
         }
         else
         {
@@ -65,7 +64,7 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
 
         if (requiresUpdate)
         {
-            await using var database = CreateDbContext(true);
+            await using var database = _commonServices.DatabaseHub.CreateDbContext(true);
             database.Attach(record);
 
             record.UpdateRecord ??= new BlizzardUpdateRecord();
@@ -136,7 +135,7 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
 
     public async Task OnStarting()
     {
-        await using var database = CreateDbContext(true);
+        await using var database = _commonServices.DatabaseHub.CreateDbContext(true);
 
         var updateRecords = await database.BlizzardUpdates.Where(x => x.UpdateStatus == BlizzardUpdateStatus.Progress).OrderBy(x => x.UpdateLastModified).ToArrayAsync().ConfigureAwait(false);
 
@@ -145,7 +144,7 @@ internal sealed class BlizzardUpdateHandler : DbServiceBase<AppDbContext>
 
     public async Task OnUpdating()
     {
-        await using var database = CreateDbContext(true);
+        await using var database = _commonServices.DatabaseHub.CreateDbContext(true);
 
         var updateRecords = await database.BlizzardUpdates.Where(x => x.UpdateStatus == BlizzardUpdateStatus.Queued).OrderBy(x => x.UpdatePriority).ThenBy(x => x.UpdateLastModified).Take(25).ToArrayAsync().ConfigureAwait(false);
 

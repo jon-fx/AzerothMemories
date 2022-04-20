@@ -24,7 +24,7 @@ internal static class AccountServices_OnSignInCommand
             return;
         }
 
-        await using var database = await commonServices.AccountServices.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         var accountRecord = await GetCurrentAccount(database, command.Session, sessionRepo, commonServices.AccountServices, cancellationToken).ConfigureAwait(false);
 
         var authKey = command.AuthenticatedIdentity.Id.Value;

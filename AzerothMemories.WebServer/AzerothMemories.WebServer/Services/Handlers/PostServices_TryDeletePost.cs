@@ -2,7 +2,7 @@
 
 internal static class PostServices_TryDeletePost
 {
-    public static async Task<long> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryDeletePost command, CancellationToken cancellationToken)
+    public static async Task<long> TryHandle(CommonServices commonServices, Post_TryDeletePost command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -61,7 +61,7 @@ internal static class PostServices_TryDeletePost
             return 0;
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(postRecord);
         postRecord.DeletedTimeStamp = now;
 

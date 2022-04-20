@@ -2,7 +2,7 @@
 
 internal sealed class PostServices_UpdateViewCount
 {
-    public static async Task<PostRecord> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_UpdateViewCount command, CancellationToken cancellationToken)
+    public static async Task<PostRecord> TryHandle(CommonServices commonServices, Post_UpdateViewCount command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -22,13 +22,13 @@ internal sealed class PostServices_UpdateViewCount
             return null;
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(postRecord);
 
         postRecord.TotalViewCount++;
-        
+
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-        
+
         context.Operation().Items.Set(new Post_InvalidatePost(command.PostId));
 
         return postRecord;

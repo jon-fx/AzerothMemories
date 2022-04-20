@@ -2,11 +2,11 @@
 
 [RegisterComputeService]
 [RegisterAlias(typeof(IAdminServices))]
-public class AdminServices : DbServiceBase<AppDbContext>, IAdminServices, IDatabaseContextProvider
+public class AdminServices : IAdminServices
 {
     private readonly CommonServices _commonServices;
 
-    public AdminServices(IServiceProvider services, CommonServices commonServices) : base(services)
+    public AdminServices(CommonServices commonServices) : base()
     {
         _commonServices = commonServices;
     }
@@ -14,35 +14,35 @@ public class AdminServices : DbServiceBase<AppDbContext>, IAdminServices, IDatab
     [ComputeMethod]
     public virtual async Task<int> GetSessionCount()
     {
-        await using var datbase = CreateDbContext();
+        await using var datbase = _commonServices.DatabaseHub.CreateDbContext();
         return await datbase.Sessions.CountAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod(AutoInvalidateTime = 60)]
     public virtual async Task<int> GetOperationCount()
     {
-        await using var datbase = CreateDbContext();
+        await using var datbase = _commonServices.DatabaseHub.CreateDbContext();
         return await datbase.Operations.CountAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod]
     public virtual async Task<int> GetAccountCount()
     {
-        await using var datbase = CreateDbContext();
+        await using var datbase = _commonServices.DatabaseHub.CreateDbContext();
         return await datbase.Accounts.CountAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod]
     public virtual async Task<int> GetCharacterCount()
     {
-        await using var datbase = CreateDbContext();
+        await using var datbase = _commonServices.DatabaseHub.CreateDbContext();
         return await datbase.Characters.CountAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod]
     public virtual async Task<int> GetGuildCount()
     {
-        await using var datbase = CreateDbContext();
+        await using var datbase = _commonServices.DatabaseHub.CreateDbContext();
         return await datbase.Guilds.CountAsync().ConfigureAwait(false);
     }
 
@@ -51,7 +51,7 @@ public class AdminServices : DbServiceBase<AppDbContext>, IAdminServices, IDatab
     {
         await _commonServices.PostServices.DependsOnNewPosts().ConfigureAwait(false);
 
-        await using var datbase = CreateDbContext();
+        await using var datbase = _commonServices.DatabaseHub.CreateDbContext();
         return await datbase.Posts.CountAsync().ConfigureAwait(false);
     }
 
@@ -60,7 +60,7 @@ public class AdminServices : DbServiceBase<AppDbContext>, IAdminServices, IDatab
     {
         await _commonServices.PostServices.DependsOnNewComments().ConfigureAwait(false);
 
-        await using var datbase = CreateDbContext();
+        await using var datbase = _commonServices.DatabaseHub.CreateDbContext();
         return await datbase.PostComments.CountAsync().ConfigureAwait(false);
     }
 
@@ -69,7 +69,7 @@ public class AdminServices : DbServiceBase<AppDbContext>, IAdminServices, IDatab
     {
         await _commonServices.PostServices.DependsOnNewPosts().ConfigureAwait(false);
 
-        await using var datbase = CreateDbContext();
+        await using var datbase = _commonServices.DatabaseHub.CreateDbContext();
         return await datbase.UploadLogs.CountAsync().ConfigureAwait(false);
     }
 
@@ -100,7 +100,7 @@ public class AdminServices : DbServiceBase<AppDbContext>, IAdminServices, IDatab
 
         return new AdminCountersViewModel
         {
-            TimeStamp =  SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds(),
+            TimeStamp = SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds(),
             SessionCount = sessionCount,
             OperationCount = operationCount,
 
@@ -166,7 +166,7 @@ public class AdminServices : DbServiceBase<AppDbContext>, IAdminServices, IDatab
     {
         await _commonServices.PostServices.DependsOnPostReports().ConfigureAwait(false);
 
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var query = from report in database.PostReports
                     where report.ResolvedByAccountId == null
@@ -193,7 +193,7 @@ public class AdminServices : DbServiceBase<AppDbContext>, IAdminServices, IDatab
 
         var resultViewModels = new List<ReportedPostCommentsViewModel>();
         var queryResults = await TryGetReportedComments().ConfigureAwait(false);
-        var database = CreateDbContext();
+        var database = _commonServices.DatabaseHub.CreateDbContext();
 
         foreach (var result in queryResults)
         {
@@ -241,7 +241,7 @@ public class AdminServices : DbServiceBase<AppDbContext>, IAdminServices, IDatab
     {
         await _commonServices.PostServices.DependsOnPostCommentReports().ConfigureAwait(false);
 
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var query = from report in database.PostCommentReports
                     where report.ResolvedByAccountId == null
@@ -315,7 +315,7 @@ public class AdminServices : DbServiceBase<AppDbContext>, IAdminServices, IDatab
     {
         await _commonServices.PostServices.DependsOnPostTagReports().ConfigureAwait(false);
 
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var query2 = from report in database.PostTagReports.Include(x => x.Tag)
                      where report.ResolvedByAccountId == null
@@ -334,29 +334,24 @@ public class AdminServices : DbServiceBase<AppDbContext>, IAdminServices, IDatab
     [CommandHandler]
     public virtual async Task<bool> SetPostReportResolved(Admin_SetPostReportResolved command, CancellationToken cancellationToken = default)
     {
-        return await AdminServices_SetPostReportResolved.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await AdminServices_SetPostReportResolved.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> SetPostCommentReportResolved(Admin_SetPostCommentReportResolved command, CancellationToken cancellationToken = default)
     {
-        return await AdminServices_SetPostCommentReportResolved.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await AdminServices_SetPostCommentReportResolved.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> SetPostTagReportResolved(Admin_SetPostTagReportResolved command, CancellationToken cancellationToken = default)
     {
-        return await AdminServices_SetPostTagReportResolved.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await AdminServices_SetPostTagReportResolved.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> TryBanUser(Admin_TryBanUser command, CancellationToken cancellationToken = default)
     {
-        return await AdminServices_TryBanUser.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
-    }
-    
-    public Task<AppDbContext> CreateCommandDbContextNow(CancellationToken cancellationToken)
-    {
-        return CreateCommandDbContext(true, cancellationToken);
+        return await AdminServices_TryBanUser.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 }

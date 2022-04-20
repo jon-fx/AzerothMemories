@@ -2,7 +2,7 @@
 
 internal static class AccountServices_OnSetupSessionCommand
 {
-    public static async Task TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, SetupSessionCommand command, CancellationToken cancellationToken)
+    public static async Task TryHandle(CommonServices commonServices, SetupSessionCommand command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
@@ -31,7 +31,7 @@ internal static class AccountServices_OnSetupSessionCommand
 
         if (accountRecord.ShouldUpdateLoginConsecutiveDays())
         {
-            await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
+            await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
             database.Attach(accountRecord);
 
             accountRecord.TryUpdateLoginConsecutiveDaysCount();

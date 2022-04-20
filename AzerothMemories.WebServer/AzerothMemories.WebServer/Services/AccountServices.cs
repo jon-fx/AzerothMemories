@@ -2,21 +2,21 @@
 
 [RegisterComputeService]
 [RegisterAlias(typeof(IAccountServices))]
-public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, IDatabaseContextProvider
+public class AccountServices : IAccountServices
 {
     private readonly CommonServices _commonServices;
     private readonly IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> _sessionRepo;
 
-    public AccountServices(IServiceProvider services, CommonServices commonServices) : base(services)
+    public AccountServices(CommonServices commonServices, IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> sessionRepo)
     {
         _commonServices = commonServices;
-        _sessionRepo = services.GetRequiredService<IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string>>();
+        _sessionRepo = sessionRepo;
     }
 
     [CommandHandler]
     public virtual async Task<bool> TryUpdateAuthToken(Account_TryUpdateAuthToken command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_TryUpdateAuthToken.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await AccountServices_TryUpdateAuthToken.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler(IsFilter = true, Priority = 1)]
@@ -34,7 +34,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, ID
     [CommandHandler(IsFilter = true, Priority = 1)]
     protected virtual async Task OnSetupSessionCommand(SetupSessionCommand command, CancellationToken cancellationToken)
     {
-        await AccountServices_OnSetupSessionCommand.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        await AccountServices_OnSetupSessionCommand.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -66,7 +66,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, ID
     {
         await DependsOnAccountRecord(id).ConfigureAwait(false);
 
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
         var accountRecord = await database.Accounts.FirstOrDefaultAsync(a => a.Id == id).ConfigureAwait(false);
 
         return accountRecord;
@@ -75,7 +75,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, ID
     [ComputeMethod]
     public virtual async Task<AccountRecord> TryGetAccountRecordFusionId(string fusionId)
     {
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
         var accountRecord = await database.Accounts.FirstOrDefaultAsync(a => a.FusionId == fusionId).ConfigureAwait(false);
         if (accountRecord != null)
         {
@@ -88,7 +88,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, ID
     [ComputeMethod]
     public virtual async Task<AccountRecord> TryGetAccountRecordUsername(string username)
     {
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
         var accountRecord = await database.Accounts.FirstOrDefaultAsync(a => a.Username == username).ConfigureAwait(false);
         if (accountRecord != null)
         {
@@ -200,28 +200,28 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, ID
     [ComputeMethod]
     public virtual async Task<int> GetPostCount(int accountId)
     {
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
         return await database.Posts.Where(x => x.AccountId == accountId).CountAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod]
     public virtual async Task<int> GetMemoryCount(int accountId)
     {
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
         return await database.PostTags.Where(x => x.TagType == PostTagType.Account && x.TagId == accountId && x.TagKind == PostTagKind.PostRestored).CountAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod]
     public virtual async Task<int> GetCommentCount(int accountId)
     {
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
         return await database.PostComments.Where(x => x.AccountId == accountId).CountAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod]
     public virtual async Task<int> GetReactionCount(int accountId)
     {
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
         var postCount = await database.PostReactions.Where(x => x.AccountId == accountId && x.Reaction > PostReaction.None).CountAsync().ConfigureAwait(false);
         var commentCount = await database.PostCommentReactions.Where(x => x.AccountId == accountId && x.Reaction > PostReaction.None).CountAsync().ConfigureAwait(false);
 
@@ -242,7 +242,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, ID
             return false;
         }
 
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
         var usernameExists = await database.Accounts.AnyAsync(x => x.Username == username).ConfigureAwait(false);
         if (usernameExists)
         {
@@ -255,25 +255,25 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, ID
     [CommandHandler]
     public virtual async Task<bool> TryChangeUsername(Account_TryChangeUsername command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_TryChangeUsername.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await AccountServices_TryChangeUsername.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> TryChangeIsPrivate(Account_TryChangeIsPrivate command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_TryChangeIsPrivate.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await AccountServices_TryChangeIsPrivate.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> TryChangeBattleTagVisibility(Account_TryChangeBattleTagVisibility command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_TryChangeBattleTagVisibility.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await AccountServices_TryChangeBattleTagVisibility.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<string> TryChangeAvatar(Account_TryChangeAvatar command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_TryChangeAvatar.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await AccountServices_TryChangeAvatar.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     public Task<string> TryChangeAvatarUpload(Session session, byte[] buffer)
@@ -303,25 +303,25 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, ID
     [CommandHandler]
     public virtual async Task<string> TryChangeAvatarUpload(Account_TryChangeAvatarUpload command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_TryChangeAvatarUpload.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await AccountServices_TryChangeAvatarUpload.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<string> TryChangeSocialLink(Account_TryChangeSocialLink command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_TryChangeSocialLink.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await AccountServices_TryChangeSocialLink.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> TryDisconnectAccount(Account_TryDisconnectAccount command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_TryDisconnectAccount.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await AccountServices_TryDisconnectAccount.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> AddNewHistoryItem(Account_AddNewHistoryItem command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_AddNewHistoryItem.TryHandle(_commonServices, this, command, cancellationToken).ConfigureAwait(false);
+        return await AccountServices_AddNewHistoryItem.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -340,7 +340,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, ID
         var min = Instant.FromUnixTimeMilliseconds(timeStamp).Minus(Duration.FromSeconds(diffInSeconds));
         var max = Instant.FromUnixTimeMilliseconds(timeStamp).Plus(Duration.FromSeconds(diffInSeconds));
 
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
         var query = from a in database.CharacterAchievements
                     where a.AccountId == accountRecord.Id && a.AchievementTimeStamp > min && a.AchievementTimeStamp < max
                     select a.AchievementId;
@@ -384,7 +384,7 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, ID
         Exceptions.ThrowIf(activeAccountId == 0);
         Exceptions.ThrowIf(currentPage == 0);
 
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var historyQuery = from record in database.AccountHistory
                            where record.AccountId == activeAccountId
@@ -449,10 +449,5 @@ public class AccountServices : DbServiceBase<AppDbContext>, IAccountServices, ID
         await DependsOnAccountRecord(accountRecord.Id).ConfigureAwait(false);
 
         return accountRecord;
-    }
-
-    public Task<AppDbContext> CreateCommandDbContextNow(CancellationToken cancellationToken)
-    {
-        return CreateCommandDbContext(true, cancellationToken);
     }
 }

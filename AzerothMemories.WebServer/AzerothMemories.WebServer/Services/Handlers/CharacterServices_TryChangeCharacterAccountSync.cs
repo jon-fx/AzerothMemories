@@ -2,7 +2,7 @@
 
 internal static class CharacterServices_TryChangeCharacterAccountSync
 {
-    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Character_TryChangeCharacterAccountSync command, CancellationToken cancellationToken)
+    public static async Task<bool> TryHandle(CommonServices commonServices, Character_TryChangeCharacterAccountSync command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -33,7 +33,7 @@ internal static class CharacterServices_TryChangeCharacterAccountSync
             return characterRecord.AccountSync;
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(characterRecord);
         characterRecord.AccountSync = command.NewValue;
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

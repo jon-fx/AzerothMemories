@@ -2,7 +2,7 @@
 
 internal static class AdminServices_SetPostCommentReportResolved
 {
-    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Admin_SetPostCommentReportResolved command, CancellationToken cancellationToken)
+    public static async Task<bool> TryHandle(CommonServices commonServices, Admin_SetPostCommentReportResolved command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -30,7 +30,7 @@ internal static class AdminServices_SetPostCommentReportResolved
         }
         else
         {
-            await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
+            await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
 
             var reports = await database.PostCommentReports.Where(x => x.CommentId == command.CommentId).ToArrayAsync(cancellationToken).ConfigureAwait(false);
             foreach (var report in reports)

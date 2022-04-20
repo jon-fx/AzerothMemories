@@ -2,7 +2,7 @@
 
 internal static class PostServices_TryDeleteComment
 {
-    public static async Task<long> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Post_TryDeleteComment command, CancellationToken cancellationToken)
+    public static async Task<long> TryHandle(CommonServices commonServices, Post_TryDeleteComment command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -56,7 +56,7 @@ internal static class PostServices_TryDeleteComment
             return 0;
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         var commentRecord = await database.PostComments.FirstAsync(x => x.Id == commentId, cancellationToken).ConfigureAwait(false);
         commentRecord.DeletedTimeStamp = now;
 

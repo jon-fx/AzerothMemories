@@ -2,11 +2,11 @@
 
 [RegisterComputeService]
 [RegisterAlias(typeof(IGuildServices))]
-public class GuildServices : DbServiceBase<AppDbContext>, IGuildServices
+public class GuildServices : IGuildServices
 {
     private readonly CommonServices _commonServices;
 
-    public GuildServices(IServiceProvider services, CommonServices commonServices) : base(services)
+    public GuildServices(CommonServices commonServices)
     {
         _commonServices = commonServices;
     }
@@ -20,7 +20,7 @@ public class GuildServices : DbServiceBase<AppDbContext>, IGuildServices
     [ComputeMethod]
     public virtual async Task<GuildRecord> TryGetGuildRecord(int id)
     {
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
         var record = await database.Guilds.FirstOrDefaultAsync(r => r.Id == id).ConfigureAwait(false);
 
         if (record != null)
@@ -51,7 +51,7 @@ public class GuildServices : DbServiceBase<AppDbContext>, IGuildServices
         Exceptions.ThrowIf(moaRef.IsWildCard);
         Exceptions.ThrowIf(!moaRef.IsValidGuild);
 
-        await using var database = CreateDbContext(true);
+        await using var database = _commonServices.DatabaseHub.CreateDbContext(true);
         var guildRecord = await (from r in database.Guilds
                                  where r.MoaRef == moaRef.Full
                                  select r).FirstOrDefaultAsync().ConfigureAwait(false);
@@ -122,7 +122,7 @@ public class GuildServices : DbServiceBase<AppDbContext>, IGuildServices
             return Array.Empty<CharacterRecord>();
         }
 
-        await using var database = CreateDbContext();
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var characterQuery = from characterRecord in database.Characters
                              where characterRecord.GuildId == guildId

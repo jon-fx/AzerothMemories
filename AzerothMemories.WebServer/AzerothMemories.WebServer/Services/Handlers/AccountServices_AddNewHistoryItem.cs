@@ -2,7 +2,7 @@
 
 internal static class AccountServices_AddNewHistoryItem
 {
-    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Account_AddNewHistoryItem command, CancellationToken cancellationToken)
+    public static async Task<bool> TryHandle(CommonServices commonServices, Account_AddNewHistoryItem command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -21,7 +21,7 @@ internal static class AccountServices_AddNewHistoryItem
             throw new NotImplementedException();
         }
 
-        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         var query = from r in database.AccountHistory
                     where r.AccountId == command.AccountId &&
                           r.OtherAccountId == command.OtherAccountId &&

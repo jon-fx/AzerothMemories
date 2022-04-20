@@ -14,6 +14,7 @@ public sealed class CommonServices
         Auth = _serviceProvider.GetRequiredService<IAuth>();
         Config = _serviceProvider.GetRequiredService<CommonConfig>();
         Commander = _serviceProvider.GetRequiredService<ICommander>();
+        DatabaseHub = _serviceProvider.GetRequiredService<DbHub<AppDbContext>>();
         BlizzardUpdateHandler = _serviceProvider.GetRequiredService<BlizzardUpdateHandler>();
         HttpClientProvider = _serviceProvider.GetRequiredService<HttpClientProvider>();
 
@@ -34,6 +35,8 @@ public sealed class CommonServices
     internal ICommander Commander { get; private set; }
 
     internal CommonConfig Config { get; private set; }
+
+    internal DbHub<AppDbContext> DatabaseHub { get; set; }
 
     internal HttpClientProvider HttpClientProvider { get; private set; }
 

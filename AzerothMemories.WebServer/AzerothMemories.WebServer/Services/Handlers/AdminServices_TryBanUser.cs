@@ -2,7 +2,7 @@
 
 internal static class AdminServices_TryBanUser
 {
-    public static async Task<bool> TryHandle(CommonServices commonServices, IDatabaseContextProvider databaseContextProvider, Admin_TryBanUser command, CancellationToken cancellationToken)
+    public static async Task<bool> TryHandle(CommonServices commonServices, Admin_TryBanUser command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -37,7 +37,7 @@ internal static class AdminServices_TryBanUser
         }
 
         var accountRecord = await commonServices.AccountServices.TryGetAccountRecord(command.AccountId).ConfigureAwait(false);
-        await using var database = await databaseContextProvider.CreateCommandDbContextNow(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(accountRecord);
         accountRecord.BanExpireTime = SystemClock.Instance.GetCurrentInstant().Plus(Duration.FromMilliseconds(command.Duration));
         accountRecord.BanReason = reason;
