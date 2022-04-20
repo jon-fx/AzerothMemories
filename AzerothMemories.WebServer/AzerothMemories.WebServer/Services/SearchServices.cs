@@ -12,6 +12,22 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
     private readonly int _endYear = 2023;
     private readonly int _totalYearValue = 0;
 
+    private readonly List<PostTagType> _tagsToIncludeInTop = new()
+    {
+        PostTagType.Achievement,
+        PostTagType.Item,
+        PostTagType.Mount,
+        PostTagType.Pet,
+        PostTagType.Zone,
+        PostTagType.Npc,
+        PostTagType.Spell,
+        PostTagType.Object,
+        PostTagType.Quest,
+        PostTagType.ItemSet,
+        PostTagType.Toy,
+        PostTagType.Title,
+    };
+
     public SearchServices(IServiceProvider services, CommonServices commonServices) : base(services)
     {
         _commonServices = commonServices;
@@ -283,6 +299,11 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
                     continue;
                 }
 
+                if (!_tagsToIncludeInTop.Contains(postTag.TagType))
+                {
+                    continue;
+                }
+
                 var activitySet = results[localDateTime.Year];
                 activitySet.PostTags.TryGetValue(postTag.TagString, out var tagCount);
                 activitySet.PostTags[postTag.TagString] = tagCount + 1;
@@ -335,7 +356,7 @@ public class SearchServices : DbServiceBase<AppDbContext>, ISearchServices
         var firstTagsQuery = from tag in database.PostTags
                              join post in database.Posts
                                  on tag.PostId equals post.Id
-                             where post.DeletedTimeStamp == 0 && tag.TagKind == PostTagKind.Post
+                             where post.DeletedTimeStamp == 0 && tag.TagKind == PostTagKind.Post && _tagsToIncludeInTop.Contains(tag.TagType)
                              select new
                              {
                                  post.PostTime,
