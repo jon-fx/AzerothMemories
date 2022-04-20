@@ -6,7 +6,7 @@
             {
                 var index = i;
                 var tagInfo = SharedData.TypeTags[index];
-                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" Default="@(index == 0)" />
+                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" Variant="Variant.Text" Default="@(index == 0)" />
             }
         </MudChipSet>
     </MudPaper>
@@ -17,7 +17,7 @@
             {
                 var index = i;
                 var tagInfo = SharedData.RegionTags[index];
-                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" Default="@(index == 0)" />
+                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" Variant="Variant.Text" Default="@(index == 0)" />
             }
         </MudChipSet>
     </MudPaper>
@@ -28,7 +28,7 @@
             {
                 var index = i;
                 var tagInfo = SharedData.CommonTags[index];
-                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" Default="@(index == 0)" />
+                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" Variant="Variant.Text" Default="@(index == 0)" />
             }
         </MudChipSet>
     </MudPaper>
@@ -49,7 +49,7 @@
                         var index = i;
                         var tagInfo = SharedData.AchievementTags[index];
 
-                        <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" />
+                        <PostTagChipComponent @key="@tagInfo" Variant="Variant.Text" TagInfo="tagInfo" />
                     }
                 </MudChipSet>
             }
