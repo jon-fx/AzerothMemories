@@ -60,15 +60,35 @@ else
                     new("My First Achievements", userData.FirstAchievements),
                 };
 
-                foreach (var (text, items) in otherTuples)
+                for (var i = 0; i < otherTuples.Length; i++)
                 {
-                    @if (items.Count > 0)
+                    var index = i;
+                    var (text, items) = otherTuples[index];
+                    var count = _otherTuplesShowCount[index];
+                    if (count > items.Count)
+                    {
+                        count = items.Count;
+                    }
+
+                    if (items.Count > 0)
                     {
                         <MudPaper Outlined="true" Class="@ClassPresets.DefaultPadding">
                             <MudText Class="@ClassPresets.DefaultPadding" Typo="Typo.body2"><b>@text</b></MudText>
-                            @foreach (var postTagInfo in items)
-                            {
-                                <PostTagChipComponent TagInfo="postTagInfo" OnClick="() => OnMainTagClicked(postTagInfo)" />
+                            @{
+                                for (var j = 0; j < count; j++)
+                                {
+                                    var postTagInfo = items[j];
+
+                                    <PostTagChipComponent TagInfo="postTagInfo" OnClick="() => OnMainTagClicked(postTagInfo)" />
+                                }
+
+                                var showMore = items.Count > count;
+                                @if (showMore)
+                                {
+                                    <MudChip Variant="@Variant.Filled" Color="Color.Default" OnClick="() => _otherTuplesShowCount[index] += 100">
+                                        Show More...
+                                    </MudChip>
+                                }
                             }
                         </MudPaper>
                     }
@@ -132,6 +152,7 @@ else
 
 @code {
     private readonly List<PostViewModelBlobInfo> _allBlobInfos = new();
+    private readonly int[] _otherTuplesShowCount = Enumerable.Repeat(10, 6).ToArray();
 
     [Parameter, EditorRequired] public DailyActivityResults HeaderData { get; init; }
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }

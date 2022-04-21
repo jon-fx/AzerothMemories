@@ -334,7 +334,7 @@ public static class ZExtensions
 
     public static Color GetChipColor(this PostTagInfo tagInfo)
     {
-        return Color.Primary;
+        return Color.Default;
     }
 
     public static string BuildReactionString(int totalReactionCount, int[] reactionCounters)
