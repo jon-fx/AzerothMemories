@@ -15,27 +15,25 @@
 
         <MudSpacer />
 
-        <MudHidden Breakpoint="Breakpoint.Xs" Invert="false">
-            <MainSearchBoxComponent />
-        </MudHidden>
+        <MainSearchBoxComponent ExtraClasses="d-none d-sm-flex" />
 
         <LoginDisplay />
     </MudAppBar>
 
     <MudMainContent>
 
-        <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+        <div class="d-block d-sm-none">
             <MudPaper Elevation="25">
                 <MudToolBar>
-                    <MainSearchBoxComponent />
+                    <MainSearchBoxComponent/>
                 </MudToolBar>
             </MudPaper>
-        </MudHidden>
+        </div>
 
         <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
             <ErrorBoundary>
                 <AccountBannedHeader/>
-                
+
                 @Body
 
             </ErrorBoundary>
