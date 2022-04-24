@@ -112,7 +112,7 @@ public class MediaServices
                 return await TryGetUserUpload_Default().ConfigureAwait(false);
             }
 
-            var canSeePost = await _commonServices.PostServices.CanAccountSeePost(accountId, postRecord).ConfigureAwait(false);
+            var canSeePost = await _commonServices.PostServices.CanAccountSeePost(accountId, postRecord.AccountId, postRecord.PostVisibility).ConfigureAwait(false);
             if (!canSeePost)
             {
                 return await TryGetUserUpload_Default().ConfigureAwait(false);

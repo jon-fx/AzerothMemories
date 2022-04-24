@@ -60,31 +60,31 @@ public class PostServices : IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<bool> CanAccountSeePost(int activeAccountId, PostRecord postRecord)
+    public virtual async Task<bool> CanAccountSeePost(int activeAccountId, int postAccountId, byte postVisibility)
     {
-        Exceptions.ThrowIf(postRecord == null);
+        //Exceptions.ThrowIf(postRecord == null);
 
-        await DependsOnPost(postRecord.Id).ConfigureAwait(false);
+        //await DependsOnPost(postId).ConfigureAwait(false);
 
-        if (postRecord.PostVisibility == 0)
+        if (postVisibility == 0)
         {
             return true;
         }
 
-        if (postRecord.AccountId == activeAccountId)
+        if (postAccountId == activeAccountId)
         {
             return true;
         }
 
         if (activeAccountId > 0)
         {
-            var accountRecord = await _commonServices.AccountServices.TryGetAccountRecord(activeAccountId).ConfigureAwait(false);
-            if (accountRecord == null)
+            var activeAccountRecord = await _commonServices.AccountServices.TryGetAccountRecord(activeAccountId).ConfigureAwait(false);
+            if (activeAccountRecord == null)
             {
                 return false;
             }
 
-            if (accountRecord.AccountType >= AccountType.Admin)
+            if (activeAccountRecord.AccountType >= AccountType.Admin)
             {
                 return true;
             }
@@ -95,7 +95,7 @@ public class PostServices : IPostServices
         }
 
         var following = await _commonServices.FollowingServices.TryGetAccountFollowing(activeAccountId).ConfigureAwait(false);
-        if (!following.TryGetValue(postRecord.AccountId, out var viewModel))
+        if (!following.TryGetValue(postAccountId, out var viewModel))
         {
             return false;
         }
@@ -114,7 +114,7 @@ public class PostServices : IPostServices
             return null;
         }
 
-        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord).ConfigureAwait(false);
+        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord.AccountId, postRecord.PostVisibility).ConfigureAwait(false);
         var posterAccount = await _commonServices.AccountServices.TryGetAccountById(session, postRecord.AccountId).ConfigureAwait(false);
         if (posterAccount == null)
         {
@@ -285,7 +285,7 @@ public class PostServices : IPostServices
             return null;
         }
 
-        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord).ConfigureAwait(false);
+        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord.AccountId, postRecord.PostVisibility).ConfigureAwait(false);
         if (!canSeePost)
         {
             return null;
@@ -306,7 +306,7 @@ public class PostServices : IPostServices
             return null;
         }
 
-        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord).ConfigureAwait(false);
+        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord.AccountId, postRecord.PostVisibility).ConfigureAwait(false);
         if (!canSeePost)
         {
             return null;
@@ -326,7 +326,7 @@ public class PostServices : IPostServices
             return null;
         }
 
-        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord).ConfigureAwait(false);
+        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord.AccountId, postRecord.PostVisibility).ConfigureAwait(false);
         if (!canSeePost)
         {
             return null;
@@ -450,7 +450,7 @@ public class PostServices : IPostServices
             return new Dictionary<int, PostCommentReactionViewModel>();
         }
 
-        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord).ConfigureAwait(false);
+        var canSeePost = await CanAccountSeePost(activeAccountId, postRecord.AccountId, postRecord.PostVisibility).ConfigureAwait(false);
         if (!canSeePost)
         {
             return new Dictionary<int, PostCommentReactionViewModel>();

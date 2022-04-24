@@ -47,7 +47,7 @@ internal static class PostServices_TryReactToPostComment
             return 0;
         }
 
-        var canSeePost = await commonServices.PostServices.CanAccountSeePost(activeAccount.Id, postRecord).ConfigureAwait(false);
+        var canSeePost = await commonServices.PostServices.CanAccountSeePost(activeAccount.Id, postRecord.AccountId, postRecord.PostVisibility).ConfigureAwait(false);
         if (!canSeePost)
         {
             return 0;
