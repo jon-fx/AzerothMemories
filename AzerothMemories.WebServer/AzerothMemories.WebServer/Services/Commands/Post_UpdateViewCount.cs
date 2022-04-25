@@ -1,8 +1,8 @@
-﻿//namespace AzerothMemories.WebServer.Services.Commands;
+﻿namespace AzerothMemories.WebServer.Services.Commands;
 
-//public record Post_UpdateViewCount(Session Session, int PostId) : ISessionCommand<PostRecord>
-//{
-//    public Post_UpdateViewCount() : this(Session.Null, 0)
-//    {
-//    }
-//}
+public record Post_UpdateViewCount(int AccountId, int PostId) : ICommand<PostRecord>
+{
+    public Post_UpdateViewCount() : this(0, 0)
+    {
+    }
+}

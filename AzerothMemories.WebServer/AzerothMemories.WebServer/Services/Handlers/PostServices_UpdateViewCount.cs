@@ -1,36 +1,41 @@
-﻿//namespace AzerothMemories.WebServer.Services.Handlers;
+﻿namespace AzerothMemories.WebServer.Services.Handlers;
 
-//internal sealed class PostServices_UpdateViewCount
-//{
-//    public static async Task<PostRecord> TryHandle(CommonServices commonServices, Post_UpdateViewCount command, CancellationToken cancellationToken)
-//    {
-//        var context = CommandContext.GetCurrent();
-//        if (Computed.IsInvalidating())
-//        {
-//            var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
-//            if (invPost != null && invPost.PostId > 0)
-//            {
-//                _ = commonServices.PostServices.DependsOnPost(invPost.PostId);
-//            }
+internal sealed class PostServices_UpdateViewCount
+{
+    public static async Task<PostRecord> TryHandle(CommonServices commonServices, Post_UpdateViewCount command, CancellationToken cancellationToken)
+    {
+        var context = CommandContext.GetCurrent();
+        if (Computed.IsInvalidating())
+        {
+            var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
+            if (invPost != null && invPost.PostId > 0)
+            {
+                _ = commonServices.PostServices.DependsOnPost(invPost.PostId);
+            }
 
-//            return default;
-//        }
+            return default;
+        }
 
-//        var postRecord = await commonServices.PostServices.TryGetPostRecord(command.PostId).ConfigureAwait(false);
-//        if (postRecord == null)
-//        {
-//            return null;
-//        }
+        if (command.AccountId == 0)
+        {
+            return null;
+        }
 
-//        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
-//        database.Attach(postRecord);
+        var postRecord = await commonServices.PostServices.TryGetPostRecord(command.PostId).ConfigureAwait(false);
+        if (postRecord == null)
+        {
+            return null;
+        }
 
-//        postRecord.TotalViewCount++;
+        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        database.Attach(postRecord);
 
-//        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        postRecord.TotalViewCount++;
 
-//        context.Operation().Items.Set(new Post_InvalidatePost(command.PostId));
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-//        return postRecord;
-//    }
-//}
+        context.Operation().Items.Set(new Post_InvalidatePost(command.PostId));
+
+        return postRecord;
+    }
+}
