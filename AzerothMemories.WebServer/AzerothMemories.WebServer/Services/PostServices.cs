@@ -62,10 +62,6 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<bool> CanAccountSeePost(int activeAccountId, int postAccountId, byte postVisibility)
     {
-        //Exceptions.ThrowIf(postRecord == null);
-
-        //await DependsOnPost(postId).ConfigureAwait(false);
-
         if (postVisibility == 0)
         {
             return true;
@@ -104,10 +100,8 @@ public class PostServices : IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, int postId, ServerSideLocale locale)
+    public virtual async Task<PostViewModel> TryGetPostViewModel(int activeAccountId, int postId, ServerSideLocale locale)
     {
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
-        var activeAccountId = activeAccount?.Id ?? 0;
         var postRecord = await TryGetPostRecord(postId).ConfigureAwait(false);
         if (postRecord == null)
         {
@@ -115,22 +109,22 @@ public class PostServices : IPostServices
         }
 
         var canSeePost = await CanAccountSeePost(activeAccountId, postRecord.AccountId, postRecord.PostVisibility).ConfigureAwait(false);
-        var posterAccount = await _commonServices.AccountServices.TryGetAccountById(session, postRecord.AccountId).ConfigureAwait(false);
+        var posterAccount = await _commonServices.AccountServices.TryGetAccountRecord(postRecord.AccountId).ConfigureAwait(false);
         if (posterAccount == null)
         {
             return null;
         }
 
-        if (canSeePost && activeAccountId > 0)
-        {
-            var timeStampNow = SystemClock.Instance.GetCurrentInstant();
-            var timeStampNowMs = timeStampNow.ToUnixTimeMilliseconds();
-            var sessionStamp = await GetSessionPostViewTimeStamp(activeAccountId, postId).ConfigureAwait(false);
-            if (sessionStamp >= timeStampNowMs)
-            {
-                postRecord = await TryUpdatePostViewCount(new Post_UpdateViewCount(session, postId)).ConfigureAwait(false);
-            }
-        }
+        //if (canSeePost && activeAccountId > 0)
+        //{
+        //    var timeStampNow = SystemClock.Instance.GetCurrentInstant();
+        //    var timeStampNowMs = timeStampNow.ToUnixTimeMilliseconds();
+        //    var sessionStamp = await GetSessionPostViewTimeStamp(activeAccountId, postId).ConfigureAwait(false);
+        //    if (sessionStamp >= timeStampNowMs)
+        //    {
+        //        postRecord = await TryUpdatePostViewCount(new Post_UpdateViewCount(session, postId)).ConfigureAwait(false);
+        //    }
+        //}
 
         var postTagInfos = await GetAllPostTagRecord(postId, locale).ConfigureAwait(false);
         var reactionRecords = await TryGetPostReactions(postId).ConfigureAwait(false);
@@ -140,17 +134,17 @@ public class PostServices : IPostServices
         return postRecord.CreatePostViewModel(posterAccount, canSeePost, reactionViewModel, postTagInfos);
     }
 
-    [ComputeMethod]
-    protected virtual Task<long> GetSessionPostViewTimeStamp(int accountId, int postId)
-    {
-        return Task.FromResult(SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
-    }
+    //[ComputeMethod]
+    //protected virtual Task<long> GetSessionPostViewTimeStamp(int accountId, int postId)
+    //{
+    //    return Task.FromResult(SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
+    //}
 
-    [CommandHandler]
-    public virtual async Task<PostRecord> TryUpdatePostViewCount(Post_UpdateViewCount command, CancellationToken cancellationToken = default)
-    {
-        return await PostServices_UpdateViewCount.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
-    }
+    //[CommandHandler]
+    //public virtual async Task<PostRecord> TryUpdatePostViewCount(Post_UpdateViewCount command, CancellationToken cancellationToken = default)
+    //{
+    //    return await PostServices_UpdateViewCount.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+    //}
 
     public Task<AddMemoryResult> TryPostMemory(Session session, byte[] buffer)
     {
@@ -212,7 +206,10 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, int postAccountId, int postId, ServerSideLocale locale)
     {
-        var result = await TryGetPostViewModel(session, postId, locale).ConfigureAwait(false);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
+        var activeAccountId = activeAccount?.Id ?? 0;
+
+        var result = await TryGetPostViewModel(activeAccountId, postId, locale).ConfigureAwait(false);
         if (result == null)
         {
             return null;

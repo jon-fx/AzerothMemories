@@ -63,14 +63,22 @@ public class TagServices : ITagServices
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var tagString = PostTagInfo.GetTagString(tagType, tagId);
-        //var record = await database.BlizzardData.FirstOrDefaultAsync(r => r.TagType == tagType && r.TagId == tagId);
-        var record = await database.BlizzardData.FirstOrDefaultAsync(r => r.Key == tagString).ConfigureAwait(false);
-        if (record == null)
+        var allRecords = await GetAllBlizzardDataRecord().ConfigureAwait(false);
+
+        if (!allRecords.TryGetValue(tagString, out var record))
         {
             return new PostTagInfo(tagType, tagId, tagString, null);
         }
 
         return CreatePostTagInfo(record, locale);
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<Dictionary<string, BlizzardDataRecord>> GetAllBlizzardDataRecord()
+    {
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        
+        return await database.BlizzardData.ToDictionaryAsync(r => r.Key, r => r).ConfigureAwait(false);
     }
 
     [ComputeMethod]

@@ -127,7 +127,7 @@ public class AdminServices : IAdminServices
         var queryResults = await TryGetReportedPosts().ConfigureAwait(false);
         foreach (var result in queryResults)
         {
-            var postViewModel = await _commonServices.PostServices.TryGetPostViewModel(session, result.PostId, ServerSideLocale.En_Gb).ConfigureAwait(false);
+            var postViewModel = await _commonServices.PostServices.TryGetPostViewModel(account.Id, result.PostId, ServerSideLocale.En_Gb).ConfigureAwait(false);
             if (postViewModel == null)
             {
                 continue;
@@ -270,7 +270,7 @@ public class AdminServices : IAdminServices
         var queryResults = await TryGetReportedTags().ConfigureAwait(false);
         foreach (var result in queryResults)
         {
-            var postViewModel = await _commonServices.PostServices.TryGetPostViewModel(session, result.PostId, ServerSideLocale.En_Gb).ConfigureAwait(false);
+            var postViewModel = await _commonServices.PostServices.TryGetPostViewModel(account.Id, result.PostId, ServerSideLocale.En_Gb).ConfigureAwait(false);
             if (postViewModel == null)
             {
                 continue;

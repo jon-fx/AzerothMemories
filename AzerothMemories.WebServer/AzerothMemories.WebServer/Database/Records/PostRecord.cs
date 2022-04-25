@@ -66,14 +66,14 @@ public sealed class PostRecord : IDatabaseRecordWithVersion
 
     public ICollection<AccountUploadLog> Uploads { get; set; }
 
-    public PostViewModel CreatePostViewModel(AccountViewModel accountViewModel, bool canSeePost, PostReactionViewModel reactionRecord, PostTagInfo[] postTagRecords)
+    public PostViewModel CreatePostViewModel(AccountRecord accountRecord, bool canSeePost, PostReactionViewModel reactionRecord, PostTagInfo[] postTagRecords)
     {
         var viewModel = new PostViewModel
         {
             Id = Id,
             AccountId = AccountId,
-            AccountUsername = accountViewModel.Username,
-            AccountAvatar = accountViewModel.Avatar,
+            AccountUsername = accountRecord.Username,
+            AccountAvatar = accountRecord.Avatar,
             PostComment = PostCommentMark,
             PostVisibility = PostVisibility,
             PostTime = PostTime.ToUnixTimeMilliseconds(),
