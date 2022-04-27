@@ -63,23 +63,30 @@ public class TagServices : ITagServices
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var tagString = PostTagInfo.GetTagString(tagType, tagId);
-        var allRecords = await GetAllBlizzardDataRecord().ConfigureAwait(false);
-
-        if (!allRecords.TryGetValue(tagString, out var record))
+        var tagRecord = await GetBlizzardDataRecord(tagString).ConfigureAwait(false);
+        if (tagRecord == null)
         {
             return new PostTagInfo(tagType, tagId, tagString, null);
         }
 
-        return CreatePostTagInfo(record, locale);
+        return CreatePostTagInfo(tagRecord, locale);
     }
-
+    
     [ComputeMethod]
-    protected virtual async Task<Dictionary<string, BlizzardDataRecord>> GetAllBlizzardDataRecord()
+    protected virtual async Task<BlizzardDataRecord> GetBlizzardDataRecord(string tagString)
     {
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
-        
-        return await database.BlizzardData.ToDictionaryAsync(r => r.Key, r => r).ConfigureAwait(false);
+
+        return await database.BlizzardData.FirstOrDefaultAsync(r => r.Key == tagString).ConfigureAwait(false);
     }
+
+    //[ComputeMethod]
+    //protected virtual async Task<Dictionary<string, BlizzardDataRecord>> GetAllBlizzardDataRecord()
+    //{
+    //    await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        
+    //    return await database.BlizzardData.ToDictionaryAsync(r => r.Key, r => r).ConfigureAwait(false);
+    //}
 
     [ComputeMethod]
     public virtual async Task<PostTagInfo> TryGetUserTagInfo(PostTagType tagType, int tagId)
@@ -167,13 +174,14 @@ public class TagServices : ITagServices
 
     private PostTagInfo CreatePostTagInfo(BlizzardDataRecord record, ServerSideLocale locale)
     {
+        var media = record.Media;
         if (record.TagType == PostTagType.Realm)
         {
-            record.Media = null;
+            media = null;
         }
-        else if (!string.IsNullOrEmpty(record.Media))
+        else if (!string.IsNullOrEmpty(media))
         {
-            record.Media = $"{ZExtensions.BlobStaticMediaStoragePath}{record.Media}";
+            media = $"{ZExtensions.BlobStaticMediaStoragePath}{media}";
         }
 
         var name = ServerLocaleHelpers.GetName(locale, record.Name);
@@ -182,7 +190,7 @@ public class TagServices : ITagServices
             name = PostTagInfo.GetTagString(record.TagType, record.TagId);
         }
 
-        return new PostTagInfo(record.TagType, record.TagId, name, record.Media, record.MinTagTime.ToUnixTimeMilliseconds());
+        return new PostTagInfo(record.TagType, record.TagId, name, media, record.MinTagTime.ToUnixTimeMilliseconds());
     }
 
     public async Task<PostTagRecord> TryCreateTagRecord(string systemTag, PostRecord postRecord, AccountViewModel accountViewModel, PostTagKind tagKind)
