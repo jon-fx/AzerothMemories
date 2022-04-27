@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using System.Text.Encodings.Web;
+﻿using System.Text.Encodings.Web;
 using AspNet.Security.OAuth.Patreon;
 using Microsoft.Extensions.Options;
 

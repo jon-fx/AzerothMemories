@@ -6,7 +6,7 @@ public class CharacterServices : ICharacterServices
 {
     private readonly CommonServices _commonServices;
 
-    public CharacterServices(CommonServices commonServices) : base()
+    public CharacterServices(CommonServices commonServices)
     {
         _commonServices = commonServices;
     }

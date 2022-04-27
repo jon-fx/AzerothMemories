@@ -64,7 +64,7 @@
                             <MudSwitch T="bool" Checked="@ViewModel.AccountViewModel.IsPrivate" Color="Color.Primary" Label="Private" CheckedChanged="ViewModel.OnIsPrivateChanged " />
                         </MudItem>
                         
-                        @foreach(var info in @ViewModel.SocialLogins)
+                        @foreach(var info in ViewModel.SocialLogins)
                         {
                             var current = ViewModel.AccountViewModel.LinkedLogins.FirstOrDefault(x => x.Key.StartsWith($"{info}/"));
                             if (current == null)

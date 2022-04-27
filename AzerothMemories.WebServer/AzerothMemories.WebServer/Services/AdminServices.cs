@@ -6,7 +6,7 @@ public class AdminServices : IAdminServices
 {
     private readonly CommonServices _commonServices;
 
-    public AdminServices(CommonServices commonServices) : base()
+    public AdminServices(CommonServices commonServices)
     {
         _commonServices = commonServices;
     }
