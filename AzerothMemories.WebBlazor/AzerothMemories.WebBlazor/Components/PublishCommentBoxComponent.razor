@@ -18,7 +18,7 @@
             </MudCardHeader>
 
             <MudCardContent Class="@ClassPresets.CardContent">
-                <PublishCommentComponent @ref="_commentComponent" Lines="1" TagsList="@Services.ClientServices.ActiveAccountServices.GetUserTagList()" OnSingleLineSubmit="@OnSubmitComment" Disabled="@_isCommentBoxDisabled" AutoFocus="true" />
+                <PublishCommentComponent @ref="_commentComponent" IsMainPost="false" TagsList="@Services.ClientServices.ActiveAccountServices.GetUserTagList()" OnSingleLineSubmit="@OnSubmitComment" Disabled="@_isCommentBoxDisabled" AutoFocus="true" />
             </MudCardContent>
 
             <MudCardActions Class="@ClassPresets.CardActions">

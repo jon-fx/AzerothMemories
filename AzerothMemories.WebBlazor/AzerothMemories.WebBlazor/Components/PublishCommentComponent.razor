@@ -1,61 +1,59 @@
 ﻿@implements IDisposable
 
-<form @onsubmit=Submit>
-    <MudGrid>
-        <MudItem xs="@(Lines == 1 ? 11 : 12)" Class="my-auto">
-            <MudTextField id="mudTextField"
-                          @ref="_textField"
-                          @bind-Value="@_currentTextFieldText"
-                          T="string"
-                          Label="Comment"
-                          Variant="Variant.Filled"
-                          Lines="@Lines"
-                          FullWidth="true"
-                          Margin="Margin.Dense"
-                          DisableUnderLine="true"
-                          Disabled="@Disabled"
-                          AutoFocus="@AutoFocus"
-                          MaxLength="@MaxLength"
-                          Immediate="true"
-                          autocomplete="off">
-            </MudTextField>
-        </MudItem>
+<MudTextField id="mudTextField"
+              @ref="_textField"
+              @bind-Value="@_currentTextFieldText"
+              T="string"
+              Label="Comment"
+              Variant="Variant.Filled"
+              Lines="@(IsMainPost ? 10 : 5)"
+              FullWidth="true"
+              Margin="Margin.Dense"
+              DisableUnderLine="true"
+              Disabled="@Disabled"
+              AutoFocus="@AutoFocus"
+              MaxLength="@MaxLength"
+              Immediate="true"
+              autocomplete="off">
+</MudTextField>
 
-        @if (Lines == 1)
+@{
+    var isSubmitDisabled = true;
+    if (_parserResult == null)
+    {
+    }
+    else if (_parserResult.ResultCode == MarkdownParserResultCode.Success)
+    {
+        if (!string.IsNullOrWhiteSpace(_parserResult.CommentTextMarkdown))
         {
-            <MudItem xs="1" Class="my-auto mx-n4">
-                <MudIconButton Variant="Variant.Filled"
-                               Size="Size.Medium"
-                               Icon="@Icons.Filled.Send"
-                               Color="Color.Primary"
-                               Disabled="@(string.IsNullOrWhiteSpace(_currentTextFieldText) || _currentTextFieldText.Length <= 1)"
-                               OnClick="Submit" />
-            </MudItem>
+            isSubmitDisabled = false;
+
+            <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+                <MudText Typo="Typo.body2" Style="overflow-wrap: break-word;">@(new MarkupString(_parserResult.CommentTextMarkdown))</MudText>
+            </MudPaper>
         }
+    }
+    else
+    {
+        <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+            <CardInfoComponent Message="Error."/>
+        </MudPaper>
+    }
 
-        <MudItem xs="12">
-            @if (_parserResult == null)
-            {
-
-            }
-            else if (_parserResult.ResultCode == MarkdownParserResultCode.Success)
-            {
-                if (!string.IsNullOrWhiteSpace(_parserResult.CommentTextMarkdown))
-                {
-                    <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
-                        <MudText Typo="Typo.body2" Style="overflow-wrap: break-word;">@(new MarkupString(_parserResult.CommentTextMarkdown))</MudText>
-                    </MudPaper>
-                }
-            }
-            else
-            {
-                <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
-                    <CardInfoComponent Message="Error." />
-                </MudPaper>
-            }
-        </MudItem>
-    </MudGrid>
-</form>
+    if (IsMainPost)
+    {
+    }
+    else
+    {
+        <MudButton Variant="Variant.Filled"
+                   FullWidth="true"
+                   Color="Color.Primary"
+                   IconColor="Color.Secondary"
+                   StartIcon="@Icons.Filled.Send"
+                   Disabled="@isSubmitDisabled"
+                   OnClick="Submit">Submit</MudButton>
+    }
+}
 
 @code
 {
@@ -64,7 +62,7 @@
     private string _currentTextFieldText;
     private MarkdownParserResult _parserResult;
 
-    [Parameter] public int Lines { get; init; } = 1;
+    [Parameter] public bool IsMainPost { get; init; }
 
     [Parameter] public int MaxLength { get; init; } = ZExtensions.MaxCommentLength / 2;
 
@@ -131,11 +129,29 @@
 
     private async Task Submit()
     {
-        var commentText = GetCommentText();
-        if (Lines == 1 && !string.IsNullOrWhiteSpace(commentText) && commentText.Length > 1)
+        if (IsMainPost)
         {
-            await OnSingleLineSubmit.InvokeAsync(commentText);
+            return;
         }
+
+        if (_parserResult == null)
+        {
+            return;
+        }
+
+        if (_parserResult.ResultCode != MarkdownParserResultCode.Success)
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_parserResult.CommentText) || string.IsNullOrWhiteSpace(_parserResult.CommentTextMarkdown))
+        {
+            return;
+        }
+
+        var commentText = GetCommentText();
+
+        await OnSingleLineSubmit.InvokeAsync(commentText);
     }
 
     public string GetCommentText()
@@ -173,7 +189,7 @@
         }
         else
         {
-            _parserResult = MarkdownServices.GetCommentText(_currentTextFieldText, TagsList, Lines != 1);
+            _parserResult = MarkdownServices.GetCommentText(_currentTextFieldText, FullTagsList, IsMainPost);
         }
 
         InvokeAsync(StateHasChanged).AndForget();

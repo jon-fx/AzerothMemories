@@ -38,7 +38,7 @@
     <AddMemoryMainTagComponent Services="Services" SharedData="@ViewModel.SharedData" />
 
     <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
-        <PublishCommentComponent @ref="ViewModel.PublishCommentComponent" Lines="10" TagsList="@Services.ClientServices.ActiveAccountServices.GetUserTagList()" />
+        <PublishCommentComponent @ref="ViewModel.PublishCommentComponent" IsMainPost="true" TagsList="@Services.ClientServices.ActiveAccountServices.GetUserTagList()" />
     </MudPaper>
 
     <AddMemoryPostAvatarComponent SharedData="@ViewModel.SharedData" />
