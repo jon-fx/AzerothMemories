@@ -9,13 +9,24 @@ internal sealed class PetDataSeeder : GenericBase<PetDataSeeder>
     protected override async Task DoSomething()
     {
         var data = new Dictionary<int, WowToolsData>();
-        WowTools.Main.LoadDataFromWowTools("BattlePetSpecies", "ID", ref data, new[] { "ID", "SummonSpellID", "IconFileDataID" });
+        WowTools.Main.LoadDataFromWowTools("BattlePetSpecies", "ID", ref data, new[] { "ID", "SummonSpellID", "IconFileDataID", "CreatureID" });
 
         foreach (var reference in data.Values)
         {
-            if (reference.TryGetData<int>("SummonSpellID", out var spellId))
+            BlizzardDataRecord dataToCopy = null; 
+            if (reference.TryGetData<int>("SummonSpellID", out var spellId) && ResourceWriter.TryGetServerSideResource(PostTagType.Spell, spellId, out dataToCopy))
             {
-                var dataToCopy = ResourceWriter.GetOrCreateServerSideResource(PostTagType.Spell, spellId);
+            }
+
+            if (dataToCopy == null && reference.TryGetData<int>("CreatureID", out var creatureId) && ResourceWriter.TryGetServerSideResource(PostTagType.Npc, creatureId, out dataToCopy))
+            {
+            }
+
+            if (dataToCopy == null)
+            {
+            }
+            else
+            {
                 ResourceWriter.AddServerSideLocalizationName(PostTagType.Pet, reference.Id, dataToCopy.Name);
             }
 

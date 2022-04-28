@@ -229,6 +229,12 @@ internal sealed class MoaResourceWriter
 
         return value;
     }
+    public bool TryGetServerSideResource(PostTagType tagType, int tagId, out BlizzardDataRecord dataRecord)
+    {
+        var key = PostTagInfo.GetTagString(tagType, tagId);
+
+        return _serverSideResources.TryGetValue(key, out dataRecord);
+    }
 
     private void OnServerSideRecordUpdated(bool updated, BlizzardDataRecord resource)
     {
