@@ -115,16 +115,16 @@ public class PostServices : IPostServices
             return null;
         }
 
-        if (canSeePost && activeAccountId > 0)
-        {
-            var timeStampNow = SystemClock.Instance.GetCurrentInstant();
-            var timeStampNowMs = timeStampNow.ToUnixTimeMilliseconds();
-            var sessionStamp = await GetSessionPostViewTimeStamp(activeAccountId, postId).ConfigureAwait(false);
-            if (sessionStamp >= timeStampNowMs)
-            {
-                postRecord = await TryUpdatePostViewCount(new Post_UpdateViewCount(activeAccountId, postId)).ConfigureAwait(false);
-            }
-        }
+        //if (canSeePost && activeAccountId > 0)
+        //{
+        //    var timeStampNow = SystemClock.Instance.GetCurrentInstant();
+        //    var timeStampNowMs = timeStampNow.ToUnixTimeMilliseconds();
+        //    var sessionStamp = await GetSessionPostViewTimeStamp(activeAccountId, postId).ConfigureAwait(false);
+        //    if (sessionStamp >= timeStampNowMs)
+        //    {
+        //        postRecord = await TryUpdatePostViewCount(new Post_UpdateViewCount(activeAccountId, postId)).ConfigureAwait(false);
+        //    }
+        //}
 
         var postTagInfos = await GetAllPostTagRecord(postId, locale).ConfigureAwait(false);
         var reactionRecords = await TryGetPostReactions(postId).ConfigureAwait(false);
@@ -134,17 +134,17 @@ public class PostServices : IPostServices
         return postRecord.CreatePostViewModel(posterAccount, canSeePost, reactionViewModel, postTagInfos);
     }
 
-    [ComputeMethod]
-    protected virtual Task<long> GetSessionPostViewTimeStamp(int accountId, int postId)
-    {
-        return Task.FromResult(SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
-    }
+    //[ComputeMethod]
+    //protected virtual Task<long> GetSessionPostViewTimeStamp(int accountId, int postId)
+    //{
+    //    return Task.FromResult(SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
+    //}
 
-    [CommandHandler]
-    public virtual async Task<PostRecord> TryUpdatePostViewCount(Post_UpdateViewCount command, CancellationToken cancellationToken = default)
-    {
-        return await PostServices_UpdateViewCount.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
-    }
+    //[CommandHandler]
+    //public virtual async Task<PostRecord> TryUpdatePostViewCount(Post_UpdateViewCount command, CancellationToken cancellationToken = default)
+    //{
+    //    return await PostServices_UpdateViewCount.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+    //}
 
     public Task<AddMemoryResult> TryPostMemory(Session session, byte[] buffer)
     {
@@ -566,10 +566,11 @@ public class PostServices : IPostServices
     {
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
-        var allTags = from tag in database.PostTags
-                      where tag.PostId == postId && (tag.TagKind == PostTagKind.Post || tag.TagKind == PostTagKind.PostComment || tag.TagKind == PostTagKind.PostRestored)
+        var query = from tag in database.PostTags
+                      where tag.PostId == postId
                       select tag;
 
-        return await allTags.ToArrayAsync().ConfigureAwait(false);
+        var allTags = await query.ToArrayAsync().ConfigureAwait(false);
+        return allTags.Where(tag => tag.TagKind == PostTagKind.Post || tag.TagKind == PostTagKind.PostComment || tag.TagKind == PostTagKind.PostRestored).ToArray();
     }
 }

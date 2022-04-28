@@ -60,9 +60,15 @@ public class TagServices : ITagServices
             return new PostTagInfo(tagType, tagId, hashTagText, null);
         }
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        //await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var tagString = PostTagInfo.GetTagString(tagType, tagId);
+        //var allRecords = await GetAllBlizzardDataRecord().ConfigureAwait(false);
+        //if (!allRecords.TryGetValue(tagString, out var tagRecord))
+        //{
+        //    return new PostTagInfo(tagType, tagId, tagString, null);
+        //}
+
         var tagRecord = await GetBlizzardDataRecord(tagString).ConfigureAwait(false);
         if (tagRecord == null)
         {
@@ -71,7 +77,7 @@ public class TagServices : ITagServices
 
         return CreatePostTagInfo(tagRecord, locale);
     }
-    
+
     [ComputeMethod]
     protected virtual async Task<BlizzardDataRecord> GetBlizzardDataRecord(string tagString)
     {
@@ -84,7 +90,7 @@ public class TagServices : ITagServices
     //protected virtual async Task<Dictionary<string, BlizzardDataRecord>> GetAllBlizzardDataRecord()
     //{
     //    await using var database = _commonServices.DatabaseHub.CreateDbContext();
-        
+
     //    return await database.BlizzardData.ToDictionaryAsync(r => r.Key, r => r).ConfigureAwait(false);
     //}
 
