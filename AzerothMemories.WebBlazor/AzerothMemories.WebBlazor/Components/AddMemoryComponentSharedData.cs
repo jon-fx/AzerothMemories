@@ -123,6 +123,11 @@ public sealed class AddMemoryComponentSharedData
             var mainTag = TypeTags.FirstOrDefault(x => PostTagInfo.EqualityComparer1.Equals(x, tagInfo));
             if (mainTag != null)
             {
+                if (_selectedTypeTags.Count > 0)
+                {
+                    _selectedTypeTags.Clear();
+                }
+
                 _selectedTypeTags.Add(mainTag);
                 continue;
             }
@@ -130,6 +135,11 @@ public sealed class AddMemoryComponentSharedData
             var regionTag = RegionTags.FirstOrDefault(x => PostTagInfo.EqualityComparer1.Equals(x, tagInfo));
             if (regionTag != null)
             {
+                if (_selectedRegionTags.Count > 0)
+                {
+                    _selectedRegionTags.Clear();
+                }
+
                 _selectedRegionTags.Add(regionTag);
                 continue;
             }
@@ -158,9 +168,9 @@ public sealed class AddMemoryComponentSharedData
                 continue;
             }
 
-            var accountViewModel = _accountViewModelProvider();
             if (tagInfo.Type == PostTagType.Character)
             {
+                var accountViewModel = _accountViewModelProvider();
                 var character = accountViewModel.GetCharactersSafe().FirstOrDefault(x => x.Id == tagInfo.Id);
                 if (character != null)
                 {

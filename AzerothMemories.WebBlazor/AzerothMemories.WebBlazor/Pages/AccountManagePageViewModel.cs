@@ -26,7 +26,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
 
     public string CustomAvatarLink { get; private set; }
 
-    public List<string> SocialLogins { get; } = new() { "Patreon" };
+    public List<string> SocialLogins { get; } = new();// { "Patreon" };
 
     public override async Task ComputeState(CancellationToken cancellationToken)
     {

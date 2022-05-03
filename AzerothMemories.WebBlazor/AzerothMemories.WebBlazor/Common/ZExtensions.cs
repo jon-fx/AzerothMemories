@@ -32,7 +32,7 @@ public static class ZExtensions
 
     static ZExtensions()
     {
-        TagCountsPerPost = new (int Min, int Max)[(int)PostTagType.CountExcludingHashTag];
+        TagCountsPerPost = new (int Min, int Max)[(int)PostTagType.Count];
 
         TagCountsPerPost[(int)PostTagType.Type] = (1, 1);
         TagCountsPerPost[(int)PostTagType.Main] = (0, 5);
@@ -60,6 +60,8 @@ public static class ZExtensions
         TagCountsPerPost[(int)PostTagType.CharacterRace] = (0, 5);
         TagCountsPerPost[(int)PostTagType.CharacterClass] = (0, 5);
         TagCountsPerPost[(int)PostTagType.CharacterClassSpecialization] = (0, 5);
+
+        TagCountsPerPost[(int)PostTagType.HashTag] = (0, 8);
     }
 
     public static bool IsRetailOnlyTag(this PostTagType tagType)

@@ -11,7 +11,7 @@ internal sealed class PostTagInfoEqualityComparer1 : IEqualityComparer<PostTagIn
 
         if (x.Type == PostTagType.HashTag)
         {
-            throw new NotImplementedException();
+            return string.Equals(x.Name, y.Name, StringComparison.OrdinalIgnoreCase);
         }
 
         return x.Id == y.Id && x.Type == y.Type;
@@ -21,7 +21,7 @@ internal sealed class PostTagInfoEqualityComparer1 : IEqualityComparer<PostTagIn
     {
         if (obj.Type == PostTagType.HashTag)
         {
-            throw new NotImplementedException();
+            return HashCode.Combine(obj.Id, (int)obj.Type, obj.Name);
         }
 
         return HashCode.Combine(obj.Id, (int)obj.Type);
