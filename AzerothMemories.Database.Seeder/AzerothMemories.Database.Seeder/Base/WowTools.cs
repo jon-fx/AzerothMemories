@@ -2,7 +2,7 @@
 
 internal sealed class WowTools
 {
-    private const string BuildConst = "9.2.0.43340";
+    private const string BuildConst = "9.2.0.43345";
 
     public WowToolsInternal Main { get; } = new(BuildConst, true);
 }
