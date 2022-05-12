@@ -119,7 +119,7 @@ internal static class PostServices_TryPublishComment
             tagRecords.Add(tagRecord);
         }
 
-        if (tagRecords.Count > 64)
+        if (tagRecords.Count > 16)
         {
             return 0;
         }
