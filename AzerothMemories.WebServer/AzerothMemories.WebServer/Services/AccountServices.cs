@@ -286,11 +286,7 @@ public class AccountServices : IAccountServices
             var byteCount = binaryReader.ReadInt32();
             var imageBuffer = binaryReader.ReadBytes(byteCount);
 
-            var command = new Account_TryChangeAvatarUpload
-            {
-                Session = session,
-                ImageData = imageBuffer,
-            };
+            var command = new Account_TryChangeAvatarUpload(session, imageBuffer);
 
             return TryChangeAvatarUpload(command);
         }

@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebServer.Services.Commands;
 
-public record Account_AddNewHistoryItem : ICommand<bool>
+public sealed record Account_AddNewHistoryItem : ICommand<bool>
 {
     public int AccountId { get; init; }
 

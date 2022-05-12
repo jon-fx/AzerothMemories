@@ -1,8 +1,3 @@
 ﻿namespace AzerothMemories.WebServer.Services.Commands;
 
-public record Admin_InvalidateReports(bool AlwaysTrue)
-{
-    public Admin_InvalidateReports() : this(true)
-    {
-    }
-}
+public sealed record Admin_InvalidateReports(bool AlwaysTrue);

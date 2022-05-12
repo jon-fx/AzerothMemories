@@ -1,7 +1,7 @@
-﻿using NodaTime.Extensions;
-using System.Security.Claims;
-using AspNet.Security.OAuth.BattleNet;
+﻿using AspNet.Security.OAuth.BattleNet;
 using AspNet.Security.OAuth.Patreon;
+using NodaTime.Extensions;
+using System.Security.Claims;
 
 namespace AzerothMemories.WebServer.Common;
 
@@ -69,17 +69,8 @@ internal static class StartUpHelpers
             }
         }
 
-        var updateResult = await accountServices.TryUpdateAuthToken(new Account_TryUpdateAuthToken
-        {
-            Id = id,
-            Name = name,
-            Type = authenticationType,
-            AccountId = accountId,
-            AccessToken = context.AccessToken,
-            RefreshToken = context.RefreshToken,
-            TokenExpiresAt = (SystemClock.Instance.GetCurrentInstant() + context.ExpiresIn.GetValueOrDefault().ToDuration()).ToUnixTimeMilliseconds()
-        }).ConfigureAwait(false);
-
+        var tokenExpiresAt = (SystemClock.Instance.GetCurrentInstant() + context.ExpiresIn.GetValueOrDefault().ToDuration()).ToUnixTimeMilliseconds();
+        var updateResult = await accountServices.TryUpdateAuthToken(new Account_TryUpdateAuthToken(id, name, authenticationType, accountId, context.AccessToken, context.RefreshToken, tokenExpiresAt)).ConfigureAwait(false);
         if (shouldThrowException || !updateResult)
         {
             throw new CustomAuthException();

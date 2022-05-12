@@ -178,16 +178,7 @@ public class PostServices : IPostServices
                 avatarTag = null;
             }
 
-            var command = new Post_TryPostMemory
-            {
-                Session = session,
-                TimeStamp = timeStamp,
-                AvatarTag = avatarTag,
-                IsPrivate = isPrivate,
-                Comment = comment,
-                SystemTags = systemTags,
-                ImageData = imageData,
-            };
+            var command = new Post_TryPostMemory(session, timeStamp, avatarTag, isPrivate, comment, systemTags, imageData);
 
             return TryPostMemory(command);
         }
