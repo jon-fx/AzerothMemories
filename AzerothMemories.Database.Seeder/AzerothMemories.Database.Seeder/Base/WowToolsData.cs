@@ -61,6 +61,11 @@ internal sealed class WowToolsData
         var keys = _data.Keys.Where(x => x.StartsWith(name.Replace("_lang", "_")));
         foreach (var header in keys)
         {
+            if (header.Contains("Name_male_") || header.Contains("Name_female_") || header.Contains("Name_lowercase_"))
+            {
+                continue;
+            }
+
             if (!TryGetData(header, out string value))
             {
                 continue;

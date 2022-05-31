@@ -1822,8 +1822,41 @@
   <data name="CharacterRace-11" xml:space="preserve">
     <value>Draeneï</value>
   </data>
+  <data name="CharacterRace-12" xml:space="preserve">
+    <value>Gangr'orc</value>
+  </data>
+  <data name="CharacterRace-13" xml:space="preserve">
+    <value>Naga</value>
+  </data>
+  <data name="CharacterRace-14" xml:space="preserve">
+    <value>Roué</value>
+  </data>
+  <data name="CharacterRace-15" xml:space="preserve">
+    <value>Squelette</value>
+  </data>
+  <data name="CharacterRace-16" xml:space="preserve">
+    <value>Vrykul</value>
+  </data>
+  <data name="CharacterRace-17" xml:space="preserve">
+    <value>Rohart</value>
+  </data>
+  <data name="CharacterRace-18" xml:space="preserve">
+    <value>Troll des forêts</value>
+  </data>
+  <data name="CharacterRace-19" xml:space="preserve">
+    <value>Taunka</value>
+  </data>
+  <data name="CharacterRace-20" xml:space="preserve">
+    <value>Squelette du Norfendre</value>
+  </data>
+  <data name="CharacterRace-21" xml:space="preserve">
+    <value>Troll des glaces</value>
+  </data>
   <data name="CharacterRace-22" xml:space="preserve">
     <value>Worgen</value>
+  </data>
+  <data name="CharacterRace-23" xml:space="preserve">
+    <value>Gilnéen</value>
   </data>
   <data name="CharacterRace-24" xml:space="preserve">
     <value>Pandaren</value>
@@ -1851,6 +1884,9 @@
   </data>
   <data name="CharacterRace-32" xml:space="preserve">
     <value>Kultirassien</value>
+  </data>
+  <data name="CharacterRace-33" xml:space="preserve">
+    <value>Humain</value>
   </data>
   <data name="CharacterRace-34" xml:space="preserve">
     <value>Nain sombrefer</value>
@@ -2013,5 +2049,41 @@
   </data>
   <data name="CharacterClassSpecialization-581" xml:space="preserve">
     <value>Vengeance (Chasseur de démons)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1444" xml:space="preserve">
+    <value>Initial (Chaman)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1446" xml:space="preserve">
+    <value>Initial (Guerrier)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1447" xml:space="preserve">
+    <value>Initial (Druide)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1448" xml:space="preserve">
+    <value>Initial (Chasseur)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1449" xml:space="preserve">
+    <value>Initial (Mage)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1450" xml:space="preserve">
+    <value>Initial (Moine)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1451" xml:space="preserve">
+    <value>Initial (Paladin)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1452" xml:space="preserve">
+    <value>Initial (Prêtre)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1453" xml:space="preserve">
+    <value>Initial (Voleur)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1454" xml:space="preserve">
+    <value>Initial (Démoniste)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1455" xml:space="preserve">
+    <value>Initial (Chevalier de la mort)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1456" xml:space="preserve">
+    <value>Initial (Chasseur de démons)</value>
   </data>
 </root>

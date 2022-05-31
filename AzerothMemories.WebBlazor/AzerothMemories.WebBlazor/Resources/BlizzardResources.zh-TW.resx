@@ -1822,8 +1822,41 @@
   <data name="CharacterRace-11" xml:space="preserve">
     <value>德萊尼</value>
   </data>
+  <data name="CharacterRace-12" xml:space="preserve">
+    <value>魔獄獸人</value>
+  </data>
+  <data name="CharacterRace-13" xml:space="preserve">
+    <value>納迦</value>
+  </data>
+  <data name="CharacterRace-14" xml:space="preserve">
+    <value>破碎者</value>
+  </data>
+  <data name="CharacterRace-15" xml:space="preserve">
+    <value>骷髏</value>
+  </data>
+  <data name="CharacterRace-16" xml:space="preserve">
+    <value>維酷人</value>
+  </data>
+  <data name="CharacterRace-17" xml:space="preserve">
+    <value>巨牙海民</value>
+  </data>
+  <data name="CharacterRace-18" xml:space="preserve">
+    <value>森林食人妖</value>
+  </data>
+  <data name="CharacterRace-19" xml:space="preserve">
+    <value>坦卡族</value>
+  </data>
+  <data name="CharacterRace-20" xml:space="preserve">
+    <value>北裂境骷髏</value>
+  </data>
+  <data name="CharacterRace-21" xml:space="preserve">
+    <value>寒冰食人妖</value>
+  </data>
   <data name="CharacterRace-22" xml:space="preserve">
     <value>狼人</value>
+  </data>
+  <data name="CharacterRace-23" xml:space="preserve">
+    <value>吉爾尼斯</value>
   </data>
   <data name="CharacterRace-24" xml:space="preserve">
     <value>熊貓人</value>
@@ -1851,6 +1884,9 @@
   </data>
   <data name="CharacterRace-32" xml:space="preserve">
     <value>庫爾提拉斯人</value>
+  </data>
+  <data name="CharacterRace-33" xml:space="preserve">
+    <value>人類</value>
   </data>
   <data name="CharacterRace-34" xml:space="preserve">
     <value>黑鐵矮人</value>
@@ -2013,5 +2049,41 @@
   </data>
   <data name="CharacterClassSpecialization-581" xml:space="preserve">
     <value>復仇 (惡魔獵人)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1444" xml:space="preserve">
+    <value>初始 (薩滿)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1446" xml:space="preserve">
+    <value>初始 (戰士)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1447" xml:space="preserve">
+    <value>初始 (德魯伊)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1448" xml:space="preserve">
+    <value>初始 (獵人)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1449" xml:space="preserve">
+    <value>初始 (法師)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1450" xml:space="preserve">
+    <value>初始 (武僧)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1451" xml:space="preserve">
+    <value>初始 (聖騎士)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1452" xml:space="preserve">
+    <value>初始 (牧師)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1453" xml:space="preserve">
+    <value>初始 (盜賊)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1454" xml:space="preserve">
+    <value>初始 (術士)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1455" xml:space="preserve">
+    <value>初始 (死亡騎士)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1456" xml:space="preserve">
+    <value>初始 (惡魔獵人)</value>
   </data>
 </root>

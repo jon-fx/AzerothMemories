@@ -1822,8 +1822,41 @@
   <data name="CharacterRace-11" xml:space="preserve">
     <value>Дреней</value>
   </data>
+  <data name="CharacterRace-12" xml:space="preserve">
+    <value>Орк Скверны</value>
+  </data>
+  <data name="CharacterRace-13" xml:space="preserve">
+    <value>Нага</value>
+  </data>
+  <data name="CharacterRace-14" xml:space="preserve">
+    <value>Сломленный</value>
+  </data>
+  <data name="CharacterRace-15" xml:space="preserve">
+    <value>Скелет</value>
+  </data>
+  <data name="CharacterRace-16" xml:space="preserve">
+    <value>Врайкул</value>
+  </data>
+  <data name="CharacterRace-17" xml:space="preserve">
+    <value>Клыкарр</value>
+  </data>
+  <data name="CharacterRace-18" xml:space="preserve">
+    <value>Лесной тролль</value>
+  </data>
+  <data name="CharacterRace-19" xml:space="preserve">
+    <value>Таунка</value>
+  </data>
+  <data name="CharacterRace-20" xml:space="preserve">
+    <value>Нордскольский скелет</value>
+  </data>
+  <data name="CharacterRace-21" xml:space="preserve">
+    <value>Ледяной тролль</value>
+  </data>
   <data name="CharacterRace-22" xml:space="preserve">
     <value>Ворген</value>
+  </data>
+  <data name="CharacterRace-23" xml:space="preserve">
+    <value>Житель Гилнеаса</value>
   </data>
   <data name="CharacterRace-24" xml:space="preserve">
     <value>Пандарен</value>
@@ -1851,6 +1884,9 @@
   </data>
   <data name="CharacterRace-32" xml:space="preserve">
     <value>Култирасец</value>
+  </data>
+  <data name="CharacterRace-33" xml:space="preserve">
+    <value>Человек</value>
   </data>
   <data name="CharacterRace-34" xml:space="preserve">
     <value>Дворф из клана Черного Железа</value>
@@ -2013,5 +2049,41 @@
   </data>
   <data name="CharacterClassSpecialization-581" xml:space="preserve">
     <value>Месть (Охотник на демонов)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1444" xml:space="preserve">
+    <value>Начальный (Шаман)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1446" xml:space="preserve">
+    <value>Начальный (Воин)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1447" xml:space="preserve">
+    <value>Начальный (Друид)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1448" xml:space="preserve">
+    <value>Начальный (Охотник)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1449" xml:space="preserve">
+    <value>Начальный (Маг)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1450" xml:space="preserve">
+    <value>Начальный (Монах)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1451" xml:space="preserve">
+    <value>Начальный (Паладин)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1452" xml:space="preserve">
+    <value>Начальный (Жрец)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1453" xml:space="preserve">
+    <value>Начальный (Разбойник)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1454" xml:space="preserve">
+    <value>Начальный (Чернокнижник)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1455" xml:space="preserve">
+    <value>Начальный (Рыцарь смерти)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1456" xml:space="preserve">
+    <value>Начальный (Охотник на демонов)</value>
   </data>
 </root>

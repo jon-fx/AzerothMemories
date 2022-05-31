@@ -229,6 +229,7 @@ internal sealed class MoaResourceWriter
 
         return value;
     }
+
     public bool TryGetServerSideResource(PostTagType tagType, int tagId, out BlizzardDataRecord dataRecord)
     {
         var key = PostTagInfo.GetTagString(tagType, tagId);
@@ -260,7 +261,7 @@ internal sealed class MoaResourceWriter
         {
             database.BlizzardData.Add(newResource);
         }
-        
+
         foreach (var updatedResource in updatedResources)
         {
             database.BlizzardData.Update(updatedResource);
@@ -282,7 +283,7 @@ internal sealed class MoaResourceWriter
         {
             {"None", noneDict}
         };
-        
+
         noneDict.AddRange(typeTags.Select(x => new KeyValuePair<string, string>(x.Key, x.Key)));
         noneDict.AddRange(regionTags.Select(x => new KeyValuePair<string, string>(x.Key, x.Key)));
         noneDict.AddRange(mainTags.Select(x => new KeyValuePair<string, string>(x.Key, x.Key)));

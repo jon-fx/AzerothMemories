@@ -4,6 +4,9 @@ namespace AzerothMemories.Database.Seeder.Base;
 
 internal static class SetExtensions
 {
+    private static string[] _blizzardDataRecordLocalFields = typeof(BlizzardDataRecordLocal).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+        .Select(x => x.Name.ToLower()).Where(x => x.Length == 4).ToArray();
+
     public static BlizzardDataRecordLocal ToRecord(this Name name)
     {
         return new BlizzardDataRecordLocal
@@ -34,22 +37,15 @@ internal static class SetExtensions
 
     public static void Update(string key, BlizzardDataRecordLocal record, Dictionary<string, Dictionary<string, string>> clientSideResourcesByLocal)
     {
-        var fields = typeof(BlizzardDataRecordLocal).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-        foreach (var field in fields)
+        foreach (var fieldName in _blizzardDataRecordLocalFields)
         {
-            var fieldName = field.Name.ToLower();
-            if (fieldName.Length != 4)
-            {
-                continue;
-            }
-
             var fieldInfo = typeof(BlizzardDataRecordLocal).GetProperty(fieldName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
             var fieldValue = fieldInfo.GetValue(record) as string;
             if (string.IsNullOrWhiteSpace(fieldValue))
             {
                 fieldValue = record.EnGb;
 
-                Console.WriteLine("Set Extensions lang field == null using en_GB");
+                Console.WriteLine($@"Set Extensions {fieldName} == null using en_GB [{key}] [{fieldName}] [{record.EnGb}]");
             }
 
             if (!clientSideResourcesByLocal.TryGetValue(fieldName, out var dict))

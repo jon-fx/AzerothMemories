@@ -8,76 +8,71 @@ internal sealed class PlayerDataSeeder : GenericBase<PlayerDataSeeder>
 
     protected override async Task DoSomething()
     {
-        using var client = HttpClientProvider.GetWarcraftClient(BlizzardRegion.Europe);
-        var classIndex = await ResourceCache.GetOrRequestData("ClassIndex", async k => await client.GetPlayableClassIndex());
-        if (classIndex != null)
+        var characterClasses = new Dictionary<int, WowToolsData>();
+        WowTools.Main.LoadDataFromWowTools("ChrClasses", "ID", ref characterClasses);
+
+        foreach (var reference in characterClasses.Values)
         {
-            foreach (var reference in classIndex.Classes)
+            ResourceWriter.AddServerSideLocalizationName(PostTagType.CharacterClass, reference.Id, reference.GetLocalised("Name_lang"));
+
+            if (reference.TryGetData<int>("IconFileDataID", out var iconId))
             {
-                var classInfo = await ResourceCache.GetOrRequestData($"Class-{reference.Id}", async k => await client.GetPlayableClass(reference.Id));
-                if (classInfo != null)
+                if (iconId == 0)
                 {
-                    ResourceWriter.AddServerSideLocalizationName(PostTagType.CharacterClass, classInfo.Id, classInfo.Name.ToRecord());
-
-                    var classMedia = await ResourceCache.GetOrRequestData($"Class-{classInfo.Id}-Media", async k => await client.GetPlayableClassMedia(classInfo.Id));
-                    if (classMedia != null)
-                    {
-                        var media = classMedia.Assets.FirstOrDefault(x => x.Key == "icon");
-                        if (media != null)
-                        {
-                            ResourceWriter.TryAddServerSideLocalizationMedia(PostTagType.CharacterClass, classInfo.Id, media.Value.AbsoluteUri);
-                        }
-                        else
-                        {
-                            throw new NotImplementedException();
-                        }
-                    }
-
-                    foreach (var dataSpecialization in classInfo.Specializations)
-                    {
-                        var specRecord = dataSpecialization.Name.ToRecord();
-
-                        SetExtensions.Update(specRecord, (l, x) =>
-                        {
-                            if (ResourceWriter.GetClientSideLocalizationData(l, $"CharacterClass-{classInfo.Id}", out var classNameString))
-                            {
-                                return $"{x} ({classNameString})";
-                            }
-
-                            return x;
-                        });
-
-                        ResourceWriter.AddServerSideLocalizationName(PostTagType.CharacterClassSpecialization, dataSpecialization.Id, specRecord);
-
-                        var specMedia = await ResourceCache.GetOrRequestData($"ClassSpecialization-{dataSpecialization.Id}-Media", async k => await client.GetPlayableSpecializationClassMedia(dataSpecialization.Id));
-                        if (specMedia != null)
-                        {
-                            var media = specMedia.Assets.FirstOrDefault(x => x.Key == "icon");
-                            if (media != null)
-                            {
-                                ResourceWriter.TryAddServerSideLocalizationMedia(PostTagType.CharacterClassSpecialization, dataSpecialization.Id, media.Value.AbsoluteUri);
-                            }
-                            else
-                            {
-                                throw new NotImplementedException();
-                            }
-                        }
-                    }
+                }
+                else
+                {
+                    await ResourceWriter.TryAddServerSideLocalizationMedia(PostTagType.CharacterClass, reference.Id, iconId);
                 }
             }
         }
 
-        var raceIndex = await ResourceCache.GetOrRequestData("RaceIndex", async k => await client.GetPlayableRaceIndex());
-        if (raceIndex != null)
+        var characterSpecs = new Dictionary<int, WowToolsData>();
+        WowTools.Main.LoadDataFromWowTools("ChrSpecialization", "ID", ref characterSpecs);
+
+        foreach (var reference in characterSpecs.Values)
         {
-            foreach (var reference in raceIndex.Races)
+            if (!reference.TryGetData<int>("ClassId", out var classId))
             {
-                var raceInfo = await ResourceCache.GetOrRequestData($"Race-{reference.Id}", async k => await client.GetPlayableRace(reference.Id));
-                if (raceInfo != null)
+                continue;
+            }
+
+            if (classId <= 0)
+            {
+                continue;
+            }
+
+            ResourceWriter.AddServerSideLocalizationName(PostTagType.CharacterClassSpecialization, reference.Id, reference.GetLocalised("Name_lang"));
+
+            if (reference.TryGetData<int>("IconFileDataID", out var iconId))
+            {
+                if (iconId == 0)
                 {
-                    ResourceWriter.AddServerSideLocalizationName(PostTagType.CharacterRace, raceInfo.Id, raceInfo.Name.ToRecord());
+                }
+                else
+                {
+                    await ResourceWriter.TryAddServerSideLocalizationMedia(PostTagType.CharacterClassSpecialization, reference.Id, iconId);
                 }
             }
+
+            var specRecord = ResourceWriter.GetOrCreateServerSideResource(PostTagType.CharacterClassSpecialization, reference.Id);
+            SetExtensions.Update(specRecord.Name, (l, x) =>
+            {
+                if (ResourceWriter.GetClientSideLocalizationData(l, $"CharacterClass-{classId}", out var classNameString))
+                {
+                    return $"{x} ({classNameString})";
+                }
+
+                return x;
+            });
+        }
+
+        var characterRaces = new Dictionary<int, WowToolsData>();
+        WowTools.Main.LoadDataFromWowTools("ChrRaces", "ID", ref characterRaces);
+
+        foreach (var reference in characterRaces.Values)
+        {
+            ResourceWriter.AddServerSideLocalizationName(PostTagType.CharacterRace, reference.Id, reference.GetLocalised("Name_lang"));
         }
     }
 }

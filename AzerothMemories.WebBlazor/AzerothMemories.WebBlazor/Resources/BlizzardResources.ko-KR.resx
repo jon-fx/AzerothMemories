@@ -1822,8 +1822,41 @@
   <data name="CharacterRace-11" xml:space="preserve">
     <value>드레나이</value>
   </data>
+  <data name="CharacterRace-12" xml:space="preserve">
+    <value>타락한 오크</value>
+  </data>
+  <data name="CharacterRace-13" xml:space="preserve">
+    <value>나가</value>
+  </data>
+  <data name="CharacterRace-14" xml:space="preserve">
+    <value>뒤틀린 드레나이</value>
+  </data>
+  <data name="CharacterRace-15" xml:space="preserve">
+    <value>해골</value>
+  </data>
+  <data name="CharacterRace-16" xml:space="preserve">
+    <value>브리쿨</value>
+  </data>
+  <data name="CharacterRace-17" xml:space="preserve">
+    <value>투스카르</value>
+  </data>
+  <data name="CharacterRace-18" xml:space="preserve">
+    <value>숲트롤</value>
+  </data>
+  <data name="CharacterRace-19" xml:space="preserve">
+    <value>타운카</value>
+  </data>
+  <data name="CharacterRace-20" xml:space="preserve">
+    <value>노스렌드 해골</value>
+  </data>
+  <data name="CharacterRace-21" xml:space="preserve">
+    <value>얼음 트롤</value>
+  </data>
   <data name="CharacterRace-22" xml:space="preserve">
     <value>늑대인간</value>
+  </data>
+  <data name="CharacterRace-23" xml:space="preserve">
+    <value>길니아스인</value>
   </data>
   <data name="CharacterRace-24" xml:space="preserve">
     <value>판다렌</value>
@@ -1851,6 +1884,9 @@
   </data>
   <data name="CharacterRace-32" xml:space="preserve">
     <value>쿨 티란</value>
+  </data>
+  <data name="CharacterRace-33" xml:space="preserve">
+    <value>인간</value>
   </data>
   <data name="CharacterRace-34" xml:space="preserve">
     <value>검은무쇠 드워프</value>
@@ -2013,5 +2049,41 @@
   </data>
   <data name="CharacterClassSpecialization-581" xml:space="preserve">
     <value>복수 (악마사냥꾼)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1444" xml:space="preserve">
+    <value>입문 (주술사)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1446" xml:space="preserve">
+    <value>입문 (전사)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1447" xml:space="preserve">
+    <value>입문 (드루이드)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1448" xml:space="preserve">
+    <value>입문 (사냥꾼)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1449" xml:space="preserve">
+    <value>입문 (마법사)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1450" xml:space="preserve">
+    <value>입문 (수도사)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1451" xml:space="preserve">
+    <value>입문 (성기사)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1452" xml:space="preserve">
+    <value>입문 (사제)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1453" xml:space="preserve">
+    <value>입문 (도적)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1454" xml:space="preserve">
+    <value>입문 (흑마법사)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1455" xml:space="preserve">
+    <value>입문 (죽음의 기사)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1456" xml:space="preserve">
+    <value>입문 (악마사냥꾼)</value>
   </data>
 </root>

@@ -1790,25 +1790,25 @@
     <value>Unknown Race</value>
   </data>
   <data name="CharacterRace-1" xml:space="preserve">
-    <value>Human</value>
+    <value>Humano</value>
   </data>
   <data name="CharacterRace-2" xml:space="preserve">
     <value>Orc</value>
   </data>
   <data name="CharacterRace-3" xml:space="preserve">
-    <value>Dwarf</value>
+    <value>Anão</value>
   </data>
   <data name="CharacterRace-4" xml:space="preserve">
-    <value>Night Elf</value>
+    <value>Elfo Noturno</value>
   </data>
   <data name="CharacterRace-5" xml:space="preserve">
-    <value>Undead</value>
+    <value>Morto-vivo</value>
   </data>
   <data name="CharacterRace-6" xml:space="preserve">
     <value>Tauren</value>
   </data>
   <data name="CharacterRace-7" xml:space="preserve">
-    <value>Gnome</value>
+    <value>Gnomo</value>
   </data>
   <data name="CharacterRace-8" xml:space="preserve">
     <value>Troll</value>
@@ -1817,13 +1817,46 @@
     <value>Goblin</value>
   </data>
   <data name="CharacterRace-10" xml:space="preserve">
-    <value>Blood Elf</value>
+    <value>Elfo Sangrento</value>
   </data>
   <data name="CharacterRace-11" xml:space="preserve">
     <value>Draenei</value>
   </data>
+  <data name="CharacterRace-12" xml:space="preserve">
+    <value>Orc Vil</value>
+  </data>
+  <data name="CharacterRace-13" xml:space="preserve">
+    <value>Naga</value>
+  </data>
+  <data name="CharacterRace-14" xml:space="preserve">
+    <value>Degradado</value>
+  </data>
+  <data name="CharacterRace-15" xml:space="preserve">
+    <value>Esqueleto</value>
+  </data>
+  <data name="CharacterRace-16" xml:space="preserve">
+    <value>Vraikal</value>
+  </data>
+  <data name="CharacterRace-17" xml:space="preserve">
+    <value>Morsano</value>
+  </data>
+  <data name="CharacterRace-18" xml:space="preserve">
+    <value>Troll da Floresta</value>
+  </data>
+  <data name="CharacterRace-19" xml:space="preserve">
+    <value>Taunka</value>
+  </data>
+  <data name="CharacterRace-20" xml:space="preserve">
+    <value>Esqueleto de Nortúndria</value>
+  </data>
+  <data name="CharacterRace-21" xml:space="preserve">
+    <value>Troll do Gelo</value>
+  </data>
   <data name="CharacterRace-22" xml:space="preserve">
     <value>Worgen</value>
+  </data>
+  <data name="CharacterRace-23" xml:space="preserve">
+    <value>Guilneano</value>
   </data>
   <data name="CharacterRace-24" xml:space="preserve">
     <value>Pandaren</value>
@@ -1835,183 +1868,222 @@
     <value>Pandaren</value>
   </data>
   <data name="CharacterRace-27" xml:space="preserve">
-    <value>Nightborne</value>
+    <value>Filho da Noite</value>
   </data>
   <data name="CharacterRace-28" xml:space="preserve">
-    <value>Highmountain Tauren</value>
+    <value>Tauren Altamontês</value>
   </data>
   <data name="CharacterRace-29" xml:space="preserve">
-    <value>Void Elf</value>
+    <value>Elfo Caótico</value>
   </data>
   <data name="CharacterRace-30" xml:space="preserve">
-    <value>Lightforged Draenei</value>
+    <value>Draenei Forjado a Luz</value>
   </data>
   <data name="CharacterRace-31" xml:space="preserve">
-    <value>Zandalari Troll</value>
+    <value>Troll Zandalari</value>
   </data>
   <data name="CharacterRace-32" xml:space="preserve">
-    <value>Kul Tiran</value>
+    <value>Kultireno</value>
+  </data>
+  <data name="CharacterRace-33" xml:space="preserve">
+    <value>Humano</value>
   </data>
   <data name="CharacterRace-34" xml:space="preserve">
-    <value>Dark Iron Dwarf</value>
+    <value>Anão Ferro Negro</value>
   </data>
   <data name="CharacterRace-35" xml:space="preserve">
     <value>Vulpera</value>
   </data>
   <data name="CharacterRace-36" xml:space="preserve">
-    <value>Mag'har Orc</value>
+    <value>Orc Mag'har</value>
   </data>
   <data name="CharacterRace-37" xml:space="preserve">
-    <value>Mechagnome</value>
+    <value>Gnomecânico</value>
   </data>
   <data name="CharacterClass-0" xml:space="preserve">
     <value>Unknown Class</value>
   </data>
   <data name="CharacterClass-1" xml:space="preserve">
-    <value>Warrior</value>
+    <value>Guerreiro</value>
   </data>
   <data name="CharacterClass-2" xml:space="preserve">
-    <value>Paladin</value>
+    <value>Paladino</value>
   </data>
   <data name="CharacterClass-3" xml:space="preserve">
-    <value>Hunter</value>
+    <value>Caçador</value>
   </data>
   <data name="CharacterClass-4" xml:space="preserve">
-    <value>Rogue</value>
+    <value>Ladino</value>
   </data>
   <data name="CharacterClass-5" xml:space="preserve">
-    <value>Priest</value>
+    <value>Sacerdote</value>
   </data>
   <data name="CharacterClass-6" xml:space="preserve">
-    <value>Death Knight</value>
+    <value>Cavaleiro da Morte</value>
   </data>
   <data name="CharacterClass-7" xml:space="preserve">
-    <value>Shaman</value>
+    <value>Xamã</value>
   </data>
   <data name="CharacterClass-8" xml:space="preserve">
-    <value>Mage</value>
+    <value>Mago</value>
   </data>
   <data name="CharacterClass-9" xml:space="preserve">
-    <value>Warlock</value>
+    <value>Bruxo</value>
   </data>
   <data name="CharacterClass-10" xml:space="preserve">
-    <value>Monk</value>
+    <value>Monge</value>
   </data>
   <data name="CharacterClass-11" xml:space="preserve">
-    <value>Druid</value>
+    <value>Druida</value>
   </data>
   <data name="CharacterClass-12" xml:space="preserve">
-    <value>Demon Hunter</value>
+    <value>Caçador de Demônios</value>
   </data>
   <data name="CharacterClassSpecialization-0" xml:space="preserve">
     <value>Unknown Specialization</value>
   </data>
   <data name="CharacterClassSpecialization-62" xml:space="preserve">
-    <value>Arcane (Mage)</value>
+    <value>Arcano (Mago)</value>
   </data>
   <data name="CharacterClassSpecialization-63" xml:space="preserve">
-    <value>Fire (Mage)</value>
+    <value>Fogo (Mago)</value>
   </data>
   <data name="CharacterClassSpecialization-64" xml:space="preserve">
-    <value>Frost (Mage)</value>
+    <value>Gélido (Mago)</value>
   </data>
   <data name="CharacterClassSpecialization-65" xml:space="preserve">
-    <value>Holy (Paladin)</value>
+    <value>Sagrado (Paladino)</value>
   </data>
   <data name="CharacterClassSpecialization-66" xml:space="preserve">
-    <value>Protection (Paladin)</value>
+    <value>Proteção (Paladino)</value>
   </data>
   <data name="CharacterClassSpecialization-70" xml:space="preserve">
-    <value>Retribution (Paladin)</value>
+    <value>Retribuição (Paladino)</value>
   </data>
   <data name="CharacterClassSpecialization-71" xml:space="preserve">
-    <value>Arms (Warrior)</value>
+    <value>Armas (Guerreiro)</value>
   </data>
   <data name="CharacterClassSpecialization-72" xml:space="preserve">
-    <value>Fury (Warrior)</value>
+    <value>Fúria (Guerreiro)</value>
   </data>
   <data name="CharacterClassSpecialization-73" xml:space="preserve">
-    <value>Protection (Warrior)</value>
+    <value>Proteção (Guerreiro)</value>
   </data>
   <data name="CharacterClassSpecialization-102" xml:space="preserve">
-    <value>Balance (Druid)</value>
+    <value>Equilíbrio (Druida)</value>
   </data>
   <data name="CharacterClassSpecialization-103" xml:space="preserve">
-    <value>Feral (Druid)</value>
+    <value>Feral (Druida)</value>
   </data>
   <data name="CharacterClassSpecialization-104" xml:space="preserve">
-    <value>Guardian (Druid)</value>
+    <value>Guardião (Druida)</value>
   </data>
   <data name="CharacterClassSpecialization-105" xml:space="preserve">
-    <value>Restoration (Druid)</value>
+    <value>Restauração (Druida)</value>
   </data>
   <data name="CharacterClassSpecialization-250" xml:space="preserve">
-    <value>Blood (Death Knight)</value>
+    <value>Sangue (Cavaleiro da Morte)</value>
   </data>
   <data name="CharacterClassSpecialization-251" xml:space="preserve">
-    <value>Frost (Death Knight)</value>
+    <value>Gélido (Cavaleiro da Morte)</value>
   </data>
   <data name="CharacterClassSpecialization-252" xml:space="preserve">
-    <value>Unholy (Death Knight)</value>
+    <value>Profano (Cavaleiro da Morte)</value>
   </data>
   <data name="CharacterClassSpecialization-253" xml:space="preserve">
-    <value>Beast Mastery (Hunter)</value>
+    <value>Domínio das Feras (Caçador)</value>
   </data>
   <data name="CharacterClassSpecialization-254" xml:space="preserve">
-    <value>Marksmanship (Hunter)</value>
+    <value>Precisão (Caçador)</value>
   </data>
   <data name="CharacterClassSpecialization-255" xml:space="preserve">
-    <value>Survival (Hunter)</value>
+    <value>Sobrevivência (Caçador)</value>
   </data>
   <data name="CharacterClassSpecialization-256" xml:space="preserve">
-    <value>Discipline (Priest)</value>
+    <value>Disciplina (Sacerdote)</value>
   </data>
   <data name="CharacterClassSpecialization-257" xml:space="preserve">
-    <value>Holy (Priest)</value>
+    <value>Sagrado (Sacerdote)</value>
   </data>
   <data name="CharacterClassSpecialization-258" xml:space="preserve">
-    <value>Shadow (Priest)</value>
+    <value>Sombra (Sacerdote)</value>
   </data>
   <data name="CharacterClassSpecialization-259" xml:space="preserve">
-    <value>Assassination (Rogue)</value>
+    <value>Assassinato (Ladino)</value>
   </data>
   <data name="CharacterClassSpecialization-260" xml:space="preserve">
-    <value>Outlaw (Rogue)</value>
+    <value>Fora da Lei (Ladino)</value>
   </data>
   <data name="CharacterClassSpecialization-261" xml:space="preserve">
-    <value>Subtlety (Rogue)</value>
+    <value>Subterfúgio (Ladino)</value>
   </data>
   <data name="CharacterClassSpecialization-262" xml:space="preserve">
-    <value>Elemental (Shaman)</value>
+    <value>Elemental (Xamã)</value>
   </data>
   <data name="CharacterClassSpecialization-263" xml:space="preserve">
-    <value>Enhancement (Shaman)</value>
+    <value>Aperfeiçoamento (Xamã)</value>
   </data>
   <data name="CharacterClassSpecialization-264" xml:space="preserve">
-    <value>Restoration (Shaman)</value>
+    <value>Restauração (Xamã)</value>
   </data>
   <data name="CharacterClassSpecialization-265" xml:space="preserve">
-    <value>Affliction (Warlock)</value>
+    <value>Suplício (Bruxo)</value>
   </data>
   <data name="CharacterClassSpecialization-266" xml:space="preserve">
-    <value>Demonology (Warlock)</value>
+    <value>Demonologia (Bruxo)</value>
   </data>
   <data name="CharacterClassSpecialization-267" xml:space="preserve">
-    <value>Destruction (Warlock)</value>
+    <value>Destruição (Bruxo)</value>
   </data>
   <data name="CharacterClassSpecialization-268" xml:space="preserve">
-    <value>Brewmaster (Monk)</value>
+    <value>Mestre Cervejeiro (Monge)</value>
   </data>
   <data name="CharacterClassSpecialization-269" xml:space="preserve">
-    <value>Windwalker (Monk)</value>
+    <value>Andarilho do Vento (Monge)</value>
   </data>
   <data name="CharacterClassSpecialization-270" xml:space="preserve">
-    <value>Mistweaver (Monk)</value>
+    <value>Tecelão da Névoa (Monge)</value>
   </data>
   <data name="CharacterClassSpecialization-577" xml:space="preserve">
-    <value>Havoc (Demon Hunter)</value>
+    <value>Devastação (Caçador de Demônios)</value>
   </data>
   <data name="CharacterClassSpecialization-581" xml:space="preserve">
-    <value>Vengeance (Demon Hunter)</value>
+    <value>Vingança (Caçador de Demônios)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1444" xml:space="preserve">
+    <value>Inicial (Xamã)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1446" xml:space="preserve">
+    <value>Inicial (Guerreiro)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1447" xml:space="preserve">
+    <value>Inicial (Druida)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1448" xml:space="preserve">
+    <value>Inicial (Caçador)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1449" xml:space="preserve">
+    <value>Inicial (Mago)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1450" xml:space="preserve">
+    <value>Inicial (Monge)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1451" xml:space="preserve">
+    <value>Inicial (Paladino)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1452" xml:space="preserve">
+    <value>Inicial (Sacerdote)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1453" xml:space="preserve">
+    <value>Inicial (Ladino)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1454" xml:space="preserve">
+    <value>Inicial (Bruxo)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1455" xml:space="preserve">
+    <value>Inicial (Cavaleiro da Morte)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1456" xml:space="preserve">
+    <value>Inicial (Caçador de Demônios)</value>
   </data>
 </root>
