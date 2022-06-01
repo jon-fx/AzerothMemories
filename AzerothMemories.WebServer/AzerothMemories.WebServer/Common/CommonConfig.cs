@@ -5,9 +5,8 @@ public sealed class CommonConfig
     public CommonConfig()
     {
 #if DEBUG
-        DatabaseConnectionString = "***REMOVED***";
-        //DatabaseConnectionString = "***REMOVED***";
-        BlobStorageConnectionString = "***REMOVED***";
+        DatabaseConnectionString = CommonConfigDoNotCommit.DatabaseConnectionString;
+        BlobStorageConnectionString = CommonConfigDoNotCommit.BlobStorageConnectionString;
 
         UploadToBlobStorage = false;
         UpdateSkipCharactersOnLowPriority = true;
@@ -22,7 +21,7 @@ public sealed class CommonConfig
 
     public string DatabaseConnectionString { get; init; }
 
-    public string BlobStorageConnectionString { get; }
+    public string BlobStorageConnectionString { get; init; }
 
     public Duration UpdateAccountDelay { get; } = Duration.FromHours(1);
 
@@ -46,21 +45,13 @@ public sealed class CommonConfig
 
     public int MaxUploadsWithTheSameHash { get; set; } = 10;
 
-    public readonly (string Id, string Secret)?[] BlizzardClientInfo =
-    {
-        null,
-        new("***REMOVED***", "***REMOVED***"),
-        new("***REMOVED***", "***REMOVED***"),
-        new("***REMOVED***", "***REMOVED***"),
-        new("***REMOVED***", "***REMOVED***"),
-        new("***REMOVED***", "***REMOVED***")
-    };
+    public readonly (string Id, string Secret)?[] BlizzardClientInfo = CommonConfigDoNotCommit.BlizzardClientInfo;
 
-    public string PatreonClientId { get; set; } = "***REMOVED***";
+    public string PatreonClientId { get; set; } = CommonConfigDoNotCommit.PatreonClientId;
 
-    public string PatreonClientSecret { get; set; } = "***REMOVED***";
+    public string PatreonClientSecret { get; set; } = CommonConfigDoNotCommit.PatreonClientSecret;
 
-    public string PatreonCreatorsAccessToken { get; set; } = "***REMOVED***";
+    public string PatreonCreatorsAccessToken { get; set; } = CommonConfigDoNotCommit.PatreonCreatorsAccessToken;
 
     public const int PostsPerPage = 10;
     public const int CommentsPerPage = 20;
