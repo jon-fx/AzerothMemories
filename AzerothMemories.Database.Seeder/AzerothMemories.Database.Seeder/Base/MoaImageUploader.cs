@@ -38,6 +38,7 @@ internal sealed class MoaImageUploader
                                        let hash = splt[1]
                                        select new { Key = key, Hash = hash }).ToDictionary(x => x.Key, x => x.Hash);
 
+        var csvRequiresRewrite = false;
         var files = fileInfo.Directory.EnumerateFiles("*.jpg").ToArray();
         foreach (var file in files)
         {
@@ -45,7 +46,10 @@ internal sealed class MoaImageUploader
             var currentFileHash = GetFileHash(buffer);
 
             var fileName = file.Name;
-            if (alreadyUploadedHashData.TryGetValue(fileName, out var uploadedFileHash) && uploadedFileHash == currentFileHash)
+            var alreadyUploaded = alreadyUploadedHashData.TryGetValue(fileName, out var uploadedFileHash);
+            var hashesAreTheSame = uploadedFileHash == currentFileHash;
+
+            if (alreadyUploaded && hashesAreTheSame)
             {
                 _logger.LogDebug($"Skipping: {fileName} Hash: {currentFileHash}");
             }
@@ -64,7 +68,14 @@ internal sealed class MoaImageUploader
                     {
                         alreadyUploadedHashData[fileName] = currentFileHash;
 
-                        await File.AppendAllLinesAsync(indexFilePath, new[] { $"{fileName}{splitKey}{currentFileHash}" });
+                        if (alreadyUploaded)
+                        {
+                            csvRequiresRewrite = true;
+                        }
+                        else
+                        {
+                            await File.AppendAllLinesAsync(indexFilePath, new[] { $"{fileName}{splitKey}{currentFileHash}" });
+                        }
                     }
                 }
                 catch (Exception e)
@@ -74,9 +85,11 @@ internal sealed class MoaImageUploader
             }
         }
 
-        //var newFileLines = alreadyUploadedHashData.Select(kvp => $"{kvp.Key}{splitKey}{kvp.Value}").ToArray();
-
-        //await File.WriteAllLinesAsync(indexFilePath, newFileLines);
+        if (csvRequiresRewrite)
+        {
+            var newFileLines = alreadyUploadedHashData.Select(kvp => $"{kvp.Key}{splitKey}{kvp.Value}").ToArray();
+            await File.WriteAllLinesAsync(indexFilePath, newFileLines);
+        }
     }
 
     private string GetFileHash(byte[] buffer)
