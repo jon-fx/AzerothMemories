@@ -25,7 +25,7 @@ internal static class AdminServices_SetPostCommentReportResolved
         var result = false;
         if (command.Delete)
         {
-            var deletedTime = await commonServices.PostServices.TryDeleteComment(new Post_TryDeleteComment(command.Session, command.PostId, command.CommentId), cancellationToken).ConfigureAwait(false);
+            var deletedTime = await commonServices.Commander.Call(new Post_TryDeleteComment(command.Session, command.PostId, command.CommentId), cancellationToken).ConfigureAwait(false);
             result = deletedTime != 0;
         }
         else

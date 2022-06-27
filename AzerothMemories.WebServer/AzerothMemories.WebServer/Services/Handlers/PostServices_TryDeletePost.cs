@@ -83,7 +83,7 @@ internal static class PostServices_TryDeletePost
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        await commonServices.Commander.Call(new Account_AddNewHistoryItem
         {
             AccountId = postRecord.AccountId,
             //CreatedTime = SystemClock.Instance.GetCurrentInstant(),

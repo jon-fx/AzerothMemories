@@ -288,7 +288,7 @@ public class AccountServices : IAccountServices
 
             var command = new Account_TryChangeAvatarUpload(session, imageBuffer);
 
-            return TryChangeAvatarUpload(command);
+            return _commonServices.Commander.Call(command);
         }
         catch (Exception)
         {

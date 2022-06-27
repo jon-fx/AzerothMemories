@@ -44,7 +44,7 @@ internal static class FollowingServices_TryStopFollowing
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        await commonServices.Commander.Call(new Account_AddNewHistoryItem
         {
             AccountId = activeAccount.Id,
             OtherAccountId = otherAccountId,

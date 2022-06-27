@@ -38,7 +38,7 @@ public sealed class PostController : ControllerBase, IPostServices
     [HttpPost]
     public Task<int> TryReactToPost([FromBody] Post_TryReactToPost command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TryReactToPost(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpGet("{postId}"), Publish]
@@ -68,60 +68,60 @@ public sealed class PostController : ControllerBase, IPostServices
     [HttpPost]
     public Task<bool> TryRestoreMemory([FromBody] Post_TryRestoreMemory command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TryRestoreMemory(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<int> TryPublishComment([FromBody] Post_TryPublishComment command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TryPublishComment(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<int> TryReactToPostComment([FromBody] Post_TryReactToPostComment command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TryReactToPostComment(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<byte?> TrySetPostVisibility([FromBody] Post_TrySetPostVisibility command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TrySetPostVisibility(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<long> TryDeletePost([FromBody] Post_TryDeletePost command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TryDeletePost(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<long> TryDeleteComment([FromBody] Post_TryDeleteComment command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TryDeleteComment(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<bool> TryReportPost([FromBody] Post_TryReportPost command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TryReportPost(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<bool> TryReportPostComment([FromBody] Post_TryReportPostComment command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TryReportPostComment(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<bool> TryReportPostTags([FromBody] Post_TryReportPostTags command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TryReportPostTags(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<AddMemoryResultCode> TryUpdateSystemTags([FromBody] Post_TryUpdateSystemTags command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.PostServices.TryUpdateSystemTags(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 }

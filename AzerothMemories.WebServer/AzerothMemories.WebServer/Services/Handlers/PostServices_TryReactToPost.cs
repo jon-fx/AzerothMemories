@@ -101,7 +101,7 @@ internal static class PostServices_TryReactToPost
 
         if (newReaction != PostReaction.None)
         {
-            await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+            await commonServices.Commander.Call(new Account_AddNewHistoryItem
             {
                 AccountId = activeAccount.Id,
                 OtherAccountId = postRecord.AccountId,
@@ -113,7 +113,7 @@ internal static class PostServices_TryReactToPost
 
             if (activeAccount.Id != postRecord.AccountId)
             {
-                await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+                await commonServices.Commander.Call(new Account_AddNewHistoryItem
                 {
                     AccountId = postRecord.AccountId,
                     OtherAccountId = activeAccount.Id,

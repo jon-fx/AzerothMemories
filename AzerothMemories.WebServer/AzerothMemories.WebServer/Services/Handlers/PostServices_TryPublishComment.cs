@@ -157,7 +157,7 @@ internal static class PostServices_TryPublishComment
         await database.PostComments.AddAsync(commentRecord, cancellationToken).ConfigureAwait(false);
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        await commonServices.Commander.Call(new Account_AddNewHistoryItem
         {
             AccountId = activeAccount.Id,
             OtherAccountId = postRecord.AccountId,
@@ -170,7 +170,7 @@ internal static class PostServices_TryPublishComment
 
         if (activeAccount.Id != postRecord.AccountId)
         {
-            await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+            await commonServices.Commander.Call(new Account_AddNewHistoryItem
             {
                 AccountId = postRecord.AccountId,
                 OtherAccountId = activeAccount.Id,
@@ -184,7 +184,7 @@ internal static class PostServices_TryPublishComment
 
         foreach (var userTag in parseResult.AccountsTaggedInComment)
         {
-            await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+            await commonServices.Commander.Call(new Account_AddNewHistoryItem
             {
                 AccountId = userTag,
                 OtherAccountId = activeAccount.Id,

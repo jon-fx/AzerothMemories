@@ -52,13 +52,13 @@ internal static class StartUpHelpers
 
         int? accountId = null;
         var isAuthenticated = sessionInfo != null && sessionInfo.IsAuthenticated;
-        var accountServices = context.HttpContext.RequestServices.GetRequiredService<AccountServices>();
+        var commonServices = context.HttpContext.RequestServices.GetRequiredService<CommonServices>();
         var shouldThrowException = requiresIsAuthenticated != isAuthenticated;
 
         if (requiresIsAuthenticated && isAuthenticated)
         {
             var userId = sessionInfo!.UserId;
-            var account = await accountServices.TryGetAccountRecordFusionId(userId).ConfigureAwait(false);
+            var account = await commonServices.AccountServices.TryGetAccountRecordFusionId(userId).ConfigureAwait(false);
             if (account == null)
             {
                 shouldThrowException = true;
@@ -70,7 +70,7 @@ internal static class StartUpHelpers
         }
 
         var tokenExpiresAt = (SystemClock.Instance.GetCurrentInstant() + context.ExpiresIn.GetValueOrDefault().ToDuration()).ToUnixTimeMilliseconds();
-        var updateResult = await accountServices.TryUpdateAuthToken(new Account_TryUpdateAuthToken(id, name, authenticationType, accountId, context.AccessToken, context.RefreshToken, tokenExpiresAt)).ConfigureAwait(false);
+        var updateResult = await commonServices.Commander.Call(new Account_TryUpdateAuthToken(id, name, authenticationType, accountId, context.AccessToken, context.RefreshToken, tokenExpiresAt)).ConfigureAwait(false);
         if (shouldThrowException || !updateResult)
         {
             throw new CustomAuthException();

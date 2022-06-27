@@ -44,7 +44,7 @@ internal static class FollowingServices_TryAcceptFollower
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        await commonServices.Commander.Call(new Account_AddNewHistoryItem
         {
             AccountId = activeAccount.Id,
             OtherAccountId = otherAccountId,
@@ -52,7 +52,7 @@ internal static class FollowingServices_TryAcceptFollower
             Type = AccountHistoryType.FollowingRequestAccepted1
         }, cancellationToken).ConfigureAwait(false);
 
-        await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        await commonServices.Commander.Call(new Account_AddNewHistoryItem
         {
             AccountId = otherAccountId,
             OtherAccountId = activeAccount.Id,

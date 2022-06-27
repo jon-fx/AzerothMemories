@@ -41,24 +41,24 @@ public sealed class AdminController : ControllerBase, IAdminServices
     [HttpPost]
     public Task<bool> SetPostReportResolved([FromBody] Admin_SetPostReportResolved command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.AdminServices.SetPostReportResolved(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<bool> SetPostCommentReportResolved([FromBody] Admin_SetPostCommentReportResolved command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.AdminServices.SetPostCommentReportResolved(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<bool> SetPostTagReportResolved([FromBody] Admin_SetPostTagReportResolved command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.AdminServices.SetPostTagReportResolved(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<bool> TryBanUser([FromBody] Admin_TryBanUser command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.AdminServices.TryBanUser(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 }

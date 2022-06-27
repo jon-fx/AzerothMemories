@@ -76,7 +76,7 @@ internal static class PostServices_TryReportPost
             reportQueryResult.ResolvedByAccountId = null;
         }
 
-        await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        await commonServices.Commander.Call(new Account_AddNewHistoryItem
         {
             AccountId = activeAccount.Id,
             //CreatedTime = SystemClock.Instance.GetCurrentInstant(),

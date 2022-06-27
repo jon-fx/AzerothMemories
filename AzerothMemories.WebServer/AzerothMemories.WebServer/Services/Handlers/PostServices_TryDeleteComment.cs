@@ -68,7 +68,7 @@ internal static class PostServices_TryDeleteComment
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        await commonServices.Commander.Call(new Account_AddNewHistoryItem
         {
             AccountId = postRecord.AccountId,
             Type = AccountHistoryType.CommentDeleted,

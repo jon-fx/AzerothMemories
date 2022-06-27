@@ -80,7 +80,7 @@ internal static class FollowingServices_TryStartFollowing
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        await commonServices.Commander.Call(new Account_AddNewHistoryItem
         {
             AccountId = activeAccount.Id,
             OtherAccountId = otherAccountId,
@@ -88,7 +88,7 @@ internal static class FollowingServices_TryStartFollowing
             Type = viewModel.Status == AccountFollowingStatus.Active ? AccountHistoryType.StartedFollowing : AccountHistoryType.FollowingRequestSent
         }, cancellationToken).ConfigureAwait(false);
 
-        await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        await commonServices.Commander.Call(new Account_AddNewHistoryItem
         {
             AccountId = otherAccountId,
             TargetId = 1,

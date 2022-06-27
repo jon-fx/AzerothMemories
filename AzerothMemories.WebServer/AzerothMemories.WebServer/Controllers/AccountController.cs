@@ -47,25 +47,25 @@ public sealed class AccountController : ControllerBase, IAccountServices
     [HttpPost]
     public Task<bool> TryChangeUsername([FromBody] Account_TryChangeUsername command, CancellationToken cancellationToken)
     {
-        return _commonServices.AccountServices.TryChangeUsername(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<bool> TryChangeIsPrivate([FromBody] Account_TryChangeIsPrivate command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.AccountServices.TryChangeIsPrivate(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<bool> TryChangeBattleTagVisibility([FromBody] Account_TryChangeBattleTagVisibility command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.AccountServices.TryChangeBattleTagVisibility(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<string> TryChangeAvatar([FromBody] Account_TryChangeAvatar command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.AccountServices.TryChangeAvatar(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]
@@ -86,13 +86,13 @@ public sealed class AccountController : ControllerBase, IAccountServices
     [HttpPost]
     public Task<string> TryChangeSocialLink([FromBody] Account_TryChangeSocialLink command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.AccountServices.TryChangeSocialLink(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<bool> TryDisconnectAccount([FromBody] Account_TryDisconnectAccount command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.AccountServices.TryDisconnectAccount(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpGet("{timeStamp}/{diffInSeconds}"), Publish]

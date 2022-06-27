@@ -156,7 +156,7 @@ internal static class PostServices_TryPostMemory
         await database.Posts.AddAsync(postRecord, cancellationToken).ConfigureAwait(false);
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        await commonServices.Commander.Call(new Account_AddNewHistoryItem
         {
             AccountId = activeAccount.Id,
             //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
@@ -167,7 +167,7 @@ internal static class PostServices_TryPostMemory
 
         foreach (var userTag in parseResult.AccountsTaggedInComment)
         {
-            await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+            await commonServices.Commander.Call(new Account_AddNewHistoryItem
             {
                 AccountId = userTag,
                 OtherAccountId = activeAccount.Id,

@@ -17,24 +17,24 @@ public sealed class FollowingController : ControllerBase, IFollowingServices
     [HttpPost]
     public Task<AccountFollowingStatus?> TryStartFollowing([FromBody] Following_TryStartFollowing command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.FollowingServices.TryStartFollowing(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<AccountFollowingStatus?> TryStopFollowing([FromBody] Following_TryStopFollowing command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.FollowingServices.TryStopFollowing(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<AccountFollowingStatus?> TryAcceptFollower([FromBody] Following_TryAcceptFollower command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.FollowingServices.TryAcceptFollower(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]
     public Task<AccountFollowingStatus?> TryRemoveFollower([FromBody] Following_TryRemoveFollower command, CancellationToken cancellationToken = default)
     {
-        return _commonServices.FollowingServices.TryRemoveFollower(command, cancellationToken);
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 }

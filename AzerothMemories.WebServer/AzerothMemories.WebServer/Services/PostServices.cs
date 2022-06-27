@@ -180,7 +180,7 @@ public class PostServices : IPostServices
 
             var command = new Post_TryPostMemory(session, timeStamp, avatarTag, isPrivate, comment, systemTags, imageData);
 
-            return TryPostMemory(command);
+            return _commonServices.Commander.Call(command);
         }
         catch (Exception)
         {
@@ -558,8 +558,8 @@ public class PostServices : IPostServices
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var query = from tag in database.PostTags
-                      where tag.PostId == postId
-                      select tag;
+                    where tag.PostId == postId
+                    select tag;
 
         var allTags = await query.ToArrayAsync().ConfigureAwait(false);
         return allTags.Where(tag => tag.TagKind == PostTagKind.Post || tag.TagKind == PostTagKind.PostComment || tag.TagKind == PostTagKind.PostRestored).ToArray();

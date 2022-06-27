@@ -165,7 +165,7 @@ internal static class PostServices_TryRestoreMemory
             }
         }
 
-        await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        await commonServices.Commander.Call(new Account_AddNewHistoryItem
         {
             AccountId = activeAccount.Id,
             OtherAccountId = postRecord.AccountId,
@@ -177,7 +177,7 @@ internal static class PostServices_TryRestoreMemory
 
         if (activeAccount.Id != postRecord.AccountId)
         {
-            await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+            await commonServices.Commander.Call(new Account_AddNewHistoryItem
             {
                 AccountId = postRecord.AccountId,
                 OtherAccountId = activeAccount.Id,

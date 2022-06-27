@@ -60,7 +60,7 @@ internal static class AccountServices_OnSignInCommand
                 throw new NotImplementedException();
             }
 
-            accountRecord = await GetOrCreateAccount(commonServices.AccountServices, database, sessionInfo.UserId).ConfigureAwait(false);
+            accountRecord = await GetOrCreateAccount(commonServices.Commander, database, sessionInfo.UserId).ConfigureAwait(false);
         }
 
         if (string.IsNullOrWhiteSpace(accountRecord.Username))
@@ -105,7 +105,7 @@ internal static class AccountServices_OnSignInCommand
         context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
     }
 
-    private static async Task<AccountRecord> GetOrCreateAccount(AccountServices accountServices, AppDbContext database, string userId)
+    private static async Task<AccountRecord> GetOrCreateAccount(ICommander commander, AppDbContext database, string userId)
     {
         var accountRecord = await database.Accounts.FirstOrDefaultAsync(a => a.FusionId == userId).ConfigureAwait(false);
         if (accountRecord == null)
@@ -120,7 +120,7 @@ internal static class AccountServices_OnSignInCommand
             await database.Accounts.AddAsync(accountRecord).ConfigureAwait(false);
             await database.SaveChangesAsync().ConfigureAwait(false);
 
-            await accountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+            await commander.Call(new Account_AddNewHistoryItem
             {
                 AccountId = accountRecord.Id,
                 Type = AccountHistoryType.AccountCreated

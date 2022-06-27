@@ -79,7 +79,7 @@ internal static class AccountServices_TryChangeUsername
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        await commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+        await commonServices.Commander.Call(new Account_AddNewHistoryItem
         {
             AccountId = accountRecord.Id,
             Type = AccountHistoryType.UsernameChanged

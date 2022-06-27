@@ -37,7 +37,7 @@ internal static class AdminServices_SetPostTagReportResolved
             }
 
             var newTagStrings = postTagsStrings.Keys.ToHashSet();
-            var updateSystemTagResult = await commonServices.PostServices.TryUpdateSystemTags(new Post_TryUpdateSystemTags(command.Session, command.PostId, Post_TryUpdateSystemTags.DefaultAvatar, newTagStrings), cancellationToken).ConfigureAwait(false);
+            var updateSystemTagResult = await commonServices.Commander.Call(new Post_TryUpdateSystemTags(command.Session, command.PostId, Post_TryUpdateSystemTags.DefaultAvatar, newTagStrings), cancellationToken).ConfigureAwait(false);
             if (updateSystemTagResult == AddMemoryResultCode.Success)
             {
             }
