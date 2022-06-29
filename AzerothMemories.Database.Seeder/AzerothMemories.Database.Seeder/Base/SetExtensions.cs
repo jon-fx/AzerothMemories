@@ -4,7 +4,7 @@ namespace AzerothMemories.Database.Seeder.Base;
 
 internal static class SetExtensions
 {
-    private static string[] _blizzardDataRecordLocalFields = typeof(BlizzardDataRecordLocal).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+    private static readonly string[] _blizzardDataRecordLocalFields = typeof(BlizzardDataRecordLocal).GetProperties(BindingFlags.Public | BindingFlags.Instance)
         .Select(x => x.Name.ToLower()).Where(x => x.Length == 4).ToArray();
 
     public static BlizzardDataRecordLocal ToRecord(this Name name)

@@ -8,7 +8,7 @@ public sealed class PostPageViewModelHelper
     private int _lastScrollToFocusId;
     private PostCommentTreeNode _focusedNode;
 
-    private Dictionary<int, PostCommentTreeNode> _allCommentTreeNodes = new();
+    private readonly Dictionary<int, PostCommentTreeNode> _allCommentTreeNodes = new();
 
     public PostPageViewModelHelper(IMoaServices services)
     {
