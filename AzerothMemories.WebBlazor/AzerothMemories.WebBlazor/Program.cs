@@ -10,13 +10,13 @@ var apiBaseUri = new Uri($"{baseUri}api/");
 
 // Fusion services
 var fusion = builder.Services.AddFusion();
-var fusionClient = fusion.AddRestEaseClient((_, o) =>
+var fusionClient = fusion.AddRestEaseClient(_ => new WebSocketChannelProvider.Options
 {
-    o.BaseUri = baseUri;
-    o.IsLoggingEnabled = true;
-    o.IsMessageLoggingEnabled = false;
+    BaseUri = baseUri,
+    //IsLoggingEnabled = true,
+    //IsMessageLoggingEnabled = false
 });
-fusionClient.ConfigureHttpClientFactory((c, name, o) =>
+fusionClient.ConfigureHttpClientFactory((_, name, o) =>
 {
     var isFusionClient = (name ?? "").StartsWith("Stl.Fusion");
     var clientBaseUri = isFusionClient ? baseUri : apiBaseUri;
