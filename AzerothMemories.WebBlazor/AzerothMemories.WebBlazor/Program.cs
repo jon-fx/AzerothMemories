@@ -16,7 +16,7 @@ var fusionClient = fusion.AddRestEaseClient(_ => new WebSocketChannelProvider.Op
     //IsLoggingEnabled = true,
     //IsMessageLoggingEnabled = false
 });
-fusionClient.ConfigureHttpClientFactory((_, name, o) =>
+fusionClient.ConfigureHttpClient((_, name, o) =>
 {
     var isFusionClient = (name ?? "").StartsWith("Stl.Fusion");
     var clientBaseUri = isFusionClient ? baseUri : apiBaseUri;
