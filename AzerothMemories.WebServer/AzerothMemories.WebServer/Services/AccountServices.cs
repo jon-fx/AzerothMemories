@@ -431,7 +431,7 @@ public class AccountServices : IAccountServices
         }
 
         var user = await _commonServices.Auth.GetUser(session).ConfigureAwait(false);
-        if (user == null || user.IsAuthenticated == false)
+        if (user == null || user.IsGuest())
         {
             return null;
         }

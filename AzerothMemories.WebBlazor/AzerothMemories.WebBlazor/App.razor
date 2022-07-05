@@ -1,4 +1,6 @@
-﻿<CascadingAuthState SessionId="@Session.Default.Id">
+﻿@inject ISessionProvider SessionProvider
+
+<CascadingAuthState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
             <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
@@ -12,3 +14,10 @@
     </Router>
     <NavigationTracker />
 </CascadingAuthState>
+
+@code {
+    protected override void OnInitialized()
+    {
+        SessionProvider.Session = Session.Default;
+    }
+}

@@ -51,7 +51,7 @@ internal static class StartUpHelpers
         var sessionInfo = await context.HttpContext.RequestServices.GetRequiredService<IAuth>().GetSessionInfo(session).ConfigureAwait(false);
 
         int? accountId = null;
-        var isAuthenticated = sessionInfo != null && sessionInfo.IsAuthenticated;
+        var isAuthenticated = sessionInfo != null && sessionInfo.IsAuthenticated();
         var commonServices = context.HttpContext.RequestServices.GetRequiredService<CommonServices>();
         var shouldThrowException = requiresIsAuthenticated != isAuthenticated;
 
