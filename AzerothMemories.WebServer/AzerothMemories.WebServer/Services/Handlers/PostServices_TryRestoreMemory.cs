@@ -47,9 +47,9 @@ internal static class PostServices_TryRestoreMemory
         }
 
         var newTagKind = PostTagKind.PostRestored;
-        int? accountTagToAdd = command.NewCharacterId > 0 ? activeAccount.Id : null;
+        int? accountTagToAdd = command.NewCharacterId >= 0 ? activeAccount.Id : null;
         int? characterTagToAdd = command.NewCharacterId > 0 ? command.NewCharacterId : null;
-        int? accountTagToRemove = command.NewCharacterId > 0 ? null : activeAccount.Id;
+        int? accountTagToRemove = command.NewCharacterId >= 0 ? null : activeAccount.Id;
 
         if (activeAccount.Id == postRecord.AccountId)
         {

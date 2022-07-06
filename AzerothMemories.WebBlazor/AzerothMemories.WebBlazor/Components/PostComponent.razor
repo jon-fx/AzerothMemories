@@ -229,14 +229,29 @@ else
 
                         <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
                             <MudCardContent Class="@ClassPresets.CardContent">
+
+                                @if (Services.ClientServices.ActiveAccountServices.AccountViewModel.Id != Post.AccountId)
+                                {
+                                    <MudTooltip Placement="Placement.End" Color="Color.Dark">
+                                        <ChildContent>
+                                            <MudButton Variant="Variant.Filled" Disabled="!accountIsTagged && taggedCharacter == null" OnClick="() => OnRestoreButtonClicked(-1)">
+                                                <MudAvatar Size="Size.Medium">?</MudAvatar>
+                                            </MudButton>
+                                        </ChildContent>
+                                        <TooltipContent>
+                                            <MudText>None</MudText>
+                                        </TooltipContent>
+                                    </MudTooltip>
+                                }
+
                                 <MudTooltip Placement="Placement.End" Color="Color.Dark">
                                     <ChildContent>
-                                        <MudButton Variant="Variant.Filled" Disabled="!accountIsTagged && taggedCharacter == null" OnClick="() => OnRestoreButtonClicked(taggedCharacter, null)">
-                                            <MudAvatar Size="Size.Medium">?</MudAvatar>
+                                        <MudButton Variant="Variant.Filled" Disabled="accountIsTagged && taggedCharacter == null" OnClick="() => OnRestoreButtonClicked(0)">
+                                            <MudAvatar Size="Size.Medium" Image="@Services.ClientServices.ActiveAccountServices.AccountViewModel.Avatar">@Services.ClientServices.ActiveAccountServices.AccountViewModel.GetAvatarText()</MudAvatar>
                                         </MudButton>
                                     </ChildContent>
                                     <TooltipContent>
-                                        <MudText>None</MudText>
+                                        <MudText>Account</MudText>
                                     </TooltipContent>
                                 </MudTooltip>
 
@@ -247,22 +262,22 @@ else
 
                                     <MudTooltip @key="@character.Id" Placement="Placement.Bottom" Color="Color.Dark">
                                         <ChildContent>
-                                            <MudButton Id="@index" Variant="Variant.Filled" Disabled="taggedCharacter != null && taggedCharacter.Id == character.Id" OnClick="() => OnRestoreButtonClicked(taggedCharacter, character)">
-                                                <MudAvatar Size="Size.Medium" Image="@character.AvatarLinkWithFallBack" />
+                                            <MudButton Id="@index" Variant="Variant.Filled" Disabled="taggedCharacter != null && taggedCharacter.Id == character.Id" OnClick="() => OnRestoreButtonClicked(character.Id)">
+                                                <MudAvatar Size="Size.Medium" Image="@character.AvatarLinkWithFallBack"/>
                                             </MudButton>
                                         </ChildContent>
                                         <TooltipContent>
                                             <CharacterNameLinkComponent CharacterName="@character.Name"
-                                            CharacterClass="@character.Class"
-                                            CharacterRealmId="@character.RealmId"
-                                            CharacterRegionInfo="@character.RegionId.ToInfo()" />
+                                                                        CharacterClass="@character.Class"
+                                                                        CharacterRealmId="@character.RealmId"
+                                                                        CharacterRegionInfo="@character.RegionId.ToInfo()"/>
 
                                             <div>
                                                 <MudText Inline="true" Typo="Typo.body2">@character.Level @Services.ClientServices.BlizzardStringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
                                                 <MudText Inline="true" Typo="Typo.body2" Class=@($"wowclass-{character.Class}")>@Services.ClientServices.BlizzardStringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
                                             </div>
 
-                                            <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@character.RealmId" />
+                                            <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@character.RealmId"/>
                                         </TooltipContent>
                                     </MudTooltip>
                                 }
@@ -411,7 +426,7 @@ else
         Services.ClientServices.NavigationManager.NavigateTo($"/post/{Post.AccountId}/{Post.Id}");
     }
 
-    private async Task OnRestoreButtonClicked(CharacterViewModel previousCharacter, CharacterViewModel character)
+    private async Task OnRestoreButtonClicked(int characterId)
     {
         if (_isChangingTags)
         {
@@ -421,7 +436,7 @@ else
         _isChangingTags = true;
 
         var postId = Post.Id;
-        var result = await Services.ClientServices.CommandRunner.Run(new Post_TryRestoreMemory(Session.Default, postId, character?.Id ?? -1));
+        var result = await Services.ClientServices.CommandRunner.Run(new Post_TryRestoreMemory(Session.Default, postId, characterId));
         if (result.Result)
         {
             _showTagMenu = false;
