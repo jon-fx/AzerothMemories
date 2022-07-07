@@ -17,7 +17,7 @@ namespace AzerothMemories.WebServer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.3")
+                .HasAnnotation("ProductVersion", "6.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -25,8 +25,8 @@ namespace AzerothMemories.WebServer.Migrations
             modelBuilder.Entity("Stl.Fusion.EntityFramework.Authentication.DbSessionInfo<string>", b =>
                 {
                     b.Property<string>("Id")
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("AuthenticatedIdentity")
                         .IsRequired()
