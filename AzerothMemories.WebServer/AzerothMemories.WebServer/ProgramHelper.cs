@@ -46,18 +46,23 @@ public abstract class ProgramHelper
 
         _services.AddDbContextFactory<AppDbContext>(ConfigureDbContextFactory);
 
-        _services.AddTransient(c => new DbOperationScope<AppDbContext>(c)
+        _services.AddTransient(_ => new DbOperationScope<AppDbContext>.Options
         {
-            //IsolationLevel = System.Data.IsolationLevel.Serializable,
+            //DefaultIsolationLevel =  System.Data.IsolationLevel.Serializable,
         });
+
         _services.AddDbContextServices<AppDbContext>(dbContext =>
         {
-            dbContext.AddOperations(_ => new DbOperationLogReader<AppDbContext>.Options
+            dbContext.AddOperations(operations =>
             {
-                UnconditionalCheckPeriod = TimeSpan.FromSeconds(5)
+                operations.ConfigureOperationLogReader(_ => new DbOperationLogReader<AppDbContext>.Options
+                {
+                    UnconditionalCheckPeriod = TimeSpan.FromSeconds(5),
+                });
+
+                operations.AddNpgsqlOperationLogChangeTracking();
             });
 
-            dbContext.AddNpgsqlOperationLogChangeTracking();
             dbContext.AddAuthentication<string>();
         });
 
