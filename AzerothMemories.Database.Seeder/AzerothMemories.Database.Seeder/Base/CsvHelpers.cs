@@ -15,7 +15,7 @@ internal static class CsvHelpers
         _converters = new List<(Type type, ITypeConverter converter)>();
 
         _config.AllowComments = true;
-        _config.ShouldSkipRecord = record => record.Record.All(string.IsNullOrEmpty);
+        _config.ShouldSkipRecord = args => args.Row.Parser.Record.All(string.IsNullOrEmpty);
     }
 
     private static void Initialize(this CsvContext context)
