@@ -18,7 +18,7 @@ public class AdminServices : IAdminServices
         return await datbase.Sessions.CountAsync().ConfigureAwait(false);
     }
 
-    [ComputeMethod(AutoInvalidateTime = 60)]
+    [ComputeMethod(AutoInvalidationDelay = 60)]
     public virtual async Task<int> GetOperationCount()
     {
         await using var datbase = _commonServices.DatabaseHub.CreateDbContext();

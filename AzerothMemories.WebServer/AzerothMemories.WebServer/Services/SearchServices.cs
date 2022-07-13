@@ -338,7 +338,7 @@ public class SearchServices : ISearchServices
         return results;
     }
 
-    [ComputeMethod(AutoInvalidateTime = 60 * 10)]
+    [ComputeMethod(MinCacheDuration = 60 * 10)]
     protected virtual async Task<Tuple<int, Instant>[]> GetAllFirstAchievements()
     {
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
@@ -348,7 +348,7 @@ public class SearchServices : ISearchServices
         return await firstAchievementsQuery.ToArrayAsync().ConfigureAwait(false);
     }
 
-    [ComputeMethod(AutoInvalidateTime = 60 * 10)]
+    [ComputeMethod(MinCacheDuration = 60 * 10)]
     protected virtual async Task<Tuple<string, Instant>[]> GetAllFirstTags()
     {
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
@@ -435,7 +435,7 @@ public class SearchServices : ISearchServices
         return result;
     }
 
-    [ComputeMethod(AutoInvalidateTime = 60 * 10)]
+    [ComputeMethod(AutoInvalidationDelay = 60 * 10)]
     protected virtual async Task<Dictionary<int, ActivitySetUser>> TryGetUserActivitySetFull(int accountId, string timeZoneId, int inZoneDay, int inZoneMonth)
     {
         await _commonServices.PostServices.DependsOnPostsBy(accountId).ConfigureAwait(false);
@@ -587,7 +587,7 @@ public class SearchServices : ISearchServices
         return allResults.ToArray();
     }
 
-    [ComputeMethod(AutoInvalidateTime = 60)]
+    [ComputeMethod(AutoInvalidationDelay = 60)]
     protected virtual async Task<MainSearchResult[]> TrySearchAccounts(string searchString)
     {
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
@@ -600,7 +600,7 @@ public class SearchServices : ISearchServices
         return results;
     }
 
-    [ComputeMethod(AutoInvalidateTime = 60)]
+    [ComputeMethod(AutoInvalidationDelay = 60)]
     protected virtual async Task<MainSearchResult[]> TrySearchCharacters(string searchString)
     {
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
@@ -613,7 +613,7 @@ public class SearchServices : ISearchServices
         return results;
     }
 
-    [ComputeMethod(AutoInvalidateTime = 60)]
+    [ComputeMethod(AutoInvalidationDelay = 60)]
     protected virtual async Task<MainSearchResult[]> TrySearchGuilds(string searchString)
     {
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
@@ -633,7 +633,7 @@ public class SearchServices : ISearchServices
         var activeAccountId = activeAccount?.Id ?? 0;
 
         var allSearchResult = Array.Empty<int>();
-        if (activeAccountId > 0&& postsType == RecentPostsType.Default)
+        if (activeAccountId > 0 && postsType == RecentPostsType.Default)
         {
             allSearchResult = await TryGetRecentPosts(activeAccountId).ConfigureAwait(false);
         }

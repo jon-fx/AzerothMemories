@@ -1,8 +1,5 @@
 ﻿using AzerothMemories.WebBlazor;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Npgsql;
 using Stl.Fusion.EntityFramework.Npgsql;
-using Stl.Fusion.Operations.Reprocessing;
 using Stl.Fusion.Server.Authentication;
 using Stl.Fusion.Server.Controllers;
 using System.Net.Http.Headers;
@@ -73,8 +70,8 @@ public abstract class ProgramHelper
         _fusionServer = _fusion.AddWebServer();
 
         _fusion.AddOperationReprocessor();
-        _services.TryAddEnumerable(ServiceDescriptor.Singleton(TransientFailureDetector.New(e => e is DbUpdateConcurrencyException)));
-        _services.TryAddEnumerable(ServiceDescriptor.Singleton(TransientFailureDetector.New(e => e is PostgresException postgresException && postgresException.IsTransient)));
+        //_services.TryAddEnumerable(ServiceDescriptor.Singleton(TransientFailureDetector.New(e => e is DbUpdateConcurrencyException)));
+        //_services.TryAddEnumerable(ServiceDescriptor.Singleton(TransientFailureDetector.New(e => e is PostgresException postgresException && postgresException.IsTransient)));
 
         var signInControllerSettings = new SignInController.Options
         {
