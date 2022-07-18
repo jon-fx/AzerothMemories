@@ -253,7 +253,7 @@ public sealed class AddMemoryComponentSharedData
         }
 
         var result = await _viewModel.Services.ClientServices.CommandRunner.Run(new Post_TryUpdateSystemTags(Session.Default, currentPost.Id, avatarTag, newTags));
-        return result.Result;
+        return result.Value;
     }
 
     private HashSet<string> GetSystemHashTags()
@@ -302,7 +302,7 @@ public sealed class AddMemoryComponentSharedData
 
         return tagsAsTags;
     }
-    
+
     public void SelectedMainTagsChanged(ICollection<object> collection)
     {
         _selectedTypeTags = collection.ToHashSet();

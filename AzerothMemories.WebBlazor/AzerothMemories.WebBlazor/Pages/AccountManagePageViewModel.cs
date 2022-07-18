@@ -143,7 +143,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
         }
 
         var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeUsername(Session.Default, 0, NewUsername));
-        if (result.Result)
+        if (result.Value)
         {
             AccountViewModel.Username = NewUsername;
 
@@ -169,12 +169,12 @@ public sealed class AccountManagePageViewModel : ViewModelBase
         }
 
         var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeIsPrivate(Session.Default, newValue));
-        if (AccountViewModel.IsPrivate == result.Result)
+        if (AccountViewModel.IsPrivate == result.Value)
         {
             return;
         }
 
-        AccountViewModel.IsPrivate = result.Result;
+        AccountViewModel.IsPrivate = result.Value;
 
         OnViewModelChanged?.Invoke();
     }
@@ -187,12 +187,12 @@ public sealed class AccountManagePageViewModel : ViewModelBase
         }
 
         var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeBattleTagVisibility(Session.Default, newValue));
-        if (AccountViewModel.BattleTagIsPublic == result.Result)
+        if (AccountViewModel.BattleTagIsPublic == result.Value)
         {
             return;
         }
 
-        AccountViewModel.BattleTagIsPublic = result.Result;
+        AccountViewModel.BattleTagIsPublic = result.Value;
 
         OnViewModelChanged?.Invoke();
     }
@@ -220,10 +220,10 @@ public sealed class AccountManagePageViewModel : ViewModelBase
     public async Task OnChangeAvatarButtonClicked(string avatarLink)
     {
         var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeAvatar(Session.Default, 0, avatarLink));
-        if (result.Result != AccountViewModel.Avatar)
+        if (result.Value != AccountViewModel.Avatar)
         {
-            AvatarLink = result.Result;
-            AccountViewModel.Avatar = result.Result;
+            AvatarLink = result.Value;
+            AccountViewModel.Avatar = result.Value;
             OnViewModelChanged?.Invoke();
         }
     }
@@ -317,7 +317,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
         if (shouldChange)
         {
             var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeSocialLink(Session.Default, 0, link.LinkId, newValue));
-            AccountViewModel.SocialLinks[link.LinkId] = result.Result;
+            AccountViewModel.SocialLinks[link.LinkId] = result.Value;
             SocialLinksAdornmentIcons[link.LinkId] = string.Empty;
         }
 
@@ -334,12 +334,12 @@ public sealed class AccountManagePageViewModel : ViewModelBase
         if (character.AccountSync != newValue)
         {
             var result = await Services.ClientServices.CommandRunner.Run(new Character_TryChangeCharacterAccountSync(Session.Default, character.Id, newValue));
-            if (character.AccountSync == result.Result)
+            if (character.AccountSync == result.Value)
             {
                 return;
             }
 
-            character.AccountSync = result.Result;
+            character.AccountSync = result.Value;
 
             OnViewModelChanged?.Invoke();
         }

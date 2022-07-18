@@ -145,12 +145,10 @@ else
                 }
             }
         </MudCardContent>
-        
         @{
             var reactIsDisabled = !Services.ClientServices.ActiveAccountServices.AccountViewModel.CanReactToPost() || DoseNotHavePermission;
             var restoreIsDisabled = !Services.ClientServices.ActiveAccountServices.AccountViewModel.CanRestoreMemory() || DoseNotHavePermission;
             var commentIsDisabled = !Services.ClientServices.ActiveAccountServices.AccountViewModel.CanPublishComment() || DoseNotHavePermission;
-            
             <MudCardActions Class="@ClassPresets.CardActions">
                 <MudButtonGroup OverrideStyles="true" Class="pa-0 ma-2" Variant="Variant.Filled" Size="Size.Small">
                     <MudButton StartIcon="@Icons.Material.Filled.Favorite" IconColor="@(Post.Reaction == PostReaction.None ? Color.Default : Color.Secondary)" Disabled="@(reactIsDisabled || _userReacting)" OnClick="() => OnReactButtonClicked(Post.Reaction)">@Post.Reaction.Humanize()</MudButton>
@@ -368,9 +366,9 @@ else
         var postId = Post.Id;
 
         var result = await Services.ClientServices.CommandRunner.Run(new Post_TryReactToPost(Session.Default, postId, newReaction));
-        if (result.Result > 0)
+        if (result.Value > 0)
         {
-            Post.ReactionId = result.Result;
+            Post.ReactionId = result.Value;
             Post.Reaction = newReaction;
         }
 
@@ -437,7 +435,7 @@ else
 
         var postId = Post.Id;
         var result = await Services.ClientServices.CommandRunner.Run(new Post_TryRestoreMemory(Session.Default, postId, characterId));
-        if (result.Result)
+        if (result.Value)
         {
             _showTagMenu = false;
         }
@@ -457,7 +455,7 @@ else
         {
             var postId = Post.Id;
             var result = await Services.ClientServices.CommandRunner.Run(new Post_TryDeletePost(Session.Default, postId));
-            Post.DeletedTimeStamp = result.Result;
+            Post.DeletedTimeStamp = result.Value;
 
             var message = Post.DeletedTimeStamp == 0 ? "Post delete failed." : "Post deleted.";
             await Services.ClientServices.DialogService.ShowNotificationDialog(true, message);
@@ -474,13 +472,13 @@ else
         var postId = Post.Id;
         var newVisibility = Post.PostVisibility == 1 ? (byte)0 : (byte)1;
         var result = await Services.ClientServices.CommandRunner.Run(new Post_TrySetPostVisibility(Session.Default, postId, newVisibility));
-        if (result.Result == null)
+        if (result.Value == null)
         {
             await Services.ClientServices.DialogService.ShowNotificationDialog(false, "Post visibility change failed.");
         }
         else
         {
-            Post.PostVisibility = result.Result.Value;
+            Post.PostVisibility = result.Value.Value;
 
             await Services.ClientServices.DialogService.ShowNotificationDialog(true, "Post visibility changed.");
         }

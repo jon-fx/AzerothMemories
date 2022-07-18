@@ -55,12 +55,12 @@
         if (CommentId == 0)
         {
             var result = await ClientServices.CommandRunner.Run(new Post_TryReportPost(Session.Default, PostId, _reason, reasonText));
-            await ClientServices.DialogService.ShowNotificationDialog(result.Result, "Post reported.");
+            await ClientServices.DialogService.ShowNotificationDialog(result.Value, "Post reported.");
         }
         else
         {
             var result = await ClientServices.CommandRunner.Run(new Post_TryReportPostComment(Session.Default, PostId, CommentId, _reason, reasonText));
-            await ClientServices.DialogService.ShowNotificationDialog(result.Result, "Comment reported.");
+            await ClientServices.DialogService.ShowNotificationDialog(result.Value, "Comment reported.");
         }
     }
 

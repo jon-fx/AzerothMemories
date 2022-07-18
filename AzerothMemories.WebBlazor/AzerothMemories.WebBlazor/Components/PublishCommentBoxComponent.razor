@@ -67,7 +67,7 @@
         var postId = PostId;
         var parentId = CommentId;
         var result = await Services.ClientServices.CommandRunner.Run(new Post_TryPublishComment(Session.Default, postId, parentId, commentText));
-        if (result.Result > 0)
+        if (result.Value > 0)
         {
             _commentComponent.Reset();
 
@@ -76,7 +76,7 @@
             var dictionary = new Dictionary<string, object>
             {
                 { "page",null},
-                { "comment", result.Result }
+                { "comment", result.Value }
             };
 
             var newPath = Services.ClientServices.NavigationManager.GetUriWithQueryParameters(dictionary);

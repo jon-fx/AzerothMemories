@@ -9,7 +9,7 @@ public sealed class ClientServices
         ActiveAccountServices = serviceProvider.GetRequiredService<ActiveAccountServices>();
         DialogService = serviceProvider.GetRequiredService<DialogHelperService>();
         NavigationManager = serviceProvider.GetRequiredService<NavigationManager>();
-        CommandRunner = serviceProvider.GetRequiredService<UICommandRunner>();
+        CommandRunner = serviceProvider.GetRequiredService<UICommander>();
         JsRuntime = serviceProvider.GetRequiredService<IJSRuntime>();
         ScrollManager = serviceProvider.GetRequiredService<IScrollManager>();
         TagHelpers = serviceProvider.GetRequiredService<TagHelpers>();
@@ -24,7 +24,7 @@ public sealed class ClientServices
 
     public NavigationManager NavigationManager { get; }
 
-    public UICommandRunner CommandRunner { get; }
+    public UICommander CommandRunner { get; }
 
     public IJSRuntime JsRuntime { get; }
 

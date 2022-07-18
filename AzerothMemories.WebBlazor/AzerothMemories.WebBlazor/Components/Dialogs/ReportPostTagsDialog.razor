@@ -44,7 +44,7 @@
         {
             var tagStrings = _selectedChips.Select(x => ((PostTagInfo)x).TagString).ToHashSet();
             var result = await ClientServices.CommandRunner.Run(new Post_TryReportPostTags(Session.Default, Post.Id, tagStrings));
-            await ClientServices.DialogService.ShowNotificationDialog(result.Result, "Tags reported.");
+            await ClientServices.DialogService.ShowNotificationDialog(result.Value, "Tags reported.");
         }
     }
 
