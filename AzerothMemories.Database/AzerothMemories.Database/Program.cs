@@ -44,6 +44,9 @@ else if (ConfigHelpers.SafetyCheck("DELETE ACCOUNT DATA?!"))
     runner.MigrateDown(Migration0003_AccountData.MigrationId - 1);
 }
 
-ConfigHelpers.WriteWithColors(ConsoleColor.Green, ConsoleColor.White, "Running Migration...");
+if (ConfigHelpers.SafetyCheck("MIGRATE UP?!"))
+{
+    ConfigHelpers.WriteWithColors(ConsoleColor.Green, ConsoleColor.White, "Running Migration...");
 
-runner.MigrateUp();
+    runner.MigrateUp();
+}
