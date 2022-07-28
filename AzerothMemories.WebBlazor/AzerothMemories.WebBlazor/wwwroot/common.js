@@ -3,7 +3,7 @@
 }
 
 function HideWowheadToolTips() {
-    $WowheadPower.hideTooltip();
+    //$WowheadPower.hideTooltip();
 }
 
 function BlazorGetTimeZone() {
