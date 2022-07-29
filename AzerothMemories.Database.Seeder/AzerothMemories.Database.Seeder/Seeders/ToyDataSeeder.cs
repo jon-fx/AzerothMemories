@@ -17,7 +17,7 @@ internal sealed class ToyDataSeeder : GenericBase<ToyDataSeeder>
             {
                 var dataToCopy = ResourceWriter.GetOrCreateServerSideResource(PostTagType.Item, itemId);
 
-                ResourceWriter.AddServerSideLocalizationName(PostTagType.Toy, reference.Id, dataToCopy.Name);
+                ResourceWriter.AddServerSideLocalizationName(PostTagType.Toy, reference.Id, dataToCopy.Names);
                 ResourceWriter.TryAddServerSideLocalizationMedia(PostTagType.Toy, reference.Id, dataToCopy.Media);
             }
         }

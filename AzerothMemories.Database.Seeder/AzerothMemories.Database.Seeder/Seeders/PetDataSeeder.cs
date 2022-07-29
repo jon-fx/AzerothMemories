@@ -13,7 +13,7 @@ internal sealed class PetDataSeeder : GenericBase<PetDataSeeder>
 
         foreach (var reference in data.Values)
         {
-            BlizzardDataRecord dataToCopy = null; 
+            BlizzardData dataToCopy = null;
             if (reference.TryGetData<int>("SummonSpellID", out var spellId) && ResourceWriter.TryGetServerSideResource(PostTagType.Spell, spellId, out dataToCopy))
             {
             }
@@ -27,7 +27,7 @@ internal sealed class PetDataSeeder : GenericBase<PetDataSeeder>
             }
             else
             {
-                ResourceWriter.AddServerSideLocalizationName(PostTagType.Pet, reference.Id, dataToCopy.Name);
+                ResourceWriter.AddServerSideLocalizationName(PostTagType.Pet, reference.Id, dataToCopy.Names);
             }
 
             if (reference.TryGetData<int>("IconFileDataID", out var iconId))

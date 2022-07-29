@@ -49,9 +49,9 @@ internal sealed class WowToolsData
         return _data.Keys.Any(x => x.StartsWith(name.Replace("_lang", "_")));
     }
 
-    public BlizzardDataRecordLocal GetLocalised(string name)
+    public string[] GetLocalised(string name)
     {
-        var result = new BlizzardDataRecordLocal();
+        var result = new string[(int)ServerSideLocale.Count];
 
         if (!name.EndsWith("_lang"))
         {
@@ -71,7 +71,18 @@ internal sealed class WowToolsData
                 continue;
             }
 
-            SetExtensions.SetValue(result, header, value);
+            var index = header.IndexOf('_') + 1;
+            var fieldName = header[index..];
+            fieldName = fieldName.Insert(2, "_");
+
+            if (Enum.TryParse<ServerSideLocale>(fieldName, true, out var key))
+            {
+                result[(int)key] = value;
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         return result;

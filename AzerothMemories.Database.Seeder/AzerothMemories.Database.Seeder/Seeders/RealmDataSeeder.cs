@@ -20,7 +20,7 @@ internal sealed class RealmDataSeeder : GenericBase<RealmDataSeeder>
             {
                 foreach (var realmData in allRealmSearchResults.Realms)
                 {
-                    var realmRecord = realmData.Name.ToRecord();
+                    var realmRecord = realmData.Name.ToArray();
                     SetExtensions.Update(realmRecord, (l, x) => $"{twoLetters}-{x}");
 
                     ResourceWriter.AddServerSideLocalizationName(PostTagType.Realm, realmData.Id, realmRecord);

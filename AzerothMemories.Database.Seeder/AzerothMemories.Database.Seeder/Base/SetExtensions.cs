@@ -1,96 +1,51 @@
-﻿using System.Reflection;
+﻿using ServerSideLocale = AzerothMemories.WebBlazor.Common.ServerSideLocale;
 
 namespace AzerothMemories.Database.Seeder.Base;
 
 internal static class SetExtensions
 {
-    private static readonly string[] _blizzardDataRecordLocalFields = typeof(BlizzardDataRecordLocal).GetProperties(BindingFlags.Public | BindingFlags.Instance)
-        .Select(x => x.Name.ToLower()).Where(x => x.Length == 4).ToArray();
-
-    public static BlizzardDataRecordLocal ToRecord(this Name name)
+    public static string[] ToArray(this Name name)
     {
-        return new BlizzardDataRecordLocal
-        {
-            EnUs = name.En_US,
-            KoKr = name.Ko_KR,
-            FrFr = name.Fr_FR,
-            DeDe = name.De_DE,
-            ZhCn = name.Zh_CN,
-            EsEs = name.Es_ES,
-            ZhTw = name.Zh_TW,
-            EnGb = name.En_GB,
-            EsMx = name.Es_MX,
-            RuRu = name.Ru_RU,
-            PtBr = name.Pt_BR,
-            ItIt = name.It_IT,
-            PtPt = name.Pt_PT,
-        };
+        var results = new string[(int)ServerSideLocale.Count];
+
+        results[(int)ServerSideLocale.En_Us] = name.En_US;
+        results[(int)ServerSideLocale.Es_Mx] = name.Es_MX;
+        results[(int)ServerSideLocale.Pt_Br] = name.Pt_BR;
+        results[(int)ServerSideLocale.En_Gb] = name.En_GB;
+
+        results[(int)ServerSideLocale.Es_Es] = name.Es_ES;
+        results[(int)ServerSideLocale.Fr_Fr] = name.Fr_FR;
+        results[(int)ServerSideLocale.Ru_Ru] = name.Ru_RU;
+        results[(int)ServerSideLocale.De_De] = name.De_DE;
+
+        results[(int)ServerSideLocale.Pt_Pt] = name.Pt_PT;
+        results[(int)ServerSideLocale.It_It] = name.It_IT;
+
+        results[(int)ServerSideLocale.Ko_Kr] = name.Ko_KR;
+        results[(int)ServerSideLocale.Zh_Tw] = name.Zh_TW;
+        results[(int)ServerSideLocale.Zh_Cn] = name.Zh_CN;
+
+        return results;
     }
 
-    public static void SetValue(BlizzardDataRecordLocal record, string key, string value)
+    public static void Update(string[] dataDictionary, Func<ServerSideLocale, string, string> func)
     {
-        var index = key.IndexOf('_') + 1;
-        var fieldName = key[index..];
-        var fieldInfo = typeof(BlizzardDataRecordLocal).GetProperty(fieldName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-        fieldInfo.SetValue(record, value);
-    }
-
-    public static void Update(string key, BlizzardDataRecordLocal record, Dictionary<string, Dictionary<string, string>> clientSideResourcesByLocal)
-    {
-        foreach (var fieldName in _blizzardDataRecordLocalFields)
+        var defaultValue = dataDictionary[(int)ServerSideLocale.En_Us];
+        if (string.IsNullOrWhiteSpace(defaultValue))
         {
-            var fieldInfo = typeof(BlizzardDataRecordLocal).GetProperty(fieldName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-            var fieldValue = fieldInfo.GetValue(record) as string;
-            if (string.IsNullOrWhiteSpace(fieldValue))
-            {
-                fieldValue = record.EnGb;
-
-                Console.WriteLine($@"Set Extensions {fieldName} == null using en_GB [{key}] [{fieldName}] [{record.EnGb}]");
-            }
-
-            if (!clientSideResourcesByLocal.TryGetValue(fieldName, out var dict))
-            {
-                clientSideResourcesByLocal[fieldName] = dict = new Dictionary<string, string>();
-            }
-
-            //if (func != null)
-            //{
-            //    fieldValue = func(fieldName, fieldValue);
-            //}
-
-            dict[key] = fieldValue;
+            throw new NotImplementedException();
         }
-    }
 
-    public static void Update(BlizzardDataRecordLocal record, Func<string, string, string> func)
-    {
-        var fields = typeof(BlizzardDataRecordLocal).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-        foreach (var field in fields)
+        for (var i = 0; i < (int)ServerSideLocale.Count; i++)
         {
-            var fieldName = field.Name.ToLower();
-            if (fieldName.Length != 4)
+            var currentValue = dataDictionary[i];
+            if (string.IsNullOrWhiteSpace(currentValue))
             {
-                continue;
+                currentValue = defaultValue;
             }
 
-            var fieldInfo = typeof(BlizzardDataRecordLocal).GetProperty(fieldName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-            var fieldValue = fieldInfo.GetValue(record) as string;
-            if (string.IsNullOrWhiteSpace(fieldValue))
-            {
-                continue;
-            }
-
-            //if (!clientSideResourcesByLocal.TryGetValue(fieldName, out var dict))
-            //{
-            //    clientSideResourcesByLocal[fieldName] = dict = new Dictionary<string, string>();
-            //}
-
-            if (func != null)
-            {
-                fieldValue = func(fieldName, fieldValue);
-            }
-
-            fieldInfo.SetValue(record, fieldValue);
+            var newValue = func((ServerSideLocale)i, currentValue);
+            dataDictionary[i] = newValue;
         }
     }
 }

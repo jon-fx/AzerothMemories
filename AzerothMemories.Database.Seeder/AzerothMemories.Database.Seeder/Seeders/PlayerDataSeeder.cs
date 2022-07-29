@@ -56,11 +56,11 @@ internal sealed class PlayerDataSeeder : GenericBase<PlayerDataSeeder>
             }
 
             var specRecord = ResourceWriter.GetOrCreateServerSideResource(PostTagType.CharacterClassSpecialization, reference.Id);
-            SetExtensions.Update(specRecord.Name, (l, x) =>
+            SetExtensions.Update(specRecord.Names, (l, x) =>
             {
-                if (ResourceWriter.GetClientSideLocalizationData(l, $"CharacterClass-{classId}", out var classNameString))
+                if (ResourceWriter.TryGetServerSideResource(PostTagType.CharacterClass, classId, out var dataRecord) && dataRecord.TryGetNameOrDefault(l, out var characterClass))
                 {
-                    return $"{x} ({classNameString})";
+                    return $"{x} ({characterClass})";
                 }
 
                 return x;

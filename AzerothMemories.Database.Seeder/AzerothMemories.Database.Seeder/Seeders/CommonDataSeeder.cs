@@ -38,23 +38,11 @@ internal sealed class CommonDataSeeder : GenericBase<CommonDataSeeder>
         return Task.CompletedTask;
     }
 
-    private BlizzardDataRecordLocal GetFilledLocal(string value)
+    private string[] GetFilledLocal(string value)
     {
-        return new BlizzardDataRecordLocal
-        {
-            EnUs = value,
-            //Ko_Kr = value,
-            //Fr_Fr = value,
-            //De_De = value,
-            //Zh_Cn = value,
-            //Es_Es = value,
-            //Zh_Tw = value,
-            EnGb = value,
-            //Es_Mx = value,
-            //Ru_Ru = value,
-            //Pt_Br = value,
-            //It_It = value,
-            //Pt_Pt = value,
-        };
+        var result = new string[(int)ServerSideLocale.Count];
+        result[(int)ServerSideLocale.En_Us] = value;
+
+        return result;
     }
 }
