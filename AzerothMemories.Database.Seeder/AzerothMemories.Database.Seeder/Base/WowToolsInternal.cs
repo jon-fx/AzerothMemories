@@ -15,7 +15,7 @@ internal sealed class WowToolsInternal
     }
 
     public string BuildString => _buildString;
-    
+
     public Version BuildVersion => Version.Parse(_buildString);
 
     public bool TryGetIconName(int iconId, out string iconName)
@@ -35,17 +35,19 @@ internal sealed class WowToolsInternal
 
     private Dictionary<int, string> GetListFile()
     {
-        var fileInfo = DownloadIfNotExists("_list-file.csv", "https://wow.tools/casc/listfile/download/csv/unverified");
+        var dictionary = new Dictionary<int, string>();
+        var fileInfo = DownloadIfNotExists("_list-file.csv", "https://raw.githubusercontent.com/wowdev/wow-listfile/master/community-listfile.csv");
         if (fileInfo == null)
         {
-            return new Dictionary<int, string>();
+            return dictionary;
         }
 
-        var lines = File.ReadAllLines(fileInfo.FullName);
-        var dictionary = new Dictionary<int, string>();
+        using var stream = fileInfo.OpenRead();
+        using var reader = new StreamReader(stream);
 
-        foreach (var line in lines)
+        while (!reader.EndOfStream)
         {
+            var line = reader.ReadLine();
             var split = line.Split(';');
             var result = int.TryParse(split[0], out var id);
             if (!result)
@@ -54,6 +56,11 @@ internal sealed class WowToolsInternal
             }
 
             dictionary.Add(id, split[1]);
+        }
+
+        if (dictionary.Count < 1_500_000)
+        {
+            throw new NotImplementedException();
         }
 
         return dictionary;
@@ -101,7 +108,7 @@ internal sealed class WowToolsInternal
 
     public void LoadDataFromWowTools(string fileName, string primaryKeyName, ref Dictionary<int, WowToolsData> dictionary, string locale, string[] fieldsToLoad = null)
     {
-        var fileInfo = DownloadIfNotExists($"{fileName}-{locale}.csv", $"https://wow.tools/dbc/api/export/?name={fileName}&build={_buildString}&locale={locale}");     
+        var fileInfo = DownloadIfNotExists($"{fileName}-{locale}.csv", $"https://wow.tools/dbc/api/export/?name={fileName}&build={_buildString}&locale={locale}");
         if (fileInfo == null)
         {
             return;
