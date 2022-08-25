@@ -6,12 +6,12 @@
             <MudMenuItem Link="AddMemory">Restore</MudMenuItem>
             <MudMenuItem Link="AccountHistory">History</MudMenuItem>
             <MudMenuItem Link="AccountManage">Manage</MudMenuItem>
-            <MudMenuItem OnClick=@(_ => TryLogout())>Log out</MudMenuItem>
+            <MudMenuItem OnClick="TryLogout">Log out</MudMenuItem>
         </MudMenu>
     </Authorized>
     <NotAuthorized>
         <MudMenu EndIcon="@Icons.Filled.KeyboardArrowDown" Label="Account" Color="Color.Inherit" Dense="true" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
-            <MudMenuItem OnClick=@(x => TrySignIn(x, "BattleNet"))>Log In</MudMenuItem>
+            <MudMenuItem OnClick=@(_ => TrySignIn("BattleNet"))>Log In</MudMenuItem>
         </MudMenu>
     </NotAuthorized>
     <Authorizing>
@@ -21,7 +21,7 @@
 
 @code
 {
-    private async Task TrySignIn(MouseEventArgs e, string schema)
+    private async Task TrySignIn(string schema)
     {
 	    await _clientAuthHelper.SignIn(schema);
     }
