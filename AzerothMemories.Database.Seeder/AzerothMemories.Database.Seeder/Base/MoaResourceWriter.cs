@@ -12,6 +12,7 @@ internal sealed class MoaResourceWriter
     private readonly ILogger<MoaResourceWriter> _logger;
     private readonly IDbContextFactory<AppDbContext> _databaseProvider;
     private readonly Dictionary<string, BlizzardData> _serverSideResources;
+    private readonly JsonSerializerOptions _jsonSerializerOptions;
 
     public MoaResourceWriter(WowTools wowTools, ILogger<MoaResourceWriter> logger, IDbContextFactory<AppDbContext> databaseProvider)
     {
@@ -19,6 +20,12 @@ internal sealed class MoaResourceWriter
         _logger = logger;
         _databaseProvider = databaseProvider;
         _serverSideResources = new Dictionary<string, BlizzardData>();
+        _jsonSerializerOptions = new JsonSerializerOptions
+        {
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            WriteIndented = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
     }
 
     public async Task Initialize()
@@ -229,12 +236,7 @@ internal sealed class MoaResourceWriter
             var items = group.Value.ToArray();
 
             await using var fileStream = File.Create(outputFile);
-            await JsonSerializer.SerializeAsync(fileStream, items, new JsonSerializerOptions
-            {
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                WriteIndented = true,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-            });
+            await JsonSerializer.SerializeAsync(fileStream, items, _jsonSerializerOptions);
         }
 
         var clientSideDataDict = new Dictionary<string, string>[(int)ServerSideLocale.Count];
