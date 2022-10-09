@@ -49,19 +49,19 @@ else
 
                     @if (Services.ClientServices.ActiveAccountServices.IsActiveAccount(Post.AccountId) || Services.ClientServices.ActiveAccountServices.AccountViewModel.IsAdmin())
                     {
-                        <MudMenuItem OnClick="@OnTogglePostVisibility">
+                        <MudMenuItem OnClick="@OnTogglePostVisibility" OnTouch="@OnTogglePostVisibility">
                             <MudTooltip Text="Toggle Visibility" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
                                 <MudIcon Icon="@(Post.PostVisibility == 0 ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility)" Size="Size.Small " />
                             </MudTooltip>
                         </MudMenuItem>
 
-                        <MudMenuItem OnClick="@OnEditPostTags">
+                        <MudMenuItem OnClick="@OnEditPostTags" OnTouch="@OnEditPostTags">
                             <MudTooltip Text="Edit Tags" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
                                 <MudIcon Icon="@Icons.Material.Filled.Edit" Size="Size.Small " />
                             </MudTooltip>
                         </MudMenuItem>
 
-                        <MudMenuItem OnClick="@OnDeletePost" Disabled="@(Post.DeletedTimeStamp != 0)">
+                        <MudMenuItem OnClick="@OnDeletePost" OnTouch="@OnDeletePost" Disabled="@(Post.DeletedTimeStamp != 0)">
                             <MudTooltip Text="Delete" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
                                 <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Size="Size.Small " />
                             </MudTooltip>
@@ -70,13 +70,13 @@ else
 
                     @if (Services.ClientServices.ActiveAccountServices.AccountViewModel.CanReport() && !Services.ClientServices.ActiveAccountServices.IsActiveAccount(Post.AccountId))
                     {
-                        <MudMenuItem OnClick="@OnReportPostTags">
+                        <MudMenuItem OnClick="@OnReportPostTags" OnTouch="@OnReportPostTags">
                             <MudTooltip Text="Report Tags" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
                                 <MudIcon Icon="@Icons.Material.Filled.RepeatOneOn" Size="Size.Small" />
                             </MudTooltip>
                         </MudMenuItem>
 
-                        <MudMenuItem OnClick="@OnReportPost">
+                        <MudMenuItem OnClick="@OnReportPost" OnTouch="@OnReportPost">
                             <MudTooltip Text="Report" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
                                 <MudIcon Icon="@Icons.Material.Filled.Report" Size="Size.Small" />
                             </MudTooltip>
@@ -153,12 +153,12 @@ else
                 <MudButtonGroup OverrideStyles="true" Class="pa-0 ma-2" Variant="Variant.Filled" Size="Size.Small">
                     <MudButton StartIcon="@Icons.Material.Filled.Favorite" IconColor="@(Post.Reaction == PostReaction.None ? Color.Default : Color.Secondary)" Disabled="@(reactIsDisabled || _userReacting)" OnClick="() => OnReactButtonClicked(Post.Reaction)">@Post.Reaction.Humanize()</MudButton>
                     <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Disabled="@(reactIsDisabled || _userReacting)" Direction="Direction.Bottom" OffsetY="true">
-                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction1)">@PostReaction.Reaction1.Humanize()</MudMenuItem>
-                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction2)">@PostReaction.Reaction2.Humanize()</MudMenuItem>
-                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction3)">@PostReaction.Reaction3.Humanize()</MudMenuItem>
-                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction4)">@PostReaction.Reaction4.Humanize()</MudMenuItem>
-                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction5)">@PostReaction.Reaction5.Humanize()</MudMenuItem>
-                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction6)">@PostReaction.Reaction6.Humanize()</MudMenuItem>
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction1)" OnTouch="() => OnReactButtonClicked(PostReaction.Reaction1)">@PostReaction.Reaction1.Humanize()</MudMenuItem>
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction2)" OnTouch="() => OnReactButtonClicked(PostReaction.Reaction2)">@PostReaction.Reaction2.Humanize()</MudMenuItem>
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction3)" OnTouch="() => OnReactButtonClicked(PostReaction.Reaction3)">@PostReaction.Reaction3.Humanize()</MudMenuItem>
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction4)" OnTouch="() => OnReactButtonClicked(PostReaction.Reaction4)">@PostReaction.Reaction4.Humanize()</MudMenuItem>
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction5)" OnTouch="() => OnReactButtonClicked(PostReaction.Reaction5)">@PostReaction.Reaction5.Humanize()</MudMenuItem>
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction6)" OnTouch="() => OnReactButtonClicked(PostReaction.Reaction6)">@PostReaction.Reaction6.Humanize()</MudMenuItem>
                     </MudMenu>
                     <MudButton StartIcon="@Icons.Material.Filled.Comment" Disabled="@commentIsDisabled" OnClick="OnCommentButtonClicked">Comments</MudButton>
                     <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">

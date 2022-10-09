@@ -17,7 +17,14 @@ else if (ViewModel.Helper.AccountViewModel == null || ViewModel.Helper.PostViewM
 else
 {
     var name = $"{ViewModel.Helper.AccountViewModel.GetDisplayName()}'s Memory of Azeroth";
-    var image = ViewModel.Helper.PostViewModel.ImageBlobNames.FirstOrDefault();
+    var allBlobInfo = ViewModel.Helper.PostViewModel.GetImageBlobInfo();
+    
+    string image = null;
+    if (allBlobInfo.Length > 0)
+    {
+        image = allBlobInfo[0].Source;
+    }
+
     var altImage = name;
     var stringBuilder = new StringBuilder();
     foreach (var systemTag in ViewModel.Helper.PostViewModel.SystemTags)

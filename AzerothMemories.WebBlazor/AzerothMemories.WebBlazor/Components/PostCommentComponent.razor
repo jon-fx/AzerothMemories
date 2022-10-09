@@ -33,7 +33,7 @@
 
                     @if (Services.ClientServices.ActiveAccountServices.IsActiveAccount(comment.AccountId) || Services.ClientServices.ActiveAccountServices.AccountViewModel.IsAdmin())
                     {
-                        <MudMenuItem OnClick="@OnDeleteComment" Disabled="@(comment.DeletedTimeStamp != 0)">
+                        <MudMenuItem OnClick="@OnDeleteComment" OnTouch="@OnDeleteComment" Disabled="@(comment.DeletedTimeStamp != 0)">
                             <MudTooltip Text="Delete" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
                                 <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Size="Size.Small" />
                             </MudTooltip>
@@ -42,7 +42,7 @@
 
                     @if (Services.ClientServices.ActiveAccountServices.AccountViewModel.CanReport() && !Services.ClientServices.ActiveAccountServices.IsActiveAccount(comment.AccountId))
                     {
-                        <MudMenuItem OnClick="@OnReportComment">
+                        <MudMenuItem OnClick="@OnReportComment" OnTouch="@OnReportComment">
                             <MudTooltip Text="Report" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
                                 <MudIcon Icon="@Icons.Material.Filled.Report" Size="Size.Small" />
                             </MudTooltip>
@@ -66,12 +66,12 @@
                 <MudButtonGroup OverrideStyles="true" Variant="Variant.Text" Size="Size.Small">
                     <MudButton StartIcon="@Icons.Material.Filled.Favorite" IconColor="@(item.Reaction == PostReaction.None ? Color.Default : Color.Secondary)" Disabled="@(reactIsDisabled || _userReacting)" OnClick="() => OnReactButtonClicked(item.Reaction)">@item.Reaction.Humanize()</MudButton>
                     <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Disabled="@(reactIsDisabled || _userReacting)" Direction="Direction.Bottom" OffsetY="true">
-                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction1)">@PostReaction.Reaction1.Humanize()</MudMenuItem>
-                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction2)">@PostReaction.Reaction2.Humanize()</MudMenuItem>
-                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction3)">@PostReaction.Reaction3.Humanize()</MudMenuItem>
-                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction4)">@PostReaction.Reaction4.Humanize()</MudMenuItem>
-                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction5)">@PostReaction.Reaction5.Humanize()</MudMenuItem>
-                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction6)">@PostReaction.Reaction6.Humanize()</MudMenuItem>
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction1)" OnTouch="() => OnReactButtonClicked(PostReaction.Reaction1)">@PostReaction.Reaction1.Humanize()</MudMenuItem>
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction2)" OnTouch="() => OnReactButtonClicked(PostReaction.Reaction2)">@PostReaction.Reaction2.Humanize()</MudMenuItem>
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction3)" OnTouch="() => OnReactButtonClicked(PostReaction.Reaction3)">@PostReaction.Reaction3.Humanize()</MudMenuItem>
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction4)" OnTouch="() => OnReactButtonClicked(PostReaction.Reaction4)">@PostReaction.Reaction4.Humanize()</MudMenuItem>
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction5)" OnTouch="() => OnReactButtonClicked(PostReaction.Reaction5)">@PostReaction.Reaction5.Humanize()</MudMenuItem>
+                        <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction6)" OnTouch="() => OnReactButtonClicked(PostReaction.Reaction6)">@PostReaction.Reaction6.Humanize()</MudMenuItem>
                     </MudMenu>
                     <MudButton OnClick="() => ReplyToComment(item)" Disabled="@commentIsDisabled">Reply</MudButton>
                 </MudButtonGroup>

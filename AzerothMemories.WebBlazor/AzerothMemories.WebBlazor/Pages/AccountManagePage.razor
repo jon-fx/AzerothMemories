@@ -217,7 +217,7 @@
                                             continue;
                                         }
 
-                                        <MudMenuItem OnClick="() => ViewModel.OnCharacterRenamedOrTransferred(character, otherCharacter)">
+                                        <MudMenuItem OnClick="() => ViewModel.OnCharacterRenamedOrTransferred(character, otherCharacter)" OnTouch="() => ViewModel.OnCharacterRenamedOrTransferred(character, otherCharacter)">
 
                                             <CharacterNameLinkComponent Typo="Typo.h6"
                                                         CharacterName="@otherCharacter.Name"
