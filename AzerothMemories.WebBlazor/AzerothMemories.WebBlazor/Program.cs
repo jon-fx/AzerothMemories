@@ -1,7 +1,7 @@
 using AzerothMemories.WebBlazor;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
-builder.RootComponents.Add<HeadOutlet>("head::after");
+//builder.RootComponents.Add<HeadOutlet>("head::after");
 
 ProgramEx.Initialize(builder.Services);
 

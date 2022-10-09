@@ -1,16 +1,20 @@
 ﻿<HeadContent>
+    
+    @{ var imagePath = GetImagePath(Image); }
+
     <meta name="description" content="@Description">
 
-    <meta property="og:title" content="@Title" />
-    <meta property="og:type" content="image/jpeg" />
-    <meta property="og:url" content="@Url" />
-    <meta property="og:image" content="@(Image ?? ZExtensions.DefaultSocialImage)" />
-    <meta property="og:image:alt" content="@AltImage" />
+    <meta property="og:title" content="@Title"/>
+    <meta property="og:description" content="@Description">
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="@Url"/>
+    <meta property="og:image" content="@imagePath"/>
+    <meta property="og:image:alt" content="@AltImage"/>
     <meta property="og:site_name" content="Memories of Azeroth">
 
     <meta name="twitter:title" content="@Title">
     <meta name="twitter:description" content="@Description">
-    <meta name="twitter:image" content="@(Image ?? ZExtensions.DefaultSocialImage)">
+    <meta name="twitter:image" content="@imagePath">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image:alt" content="@AltImage">
 </HeadContent>
@@ -21,4 +25,27 @@
     [Parameter, EditorRequired] public string Image { get; init; }
     [Parameter, EditorRequired] public string AltImage { get; init; }
     [Parameter, EditorRequired] public string Description { get; init; }
+
+    private string GetImagePath(string imageAddress)
+    {
+        var uri = new Uri(Url);
+
+        if (string.IsNullOrWhiteSpace(imageAddress))
+        {
+            imageAddress = ZExtensions.DefaultSocialImage;
+        }
+
+        if (imageAddress.StartsWith("https://"))
+        {
+            return imageAddress;
+        }
+        
+        var leftPart = uri.GetLeftPart(UriPartial.Authority);
+        if (imageAddress.StartsWith('/'))
+        {
+            return leftPart + imageAddress;
+        }
+
+        return leftPart + "/" + imageAddress;
+    }
 }
