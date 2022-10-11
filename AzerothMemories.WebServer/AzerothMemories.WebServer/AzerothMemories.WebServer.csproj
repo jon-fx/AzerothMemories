@@ -31,8 +31,8 @@
         <PackageReference Include="Stl.Fusion.RegisterAttributes" Version="4.0.12" />
         <PackageReference Include="Stl.Fusion.Server" Version="4.0.12" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-        <PackageReference Include="AspNet.Security.OAuth.BattleNet" Version="6.0.11" />
-        <PackageReference Include="AspNet.Security.OAuth.Patreon" Version="6.0.11" />
+        <PackageReference Include="AspNet.Security.OAuth.BattleNet" Version="6.0.12" />
+        <PackageReference Include="AspNet.Security.OAuth.Patreon" Version="6.0.12" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.9" />
     </ItemGroup>
 

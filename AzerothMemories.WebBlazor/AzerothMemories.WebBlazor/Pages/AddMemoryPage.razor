@@ -14,7 +14,7 @@
         {
             <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
                 <MudCardContent Class="@ClassPresets.CardContent">
-                    <InputFile id="fileInput" OnChange="ViewModel.Initialize" hidden accept="@ZExtensions.UploadAcceptExtensions" />
+                    <InputFile id="fileInput" OnChange="ViewModel.Initialize" hidden multiple accept="@ZExtensions.UploadAcceptExtensions" />
                     <MudButton Class="@ClassPresets.DefaultPadding" HtmlTag="label" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Filled.CloudUpload" for="fileInput">Upload Image</MudButton>
                     <MudButton Class="@ClassPresets.DefaultPadding" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Filled.ImageNotSupported" OnClick="OnSkipClicked">Continue</MudButton>
                 </MudCardContent>
