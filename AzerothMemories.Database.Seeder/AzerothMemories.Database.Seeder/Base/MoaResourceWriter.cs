@@ -304,6 +304,11 @@ internal sealed class MoaResourceWriter
             currentData.Name.ZhCn = serverSideResource.GetNameOrDefault(ServerSideLocale.Zh_Cn);
         }
 
+        if (database.BlizzardData.Count() != _serverSideResources.Count)
+        {
+            throw new NotImplementedException();
+        }
+
         await database.SaveChangesAsync();
 
         _logger.LogInformation("End Save");
