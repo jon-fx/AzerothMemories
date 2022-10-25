@@ -1900,6 +1900,33 @@
   <data name="CharacterRace-37" xml:space="preserve">
     <value>기계노움</value>
   </data>
+  <data name="CharacterRace-52" xml:space="preserve">
+    <value>드랙티르</value>
+  </data>
+  <data name="CharacterRace-70" xml:space="preserve">
+    <value>드랙티르</value>
+  </data>
+  <data name="CharacterRace-71" xml:space="preserve">
+    <value>고원 비룡</value>
+  </data>
+  <data name="CharacterRace-72" xml:space="preserve">
+    <value>소생한 원시비룡</value>
+  </data>
+  <data name="CharacterRace-73" xml:space="preserve">
+    <value>구불구불한 비단비룡</value>
+  </data>
+  <data name="CharacterRace-74" xml:space="preserve">
+    <value>절벽 황야비룡</value>
+  </data>
+  <data name="CharacterRace-75" xml:space="preserve">
+    <value>인간 형상</value>
+  </data>
+  <data name="CharacterRace-76" xml:space="preserve">
+    <value>인간 형상</value>
+  </data>
+  <data name="CharacterRace-77" xml:space="preserve">
+    <value>바람내기 벨로시비룡</value>
+  </data>
   <data name="CharacterClass-0" xml:space="preserve">
     <value>Unknown Class</value>
   </data>
@@ -1938,6 +1965,12 @@
   </data>
   <data name="CharacterClass-12" xml:space="preserve">
     <value>악마사냥꾼</value>
+  </data>
+  <data name="CharacterClass-13" xml:space="preserve">
+    <value>기원사</value>
+  </data>
+  <data name="CharacterClass-14" xml:space="preserve">
+    <value>모험가</value>
   </data>
   <data name="CharacterClassSpecialization-0" xml:space="preserve">
     <value>Unknown Specialization</value>
@@ -2085,5 +2118,14 @@
   </data>
   <data name="CharacterClassSpecialization-1456" xml:space="preserve">
     <value>입문 (악마사냥꾼)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1465" xml:space="preserve">
+    <value>입문 (기원사)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1467" xml:space="preserve">
+    <value>황폐 (기원사)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1468" xml:space="preserve">
+    <value>보존 (기원사)</value>
   </data>
 </root>

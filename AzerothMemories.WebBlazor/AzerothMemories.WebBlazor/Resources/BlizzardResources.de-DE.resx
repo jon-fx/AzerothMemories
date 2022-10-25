@@ -1900,6 +1900,33 @@
   <data name="CharacterRace-37" xml:space="preserve">
     <value>Mechagnom</value>
   </data>
+  <data name="CharacterRace-52" xml:space="preserve">
+    <value>Dracthyr</value>
+  </data>
+  <data name="CharacterRace-70" xml:space="preserve">
+    <value>Dracthyr</value>
+  </data>
+  <data name="CharacterRace-71" xml:space="preserve">
+    <value>Hochlanddrache</value>
+  </data>
+  <data name="CharacterRace-72" xml:space="preserve">
+    <value>Erneuerter Protodrache</value>
+  </data>
+  <data name="CharacterRace-73" xml:space="preserve">
+    <value>Schlängelnder Kriecherdrache</value>
+  </data>
+  <data name="CharacterRace-74" xml:space="preserve">
+    <value>Klippenwilddrache</value>
+  </data>
+  <data name="CharacterRace-75" xml:space="preserve">
+    <value>Antlitz</value>
+  </data>
+  <data name="CharacterRace-76" xml:space="preserve">
+    <value>Antlitz</value>
+  </data>
+  <data name="CharacterRace-77" xml:space="preserve">
+    <value>Windgeborener Velocidrache</value>
+  </data>
   <data name="CharacterClass-0" xml:space="preserve">
     <value>Unknown Class</value>
   </data>
@@ -1938,6 +1965,12 @@
   </data>
   <data name="CharacterClass-12" xml:space="preserve">
     <value>Dämonenjäger</value>
+  </data>
+  <data name="CharacterClass-13" xml:space="preserve">
+    <value>Rufer</value>
+  </data>
+  <data name="CharacterClass-14" xml:space="preserve">
+    <value>Abenteurer</value>
   </data>
   <data name="CharacterClassSpecialization-0" xml:space="preserve">
     <value>Unknown Specialization</value>
@@ -2085,5 +2118,14 @@
   </data>
   <data name="CharacterClassSpecialization-1456" xml:space="preserve">
     <value>Standard (Dämonenjäger)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1465" xml:space="preserve">
+    <value>Initiand (Rufer)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1467" xml:space="preserve">
+    <value>Verheerung (Rufer)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1468" xml:space="preserve">
+    <value>Bewahrung (Rufer)</value>
   </data>
 </root>

@@ -1900,6 +1900,33 @@
   <data name="CharacterRace-37" xml:space="preserve">
     <value>Механогном</value>
   </data>
+  <data name="CharacterRace-52" xml:space="preserve">
+    <value>Драктир</value>
+  </data>
+  <data name="CharacterRace-70" xml:space="preserve">
+    <value>Драктир</value>
+  </data>
+  <data name="CharacterRace-71" xml:space="preserve">
+    <value>Дракон нагорья</value>
+  </data>
+  <data name="CharacterRace-72" xml:space="preserve">
+    <value>Обновленный протодракон</value>
+  </data>
+  <data name="CharacterRace-73" xml:space="preserve">
+    <value>Скользящий дракозмей</value>
+  </data>
+  <data name="CharacterRace-74" xml:space="preserve">
+    <value>Горный вивернодракон</value>
+  </data>
+  <data name="CharacterRace-75" xml:space="preserve">
+    <value>Человек</value>
+  </data>
+  <data name="CharacterRace-76" xml:space="preserve">
+    <value>Человек</value>
+  </data>
+  <data name="CharacterRace-77" xml:space="preserve">
+    <value>Воздушный велоцидракон</value>
+  </data>
   <data name="CharacterClass-0" xml:space="preserve">
     <value>Unknown Class</value>
   </data>
@@ -1938,6 +1965,12 @@
   </data>
   <data name="CharacterClass-12" xml:space="preserve">
     <value>Охотник на демонов</value>
+  </data>
+  <data name="CharacterClass-13" xml:space="preserve">
+    <value>Пробудитель</value>
+  </data>
+  <data name="CharacterClass-14" xml:space="preserve">
+    <value>Искатель приключений</value>
   </data>
   <data name="CharacterClassSpecialization-0" xml:space="preserve">
     <value>Unknown Specialization</value>
@@ -2085,5 +2118,14 @@
   </data>
   <data name="CharacterClassSpecialization-1456" xml:space="preserve">
     <value>Начальный (Охотник на демонов)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1465" xml:space="preserve">
+    <value>Начальный (Пробудитель)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1467" xml:space="preserve">
+    <value>Опустошитель (Пробудитель)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1468" xml:space="preserve">
+    <value>Хранитель (Пробудитель)</value>
   </data>
 </root>

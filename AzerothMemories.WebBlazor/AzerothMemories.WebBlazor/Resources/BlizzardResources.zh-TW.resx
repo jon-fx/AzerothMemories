@@ -1900,6 +1900,33 @@
   <data name="CharacterRace-37" xml:space="preserve">
     <value>機械地精</value>
   </data>
+  <data name="CharacterRace-52" xml:space="preserve">
+    <value>半龍人</value>
+  </data>
+  <data name="CharacterRace-70" xml:space="preserve">
+    <value>半龍人</value>
+  </data>
+  <data name="CharacterRace-71" xml:space="preserve">
+    <value>高地飛龍</value>
+  </data>
+  <data name="CharacterRace-72" xml:space="preserve">
+    <value>再生元龍</value>
+  </data>
+  <data name="CharacterRace-73" xml:space="preserve">
+    <value>蜿蜒滑龍</value>
+  </data>
+  <data name="CharacterRace-74" xml:space="preserve">
+    <value>峭壁荒野飛龍</value>
+  </data>
+  <data name="CharacterRace-75" xml:space="preserve">
+    <value>人形</value>
+  </data>
+  <data name="CharacterRace-76" xml:space="preserve">
+    <value>人形</value>
+  </data>
+  <data name="CharacterRace-77" xml:space="preserve">
+    <value>烈風迅疾龍</value>
+  </data>
   <data name="CharacterClass-0" xml:space="preserve">
     <value>Unknown Class</value>
   </data>
@@ -1938,6 +1965,12 @@
   </data>
   <data name="CharacterClass-12" xml:space="preserve">
     <value>惡魔獵人</value>
+  </data>
+  <data name="CharacterClass-13" xml:space="preserve">
+    <value>喚能師</value>
+  </data>
+  <data name="CharacterClass-14" xml:space="preserve">
+    <value>冒險者</value>
   </data>
   <data name="CharacterClassSpecialization-0" xml:space="preserve">
     <value>Unknown Specialization</value>
@@ -2085,5 +2118,14 @@
   </data>
   <data name="CharacterClassSpecialization-1456" xml:space="preserve">
     <value>初始 (惡魔獵人)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1465" xml:space="preserve">
+    <value>初始 (喚能師)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1467" xml:space="preserve">
+    <value>破滅 (喚能師)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1468" xml:space="preserve">
+    <value>護存 (喚能師)</value>
   </data>
 </root>

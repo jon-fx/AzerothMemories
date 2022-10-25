@@ -1900,6 +1900,33 @@
   <data name="CharacterRace-37" xml:space="preserve">
     <value>机械侏儒</value>
   </data>
+  <data name="CharacterRace-52" xml:space="preserve">
+    <value>龙希尔</value>
+  </data>
+  <data name="CharacterRace-70" xml:space="preserve">
+    <value>龙希尔</value>
+  </data>
+  <data name="CharacterRace-71" xml:space="preserve">
+    <value>高地幼龙</value>
+  </data>
+  <data name="CharacterRace-72" xml:space="preserve">
+    <value>复苏始祖幼龙</value>
+  </data>
+  <data name="CharacterRace-73" xml:space="preserve">
+    <value>盘曲蜿变幼龙</value>
+  </data>
+  <data name="CharacterRace-74" xml:space="preserve">
+    <value>崖际荒狂幼龙</value>
+  </data>
+  <data name="CharacterRace-75" xml:space="preserve">
+    <value>幻容</value>
+  </data>
+  <data name="CharacterRace-76" xml:space="preserve">
+    <value>幻容</value>
+  </data>
+  <data name="CharacterRace-77" xml:space="preserve">
+    <value>载风迅疾幼龙</value>
+  </data>
   <data name="CharacterClass-0" xml:space="preserve">
     <value>Unknown Class</value>
   </data>
@@ -1938,6 +1965,12 @@
   </data>
   <data name="CharacterClass-12" xml:space="preserve">
     <value>恶魔猎手</value>
+  </data>
+  <data name="CharacterClass-13" xml:space="preserve">
+    <value>唤魔师</value>
+  </data>
+  <data name="CharacterClass-14" xml:space="preserve">
+    <value>冒险者</value>
   </data>
   <data name="CharacterClassSpecialization-0" xml:space="preserve">
     <value>Unknown Specialization</value>
@@ -2085,5 +2118,14 @@
   </data>
   <data name="CharacterClassSpecialization-1456" xml:space="preserve">
     <value>初始 (恶魔猎手)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1465" xml:space="preserve">
+    <value>初始 (唤魔师)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1467" xml:space="preserve">
+    <value>湮灭 (唤魔师)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1468" xml:space="preserve">
+    <value>恩护 (唤魔师)</value>
   </data>
 </root>

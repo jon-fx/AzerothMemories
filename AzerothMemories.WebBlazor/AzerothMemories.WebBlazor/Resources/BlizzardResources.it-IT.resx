@@ -1900,6 +1900,33 @@
   <data name="CharacterRace-37" xml:space="preserve">
     <value>Meccagnomo</value>
   </data>
+  <data name="CharacterRace-52" xml:space="preserve">
+    <value>Dracthyr</value>
+  </data>
+  <data name="CharacterRace-70" xml:space="preserve">
+    <value>Dracthyr</value>
+  </data>
+  <data name="CharacterRace-71" xml:space="preserve">
+    <value>Draco delle Alture</value>
+  </data>
+  <data name="CharacterRace-72" xml:space="preserve">
+    <value>Proto-Draco Rinnovato</value>
+  </data>
+  <data name="CharacterRace-73" xml:space="preserve">
+    <value>Dracondoso Serpeggiante</value>
+  </data>
+  <data name="CharacterRace-74" xml:space="preserve">
+    <value>Dracobrado delle Alture</value>
+  </data>
+  <data name="CharacterRace-75" xml:space="preserve">
+    <value>Volto</value>
+  </data>
+  <data name="CharacterRace-76" xml:space="preserve">
+    <value>Volto</value>
+  </data>
+  <data name="CharacterRace-77" xml:space="preserve">
+    <value>Velocidraco del Vento</value>
+  </data>
   <data name="CharacterClass-0" xml:space="preserve">
     <value>Unknown Class</value>
   </data>
@@ -1938,6 +1965,12 @@
   </data>
   <data name="CharacterClass-12" xml:space="preserve">
     <value>Cacciatore di Demoni</value>
+  </data>
+  <data name="CharacterClass-13" xml:space="preserve">
+    <value>Evocatore</value>
+  </data>
+  <data name="CharacterClass-14" xml:space="preserve">
+    <value>Avventuriera</value>
   </data>
   <data name="CharacterClassSpecialization-0" xml:space="preserve">
     <value>Unknown Specialization</value>
@@ -2085,5 +2118,14 @@
   </data>
   <data name="CharacterClassSpecialization-1456" xml:space="preserve">
     <value>Iniziale (Cacciatore di Demoni)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1465" xml:space="preserve">
+    <value>Iniziale (Evocatore)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1467" xml:space="preserve">
+    <value>Devastazione (Evocatore)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1468" xml:space="preserve">
+    <value>Conservazione (Evocatore)</value>
   </data>
 </root>
