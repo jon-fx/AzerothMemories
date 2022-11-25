@@ -21,8 +21,8 @@ restEaseClientBuilder.ConfigureHttpClient((_, name, o) =>
 restEaseClientBuilder.ConfigureWebSocketChannel(_ => new WebSocketChannelProvider.Options
 {
     BaseUri = baseUri,
-    //IsLoggingEnabled = true,
-    //IsMessageLoggingEnabled = false
+    LogLevel = LogLevel.Information,
+    MessageLogLevel = LogLevel.None
 });
 
 restEaseClientBuilder.AddReplicaService<IAdminServices>();
