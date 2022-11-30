@@ -11,7 +11,7 @@
     <PropertyGroup>
         <RunAOTCompilation>false</RunAOTCompilation>
         <!--<InvariantGlobalization>true</InvariantGlobalization>-->
-        <TrimMode>link</TrimMode>
+        <!--<TrimMode>link</TrimMode>-->
     </PropertyGroup>
 
     <PropertyGroup>
@@ -33,11 +33,11 @@
         <PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.0" />
         <PackageReference Include="Markdig" Version="0.30.4" />
         <PackageReference Include="MudBlazor" Version="6.1.2" />
-        <PackageReference Include="NodaTime" Version="3.1.5" />
-        <PackageReference Include="Stl.Fusion" Version="4.1.19" />
-        <PackageReference Include="Stl.CommandR" Version="4.1.19" />
-        <PackageReference Include="Stl.Fusion.Blazor" Version="4.1.19" />
-        <PackageReference Include="Stl.Fusion.Client" Version="4.1.19" />
+        <PackageReference Include="NodaTime" Version="3.1.6" />
+        <PackageReference Include="Stl.Fusion" Version="4.1.30" />
+        <PackageReference Include="Stl.CommandR" Version="4.1.30" />
+        <PackageReference Include="Stl.Fusion.Blazor" Version="4.1.30" />
+        <PackageReference Include="Stl.Fusion.Client" Version="4.1.30" />
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Update="Resources\AzerothResources.resx">

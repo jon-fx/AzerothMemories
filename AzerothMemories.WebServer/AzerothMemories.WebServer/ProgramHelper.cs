@@ -2,6 +2,7 @@
 using Stl.Fusion.EntityFramework.Npgsql;
 using Stl.Fusion.Server.Authentication;
 using Stl.Fusion.Server.Controllers;
+using Stl.Generators;
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -63,11 +64,17 @@ public abstract class ProgramHelper
             dbContext.AddAuthentication<string>();
         });
 
-        var generator = new Stl.Generators.RandomSymbolGenerator("p-", 12, "0123456789");
-        _services.AddSingleton(new PublisherOptions { Id = generator.Next() });
-
         _fusion = _services.AddFusion();
         _fusionServer = _fusion.AddWebServer();
+
+        _services.AddSingleton(new PublisherOptions { Id = $"p-{RandomStringGenerator.Default.Next(8)}" });
+        //_services.AddSingleton(new WebSocketServer.Options
+        //{
+        //    ConfigureWebSocket = () => new WebSocketAcceptContext
+        //    {
+        //        DangerousEnableCompression = false
+        //    }
+        //});
 
         _fusion.AddOperationReprocessor();
         //_services.TryAddEnumerable(ServiceDescriptor.Singleton(TransientFailureDetector.New(e => e is DbUpdateConcurrencyException)));

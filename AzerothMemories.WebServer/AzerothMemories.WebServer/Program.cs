@@ -53,23 +53,31 @@ else
 app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
-app.UseWebSockets(new WebSocketOptions
+
+var webSocketOptions = new WebSocketOptions
 {
     KeepAliveInterval = TimeSpan.FromSeconds(30),
-});
+};
+
+app.UseWebSockets(webSocketOptions);
 app.UseFusionSession();
 
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapBlazorHub();
-    endpoints.MapFusionWebSocketServer();
-    endpoints.MapControllers();
-    //endpoints.MapRazorPages();
-    endpoints.MapFallbackToPage("/_Host");
-});
+//app.UseEndpoints(endpoints =>
+//{
+//    endpoints.MapBlazorHub();
+//    endpoints.MapFusionWebSocketServer();
+//    endpoints.MapControllers();
+//    //endpoints.MapRazorPages();
+//    endpoints.MapFallbackToPage("/_Host");
+//});
+
+app.MapBlazorHub();
+app.MapFusionWebSocketServer();
+app.MapControllers();
+app.MapFallbackToPage("/_Host");
 
 app.Run();
