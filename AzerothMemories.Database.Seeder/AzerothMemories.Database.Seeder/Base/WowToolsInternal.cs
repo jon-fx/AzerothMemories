@@ -108,7 +108,8 @@ internal sealed class WowToolsInternal
 
     public void LoadDataFromWowTools(string fileName, string primaryKeyName, ref Dictionary<int, WowToolsData> dictionary, string locale, string[] fieldsToLoad = null)
     {
-        var fileInfo = DownloadIfNotExists($"{fileName}-{locale}.csv", $"https://wow.tools/dbc/api/export/?name={fileName}&build={_buildString}&locale={locale}");
+        var fileInfo = DownloadIfNotExists($"{fileName}-{locale}.csv", $"http://localhost:5080/dbc/export/?name={fileName}&build={_buildString}&locale={locale}");
+        //var fileInfo = DownloadIfNotExists($"{fileName}-{locale}.csv", $"https://wow.tools/dbc/api/export/?name={fileName}&build={_buildString}&locale={locale}");
         if (fileInfo == null)
         {
             return;
