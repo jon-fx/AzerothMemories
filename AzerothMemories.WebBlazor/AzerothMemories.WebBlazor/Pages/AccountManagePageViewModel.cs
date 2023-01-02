@@ -44,7 +44,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
                 NewUsername = AccountViewModel.Username;
 
                 NewUsernameTextBoxAdornmentColor = Color.Success;
-                NewUsernameTextBoxAdornmentIcon = Icons.Filled.CheckCircleOutline;
+                NewUsernameTextBoxAdornmentIcon = Icons.Material.Filled.CheckCircleOutline;
             }
 
             if (SocialLinks == null)
@@ -105,12 +105,12 @@ public sealed class AccountManagePageViewModel : ViewModelBase
         if (NewUsernameValid)
         {
             NewUsernameTextBoxAdornmentColor = Color.Success;
-            NewUsernameTextBoxAdornmentIcon = Icons.Filled.Check;
+            NewUsernameTextBoxAdornmentIcon = Icons.Material.Filled.Check;
         }
         else
         {
             NewUsernameTextBoxAdornmentColor = Color.Error;
-            NewUsernameTextBoxAdornmentIcon = Icons.Filled.Warning;
+            NewUsernameTextBoxAdornmentIcon = Icons.Material.Filled.Warning;
         }
 
         OnViewModelChanged?.Invoke();
@@ -148,12 +148,12 @@ public sealed class AccountManagePageViewModel : ViewModelBase
             AccountViewModel.Username = NewUsername;
 
             NewUsernameTextBoxAdornmentColor = Color.Success;
-            NewUsernameTextBoxAdornmentIcon = Icons.Filled.CheckCircleOutline;
+            NewUsernameTextBoxAdornmentIcon = Icons.Material.Filled.CheckCircleOutline;
         }
         else
         {
             NewUsernameTextBoxAdornmentColor = Color.Error;
-            NewUsernameTextBoxAdornmentIcon = Icons.Filled.Warning;
+            NewUsernameTextBoxAdornmentIcon = Icons.Material.Filled.Warning;
         }
 
         ChangeUsernameButtonVisible = false;
@@ -283,7 +283,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
         if (newValue == oldValue)
         {
             color = Color.Success;
-            icon = Icons.Filled.Check;
+            icon = Icons.Material.Filled.Check;
         }
         else if (string.IsNullOrWhiteSpace(newValue))
         {
@@ -293,7 +293,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase
             else
             {
                 color = Color.Success;
-                icon = Icons.Filled.Check;
+                icon = Icons.Material.Filled.Check;
                 shouldChange = true;
             }
         }
@@ -302,12 +302,12 @@ public sealed class AccountManagePageViewModel : ViewModelBase
             shouldChange = true;
 
             color = Color.Success;
-            icon = Icons.Filled.Check;
+            icon = Icons.Material.Filled.Check;
         }
         else
         {
             color = Color.Error;
-            icon = Icons.Filled.Warning;
+            icon = Icons.Material.Filled.Warning;
         }
 
         SocialLinks[link.LinkId] = newValue;
