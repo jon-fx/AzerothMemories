@@ -307,7 +307,7 @@ internal sealed class MoaResourceWriter
         await database.SaveChangesAsync();
 
         var databaseItemCount = await database.BlizzardData.CountAsync();
-        if (databaseItemCount != _serverSideResources.Count)
+        if (_serverSideResources.Count > databaseItemCount)
         {
             throw new NotImplementedException();
         }
