@@ -34,10 +34,10 @@
         <PackageReference Include="Markdig" Version="0.30.4" />
         <PackageReference Include="MudBlazor" Version="6.1.7" />
         <PackageReference Include="NodaTime" Version="3.1.6" />
-        <PackageReference Include="Stl.Fusion" Version="4.2.10" />
-        <PackageReference Include="Stl.CommandR" Version="4.2.10" />
-        <PackageReference Include="Stl.Fusion.Blazor" Version="4.2.10" />
-        <PackageReference Include="Stl.Fusion.Client" Version="4.2.10" />
+        <PackageReference Include="Stl.Fusion" Version="4.2.15" />
+        <PackageReference Include="Stl.CommandR" Version="4.2.15" />
+        <PackageReference Include="Stl.Fusion.Blazor" Version="4.2.15" />
+        <PackageReference Include="Stl.Fusion.Client" Version="4.2.15" />
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Update="Resources\AzerothResources.resx">
