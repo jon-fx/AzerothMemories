@@ -45,7 +45,7 @@
                             @if (!ViewModel.AccountViewModel.CanChangeUsername)
                             {
                                 var tooltip = ClientServices.TimeProvider.GetTimeAsLocalStringAgo(ViewModel.AccountViewModel.NextUsernameChangedTime, true);
-                                <MudIcon Icon="@Icons.Outlined.Info" Title="@tooltip" />
+                                <MudIcon Icon="@Icons.Material.Outlined.Info" Title="@tooltip" />
                             }
                         </MudItem>
                         <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
@@ -165,7 +165,7 @@
                         @if (ViewModel.AccountViewModel.CanUploadAvatar())
                         {
                             <InputFile id="fileInput" OnChange="ViewModel.UploadCustomAvatar" hidden accept="@ZExtensions.UploadAcceptExtensions" />
-                            <MudButton Class="@ClassPresets.DefaultPadding" HtmlTag="label" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Filled.CloudUpload" for="fileInput">Upload Image</MudButton>
+                            <MudButton Class="@ClassPresets.DefaultPadding" HtmlTag="label" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Material.Filled.CloudUpload" for="fileInput">Upload Image</MudButton>
                         }
                     </MudCardContent>
                 </MudCard>

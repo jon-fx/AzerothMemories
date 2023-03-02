@@ -71,7 +71,7 @@ else
                         </a>
                     }
                     <MudMenu Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Dense="true">
-                        <MudMenuItem Link="@($"/account/{AccountViewModel.Id}")">
+                        <MudMenuItem Href="@($"/account/{AccountViewModel.Id}")">
                             <MudTooltip Text="Link" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
                                 <MudIcon Icon="@Icons.Material.Filled.AddLink" Size="Size.Small" />
                             </MudTooltip>
@@ -79,7 +79,7 @@ else
                             
                             @if (Services.ClientServices.ActiveAccountServices.AccountViewModel.IsAdmin())
                             {
-                                <MudMenuItem Link="@("/admin")">
+                                <MudMenuItem Href="@("/admin")">
                                     <MudTooltip Text="Admin" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
                                         <MudIcon Icon="@Icons.Material.Filled.AdminPanelSettings" Size="Size.Small" />
                                     </MudTooltip>
@@ -101,7 +101,7 @@ else
 
         <MudCardContent Class="@ClassPresets.CardContent">
             <div class="d-flex align-baseline">
-                <MudIcon Class="mr-1" Icon="@Icons.Filled.CalendarToday" Size="Size.Small" />
+                <MudIcon Class="mr-1" Icon="@Icons.Material.Filled.CalendarToday" Size="Size.Small" />
                 <MudText Typo="Typo.body1" Class="my-auto">@Services.ClientServices.TimeProvider.GetJoinedDate(AccountViewModel.CreatedDateTime)</MudText>
             </div>
 
@@ -116,7 +116,7 @@ else
                     if (totalPostCount > 1)  postText = postText.Pluralize();
 
                     <div class="d-flex align-baseline">
-                        <MudIcon Class="mr-1" Icon="@Icons.Filled.PostAdd" Size="Size.Small" />
+                        <MudIcon Class="mr-1" Icon="@Icons.Material.Filled.PostAdd" Size="Size.Small" />
                         <MudText Typo="Typo.body1" Class="my-auto"><b>@totalPostCount.ToMetric()</b> @postText</MudText>
                     </div>
                 }
@@ -126,7 +126,7 @@ else
                     if (totalMemoriesCount > 1)  memoriesText = memoriesText.Pluralize();
 
                     <div class="d-flex align-baseline">
-                        <MudIcon Class="mr-1" Icon="@Icons.Filled.LinkedCamera" Size="Size.Small" />
+                        <MudIcon Class="mr-1" Icon="@Icons.Material.Filled.LinkedCamera" Size="Size.Small" />
                         <MudText Typo="Typo.body1" Class="my-auto"><b>@totalMemoriesCount.ToMetric()</b> @memoriesText</MudText>
                     </div>
                 }

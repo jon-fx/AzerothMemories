@@ -7,7 +7,7 @@ namespace AzerothMemories.WebBlazor.Common;
 public static class Exceptions
 {
     [DebuggerStepThrough]
-    public static void ThrowIf([DoesNotReturnIf(true)] bool condition, [CallerArgumentExpression("condition")] string message = null)
+    public static void ThrowIf([DoesNotReturnIf(true)] bool condition, [CallerArgumentExpression(nameof(condition))] string message = null)
     {
         if (condition)
         {
