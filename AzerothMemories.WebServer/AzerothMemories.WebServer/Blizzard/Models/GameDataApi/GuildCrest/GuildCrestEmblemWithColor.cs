@@ -21,5 +21,5 @@ public record GuildCrestEmblemWithColor
     /// Gets the emblem color.
     /// </summary>
     [JsonPropertyName("color")]
-    public Color Color { get; init; }
+    public ProfileColor Color { get; init; }
 }

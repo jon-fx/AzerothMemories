@@ -9,5 +9,5 @@ public record Background
     /// Gets the background color.
     /// </summary>
     [JsonPropertyName("color")]
-    public Color Color { get; init; }
+    public ProfileColor Color { get; init; }
 }

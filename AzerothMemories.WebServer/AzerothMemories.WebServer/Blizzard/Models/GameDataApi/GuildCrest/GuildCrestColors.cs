@@ -9,17 +9,17 @@ public record GuildCrestColors
     /// Gets the guild crest emblems.
     /// </summary>
     [JsonPropertyName("emblems")]
-    public Color[] Emblems { get; init; }
+    public ProfileColor[] Emblems { get; init; }
 
     /// <summary>
     /// Gets the guild crest borders.
     /// </summary>
     [JsonPropertyName("borders")]
-    public Color[] Borders { get; init; }
+    public ProfileColor[] Borders { get; init; }
 
     /// <summary>
     /// Gets the guild crest borders.
     /// </summary>
     [JsonPropertyName("backgrounds")]
-    public Color[] Backgrounds { get; init; }
+    public ProfileColor[] Backgrounds { get; init; }
 }
