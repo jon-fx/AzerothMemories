@@ -21,7 +21,7 @@ else if (reactionData.Length > 0)
                     @if (reaction.AccountAvatar != null)
                     {
                         <MudAvatar Class="mr-2" Size="Size.Small">
-                            <MudImage Src="@reaction.AccountAvatar" />
+                            <MudImage Src="@reaction.AccountAvatar" loading="lazy" />
                         </MudAvatar>
                     }
 

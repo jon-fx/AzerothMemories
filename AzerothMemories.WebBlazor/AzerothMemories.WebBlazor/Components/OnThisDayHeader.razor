@@ -112,7 +112,7 @@ else
                                         <a href="@link">
                                             <MudText Typo="Typo.h6" Align="Align.Center">@postTimeString</MudText>
                                         </a>
-                                        
+
                                         <a href="@link">
                                             <MudText Typo="Typo.caption" Align="Align.Center">@postCreatedTimeString</MudText>
                                         </a>
@@ -136,7 +136,7 @@ else
                                         _allBlobInfos.Add(blobInfo);
 
                                         <MudItem xs="12" sm="3" Class="d-flex justify-center">
-                                            <MudImage ObjectFit="ObjectFit.Cover" ObjectPosition="ObjectPosition.Center" Fluid="true" Src="@blobInfo.Source" @onclick="() => OnImageClicked(blobIndex)"/>
+                                            <MudImage ObjectFit="ObjectFit.Cover" ObjectPosition="ObjectPosition.Center" Fluid="true" Src="@blobInfo.Source" @onclick="() => OnImageClicked(blobIndex)" loading="lazy" />
                                         </MudItem>
                                     }
                                 }

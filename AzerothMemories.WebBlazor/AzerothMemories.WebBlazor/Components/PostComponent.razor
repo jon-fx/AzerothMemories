@@ -28,14 +28,14 @@ else
                         }
                         else
                         {
-                            <MudImage Src="@avatarSource" />
+                            <MudImage Src="@avatarSource" loading="lazy" />
                         }
                     }
                 </MudAvatar>
                 @if (!string.IsNullOrWhiteSpace(Post.PostAvatar))
                 {
                     <MudAvatar Class="ml-n3 mt-5" Style="float: right" Size="Size.Small">
-                        <MudImage Src="@Post.PostAvatar" />
+                        <MudImage Src="@Post.PostAvatar" loading="lazy" />
                     </MudAvatar>
                 }
             </CardHeaderAvatar>
@@ -272,7 +272,7 @@ else
                                                     }
                                                     else
                                                     {
-                                                        <MudImage Src="@avatarSource" />
+                                                        <MudImage Src="@avatarSource" loading="lazy" />
                                                     }
                                                 }
                                             </MudAvatar>
@@ -292,7 +292,7 @@ else
                                         <ChildContent>
                                             <MudButton Id="@index" Variant="Variant.Filled" Disabled="taggedCharacter != null && taggedCharacter.Id == character.Id" OnClick="() => OnRestoreButtonClicked(character.Id)">
                                                 <MudAvatar Size="Size.Medium">
-                                                    <MudImage Src="@character.AvatarLinkWithFallBack" />
+                                                    <MudImage Src="@character.AvatarLinkWithFallBack" loading="lazy" />
                                                 </MudAvatar>
                                             </MudButton>
                                         </ChildContent>

@@ -5,7 +5,7 @@
     <source srcset="@($"{Source}?size=1")" media="(min-width: 600px)">
     <source srcset="@($"{Source}?size=0")">
 
-    <MudImage ObjectFit="ObjectFit.Cover" Fluid="true" Src="@($"{Source}?size=0")" @onclick="OnClick" />
+    <MudImage ObjectFit="ObjectFit.Cover" Fluid="true" Src="@($"{Source}?size=0")" @onclick="OnClick" loading="lazy" />
 </picture>
 
 @code

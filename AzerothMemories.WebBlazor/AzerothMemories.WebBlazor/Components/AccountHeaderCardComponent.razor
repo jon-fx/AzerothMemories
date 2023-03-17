@@ -17,7 +17,7 @@ else
                         }
                         else
                         {
-                            <MudImage Src="@avatarSource" />
+                            <MudImage Src="@avatarSource" loading="lazy" />
                         }
                     }
                 </MudAvatar>
@@ -44,7 +44,7 @@ else
                     {
                         <div class="d-flex align-center">
                             <MudAvatar Class="mr-1" Style="background-color: transparent" Size="Size.Small" Square="true">
-                                <MudImage Src="@SocialHelpers.BlizzardIconLink" />
+                                <MudImage Src="@SocialHelpers.BlizzardIconLink" loading="lazy" />
                             </MudAvatar>
                             <MudText Typo="Typo.body2" Inline="true">@AccountViewModel.BattleTag</MudText>
                         </div>
@@ -59,7 +59,7 @@ else
                         var socialHelper = SocialHelpers.All[(int)SocialLinks.Discord];
                         <div class="d-flex align-center">
                             <MudAvatar Class="mr-1" Style="background-color: transparent" Size="Size.Small" Square="true">
-                                <MudImage Src="@socialHelper.SocialIconLink" />
+                                <MudImage Src="@socialHelper.SocialIconLink" loading="lazy" />
                             </MudAvatar>
                             <MudText Typo="Typo.body2" Inline="true">@discord</MudText>
                         </div>
@@ -85,7 +85,7 @@ else
 
                         <a href="@fullLink" target="_blank">
                             <MudAvatar Class="ma-1" Style="background-color: transparent" Size="Size.Small" Square="true">
-                                <MudImage Src="@socialHelper.SocialIconLink" />
+                                <MudImage Src="@socialHelper.SocialIconLink" loading="lazy" />
                             </MudAvatar>
                         </a>
                     }

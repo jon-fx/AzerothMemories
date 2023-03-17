@@ -23,7 +23,7 @@
                                 }
                                 else
                                 {
-                                    <MudImage Src="@avatarSource" />
+                                    <MudImage Src="@avatarSource" loading="lazy" />
                                 }
                             }
                         </MudAvatar>
@@ -140,7 +140,7 @@
                             <MudTooltip Text="Use Custom Avatar" Placement="Placement.Bottom" Color="Color.Dark">
                                 <MudButton Variant="Variant.Filled" Disabled="ViewModel.AvatarLink == ViewModel.CustomAvatarLink" OnClick="() => ViewModel.OnChangeAvatarButtonClicked(ViewModel.CustomAvatarLink)">
                                     <MudAvatar Size="Size.Medium">
-                                        <MudImage Src="@ViewModel.CustomAvatarLink" />
+                                        <MudImage Src="@ViewModel.CustomAvatarLink" loading="lazy" />
                                     </MudAvatar>
                                 </MudButton>
                             </MudTooltip>
@@ -160,7 +160,7 @@
                                 <ChildContent>
                                     <MudButton Id="@index" Variant="Variant.Filled" Disabled="ViewModel.AvatarLink == character.AvatarLink" OnClick="() => ViewModel.OnChangeAvatarButtonClicked(character)">
                                         <MudAvatar Size="Size.Medium">
-                                            <MudImage Src="@character.AvatarLink" />
+                                            <MudImage Src="@character.AvatarLink" loading="lazy" />
                                         </MudAvatar>
                                     </MudButton>
                                 </ChildContent>
@@ -215,7 +215,7 @@
                                         }
                                         else
                                         {
-                                            <MudImage Src="@avatarSource" />
+                                            <MudImage Src="@avatarSource" loading="lazy" />
                                         }
                                     }
                                 </MudAvatar>
@@ -310,7 +310,7 @@
                                     <tr @key="row.Id">
                                         <MudTd>
                                             <MudAvatar Size="Size.Medium">
-                                                <MudImage Src="@row.AvatarLinkWithFallBack" />
+                                                <MudImage Src="@row.AvatarLinkWithFallBack" loading="lazy" />
                                             </MudAvatar>
                                         </MudTd>
                                         <MudHidden Breakpoint="Breakpoint.SmAndDown">
