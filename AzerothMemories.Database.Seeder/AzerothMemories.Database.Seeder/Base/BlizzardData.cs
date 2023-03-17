@@ -1,5 +1,4 @@
 ﻿using NodaTime;
-using System.IO.Compression;
 using System.Text.Json.Serialization;
 
 namespace AzerothMemories.Database.Seeder.Base

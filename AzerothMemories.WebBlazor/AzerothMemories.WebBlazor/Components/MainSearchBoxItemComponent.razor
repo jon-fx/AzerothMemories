@@ -1,6 +1,20 @@
 ﻿<MudCardHeader Class="pa-0">
     <CardHeaderAvatar>
-        <MudAvatar Size="Size.Small" Image="@Result.Avatar" Square="true">@Result.Name[0]</MudAvatar>
+        <MudAvatar Size="Size.Small" Square="true">
+            @{
+                var avatarSource = Result.Avatar;
+                var avatarAlt = Result.Name[0];
+
+                if (string.IsNullOrWhiteSpace(avatarSource))
+                {
+                    @avatarAlt
+                }
+                else
+                {
+                    <MudImage Src="@avatarSource" />
+                }
+            }
+        </MudAvatar>
     </CardHeaderAvatar>
     <CardHeaderContent>
         @if (Result.Type == MainSearchType.Account)
@@ -12,17 +26,13 @@
         {
             <MudText Class=@($"wowclass-{Result.CharacterClass}")>@Result.Name</MudText>
 
-            <RealmLinkComponent Typo="Typo.caption"
-                                BlizzardRealmId="@Result.RealmId"
-                                LinkDisabled="true" />
+            <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@Result.RealmId" LinkDisabled="true" />
         }
         else if (Result.Type == MainSearchType.Guild)
         {
             <MudText>@Result.Name</MudText>
 
-            <RealmLinkComponent Typo="Typo.caption"
-                                BlizzardRealmId="@Result.RealmId"
-                                LinkDisabled="true" />
+            <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@Result.RealmId" LinkDisabled="true" />
         }
         else
         {

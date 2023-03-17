@@ -6,7 +6,7 @@ namespace AzerothMemories.Database.Seeder.Base;
 
 internal sealed class MoaResourceWriter
 {
-    private static readonly string _jsonDataPath = @$"C:\Users\John\Desktop\Stuff\BlizzardData\JSON Data\";
+    private static readonly string _jsonDataPath = @"C:\Users\John\Desktop\Stuff\BlizzardData\JSON Data\";
 
     private readonly WowTools _wowTools;
     private readonly ILogger<MoaResourceWriter> _logger;

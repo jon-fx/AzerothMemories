@@ -20,7 +20,9 @@ else if (reactionData.Length > 0)
                 <MudChip @key="reaction.Id" OnClick="() => OnReactionChipClickedCallback(reaction)">
                     @if (reaction.AccountAvatar != null)
                     {
-                        <MudAvatar Class="mr-2" Size="Size.Small" Image="@reaction.AccountAvatar" />
+                        <MudAvatar Class="mr-2" Size="Size.Small">
+                            <MudImage Src="@reaction.AccountAvatar" />
+                        </MudAvatar>
                     }
 
                     @text

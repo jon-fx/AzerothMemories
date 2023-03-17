@@ -2,7 +2,9 @@
     <MudTooltip Placement="Placement.Bottom" Color="Color.Dark">
         <ChildContent>
             <MudButton Variant="Variant.Filled">
-                <MudAvatar Size="Size.Medium" Image="@CharacterViewModel.AvatarLinkWithFallBack" />
+                <MudAvatar Size="Size.Medium">
+                    <MudImage Src="@CharacterViewModel.AvatarLinkWithFallBack" />
+                </MudAvatar>
             </MudButton>
         </ChildContent>
         <TooltipContent>

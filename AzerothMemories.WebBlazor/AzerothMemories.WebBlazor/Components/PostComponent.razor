@@ -17,10 +17,26 @@ else
     <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
         <MudCardHeader Class="@ClassPresets.CardHeader">
             <CardHeaderAvatar>
-                <MudAvatar Size="Size.Medium" Image="@Post.AccountAvatar">@Post.AccountUsername[0]</MudAvatar>
+                <MudAvatar Size="Size.Medium">
+                    @{
+                        var avatarSource = Post.AccountAvatar;
+                        var avatarAlt = Post.AccountUsername[0];
+
+                        if (string.IsNullOrWhiteSpace(avatarSource))
+                        {
+                            @avatarAlt
+                        }
+                        else
+                        {
+                            <MudImage Src="@avatarSource" />
+                        }
+                    }
+                </MudAvatar>
                 @if (!string.IsNullOrWhiteSpace(Post.PostAvatar))
                 {
-                    <MudAvatar Class="ml-n3 mt-5" Style="float: right" Size="Size.Small" Image="@Post.PostAvatar">?</MudAvatar>
+                    <MudAvatar Class="ml-n3 mt-5" Style="float: right" Size="Size.Small">
+                        <MudImage Src="@Post.PostAvatar" />
+                    </MudAvatar>
                 }
             </CardHeaderAvatar>
             <CardHeaderContent>
@@ -29,19 +45,19 @@ else
                 </a>
 
                 <div class="d-block d-sm-none">
-                    <TimeAsLocalStringAgoComponent Typo="Typo.body2" Inline="false" Time="Post.PostTime" TimeProvider="@Services.ClientServices.TimeProvider"/>
+                    <TimeAsLocalStringAgoComponent Typo="Typo.body2" Inline="false" Time="Post.PostTime" TimeProvider="@Services.ClientServices.TimeProvider" />
                     <TimeAsLocalStringAgoComponent Typo="Typo.body2" Inline="false" Time="Post.PostCreatedTime" TimeProvider="@Services.ClientServices.TimeProvider" />
                 </div>
 
                 <div class="d-none d-sm-flex justify-space-between">
-                    <TimeAsLocalStringAgoComponent Typo="Typo.body2" Inline="true" Time="Post.PostTime" TimeProvider="@Services.ClientServices.TimeProvider"/>
+                    <TimeAsLocalStringAgoComponent Typo="Typo.body2" Inline="true" Time="Post.PostTime" TimeProvider="@Services.ClientServices.TimeProvider" />
                     <TimeAsLocalStringAgoComponent Typo="Typo.body2" Inline="true" Time="Post.PostCreatedTime" TimeProvider="@Services.ClientServices.TimeProvider" />
                 </div>
             </CardHeaderContent>
             <CardHeaderActions>
                 <MudMenu Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Dense="true">
 
-                    <MudMenuItem Link="@($"/post/{Post.AccountId}/{Post.Id}")">
+                    <MudMenuItem Href="@($"/post/{Post.AccountId}/{Post.Id}")">
                         <MudTooltip Text="Link" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
                             <MudIcon Icon="@Icons.Material.Filled.AddLink" Size="Size.Small" />
                         </MudTooltip>
@@ -152,7 +168,7 @@ else
             <MudCardActions Class="@ClassPresets.CardActions">
                 <MudButtonGroup OverrideStyles="true" Class="pa-0 ma-2" Variant="Variant.Filled" Size="Size.Small">
                     <MudButton StartIcon="@Icons.Material.Filled.Favorite" IconColor="@(Post.Reaction == PostReaction.None ? Color.Default : Color.Secondary)" Disabled="@(reactIsDisabled || _userReacting)" OnClick="() => OnReactButtonClicked(Post.Reaction)">@Post.Reaction.Humanize()</MudButton>
-                    <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Disabled="@(reactIsDisabled || _userReacting)" Direction="Direction.Bottom" OffsetY="true">
+                    <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Disabled="@(reactIsDisabled || _userReacting)" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
                         <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction1)" OnTouch="() => OnReactButtonClicked(PostReaction.Reaction1)">@PostReaction.Reaction1.Humanize()</MudMenuItem>
                         <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction2)" OnTouch="() => OnReactButtonClicked(PostReaction.Reaction2)">@PostReaction.Reaction2.Humanize()</MudMenuItem>
                         <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction3)" OnTouch="() => OnReactButtonClicked(PostReaction.Reaction3)">@PostReaction.Reaction3.Humanize()</MudMenuItem>
@@ -245,7 +261,21 @@ else
                                 <MudTooltip Placement="Placement.End" Color="Color.Dark">
                                     <ChildContent>
                                         <MudButton Variant="Variant.Filled" Disabled="accountIsTagged && taggedCharacter == null" OnClick="() => OnRestoreButtonClicked(0)">
-                                            <MudAvatar Size="Size.Medium" Image="@Services.ClientServices.ActiveAccountServices.AccountViewModel.Avatar">@Services.ClientServices.ActiveAccountServices.AccountViewModel.GetAvatarText()</MudAvatar>
+                                            <MudAvatar Size="Size.Medium">
+                                                @{
+                                                    var avatarSource = Services.ClientServices.ActiveAccountServices.AccountViewModel.Avatar;
+                                                    var avatarAlt = Services.ClientServices.ActiveAccountServices.AccountViewModel.GetAvatarText();
+
+                                                    if (string.IsNullOrWhiteSpace(avatarSource))
+                                                    {
+                                                        @avatarAlt
+                                                    }
+                                                    else
+                                                    {
+                                                        <MudImage Src="@avatarSource" />
+                                                    }
+                                                }
+                                            </MudAvatar>
                                         </MudButton>
                                     </ChildContent>
                                     <TooltipContent>
@@ -261,21 +291,20 @@ else
                                     <MudTooltip @key="@character.Id" Placement="Placement.Bottom" Color="Color.Dark">
                                         <ChildContent>
                                             <MudButton Id="@index" Variant="Variant.Filled" Disabled="taggedCharacter != null && taggedCharacter.Id == character.Id" OnClick="() => OnRestoreButtonClicked(character.Id)">
-                                                <MudAvatar Size="Size.Medium" Image="@character.AvatarLinkWithFallBack"/>
+                                                <MudAvatar Size="Size.Medium">
+                                                    <MudImage Src="@character.AvatarLinkWithFallBack" />
+                                                </MudAvatar>
                                             </MudButton>
                                         </ChildContent>
                                         <TooltipContent>
-                                            <CharacterNameLinkComponent CharacterName="@character.Name"
-                                                                        CharacterClass="@character.Class"
-                                                                        CharacterRealmId="@character.RealmId"
-                                                                        CharacterRegionInfo="@character.RegionId.ToInfo()"/>
+                                            <CharacterNameLinkComponent CharacterName="@character.Name" CharacterClass="@character.Class" CharacterRealmId="@character.RealmId" CharacterRegionInfo="@character.RegionId.ToInfo()" />
 
                                             <div>
                                                 <MudText Inline="true" Typo="Typo.body2">@character.Level @Services.ClientServices.BlizzardStringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
                                                 <MudText Inline="true" Typo="Typo.body2" Class=@($"wowclass-{character.Class}")>@Services.ClientServices.BlizzardStringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
                                             </div>
 
-                                            <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@character.RealmId"/>
+                                            <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@character.RealmId" />
                                         </TooltipContent>
                                     </MudTooltip>
                                 }

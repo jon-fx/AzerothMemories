@@ -12,7 +12,21 @@ else
     <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
         <MudCardHeader Class="@ClassPresets.CardHeader">
             <CardHeaderAvatar>
-                <MudAvatar Size="Size.Large" Image="@GuildViewModel.Avatar">@GuildViewModel.GetAvatarText()</MudAvatar>
+                <MudAvatar Size="Size.Large">
+                    @{
+                        var avatarSource = GuildViewModel.Avatar;
+                        var avatarAlt = GuildViewModel.GetAvatarText();
+
+                        if (string.IsNullOrWhiteSpace(avatarSource))
+                        {
+                            @avatarAlt
+                        }
+                        else
+                        {
+                            <MudImage Src="@avatarSource" />
+                        }
+                    }
+                </MudAvatar>
             </CardHeaderAvatar>
             <CardHeaderContent>
                 <div>
@@ -44,7 +58,7 @@ else
 
                         <CharacterLinkButton @key="character" BlizzardStringLocalizer="@Services.ClientServices.BlizzardStringLocalizer" CharacterViewModel="@character" />
                     }
-                    
+
                     if (remainingCharacters > 0)
                     {
                         <MudTooltip Placement="Placement.Bottom" Color="Color.Dark">

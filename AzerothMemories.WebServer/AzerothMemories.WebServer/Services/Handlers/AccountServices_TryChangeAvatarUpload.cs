@@ -1,5 +1,4 @@
 ﻿using Humanizer;
-using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 
 namespace AzerothMemories.WebServer.Services.Handlers;

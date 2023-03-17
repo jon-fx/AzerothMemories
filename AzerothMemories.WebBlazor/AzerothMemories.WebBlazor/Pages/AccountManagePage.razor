@@ -12,7 +12,21 @@
             <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
                 <MudCardHeader Class="@ClassPresets.CardHeader">
                     <CardHeaderAvatar>
-                        <MudAvatar Size="Size.Large" Image="@ViewModel.AccountViewModel.Avatar">@ViewModel.AccountViewModel.GetAvatarText()</MudAvatar>
+                        <MudAvatar Size="Size.Large">
+                            @{
+                                var avatarSource = ViewModel.AccountViewModel.Avatar;
+                                var avatarAlt = ViewModel.AccountViewModel.GetAvatarText();
+
+                                if (string.IsNullOrWhiteSpace(avatarSource))
+                                {
+                                    @avatarAlt
+                                }
+                                else
+                                {
+                                    <MudImage Src="@avatarSource" />
+                                }
+                            }
+                        </MudAvatar>
                     </CardHeaderAvatar>
                     <CardHeaderContent>
                         <MudText Typo="Typo.h6">Manage Account</MudText>
@@ -63,8 +77,8 @@
                         <MudItem xs="12">
                             <MudSwitch T="bool" Checked="@ViewModel.AccountViewModel.IsPrivate" Color="Color.Primary" Label="Private" CheckedChanged="ViewModel.OnIsPrivateChanged " />
                         </MudItem>
-                        
-                        @foreach(var info in ViewModel.SocialLogins)
+
+                        @foreach (var info in ViewModel.SocialLogins)
                         {
                             var current = ViewModel.AccountViewModel.LinkedLogins.FirstOrDefault(x => x.Key.StartsWith($"{info}/"));
                             if (current == null)
@@ -125,7 +139,9 @@
                         {
                             <MudTooltip Text="Use Custom Avatar" Placement="Placement.Bottom" Color="Color.Dark">
                                 <MudButton Variant="Variant.Filled" Disabled="ViewModel.AvatarLink == ViewModel.CustomAvatarLink" OnClick="() => ViewModel.OnChangeAvatarButtonClicked(ViewModel.CustomAvatarLink)">
-                                    <MudAvatar Size="Size.Medium" Image="@ViewModel.CustomAvatarLink" />
+                                    <MudAvatar Size="Size.Medium">
+                                        <MudImage Src="@ViewModel.CustomAvatarLink" />
+                                    </MudAvatar>
                                 </MudButton>
                             </MudTooltip>
                         }
@@ -143,7 +159,9 @@
                             <MudTooltip @key="@character.Id" Placement="Placement.Bottom" Color="Color.Dark">
                                 <ChildContent>
                                     <MudButton Id="@index" Variant="Variant.Filled" Disabled="ViewModel.AvatarLink == character.AvatarLink" OnClick="() => ViewModel.OnChangeAvatarButtonClicked(character)">
-                                        <MudAvatar Size="Size.Medium" Image="@character.AvatarLink" />
+                                        <MudAvatar Size="Size.Medium">
+                                            <MudImage Src="@character.AvatarLink" />
+                                        </MudAvatar>
                                     </MudButton>
                                 </ChildContent>
                                 <TooltipContent>
@@ -186,7 +204,21 @@
                     <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
                         <MudCardHeader Class="@ClassPresets.CardHeader">
                             <CardHeaderAvatar>
-                                <MudAvatar Size="Size.Large" Image="@character.AvatarLinkWithFallBack">@character.Name[0]</MudAvatar>
+                                <MudAvatar Size="Size.Large">
+                                    @{
+                                        var avatarSource = character.AvatarLinkWithFallBack;
+                                        var avatarAlt = character.Name[0];
+
+                                        if (string.IsNullOrWhiteSpace(avatarSource))
+                                        {
+                                            @avatarAlt
+                                        }
+                                        else
+                                        {
+                                            <MudImage Src="@avatarSource" />
+                                        }
+                                    }
+                                </MudAvatar>
                             </CardHeaderAvatar>
                             <CardHeaderContent>
                                 <CharacterNameLinkComponent Typo="Typo.h6"
@@ -209,7 +241,7 @@
                             <MudButtonGroup OverrideStyles="true" Class="@ClassPresets.DefaultPadding" Variant="Variant.Filled" Size="Size.Small">
                                 <MudButton StartIcon="@Icons.Material.Filled.DeleteForever" OnClick="() => ViewModel.OnCharacterDeletedClicked(character)">Deleted</MudButton>
                                 <MudButton StartIcon="@Icons.Material.Filled.Transform" Disabled="@(possibleCharacters.Length == 0)">Transferred / Renamed</MudButton>
-                                <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Direction="Direction.Bottom" OffsetY="true">
+                                <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
                                     @foreach (var otherCharacter in possibleCharacters)
                                     {
                                         if (otherCharacter.CharacterStatus == CharacterStatus2.MaybeDeleted)
@@ -277,7 +309,9 @@
                                 {
                                     <tr @key="row.Id">
                                         <MudTd>
-                                            <MudAvatar Size="Size.Medium" Image="@row.AvatarLinkWithFallBack" />
+                                            <MudAvatar Size="Size.Medium">
+                                                <MudImage Src="@row.AvatarLinkWithFallBack" />
+                                            </MudAvatar>
                                         </MudTd>
                                         <MudHidden Breakpoint="Breakpoint.SmAndDown">
                                             <MudTd DataLabel="Name">
@@ -327,7 +361,7 @@
                                         </MudTd>
 
                                         <MudTd DataLabel="Result">
-                                            <LastUpdateInfoComponent TimeProvider="@ClientServices.TimeProvider" UpdateViewModel="@row.UpdateJobLastResults"/>
+                                            <LastUpdateInfoComponent TimeProvider="@ClientServices.TimeProvider" UpdateViewModel="@row.UpdateJobLastResults" />
                                         </MudTd>
                                     </tr>
                                 }

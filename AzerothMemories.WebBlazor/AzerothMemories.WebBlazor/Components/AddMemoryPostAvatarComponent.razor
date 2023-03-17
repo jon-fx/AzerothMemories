@@ -9,7 +9,21 @@
             <MudTooltip Placement="Placement.Bottom" Color="Color.Dark">
                 <ChildContent>
                     <MudButton Id="@index" Variant="Variant.Filled" Disabled="SharedData.SelectedPostAvatarImage == index" OnClick="@(_ => SharedData.SelectedPostAvatarImage = index)">
-                        <MudAvatar Size="Size.Medium" Image="@avatar.ImageLink">@avatar.ImageText</MudAvatar>
+                        <MudAvatar Size="Size.Medium">
+                            @{
+                                var avatarSource = avatar.ImageLink;
+                                var avatarAlt = avatar.ImageText;
+
+                                if (string.IsNullOrWhiteSpace(avatarSource))
+                                {
+                                    @avatarAlt
+                                }
+                                else
+                                {
+                                    <MudImage Src="@avatarSource" />
+                                }
+                            }
+                        </MudAvatar>
                     </MudButton>
                 </ChildContent>
                 <TooltipContent>
@@ -21,7 +35,21 @@
         {
             <a class="cardlink2" data-wowhead="@avatar.Tag.WowHeadLink">
                 <MudButton Id="@index" Variant="Variant.Filled" Disabled="SharedData.SelectedPostAvatarImage == index" OnClick="@(_ => SharedData.SelectedPostAvatarImage = index)">
-                    <MudAvatar Size="Size.Medium" Image="@avatar.ImageLink">@avatar.ImageText</MudAvatar>
+                    <MudAvatar Size="Size.Medium">
+                        @{
+                            var avatarSource = avatar.ImageLink;
+                            var avatarAlt = avatar.ImageText;
+
+                            if (string.IsNullOrWhiteSpace(avatarSource))
+                            {
+                                @avatarAlt
+                            }
+                            else
+                            {
+                                <MudImage Src="@avatarSource" />
+                            }
+                        }
+                    </MudAvatar>
                 </MudButton>
             </a>
         }

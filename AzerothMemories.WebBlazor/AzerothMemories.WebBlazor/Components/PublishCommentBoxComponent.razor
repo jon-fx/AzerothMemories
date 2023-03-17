@@ -8,7 +8,21 @@
         <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
             <MudCardHeader Class="@ClassPresets.CardHeader">
                 <CardHeaderAvatar>
-                    <MudAvatar Size="Size.Small" Image="@Services.ClientServices.ActiveAccountServices.AccountViewModel.Avatar">@Services.ClientServices.ActiveAccountServices.AccountViewModel.GetAvatarText()</MudAvatar>
+                    <MudAvatar Size="Size.Small">
+                        @{
+                            var avatarSource = Services.ClientServices.ActiveAccountServices.AccountViewModel.Avatar;
+                            var avatarAlt = Services.ClientServices.ActiveAccountServices.AccountViewModel.GetAvatarText();
+
+                            if (string.IsNullOrWhiteSpace(avatarSource))
+                            {
+                                @avatarAlt
+                            }
+                            else
+                            {
+                                <MudImage Src="@avatarSource" />
+                            }
+                        }
+                    </MudAvatar>
                 </CardHeaderAvatar>
                 <CardHeaderContent>
                     <MudText Typo="Typo.body1">@Services.ClientServices.ActiveAccountServices.AccountViewModel.GetDisplayName()</MudText>

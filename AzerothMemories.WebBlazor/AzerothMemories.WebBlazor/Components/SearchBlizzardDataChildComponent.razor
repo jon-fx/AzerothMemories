@@ -1,7 +1,21 @@
 ﻿@if (TagInfo.WowHeadLink == null)
 {
     <div class="d-flex">
-        <MudAvatar Class="flex-grow-0 flex-shrink-0 mx-1" Size="Size.Small" Image="@TagInfo.Image" Square="true">TagInfo.Name[0]</MudAvatar>
+        <MudAvatar Class="flex-grow-0 flex-shrink-0 mx-1" Size="Size.Small" Square="true">
+            @{
+                var avatarSource = TagInfo.Image;
+                var avatarAlt = TagInfo.Name[0];
+
+                if (string.IsNullOrWhiteSpace(avatarSource))
+                {
+                    @avatarAlt
+                }
+                else
+                {
+                    <MudImage Src="@avatarSource" />
+                }
+            }
+        </MudAvatar>
         <MudText Class="flex-grow-1 flex-shrink-0 mx-1">@TagInfo.Name</MudText>
         <MudText Class="flex-grow-0 flex-shrink-0 mx-1" Typo="Typo.caption">@TagInfo.Type: @TagInfo.Id</MudText>
     </div>
@@ -10,7 +24,21 @@ else
 {
     <a class="cardlink2" data-wowhead="@TagInfo.WowHeadLink">
         <div class="d-flex">
-            <MudAvatar Class="flex-grow-0 flex-shrink-0 mx-1" Size="Size.Small" Image="@TagInfo.Image" Square="true">TagInfo.Name[0]</MudAvatar>
+            <MudAvatar Class="flex-grow-0 flex-shrink-0 mx-1" Size="Size.Small" Square="true">
+                @{
+                    var avatarSource = TagInfo.Image;
+                    var avatarAlt = TagInfo.Name[0];
+
+                    if (string.IsNullOrWhiteSpace(avatarSource))
+                    {
+                        @avatarAlt
+                    }
+                    else
+                    {
+                        <MudImage Src="@avatarSource" />
+                    }
+                }
+            </MudAvatar>
             <MudText Class="flex-grow-1 flex-shrink-0 mx-1">@TagInfo.Name</MudText>
             <MudText Class="flex-grow-0 flex-shrink-0 mx-1" Typo="Typo.caption">@TagInfo.Type: @TagInfo.Id</MudText>
         </div>

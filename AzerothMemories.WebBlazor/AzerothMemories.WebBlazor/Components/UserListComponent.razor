@@ -9,7 +9,21 @@
                 <MudCard @key="viewModel.Id" Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
                     <MudCardHeader Class="@ClassPresets.CardHeader">
                         <CardHeaderAvatar>
-                            <MudAvatar Size="Size.Medium" Image="@viewModel.FollowerAvatarLink">@viewModel.FollowerUsername[0]</MudAvatar>
+                            <MudAvatar Size="Size.Medium">
+                                @{
+                                    var avatarSource = viewModel.FollowerAvatarLink;
+                                    var avatarAlt = viewModel.FollowerUsername[0];
+
+                                    if (string.IsNullOrWhiteSpace(avatarSource))
+                                    {
+                                        @avatarAlt
+                                    }
+                                    else
+                                    {
+                                        <MudImage Src="@avatarSource" />
+                                    }
+                                }
+                            </MudAvatar>
                         </CardHeaderAvatar>
                         <CardHeaderContent>
                             <a href="@($"/account/{viewModel.FollowerId}")">
@@ -45,7 +59,21 @@
                 <MudCard @key="viewModel.Id" Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
                     <MudCardHeader Class="@ClassPresets.CardHeader">
                         <CardHeaderAvatar>
-                            <MudAvatar Size="Size.Medium" Image="@viewModel.FollowerAvatarLink">@viewModel.FollowerUsername[0]</MudAvatar>
+                            <MudAvatar Size="Size.Medium">
+                                @{
+                                    var avatarSource = viewModel.FollowerAvatarLink;
+                                    var avatarAlt = viewModel.FollowerUsername[0];
+
+                                    if (string.IsNullOrWhiteSpace(avatarSource))
+                                    {
+                                        @avatarAlt
+                                    }
+                                    else
+                                    {
+                                        <MudImage Src="@avatarSource" />
+                                    }
+                                }
+                            </MudAvatar>
                         </CardHeaderAvatar>
                         <CardHeaderContent>
                             <a href="@($"/account/{viewModel.FollowerId}")">

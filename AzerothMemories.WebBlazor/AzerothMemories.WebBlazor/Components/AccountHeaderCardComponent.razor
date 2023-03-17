@@ -6,21 +6,34 @@ else
     <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
         <MudCardHeader Class="@ClassPresets.CardHeader">
             <CardHeaderAvatar>
-                <MudAvatar Size="Size.Large" Image="@AccountViewModel.Avatar">@AccountViewModel.GetAvatarText()</MudAvatar>
+                <MudAvatar Size="Size.Large">
+                    @{
+                        var avatarSource = AccountViewModel.Avatar;
+                        var avatarAlt = AccountViewModel.GetAvatarText();
+
+                        if (string.IsNullOrWhiteSpace(avatarSource))
+                        {
+                            @avatarAlt
+                        }
+                        else
+                        {
+                            <MudImage Src="@avatarSource" />
+                        }
+                    }
+                </MudAvatar>
             </CardHeaderAvatar>
             <CardHeaderContent>
                 <MudStack Row="true" AlignItems="AlignItems.Center">
                     <a href="@($"/account/{AccountViewModel.Id}")" tabindex="-1">
                         <MudText Inline="true" Typo="Typo.h6">@AccountViewModel.GetDisplayName()</MudText>
                     </a>
-                    
+
                     @if (AccountViewModel.IsBanned())
                     {
                         <MudTooltip Text="Banned" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
                             <MudIcon Icon="@Icons.Material.Filled.WarningAmber" Size="Size.Small" />
                         </MudTooltip>
                     }
-
                 </MudStack>
 
                 @{
@@ -30,7 +43,9 @@ else
                     else
                     {
                         <div class="d-flex align-center">
-                            <MudAvatar Class="mr-1" Style="background-color: transparent" Size="Size.Small" Square="true" Image="@SocialHelpers.BlizzardIconLink" />
+                            <MudAvatar Class="mr-1" Style="background-color: transparent" Size="Size.Small" Square="true">
+                                <MudImage Src="@SocialHelpers.BlizzardIconLink" />
+                            </MudAvatar>
                             <MudText Typo="Typo.body2" Inline="true">@AccountViewModel.BattleTag</MudText>
                         </div>
                     }
@@ -43,7 +58,9 @@ else
                     {
                         var socialHelper = SocialHelpers.All[(int)SocialLinks.Discord];
                         <div class="d-flex align-center">
-                            <MudAvatar Class="mr-1" Style="background-color: transparent" Size="Size.Small" Square="true" Image="@socialHelper.SocialIconLink" />
+                            <MudAvatar Class="mr-1" Style="background-color: transparent" Size="Size.Small" Square="true">
+                                <MudImage Src="@socialHelper.SocialIconLink" />
+                            </MudAvatar>
                             <MudText Typo="Typo.body2" Inline="true">@discord</MudText>
                         </div>
                     }
@@ -67,7 +84,9 @@ else
                         var fullLink = $"{socialHelper.LinkPrefix}{suffix}";
 
                         <a href="@fullLink" target="_blank">
-                            <MudAvatar Class="ma-1" Style="background-color: transparent" Size="Size.Small" Square="true" Image="@socialHelper.SocialIconLink"/>
+                            <MudAvatar Class="ma-1" Style="background-color: transparent" Size="Size.Small" Square="true">
+                                <MudImage Src="@socialHelper.SocialIconLink" />
+                            </MudAvatar>
                         </a>
                     }
                     <MudMenu Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Dense="true">
@@ -76,22 +95,21 @@ else
                                 <MudIcon Icon="@Icons.Material.Filled.AddLink" Size="Size.Small" />
                             </MudTooltip>
                         </MudMenuItem>
-                            
-                            @if (Services.ClientServices.ActiveAccountServices.AccountViewModel.IsAdmin())
-                            {
-                                <MudMenuItem Href="@("/admin")">
-                                    <MudTooltip Text="Admin" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
-                                        <MudIcon Icon="@Icons.Material.Filled.AdminPanelSettings" Size="Size.Small" />
-                                    </MudTooltip>
-                                </MudMenuItem>
 
-                                <MudMenuItem OnClick="@OnShowAdminDialog" OnTouch="@OnShowAdminDialog">
-                                    <MudTooltip Text="User Admin" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
-                                        <MudIcon Icon="@Icons.Material.Filled.ChangeCircle" Size="Size.Small" />
-                                    </MudTooltip>
-                                </MudMenuItem>
-                            }
+                        @if (Services.ClientServices.ActiveAccountServices.AccountViewModel.IsAdmin())
+                        {
+                            <MudMenuItem Href="@("/admin")">
+                                <MudTooltip Text="Admin" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
+                                    <MudIcon Icon="@Icons.Material.Filled.AdminPanelSettings" Size="Size.Small" />
+                                </MudTooltip>
+                            </MudMenuItem>
 
+                            <MudMenuItem OnClick="@OnShowAdminDialog" OnTouch="@OnShowAdminDialog">
+                                <MudTooltip Text="User Admin" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
+                                    <MudIcon Icon="@Icons.Material.Filled.ChangeCircle" Size="Size.Small" />
+                                </MudTooltip>
+                            </MudMenuItem>
+                        }
                     </MudMenu>
                 </MudStack>
             </CardHeaderActions>
@@ -113,7 +131,7 @@ else
 
                 if (totalPostCount > 0)
                 {
-                    if (totalPostCount > 1)  postText = postText.Pluralize();
+                    if (totalPostCount > 1) postText = postText.Pluralize();
 
                     <div class="d-flex align-baseline">
                         <MudIcon Class="mr-1" Icon="@Icons.Material.Filled.PostAdd" Size="Size.Small" />
@@ -123,7 +141,7 @@ else
 
                 if (totalMemoriesCount > 0)
                 {
-                    if (totalMemoriesCount > 1)  memoriesText = memoriesText.Pluralize();
+                    if (totalMemoriesCount > 1) memoriesText = memoriesText.Pluralize();
 
                     <div class="d-flex align-baseline">
                         <MudIcon Class="mr-1" Icon="@Icons.Material.Filled.LinkedCamera" Size="Size.Small" />
@@ -216,7 +234,6 @@ else
             }
         }
     }
-    
 
     private async Task OnShowAdminDialog()
     {

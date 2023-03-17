@@ -23,11 +23,11 @@
 {
     private async Task TrySignIn(string schema)
     {
-	    await _clientAuthHelper.SignIn(schema);
+        await _clientAuthHelper.SignIn(schema);
     }
 
     private async Task TryLogout()
     {
-	    await _clientAuthHelper.SignOut();
+        await _clientAuthHelper.SignOut();
     }
 }

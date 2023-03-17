@@ -12,20 +12,34 @@
 <div id="@headerId" class="@divClass">
     <MudCard Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
         <MudCardHeader Class="@(item.IsFocused ? "pt-2 pb-2 mud-theme-primary" : "pt-2 pb-2")">
-            <CardHeaderAvatar >
+            <CardHeaderAvatar>
                 <a href="@accountLink">
-                    <MudAvatar Class="cardLinkText" Size="Size.Small" Image="@comment.AccountAvatar">@username[0]</MudAvatar>
+                    <MudAvatar Class="cardLinkText" Size="Size.Small">
+                        @{
+                            var avatarSource = comment.AccountAvatar;
+                            var avatarAlt = username[0];
+
+                            if (string.IsNullOrWhiteSpace(avatarSource))
+                            {
+                                @avatarAlt
+                            }
+                            else
+                            {
+                                <MudImage Src="@avatarSource" />
+                            }
+                        }
+                    </MudAvatar>
                 </a>
             </CardHeaderAvatar>
             <CardHeaderContent>
                 <a href="@accountLink">
                     <MudText Class="cardLinkText" Typo="Typo.body1">@username</MudText>
                 </a>
-                <TimeAsLocalStringAgoComponent Typo="Typo.body2" Inline="true" Time="comment.CreatedTime" TimeProvider="@Services.ClientServices.TimeProvider"/>
+                <TimeAsLocalStringAgoComponent Typo="Typo.body2" Inline="true" Time="comment.CreatedTime" TimeProvider="@Services.ClientServices.TimeProvider" />
             </CardHeaderContent>
             <CardHeaderActions>
                 <MudMenu Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Dense="true">
-                    <MudMenuItem Link="@($"/post/{item.PostersAccountId}/{comment.PostId}?comment={comment.Id}")">
+                    <MudMenuItem Href="@($"/post/{item.PostersAccountId}/{comment.PostId}?comment={comment.Id}")">
                         <MudTooltip Text="Link" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
                             <MudIcon Icon="@Icons.Material.Filled.AddLink" Size="Size.Small" />
                         </MudTooltip>
@@ -59,13 +73,13 @@
 
             <MudCardContent Class="@ClassPresets.CardContent">
                 <MudText Typo="Typo.body2" Style="overflow-wrap: break-word;">@(new MarkupString(comment.PostComment))</MudText>
-                <MudText Class="cardLinkText" Typo="Typo.body2" @onclick="OnReactionLinkClicked">@ZExtensions.BuildReactionString(comment.TotalReactionCount, comment.ReactionCounters)</MudText>
-            </MudCardContent>
+                    <MudText Class="cardLinkText" Typo="Typo.body2" @onclick="OnReactionLinkClicked">@ZExtensions.BuildReactionString(comment.TotalReactionCount, comment.ReactionCounters)</MudText>
+                </MudCardContent>
 
             <MudCardActions Class="@ClassPresets.CardActions">
                 <MudButtonGroup OverrideStyles="true" Variant="Variant.Text" Size="Size.Small">
                     <MudButton StartIcon="@Icons.Material.Filled.Favorite" IconColor="@(item.Reaction == PostReaction.None ? Color.Default : Color.Secondary)" Disabled="@(reactIsDisabled || _userReacting)" OnClick="() => OnReactButtonClicked(item.Reaction)">@item.Reaction.Humanize()</MudButton>
-                    <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Disabled="@(reactIsDisabled || _userReacting)" Direction="Direction.Bottom" OffsetY="true">
+                    <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Disabled="@(reactIsDisabled || _userReacting)" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
                         <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction1)" OnTouch="() => OnReactButtonClicked(PostReaction.Reaction1)">@PostReaction.Reaction1.Humanize()</MudMenuItem>
                         <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction2)" OnTouch="() => OnReactButtonClicked(PostReaction.Reaction2)">@PostReaction.Reaction2.Humanize()</MudMenuItem>
                         <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction3)" OnTouch="() => OnReactButtonClicked(PostReaction.Reaction3)">@PostReaction.Reaction3.Humanize()</MudMenuItem>
