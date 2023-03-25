@@ -1,7 +1,7 @@
 ﻿namespace AzerothMemories.WebBlazor.Services;
 
 [BasePath("character")]
-public interface ICharacterServices
+public interface ICharacterServices : IComputeService
 {
     [CommandHandler]
     [Post(nameof(TryChangeCharacterAccountSync))]

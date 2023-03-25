@@ -1,7 +1,7 @@
 ﻿namespace AzerothMemories.WebBlazor.Services;
 
 [BasePath("admin")]
-public interface IAdminServices
+public interface IAdminServices : IComputeService
 {
     [ComputeMethod, Get(nameof(TryGetUserCounts))]
     Task<AdminCountersViewModel> TryGetUserCounts(Session session);

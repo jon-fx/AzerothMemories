@@ -1,7 +1,7 @@
 ﻿namespace AzerothMemories.WebBlazor.Services;
 
 [BasePath("search")]
-public interface ISearchServices
+public interface ISearchServices : IComputeService
 {
     [ComputeMethod]
     [Get(nameof(TryGetDailyActivity))]

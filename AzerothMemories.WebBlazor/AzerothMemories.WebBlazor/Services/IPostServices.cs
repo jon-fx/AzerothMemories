@@ -1,7 +1,7 @@
 ﻿namespace AzerothMemories.WebBlazor.Services;
 
 [BasePath("post")]
-public interface IPostServices
+public interface IPostServices : IComputeService
 {
     [Post(nameof(TryPostMemory))]
     Task<AddMemoryResult> TryPostMemory(Session session, [Body] byte[] toArray);

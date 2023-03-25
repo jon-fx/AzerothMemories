@@ -1,7 +1,7 @@
 ﻿namespace AzerothMemories.WebServer.Services.Updates;
 
 [RegisterComputeService]
-public class BlizzardUpdateServices : DbServiceBase<AppDbContext>
+public class BlizzardUpdateServices : DbServiceBase<AppDbContext>, IComputeService
 {
     private readonly CommonServices _commonServices;
 

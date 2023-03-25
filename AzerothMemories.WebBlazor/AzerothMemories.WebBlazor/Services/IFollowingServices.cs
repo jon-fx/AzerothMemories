@@ -1,7 +1,7 @@
 ﻿namespace AzerothMemories.WebBlazor.Services;
 
 [BasePath("following")]
-public interface IFollowingServices
+public interface IFollowingServices : IComputeService
 {
     [CommandHandler]
     [Post(nameof(TryStartFollowing))]

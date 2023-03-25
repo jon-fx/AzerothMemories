@@ -1,7 +1,7 @@
 ﻿namespace AzerothMemories.WebBlazor.Services;
 
 [BasePath("account")]
-public interface IAccountServices
+public interface IAccountServices : IComputeService
 {
     [ComputeMethod]
     [Get(nameof(TryGetActiveAccount))]

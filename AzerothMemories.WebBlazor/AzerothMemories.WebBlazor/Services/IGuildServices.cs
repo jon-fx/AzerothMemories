@@ -1,7 +1,7 @@
 ﻿namespace AzerothMemories.WebBlazor.Services;
 
 [BasePath("guild")]
-public interface IGuildServices
+public interface IGuildServices : IComputeService
 {
     [ComputeMethod]
     [Get(nameof(TryGetGuild) + "/{guildId}")]

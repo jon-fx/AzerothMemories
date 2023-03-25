@@ -1,7 +1,7 @@
 ﻿namespace AzerothMemories.WebBlazor.Services;
 
 [BasePath("tag")]
-public interface ITagServices
+public interface ITagServices : IComputeService
 {
     [ComputeMethod]
     [Get(nameof(Search) + "/{searchString}")]

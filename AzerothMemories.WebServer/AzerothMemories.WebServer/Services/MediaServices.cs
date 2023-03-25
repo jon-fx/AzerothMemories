@@ -4,7 +4,7 @@ using NodaTime.Extensions;
 namespace AzerothMemories.WebServer.Services;
 
 [RegisterComputeService]
-public class MediaServices
+public class MediaServices : IComputeService
 {
     private readonly CommonServices _commonServices;
     private readonly int[] _imageSizes;

@@ -25,14 +25,14 @@ restEaseClientBuilder.ConfigureWebSocketChannel(_ => new WebSocketChannelProvide
     MessageLogLevel = LogLevel.None
 });
 
-restEaseClientBuilder.AddReplicaService<IAdminServices>();
-restEaseClientBuilder.AddReplicaService<IAccountServices>();
-restEaseClientBuilder.AddReplicaService<IFollowingServices>();
-restEaseClientBuilder.AddReplicaService<ICharacterServices>();
-restEaseClientBuilder.AddReplicaService<IGuildServices>();
-restEaseClientBuilder.AddReplicaService<ITagServices>();
-restEaseClientBuilder.AddReplicaService<IPostServices>();
-restEaseClientBuilder.AddReplicaService<ISearchServices>();
+restEaseClientBuilder.AddReplicaService<IAdminServices, IAdminServices>();
+restEaseClientBuilder.AddReplicaService<IAccountServices, IAccountServices>();
+restEaseClientBuilder.AddReplicaService<IFollowingServices, IFollowingServices>();
+restEaseClientBuilder.AddReplicaService<ICharacterServices, ICharacterServices>();
+restEaseClientBuilder.AddReplicaService<IGuildServices, IGuildServices>();
+restEaseClientBuilder.AddReplicaService<ITagServices, ITagServices>();
+restEaseClientBuilder.AddReplicaService<IPostServices, IPostServices>();
+restEaseClientBuilder.AddReplicaService<ISearchServices, ISearchServices>();
 
 fusion.AddAuthentication().AddRestEaseClient().AddBlazor();
 
