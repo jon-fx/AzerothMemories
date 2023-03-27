@@ -11,6 +11,10 @@ public static class ProgramEx
 {
     public static void Initialize(IServiceCollection services)
     {
+#if !DEBUG
+        Stl.Interception.Interceptors.InterceptorBase.Options.Defaults.IsValidationEnabled = false;
+#endif
+
         services.AddMudServices(config =>
         {
             config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopRight;
