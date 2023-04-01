@@ -28,7 +28,10 @@ public sealed class AccountFollowPageViewModel : ViewModelBase
         if (accountViewModel == null)
         {
             ErrorMessage = "Invalid Account";
-            return;
+        }
+        else
+        {
+            ErrorMessage = null;
         }
 
         AccountViewModel = accountViewModel;

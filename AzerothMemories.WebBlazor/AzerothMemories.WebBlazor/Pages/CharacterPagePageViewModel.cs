@@ -58,50 +58,48 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel
     {
         int.TryParse(_idString, out var id);
 
+        ErrorMessage = null;
+        CharacterAccountViewModel viewModel;
+
         if (id > 0)
         {
-            var results = await Services.ComputeServices.CharacterServices.TryGetCharacter(Session.Default, id);
-            if (results == null || results.CharacterViewModel == null)
+            viewModel = await Services.ComputeServices.CharacterServices.TryGetCharacter(Session.Default, id);
+        }
+        else
+        {
+            if (string.IsNullOrWhiteSpace(_region))
             {
-                ErrorMessage = "Invalid Character";
-
+                ErrorMessage = "Invalid Region";
                 return null;
             }
 
-            return results;
+            if (string.IsNullOrWhiteSpace(_realm))
+            {
+                ErrorMessage = "Invalid Realm";
+                return null;
+            }
+
+            if (string.IsNullOrWhiteSpace(_name))
+            {
+                ErrorMessage = "Invalid Name";
+                return null;
+            }
+
+            if (!BlizzardRegionInfo.AllByTwoLetters.TryGetValue(_region, out var regionInfo))
+            {
+                ErrorMessage = "Invalid Region";
+                return null;
+            }
+
+            if (!Services.ClientServices.TagHelpers.GetRealmId(_realm, out _) && !Services.ClientServices.TagHelpers.GetRealmSlug($"{regionInfo.TwoLettersLower}-{_realm}", out _realm))
+            {
+                ErrorMessage = "Invalid Realm";
+                return null;
+            }
+
+            viewModel = await Services.ComputeServices.CharacterServices.TryGetCharacter(Session.Default, regionInfo.Region, _realm, _name);
         }
 
-        if (string.IsNullOrWhiteSpace(_region))
-        {
-            ErrorMessage = "Invalid Region";
-            return null;
-        }
-
-        if (string.IsNullOrWhiteSpace(_realm))
-        {
-            ErrorMessage = "Invalid Realm";
-            return null;
-        }
-
-        if (string.IsNullOrWhiteSpace(_name))
-        {
-            ErrorMessage = "Invalid Name";
-            return null;
-        }
-
-        if (!BlizzardRegionInfo.AllByTwoLetters.TryGetValue(_region, out var regionInfo))
-        {
-            ErrorMessage = "Invalid Region";
-            return null;
-        }
-
-        if (!Services.ClientServices.TagHelpers.GetRealmId(_realm, out _) && !Services.ClientServices.TagHelpers.GetRealmSlug($"{regionInfo.TwoLettersLower}-{_realm}", out _realm))
-        {
-            ErrorMessage = "Invalid Realm";
-            return null;
-        }
-
-        var viewModel = await Services.ComputeServices.CharacterServices.TryGetCharacter(Session.Default, regionInfo.Region, _realm, _name);
         if (viewModel == null || viewModel.CharacterViewModel == null)
         {
             ErrorMessage = "Invalid Character";

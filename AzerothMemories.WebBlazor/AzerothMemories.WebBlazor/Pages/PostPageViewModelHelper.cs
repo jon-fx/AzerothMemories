@@ -55,6 +55,10 @@ public sealed class PostPageViewModelHelper
         {
             ErrorMessage = "Invalid Account";
         }
+        else
+        {
+            ErrorMessage = null;
+        }
 
         return AccountViewModel;
     }
@@ -77,6 +81,10 @@ public sealed class PostPageViewModelHelper
             if (PostViewModel == null)
             {
                 ErrorMessage = "Post Not Found";
+            }
+            else
+            {
+                ErrorMessage = null;
             }
         }
 

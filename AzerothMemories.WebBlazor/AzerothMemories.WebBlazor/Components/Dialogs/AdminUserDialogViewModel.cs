@@ -4,7 +4,6 @@
     {
         private int _accountId;
 
-
         public AdminUserDialogViewModel()
         {
             BanTimers = new[]
@@ -45,7 +44,10 @@
             if (accountViewModel == null)
             {
                 ErrorMessage = "Invalid Account";
-                return;
+            }
+            else
+            {
+                ErrorMessage = null;
             }
 
             AccountViewModel = accountViewModel;

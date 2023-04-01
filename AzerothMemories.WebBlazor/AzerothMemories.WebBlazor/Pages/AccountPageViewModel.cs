@@ -62,6 +62,10 @@ public sealed class AccountPageViewModel : PersistentStateViewModel
         {
             ErrorMessage = "Invalid Account";
         }
+        else
+        {
+            ErrorMessage = null;
+        }
 
         return accountViewModel;
     }
