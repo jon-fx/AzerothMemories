@@ -88,7 +88,7 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel
             ErrorMessage = "Invalid Name";
             return null;
         }
-   
+
         if (!BlizzardRegionInfo.AllByTwoLetters.TryGetValue(_region, out var regionInfo))
         {
             ErrorMessage = "Invalid Region";
@@ -105,6 +105,19 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel
         if (viewModel == null || viewModel.CharacterViewModel == null)
         {
             ErrorMessage = "Invalid Character";
+            return null;
+        }
+
+        var characterStatus = viewModel.CharacterViewModel.CharacterStatus;
+        if (characterStatus == CharacterStatus2.Deleted || characterStatus == CharacterStatus2.DeletePending)
+        {
+            ErrorMessage = "Character Deleted";
+            return null;
+        }
+
+        if (characterStatus == CharacterStatus2.RenamedOrTransferred)
+        {
+            ErrorMessage = "Character Renamed or Transferred";
             return null;
         }
 
