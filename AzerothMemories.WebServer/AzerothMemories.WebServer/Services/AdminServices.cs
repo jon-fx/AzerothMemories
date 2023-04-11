@@ -14,36 +14,36 @@ public class AdminServices : IAdminServices
     [ComputeMethod]
     public virtual async Task<int> GetSessionCount()
     {
-        await using var datbase = _commonServices.DatabaseHub.CreateDbContext();
-        return await datbase.Sessions.CountAsync().ConfigureAwait(false);
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        return await database.Sessions.CountAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod(AutoInvalidationDelay = 60)]
     public virtual async Task<int> GetOperationCount()
     {
-        await using var datbase = _commonServices.DatabaseHub.CreateDbContext();
-        return await datbase.Operations.CountAsync().ConfigureAwait(false);
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        return await database.Operations.CountAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod]
     public virtual async Task<int> GetAccountCount()
     {
-        await using var datbase = _commonServices.DatabaseHub.CreateDbContext();
-        return await datbase.Accounts.CountAsync().ConfigureAwait(false);
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        return await database.Accounts.CountAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod]
     public virtual async Task<int> GetCharacterCount()
     {
-        await using var datbase = _commonServices.DatabaseHub.CreateDbContext();
-        return await datbase.Characters.CountAsync().ConfigureAwait(false);
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        return await database.Characters.CountAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod]
     public virtual async Task<int> GetGuildCount()
     {
-        await using var datbase = _commonServices.DatabaseHub.CreateDbContext();
-        return await datbase.Guilds.CountAsync().ConfigureAwait(false);
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        return await database.Guilds.CountAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -51,8 +51,8 @@ public class AdminServices : IAdminServices
     {
         await _commonServices.PostServices.DependsOnNewPosts().ConfigureAwait(false);
 
-        await using var datbase = _commonServices.DatabaseHub.CreateDbContext();
-        return await datbase.Posts.CountAsync().ConfigureAwait(false);
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        return await database.Posts.CountAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -60,8 +60,8 @@ public class AdminServices : IAdminServices
     {
         await _commonServices.PostServices.DependsOnNewComments().ConfigureAwait(false);
 
-        await using var datbase = _commonServices.DatabaseHub.CreateDbContext();
-        return await datbase.PostComments.CountAsync().ConfigureAwait(false);
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        return await database.PostComments.CountAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -69,8 +69,8 @@ public class AdminServices : IAdminServices
     {
         await _commonServices.PostServices.DependsOnNewPosts().ConfigureAwait(false);
 
-        await using var datbase = _commonServices.DatabaseHub.CreateDbContext();
-        return await datbase.UploadLogs.CountAsync().ConfigureAwait(false);
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        return await database.UploadLogs.CountAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod]
