@@ -197,19 +197,27 @@ public class CharacterServices : ICharacterServices
         var moaRef = MoaRef.GetCharacterRef(region, realmSlug, characterName, -1);
         var query = from r in database.Characters
                     where r.MoaRef.StartsWith(moaRef.GetLikeQuery())
-                    select new { r.Id, r.AccountId, r.MoaRef };
+                    select new { r.Id, r.AccountId, r.MoaRef, r.CharacterStatus };
 
-        var result = await query.FirstOrDefaultAsync().ConfigureAwait(false);
-        if (result != null)
+        var result = await query.ToArrayAsync().ConfigureAwait(false);
+        if (result.Length == 0)
         {
-            return new MoaRef(result.MoaRef);
+            using var client = _commonServices.HttpClientProvider.GetWarcraftClient(region);
+            var statusResult = await client.GetCharacterStatusAsync(realmSlug, characterName).ConfigureAwait(false);
+            if (statusResult.IsSuccess && statusResult.ResultData != null && statusResult.ResultData.IsValid && statusResult.ResultData.Id > 0)
+            {
+                return MoaRef.GetCharacterRef(region, realmSlug, characterName, statusResult.ResultData.Id);
+            }
         }
-
-        using var client = _commonServices.HttpClientProvider.GetWarcraftClient(region);
-        var statusResult = await client.GetCharacterStatusAsync(realmSlug, characterName).ConfigureAwait(false);
-        if (statusResult.IsSuccess && statusResult.ResultData != null && statusResult.ResultData.IsValid && statusResult.ResultData.Id > 0)
+        else if (result.Length == 1)
         {
-            return MoaRef.GetCharacterRef(region, realmSlug, characterName, statusResult.ResultData.Id);
+            return new MoaRef(result[0].MoaRef);
+        }
+        else
+        {
+            var firstOrDefault = result.FirstOrDefault(x => x.CharacterStatus == CharacterStatus2.None) ?? result[0];
+
+            return new MoaRef(firstOrDefault.MoaRef);
         }
 
         return null;
