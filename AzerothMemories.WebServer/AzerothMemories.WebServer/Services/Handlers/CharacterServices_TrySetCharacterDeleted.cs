@@ -41,6 +41,8 @@ internal static class CharacterServices_TrySetCharacterDeleted
         await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(characterRecord);
         characterRecord.CharacterStatus = CharacterStatus2.DeletePending;
+        characterRecord.NameSearchable = $"Ð-{characterRecord.NameSearchable}";
+
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         context.Operation().Items.Set(new Character_InvalidateCharacterRecord(command.CharacterId, characterRecord.AccountId.GetValueOrDefault()));

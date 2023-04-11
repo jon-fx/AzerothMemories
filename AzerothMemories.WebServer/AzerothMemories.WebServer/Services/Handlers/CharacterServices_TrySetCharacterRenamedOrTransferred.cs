@@ -62,6 +62,7 @@ internal static class CharacterServices_TrySetCharacterRenamedOrTransferred
         await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(oldCharacterRecord);
         oldCharacterRecord.CharacterStatus = CharacterStatus2.RenamedOrTransferred;
+        oldCharacterRecord.NameSearchable = $"Ð-{oldCharacterRecord.NameSearchable}";
 
         var oldTag = PostTagInfo.GetTagString(PostTagType.Character, oldCharacterRecord.Id);
         var newTag = PostTagInfo.GetTagString(PostTagType.Character, newCharacterRecord.Id);

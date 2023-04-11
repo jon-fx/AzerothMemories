@@ -23,6 +23,7 @@ internal sealed class UpdateHandler_Characters : UpdateHandlerBaseResult<Charact
         record.Level = (byte)requestResult.Level;
         record.Faction = requestResult.Faction.AsFaction();
         record.Gender = requestResult.Gender.AsGender();
+        record.CharacterStatus = CharacterStatus2.None;
 
         var guildData = requestResult.Guild;
         string newGuildName = null;
