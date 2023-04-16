@@ -199,25 +199,31 @@ public class CharacterServices : ICharacterServices
                     where r.MoaRef.StartsWith(moaRef.GetLikeQuery())
                     select new { r.Id, r.AccountId, r.MoaRef, r.CharacterStatus };
 
-        var result = await query.ToArrayAsync().ConfigureAwait(false);
-        if (result.Length == 0)
+        var allResults = await query.ToArrayAsync().ConfigureAwait(false);
+        if (allResults.Length == 0)
         {
-            using var client = _commonServices.HttpClientProvider.GetWarcraftClient(region);
-            var statusResult = await client.GetCharacterStatusAsync(realmSlug, characterName).ConfigureAwait(false);
-            if (statusResult.IsSuccess && statusResult.ResultData != null && statusResult.ResultData.IsValid && statusResult.ResultData.Id > 0)
-            {
-                return MoaRef.GetCharacterRef(region, realmSlug, characterName, statusResult.ResultData.Id);
-            }
-        }
-        else if (result.Length == 1)
-        {
-            return new MoaRef(result[0].MoaRef);
         }
         else
         {
-            var firstOrDefault = result.FirstOrDefault(x => x.CharacterStatus == CharacterStatus2.None) ?? result[0];
+            var firstOrDefault = allResults.FirstOrDefault(x => x.CharacterStatus == CharacterStatus2.None);
+            if (firstOrDefault != null)
+            {
+                return new MoaRef(firstOrDefault.MoaRef);
+            }
+        }
 
-            return new MoaRef(firstOrDefault.MoaRef);
+        using var client = _commonServices.HttpClientProvider.GetWarcraftClient(region);
+        var statusResult = await client.GetCharacterStatusAsync(realmSlug, characterName).ConfigureAwait(false);
+        if (statusResult.IsSuccess && statusResult.ResultData != null && statusResult.ResultData.IsValid && statusResult.ResultData.Id > 0)
+        {
+            return MoaRef.GetCharacterRef(region, realmSlug, characterName, statusResult.ResultData.Id);
+        }
+
+        if (allResults.Length > 0)
+        {
+            var sortedResults = allResults.OrderByDescending(x => x.Id).ToArray();
+
+            return new MoaRef(sortedResults[0].MoaRef);
         }
 
         return null;

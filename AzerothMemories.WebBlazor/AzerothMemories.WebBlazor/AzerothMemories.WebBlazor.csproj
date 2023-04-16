@@ -32,7 +32,7 @@
         <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
         <PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.5" />
         <PackageReference Include="Markdig" Version="0.31.0" />
-        <PackageReference Include="MudBlazor" Version="6.2.0" />
+        <PackageReference Include="MudBlazor" Version="6.2.2" />
         <PackageReference Include="NodaTime" Version="3.1.9" />
         <PackageReference Include="Stl.Fusion" Version="5.1.25" />
         <PackageReference Include="Stl.CommandR" Version="5.1.25" />
