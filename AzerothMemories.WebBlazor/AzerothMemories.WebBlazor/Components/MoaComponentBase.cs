@@ -29,6 +29,8 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
         OnParametersChanged();
 
         await ViewModel.OnInitialized();
+
+        await State.Update();
     }
 
     protected override sealed void OnParametersSet()
