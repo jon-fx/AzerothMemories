@@ -6,61 +6,61 @@
     <CardInfoComponent Message="Insufficient permissions." />
 }
 else
-{       
+{
     <MudStack Justify="Justify.Center">
         <MudPaper Class="@ClassPresets.Card">
-            <TimeAsLocalStringAgoComponent Typo="Typo.h6" Class="mud-text-secondary" Color="Color.Primary" Align="Align.Center" Time="ViewModel.Counters.TimeStamp" TimeProvider="@ClientServices.TimeProvider"/>
+            <TimeAsLocalStringAgoComponent Typo="Typo.h6" Class="mud-text-secondary" Color="Color.Primary" Align="Align.Center" Time="ViewModel.Counters.TimeStamp" TimeProvider="@ClientServices.TimeProvider" />
         </MudPaper>
     </MudStack>
 
     <MudStack Justify="Justify.Center" Row="true">
-        <AdminInfoText Text="Sessions" Value="@ViewModel.Counters.SessionCount.ToString("N0")"/>
-        <AdminInfoText Text="Operations" Value="@ViewModel.Counters.OperationCount.ToString("N0")"/>
+        <AdminInfoText Text="Sessions" Value="@ViewModel.Counters.SessionCount.ToString("N0")" />
+        <AdminInfoText Text="Operations" Value="@ViewModel.Counters.OperationCount.ToString("N0")" />
 
-        <AdminInfoText Text="Acounts" Value="@ViewModel.Counters.AcountCount.ToString("N0")"/>
-        <AdminInfoText Text="Characters" Value="@ViewModel.Counters.CharacterCount.ToString("N0")"/>
-        <AdminInfoText Text="Guilds" Value="@ViewModel.Counters.GuildCount.ToString("N0")"/>
+        <AdminInfoText Text="Acounts" Value="@ViewModel.Counters.AcountCount.ToString("N0")" />
+        <AdminInfoText Text="Characters" Value="@ViewModel.Counters.CharacterCount.ToString("N0")" />
+        <AdminInfoText Text="Guilds" Value="@ViewModel.Counters.GuildCount.ToString("N0")" />
 
-        <AdminInfoText Text="Posts" Value="@ViewModel.Counters.PostCount.ToString("N0")"/>
-        <AdminInfoText Text="Comments" Value="@ViewModel.Counters.CommentCount.ToString("N0")"/>
-        <AdminInfoText Text="Uploads" Value="@ViewModel.Counters.UploadCount.ToString("N0")"/>
+        <AdminInfoText Text="Posts" Value="@ViewModel.Counters.PostCount.ToString("N0")" />
+        <AdminInfoText Text="Comments" Value="@ViewModel.Counters.CommentCount.ToString("N0")" />
+        <AdminInfoText Text="Uploads" Value="@ViewModel.Counters.UploadCount.ToString("N0")" />
     </MudStack>
 
-    <MudDivider/>
-    
+    <MudDivider />
+
     <MudExpansionPanels Class="@ClassPresets.Card" MultiExpansion="true">
         @foreach (var viewModel in ViewModel.ReportedPosts)
         {
             var headerText = $"Reported Post: {viewModel.PostViewModel.Id}";
             <MudExpansionPanel Text="@headerText">
-                <PostComponent Services="@this" Post="@viewModel.PostViewModel" InDialog="true"/>
+                <PostComponent Services="@this" Post="@viewModel.PostViewModel" InDialog="true" />
 
                 <div class="postIndent">
                     <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
                         <MudCardContent Class="@ClassPresets.CardContent">
-                            <MudSimpleTable Dense="true" Hover="true" Bordered="true" Striped="true">
+                            <MudSimpleTable Dense="true" Hover="true" Bordered="true">
                                 <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>User</th>
-                                    <th>Reason</th>
-                                    <th>ReasonText</th>
-                                    <th>Delete</th>
-                                    <th>Ignore</th>
-                                </tr>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>User</th>
+                                        <th>Reason</th>
+                                        <th>ReasonText</th>
+                                        <th>Delete</th>
+                                        <th>Ignore</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                @foreach (var row in viewModel.Reports)
-                                {
-                                    <tr>
-                                        <td>@row.RecordId</td>
-                                        <td><PostTagChipComponent TagInfo="row.UserTag"/></td>
-                                        <td>@row.Reason</td>
-                                        <td>@row.ReasonText</td>
-                                        <td><MudIconButton Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Error" OnClick="() => ViewModel.ResolveReportedPost(true, viewModel)"/></td>
+                                    @foreach (var row in viewModel.Reports)
+                                    {
+                                        <tr>
+                                            <td>@row.RecordId</td>
+                                            <td><PostTagChipComponent TagInfo="row.UserTag" /></td>
+                                            <td>@row.Reason</td>
+                                            <td>@row.ReasonText</td>
+                                            <td><MudIconButton Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Error" OnClick="() => ViewModel.ResolveReportedPost(true, viewModel)" /></td>
                                             <td><MudIconButton Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" OnClick="() => ViewModel.ResolveReportedPost(false, viewModel)" /></td>
-                                    </tr>
-                                }
+                                        </tr>
+                                    }
                                 </tbody>
                             </MudSimpleTable>
                         </MudCardContent>
@@ -77,31 +77,31 @@ else
 
             <MudExpansionPanel Text="@headerText">
                 <PostComponent Services="@this" Post="@viewModel.PostViewModel" InDialog="true" />
-            
+
                 <div class="postIndent">
                     <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
                         <MudCardContent Class="@ClassPresets.CardContent">
-                            <MudSimpleTable Dense="true" Hover="true" Bordered="true" Striped="true">
+                            <MudSimpleTable Dense="true" Hover="true" Bordered="true">
                                 <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>User</th>
-                                    <th>Reported Tag</th>
-                                    <th>Delete</th>
-                                    <th>Ignore</th>
-                                </tr>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>User</th>
+                                        <th>Reported Tag</th>
+                                        <th>Delete</th>
+                                        <th>Ignore</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                @foreach (var row in viewModel.Reports)
-                                {
-                                    <tr>
-                                        <td>@row.RecordId</td>
-                                        <td><PostTagChipComponent TagInfo="row.UserTag"/></td>
-                                        <td><PostTagChipComponent TagInfo="row.ReportedTag"/></td>
+                                    @foreach (var row in viewModel.Reports)
+                                    {
+                                        <tr>
+                                            <td>@row.RecordId</td>
+                                            <td><PostTagChipComponent TagInfo="row.UserTag" /></td>
+                                            <td><PostTagChipComponent TagInfo="row.ReportedTag" /></td>
                                             <td><MudIconButton Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Error" OnClick="() => ViewModel.ResolveReportedTag(true, viewModel, row)" /></td>
                                             <td><MudIconButton Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" OnClick="() => ViewModel.ResolveReportedTag(false, viewModel, row)" /></td>
-                                    </tr>
-                                }
+                                        </tr>
+                                    }
                                 </tbody>
                             </MudSimpleTable>
                         </MudCardContent>
@@ -110,45 +110,45 @@ else
             </MudExpansionPanel>
         }
     </MudExpansionPanels>
-    
+
     <MudExpansionPanels Class="@ClassPresets.Card" MultiExpansion="true">
         @foreach (var viewModel in ViewModel.ReportedComments)
         {
             var headerText = $"Reported Comment: {viewModel.CommentViewModel.Id}";
             var commentTreeNode = new PostCommentTreeNode(0, viewModel.CommentViewModel.PostId, viewModel.CommentViewModel.Id)
-            {
-                Comment = viewModel.CommentViewModel
-            };
+                    {
+                        Comment = viewModel.CommentViewModel
+                    };
 
             <MudExpansionPanel Text="@headerText">
                 <PostCommentComponent Services="@this" Comment="@commentTreeNode" Indent="false" />
-            
+
                 <div class="postIndent">
                     <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
                         <MudCardContent Class="@ClassPresets.CardContent">
-                            <MudSimpleTable Dense="true" Hover="true" Bordered="true" Striped="true">
+                            <MudSimpleTable Dense="true" Hover="true" Bordered="true">
                                 <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>User</th>
-                                    <th>Reason</th>
-                                    <th>ReasonText</th>
-                                    <th>Delete</th>
-                                    <th>Ignore</th>
-                                </tr>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>User</th>
+                                        <th>Reason</th>
+                                        <th>ReasonText</th>
+                                        <th>Delete</th>
+                                        <th>Ignore</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                @foreach (var row in viewModel.Reports)
-                                {
-                                    <tr>
-                                        <td>@row.RecordId</td>
-                                        <td><PostTagChipComponent TagInfo="row.UserTag"/></td>
-                                        <td>@row.Reason</td>
-                                        <td>@row.ReasonText</td>
-                                        <td><MudIconButton Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Error" OnClick="() => ViewModel.ResolveReportedComment(true, viewModel)"/></td>
-                                        <td><MudIconButton Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" OnClick="() => ViewModel.ResolveReportedComment(false, viewModel)" /></td>
-                                    </tr>
-                                }
+                                    @foreach (var row in viewModel.Reports)
+                                    {
+                                        <tr>
+                                            <td>@row.RecordId</td>
+                                            <td><PostTagChipComponent TagInfo="row.UserTag" /></td>
+                                            <td>@row.Reason</td>
+                                            <td>@row.ReasonText</td>
+                                            <td><MudIconButton Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Error" OnClick="() => ViewModel.ResolveReportedComment(true, viewModel)" /></td>
+                                            <td><MudIconButton Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" OnClick="() => ViewModel.ResolveReportedComment(false, viewModel)" /></td>
+                                        </tr>
+                                    }
                                 </tbody>
                             </MudSimpleTable>
                         </MudCardContent>
