@@ -31,10 +31,10 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
-        <PackageReference Include="Stl.Fusion.EntityFramework.Npgsql" Version="5.2.2" />
-        <PackageReference Include="Stl.Fusion.RegisterAttributes" Version="5.2.2" />
-        <PackageReference Include="Stl.Fusion.Server" Version="5.2.2" />
-        <PackageReference Include="Stl.Generators" Version="5.2.2">
+        <PackageReference Include="Stl.Fusion.EntityFramework.Npgsql" Version="5.2.8" />
+        <PackageReference Include="Stl.Fusion.RegisterAttributes" Version="5.2.8" />
+        <PackageReference Include="Stl.Fusion.Server" Version="5.2.8" />
+        <PackageReference Include="Stl.Generators" Version="5.2.8">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
