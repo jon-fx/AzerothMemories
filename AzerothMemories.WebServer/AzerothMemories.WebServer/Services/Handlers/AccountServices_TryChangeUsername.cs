@@ -64,6 +64,11 @@ internal static class AccountServices_TryChangeUsername
             return false;
         }
 
+        if (newUsername.StartsWith("User-") && !newUsername.Contains(accountRecord.Id.ToString()))
+        {
+            newUsername = $"User-{accountRecord.Id}";
+        }
+
         await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         var usernameExists = await database.Accounts.AnyAsync(x => x.Username == newUsername, cancellationToken).ConfigureAwait(false);
         if (usernameExists)
