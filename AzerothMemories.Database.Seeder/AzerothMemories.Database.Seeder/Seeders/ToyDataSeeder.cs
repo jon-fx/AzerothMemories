@@ -2,7 +2,7 @@
 
 internal sealed class ToyDataSeeder : GenericBase<ToyDataSeeder>
 {
-    public ToyDataSeeder(ILogger<ToyDataSeeder> logger, HttpClientProvider clientProvider, MoaResourceCache resourceCache, MoaResourceWriter resourceWriter) : base(logger, clientProvider, resourceCache, resourceWriter)
+    public ToyDataSeeder(ILogger<ToyDataSeeder> logger, HttpClientProvider clientProvider, WowTools wowTools, MoaResourceWriter resourceWriter) : base(logger, clientProvider, wowTools, resourceWriter)
     {
     }
 

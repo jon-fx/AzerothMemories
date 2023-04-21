@@ -1729,6 +1729,12 @@
   <data name="Realm-3738" xml:space="preserve">
     <value>US-萨鲁法尔</value>
   </data>
+  <data name="Realm-5735" xml:space="preserve">
+    <value>TW-克罗之刃</value>
+  </data>
+  <data name="Realm-5736" xml:space="preserve">
+    <value>TW-老马布兰契</value>
+  </data>
   <data name="Region-0" xml:space="preserve">
     <value>None</value>
   </data>

@@ -6,17 +6,27 @@ internal sealed class WowToolsInternal
 {
     private readonly string _buildString;
     private readonly bool _throwIfNotFound;
+    private readonly MoaResourceCache _resourceCache;
     private Dictionary<int, string> _listFile;
 
     public WowToolsInternal(string buildString, bool throwIfNotFound)
     {
         _buildString = buildString;
         _throwIfNotFound = throwIfNotFound;
+        _resourceCache = new MoaResourceCache(this);
+
+        var filePath = Path.Combine(@$"C:\Users\John\Desktop\Stuff\BlizzardData\Tools\{_buildString}");
+        if (!Directory.Exists(filePath))
+        {
+            Directory.CreateDirectory(filePath);
+        }
     }
 
     public string BuildString => _buildString;
 
     public Version BuildVersion => Version.Parse(_buildString);
+
+    public MoaResourceCache ResourceCache => _resourceCache;
 
     public bool TryGetIconName(int iconId, out string iconName)
     {

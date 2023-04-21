@@ -2,7 +2,7 @@
 
 internal sealed class SpellDataSeeder : GenericBase<SpellDataSeeder>
 {
-    public SpellDataSeeder(ILogger<SpellDataSeeder> logger, HttpClientProvider clientProvider, MoaResourceCache resourceCache, MoaResourceWriter resourceWriter) : base(logger, clientProvider, resourceCache, resourceWriter)
+    public SpellDataSeeder(ILogger<SpellDataSeeder> logger, HttpClientProvider clientProvider, WowTools wowTools, MoaResourceWriter resourceWriter) : base(logger, clientProvider, wowTools, resourceWriter)
     {
     }
 

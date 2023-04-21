@@ -15,7 +15,6 @@ services.AddHttpClient("Default", x =>
 });
 
 services.AddSingleton<WowTools>();
-services.AddSingleton<MoaResourceCache>();
 services.AddSingleton<MoaResourceWriter>();
 services.AddSingleton<MoaImageUploader>();
 services.AddSingleton<HttpClientProvider>();

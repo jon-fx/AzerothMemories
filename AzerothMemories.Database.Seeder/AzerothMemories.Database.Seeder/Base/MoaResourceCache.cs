@@ -4,22 +4,22 @@ namespace AzerothMemories.Database.Seeder.Base;
 
 internal sealed class MoaResourceCache
 {
-    private readonly WowTools _wowTools;
+    private readonly WowToolsInternal _wowTools;
     private readonly string _resourceFilePath;
 
     private readonly string _seperator = "|>*<|";
     private Dictionary<string, string> _allResources;
 
-    public MoaResourceCache(WowTools wowTools)
+    public MoaResourceCache(WowToolsInternal wowTools)
     {
         _wowTools = wowTools;
         _allResources = new Dictionary<string, string>();
-        _resourceFilePath = Path.Combine(@"C:\Users\John\Desktop\Stuff\BlizzardData\", "BlizzardResources");
+        _resourceFilePath = Path.Combine(@"C:\Users\John\Desktop\Stuff\BlizzardData\Tools\", _wowTools.BuildString, "_BlizzardResources");
     }
 
     public bool RequestData { get; set; } = true;
 
-    public WowTools WowTools => _wowTools;
+    //public WowToolsInternal WowTools => _wowTools;
 
     public async Task<T> GetOrRequestData<T>(string key, Func<string, Task<RequestResult<T>>> callback, [CallerArgumentExpression("callback")] string callbackExpression = default) where T : class
     {

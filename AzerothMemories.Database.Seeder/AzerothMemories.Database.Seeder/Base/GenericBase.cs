@@ -2,7 +2,7 @@
 
 internal abstract class GenericBase<TType> : AbstractBase
 {
-    protected GenericBase(ILogger<TType> logger, HttpClientProvider clientProvider, MoaResourceCache resourceCache, MoaResourceWriter resourceWriter) : base(clientProvider, resourceCache, resourceWriter)
+    protected GenericBase(ILogger<TType> logger, HttpClientProvider clientProvider, WowTools wowTools, MoaResourceWriter resourceWriter) : base(clientProvider, wowTools, resourceWriter)
     {
         Logger = logger;
     }

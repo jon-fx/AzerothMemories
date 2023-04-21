@@ -2,7 +2,7 @@
 
 internal sealed class RealmDataSeeder : GenericBase<RealmDataSeeder>
 {
-    public RealmDataSeeder(ILogger<RealmDataSeeder> logger, HttpClientProvider clientProvider, MoaResourceCache resourceCache, MoaResourceWriter resourceWriter) : base(logger, clientProvider, resourceCache, resourceWriter)
+    public RealmDataSeeder(ILogger<RealmDataSeeder> logger, HttpClientProvider clientProvider, WowTools wowTools, MoaResourceWriter resourceWriter) : base(logger, clientProvider, wowTools, resourceWriter)
     {
     }
 

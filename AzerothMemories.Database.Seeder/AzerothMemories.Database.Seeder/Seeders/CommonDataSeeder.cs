@@ -2,7 +2,7 @@
 
 internal sealed class CommonDataSeeder : GenericBase<CommonDataSeeder>
 {
-    public CommonDataSeeder(ILogger<CommonDataSeeder> logger, HttpClientProvider clientProvider, MoaResourceCache resourceCache, MoaResourceWriter resourceWriter) : base(logger, clientProvider, resourceCache, resourceWriter)
+    public CommonDataSeeder(ILogger<CommonDataSeeder> logger, HttpClientProvider clientProvider, WowTools wowTools, MoaResourceWriter resourceWriter) : base(logger, clientProvider, wowTools, resourceWriter)
     {
     }
 

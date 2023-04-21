@@ -1729,6 +1729,12 @@
   <data name="Realm-3738" xml:space="preserve">
     <value>US-Saurfang US9</value>
   </data>
+  <data name="Realm-5735" xml:space="preserve">
+    <value>TW-Krol Blade</value>
+  </data>
+  <data name="Realm-5736" xml:space="preserve">
+    <value>TW-Old Blanchy</value>
+  </data>
   <data name="Region-0" xml:space="preserve">
     <value>None</value>
   </data>

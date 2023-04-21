@@ -2,7 +2,7 @@
 
 internal sealed class MountDataSeeder : GenericBase<MountDataSeeder>
 {
-    public MountDataSeeder(ILogger<MountDataSeeder> logger, HttpClientProvider clientProvider, MoaResourceCache resourceCache, MoaResourceWriter resourceWriter) : base(logger, clientProvider, resourceCache, resourceWriter)
+    public MountDataSeeder(ILogger<MountDataSeeder> logger, HttpClientProvider clientProvider, WowTools wowTools, MoaResourceWriter resourceWriter) : base(logger, clientProvider, wowTools, resourceWriter)
     {
     }
 

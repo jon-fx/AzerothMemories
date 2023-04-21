@@ -2,7 +2,7 @@
 
 internal sealed class PlayerDataSeeder : GenericBase<PlayerDataSeeder>
 {
-    public PlayerDataSeeder(ILogger<PlayerDataSeeder> logger, HttpClientProvider clientProvider, MoaResourceCache resourceCache, MoaResourceWriter resourceWriter) : base(logger, clientProvider, resourceCache, resourceWriter)
+    public PlayerDataSeeder(ILogger<PlayerDataSeeder> logger, HttpClientProvider clientProvider, WowTools wowTools, MoaResourceWriter resourceWriter) : base(logger, clientProvider, wowTools, resourceWriter)
     {
     }
 

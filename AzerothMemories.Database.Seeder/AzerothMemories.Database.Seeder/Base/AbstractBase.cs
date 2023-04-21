@@ -2,20 +2,20 @@
 
 internal abstract class AbstractBase
 {
-    protected AbstractBase(HttpClientProvider clientProvider, MoaResourceCache resourceCache, MoaResourceWriter resourceWriter)
+    protected AbstractBase(HttpClientProvider clientProvider, WowTools wowTools, MoaResourceWriter resourceWriter)
     {
-        ResourceCache = resourceCache;
+        WowTools = wowTools;
         ResourceWriter = resourceWriter;
         HttpClientProvider = clientProvider;
     }
 
-    protected MoaResourceCache ResourceCache { get; }
+    protected MoaResourceCache ResourceCache => WowTools.Main.ResourceCache;
 
     protected MoaResourceWriter ResourceWriter { get; }
 
     protected HttpClientProvider HttpClientProvider { get; }
 
-    protected WowTools WowTools => ResourceCache.WowTools;
+    protected WowTools WowTools { get; }
 
     public abstract Task Execute();
 }

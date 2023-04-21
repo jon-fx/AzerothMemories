@@ -2,7 +2,7 @@
 
 internal sealed class CreatureDataSeeder : GenericBase<CreatureDataSeeder>
 {
-    public CreatureDataSeeder(ILogger<CreatureDataSeeder> logger, HttpClientProvider clientProvider, MoaResourceCache resourceCache, MoaResourceWriter resourceWriter) : base(logger, clientProvider, resourceCache, resourceWriter)
+    public CreatureDataSeeder(ILogger<CreatureDataSeeder> logger, HttpClientProvider clientProvider, WowTools wowTools, MoaResourceWriter resourceWriter) : base(logger, clientProvider, wowTools, resourceWriter)
     {
     }
 
