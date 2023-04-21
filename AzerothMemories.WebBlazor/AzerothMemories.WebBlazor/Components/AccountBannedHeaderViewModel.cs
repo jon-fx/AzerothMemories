@@ -1,5 +1,5 @@
 ﻿namespace AzerothMemories.WebBlazor.Components;
 
-public sealed class AccountBannedHeaderViewModel : ViewModelBase	
+public sealed class AccountBannedHeaderViewModel : ViewModelBase
 {
 }

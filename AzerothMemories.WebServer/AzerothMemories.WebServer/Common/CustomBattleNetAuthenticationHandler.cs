@@ -1,6 +1,6 @@
-﻿using System.Text.Encodings.Web;
-using AspNet.Security.OAuth.BattleNet;
+﻿using AspNet.Security.OAuth.BattleNet;
 using Microsoft.Extensions.Options;
+using System.Text.Encodings.Web;
 
 namespace AzerothMemories.WebServer.Common;
 

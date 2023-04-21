@@ -15,7 +15,7 @@
         NavigationManager.LocationChanged -= OnLocationChanged;
         NavigationManager.LocationChanged += OnLocationChanged;
     }
-    
+
     public void Dispose()
     {
         NavigationManager.LocationChanged -= OnLocationChanged;
@@ -29,7 +29,7 @@
         {
             await OnLocationChanged(NavigationManager.Uri);
         }
-    } 
+    }
 
     private void OnLocationChanged(object sender, LocationChangedEventArgs args)
     {

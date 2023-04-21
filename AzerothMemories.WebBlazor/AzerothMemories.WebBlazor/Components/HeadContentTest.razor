@@ -1,15 +1,17 @@
 ﻿<HeadContent>
-    
-    @{ var imagePath = GetImagePath(Image); }
+
+    @{
+        var imagePath = GetImagePath(Image);
+    }
 
     <meta name="description" content="@Description">
 
-    <meta property="og:title" content="@Title"/>
+    <meta property="og:title" content="@Title">
     <meta property="og:description" content="@Description">
-    <meta property="og:type" content="website"/>
-    <meta property="og:url" content="@Url"/>
-    <meta property="og:image" content="@imagePath"/>
-    <meta property="og:image:alt" content="@AltImage"/>
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="@Url">
+    <meta property="og:image" content="@imagePath">
+    <meta property="og:image:alt" content="@AltImage">
     <meta property="og:site_name" content="Memories of Azeroth">
 
     <meta name="twitter:title" content="@Title">
@@ -39,7 +41,7 @@
         {
             return imageAddress;
         }
-        
+
         var leftPart = uri.GetLeftPart(UriPartial.Authority);
         if (imageAddress.StartsWith('/'))
         {

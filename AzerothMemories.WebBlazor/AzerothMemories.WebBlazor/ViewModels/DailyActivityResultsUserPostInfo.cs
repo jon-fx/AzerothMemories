@@ -8,7 +8,7 @@ public sealed record DailyActivityResultsUserPostInfo
     public long PostCreatedTime { get; init; }
     public PostViewModelBlobInfo[] BlobInfo { get; init; }
 
-    public  PostViewModelBlobInfo[] GetBlobPreviewInfo(string description)
+    public PostViewModelBlobInfo[] GetBlobPreviewInfo(string description)
     {
         var results = new PostViewModelBlobInfo[BlobInfo.Length];
         for (var i = 0; i < results.Length; i++)

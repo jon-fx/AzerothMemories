@@ -7,7 +7,6 @@ public static class ServerSideLocaleExt
 
     static ServerSideLocaleExt()
     {
-
         _wowheadLocales = new string[(int)ServerSideLocale.Count];
         _wowheadLocales[(int)ServerSideLocale.None] = null;
         _wowheadLocales[(int)ServerSideLocale.En_Us] = null;
@@ -44,12 +43,12 @@ public static class ServerSideLocaleExt
     public static string GetWowHeadDomain()
     {
         var locale = GetServerSideLocale();
-        var wowhead = _wowheadLocales[(int) locale];
+        var wowhead = _wowheadLocales[(int)locale];
         if (wowhead == null)
         {
             return "";
         }
-        
+
         return $"&domain={wowhead}";
     }
 }

@@ -62,7 +62,7 @@ public sealed class BlizzardUpdateRecord : IDatabaseRecord
         var children = Children.Select(x => new BlizzardUpdateViewModelChild()
         {
             Id = x.Id,
-            UpdateType = (byte) x.UpdateType,
+            UpdateType = (byte)x.UpdateType,
             UpdateTypeString = x.UpdateTypeString,
             UpdateJobLastResult = x.UpdateJobLastResult,
         });

@@ -8,7 +8,6 @@ global using AzerothMemories.WebBlazor.Services.Markdown;
 global using AzerothMemories.WebBlazor.ViewModels;
 global using Humanizer;
 global using Microsoft.AspNetCore.Components;
-global using Microsoft.AspNetCore.Components.Web;
 global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 global using Microsoft.Extensions.Localization;
 global using MudBlazor;

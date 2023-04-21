@@ -18,7 +18,7 @@ else
 {
     var name = $"{ViewModel.Helper.AccountViewModel.GetDisplayName()}'s Memory of Azeroth";
     var allBlobInfo = ViewModel.Helper.PostViewModel.GetImageBlobInfo();
-    
+
     string image = null;
     if (allBlobInfo.Length > 0)
     {
@@ -50,7 +50,6 @@ else
     [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }
 
     [Parameter, SupplyParameterFromQuery(Name = "comment")] public string FocusedCommentId { get; init; }
-
 
     protected override void OnParametersChanged()
     {

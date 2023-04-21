@@ -23,6 +23,6 @@ public sealed class AccountHistoryRecord : IDatabaseRecordWithVersion
     [Column] public int? TargetCommentId { get; set; }
 
     [Column] public Instant CreatedTime { get; set; }
-    
+
     public uint RowVersion { get; set; }
 }

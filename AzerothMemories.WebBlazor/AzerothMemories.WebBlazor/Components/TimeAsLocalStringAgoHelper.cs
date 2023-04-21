@@ -3,12 +3,12 @@
     public sealed class TimeAsLocalStringAgoHelper : IDisposable
     {
         private readonly Action _tickCallbackAction;
-        
+
         private long _time;
         private Timer _timer;
         private Duration _timerTick;
 
-        public TimeAsLocalStringAgoHelper( Action tickCallbackAction)
+        public TimeAsLocalStringAgoHelper(Action tickCallbackAction)
         {
             _tickCallbackAction = tickCallbackAction;
         }

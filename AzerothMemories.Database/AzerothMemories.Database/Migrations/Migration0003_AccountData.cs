@@ -43,7 +43,7 @@ public sealed class Migration0003_AccountData : Migration
             .WithColumn(nameof(AccountFollowingRecord.Status)).AsByte().WithDefaultValue(0)
             .WithColumn(nameof(AccountFollowingRecord.LastUpdateTime)).AsDateTimeOffsetWithDefault()
             .WithColumn(nameof(AccountFollowingRecord.CreatedTime)).AsDateTimeOffsetWithDefault();
-        
+
         Create.Table(AuthTokenRecord.TableName)
             .WithColumn(nameof(AuthTokenRecord.Id)).AsInt32().PrimaryKey().Identity()
             .WithColumn(nameof(AuthTokenRecord.Key)).AsText().Unique().NotNullable()

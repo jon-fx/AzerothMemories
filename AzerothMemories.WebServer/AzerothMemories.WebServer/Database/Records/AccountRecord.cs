@@ -58,7 +58,6 @@ public sealed class AccountRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVe
 
     public AccountViewModel CreateViewModel(CommonServices commonServices, bool activeOrAdmin, Dictionary<int, AccountFollowingViewModel> followingViewModels, Dictionary<int, AccountFollowingViewModel> followersViewModels)
     {
-
         var viewModel = new AccountViewModel
         {
             Id = Id,
@@ -109,9 +108,8 @@ public sealed class AccountRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVe
         {
             if (authToken.IsPatreon && activeOrAdmin)
             {
-                results.Add(new AccountViewModelLinks { Id = authToken.Id, Name = authToken.Name, Key = authToken.Key});
+                results.Add(new AccountViewModelLinks { Id = authToken.Id, Name = authToken.Name, Key = authToken.Key });
             }
-            
         }
         return results.ToArray();
     }

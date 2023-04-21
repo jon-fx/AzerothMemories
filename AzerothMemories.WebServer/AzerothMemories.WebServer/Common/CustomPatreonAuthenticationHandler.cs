@@ -1,6 +1,6 @@
-﻿using System.Text.Encodings.Web;
-using AspNet.Security.OAuth.Patreon;
+﻿using AspNet.Security.OAuth.Patreon;
 using Microsoft.Extensions.Options;
+using System.Text.Encodings.Web;
 
 namespace AzerothMemories.WebServer.Common;
 

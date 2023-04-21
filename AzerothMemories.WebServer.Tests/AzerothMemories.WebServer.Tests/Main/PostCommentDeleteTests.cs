@@ -20,7 +20,6 @@ public sealed class PostCommentDeleteTests : BaseTestHelper
         result.Should().BeGreaterThan(0);
     }
 
-
     [Fact]
     public async Task CanNotDeleteOtherComments()
     {

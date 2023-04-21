@@ -28,9 +28,9 @@ else
 }
 
 @code {
-    [Parameter,EditorRequired] public TimeProvider TimeProvider { get; init; }
-    
-    [Parameter,EditorRequired] public BlizzardUpdateViewModel UpdateViewModel { get; init; }
+    [Parameter, EditorRequired] public TimeProvider TimeProvider { get; init; }
+
+    [Parameter, EditorRequired] public BlizzardUpdateViewModel UpdateViewModel { get; init; }
 
     private (string Icon, Color IconColor) GetIconAndColor(bool isSuccess)
     {

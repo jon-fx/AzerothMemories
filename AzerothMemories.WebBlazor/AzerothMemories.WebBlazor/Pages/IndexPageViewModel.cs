@@ -33,7 +33,7 @@ public sealed class IndexPageViewModel : PersistentStateViewModel
         await base.OnInitialized();
     }
 
-    public override  async Task ComputeState(CancellationToken cancellationToken)
+    public override async Task ComputeState(CancellationToken cancellationToken)
     {
         await base.ComputeState(cancellationToken);
 

@@ -22,7 +22,7 @@ else
                 <MudTooltip Text="Move Up" Color="Color.Dark">
                     <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward" Color="Color.Success" OnClick="() => MoveImage(-1)" Disabled="@(ViewModel.UploadedImages.IndexOf(UploadedImage) == 0)" />
                 </MudTooltip>
-                
+
                 <MudTooltip Text="Move Down" Color="Color.Dark">
                     <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Color="Color.Success" OnClick="() => MoveImage(1)" Disabled="@(ViewModel.UploadedImages.IndexOf(UploadedImage) == ViewModel.UploadedImages.Count - 1)" />
                 </MudTooltip>

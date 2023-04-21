@@ -14,6 +14,7 @@ public static class AccountPermissionExt
 
         return accountViewModel.AccountType >= AccountType.Admin;
     }
+
     public static bool IsBanned(this AccountViewModel accountViewModel)
     {
         if (accountViewModel == null)
