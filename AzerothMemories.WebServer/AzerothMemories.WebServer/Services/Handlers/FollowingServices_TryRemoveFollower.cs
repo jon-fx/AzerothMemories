@@ -48,7 +48,6 @@ internal static class FollowingServices_TryRemoveFollower
         {
             AccountId = activeAccount.Id,
             OtherAccountId = otherAccountId,
-            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = AccountHistoryType.FollowerRemoved
         }, cancellationToken).ConfigureAwait(false);
 

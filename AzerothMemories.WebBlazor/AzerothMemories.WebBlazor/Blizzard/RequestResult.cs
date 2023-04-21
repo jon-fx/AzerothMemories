@@ -17,8 +17,6 @@ public sealed class RequestResult<T> where T : class
 
     public bool IsSuccess => ResultCode.IsSuccess();
 
-    //public bool IsFailure => ResultCode.IsFailure();
-
     public bool IsNotModified => ResultCode == HttpStatusCode.NotModified;
 
     public Instant ResultLastModifiedMs => ResultLastModified;

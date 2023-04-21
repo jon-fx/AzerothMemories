@@ -46,7 +46,7 @@ else if (ConfigHelpers.SafetyCheck("DELETE ACCOUNT DATA?!"))
 
 if (ConfigHelpers.SafetyCheck("MIGRATE UP?!"))
 {
-    ConfigHelpers.WriteWithColors(ConsoleColor.Green, ConsoleColor.White, "Running Migration...");
+    ConfigHelpers.WriteWithColors(ConsoleColor.White, "Running Migration...");
 
     runner.MigrateUp();
 }

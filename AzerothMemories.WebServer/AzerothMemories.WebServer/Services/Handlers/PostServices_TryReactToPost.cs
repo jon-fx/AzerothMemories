@@ -105,7 +105,6 @@ internal static class PostServices_TryReactToPost
             {
                 AccountId = activeAccount.Id,
                 OtherAccountId = postRecord.AccountId,
-                //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
                 Type = AccountHistoryType.ReactedToPost1,
                 TargetId = postRecord.AccountId,
                 TargetPostId = postRecord.Id
@@ -117,7 +116,6 @@ internal static class PostServices_TryReactToPost
                 {
                     AccountId = postRecord.AccountId,
                     OtherAccountId = activeAccount.Id,
-                    //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
                     Type = AccountHistoryType.ReactedToPost2,
                     TargetId = postRecord.AccountId,
                     TargetPostId = postRecord.Id
@@ -139,7 +137,6 @@ internal static class PostServices_TryReactToPost
         {
             case PostReaction.None:
             {
-                //return query;
                 break;
             }
             case PostReaction.Reaction1:

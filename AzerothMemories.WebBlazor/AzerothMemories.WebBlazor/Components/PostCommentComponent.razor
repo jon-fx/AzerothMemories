@@ -163,8 +163,6 @@
 {
     private bool _userReacting;
 
-    //public bool IsDisabled => !Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract || Comment.Comment.DeletedTimeStamp != 0;
-
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired] public PostCommentTreeNode Comment { get; init; }

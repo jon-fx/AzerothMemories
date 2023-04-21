@@ -15,7 +15,6 @@ services.AddHttpClient("Default", x =>
 });
 
 services.AddSingleton<WowTools>();
-//services.AddSingleton<DatabaseProvider>();
 services.AddSingleton<MoaResourceCache>();
 services.AddSingleton<MoaResourceWriter>();
 services.AddSingleton<MoaImageUploader>();
@@ -38,7 +37,6 @@ void AddSeeder<TSeeder>() where TSeeder : AbstractBase
 AddSeeder<CommonDataSeeder>();
 AddSeeder<RealmDataSeeder>();
 AddSeeder<PlayerDataSeeder>();
-//AddSeeder<InstanceSeeder>();
 AddSeeder<AchievementDataSeeder>();
 AddSeeder<ZoneDataSeeder>();
 AddSeeder<CreatureDataSeeder>();

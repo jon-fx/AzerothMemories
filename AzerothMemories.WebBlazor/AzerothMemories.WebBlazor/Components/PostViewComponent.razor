@@ -77,8 +77,6 @@ else if (Helper.PostViewModel.DeletedTimeStamp == 0)
 
     [Parameter, EditorRequired] public PostPageViewModelHelper Helper { get; init; }
 
-    //public bool IsDisabled => !Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract;
-
     private void AddComment()
     {
         Services.ClientServices.ActiveAccountServices.ActiveCommentContext = this;

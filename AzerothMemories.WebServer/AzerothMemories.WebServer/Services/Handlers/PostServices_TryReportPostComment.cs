@@ -90,7 +90,6 @@ internal static class PostServices_TryReportPostComment
         await commonServices.Commander.Call(new Account_AddNewHistoryItem
         {
             AccountId = activeAccount.Id,
-            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = AccountHistoryType.PostReportedComment,
             TargetId = postRecord.AccountId,
             TargetPostId = postRecord.Id,

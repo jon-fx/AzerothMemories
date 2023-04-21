@@ -79,13 +79,6 @@ internal static class PostServices_TryPostMemory
             return new AddMemoryResult(AddMemoryResultCode.ParseCommentFailed);
         }
 
-        //var linkStringBuilder = new StringBuilder();
-        //foreach (var link in contextHelper.LinksInComment)
-        //{
-        //    linkStringBuilder.Append(link);
-        //    linkStringBuilder.Append('|');
-        //}
-
         var tagRecords = new HashSet<PostTagRecord>();
         var postRecord = new PostRecord
         {
@@ -116,11 +109,6 @@ internal static class PostServices_TryPostMemory
         {
             return new AddMemoryResult(AddMemoryResultCode.InvalidTags);
         }
-
-        //if (tagRecords.FirstOrDefault(x => x.TagString == PostTagInfo.GetTagString(PostTagType.Region, activeAccount.RegionId.ToValue())) == null)
-        //{
-        //    return new AddMemoryResult(AddMemoryResultCode.InvalidTags);
-        //}
 
         if (!PostTagRecord.ValidateTagCounts(tagRecords))
         {
@@ -158,7 +146,6 @@ internal static class PostServices_TryPostMemory
         await commonServices.Commander.Call(new Account_AddNewHistoryItem
         {
             AccountId = activeAccount.Id,
-            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = AccountHistoryType.MemoryRestored,
             TargetId = postRecord.AccountId,
             TargetPostId = postRecord.Id
@@ -171,7 +158,6 @@ internal static class PostServices_TryPostMemory
                 AccountId = userTag,
                 OtherAccountId = activeAccount.Id,
                 Type = AccountHistoryType.TaggedPost,
-                //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
                 TargetId = postRecord.AccountId,
                 TargetPostId = postRecord.Id
             }, cancellationToken).ConfigureAwait(false);

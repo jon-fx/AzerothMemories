@@ -9,7 +9,7 @@ public sealed class AuthTokenRecord : IDatabaseRecordWithVersion
     public const string TableName = "Accounts_AuthTokens";
 
     [Key] public int Id { get; set; }
-    
+
     [Column] public int? AccountId { get; set; }
 
     [Column] public AccountRecord Account { get; set; }
@@ -33,14 +33,6 @@ public sealed class AuthTokenRecord : IDatabaseRecordWithVersion
     public bool IsPatreon => Key.StartsWith("Patreon");
 
     public uint RowVersion { get; set; }
-
-    //public BlizzardRegion GetBlizzardRegionId()
-    //{
-    //    var nameSplit = Key.Split('/');
-    //    var providerSplit = nameSplit[0].Split('-');
-
-    //    return BlizzardRegionExt.FromName(providerSplit[1]);
-    //}
 
     public static long GetIdFrom(string key)
     {

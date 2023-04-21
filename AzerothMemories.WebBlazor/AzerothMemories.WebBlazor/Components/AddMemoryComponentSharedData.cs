@@ -77,10 +77,7 @@ public sealed class AddMemoryComponentSharedData
 
         PostAvatarImages.Add((null, accountViewModel.Avatar, accountViewModel.GetAvatarText(), "Default"));
 
-        //var accountRegion = accountViewModel.RegionId.ToInfo();
-
         _selectedExtraTags.Add(new PostTagInfo(PostTagType.Account, accountViewModel.Id, accountViewModel.GetDisplayName(), null) { IsChipClosable = false });
-        //_selectedExtraTags.Add(new PostTagInfo(PostTagType.Region, (int)accountRegion.Region, accountRegion.Name, null) { IsChipClosable = false });
 
         OnTagsChanged?.Invoke();
 
@@ -566,7 +563,16 @@ public sealed class AddMemoryComponentSharedData
             var minTime = _viewModel.Services.ClientServices.TimeProvider.GetTimeAsLocalString(ZExtensions.MinPostTime);
             var maxTime = _viewModel.Services.ClientServices.TimeProvider.GetTimeAsLocalString(timeNow);
 
-            errorStrings.Add($"Time muse be between {minTime} and {maxTime}.");
+            errorStrings.Add($"Time must be between {minTime} and {maxTime}.");
+        }
+
+        var selectedRegionObj = SelectedRegionTags.FirstOrDefault();
+        if (selectedRegionObj is PostTagInfo selectedRegionTag && selectedRegionTag.Id > 0)
+        {
+        }
+        else
+        {
+            errorStrings.Add("A region must be selected.");
         }
 
         var allTags = new List<PostTagInfo>();

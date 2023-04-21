@@ -12,8 +12,6 @@
 
 @code
 {
-    //private string _nullText = null;
-    //private PostTagInfo _nullValue = null;
     private AutoCompleteComponent<PostTagInfo> _autoComplete;
 
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
@@ -26,7 +24,7 @@
         {
             return;
         }
-        
+
         await OnSelectedItemChanged.InvokeAsync(value);
 
         await _autoComplete.Clear();

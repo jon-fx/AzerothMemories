@@ -48,7 +48,6 @@ internal static class FollowingServices_TryStopFollowing
         {
             AccountId = activeAccount.Id,
             OtherAccountId = otherAccountId,
-            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = AccountHistoryType.StoppedFollowing
         }, cancellationToken).ConfigureAwait(false);
 

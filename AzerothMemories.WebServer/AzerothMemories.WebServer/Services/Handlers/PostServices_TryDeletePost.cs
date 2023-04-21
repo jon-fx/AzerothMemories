@@ -86,7 +86,6 @@ internal static class PostServices_TryDeletePost
         await commonServices.Commander.Call(new Account_AddNewHistoryItem
         {
             AccountId = postRecord.AccountId,
-            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = AccountHistoryType.MemoryDeleted,
             TargetId = postRecord.AccountId,
             TargetPostId = postRecord.Id,

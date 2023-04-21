@@ -65,8 +65,6 @@ public sealed class PostCommentRecord : IDatabaseRecordWithVersion
             PostComment = PostCommentMark,
             CreatedTime = CreatedTime.ToUnixTimeMilliseconds(),
             DeletedTimeStamp = DeletedTimeStamp,
-            //ReactionId = reaction?.Id ?? 0,
-            //Reaction = reaction?.Reaction ?? PostReaction.None,
             TotalReactionCount = TotalReactionCount,
             ReactionCounters = new[]
             {

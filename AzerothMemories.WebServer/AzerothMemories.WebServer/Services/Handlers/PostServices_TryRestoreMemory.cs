@@ -56,14 +56,6 @@ internal static class PostServices_TryRestoreMemory
             accountTagToRemove = null;
             newTagKind = PostTagKind.Post;
         }
-        //else
-        //{
-        //    var accountRecord = await _commonServices.AccountServices.TryGetAccountRecord(postRecord.AccountId).ConfigureAwait(false);
-        //    if (accountRecord.BlizzardRegionId != activeAccount.RegionId)
-        //    {
-        //        return false;
-        //    }
-        //}
 
         var accountCharacters = activeAccount.GetAllCharactersSafe();
         if (characterTagToAdd != null && accountCharacters.FirstOrDefault(x => x.Id == characterTagToAdd.Value) == null)
@@ -169,7 +161,6 @@ internal static class PostServices_TryRestoreMemory
         {
             AccountId = activeAccount.Id,
             OtherAccountId = postRecord.AccountId,
-            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = AccountHistoryType.MemoryRestoredExternal1,
             TargetId = postRecord.AccountId,
             TargetPostId = postRecord.Id
@@ -181,7 +172,6 @@ internal static class PostServices_TryRestoreMemory
             {
                 AccountId = postRecord.AccountId,
                 OtherAccountId = activeAccount.Id,
-                //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
                 Type = AccountHistoryType.MemoryRestoredExternal2,
                 TargetId = postRecord.AccountId,
                 TargetPostId = postRecord.Id

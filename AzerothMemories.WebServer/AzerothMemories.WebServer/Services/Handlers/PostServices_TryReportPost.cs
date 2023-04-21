@@ -79,7 +79,6 @@ internal static class PostServices_TryReportPost
         await commonServices.Commander.Call(new Account_AddNewHistoryItem
         {
             AccountId = activeAccount.Id,
-            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = AccountHistoryType.PostReported,
             TargetId = postRecord.AccountId,
             TargetPostId = postRecord.Id,

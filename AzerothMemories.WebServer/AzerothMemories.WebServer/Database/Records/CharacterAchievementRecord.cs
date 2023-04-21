@@ -18,7 +18,5 @@ public sealed class CharacterAchievementRecord : IDatabaseRecordWithVersion
 
     [Column] public Instant AchievementTimeStamp { get; set; }
 
-    //[Column] public bool CompletedByCharacter { get; set; }
-
     public uint RowVersion { get; set; }
 }

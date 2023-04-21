@@ -84,7 +84,6 @@ internal static class FollowingServices_TryStartFollowing
         {
             AccountId = activeAccount.Id,
             OtherAccountId = otherAccountId,
-            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = viewModel.Status == AccountFollowingStatus.Active ? AccountHistoryType.StartedFollowing : AccountHistoryType.FollowingRequestSent
         }, cancellationToken).ConfigureAwait(false);
 
@@ -93,7 +92,6 @@ internal static class FollowingServices_TryStartFollowing
             AccountId = otherAccountId,
             TargetId = 1,
             OtherAccountId = activeAccount.Id,
-            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = viewModel.Status == AccountFollowingStatus.Active ? AccountHistoryType.StartedFollowing : AccountHistoryType.FollowingRequestReceived
         }, cancellationToken).ConfigureAwait(false);
 

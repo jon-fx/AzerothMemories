@@ -46,7 +46,6 @@ public sealed class PostTagInfo
     public string GetTagQueryLink()
     {
         return $"postsearch?tag={TagString}";
-        //return QueryHelpers.AddQueryString("postsearch", "tag", GetTagValue());
     }
 
     public string GetTagValue()

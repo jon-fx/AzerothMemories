@@ -46,7 +46,6 @@ public sealed class TagHelpers
         var allRealmNames = stringLocalizer.GetAllStrings().Where(x => x.Name.StartsWith("Realm-")).ToDictionary(x => GetId(x.Name), x => x.Value);
         var allRealmSlugs = stringLocalizer.GetAllStrings().Where(x => x.Name.StartsWith("RealmSlug-")).ToDictionary(x => GetId(x.Name), x => x.Value);
 
-        //_allValidRealmSlugs = allRealmSlugs.Select(x => x.Value).ToHashSet();
         _realmSlugsToId = new Dictionary<string, int>();
         _realmNamesToSlugs = new Dictionary<string, string>();
 

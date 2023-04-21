@@ -353,8 +353,6 @@ else
 
     public bool DoseNotHavePermission => Post.PostVisibility == 255;
 
-    //public bool IsDisabled => !Services.ClientServices.ActiveAccountServices.IsAccountActiveAndCanInteract || DoseNotHavePermission;
-
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();

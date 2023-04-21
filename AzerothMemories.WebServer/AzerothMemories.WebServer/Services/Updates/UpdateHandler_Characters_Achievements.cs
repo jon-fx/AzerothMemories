@@ -47,7 +47,6 @@ internal sealed class UpdateHandler_Characters_Achievements : UpdateHandlerBaseR
             }
 
             achievementRecord.AchievementTimeStamp = Instant.FromUnixTimeMilliseconds(timeStamp);
-            //achievementRecord.CompletedByCharacter = achievement.Criteria == null || achievement.Criteria != null && achievement.Criteria.IsCompleted;
         }
 
         record.AchievementTotalPoints = requestResult.TotalPoints;

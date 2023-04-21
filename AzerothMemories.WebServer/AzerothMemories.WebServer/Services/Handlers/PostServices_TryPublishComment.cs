@@ -124,13 +124,6 @@ internal static class PostServices_TryPublishComment
             return 0;
         }
 
-        //var linkStringBuilder = new StringBuilder();
-        //foreach (var link in contextHelper.LinksInComment)
-        //{
-        //    linkStringBuilder.Append(link);
-        //    linkStringBuilder.Append('|');
-        //}
-
         await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(postRecord);
 
@@ -161,7 +154,6 @@ internal static class PostServices_TryPublishComment
         {
             AccountId = activeAccount.Id,
             OtherAccountId = postRecord.AccountId,
-            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = AccountHistoryType.Commented1,
             TargetId = postRecord.AccountId,
             TargetPostId = postId,
@@ -174,7 +166,6 @@ internal static class PostServices_TryPublishComment
             {
                 AccountId = postRecord.AccountId,
                 OtherAccountId = activeAccount.Id,
-                //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
                 Type = AccountHistoryType.Commented2,
                 TargetId = postRecord.AccountId,
                 TargetPostId = postId,
@@ -189,7 +180,6 @@ internal static class PostServices_TryPublishComment
                 AccountId = userTag,
                 OtherAccountId = activeAccount.Id,
                 Type = AccountHistoryType.TaggedComment,
-                //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
                 TargetId = postRecord.AccountId,
                 TargetPostId = postRecord.Id,
                 TargetCommentId = commentRecord.Id

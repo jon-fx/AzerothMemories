@@ -48,7 +48,6 @@ internal static class FollowingServices_TryAcceptFollower
         {
             AccountId = activeAccount.Id,
             OtherAccountId = otherAccountId,
-            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = AccountHistoryType.FollowingRequestAccepted1
         }, cancellationToken).ConfigureAwait(false);
 
@@ -56,7 +55,6 @@ internal static class FollowingServices_TryAcceptFollower
         {
             AccountId = otherAccountId,
             OtherAccountId = activeAccount.Id,
-            //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             Type = AccountHistoryType.FollowingRequestAccepted2
         }, cancellationToken).ConfigureAwait(false);
 

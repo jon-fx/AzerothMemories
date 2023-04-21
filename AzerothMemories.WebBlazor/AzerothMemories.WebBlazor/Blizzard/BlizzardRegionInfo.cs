@@ -9,7 +9,6 @@ public sealed class BlizzardRegionInfo
     public static readonly BlizzardRegionInfo China = new(BlizzardRegion.China, "cn", "CN")
     {
         Host = "https://gateway.battlenet.com.cn",
-        //Authorization = "https://www.battlenet.com.cn"
     };
 
     public static readonly BlizzardRegionInfo Europe = new(BlizzardRegion.Europe, "eu", "EU");
@@ -24,7 +23,6 @@ public sealed class BlizzardRegionInfo
         TwoLettersLower = twoLettersLower;
         TwoLettersUpper = twoLettersUpper;
         Host = $"https://{twoLettersLower}.api.blizzard.com";
-        //Authorization = $"https://{twoLettersLower}.battle.net";
 
         AllById[(int)region] = this;
         AllByName[Name] = this;
@@ -42,12 +40,4 @@ public sealed class BlizzardRegionInfo
     public string TwoLettersLower { get; }
 
     public string TwoLettersUpper { get; }
-
-    //public string Authorization { get; private init; }
-
-    //public string TokenEndpoint => $"{Authorization}/oauth/token";
-
-    //public string AuthorizationEndpoint => $"{Authorization}/oauth/authorize";
-
-    //public string UserInformationEndpoint => $"{Authorization}/oauth/userinfo";
 }

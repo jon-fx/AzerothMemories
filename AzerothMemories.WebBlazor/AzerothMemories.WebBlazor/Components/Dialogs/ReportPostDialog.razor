@@ -46,12 +46,6 @@
             reasonText = reasonText[.._maxLength];
         }
 
-        //var info = new PostReportInfo
-        //{
-        //    Reason = _reason,
-        //    ReasonText = reasonText,
-        //};
-
         if (CommentId == 0)
         {
             var result = await ClientServices.CommandRunner.Run(new Post_TryReportPost(Session.Default, PostId, _reason, reasonText));

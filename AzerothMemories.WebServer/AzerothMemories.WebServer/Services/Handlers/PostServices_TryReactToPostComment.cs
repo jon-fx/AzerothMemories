@@ -116,7 +116,6 @@ internal static class PostServices_TryReactToPostComment
             {
                 AccountId = activeAccount.Id,
                 OtherAccountId = commentViewModel.AccountId,
-                //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
                 Type = AccountHistoryType.ReactedToComment1,
                 TargetId = postRecord.AccountId,
                 TargetPostId = postRecord.Id,
@@ -129,7 +128,6 @@ internal static class PostServices_TryReactToPostComment
                 {
                     AccountId = commentViewModel.AccountId,
                     OtherAccountId = activeAccount.Id,
-                    //CreatedTime = SystemClock.Instance.GetCurrentInstant(),
                     Type = AccountHistoryType.ReactedToComment2,
                     TargetId = postRecord.AccountId,
                     TargetPostId = postRecord.Id,
@@ -152,7 +150,6 @@ internal static class PostServices_TryReactToPostComment
         {
             case PostReaction.None:
             {
-                //return query;
                 break;
             }
             case PostReaction.Reaction1:
