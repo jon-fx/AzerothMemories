@@ -56,16 +56,6 @@ public class BaseTestHelper : IAsyncLifetime
 
         await CommonServices.Commander.Call(new SignInCommand(session, user));
 
-        //var actualUser = await _commonServices.Auth.GetUser(session);
-
-        //await CommonServices.Commander.Call(new Account_OnSignInCommandCustom
-        //{
-        //    UserId = actualUser.Id,
-        //    Session = session,
-        //    AuthenticationSchema = "Default",
-        //    Claims = user.Claims.ToImmutableDictionary()
-        //});
-
         var account = await CommonServices.AccountServices.TryGetActiveAccount(session);
         account.Should().NotBeNull();
         account.Id.Should().Be(_userId);

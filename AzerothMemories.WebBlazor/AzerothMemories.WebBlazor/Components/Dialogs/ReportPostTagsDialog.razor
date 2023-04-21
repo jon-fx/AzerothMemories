@@ -34,8 +34,6 @@
 
     [Inject] public ClientServices ClientServices { get; init; }
 
-    //[Inject] public DialogHelperService DialogService { get; init; }
-
     private async Task Submit()
     {
         MudDialog.Close(DialogResult.Ok(true));

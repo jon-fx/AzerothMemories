@@ -3,7 +3,7 @@
                        T="MainSearchResult"
                        SearchFunc="SearchFunc"
                        ToStringFunc="ToStringFunc"
-                       ValueChanged="OnValueChanged" 
+                       ValueChanged="OnValueChanged"
                        Class="@ExtraClasses">
     <ItemTemplate Context="e">
         @if (UseCallback)
@@ -21,11 +21,8 @@
 
 @code
 {
-    //private string _nullText = null;
-    //private MainSearchResult _nullValue = null;
-    //private MainSearchResult _lastSelectedValue;
     private AutoCompleteComponent<MainSearchResult> _autoComplete;
-    
+
     [Parameter] public string Placeholder { get; init; } = "Search...";
 
     [Parameter] public string ExtraClasses { get; init; } = string.Empty;
@@ -46,7 +43,7 @@
         {
             return;
         }
-        
+
         if (UseCallback)
         {
             await OnSelectedItemChanged.InvokeAsync(value);
