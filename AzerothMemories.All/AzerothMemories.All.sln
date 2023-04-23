@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzerothMemories.Database", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzerothMemories.WebServer.Tests", "..\AzerothMemories.WebServer.Tests\AzerothMemories.WebServer.Tests\AzerothMemories.WebServer.Tests.csproj", "{BBB302E6-9AEC-4A2C-B2B9-7D644CC3FA42}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzerothMemories.Database.Seeder.Import", "..\AzerothMemories.Database.Seeder.Import\AzerothMemories.Database.Seeder.Import\AzerothMemories.Database.Seeder.Import.csproj", "{2A0D97F7-AD4D-4BA7-8A4C-F367B8E0A187}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{BBB302E6-9AEC-4A2C-B2B9-7D644CC3FA42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBB302E6-9AEC-4A2C-B2B9-7D644CC3FA42}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBB302E6-9AEC-4A2C-B2B9-7D644CC3FA42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A0D97F7-AD4D-4BA7-8A4C-F367B8E0A187}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A0D97F7-AD4D-4BA7-8A4C-F367B8E0A187}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A0D97F7-AD4D-4BA7-8A4C-F367B8E0A187}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A0D97F7-AD4D-4BA7-8A4C-F367B8E0A187}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

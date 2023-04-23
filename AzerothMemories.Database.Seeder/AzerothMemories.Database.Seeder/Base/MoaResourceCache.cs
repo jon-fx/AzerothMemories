@@ -10,16 +10,14 @@ internal sealed class MoaResourceCache
     private readonly string _seperator = "|>*<|";
     private Dictionary<string, string> _allResources;
 
-    public MoaResourceCache(WowToolsInternal wowTools)
+    public MoaResourceCache(WowToolsInternal wowTools, string buildFilePath)
     {
         _wowTools = wowTools;
         _allResources = new Dictionary<string, string>();
-        _resourceFilePath = Path.Combine(@"C:\Users\John\Desktop\Stuff\BlizzardData\Tools\", _wowTools.BuildString, "_BlizzardResources");
+        _resourceFilePath = Path.Combine(buildFilePath, "_BlizzardResources");
     }
 
     public bool RequestData { get; set; } = true;
-
-    //public WowToolsInternal WowTools => _wowTools;
 
     public async Task<T> GetOrRequestData<T>(string key, Func<string, Task<RequestResult<T>>> callback, [CallerArgumentExpression("callback")] string callbackExpression = default) where T : class
     {

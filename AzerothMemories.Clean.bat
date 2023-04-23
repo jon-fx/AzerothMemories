@@ -7,6 +7,9 @@ rmdir /s/q AzerothMemories.Database\AzerothMemories.Database\obj
 del /f/s/q AzerothMemories.Database.Seeder\AzerothMemories.Database.Seeder\obj > nul
 rmdir /s/q AzerothMemories.Database.Seeder\AzerothMemories.Database.Seeder\obj
 
+del /f/s/q AzerothMemories.Database.Seeder.Import\AzerothMemories.Database.Seeder.Import\obj > nul
+rmdir /s/q AzerothMemories.Database.Seeder.Import\AzerothMemories.Database.Seeder.Import\obj
+
 del /f/s/q AzerothMemories.WebBlazor\AzerothMemories.WebBlazor\obj > nul
 rmdir /s/q AzerothMemories.WebBlazor\AzerothMemories.WebBlazor\obj
 

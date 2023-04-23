@@ -16,14 +16,7 @@ services.AddHttpClient("Default", x =>
 
 services.AddSingleton<WowTools>();
 services.AddSingleton<MoaResourceWriter>();
-services.AddSingleton<MoaImageUploader>();
 services.AddSingleton<HttpClientProvider>();
-
-services.AddDbContextFactory<AppDbContext>(optionsBuilder =>
-{
-    optionsBuilder.EnableSensitiveDataLogging();
-    optionsBuilder.UseNpgsql(config.DatabaseConnectionString, o => o.UseNodaTime());
-});
 
 var seeders = new List<Func<ServiceProvider, AbstractBase>>();
 
@@ -58,7 +51,6 @@ foreach (var func in seeders)
 }
 
 await serviceProvider.GetRequiredService<MoaResourceWriter>().Save();
-await serviceProvider.GetRequiredService<MoaImageUploader>().Upload();
 
 Console.WriteLine("*** DONE ***");
 Console.ReadLine();

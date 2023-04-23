@@ -4,6 +4,7 @@ namespace AzerothMemories.Database.Seeder.Base;
 
 internal sealed class WowToolsInternal
 {
+    private readonly string _buildFilePath;
     private readonly string _buildString;
     private readonly bool _throwIfNotFound;
     private readonly MoaResourceCache _resourceCache;
@@ -13,13 +14,14 @@ internal sealed class WowToolsInternal
     {
         _buildString = buildString;
         _throwIfNotFound = throwIfNotFound;
-        _resourceCache = new MoaResourceCache(this);
 
-        var filePath = Path.Combine(@$"C:\Users\John\Desktop\Stuff\BlizzardData\Tools\{_buildString}");
-        if (!Directory.Exists(filePath))
+        _buildFilePath = Path.Combine(SeederConfig.ToolsPath, _buildString);
+        if (!Directory.Exists(_buildFilePath))
         {
-            Directory.CreateDirectory(filePath);
+            Directory.CreateDirectory(_buildFilePath);
         }
+
+        _resourceCache = new MoaResourceCache(this, _buildFilePath);
     }
 
     public string BuildString => _buildString;
@@ -78,7 +80,7 @@ internal sealed class WowToolsInternal
 
     private FileInfo DownloadIfNotExists(string fileName, string remotePath)
     {
-        var filePath = Path.Combine(@$"C:\Users\John\Desktop\Stuff\BlizzardData\Tools\{_buildString}\", fileName);
+        var filePath = Path.Combine(_buildFilePath, fileName);
         var fileInfo = new FileInfo(filePath);
 
         if (fileInfo.Directory != null && !fileInfo.Directory.Exists)

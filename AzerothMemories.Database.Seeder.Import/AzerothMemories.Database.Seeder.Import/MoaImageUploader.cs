@@ -1,30 +1,32 @@
-﻿using AzerothMemories.WebServer.Common;
+﻿using AzerothMemories.Database.Seeder.Base;
+using AzerothMemories.WebBlazor.Common;
+using AzerothMemories.WebServer.Common;
+using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace AzerothMemories.Database.Seeder.Base;
+namespace AzerothMemories.Database.Seeder.Import;
 
 internal sealed class MoaImageUploader
 {
     private readonly CommonConfig _commonConfig;
-    private readonly MoaResourceWriter _resourceWriter;
+
     private readonly ILogger<MoaImageUploader> _logger;
 
-    public MoaImageUploader(CommonConfig commonConfig, MoaResourceWriter resourceWriter, ILogger<MoaImageUploader> logger)
+    public MoaImageUploader(CommonConfig commonConfig, ILogger<MoaImageUploader> logger)
     {
         _logger = logger;
         _commonConfig = commonConfig;
-        _resourceWriter = resourceWriter;
     }
 
     public async Task Upload()
     {
-        var fileInfo = _resourceWriter.GetLocalMediaFileInfo("*");
+        var fileInfo = SeederConfig.GetLocalMediaFileInfo("*");
 
         Exceptions.ThrowIf(fileInfo.Directory == null);
         Exceptions.ThrowIf(fileInfo.Directory.Parent == null);
 
-        var indexFilePath = Path.Combine(fileInfo.Directory.Parent.FullName, "uploadedMedia.txt");
+        var indexFilePath = Path.Combine(fileInfo.Directory.Parent.FullName, "AzerothMemories.Media.UploadedMedia.txt");
         if (!File.Exists(indexFilePath))
         {
             await using var _ = File.Create(indexFilePath);
@@ -33,9 +35,9 @@ internal sealed class MoaImageUploader
         const string splitKey = "|";
         var uploadedFileLines = await File.ReadAllLinesAsync(indexFilePath);
         var alreadyUploadedHashData = (from line in uploadedFileLines
-                                       let splt = line.Split(splitKey)
-                                       let key = splt[0]
-                                       let hash = splt[1]
+                                       let split = line.Split(splitKey)
+                                       let key = split[0]
+                                       let hash = split[1]
                                        select new { Key = key, Hash = hash }).ToDictionary(x => x.Key, x => x.Hash);
 
         var csvRequiresRewrite = false;
@@ -51,7 +53,7 @@ internal sealed class MoaImageUploader
 
             if (alreadyUploaded && hashesAreTheSame)
             {
-                _logger.LogDebug($"Skipping: {fileName} Hash: {currentFileHash}");
+                //_logger.LogDebug($"Skipping: {fileName} Hash: {currentFileHash}");
             }
             else
             {
@@ -95,12 +97,12 @@ internal sealed class MoaImageUploader
     private string GetFileHash(byte[] buffer)
     {
         var hashBytes = MD5.HashData(buffer);
-        var hashBuildler = new StringBuilder();
+        var hashBuilder = new StringBuilder();
         foreach (var b in hashBytes)
         {
-            hashBuildler.Append(b.ToString("X2"));
+            hashBuilder.Append(b.ToString("X2"));
         }
 
-        return hashBuildler.ToString();
+        return hashBuilder.ToString();
     }
 }
