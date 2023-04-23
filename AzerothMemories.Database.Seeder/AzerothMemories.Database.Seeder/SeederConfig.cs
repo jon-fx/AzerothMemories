@@ -4,7 +4,7 @@ public static class SeederConfig
 {
     public static string RootPath = "C:\\Users\\John\\Desktop\\Stuff\\BlizzardData";
 
-    public static string ToolsPath = Path.Combine(RootPath, "Tools");
+    public static string ToolsPath = Path.Combine(RootPath, "AzerothMemories.Tools");
 
     public static string JsonDataPath = Path.Combine(RootPath, "AzerothMemories.Data");
 
