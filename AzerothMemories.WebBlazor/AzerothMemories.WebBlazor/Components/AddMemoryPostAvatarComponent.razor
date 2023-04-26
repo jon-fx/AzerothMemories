@@ -57,7 +57,6 @@
 </MudPaper>
 
 @code {
-    private bool _sharedDataChanged;
     private readonly AddMemoryComponentSharedData _sharedData;
 
     [Parameter, EditorRequired]
@@ -66,18 +65,22 @@
         get => _sharedData;
         init
         {
-            _sharedDataChanged = value != null && value != _sharedData;
+            if (_sharedData == value)
+            {
+                return;
+            }
+
+            if (_sharedData != null)
+            {
+                _sharedData.OnTagsChanged -= StateHasChanged;
+            }
+
             _sharedData = value;
-        }
-    }
 
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-
-        if (_sharedDataChanged)
-        {
-            SharedData.OnTagsChanged += StateHasChanged;
+            if (_sharedData != null)
+            {
+                _sharedData.OnTagsChanged += StateHasChanged;
+            }
         }
     }
 }

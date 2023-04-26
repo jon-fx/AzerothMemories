@@ -26,8 +26,8 @@ public sealed class AddMemoryComponentSharedData
         PostAvatarImages = new List<(PostTagInfo Tag, string ImageLink, string ImageText, string ToolTipText)>();
 
         _achievementTags = Array.Empty<PostTagInfo>();
-        _selectedTypeTags = new HashSet<object>(PostTagInfo.EqualityComparer2);
-        _selectedRegionTags = new HashSet<object>(PostTagInfo.EqualityComparer2);
+        _selectedTypeTags = new HashSet<object>(PostTagInfo.EqualityComparer2) { TypeTags[0] };
+        _selectedRegionTags = new HashSet<object>(PostTagInfo.EqualityComparer2) { RegionTags[0] };
         _selectedCommonTags = new HashSet<object>(PostTagInfo.EqualityComparer2);
         _selectedAchievementTags = new HashSet<object>(PostTagInfo.EqualityComparer2);
         _selectedExtraTags = new HashSet<PostTagInfo>(PostTagInfo.EqualityComparer2);
@@ -159,11 +159,11 @@ public sealed class AddMemoryComponentSharedData
                 continue;
             }
 
-            var selectedExtraTags = _selectedExtraTags.FirstOrDefault(x => PostTagInfo.EqualityComparer1.Equals(x, tagInfo));
-            if (selectedExtraTags != null)
-            {
-                continue;
-            }
+            //var selectedExtraTags = _selectedExtraTags.FirstOrDefault(x => PostTagInfo.EqualityComparer1.Equals(x, tagInfo));
+            //if (selectedExtraTags != null)
+            //{
+            //    continue;
+            //}
 
             if (tagInfo.Type == PostTagType.Character)
             {
@@ -195,6 +195,8 @@ public sealed class AddMemoryComponentSharedData
         }
 
         _viewModel.OnViewModelChanged?.Invoke();
+
+        OnTagsChanged?.Invoke();
     }
 
     public async Task<AddMemoryResult> Submit(PublishCommentComponent commentComponent, List<AddMemoryImageData> uploadResults)

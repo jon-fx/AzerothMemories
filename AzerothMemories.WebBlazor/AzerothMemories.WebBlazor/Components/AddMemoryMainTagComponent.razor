@@ -6,7 +6,7 @@
             {
                 var index = i;
                 var tagInfo = SharedData.TypeTags[index];
-                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" Variant="Variant.Text" Default="@(index == 0)" />
+                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" Variant="Variant.Text" />
             }
         </MudChipSet>
     </MudPaper>
@@ -17,7 +17,7 @@
             {
                 var index = i;
                 var tagInfo = SharedData.RegionTags[index];
-                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" Variant="Variant.Text" Default="@(index == 0)" />
+                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" Variant="Variant.Text" />
             }
         </MudChipSet>
     </MudPaper>
@@ -28,7 +28,7 @@
             {
                 var index = i;
                 var tagInfo = SharedData.CommonTags[index];
-                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" Variant="Variant.Text" Default="@(index == 0)" />
+                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" Variant="Variant.Text" />
             }
         </MudChipSet>
     </MudPaper>
@@ -118,8 +118,6 @@
 }
 
 @code {
-
-    private bool _sharedDataChanged;
     private readonly AddMemoryComponentSharedData _sharedData;
 
     [Parameter, EditorRequired]
@@ -131,18 +129,22 @@
         get => _sharedData;
         init
         {
-            _sharedDataChanged = value != null && value != _sharedData;
+            if (_sharedData == value)
+            {
+                return;
+            }
+
+            if (_sharedData != null)
+            {
+                _sharedData.OnTagsChanged -= StateHasChanged;
+            }
+
             _sharedData = value;
-        }
-    }
 
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-
-        if (_sharedDataChanged)
-        {
-            SharedData.OnTagsChanged += StateHasChanged;
+            if (_sharedData != null)
+            {
+                _sharedData.OnTagsChanged += StateHasChanged;
+            }
         }
     }
 }
