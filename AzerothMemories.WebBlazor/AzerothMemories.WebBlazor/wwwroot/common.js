@@ -4,6 +4,7 @@
 
 function HideWowheadToolTips() {
     //$WowheadPower.hideTooltip();
+    $WowheadPower.refreshLinks();
 }
 
 function BlazorGetTimeZone() {
