@@ -4,10 +4,12 @@
 [RegisterAlias(typeof(ICharacterServices))]
 public class CharacterServices : ICharacterServices
 {
+    private readonly ILogger<CharacterServices> _logger;
     private readonly CommonServices _commonServices;
 
-    public CharacterServices(CommonServices commonServices)
+    public CharacterServices(ILogger<CharacterServices> logger, CommonServices commonServices)
     {
+        _logger = logger;
         _commonServices = commonServices;
     }
 
@@ -110,7 +112,7 @@ public class CharacterServices : ICharacterServices
     [CommandHandler]
     public virtual async Task<bool> TryChangeCharacterAccountSync(Character_TryChangeCharacterAccountSync command, CancellationToken cancellationToken = default)
     {
-        return await CharacterServices_TryChangeCharacterAccountSync.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+        return await CharacterServices_TryChangeCharacterAccountSync.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -180,13 +182,13 @@ public class CharacterServices : ICharacterServices
     [CommandHandler]
     public virtual async Task<bool> TrySetCharacterDeleted(Character_TrySetCharacterDeleted command, CancellationToken cancellationToken = default)
     {
-        return await CharacterServices_TrySetCharacterDeleted.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+        return await CharacterServices_TrySetCharacterDeleted.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> TrySetCharacterRenamedOrTransferred(Character_TrySetCharacterRenamedOrTransferred command, CancellationToken cancellationToken = default)
     {
-        return await CharacterServices_TrySetCharacterRenamedOrTransferred.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+        return await CharacterServices_TrySetCharacterRenamedOrTransferred.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [ComputeMethod]

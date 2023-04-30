@@ -4,10 +4,12 @@
 [RegisterAlias(typeof(ITagServices))]
 public class TagServices : ITagServices
 {
+    private readonly ILogger<TagServices> _logger;
     private readonly CommonServices _commonServices;
 
-    public TagServices(CommonServices commonServices)
+    public TagServices(ILogger<TagServices> logger, CommonServices commonServices)
     {
+        _logger = logger;
         _commonServices = commonServices;
     }
 

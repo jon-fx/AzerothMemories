@@ -2,7 +2,7 @@
 
 internal static class AccountServices_OnSignInCommand
 {
-    public static async Task TryHandle(CommonServices commonServices, IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> sessionRepo, SignInCommand command, CancellationToken cancellationToken)
+    public static async Task TryHandle(ILogger<AccountServices> services, CommonServices commonServices, IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> sessionRepo, SignInCommand command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
 

@@ -4,10 +4,12 @@
 [RegisterAlias(typeof(IFollowingServices))]
 public class FollowingServices : IFollowingServices
 {
+    private readonly ILogger<FollowingServices> _logger;
     private readonly CommonServices _commonServices;
 
-    public FollowingServices(CommonServices commonServices)
+    public FollowingServices(ILogger<FollowingServices> logger, CommonServices commonServices)
     {
+        _logger = logger;
         _commonServices = commonServices;
     }
 
@@ -66,25 +68,25 @@ public class FollowingServices : IFollowingServices
     [CommandHandler]
     public virtual async Task<AccountFollowingStatus?> TryStartFollowing(Following_TryStartFollowing command, CancellationToken cancellationToken = default)
     {
-        return await FollowingServices_TryStartFollowing.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+        return await FollowingServices_TryStartFollowing.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<AccountFollowingStatus?> TryStopFollowing(Following_TryStopFollowing command, CancellationToken cancellationToken = default)
     {
-        return await FollowingServices_TryStopFollowing.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+        return await FollowingServices_TryStopFollowing.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<AccountFollowingStatus?> TryAcceptFollower(Following_TryAcceptFollower command, CancellationToken cancellationToken = default)
     {
-        return await FollowingServices_TryAcceptFollower.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+        return await FollowingServices_TryAcceptFollower.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<AccountFollowingStatus?> TryRemoveFollower(Following_TryRemoveFollower command, CancellationToken cancellationToken = default)
     {
-        return await FollowingServices_TryRemoveFollower.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+        return await FollowingServices_TryRemoveFollower.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     public void InvalidateFollowing(Following_InvalidateRecord record)

@@ -2,7 +2,7 @@
 
 internal static class AdminServices_SetPostTagReportResolved
 {
-    public static async Task<bool> TryHandle(CommonServices commonServices, Admin_SetPostTagReportResolved command, CancellationToken cancellationToken)
+    public static async Task<bool> TryHandle(ILogger<AdminServices> services, CommonServices commonServices, Admin_SetPostTagReportResolved command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())

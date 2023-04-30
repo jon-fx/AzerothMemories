@@ -2,7 +2,7 @@
 
 internal static class PostServices_TryReactToPostComment
 {
-    public static async Task<int> TryHandle(CommonServices commonServices, Post_TryReactToPostComment command, CancellationToken cancellationToken)
+    public static async Task<int> TryHandle(ILogger<PostServices> services, CommonServices commonServices, Post_TryReactToPostComment command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())

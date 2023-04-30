@@ -6,6 +6,7 @@ namespace AzerothMemories.WebServer.Services;
 [RegisterAlias(typeof(ISearchServices))]
 public class SearchServices : ISearchServices
 {
+    private readonly ILogger<SearchServices> _logger;
     private readonly CommonServices _commonServices;
 
     private readonly int _startYear = 2000;
@@ -28,8 +29,9 @@ public class SearchServices : ISearchServices
         PostTagType.Title,
     };
 
-    public SearchServices(CommonServices commonServices)
+    public SearchServices(ILogger<SearchServices> logger, CommonServices commonServices)
     {
+        _logger = logger;
         _commonServices = commonServices;
     }
 

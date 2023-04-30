@@ -2,7 +2,7 @@
 
 internal static class CharacterServices_TryChangeCharacterAccountSync
 {
-    public static async Task<bool> TryHandle(CommonServices commonServices, Character_TryChangeCharacterAccountSync command, CancellationToken cancellationToken)
+    public static async Task<bool> TryHandle(ILogger<CharacterServices> services, CommonServices commonServices, Character_TryChangeCharacterAccountSync command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())

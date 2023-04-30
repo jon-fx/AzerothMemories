@@ -2,7 +2,7 @@
 
 internal static class AccountServices_OnSetupSessionCommand
 {
-    public static async Task TryHandle(CommonServices commonServices, SetupSessionCommand command, CancellationToken cancellationToken)
+    public static async Task TryHandle(ILogger<AccountServices> services, CommonServices commonServices, SetupSessionCommand command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);

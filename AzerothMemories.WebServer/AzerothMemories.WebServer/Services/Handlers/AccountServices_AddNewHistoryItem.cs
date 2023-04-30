@@ -2,7 +2,7 @@
 
 internal static class AccountServices_AddNewHistoryItem
 {
-    public static async Task<bool> TryHandle(CommonServices commonServices, Account_AddNewHistoryItem command, CancellationToken cancellationToken)
+    public static async Task<bool> TryHandle(ILogger<AccountServices> services, CommonServices commonServices, Account_AddNewHistoryItem command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())

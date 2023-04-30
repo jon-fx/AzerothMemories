@@ -4,10 +4,12 @@
 [RegisterAlias(typeof(IGuildServices))]
 public class GuildServices : IGuildServices
 {
+    private readonly ILogger<GuildServices> _logger;
     private readonly CommonServices _commonServices;
 
-    public GuildServices(CommonServices commonServices)
+    public GuildServices(ILogger<GuildServices> logger, CommonServices commonServices)
     {
+        _logger = logger;
         _commonServices = commonServices;
     }
 

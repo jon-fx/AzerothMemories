@@ -2,7 +2,7 @@
 
 internal static class FollowingServices_TryAcceptFollower
 {
-    public static async Task<AccountFollowingStatus?> TryHandle(CommonServices commonServices, Following_TryAcceptFollower command, CancellationToken cancellationToken)
+    public static async Task<AccountFollowingStatus?> TryHandle(ILogger<FollowingServices> services, CommonServices commonServices, Following_TryAcceptFollower command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())

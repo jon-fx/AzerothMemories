@@ -2,7 +2,7 @@
 
 internal static class AdminServices_SetPostCommentReportResolved
 {
-    public static async Task<bool> TryHandle(CommonServices commonServices, Admin_SetPostCommentReportResolved command, CancellationToken cancellationToken)
+    public static async Task<bool> TryHandle(ILogger<AdminServices> services, CommonServices commonServices, Admin_SetPostCommentReportResolved command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())

@@ -2,7 +2,7 @@
 
 internal static class PostServices_TrySetPostVisibility
 {
-    public static async Task<byte?> TryHandle(CommonServices commonServices, Post_TrySetPostVisibility command, CancellationToken cancellationToken)
+    public static async Task<byte?> TryHandle(ILogger<PostServices> services, CommonServices commonServices, Post_TrySetPostVisibility command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())

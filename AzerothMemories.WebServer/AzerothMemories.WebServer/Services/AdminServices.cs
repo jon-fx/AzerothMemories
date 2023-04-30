@@ -4,10 +4,12 @@
 [RegisterAlias(typeof(IAdminServices))]
 public class AdminServices : IAdminServices
 {
+    private readonly ILogger<AdminServices> _logger;
     private readonly CommonServices _commonServices;
 
-    public AdminServices(CommonServices commonServices)
+    public AdminServices(ILogger<AdminServices> logger, CommonServices commonServices)
     {
+        _logger = logger;
         _commonServices = commonServices;
     }
 
@@ -334,24 +336,24 @@ public class AdminServices : IAdminServices
     [CommandHandler]
     public virtual async Task<bool> SetPostReportResolved(Admin_SetPostReportResolved command, CancellationToken cancellationToken = default)
     {
-        return await AdminServices_SetPostReportResolved.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+        return await AdminServices_SetPostReportResolved.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> SetPostCommentReportResolved(Admin_SetPostCommentReportResolved command, CancellationToken cancellationToken = default)
     {
-        return await AdminServices_SetPostCommentReportResolved.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+        return await AdminServices_SetPostCommentReportResolved.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> SetPostTagReportResolved(Admin_SetPostTagReportResolved command, CancellationToken cancellationToken = default)
     {
-        return await AdminServices_SetPostTagReportResolved.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+        return await AdminServices_SetPostTagReportResolved.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> TryBanUser(Admin_TryBanUser command, CancellationToken cancellationToken = default)
     {
-        return await AdminServices_TryBanUser.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+        return await AdminServices_TryBanUser.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 }

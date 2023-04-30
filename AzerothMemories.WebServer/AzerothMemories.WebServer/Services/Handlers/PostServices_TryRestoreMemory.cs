@@ -2,7 +2,7 @@
 
 internal static class PostServices_TryRestoreMemory
 {
-    public static async Task<bool> TryHandle(CommonServices commonServices, Post_TryRestoreMemory command, CancellationToken cancellationToken)
+    public static async Task<bool> TryHandle(ILogger<PostServices> services, CommonServices commonServices, Post_TryRestoreMemory command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())

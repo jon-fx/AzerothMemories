@@ -2,7 +2,7 @@
 
 internal static class CharacterServices_TrySetCharacterRenamedOrTransferred
 {
-    public static async Task<bool> TryHandle(CommonServices commonServices, Character_TrySetCharacterRenamedOrTransferred command, CancellationToken cancellationToken)
+    public static async Task<bool> TryHandle(ILogger<CharacterServices> services, CommonServices commonServices, Character_TrySetCharacterRenamedOrTransferred command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())

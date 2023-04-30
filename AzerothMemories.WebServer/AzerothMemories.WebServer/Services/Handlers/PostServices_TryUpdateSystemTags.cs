@@ -2,7 +2,7 @@
 
 internal static class PostServices_TryUpdateSystemTags
 {
-    public static async Task<AddMemoryResultCode> TryHandle(CommonServices commonServices, Post_TryUpdateSystemTags command, CancellationToken cancellationToken)
+    public static async Task<AddMemoryResultCode> TryHandle(ILogger<PostServices> services, CommonServices commonServices, Post_TryUpdateSystemTags command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())

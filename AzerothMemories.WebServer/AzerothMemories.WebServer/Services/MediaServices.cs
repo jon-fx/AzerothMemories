@@ -6,11 +6,13 @@ namespace AzerothMemories.WebServer.Services;
 [RegisterComputeService]
 public class MediaServices : IComputeService
 {
+    private readonly ILogger<MediaServices> _logger;
     private readonly CommonServices _commonServices;
     private readonly int[] _imageSizes;
 
-    public MediaServices(CommonServices commonServices)
+    public MediaServices(ILogger<MediaServices> logger, CommonServices commonServices)
     {
+        _logger = logger;
         _commonServices = commonServices;
         _imageSizes = new[] { 600, 960, 1280, 1920, 2560, 0 };
     }

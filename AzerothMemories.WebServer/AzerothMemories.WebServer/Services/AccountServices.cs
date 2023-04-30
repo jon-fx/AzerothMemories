@@ -4,11 +4,13 @@
 [RegisterAlias(typeof(IAccountServices))]
 public class AccountServices : IAccountServices
 {
+    private readonly ILogger<AccountServices> _logger;
     private readonly CommonServices _commonServices;
     private readonly IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> _sessionRepo;
 
-    public AccountServices(CommonServices commonServices, IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> sessionRepo)
+    public AccountServices(ILogger<AccountServices> logger, CommonServices commonServices, IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> sessionRepo)
     {
+        _logger = logger;
         _commonServices = commonServices;
         _sessionRepo = sessionRepo;
     }
@@ -16,25 +18,25 @@ public class AccountServices : IAccountServices
     [CommandHandler]
     public virtual async Task<bool> TryUpdateAuthToken(Account_TryUpdateAuthToken command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_TryUpdateAuthToken.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+        return await AccountServices_TryUpdateAuthToken.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler(IsFilter = true, Priority = 1)]
     protected virtual async Task OnSignInCommand(SignInCommand command, CancellationToken cancellationToken)
     {
-        await AccountServices_OnSignInCommand.TryHandle(_commonServices, _sessionRepo, command, cancellationToken).ConfigureAwait(false);
+        await AccountServices_OnSignInCommand.TryHandle(_logger, _commonServices, _sessionRepo, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler(IsFilter = true, Priority = 1)]
     protected virtual async Task OnSignOutCommand(SignOutCommand command, CancellationToken cancellationToken)
     {
-        await AccountServices_OnSignOutCommand.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+        await AccountServices_OnSignOutCommand.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler(IsFilter = true, Priority = 1)]
     protected virtual async Task OnSetupSessionCommand(SetupSessionCommand command, CancellationToken cancellationToken)
     {
-        await AccountServices_OnSetupSessionCommand.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+        await AccountServices_OnSetupSessionCommand.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -255,25 +257,25 @@ public class AccountServices : IAccountServices
     [CommandHandler]
     public virtual async Task<bool> TryChangeUsername(Account_TryChangeUsername command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_TryChangeUsername.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+        return await AccountServices_TryChangeUsername.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> TryChangeIsPrivate(Account_TryChangeIsPrivate command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_TryChangeIsPrivate.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+        return await AccountServices_TryChangeIsPrivate.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> TryChangeBattleTagVisibility(Account_TryChangeBattleTagVisibility command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_TryChangeBattleTagVisibility.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+        return await AccountServices_TryChangeBattleTagVisibility.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<string> TryChangeAvatar(Account_TryChangeAvatar command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_TryChangeAvatar.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+        return await AccountServices_TryChangeAvatar.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     public Task<string> TryChangeAvatarUpload(Session session, byte[] buffer)
@@ -299,25 +301,25 @@ public class AccountServices : IAccountServices
     [CommandHandler]
     public virtual async Task<string> TryChangeAvatarUpload(Account_TryChangeAvatarUpload command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_TryChangeAvatarUpload.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+        return await AccountServices_TryChangeAvatarUpload.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<string> TryChangeSocialLink(Account_TryChangeSocialLink command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_TryChangeSocialLink.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+        return await AccountServices_TryChangeSocialLink.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> TryDisconnectAccount(Account_TryDisconnectAccount command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_TryDisconnectAccount.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+        return await AccountServices_TryDisconnectAccount.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> AddNewHistoryItem(Account_AddNewHistoryItem command, CancellationToken cancellationToken = default)
     {
-        return await AccountServices_AddNewHistoryItem.TryHandle(_commonServices, command, cancellationToken).ConfigureAwait(false);
+        return await AccountServices_AddNewHistoryItem.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [ComputeMethod]

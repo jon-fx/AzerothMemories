@@ -2,7 +2,7 @@
 
 internal static class PostServices_TryDeleteComment
 {
-    public static async Task<long> TryHandle(CommonServices commonServices, Post_TryDeleteComment command, CancellationToken cancellationToken)
+    public static async Task<long> TryHandle(ILogger<PostServices> services, CommonServices commonServices, Post_TryDeleteComment command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())

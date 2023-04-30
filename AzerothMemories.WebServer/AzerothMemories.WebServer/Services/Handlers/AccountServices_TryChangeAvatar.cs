@@ -2,7 +2,7 @@
 
 internal static class AccountServices_TryChangeAvatar
 {
-    public static async Task<string> TryHandle(CommonServices commonServices, Account_TryChangeAvatar command, CancellationToken cancellationToken)
+    public static async Task<string> TryHandle(ILogger<AccountServices> services, CommonServices commonServices, Account_TryChangeAvatar command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())

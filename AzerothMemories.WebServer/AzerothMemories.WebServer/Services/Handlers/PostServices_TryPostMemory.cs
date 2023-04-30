@@ -9,7 +9,7 @@ namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class PostServices_TryPostMemory
 {
-    public static async Task<AddMemoryResult> TryHandle(CommonServices commonServices, Post_TryPostMemory command, CancellationToken cancellationToken)
+    public static async Task<AddMemoryResult> TryHandle(ILogger<PostServices> services, CommonServices commonServices, Post_TryPostMemory command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
