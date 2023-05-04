@@ -22,7 +22,7 @@
         <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="7.1.4" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.5" />
         <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="7.0.5" />
-        <PackageReference Include="MudBlazor" Version="6.2.2" />
+        <PackageReference Include="MudBlazor" Version="6.2.3" />
         <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.18.0" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="7.0.4" />
