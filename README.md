@@ -22,8 +22,8 @@ Code behind [Memories of Azeroth](https://memoriesofazeroth.com)
 
 ## Screenshots
 
-<img src="AzerothMemories.Assets\img\index-0.png" alt="Memories of Azeroth Index" title="Memories of Azeroth Index">
-<img src="AzerothMemories.Assets\img\index-1.png" alt="Memories of Azeroth Index" title="Memories of Azeroth Index">
-<img src="AzerothMemories.Assets\img\add-0.png" alt="Memories of Azeroth Restore Memory" title="Memories of Azeroth Restore Memory">
-<img src="AzerothMemories.Assets\img\add-1.png" alt="Memories of Azeroth Restore Memory" title="Memories of Azeroth Restore Memory">
-<img src="AzerothMemories.Assets\img\post-0.png" alt="Memories of Azeroth Post" title="Memories of Azeroth Post">
+<img src="AzerothMemories.Assets/img/index-0.png" alt="Memories of Azeroth Index" title="Memories of Azeroth Index">
+<img src="AzerothMemories.Assets/img/index-1.png" alt="Memories of Azeroth Index" title="Memories of Azeroth Index">
+<img src="AzerothMemories.Assets/img/add-0.png" alt="Memories of Azeroth Restore Memory" title="Memories of Azeroth Restore Memory">
+<img src="AzerothMemories.Assets/img/add-1.png" alt="Memories of Azeroth Restore Memory" title="Memories of Azeroth Restore Memory">
+<img src="AzerothMemories.Assets/img/post-0.png" alt="Memories of Azeroth Post" title="Memories of Azeroth Post">
