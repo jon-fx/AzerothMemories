@@ -19,6 +19,7 @@ Code behind [Memories of Azeroth](https://memoriesofazeroth.com)
 * [MudBlazor](https://mudblazor.com)
 * [NodaTime](https://nodatime.org)
 * [Stl.Fusion](https://github.com/servicetitan/Stl.Fusion)
+* [wow.tools](https://github.com/Marlamin/wow.tools.local)
 
 ## Screenshots
 
