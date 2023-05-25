@@ -33,7 +33,7 @@ else if (TagInfo.WowHeadLink == null)
 }
 else
 {
-    <a class="cardlink2" data-wowhead="@TagInfo.WowHeadLink">
+    <a class="cardlink2" data-wowhead="@TagInfo.WowHeadLink" href="" onclick="return false;">
         @if (TagInfo.IsChipClosable)
         {
             <MudChip @key="TagInfo.TagString" Variant="@Variant" Color="TagInfo.GetChipColor()" Default="Default" Value="TagInfo" OnClick="OnClick" OnClose="OnClose">

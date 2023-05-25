@@ -33,7 +33,7 @@
         }
         else
         {
-            <a class="cardlink2" data-wowhead="@avatar.Tag.WowHeadLink">
+            <a class="cardlink2" data-wowhead="@avatar.Tag.WowHeadLink" href="" onclick="return false;">
                 <MudButton Id="@index" Variant="Variant.Filled" Disabled="SharedData.SelectedPostAvatarImage == index" OnClick="@(_ => SharedData.SelectedPostAvatarImage = index)">
                     <MudAvatar Size="Size.Medium">
                         @{
