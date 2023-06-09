@@ -13,10 +13,10 @@ public sealed class PostCommentDeleteTests : BaseTestHelper
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
-        var validComment = await CommonServices.PostServices.TryPublishComment(new Post_TryPublishComment(session, validPost.PostId, 0, "Test Comment"));
+        var validComment = await CommonServices.Commander.Call(new Post_TryPublishComment(session, validPost.PostId, 0, "Test Comment"));
         validComment.Should().BeGreaterThan(0);
 
-        var result = await CommonServices.PostServices.TryDeleteComment(new Post_TryDeleteComment(session, validPost.PostId, validComment));
+        var result = await CommonServices.Commander.Call(new Post_TryDeleteComment(session, validPost.PostId, validComment));
         result.Should().BeGreaterThan(0);
     }
 
@@ -27,10 +27,10 @@ public sealed class PostCommentDeleteTests : BaseTestHelper
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
-        var validComment = await CommonServices.PostServices.TryPublishComment(new Post_TryPublishComment(session, validPost.PostId, 0, "Test Comment"));
+        var validComment = await CommonServices.Commander.Call(new Post_TryPublishComment(session, validPost.PostId, 0, "Test Comment"));
         validComment.Should().BeGreaterThan(0);
 
-        var result = await CommonServices.PostServices.TryDeleteComment(new Post_TryDeleteComment(SessionFactory.CreateSession(), validPost.PostId, validComment));
+        var result = await CommonServices.Commander.Call(new Post_TryDeleteComment(SessionFactory.CreateSession(), validPost.PostId, validComment));
         result.Should().Be(0);
     }
 
@@ -41,7 +41,7 @@ public sealed class PostCommentDeleteTests : BaseTestHelper
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
-        var result = await CommonServices.PostServices.TryDeleteComment(new Post_TryDeleteComment(session, validPost.PostId, 99));
+        var result = await CommonServices.Commander.Call(new Post_TryDeleteComment(session, validPost.PostId, 99));
         result.Should().Be(0);
     }
 
@@ -51,7 +51,7 @@ public sealed class PostCommentDeleteTests : BaseTestHelper
         var session = SessionFactory.CreateSession();
         var account = await CreateUser(session, "Bob");
 
-        var result = await CommonServices.PostServices.TryDeleteComment(new Post_TryDeleteComment(session, 99, 99));
+        var result = await CommonServices.Commander.Call(new Post_TryDeleteComment(session, 99, 99));
         result.Should().Be(0);
     }
 
@@ -62,10 +62,10 @@ public sealed class PostCommentDeleteTests : BaseTestHelper
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
-        var validComment = await CommonServices.PostServices.TryPublishComment(new Post_TryPublishComment(session, validPost.PostId, 0, "Test Comment"));
+        var validComment = await CommonServices.Commander.Call(new Post_TryPublishComment(session, validPost.PostId, 0, "Test Comment"));
         validComment.Should().BeGreaterThan(0);
 
-        var result = await CommonServices.PostServices.TryDeleteComment(new Post_TryDeleteComment(session, 99, validComment));
+        var result = await CommonServices.Commander.Call(new Post_TryDeleteComment(session, 99, validComment));
         result.Should().Be(0);
     }
 }

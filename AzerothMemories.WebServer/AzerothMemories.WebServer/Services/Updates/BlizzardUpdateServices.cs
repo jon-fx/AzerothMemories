@@ -133,7 +133,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>, IComputeServi
 
         if (record.AccountId.HasValue)
         {
-            await _commonServices.AccountServices.AddNewHistoryItem(new Account_AddNewHistoryItem
+            await _commonServices.Commander.Call(new Account_AddNewHistoryItem
             {
                 AccountId = record.AccountId.Value,
                 Type = AccountHistoryType.CharacterUpdated,
