@@ -2,7 +2,8 @@
 
 public interface IPostServices : IComputeService
 {
-    Task<AddMemoryResult> TryPostMemory(Session session, byte[] toArray);
+    [CommandHandler]
+    Task<AddMemoryResult> TryPostMemory(Post_TryPostMemory command, CancellationToken cancellationToken = default);
 
     [ComputeMethod]
     Task<PostViewModel> TryGetPostViewModel(Session session, int accountId, int postId, ServerSideLocale locale);

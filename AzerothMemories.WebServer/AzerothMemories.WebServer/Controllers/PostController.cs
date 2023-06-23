@@ -15,18 +15,9 @@ public sealed class PostController : ControllerBase, IPostServices
     }
 
     [HttpPost]
-    public async Task<AddMemoryResult> TryPostMemory(Session session)
+    public Task<AddMemoryResult> TryPostMemory([FromBody] Post_TryPostMemory command, CancellationToken cancellationToken = default)
     {
-        await using var memoryStream = new MemoryStream();
-        await Request.Body.CopyToAsync(memoryStream).ConfigureAwait(false);
-
-        return await _commonServices.PostServices.TryPostMemory(session, memoryStream.GetBuffer()).ConfigureAwait(false);
-    }
-
-    [NonAction]
-    public Task<AddMemoryResult> TryPostMemory(Session session, byte[] toArray)
-    {
-        throw new NotImplementedException();
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpGet("{accountId}/{postId}")]

@@ -69,18 +69,9 @@ public sealed class AccountController : ControllerBase, IAccountServices
     }
 
     [HttpPost]
-    public async Task<string> TryChangeAvatarUpload(Session session)
+    public Task<string> TryChangeAvatarUpload([FromBody] Account_TryChangeAvatarUpload command, CancellationToken cancellationToken = default)
     {
-        await using var memoryStream = new MemoryStream();
-        await Request.Body.CopyToAsync(memoryStream).ConfigureAwait(false);
-
-        return await _commonServices.AccountServices.TryChangeAvatarUpload(session, memoryStream.GetBuffer()).ConfigureAwait(false);
-    }
-
-    [NonAction]
-    public Task<string> TryChangeAvatarUpload(Session session, byte[] buffer)
-    {
-        throw new NotImplementedException();
+        return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]

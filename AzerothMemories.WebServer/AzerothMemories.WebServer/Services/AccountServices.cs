@@ -276,26 +276,6 @@ public class AccountServices : IAccountServices
         return await AccountServices_TryChangeAvatar.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
-    public Task<string> TryChangeAvatarUpload(Session session, byte[] buffer)
-    {
-        try
-        {
-            using var memoryStream = new MemoryStream(buffer);
-            using var binaryReader = new BinaryReader(memoryStream);
-
-            var byteCount = binaryReader.ReadInt32();
-            var imageBuffer = binaryReader.ReadBytes(byteCount);
-
-            var command = new Account_TryChangeAvatarUpload(session, imageBuffer);
-
-            return _commonServices.Commander.Call(command);
-        }
-        catch (Exception)
-        {
-            return Task.FromResult(string.Empty);
-        }
-    }
-
     [CommandHandler]
     public virtual async Task<string> TryChangeAvatarUpload(Account_TryChangeAvatarUpload command, CancellationToken cancellationToken = default)
     {

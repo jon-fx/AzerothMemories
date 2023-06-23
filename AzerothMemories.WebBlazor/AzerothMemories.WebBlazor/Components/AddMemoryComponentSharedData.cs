@@ -211,20 +211,7 @@ public sealed class AddMemoryComponentSharedData
             avatarTag = PostAvatarImages[SelectedPostAvatarImage].Tag.TagString;
         }
 
-        await using var memoryStream = new MemoryStream();
-        await using var binaryWriter = new BinaryWriter(memoryStream);
-        binaryWriter.Write(timeStamp.ToUnixTimeMilliseconds());
-        binaryWriter.Write(avatarTag ?? string.Empty);
-        binaryWriter.Write(PrivatePost);
-        binaryWriter.Write(finalText ?? string.Empty);
-
-        binaryWriter.Write(systemTags.Count);
-        foreach (var tag in systemTags)
-        {
-            binaryWriter.Write(tag);
-        }
-
-        binaryWriter.Write(uploadResults.Count);
+        var imageData = new List<byte[]>();
         foreach (var uploadResult in uploadResults)
         {
             if (uploadResult.EditedFileContent != null)
@@ -233,11 +220,20 @@ public sealed class AddMemoryComponentSharedData
                 uploadResult.EditedFileContent = null;
             }
 
-            binaryWriter.Write(uploadResult.FileContent.Length);
-            binaryWriter.Write(uploadResult.FileContent);
+            imageData.Add(uploadResult.FileContent);
         }
 
-        var serverUploadResult = await _viewModel.Services.ComputeServices.PostServices.TryPostMemory(_viewModel.Services.ClientServices.ActiveAccountServices.ActiveSession, memoryStream.ToArray());
+        var serverUploadResult = await _viewModel.Services.ComputeServices.PostServices.TryPostMemory(new Post_TryPostMemory
+        {
+            Session = _viewModel.Services.ClientServices.ActiveAccountServices.ActiveSession,
+            TimeStamp = timeStamp.ToUnixTimeMilliseconds(),
+            AvatarTag = avatarTag ?? string.Empty,
+            IsPrivate = PrivatePost,
+            Comment = finalText ?? string.Empty,
+            SystemTags = new HashSet<string>(systemTags),
+            ImageData = imageData
+        });
+
         return serverUploadResult;
     }
 

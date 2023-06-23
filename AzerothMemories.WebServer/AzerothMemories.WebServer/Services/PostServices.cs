@@ -134,60 +134,6 @@ public class PostServices : IPostServices
         return postRecord.CreatePostViewModel(posterAccount, canSeePost, reactionViewModel, postTagInfos);
     }
 
-    //[ComputeMethod]
-    //protected virtual Task<long> GetSessionPostViewTimeStamp(int accountId, int postId)
-    //{
-    //    return Task.FromResult(SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
-    //}
-
-    //[CommandHandler]
-    //public virtual async Task<PostRecord> TryUpdatePostViewCount(Post_UpdateViewCount command, CancellationToken cancellationToken = default)
-    //{
-    //    return await PostServices_UpdateViewCount.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
-    //}
-
-    public Task<AddMemoryResult> TryPostMemory(Session session, byte[] buffer)
-    {
-        try
-        {
-            using var memoryStream = new MemoryStream(buffer);
-            using var binaryReader = new BinaryReader(memoryStream);
-
-            var timeStamp = binaryReader.ReadInt64();
-            var avatarTag = binaryReader.ReadString();
-            var isPrivate = binaryReader.ReadBoolean();
-            var comment = binaryReader.ReadString();
-            var tagCount = binaryReader.ReadInt32();
-            var systemTags = new HashSet<string>();
-            for (var i = 0; i < tagCount; i++)
-            {
-                systemTags.Add(binaryReader.ReadString());
-            }
-
-            var imageDataCount = binaryReader.ReadInt32();
-            var imageData = new List<byte[]>(imageDataCount);
-            for (var i = 0; i < imageDataCount; i++)
-            {
-                var byteCount = binaryReader.ReadInt32();
-                var imageBuffer = binaryReader.ReadBytes(byteCount);
-                imageData.Add(imageBuffer);
-            }
-
-            if (string.IsNullOrWhiteSpace(avatarTag))
-            {
-                avatarTag = null;
-            }
-
-            var command = new Post_TryPostMemory(session, timeStamp, avatarTag, isPrivate, comment, systemTags, imageData);
-
-            return _commonServices.Commander.Call(command);
-        }
-        catch (Exception)
-        {
-            return Task.FromResult(new AddMemoryResult(AddMemoryResultCode.Failed));
-        }
-    }
-
     [CommandHandler]
     public virtual async Task<AddMemoryResult> TryPostMemory(Post_TryPostMemory command, CancellationToken cancellationToken = default)
     {

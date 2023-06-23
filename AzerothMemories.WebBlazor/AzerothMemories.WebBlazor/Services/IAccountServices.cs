@@ -28,7 +28,8 @@ public interface IAccountServices : IComputeService
     [CommandHandler]
     Task<string> TryChangeAvatar(Account_TryChangeAvatar command, CancellationToken cancellationToken = default);
 
-    Task<string> TryChangeAvatarUpload(Session session, byte[] buffer);
+    [CommandHandler]
+    Task<string> TryChangeAvatarUpload(Account_TryChangeAvatarUpload command, CancellationToken cancellationToken = default);
 
     [CommandHandler]
     Task<string> TryChangeSocialLink(Account_TryChangeSocialLink command, CancellationToken cancellationToken = default);

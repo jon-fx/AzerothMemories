@@ -252,13 +252,12 @@ public sealed class AccountManagePageViewModel : ViewModelBase
             return;
         }
 
-        await using var memoryStream2 = new MemoryStream();
-        await using var binaryWriter = new BinaryWriter(memoryStream2);
+        var result = await Services.ComputeServices.AccountServices.TryChangeAvatarUpload(new Account_TryChangeAvatarUpload
+        {
+            Session = Services.ClientServices.ActiveAccountServices.ActiveSession,
+            ImageData = buffer,
+        });
 
-        binaryWriter.Write(buffer.Length);
-        binaryWriter.Write(buffer);
-
-        var result = await Services.ComputeServices.AccountServices.TryChangeAvatarUpload(Services.ClientServices.ActiveAccountServices.ActiveSession, memoryStream2.ToArray());
         if (result != null && !string.IsNullOrWhiteSpace(result) && result != AccountViewModel.Avatar)
         {
             AvatarLink = result;
