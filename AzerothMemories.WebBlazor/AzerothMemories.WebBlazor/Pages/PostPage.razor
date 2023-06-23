@@ -37,8 +37,8 @@ else
     <PageTitle>@name</PageTitle>
     <HeadContentTest Url="@ClientServices.NavigationManager.Uri" Title="@name" Description="@description" Image="@image" AltImage="@altImage" />
 
-    <AccountHeaderCardComponent Services="@this" AccountViewModel="@ViewModel.Helper.AccountViewModel" />
-    <PostViewComponent Services="@this" Helper="@ViewModel.Helper" />
+    <AccountHeaderCardComponent Services="@(this)" AccountViewModel="@ViewModel.Helper.AccountViewModel" />
+    <PostViewComponent Services="@(this)" Helper="@ViewModel.Helper" />
 }
 
 @code

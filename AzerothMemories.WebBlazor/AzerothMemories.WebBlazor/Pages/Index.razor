@@ -8,12 +8,12 @@
 
 <AuthorizeView>
     <Authorized>
-        <AccountHeaderCardComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" />
+        <AccountHeaderCardComponent Services="@(this)" AccountViewModel="@ViewModel.AccountViewModel" />
     </Authorized>
 </AuthorizeView>
 
-<OnThisDayHeader HeaderData="@ViewModel.OnThisDay" Services="@this" />
-<RecentPostsComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" RecentPostsHelper="@ViewModel.RecentPostsHelper" />
+<OnThisDayHeader HeaderData="@ViewModel.OnThisDay" Services="@(this)" />
+<RecentPostsComponent Services="@(this)" AccountViewModel="@ViewModel.AccountViewModel" RecentPostsHelper="@ViewModel.RecentPostsHelper" />
 
 @code {
     [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }

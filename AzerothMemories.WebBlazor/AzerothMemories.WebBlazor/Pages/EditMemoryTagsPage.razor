@@ -19,14 +19,14 @@ else
 
     if (ClientServices.ActiveAccountServices.AccountViewModel.CanUpdateSystemTags() && (ClientServices.ActiveAccountServices.IsActiveAccount(ViewModel.Helper.AccountViewModel.Id) || ClientServices.ActiveAccountServices.AccountViewModel.CanUpdateSystemTagsOnAnyPost()))
     {
-        <AddMemoryMainTagComponent Services="@this" SharedData="@ViewModel.SharedData" />
+        <AddMemoryMainTagComponent Services="@(this)" SharedData="@ViewModel.SharedData" />
         <AddMemoryPostAvatarComponent SharedData="@ViewModel.SharedData" />
         <AddMemoryAllTagChipsComponent SharedData="@ViewModel.SharedData" />
 
         <AddMemorySubmitCancelComponent SharedData="@ViewModel.SharedData" OnSubmit="@ViewModel.Submit" OnCancel="@ViewModel.UserCancel" />
     }
 
-    <PostViewComponent Services="@this" Helper="@ViewModel.Helper" />
+    <PostViewComponent Services="@(this)" Helper="@ViewModel.Helper" />
 }
 
 @code {

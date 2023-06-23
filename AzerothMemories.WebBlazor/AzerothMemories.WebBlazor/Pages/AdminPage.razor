@@ -33,7 +33,7 @@ else
         {
             var headerText = $"Reported Post: {viewModel.PostViewModel.Id}";
             <MudExpansionPanel Text="@headerText">
-                <PostComponent Services="@this" Post="@viewModel.PostViewModel" InDialog="true" />
+                <PostComponent Services="@(this)" Post="@viewModel.PostViewModel" InDialog="true" />
 
                 <div class="postIndent">
                     <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
@@ -76,7 +76,7 @@ else
             var headerText = $"Reported Post Tags: {viewModel.PostViewModel.Id}";
 
             <MudExpansionPanel Text="@headerText">
-                <PostComponent Services="@this" Post="@viewModel.PostViewModel" InDialog="true" />
+                <PostComponent Services="@(this)" Post="@viewModel.PostViewModel" InDialog="true" />
 
                 <div class="postIndent">
                     <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
@@ -121,7 +121,7 @@ else
                     };
 
             <MudExpansionPanel Text="@headerText">
-                <PostCommentComponent Services="@this" Comment="@commentTreeNode" Indent="false" />
+                <PostCommentComponent Services="@(this)" Comment="@commentTreeNode" Indent="false" />
 
                 <div class="postIndent">
                     <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">

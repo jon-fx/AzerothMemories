@@ -20,7 +20,7 @@
         <PageTitle>@name</PageTitle>
         <HeadContentTest Url="@ClientServices.NavigationManager.Uri" Title="@name" Description="@name" Image="@image" AltImage="@altImage" />
 
-        <GuildHeaderCardComponent Services="@this" GuildViewModel="@ViewModel.GuildViewModel" />
+        <GuildHeaderCardComponent Services="@(this)" GuildViewModel="@ViewModel.GuildViewModel" />
         <SearchPostViewComponent PostSearchHelper="@ViewModel.PostSearchHelper" />
     }
 }

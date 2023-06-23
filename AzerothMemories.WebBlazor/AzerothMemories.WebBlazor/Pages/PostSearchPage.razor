@@ -15,7 +15,7 @@
     </MudPaper>
 
     <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
-        <SearchBlizzardDataComponent Services="@this" OnSelectedItemChanged="@ViewModel.PostSearchHelper.AddSearchDataToTags" />
+        <SearchBlizzardDataComponent Services="@(this)" OnSelectedItemChanged="@ViewModel.PostSearchHelper.AddSearchDataToTags" />
     </MudPaper>
 
     @if (ViewModel.PostSearchHelper.SelectedSearchTags.Length > 0)

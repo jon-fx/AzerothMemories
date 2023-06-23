@@ -6,7 +6,7 @@
             var accountViewModel = ViewModel.AccountViewModel;
             if (accountViewModel != null)
             {
-                <AccountHeaderCardComponent Services="@this" AccountViewModel="@accountViewModel" />
+                <AccountHeaderCardComponent Services="@(this)" AccountViewModel="@accountViewModel" />
 
                 <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
                     <MudCardContent Class="@ClassPresets.CardContent">

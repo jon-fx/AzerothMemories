@@ -20,8 +20,8 @@
         <PageTitle>@name</PageTitle>
         <HeadContentTest Url="@ClientServices.NavigationManager.Uri" Title="@name" Description="@name" Image="@image" AltImage="@altImage" />
 
-        <AccountHeaderCardComponent Services="@this" AccountViewModel="@ViewModel.AccountViewModel" />
-        <CharacterHeaderCardComponent Services="@this" CharacterViewModel="@ViewModel.CharacterViewModel" />
+        <AccountHeaderCardComponent Services="@(this)" AccountViewModel="@ViewModel.AccountViewModel" />
+        <CharacterHeaderCardComponent Services="@(this)" CharacterViewModel="@ViewModel.CharacterViewModel" />
         <SearchPostViewComponent PostSearchHelper="@ViewModel.PostSearchHelper" />
     }
 }
