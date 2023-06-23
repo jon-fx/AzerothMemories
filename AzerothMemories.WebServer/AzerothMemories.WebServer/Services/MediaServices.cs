@@ -174,7 +174,7 @@ public class MediaServices : IComputeService
     }
 
     [ComputeMethod]
-    protected virtual async Task<MediaResult> TryGetBlobData(string container, string fileName)
+    public virtual async Task<MediaResult> TryGetBlobData(string container, string fileName)
     {
         var blobClient = new BlobClient(_commonServices.Config.BlobStorageConnectionString, container, fileName);
         var blobExists = await blobClient.ExistsAsync().ConfigureAwait(false);

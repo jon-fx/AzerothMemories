@@ -15,8 +15,8 @@ internal static class AccountServices_TryChangeAvatarUpload
             {
                 _ = commonServices.AccountServices.DependsOnAccountRecord(invRecord.Id);
                 _ = commonServices.AccountServices.DependsOnAccountAvatar(invRecord.Id);
-                _ = commonServices.MediaServices.TryGetUserAvatar($"{ZExtensions.AvatarBlobFilePrefix}{invRecord.Id}-0.jpg");
-                _ = commonServices.MediaServices.TryGetUserAvatar($"{ZExtensions.AvatarBlobFilePrefix}{invRecord.Id}-1.jpg");
+                _ = commonServices.MediaServices.TryGetBlobData(ZExtensions.BlobUserAvatars, $"{ZExtensions.AvatarBlobFilePrefix}{invRecord.Id}-0.jpg");
+                _ = commonServices.MediaServices.TryGetBlobData(ZExtensions.BlobUserAvatars, $"{ZExtensions.AvatarBlobFilePrefix}{invRecord.Id}-1.jpg");
             }
 
             return default;
@@ -53,7 +53,7 @@ internal static class AccountServices_TryChangeAvatarUpload
             await image.SaveAsJpegAsync(memoryStream, defaultEncoder, cancellationToken).ConfigureAwait(false);
             memoryStream.Position = 0;
 
-            BinaryData dataToUpload = null;
+            BinaryData dataToUpload;
             if (memoryStream.Length > 1.Megabytes().Bytes)
             {
                 var secondEncoder = new JpegEncoder
@@ -66,9 +66,13 @@ internal static class AccountServices_TryChangeAvatarUpload
 
                 dataToUpload = new BinaryData(memoryStream.ToArray());
             }
+            else
+            {
+                dataToUpload = new BinaryData(memoryStream.ToArray());
+            }
 
             var blobName = $"{ZExtensions.AvatarBlobFilePrefix}{accountViewModel.Id}-{avatarIndex}.jpg";
-            if (commonServices.Config.UploadToBlobStorage && dataToUpload != null)
+            if (commonServices.Config.UploadToBlobStorage)
             {
                 var blobClient = new Azure.Storage.Blobs.BlobClient(commonServices.Config.BlobStorageConnectionString, ZExtensions.BlobUserAvatars, blobName);
                 var result = await blobClient.UploadAsync(dataToUpload, true, cancellationToken).ConfigureAwait(false);
