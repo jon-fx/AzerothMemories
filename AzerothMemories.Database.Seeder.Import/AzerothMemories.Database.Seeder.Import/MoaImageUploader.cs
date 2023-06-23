@@ -1,5 +1,4 @@
-﻿using AzerothMemories.Database.Seeder.Base;
-using AzerothMemories.WebBlazor.Common;
+﻿using AzerothMemories.WebBlazor.Common;
 using AzerothMemories.WebServer.Common;
 using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;

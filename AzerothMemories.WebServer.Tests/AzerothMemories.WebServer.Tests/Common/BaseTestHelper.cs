@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using Stl.Fusion;
 using Xunit;
 
 namespace AzerothMemories.WebServer.Tests.Common;

@@ -1,5 +1,4 @@
-﻿using AzerothMemories.WebServer.Services.Commands;
-using AzerothMemories.WebServer.Tests.Common;
+﻿using AzerothMemories.WebServer.Tests.Common;
 using FluentAssertions;
 using System.Text;
 using Xunit;
@@ -8,10 +7,6 @@ namespace AzerothMemories.WebServer.Tests.Main;
 
 public sealed class PostCreateTests : BaseTestHelper
 {
-    public PostCreateTests()
-    {
-    }
-
     [Fact]
     public async Task CantCreatePostWhenNotLoggedIn1()
     {

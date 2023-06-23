@@ -5,10 +5,6 @@ public sealed partial class PostViewModel
 {
     [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] private PostViewModelBlobInfo[] _blobInfo;
 
-    public PostViewModel()
-    {
-    }
-
     [JsonInclude, DataMember, MemoryPackInclude] public int Id;
 
     [JsonInclude, DataMember, MemoryPackInclude] public int AccountId;

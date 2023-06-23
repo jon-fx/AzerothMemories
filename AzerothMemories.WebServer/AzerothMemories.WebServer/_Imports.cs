@@ -29,7 +29,6 @@ global using Stl.Fusion.Authentication.Services;
 global using Stl.Fusion.Blazor;
 global using Stl.Fusion.EntityFramework;
 global using Stl.Fusion.EntityFramework.Operations;
-global using Stl.Fusion.Extensions;
 global using Stl.Fusion.Extensions.Services;
 global using Stl.Fusion.Operations;
 global using Stl.Fusion.Server;

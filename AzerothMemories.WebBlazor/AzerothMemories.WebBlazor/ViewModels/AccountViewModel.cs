@@ -51,10 +51,6 @@ public sealed partial class AccountViewModel
 
     [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] public bool CanChangeUsername => Username.Contains('-') || SystemClock.Instance.GetCurrentInstant() > Instant.FromUnixTimeMilliseconds(NextUsernameChangedTime);
 
-    public AccountViewModel()
-    {
-    }
-
     public string GetDisplayName()
     {
         if (string.IsNullOrWhiteSpace(Username))
