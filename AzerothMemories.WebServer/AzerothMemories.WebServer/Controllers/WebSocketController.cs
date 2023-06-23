@@ -1,17 +1,19 @@
-﻿//namespace AzerothMemories.WebServer.Controllers;
+﻿using Stl.Rpc.Server;
 
-//public sealed class WebSocketController : ControllerBase
-//{
-//    private readonly WebSocketServer _webSocketServer;
+namespace AzerothMemories.WebServer.Controllers;
 
-//    public WebSocketController(WebSocketServer webSocketServer)
-//    {
-//        _webSocketServer = webSocketServer;
-//    }
+public sealed class WebSocketController : ControllerBase
+{
+    private readonly RpcWebSocketServer _webSocketServer;
 
-//    [Route("/fusion/ws")]
-//    public Task Get()
-//    {
-//        return _webSocketServer.HandleRequest(HttpContext);
-//    }
-//}
+    public WebSocketController(RpcWebSocketServer webSocketServer)
+    {
+        _webSocketServer = webSocketServer;
+    }
+
+    [Route("/rpc/ws")]
+    public Task Get()
+    {
+        return _webSocketServer.HandleRequest(HttpContext);
+    }
+}
