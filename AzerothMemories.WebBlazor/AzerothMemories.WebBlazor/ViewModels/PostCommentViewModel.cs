@@ -1,24 +1,25 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed class PostCommentViewModel
+[DataContract, MemoryPackable]
+public sealed partial class PostCommentViewModel
 {
-    [JsonInclude] public int Id;
-    [JsonInclude] public int AccountId;
-    [JsonInclude] public string AccountAvatar;
-    [JsonInclude] public string AccountUsername;
+    [JsonInclude, DataMember, MemoryPackInclude] public int Id;
+    [JsonInclude, DataMember, MemoryPackInclude] public int AccountId;
+    [JsonInclude, DataMember, MemoryPackInclude] public string AccountAvatar;
+    [JsonInclude, DataMember, MemoryPackInclude] public string AccountUsername;
 
-    [JsonInclude] public int PostId;
-    [JsonInclude] public int ParentId;
+    [JsonInclude, DataMember, MemoryPackInclude] public int PostId;
+    [JsonInclude, DataMember, MemoryPackInclude] public int ParentId;
 
-    [JsonInclude] public string PostComment;
-    [JsonInclude] public int[] ReactionCounters;
-    [JsonInclude] public int TotalReactionCount;
+    [JsonInclude, DataMember, MemoryPackInclude] public string PostComment;
+    [JsonInclude, DataMember, MemoryPackInclude] public int[] ReactionCounters;
+    [JsonInclude, DataMember, MemoryPackInclude] public int TotalReactionCount;
 
-    [JsonInclude] public long CreatedTime;
-    [JsonInclude] public long DeletedTimeStamp;
+    [JsonInclude, DataMember, MemoryPackInclude] public long CreatedTime;
+    [JsonInclude, DataMember, MemoryPackInclude] public long DeletedTimeStamp;
 
-    [JsonInclude] public int CommentPage;
-    [JsonInclude] public List<PostCommentViewModel> Children = new();
+    [JsonInclude, DataMember, MemoryPackInclude] public int CommentPage;
+    [JsonInclude, DataMember, MemoryPackInclude] public List<PostCommentViewModel> Children = new();
 
     public string GetAccountUsernameSafe()
     {

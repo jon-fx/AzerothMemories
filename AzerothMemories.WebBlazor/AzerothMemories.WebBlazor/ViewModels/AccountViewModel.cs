@@ -1,54 +1,55 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed class AccountViewModel
+[DataContract, MemoryPackable]
+public sealed partial class AccountViewModel
 {
-    [JsonInclude] public int Id;
+    [JsonInclude, DataMember, MemoryPackInclude] public int Id;
 
-    [JsonInclude] public string Username;
+    [JsonInclude, DataMember, MemoryPackInclude] public string Username;
 
-    [JsonInclude] public long NextUsernameChangedTime;
+    [JsonInclude, DataMember, MemoryPackInclude] public long NextUsernameChangedTime;
 
-    [JsonInclude] public AccountType AccountType;
+    [JsonInclude, DataMember, MemoryPackInclude] public AccountType AccountType;
 
-    [JsonInclude] public AccountFlags AccountFlags;
+    [JsonInclude, DataMember, MemoryPackInclude] public AccountFlags AccountFlags;
 
-    [JsonInclude] public string BattleTag;
+    [JsonInclude, DataMember, MemoryPackInclude] public string BattleTag;
 
-    [JsonInclude] public bool BattleTagIsPublic;
+    [JsonInclude, DataMember, MemoryPackInclude] public bool BattleTagIsPublic;
 
-    [JsonInclude] public bool IsPrivate;
+    [JsonInclude, DataMember, MemoryPackInclude] public bool IsPrivate;
 
-    [JsonInclude] public string Avatar;
+    [JsonInclude, DataMember, MemoryPackInclude] public string Avatar;
 
-    [JsonInclude] public long CreatedDateTime;
+    [JsonInclude, DataMember, MemoryPackInclude] public long CreatedDateTime;
 
-    [JsonInclude] public string[] SocialLinks;
+    [JsonInclude, DataMember, MemoryPackInclude] public string[] SocialLinks;
 
-    [JsonInclude] public int TotalPostCount;
+    [JsonInclude, DataMember, MemoryPackInclude] public int TotalPostCount;
 
-    [JsonInclude] public int TotalMemoriesCount;
+    [JsonInclude, DataMember, MemoryPackInclude] public int TotalMemoriesCount;
 
-    [JsonInclude] public int TotalCommentCount;
+    [JsonInclude, DataMember, MemoryPackInclude] public int TotalCommentCount;
 
-    [JsonInclude] public int TotalReactionsCount;
+    [JsonInclude, DataMember, MemoryPackInclude] public int TotalReactionsCount;
 
-    [JsonInclude] public BlizzardUpdateViewModel UpdateJobLastResults;
+    [JsonInclude, DataMember, MemoryPackInclude] public BlizzardUpdateViewModel UpdateJobLastResults;
 
-    [JsonInclude] public string BanReason;
+    [JsonInclude, DataMember, MemoryPackInclude] public string BanReason;
 
-    [JsonInclude] public long BanExpireTime;
+    [JsonInclude, DataMember, MemoryPackInclude] public long BanExpireTime;
 
-    [JsonInclude] public CharacterViewModel[] CharactersArray = Array.Empty<CharacterViewModel>();
+    [JsonInclude, DataMember, MemoryPackInclude] public CharacterViewModel[] CharactersArray = Array.Empty<CharacterViewModel>();
 
-    [JsonInclude] public Dictionary<int, AccountFollowingViewModel> FollowingViewModels = new();
+    [JsonInclude, DataMember, MemoryPackInclude] public Dictionary<int, AccountFollowingViewModel> FollowingViewModels = new();
 
-    [JsonInclude] public Dictionary<int, AccountFollowingViewModel> FollowersViewModels = new();
+    [JsonInclude, DataMember, MemoryPackInclude] public Dictionary<int, AccountFollowingViewModel> FollowersViewModels = new();
 
-    [JsonInclude] public AccountViewModelLinks[] LinkedLogins { get; set; }
+    [JsonInclude, DataMember, MemoryPackInclude] public AccountViewModelLinks[] LinkedLogins { get; set; }
 
-    [JsonIgnore] public bool CanInteract => SystemClock.Instance.GetCurrentInstant() > Instant.FromUnixTimeMilliseconds(BanExpireTime);
+    [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] public bool CanInteract => SystemClock.Instance.GetCurrentInstant() > Instant.FromUnixTimeMilliseconds(BanExpireTime);
 
-    [JsonIgnore] public bool CanChangeUsername => Username.Contains('-') || SystemClock.Instance.GetCurrentInstant() > Instant.FromUnixTimeMilliseconds(NextUsernameChangedTime);
+    [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] public bool CanChangeUsername => Username.Contains('-') || SystemClock.Instance.GetCurrentInstant() > Instant.FromUnixTimeMilliseconds(NextUsernameChangedTime);
 
     public AccountViewModel()
     {

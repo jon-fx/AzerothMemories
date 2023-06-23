@@ -1,7 +1,5 @@
 ﻿namespace AzerothMemories.WebServer.Services;
 
-[RegisterComputeService]
-[RegisterAlias(typeof(ITagServices))]
 public class TagServices : ITagServices
 {
     private readonly ILogger<TagServices> _logger;

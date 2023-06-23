@@ -54,7 +54,7 @@ public class BaseTestHelper : IAsyncLifetime
         user = user.WithClaim("BattleNet-Token", "NULL TOKEN");
         user = user.WithClaim("BattleNet-TokenExpires", "0");
 
-        await CommonServices.Commander.Call(new SignInCommand(session, user));
+        await CommonServices.Commander.Call(new AuthBackend_SignIn(session, user));
 
         var account = await CommonServices.AccountServices.TryGetActiveAccount(session);
         account.Should().NotBeNull();

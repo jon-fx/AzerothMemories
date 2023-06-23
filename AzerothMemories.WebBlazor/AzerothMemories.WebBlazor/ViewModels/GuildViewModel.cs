@@ -1,30 +1,31 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed class GuildViewModel
+[DataContract, MemoryPackable]
+public sealed partial class GuildViewModel
 {
-    [JsonInclude] public int Id;
+    [JsonInclude, DataMember, MemoryPackInclude] public int Id;
 
-    [JsonInclude] public string Avatar;
+    [JsonInclude, DataMember, MemoryPackInclude] public string Avatar;
 
-    [JsonInclude] public BlizzardRegion RegionId;
+    [JsonInclude, DataMember, MemoryPackInclude] public BlizzardRegion RegionId;
 
-    [JsonInclude] public int RealmId;
+    [JsonInclude, DataMember, MemoryPackInclude] public int RealmId;
 
-    [JsonInclude] public string Name;
+    [JsonInclude, DataMember, MemoryPackInclude] public string Name;
 
-    [JsonInclude] public int MemberCount;
+    [JsonInclude, DataMember, MemoryPackInclude] public int MemberCount;
 
-    [JsonInclude] public int AchievementPoints;
+    [JsonInclude, DataMember, MemoryPackInclude] public int AchievementPoints;
 
-    [JsonInclude] public long CreatedDateTime;
+    [JsonInclude, DataMember, MemoryPackInclude] public long CreatedDateTime;
 
-    [JsonInclude] public long BlizzardCreatedTimestamp;
+    [JsonInclude, DataMember, MemoryPackInclude] public long BlizzardCreatedTimestamp;
 
-    [JsonInclude] public BlizzardUpdateViewModel UpdateJobLastResults;
+    [JsonInclude, DataMember, MemoryPackInclude] public BlizzardUpdateViewModel UpdateJobLastResults;
 
-    [JsonInclude] public GuildMembersViewModel MembersViewModel;
+    [JsonInclude, DataMember, MemoryPackInclude] public GuildMembersViewModel MembersViewModel;
 
-    [JsonIgnore] public bool IsLoadingFromArmory => UpdateJobLastResults == null || UpdateJobLastResults.IsLoadingFromArmory || RealmId == 0;
+    [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] public bool IsLoadingFromArmory => UpdateJobLastResults == null || UpdateJobLastResults.IsLoadingFromArmory || RealmId == 0;
 
     public string GetPageTitle()
     {

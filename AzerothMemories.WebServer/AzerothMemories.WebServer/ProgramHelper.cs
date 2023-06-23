@@ -1,8 +1,8 @@
 ﻿using AzerothMemories.WebBlazor;
+using Stl.Fusion.Blazor.Authentication;
 using Stl.Fusion.EntityFramework.Npgsql;
 using Stl.Fusion.Server.Authentication;
 using Stl.Fusion.Server.Controllers;
-using Stl.Generators;
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -15,7 +15,6 @@ public abstract class ProgramHelper
 
     private FusionBuilder _fusion;
     private FusionWebServerBuilder _fusionServer;
-    private FusionAuthenticationBuilder _fusionAuth;
 
     protected ProgramHelper(CommonConfig config, IServiceCollection services)
     {
@@ -30,8 +29,6 @@ public abstract class ProgramHelper
     public FusionBuilder Fusion => _fusion;
 
     public FusionWebServerBuilder FusionWebServer => _fusionServer;
-
-    public FusionAuthenticationBuilder FusionAuthentication => _fusionAuth;
 
     public void Initialize()
     {
@@ -60,56 +57,40 @@ public abstract class ProgramHelper
 
                 operations.AddNpgsqlOperationLogChangeTracking();
             });
-
-            dbContext.AddAuthentication<string>();
         });
 
-        _fusion = _services.AddFusion();
+        _fusion = _services.AddFusion(RpcServiceMode.Server, true);
         _fusionServer = _fusion.AddWebServer();
 
-        _services.AddSingleton(new PublisherOptions { Id = $"p-{RandomStringGenerator.Default.Next(8)}" });
-        //_services.AddSingleton(new WebSocketServer.Options
-        //{
-        //    ConfigureWebSocket = () => new WebSocketAcceptContext
-        //    {
-        //        DangerousEnableCompression = false
-        //    }
-        //});
+        _fusion.AddDbAuthService<AppDbContext, string>();
+        //_fusion.AddDbKeyValueStore<AppDbContext>();
+        _fusionServer.AddAuthentication();
 
-        _fusion.AddOperationReprocessor();
-        //_services.TryAddEnumerable(ServiceDescriptor.Singleton(TransientFailureDetector.New(e => e is DbUpdateConcurrencyException)));
-        //_services.TryAddEnumerable(ServiceDescriptor.Singleton(TransientFailureDetector.New(e => e is PostgresException postgresException && postgresException.IsTransient)));
-
-        var signInControllerSettings = new SignInController.Options
+        _fusionServer.ConfigureSignInController(_ => new SignInController.Options
         {
             DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme,
             SignInPropertiesBuilder = (_, properties) =>
             {
                 properties.IsPersistent = true;
             }
-        };
+        });
 
-        var authHelperSettings = new ServerAuthHelper.Options
+        _fusionServer.ConfigureServerAuthHelper(_ => new ServerAuthHelper.Options
         {
             NameClaimKeys = Array.Empty<string>(),
-        };
-
-        var sessionMiddlewareSettings = new SessionMiddleware.Options
-        {
-        };
-
-        //_services.AddScoped<ServerAuthHelper, CustomServerAuthHelper>();
-
-        //var sessionFactory = new SessionFactory(new Stl.Generators.RandomStringGenerator(32));
-        //_services.AddSingleton<ISessionFactory>(sessionFactory);
-        _fusionAuth = _fusion.AddAuthentication().AddServer(_ => sessionMiddlewareSettings, _ => authHelperSettings, _ => signInControllerSettings);
+        });
 
         OnInitializeAuth();
+
+        _fusion.AddOperationReprocessor();
 
         _services.AddSingleton(_config);
         _services.AddSingleton<CommonServices>();
         _services.AddSingleton<BlizzardUpdateHandler>();
+        _services.AddSingleton<MediaServices>();
         _services.AddSingleton<HttpClientProvider>();
+
+        _fusion.AddService<BlizzardUpdateServices>();
 
         _services.AddHttpClient("Blizzard", x =>
         {
@@ -117,7 +98,22 @@ public abstract class ProgramHelper
             x.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         });
 
-        _services.UseRegisterAttributeScanner().RegisterFrom(typeof(CommonServices).Assembly);
+        void AddServiceWithSingleton<TService, TImplementation>() where TService : class where TImplementation : class, TService, IComputeService
+        {
+            _fusion.AddService<TService, TImplementation>();
+            _services.AddSingleton(c => (TImplementation)c.GetRequiredService<TService>());
+        }
+
+        AddServiceWithSingleton<IAdminServices, AdminServices>();
+        AddServiceWithSingleton<IAccountServices, AccountServices>();
+        AddServiceWithSingleton<IFollowingServices, FollowingServices>();
+        AddServiceWithSingleton<ICharacterServices, CharacterServices>();
+        AddServiceWithSingleton<IGuildServices, GuildServices>();
+        AddServiceWithSingleton<ITagServices, TagServices>();
+        AddServiceWithSingleton<IPostServices, PostServices>();
+        AddServiceWithSingleton<ISearchServices, SearchServices>();
+
+        _fusion.AddBlazor().AddAuthentication().AddPresenceReporter();
     }
 
     protected abstract void ConfigureDbContextFactory(DbContextOptionsBuilder optionsBuilder);

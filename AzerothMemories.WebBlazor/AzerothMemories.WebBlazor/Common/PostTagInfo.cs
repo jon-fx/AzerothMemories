@@ -1,18 +1,19 @@
 ﻿namespace AzerothMemories.WebBlazor.Common;
 
-public sealed class PostTagInfo
+[DataContract, MemoryPackable]
+public sealed partial class PostTagInfo
 {
     public static readonly IEqualityComparer<PostTagInfo> EqualityComparer1 = new PostTagInfoEqualityComparer1();
     public static readonly IEqualityComparer<object> EqualityComparer2 = new PostTagInfoEqualityComparer2();
 
-    [JsonInclude] public readonly int Id;
-    [JsonInclude] public readonly string Name;
-    [JsonInclude] public readonly string Image;
-    [JsonInclude] public readonly PostTagType Type;
-    [JsonInclude] public readonly long MinTagTime;
+    [JsonInclude, DataMember, MemoryPackInclude] public readonly int Id;
+    [JsonInclude, DataMember, MemoryPackInclude] public readonly string Name;
+    [JsonInclude, DataMember, MemoryPackInclude] public readonly string Image;
+    [JsonInclude, DataMember, MemoryPackInclude] public readonly PostTagType Type;
+    [JsonInclude, DataMember, MemoryPackInclude] public readonly long MinTagTime;
 
-    [JsonIgnore] private string _nameWithIcon;
-    [JsonIgnore] private string _wowHeadLink;
+    [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] private string _nameWithIcon;
+    [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] private string _wowHeadLink;
 
     public PostTagInfo(PostTagType type, int id, string name, string image, long minTagTime = 0)
     {
@@ -23,13 +24,13 @@ public sealed class PostTagInfo
         MinTagTime = minTagTime;
     }
 
-    [JsonInclude] public bool IsChipClosable { get; set; } = true;
+    [JsonInclude, DataMember, MemoryPackInclude] public bool IsChipClosable { get; set; } = true;
 
-    [JsonIgnore] public string NameWithIcon => _nameWithIcon ??= $"{Type.GetTagIcon()}{Name}";
+    [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] public string NameWithIcon => _nameWithIcon ??= $"{Type.GetTagIcon()}{Name}";
 
-    [JsonIgnore] public string WowHeadLink => _wowHeadLink ??= Type.GetWowHeadLink(Id);
+    [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] public string WowHeadLink => _wowHeadLink ??= Type.GetWowHeadLink(Id);
 
-    [JsonIgnore]
+    [JsonIgnore, IgnoreDataMember, MemoryPackIgnore]
     public string TagString
     {
         get

@@ -1,59 +1,44 @@
 ﻿namespace AzerothMemories.WebBlazor.Services;
 
-[BasePath("account")]
 public interface IAccountServices : IComputeService
 {
     [ComputeMethod]
-    [Get(nameof(TryGetActiveAccount))]
     Task<AccountViewModel> TryGetActiveAccount(Session session);
 
     [ComputeMethod]
-    [Get(nameof(TryGetAccountById) + "/{accountId}")]
-    Task<AccountViewModel> TryGetAccountById(Session session, [Path] int accountId);
+    Task<AccountViewModel> TryGetAccountById(Session session, int accountId);
 
     [ComputeMethod]
-    [Get(nameof(TryGetAccountByUsername) + "/{username}")]
-    Task<AccountViewModel> TryGetAccountByUsername(Session session, [Path] string username);
+    Task<AccountViewModel> TryGetAccountByUsername(Session session, string username);
 
-    [Post(nameof(TryEnqueueUpdate))]
     Task<bool> TryEnqueueUpdate(Session session);
 
     [ComputeMethod]
-    [Get(nameof(CheckIsValidUsername) + "/{username}")]
-    Task<bool> CheckIsValidUsername(Session session, [Path] string username);
+    Task<bool> CheckIsValidUsername(Session session, string username);
 
     [CommandHandler]
-    [Post(nameof(TryChangeUsername))]
-    Task<bool> TryChangeUsername([Body] Account_TryChangeUsername command, CancellationToken cancellationToken = default);
+    Task<bool> TryChangeUsername(Account_TryChangeUsername command, CancellationToken cancellationToken = default);
 
     [CommandHandler]
-    [Post(nameof(TryChangeIsPrivate))]
-    Task<bool> TryChangeIsPrivate([Body] Account_TryChangeIsPrivate command, CancellationToken cancellationToken = default);
+    Task<bool> TryChangeIsPrivate(Account_TryChangeIsPrivate command, CancellationToken cancellationToken = default);
 
     [CommandHandler]
-    [Post(nameof(TryChangeBattleTagVisibility))]
-    Task<bool> TryChangeBattleTagVisibility([Body] Account_TryChangeBattleTagVisibility command, CancellationToken cancellationToken = default);
+    Task<bool> TryChangeBattleTagVisibility(Account_TryChangeBattleTagVisibility command, CancellationToken cancellationToken = default);
 
     [CommandHandler]
-    [Post(nameof(TryChangeAvatar))]
-    Task<string> TryChangeAvatar([Body] Account_TryChangeAvatar command, CancellationToken cancellationToken = default);
+    Task<string> TryChangeAvatar(Account_TryChangeAvatar command, CancellationToken cancellationToken = default);
 
-    [Post(nameof(TryChangeAvatarUpload))]
-    Task<string> TryChangeAvatarUpload(Session session, [Body] byte[] buffer);
+    Task<string> TryChangeAvatarUpload(Session session, byte[] buffer);
 
     [CommandHandler]
-    [Post(nameof(TryChangeSocialLink))]
-    Task<string> TryChangeSocialLink([Body] Account_TryChangeSocialLink command, CancellationToken cancellationToken = default);
+    Task<string> TryChangeSocialLink(Account_TryChangeSocialLink command, CancellationToken cancellationToken = default);
 
     [CommandHandler]
-    [Post(nameof(TryDisconnectAccount))]
-    Task<bool> TryDisconnectAccount([Body] Account_TryDisconnectAccount command, CancellationToken cancellationToken = default);
+    Task<bool> TryDisconnectAccount(Account_TryDisconnectAccount command, CancellationToken cancellationToken = default);
 
     [ComputeMethod]
-    [Get(nameof(TryGetAchievementsByTime) + "/{timeStamp}/{diffInSeconds}")]
-    Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, [Path] long timeStamp, [Path] int diffInSeconds, [Query] ServerSideLocale locale);
+    Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, long timeStamp, int diffInSeconds, ServerSideLocale locale);
 
     [ComputeMethod]
-    [Get(nameof(TryGetAccountHistory))]
-    Task<AccountHistoryPageResult> TryGetAccountHistory(Session session, [Query] int currentPage = 0);
+    Task<AccountHistoryPageResult> TryGetAccountHistory(Session session, int currentPage = 0);
 }

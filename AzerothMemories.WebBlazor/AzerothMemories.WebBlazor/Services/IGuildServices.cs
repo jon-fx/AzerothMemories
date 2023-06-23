@@ -1,20 +1,15 @@
 ﻿namespace AzerothMemories.WebBlazor.Services;
 
-[BasePath("guild")]
 public interface IGuildServices : IComputeService
 {
     [ComputeMethod]
-    [Get(nameof(TryGetGuild) + "/{guildId}")]
-    Task<GuildViewModel> TryGetGuild(Session session, [Path] int guildId);
+    Task<GuildViewModel> TryGetGuild(Session session, int guildId);
 
     [ComputeMethod]
-    [Get(nameof(TryGetGuildMembers) + "/{guildId}/{pageIndex}")]
-    Task<GuildMembersViewModel> TryGetGuildMembers(Session o, [Path] int guildId, [Path] int pageIndex);
+    Task<GuildMembersViewModel> TryGetGuildMembers(Session o, int guildId, int pageIndex);
 
     [ComputeMethod]
-    [Get(nameof(TryGetGuild) + "/{region}/{realmSlug}/{guildName}")]
-    Task<GuildViewModel> TryGetGuild(Session session, [Path] BlizzardRegion region, [Path] string realmSlug, [Path] string guildName);
+    Task<GuildViewModel> TryGetGuild(Session session, BlizzardRegion region, string realmSlug, string guildName);
 
-    [Post(nameof(TryEnqueueUpdate) + "/{region}/{realmSlug}/{guildName}")]
-    Task<bool> TryEnqueueUpdate(Session session, [Path] BlizzardRegion region, [Path] string realmSlug, [Path] string guildName);
+    Task<bool> TryEnqueueUpdate(Session session, BlizzardRegion region, string realmSlug, string guildName);
 }

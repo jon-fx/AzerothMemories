@@ -1,12 +1,13 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed class BlizzardUpdateViewModelChild
+[DataContract, MemoryPackable]
+public sealed partial class BlizzardUpdateViewModelChild
 {
-    [JsonInclude] public long Id;
+    [JsonInclude, DataMember, MemoryPackInclude] public long Id;
 
-    [JsonInclude] public byte UpdateType { get; set; }
+    [JsonInclude, DataMember, MemoryPackInclude] public byte UpdateType { get; set; }
 
-    [JsonInclude] public string UpdateTypeString { get; set; }
+    [JsonInclude, DataMember, MemoryPackInclude] public string UpdateTypeString { get; set; }
 
-    [JsonInclude] public HttpStatusCode UpdateJobLastResult;
+    [JsonInclude, DataMember, MemoryPackInclude] public HttpStatusCode UpdateJobLastResult;
 }

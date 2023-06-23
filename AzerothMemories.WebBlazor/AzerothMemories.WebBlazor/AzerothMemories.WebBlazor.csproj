@@ -27,18 +27,22 @@
     <ItemGroup>
         <PackageReference Include="BlazorWasmAntivirusProtection" Version="2.4.5" />
         <PackageReference Include="Humanizer" Version="2.14.1" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.5" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.5" PrivateAssets="all" />
+        <PackageReference Include="MemoryPack.Generator" Version="1.9.16">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.8" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.8" PrivateAssets="all" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.5" />
+        <PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.8" />
         <PackageReference Include="Markdig" Version="0.31.0" />
         <PackageReference Include="MudBlazor" Version="6.4.1" />
         <PackageReference Include="NodaTime" Version="3.1.9" />
-        <PackageReference Include="Stl.Fusion" Version="6.0.35" />
-        <PackageReference Include="Stl.CommandR" Version="6.0.35" />
-        <PackageReference Include="Stl.Fusion.Blazor" Version="6.0.35" />
-        <PackageReference Include="Stl.Fusion.Client" Version="6.0.35" />
-        <PackageReference Include="Stl.Generators" Version="6.0.35">
+        <PackageReference Include="Stl.Fusion" Version="6.1.14" />
+        <PackageReference Include="Stl.CommandR" Version="6.1.14" />
+        <PackageReference Include="Stl.Fusion.Blazor" Version="6.1.14" />
+        <PackageReference Include="Stl.Fusion.Blazor.Authentication" Version="6.1.14" />
+        <PackageReference Include="Stl.Generators" Version="6.1.14">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>

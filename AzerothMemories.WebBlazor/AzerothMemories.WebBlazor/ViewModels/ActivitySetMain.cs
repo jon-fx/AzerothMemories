@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed class ActivitySetMain
+public sealed partial class ActivitySetMain
 {
     public int Year { get; init; }
 

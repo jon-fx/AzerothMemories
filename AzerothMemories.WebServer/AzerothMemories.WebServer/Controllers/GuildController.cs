@@ -14,19 +14,19 @@ public sealed class GuildController : ControllerBase, IGuildServices
         _commonServices = commonServices;
     }
 
-    [HttpGet("{guildId}"), Publish]
+    [HttpGet("{guildId}")]
     public Task<GuildViewModel> TryGetGuild(Session session, [FromRoute] int guildId)
     {
         return _commonServices.GuildServices.TryGetGuild(session, guildId);
     }
 
-    [HttpGet("{guildId}/{pageIndex}"), Publish]
+    [HttpGet("{guildId}/{pageIndex}")]
     public Task<GuildMembersViewModel> TryGetGuildMembers(Session session, int guildId, int pageIndex)
     {
         return _commonServices.GuildServices.TryGetGuildMembers(session, guildId, pageIndex);
     }
 
-    [HttpGet("{region}/{realmSlug}/{guildName}"), Publish]
+    [HttpGet("{region}/{realmSlug}/{guildName}")]
     public Task<GuildViewModel> TryGetGuild(Session session, [FromRoute] BlizzardRegion region, [FromRoute] string realmSlug, [FromRoute] string guildName)
     {
         return _commonServices.GuildServices.TryGetGuild(session, region, realmSlug, guildName);

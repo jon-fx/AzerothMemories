@@ -14,19 +14,19 @@ public sealed class AccountController : ControllerBase, IAccountServices
         _commonServices = commonServices;
     }
 
-    [HttpGet, Publish]
+    [HttpGet]
     public Task<AccountViewModel> TryGetActiveAccount(Session session)
     {
         return _commonServices.AccountServices.TryGetActiveAccount(session);
     }
 
-    [HttpGet("{accountId}"), Publish]
+    [HttpGet("{accountId}")]
     public Task<AccountViewModel> TryGetAccountById(Session session, [FromRoute] int accountId)
     {
         return _commonServices.AccountServices.TryGetAccountById(session, accountId);
     }
 
-    [HttpGet("{username}"), Publish]
+    [HttpGet("{username}")]
     public Task<AccountViewModel> TryGetAccountByUsername(Session session, [FromRoute] string username)
     {
         return _commonServices.AccountServices.TryGetAccountByUsername(session, username);
@@ -38,7 +38,7 @@ public sealed class AccountController : ControllerBase, IAccountServices
         return _commonServices.AccountServices.TryEnqueueUpdate(session);
     }
 
-    [HttpGet("{username}"), Publish]
+    [HttpGet("{username}")]
     public Task<bool> CheckIsValidUsername(Session session, [FromRoute] string username)
     {
         return _commonServices.AccountServices.CheckIsValidUsername(session, username);
@@ -95,13 +95,13 @@ public sealed class AccountController : ControllerBase, IAccountServices
         return _commonServices.Commander.Call(command, cancellationToken);
     }
 
-    [HttpGet("{timeStamp}/{diffInSeconds}"), Publish]
+    [HttpGet("{timeStamp}/{diffInSeconds}")]
     public Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, [FromRoute] long timeStamp, [FromRoute] int diffInSeconds, [FromQuery] ServerSideLocale locale)
     {
         return _commonServices.AccountServices.TryGetAchievementsByTime(session, timeStamp, diffInSeconds, locale);
     }
 
-    [HttpGet, Publish]
+    [HttpGet]
     public Task<AccountHistoryPageResult> TryGetAccountHistory(Session session, [FromQuery] int currentPage)
     {
         return _commonServices.AccountServices.TryGetAccountHistory(session, currentPage);

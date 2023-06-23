@@ -14,7 +14,7 @@ public sealed class TagController : ControllerBase, ITagServices
         _commonServices = commonServices;
     }
 
-    [HttpGet("{searchString}"), Publish]
+    [HttpGet("{searchString}")]
     public Task<PostTagInfo[]> Search(Session session, [FromRoute] string searchString, [FromQuery] ServerSideLocale locale)
     {
         return _commonServices.TagServices.Search(session, searchString, locale);

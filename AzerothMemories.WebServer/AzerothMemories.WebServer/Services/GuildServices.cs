@@ -1,7 +1,5 @@
 ﻿namespace AzerothMemories.WebServer.Services;
 
-[RegisterComputeService]
-[RegisterAlias(typeof(IGuildServices))]
 public class GuildServices : IGuildServices
 {
     private readonly ILogger<GuildServices> _logger;

@@ -1,11 +1,12 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed class RecentPostsResults
+[DataContract, MemoryPackable]
+public sealed partial class RecentPostsResults
 {
-    [JsonInclude] public int TotalPages { get; set; }
-    [JsonInclude] public int CurrentPage { get; set; }
-    [JsonInclude] public PostSortMode SortMode { get; set; }
-    [JsonInclude] public RecentPostsType PostsType { get; set; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int TotalPages { get; set; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int CurrentPage { get; set; }
+    [JsonInclude, DataMember, MemoryPackInclude] public PostSortMode SortMode { get; set; }
+    [JsonInclude, DataMember, MemoryPackInclude] public RecentPostsType PostsType { get; set; }
 
-    [JsonInclude] public PostViewModel[] PostViewModels = Array.Empty<PostViewModel>();
+    [JsonInclude, DataMember, MemoryPackInclude] public PostViewModel[] PostViewModels = Array.Empty<PostViewModel>();
 }

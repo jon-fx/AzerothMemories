@@ -1,7 +1,5 @@
 ﻿namespace AzerothMemories.WebServer.Services;
 
-[RegisterComputeService]
-[RegisterAlias(typeof(IPostServices))]
 public class PostServices : IPostServices
 {
     private readonly ILogger<PostServices> _logger;

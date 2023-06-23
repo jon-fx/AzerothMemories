@@ -39,6 +39,6 @@ public sealed class OnThisDayPageViewModel : PersistentStateViewModel
             month = (byte)inZone.Month;
         }
 
-        return Services.ComputeServices.SearchServices.TryGetDailyActivityFull(Session.Default, timeZone.Id, day, month, ServerSideLocaleExt.GetServerSideLocale());
+        return Services.ComputeServices.SearchServices.TryGetDailyActivityFull(Services.ClientServices.ActiveAccountServices.ActiveSession, timeZone.Id, day, month, ServerSideLocaleExt.GetServerSideLocale());
     }
 }

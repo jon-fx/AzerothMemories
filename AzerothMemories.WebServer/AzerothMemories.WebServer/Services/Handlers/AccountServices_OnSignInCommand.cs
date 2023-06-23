@@ -2,7 +2,7 @@
 
 internal static class AccountServices_OnSignInCommand
 {
-    public static async Task TryHandle(ILogger<AccountServices> services, CommonServices commonServices, IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> sessionRepo, SignInCommand command, CancellationToken cancellationToken)
+    public static async Task TryHandle(ILogger<AccountServices> services, CommonServices commonServices, IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> sessionRepo, AuthBackend_SignIn command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
 
@@ -143,7 +143,7 @@ internal static class AccountServices_OnSignInCommand
         return null;
     }
 
-    private static bool CanBlizzardAccountSignIn(SignInCommand command, AccountRecord tempAccount, AuthTokenRecord authToken)
+    private static bool CanBlizzardAccountSignIn(AuthBackend_SignIn command, AccountRecord tempAccount, AuthTokenRecord authToken)
     {
         if (tempAccount == null)
         {
@@ -168,7 +168,7 @@ internal static class AccountServices_OnSignInCommand
         return false;
     }
 
-    private static bool CanPatreonAccountSignIn(SignInCommand command, AccountRecord tempAccount, AuthTokenRecord authToken)
+    private static bool CanPatreonAccountSignIn(AuthBackend_SignIn command, AccountRecord tempAccount, AuthTokenRecord authToken)
     {
         if (tempAccount == null)
         {

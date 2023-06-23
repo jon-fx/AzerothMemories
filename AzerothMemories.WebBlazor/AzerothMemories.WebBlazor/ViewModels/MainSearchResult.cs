@@ -1,20 +1,21 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed class MainSearchResult
+[DataContract, MemoryPackable]
+public sealed partial class MainSearchResult
 {
-    [JsonInclude] public int Id { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int Id { get; init; }
 
-    [JsonInclude] public string RefStr { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public string RefStr { get; init; }
 
-    [JsonInclude] public string Name { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public string Name { get; init; }
 
-    [JsonInclude] public string Avatar { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public string Avatar { get; init; }
 
-    [JsonInclude] public byte CharacterClass { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public byte CharacterClass { get; init; }
 
-    [JsonInclude] public int RealmId { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int RealmId { get; init; }
 
-    [JsonInclude] public MainSearchType Type { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public MainSearchType Type { get; init; }
 
     public string GetLink()
     {

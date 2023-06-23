@@ -1,15 +1,16 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed record DailyActivityResultsMain
+[DataContract, MemoryPackable]
+public sealed partial record DailyActivityResultsMain
 {
-    [JsonInclude] public int Year { get; init; }
-    [JsonInclude] public string ZoneId { get; init; }
-    [JsonInclude] public long StartTimeMs { get; init; }
-    [JsonInclude] public long EndTimeMs { get; init; }
-    [JsonInclude] public int TotalTags { get; set; }
-    [JsonInclude] public int TotalAchievements { get; set; }
-    [JsonInclude] public List<PostTagInfo> TopTags { get; init; } = new();
-    [JsonInclude] public List<PostTagInfo> TopAchievements { get; init; } = new();
-    [JsonInclude] public List<PostTagInfo> FirstTags { get; init; } = new();
-    [JsonInclude] public List<PostTagInfo> FirstAchievements { get; init; } = new();
+    [JsonInclude, DataMember, MemoryPackInclude] public int Year { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public string ZoneId { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public long StartTimeMs { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public long EndTimeMs { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int TotalTags { get; set; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int TotalAchievements { get; set; }
+    [JsonInclude, DataMember, MemoryPackInclude] public List<PostTagInfo> TopTags { get; init; } = new();
+    [JsonInclude, DataMember, MemoryPackInclude] public List<PostTagInfo> TopAchievements { get; init; } = new();
+    [JsonInclude, DataMember, MemoryPackInclude] public List<PostTagInfo> FirstTags { get; init; } = new();
+    [JsonInclude, DataMember, MemoryPackInclude] public List<PostTagInfo> FirstAchievements { get; init; } = new();
 }

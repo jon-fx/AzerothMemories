@@ -23,6 +23,11 @@ internal static class CharacterServices_TryChangeCharacterAccountSync
         }
 
         var characterRecord = await commonServices.CharacterServices.TryGetCharacterRecord(command.CharacterId).ConfigureAwait(false);
+        if (characterRecord == null)
+        {
+            return false;
+        }
+
         if (characterRecord.AccountId != activeAccount.Id)
         {
             return false;

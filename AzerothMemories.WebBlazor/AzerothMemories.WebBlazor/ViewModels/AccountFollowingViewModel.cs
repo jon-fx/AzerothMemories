@@ -1,16 +1,17 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed class AccountFollowingViewModel
+[DataContract, MemoryPackable]
+public sealed partial class AccountFollowingViewModel
 {
-    [JsonInclude] public int Id;
+    [JsonInclude, DataMember, MemoryPackInclude] public int Id;
 
-    [JsonInclude] public int AccountId;
+    [JsonInclude, DataMember, MemoryPackInclude] public int AccountId;
 
-    [JsonInclude] public int FollowerId;
+    [JsonInclude, DataMember, MemoryPackInclude] public int FollowerId;
 
-    [JsonInclude] public string FollowerUsername;
+    [JsonInclude, DataMember, MemoryPackInclude] public string FollowerUsername;
 
-    [JsonInclude] public string FollowerAvatarLink;
+    [JsonInclude, DataMember, MemoryPackInclude] public string FollowerAvatarLink;
 
-    [JsonInclude] public AccountFollowingStatus Status;
+    [JsonInclude, DataMember, MemoryPackInclude] public AccountFollowingStatus Status;
 }

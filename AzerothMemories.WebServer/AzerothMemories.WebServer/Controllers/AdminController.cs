@@ -14,25 +14,25 @@ public sealed class AdminController : ControllerBase, IAdminServices
         _commonServices = commonServices;
     }
 
-    [HttpGet, Publish]
+    [HttpGet]
     public Task<AdminCountersViewModel> TryGetUserCounts(Session session)
     {
         return _commonServices.AdminServices.TryGetUserCounts(session);
     }
 
-    [HttpGet, Publish]
+    [HttpGet]
     public Task<ReportedPostViewModel[]> TryGetReportedPosts(Session session)
     {
         return _commonServices.AdminServices.TryGetReportedPosts(session);
     }
 
-    [HttpGet, Publish]
+    [HttpGet]
     public Task<ReportedPostCommentsViewModel[]> TryGetReportedComments(Session session)
     {
         return _commonServices.AdminServices.TryGetReportedComments(session);
     }
 
-    [HttpGet, Publish]
+    [HttpGet]
     public Task<ReportedPostTagsViewModel[]> TryGetReportedTags(Session session)
     {
         return _commonServices.AdminServices.TryGetReportedTags(session);

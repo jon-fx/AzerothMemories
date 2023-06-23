@@ -1,25 +1,19 @@
 ﻿namespace AzerothMemories.WebBlazor.Services;
 
-[BasePath("search")]
 public interface ISearchServices : IComputeService
 {
     [ComputeMethod]
-    [Get(nameof(TryGetDailyActivity))]
-    Task<DailyActivityResults> TryGetDailyActivity(Session session, [Query] string timeZoneId, [Query] byte inZoneDay, [Query] byte inZoneMonth, [Query] ServerSideLocale locale);
+    Task<DailyActivityResults> TryGetDailyActivity(Session session, string timeZoneId, byte inZoneDay, byte inZoneMonth, ServerSideLocale locale);
 
     [ComputeMethod]
-    [Get(nameof(TryGetDailyActivityFull))]
-    Task<DailyActivityResults[]> TryGetDailyActivityFull(Session session, [Query] string timeZoneId, [Query] byte inZoneDay, [Query] byte inZoneMonth, [Query] ServerSideLocale locale);
+    Task<DailyActivityResults[]> TryGetDailyActivityFull(Session session, string timeZoneId, byte inZoneDay, byte inZoneMonth, ServerSideLocale locale);
 
     [ComputeMethod]
-    [Get(nameof(TrySearch))]
-    Task<MainSearchResult[]> TrySearch(Session session, [Query] MainSearchType searchType, [Query] string searchString);
+    Task<MainSearchResult[]> TrySearch(Session session, MainSearchType searchType, string searchString);
 
     [ComputeMethod]
-    [Get(nameof(TryGetRecentPosts))]
-    Task<RecentPostsResults> TryGetRecentPosts(Session session, [Query] RecentPostsType postsType, [Query] PostSortMode sortMode, [Query] int currentPage, [Query] ServerSideLocale locale);
+    Task<RecentPostsResults> TryGetRecentPosts(Session session, RecentPostsType postsType, PostSortMode sortMode, int currentPage, ServerSideLocale locale);
 
     [ComputeMethod]
-    [Get(nameof(TrySearchPosts))]
-    Task<SearchPostsResults> TrySearchPosts(Session session, [Query] string[] tagStrings, [Query] PostSortMode sortMode, [Query] int currentPage, [Query] long postMinTime, [Query] long postMaxTime, [Query] ServerSideLocale locale);
+    Task<SearchPostsResults> TrySearchPosts(Session session, string[] tagStrings, PostSortMode sortMode, int currentPage, long postMinTime, long postMaxTime, ServerSideLocale locale);
 }

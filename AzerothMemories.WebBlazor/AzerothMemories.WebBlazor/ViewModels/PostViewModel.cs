@@ -1,48 +1,49 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed class PostViewModel
+[DataContract, MemoryPackable]
+public sealed partial class PostViewModel
 {
-    [JsonIgnore] private PostViewModelBlobInfo[] _blobInfo;
+    [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] private PostViewModelBlobInfo[] _blobInfo;
 
     public PostViewModel()
     {
     }
 
-    [JsonInclude] public int Id;
+    [JsonInclude, DataMember, MemoryPackInclude] public int Id;
 
-    [JsonInclude] public int AccountId;
+    [JsonInclude, DataMember, MemoryPackInclude] public int AccountId;
 
-    [JsonInclude] public string AccountAvatar;
+    [JsonInclude, DataMember, MemoryPackInclude] public string AccountAvatar;
 
-    [JsonInclude] public string AccountUsername;
+    [JsonInclude, DataMember, MemoryPackInclude] public string AccountUsername;
 
-    [JsonInclude] public string PostAvatar;
+    [JsonInclude, DataMember, MemoryPackInclude] public string PostAvatar;
 
-    [JsonInclude] public string PostComment;
+    [JsonInclude, DataMember, MemoryPackInclude] public string PostComment;
 
-    [JsonInclude] public byte PostVisibility;
+    [JsonInclude, DataMember, MemoryPackInclude] public byte PostVisibility;
 
-    [JsonInclude] public long PostTime;
+    [JsonInclude, DataMember, MemoryPackInclude] public long PostTime;
 
-    [JsonInclude] public long PostEditedTime;
+    [JsonInclude, DataMember, MemoryPackInclude] public long PostEditedTime;
 
-    [JsonInclude] public long PostCreatedTime;
+    [JsonInclude, DataMember, MemoryPackInclude] public long PostCreatedTime;
 
-    [JsonInclude] public string[] ImageBlobNames;
+    [JsonInclude, DataMember, MemoryPackInclude] public string[] ImageBlobNames;
 
-    [JsonInclude] public PostTagInfo[] SystemTags;
+    [JsonInclude, DataMember, MemoryPackInclude] public PostTagInfo[] SystemTags;
 
-    [JsonInclude] public int ReactionId;
+    [JsonInclude, DataMember, MemoryPackInclude] public int ReactionId;
 
-    [JsonInclude] public PostReaction Reaction;
+    [JsonInclude, DataMember, MemoryPackInclude] public PostReaction Reaction;
 
-    [JsonInclude] public int TotalCommentCount;
+    [JsonInclude, DataMember, MemoryPackInclude] public int TotalCommentCount;
 
-    [JsonInclude] public int TotalReactionCount;
+    [JsonInclude, DataMember, MemoryPackInclude] public int TotalReactionCount;
 
-    [JsonInclude] public int[] ReactionCounters;
+    [JsonInclude, DataMember, MemoryPackInclude] public int[] ReactionCounters;
 
-    [JsonInclude] public long DeletedTimeStamp;
+    [JsonInclude, DataMember, MemoryPackInclude] public long DeletedTimeStamp;
 
     public PostViewModelBlobInfo[] GetImageBlobInfo()
     {

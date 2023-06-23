@@ -1,7 +1,5 @@
 ﻿namespace AzerothMemories.WebServer.Services;
 
-[RegisterComputeService]
-[RegisterAlias(typeof(IAdminServices))]
 public class AdminServices : IAdminServices
 {
     private readonly ILogger<AdminServices> _logger;

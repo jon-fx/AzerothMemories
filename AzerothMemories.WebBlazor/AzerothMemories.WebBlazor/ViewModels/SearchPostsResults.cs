@@ -1,14 +1,15 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed class SearchPostsResults
+[DataContract, MemoryPackable]
+public sealed partial class SearchPostsResults
 {
-    [JsonInclude] public int TotalPages { get; set; }
-    [JsonInclude] public int CurrentPage { get; set; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int TotalPages { get; set; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int CurrentPage { get; set; }
 
-    [JsonInclude] public long MinTime { get; set; }
-    [JsonInclude] public long MaxTime { get; set; }
-    [JsonInclude] public PostSortMode SortMode { get; set; }
+    [JsonInclude, DataMember, MemoryPackInclude] public long MinTime { get; set; }
+    [JsonInclude, DataMember, MemoryPackInclude] public long MaxTime { get; set; }
+    [JsonInclude, DataMember, MemoryPackInclude] public PostSortMode SortMode { get; set; }
 
-    [JsonInclude] public PostTagInfo[] Tags { get; set; } = Array.Empty<PostTagInfo>();
-    [JsonInclude] public PostViewModel[] PostViewModels = Array.Empty<PostViewModel>();
+    [JsonInclude, DataMember, MemoryPackInclude] public PostTagInfo[] Tags { get; set; } = Array.Empty<PostTagInfo>();
+    [JsonInclude, DataMember, MemoryPackInclude] public PostViewModel[] PostViewModels = Array.Empty<PostViewModel>();
 }

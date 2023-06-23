@@ -1,19 +1,20 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed class AccountHistoryViewModel
+[DataContract, MemoryPackable]
+public sealed partial class AccountHistoryViewModel
 {
-    [JsonInclude] public int Id;
-    [JsonInclude] public AccountHistoryType Type;
+    [JsonInclude, DataMember, MemoryPackInclude] public int Id;
+    [JsonInclude, DataMember, MemoryPackInclude] public AccountHistoryType Type;
 
-    [JsonInclude] public int AccountId;
-    [JsonInclude] public int OtherAccountId;
-    [JsonInclude] public string OtherAccountUsername;
+    [JsonInclude, DataMember, MemoryPackInclude] public int AccountId;
+    [JsonInclude, DataMember, MemoryPackInclude] public int OtherAccountId;
+    [JsonInclude, DataMember, MemoryPackInclude] public string OtherAccountUsername;
 
-    [JsonInclude] public int TargetId;
-    [JsonInclude] public int TargetPostId;
-    [JsonInclude] public int TargetCommentId;
+    [JsonInclude, DataMember, MemoryPackInclude] public int TargetId;
+    [JsonInclude, DataMember, MemoryPackInclude] public int TargetPostId;
+    [JsonInclude, DataMember, MemoryPackInclude] public int TargetCommentId;
 
-    [JsonInclude] public long CreatedTime;
+    [JsonInclude, DataMember, MemoryPackInclude] public long CreatedTime;
 
     public string GetDisplayText(AccountViewModel activeAccountViewModel, IStringLocalizer<BlizzardResources> stringLocalizer)
     {

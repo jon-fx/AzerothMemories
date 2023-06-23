@@ -1,3 +1,15 @@
 ﻿namespace AzerothMemories.WebBlazor.Services.Commands;
 
-public sealed record Post_TryDeletePost(Session Session, int PostId) : ISessionCommand<long>;
+[DataContract, MemoryPackable]
+public sealed partial record Post_TryDeletePost : ISessionCommand<long>
+{
+    public Post_TryDeletePost(Session session, int postId)
+    {
+        Session = session;
+        PostId = postId;
+    }
+
+    [DataMember, MemoryPackInclude] public Session Session { get; init; }
+
+    [DataMember, MemoryPackInclude] public int PostId { get; init; }
+}

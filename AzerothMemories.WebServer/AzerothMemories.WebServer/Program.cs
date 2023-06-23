@@ -1,3 +1,5 @@
+using Stl.Rpc.Server;
+
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("AzerothMemories.WebServer.Tests")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("AzerothMemories.WebServer.TestsFake")]
 var config = new CommonConfig();
@@ -29,7 +31,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddHostedService<BlizzardUpdateHostedService>();
 
 builder.Services.AddServerSideBlazor(o => o.DetailedErrors = true);
-helper.FusionAuthentication.AddBlazor(_ => { });
+//helper.FusionAuthentication.AddBlazor(_ => { });
 
 var app = builder.Build();
 helper.Configure(app.Services);
@@ -75,7 +77,7 @@ app.UseAuthorization();
 //});
 
 app.MapBlazorHub();
-app.MapFusionWebSocketServer();
+app.MapRpcServer();
 app.MapControllers();
 app.MapFallbackToPage("/_Host");
 

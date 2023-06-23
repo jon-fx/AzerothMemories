@@ -3,7 +3,6 @@ using NodaTime.Extensions;
 
 namespace AzerothMemories.WebServer.Services;
 
-[RegisterComputeService]
 public class MediaServices : IComputeService
 {
     private readonly ILogger<MediaServices> _logger;

@@ -1,10 +1,11 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed class AccountViewModelLinks
+[DataContract, MemoryPackable]
+public sealed partial class AccountViewModelLinks
 {
-    [JsonInclude] public int Id { get; set; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int Id { get; set; }
 
-    [JsonInclude] public string Name { get; set; }
+    [JsonInclude, DataMember, MemoryPackInclude] public string Name { get; set; }
 
-    [JsonInclude] public string Key { get; set; }
+    [JsonInclude, DataMember, MemoryPackInclude] public string Key { get; set; }
 }

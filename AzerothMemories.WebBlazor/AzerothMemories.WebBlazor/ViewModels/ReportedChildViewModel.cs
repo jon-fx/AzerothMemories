@@ -1,16 +1,17 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed class ReportedChildViewModel
+[DataContract, MemoryPackable]
+public sealed partial class ReportedChildViewModel
 {
-    [JsonInclude] public PostTagInfo UserTag { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public PostTagInfo UserTag { get; init; }
 
-    [JsonInclude] public PostTagInfo ReportedTag { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public PostTagInfo ReportedTag { get; init; }
 
-    [JsonInclude] public int RecordId { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int RecordId { get; init; }
 
-    [JsonInclude] public int ReportedTagId { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int ReportedTagId { get; init; }
 
-    [JsonInclude] public PostReportedReason Reason { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public PostReportedReason Reason { get; init; }
 
-    [JsonInclude] public string ReasonText { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public string ReasonText { get; init; }
 }

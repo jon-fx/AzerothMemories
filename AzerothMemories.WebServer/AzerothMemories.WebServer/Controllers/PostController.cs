@@ -29,7 +29,7 @@ public sealed class PostController : ControllerBase, IPostServices
         throw new NotImplementedException();
     }
 
-    [HttpGet("{accountId}/{postId}"), Publish]
+    [HttpGet("{accountId}/{postId}")]
     public Task<PostViewModel> TryGetPostViewModel(Session session, [FromRoute] int accountId, [FromRoute] int postId, [FromQuery] ServerSideLocale locale)
     {
         return _commonServices.PostServices.TryGetPostViewModel(session, accountId, postId, locale);
@@ -41,25 +41,25 @@ public sealed class PostController : ControllerBase, IPostServices
         return _commonServices.Commander.Call(command, cancellationToken);
     }
 
-    [HttpGet("{postId}"), Publish]
+    [HttpGet("{postId}")]
     public Task<PostReactionViewModel[]> TryGetReactions(Session session, [FromRoute] int postId)
     {
         return _commonServices.PostServices.TryGetReactions(session, postId);
     }
 
-    [HttpGet("{postId}"), Publish]
+    [HttpGet("{postId}")]
     public Task<PostCommentPageViewModel> TryGetCommentsPage(Session session, [FromRoute] int postId, [FromQuery] int page = 0, [FromQuery] int focusedCommentId = 0)
     {
         return _commonServices.PostServices.TryGetCommentsPage(session, postId, page, focusedCommentId);
     }
 
-    [HttpGet("{postId}/{commentId}"), Publish]
+    [HttpGet("{postId}/{commentId}")]
     public Task<PostReactionViewModel[]> TryGetCommentReactionData(Session session, [FromRoute] int postId, [FromRoute] int commentId)
     {
         return _commonServices.PostServices.TryGetCommentReactionData(session, postId, commentId);
     }
 
-    [HttpGet("{postId}"), Publish]
+    [HttpGet("{postId}")]
     public Task<Dictionary<int, PostCommentReactionViewModel>> TryGetMyCommentReactions(Session session, [FromRoute] int postId)
     {
         return _commonServices.PostServices.TryGetMyCommentReactions(session, postId);

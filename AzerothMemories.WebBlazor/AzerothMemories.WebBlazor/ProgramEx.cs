@@ -1,4 +1,4 @@
-﻿using Stl.Fusion.Bridge.Interception;
+﻿using Stl.Fusion.Client.Interception;
 using Stl.Fusion.Diagnostics;
 using Stl.Fusion.Extensions;
 using Stl.Fusion.Internal;
@@ -40,16 +40,12 @@ public static class ProgramEx
         services.AddScoped<ActiveAccountServices>();
         services.AddScoped<DialogHelperService>();
 
-        // Other UI-related services
         var fusion = services.AddFusion();
         fusion.AddComputedGraphPruner(_ => new ComputedGraphPruner.Options { CheckPeriod = TimeSpan.FromSeconds(30) });
         fusion.AddFusionTime();
-        fusion.AddBackendStatus();
 
-        // Default update delay is 0.5s
         services.AddScoped<IUpdateDelayer>(c => new UpdateDelayer(c.UIActionTracker(), 0.5));
 
-        // Diagnostics
         services.AddHostedService(c =>
         {
             var isWasm = OSInfo.IsWebAssembly;
@@ -57,7 +53,7 @@ public static class ProgramEx
             {
                 SleepPeriod = isWasm ? TimeSpan.Zero : TimeSpan.FromMinutes(1).ToRandom(0.25),
                 CollectPeriod = TimeSpan.FromSeconds(isWasm ? 3 : 60),
-                AccessFilter = isWasm ? static computed => computed.Input.Function is IReplicaMethodFunction : static _ => true,
+                AccessFilter = isWasm ? static computed => computed.Input.Function is IClientComputeMethodFunction : static computed => true,
                 AccessStatisticsPreprocessor = StatisticsPreprocessor,
                 RegistrationStatisticsPreprocessor = StatisticsPreprocessor,
             };

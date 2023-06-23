@@ -38,7 +38,7 @@
             var accountViewModel = AccountViewModel;
             if (_accountId > 0)
             {
-                accountViewModel = await Services.ComputeServices.AccountServices.TryGetAccountById(Session.Default, _accountId);
+                accountViewModel = await Services.ComputeServices.AccountServices.TryGetAccountById(Services.ClientServices.ActiveAccountServices.ActiveSession, _accountId);
             }
 
             if (accountViewModel == null)
@@ -55,22 +55,22 @@
 
         public async Task ResetUsername()
         {
-            await Services.ClientServices.CommandRunner.Run(new Account_TryChangeUsername(Session.Default, AccountViewModel.Id, null));
+            await Services.ClientServices.CommandRunner.Run(new Account_TryChangeUsername(Services.ClientServices.ActiveAccountServices.ActiveSession, AccountViewModel.Id, null));
         }
 
         public async Task ResetAvatar()
         {
-            await Services.ClientServices.CommandRunner.Run(new Account_TryChangeAvatar(Session.Default, AccountViewModel.Id, null));
+            await Services.ClientServices.CommandRunner.Run(new Account_TryChangeAvatar(Services.ClientServices.ActiveAccountServices.ActiveSession, AccountViewModel.Id, null));
         }
 
         public async Task ResetSocialLink(int linkId)
         {
-            await Services.ClientServices.CommandRunner.Run(new Account_TryChangeSocialLink(Session.Default, AccountViewModel.Id, linkId, null));
+            await Services.ClientServices.CommandRunner.Run(new Account_TryChangeSocialLink(Services.ClientServices.ActiveAccountServices.ActiveSession, AccountViewModel.Id, linkId, null));
         }
 
         public async Task BanUser(Duration duration)
         {
-            await Services.ClientServices.CommandRunner.Run(new Admin_TryBanUser(Session.Default, AccountViewModel.Id, (long)duration.TotalMilliseconds, BanReasonText));
+            await Services.ClientServices.CommandRunner.Run(new Admin_TryBanUser(Services.ClientServices.ActiveAccountServices.ActiveSession, AccountViewModel.Id, (long)duration.TotalMilliseconds, BanReasonText));
         }
     }
 }

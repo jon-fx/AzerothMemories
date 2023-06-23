@@ -1,6 +1,9 @@
-﻿@inject ISessionProvider SessionProvider
+﻿@using Stl.OS
+@using Stl.DependencyInjection
+@inject IServiceProvider Services;
+@inject ISessionResolver SessionResolver
 
-<CascadingAuthState>
+<CascadingAuthState UsePresenceReporter="true">
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
             <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
@@ -16,8 +19,17 @@
 </CascadingAuthState>
 
 @code {
+
+    [Parameter] public string SessionId { get; set; } = "";
+
     protected override void OnInitialized()
     {
-        SessionProvider.Session = Session.Default;
+        SessionResolver.Session = new Session(SessionId);
+
+        if (OSInfo.IsWebAssembly)
+        {
+            var rootServices = Services.Commander().Services;
+            _ = rootServices.HostedServices().Start();
+        }
     }
 }

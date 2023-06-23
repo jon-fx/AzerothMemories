@@ -1,7 +1,5 @@
 ﻿namespace AzerothMemories.WebServer.Services;
 
-[RegisterComputeService]
-[RegisterAlias(typeof(IFollowingServices))]
 public class FollowingServices : IFollowingServices
 {
     private readonly ILogger<FollowingServices> _logger;

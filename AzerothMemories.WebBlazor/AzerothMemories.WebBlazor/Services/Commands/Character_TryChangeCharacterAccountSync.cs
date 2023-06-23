@@ -1,3 +1,18 @@
 ﻿namespace AzerothMemories.WebBlazor.Services.Commands;
 
-public sealed record Character_TryChangeCharacterAccountSync(Session Session, int CharacterId, bool NewValue) : ISessionCommand<bool>;
+[DataContract, MemoryPackable]
+public sealed partial record Character_TryChangeCharacterAccountSync : ISessionCommand<bool>
+{
+    public Character_TryChangeCharacterAccountSync(Session session, int characterId, bool newValue)
+    {
+        Session = session;
+        CharacterId = characterId;
+        NewValue = newValue;
+    }
+
+    [DataMember, MemoryPackInclude] public Session Session { get; init; }
+
+    [DataMember, MemoryPackInclude] public int CharacterId { get; init; }
+
+    [DataMember, MemoryPackInclude] public bool NewValue { get; init; }
+}

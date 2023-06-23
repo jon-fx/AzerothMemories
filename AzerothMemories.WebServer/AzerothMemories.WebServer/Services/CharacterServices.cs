@@ -1,7 +1,5 @@
 ﻿namespace AzerothMemories.WebServer.Services;
 
-[RegisterComputeService]
-[RegisterAlias(typeof(ICharacterServices))]
 public class CharacterServices : ICharacterServices
 {
     private readonly ILogger<CharacterServices> _logger;

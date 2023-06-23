@@ -1,6 +1,7 @@
 ﻿namespace AzerothMemories.WebBlazor.Common;
 
-public sealed class AddCommentTransferData
+[DataContract, MemoryPackable]
+public sealed partial class AddCommentTransferData
 {
-    [JsonInclude] public string Comment { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public string Comment { get; init; }
 }

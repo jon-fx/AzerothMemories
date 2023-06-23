@@ -2,8 +2,6 @@
 
 namespace AzerothMemories.WebServer.Services;
 
-[RegisterComputeService]
-[RegisterAlias(typeof(ISearchServices))]
 public class SearchServices : ISearchServices
 {
     private readonly ILogger<SearchServices> _logger;

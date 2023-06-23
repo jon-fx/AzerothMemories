@@ -9,6 +9,6 @@ global using AzerothMemories.WebServer.Services;
 global using Microsoft.EntityFrameworkCore;
 global using NodaTime;
 global using Stl.CommandR;
+global using Stl.Fusion;
 global using Stl.Fusion.Authentication;
-global using Stl.Fusion.Authentication.Commands;
 global using SystemClock = NodaTime.SystemClock;

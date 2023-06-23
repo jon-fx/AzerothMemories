@@ -1,8 +1,9 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed class PostCommentPageViewModel
+[DataContract, MemoryPackable]
+public sealed partial class PostCommentPageViewModel
 {
-    [JsonInclude] public int Page;
-    [JsonInclude] public int TotalPages;
-    [JsonInclude] public Dictionary<int, PostCommentViewModel> AllComments = new();
+    [JsonInclude, DataMember, MemoryPackInclude] public int Page;
+    [JsonInclude, DataMember, MemoryPackInclude] public int TotalPages;
+    [JsonInclude, DataMember, MemoryPackInclude] public Dictionary<int, PostCommentViewModel> AllComments = new();
 }

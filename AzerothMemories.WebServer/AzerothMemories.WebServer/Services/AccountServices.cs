@@ -1,7 +1,5 @@
 ﻿namespace AzerothMemories.WebServer.Services;
 
-[RegisterComputeService]
-[RegisterAlias(typeof(IAccountServices))]
 public class AccountServices : IAccountServices
 {
     private readonly ILogger<AccountServices> _logger;
@@ -22,19 +20,19 @@ public class AccountServices : IAccountServices
     }
 
     [CommandHandler(IsFilter = true, Priority = 1)]
-    protected virtual async Task OnSignInCommand(SignInCommand command, CancellationToken cancellationToken)
+    protected virtual async Task OnSignInCommand(AuthBackend_SignIn command, CancellationToken cancellationToken)
     {
         await AccountServices_OnSignInCommand.TryHandle(_logger, _commonServices, _sessionRepo, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler(IsFilter = true, Priority = 1)]
-    protected virtual async Task OnSignOutCommand(SignOutCommand command, CancellationToken cancellationToken)
+    protected virtual async Task OnSignOutCommand(Auth_SignOut command, CancellationToken cancellationToken)
     {
         await AccountServices_OnSignOutCommand.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler(IsFilter = true, Priority = 1)]
-    protected virtual async Task OnSetupSessionCommand(SetupSessionCommand command, CancellationToken cancellationToken)
+    protected virtual async Task OnSetupSessionCommand(AuthBackend_SetupSession command, CancellationToken cancellationToken)
     {
         await AccountServices_OnSetupSessionCommand.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }

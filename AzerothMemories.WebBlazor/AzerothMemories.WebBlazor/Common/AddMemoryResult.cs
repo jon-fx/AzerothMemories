@@ -1,10 +1,11 @@
 ﻿namespace AzerothMemories.WebBlazor.Common;
 
-public sealed class AddMemoryResult
+[DataContract, MemoryPackable]
+public sealed partial class AddMemoryResult
 {
-    [JsonInclude] public readonly int AccountId;
-    [JsonInclude] public readonly int PostId;
-    [JsonInclude] public readonly AddMemoryResultCode Result;
+    [JsonInclude, DataMember, MemoryPackInclude] public readonly int AccountId;
+    [JsonInclude, DataMember, MemoryPackInclude] public readonly int PostId;
+    [JsonInclude, DataMember, MemoryPackInclude] public readonly AddMemoryResultCode Result;
 
     public AddMemoryResult(AddMemoryResultCode result, int accountId = 0, int postId = 0)
     {

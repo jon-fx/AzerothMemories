@@ -2,7 +2,7 @@
 
 internal static class AccountServices_OnSignOutCommand
 {
-    public static async Task TryHandle(ILogger<AccountServices> services, CommonServices commonServices, SignOutCommand command, CancellationToken cancellationToken)
+    public static async Task TryHandle(ILogger<AccountServices> services, CommonServices commonServices, Auth_SignOut command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);

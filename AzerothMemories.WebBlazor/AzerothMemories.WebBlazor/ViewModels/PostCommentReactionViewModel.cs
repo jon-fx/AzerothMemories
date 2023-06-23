@@ -1,16 +1,17 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed class PostCommentReactionViewModel
+[DataContract, MemoryPackable]
+public sealed partial class PostCommentReactionViewModel
 {
-    [JsonInclude] public int Id;
+    [JsonInclude, DataMember, MemoryPackInclude] public int Id;
 
-    [JsonInclude] public int CommentId;
+    [JsonInclude, DataMember, MemoryPackInclude] public int CommentId;
 
-    [JsonInclude] public int AccountId;
+    [JsonInclude, DataMember, MemoryPackInclude] public int AccountId;
 
-    [JsonInclude] public string AccountUsername;
+    [JsonInclude, DataMember, MemoryPackInclude] public string AccountUsername;
 
-    [JsonInclude] public PostReaction Reaction;
+    [JsonInclude, DataMember, MemoryPackInclude] public PostReaction Reaction;
 
-    [JsonInclude] public long LastUpdateTime;
+    [JsonInclude, DataMember, MemoryPackInclude] public long LastUpdateTime;
 }

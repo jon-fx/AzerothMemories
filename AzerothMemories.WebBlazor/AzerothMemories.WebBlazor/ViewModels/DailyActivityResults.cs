@@ -1,8 +1,9 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed record DailyActivityResults
+[DataContract, MemoryPackable]
+public sealed partial record DailyActivityResults
 {
-    [JsonInclude] public int Year { get; init; }
-    [JsonInclude] public DailyActivityResultsMain Main { get; init; }
-    [JsonInclude] public DailyActivityResultsUser User { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int Year { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public DailyActivityResultsMain Main { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public DailyActivityResultsUser User { get; init; }
 }

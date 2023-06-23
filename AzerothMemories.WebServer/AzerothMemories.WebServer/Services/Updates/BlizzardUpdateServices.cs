@@ -1,7 +1,6 @@
 ﻿namespace AzerothMemories.WebServer.Services.Updates;
 
-[RegisterComputeService]
-public class BlizzardUpdateServices : DbServiceBase<AppDbContext>, IComputeService
+public class BlizzardUpdateServices : IComputeService
 {
     private readonly CommonServices _commonServices;
 
@@ -9,7 +8,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>, IComputeServi
     private readonly UpdateHandlerBase<CharacterRecord>[] _characterHandlers;
     private readonly UpdateHandlerBase<GuildRecord>[] _guildHandlers;
 
-    public BlizzardUpdateServices(IServiceProvider services, CommonServices commonServices) : base(services)
+    public BlizzardUpdateServices(IServiceProvider services, CommonServices commonServices)
     {
         _commonServices = commonServices;
 
@@ -84,7 +83,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>, IComputeServi
             return default;
         }
 
-        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        await using var database = await _commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         var record = await database.Accounts.FirstOrDefaultAsync(x => x.Id == command.AccountId, cancellationToken).ConfigureAwait(false);
         if (record == null)
         {
@@ -122,7 +121,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>, IComputeServi
             return default;
         }
 
-        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        await using var database = await _commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         var record = await database.Characters.FirstOrDefaultAsync(x => x.Id == command.CharacterId, cancellationToken).ConfigureAwait(false);
         if (record == null)
         {
@@ -169,7 +168,7 @@ public class BlizzardUpdateServices : DbServiceBase<AppDbContext>, IComputeServi
             return default;
         }
 
-        await using var database = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        await using var database = await _commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         var record = await database.Guilds.FirstOrDefaultAsync(x => x.Id == command.GuildId, cancellationToken).ConfigureAwait(false);
         if (record == null)
         {

@@ -1,10 +1,11 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed class GuildMembersViewModel
+[DataContract, MemoryPackable]
+public sealed partial class GuildMembersViewModel
 {
-    [JsonInclude] public int Index;
+    [JsonInclude, DataMember, MemoryPackInclude] public int Index;
 
-    [JsonInclude] public int TotalCount;
+    [JsonInclude, DataMember, MemoryPackInclude] public int TotalCount;
 
-    [JsonInclude] public CharacterViewModel[] CharactersArray;
+    [JsonInclude, DataMember, MemoryPackInclude] public CharacterViewModel[] CharactersArray;
 }

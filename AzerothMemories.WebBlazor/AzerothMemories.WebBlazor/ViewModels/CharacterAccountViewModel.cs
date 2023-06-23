@@ -1,7 +1,8 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed class CharacterAccountViewModel
+[DataContract, MemoryPackable]
+public sealed partial class CharacterAccountViewModel
 {
-    [JsonInclude] public AccountViewModel AccountViewModel;
-    [JsonInclude] public CharacterViewModel CharacterViewModel;
+    [JsonInclude, DataMember, MemoryPackInclude] public AccountViewModel AccountViewModel;
+    [JsonInclude, DataMember, MemoryPackInclude] public CharacterViewModel CharacterViewModel;
 }

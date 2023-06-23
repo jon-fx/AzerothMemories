@@ -1,8 +1,9 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed class ReportedPostCommentsViewModel
+[DataContract, MemoryPackable]
+public sealed partial class ReportedPostCommentsViewModel
 {
-    [JsonInclude] public PostCommentViewModel CommentViewModel { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public PostCommentViewModel CommentViewModel { get; init; }
 
-    [JsonInclude] public List<ReportedChildViewModel> Reports { get; init; } = new();
+    [JsonInclude, DataMember, MemoryPackInclude] public List<ReportedChildViewModel> Reports { get; init; } = new();
 }

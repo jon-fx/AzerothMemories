@@ -1,29 +1,28 @@
 ﻿namespace AzerothMemories.WebBlazor.Services;
 
-[BasePath("admin")]
 public interface IAdminServices : IComputeService
 {
-    [ComputeMethod, Get(nameof(TryGetUserCounts))]
+    [ComputeMethod]
     Task<AdminCountersViewModel> TryGetUserCounts(Session session);
 
-    [ComputeMethod, Get(nameof(TryGetReportedPosts))]
+    [ComputeMethod]
     Task<ReportedPostViewModel[]> TryGetReportedPosts(Session session);
 
-    [ComputeMethod, Get(nameof(TryGetReportedComments))]
+    [ComputeMethod]
     Task<ReportedPostCommentsViewModel[]> TryGetReportedComments(Session session);
 
-    [ComputeMethod, Get(nameof(TryGetReportedTags))]
+    [ComputeMethod]
     Task<ReportedPostTagsViewModel[]> TryGetReportedTags(Session session);
 
-    [CommandHandler, Post(nameof(SetPostReportResolved))]
-    Task<bool> SetPostReportResolved([Body] Admin_SetPostReportResolved command, CancellationToken cancellationToken = default);
+    [CommandHandler]
+    Task<bool> SetPostReportResolved(Admin_SetPostReportResolved command, CancellationToken cancellationToken = default);
 
-    [CommandHandler, Post(nameof(SetPostCommentReportResolved))]
-    Task<bool> SetPostCommentReportResolved([Body] Admin_SetPostCommentReportResolved command, CancellationToken cancellationToken = default);
+    [CommandHandler]
+    Task<bool> SetPostCommentReportResolved(Admin_SetPostCommentReportResolved command, CancellationToken cancellationToken = default);
 
-    [CommandHandler, Post(nameof(SetPostTagReportResolved))]
-    Task<bool> SetPostTagReportResolved([Body] Admin_SetPostTagReportResolved command, CancellationToken cancellationToken = default);
+    [CommandHandler]
+    Task<bool> SetPostTagReportResolved(Admin_SetPostTagReportResolved command, CancellationToken cancellationToken = default);
 
-    [CommandHandler, Post(nameof(TryBanUser))]
-    Task<bool> TryBanUser([Body] Admin_TryBanUser command, CancellationToken cancellationToken = default);
+    [CommandHandler]
+    Task<bool> TryBanUser(Admin_TryBanUser command, CancellationToken cancellationToken = default);
 }

@@ -1,40 +1,26 @@
 using AzerothMemories.WebBlazor;
+using Stl.Fusion.Extensions;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
-//builder.RootComponents.Add<HeadOutlet>("head::after");
 
 ProgramEx.Initialize(builder.Services);
 
-var baseUri = new Uri(builder.HostEnvironment.BaseAddress);
-var apiBaseUri = new Uri($"{baseUri}api/");
-
-// Fusion services
 var fusion = builder.Services.AddFusion();
-var restEaseClientBuilder = fusion.AddRestEaseClient();
-restEaseClientBuilder.ConfigureHttpClient((_, name, o) =>
-{
-    var isFusionClient = (name ?? "").StartsWith("Stl.Fusion");
-    var clientBaseUri = isFusionClient ? baseUri : apiBaseUri;
-    o.HttpClientActions.Add(client => client.BaseAddress = clientBaseUri);
-});
+fusion.Rpc.AddWebSocketClient(builder.HostEnvironment.BaseAddress);
+fusion.AddAuthClient();
+fusion.AddRpcPeerConnectionMonitor();
+fusion.AddBlazor().AddAuthentication().AddPresenceReporter();
 
-restEaseClientBuilder.ConfigureWebSocketChannel(_ => new WebSocketChannelProvider.Options
-{
-    BaseUri = baseUri,
-    LogLevel = LogLevel.Information,
-    MessageLogLevel = LogLevel.None
-});
+//builder.Services.AddSingleton<RpcPeerFactory>(_ => static (hub, peerRef) => peerRef.IsServer ? throw new NotSupportedException() : new RpcClientPeer(hub, peerRef) { CallLogLevel = LogLevel.Debug });
 
-restEaseClientBuilder.AddReplicaService<IAdminServices, IAdminServices>();
-restEaseClientBuilder.AddReplicaService<IAccountServices, IAccountServices>();
-restEaseClientBuilder.AddReplicaService<IFollowingServices, IFollowingServices>();
-restEaseClientBuilder.AddReplicaService<ICharacterServices, ICharacterServices>();
-restEaseClientBuilder.AddReplicaService<IGuildServices, IGuildServices>();
-restEaseClientBuilder.AddReplicaService<ITagServices, ITagServices>();
-restEaseClientBuilder.AddReplicaService<IPostServices, IPostServices>();
-restEaseClientBuilder.AddReplicaService<ISearchServices, ISearchServices>();
-
-fusion.AddAuthentication().AddRestEaseClient().AddBlazor();
+fusion.AddClient<IAdminServices>();
+fusion.AddClient<IAccountServices>();
+fusion.AddClient<IFollowingServices>();
+fusion.AddClient<ICharacterServices>();
+fusion.AddClient<IGuildServices>();
+fusion.AddClient<ITagServices>();
+fusion.AddClient<IPostServices>();
+fusion.AddClient<ISearchServices>();
 
 var app = builder.Build();
 app.Services.GetRequiredService<ComputeServices>().Initialize();
