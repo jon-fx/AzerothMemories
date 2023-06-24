@@ -29,7 +29,7 @@ public record EnumType
             return CharacterFaction.Horde;
         }
 
-        throw new NotImplementedException();
+        return CharacterFaction.None;
     }
 
     public byte AsGender()
