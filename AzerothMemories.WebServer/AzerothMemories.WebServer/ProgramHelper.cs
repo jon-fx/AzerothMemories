@@ -5,6 +5,7 @@ using Stl.Fusion.Server.Authentication;
 using Stl.Fusion.Server.Controllers;
 using System.Net.Http.Headers;
 using System.Text;
+using Stl.Fusion.Server.Endpoints;
 
 namespace AzerothMemories.WebServer;
 
@@ -63,10 +64,8 @@ public abstract class ProgramHelper
         _fusionServer = _fusion.AddWebServer();
 
         _fusion.AddDbAuthService<AppDbContext, string>();
-        //_fusion.AddDbKeyValueStore<AppDbContext>();
-        _fusionServer.AddAuthentication();
 
-        _fusionServer.ConfigureSignInController(_ => new SignInController.Options
+        _fusionServer.ConfigureAuthEndpoint(_ => new AuthEndpoints.Options
         {
             DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme,
             SignInPropertiesBuilder = (_, properties) =>
@@ -87,10 +86,10 @@ public abstract class ProgramHelper
         _services.AddSingleton(_config);
         _services.AddSingleton<CommonServices>();
         _services.AddSingleton<BlizzardUpdateHandler>();
-        _services.AddSingleton<MediaServices>();
         _services.AddSingleton<HttpClientProvider>();
-
-        _fusion.AddService<BlizzardUpdateServices>();
+        
+        _fusion.AddService<MediaServices>(RpcServiceMode.None);
+        _fusion.AddService<BlizzardUpdateServices>(RpcServiceMode.None);
 
         _services.AddHttpClient("Blizzard", x =>
         {

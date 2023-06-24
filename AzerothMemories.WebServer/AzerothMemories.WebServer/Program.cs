@@ -1,3 +1,5 @@
+using System.Reflection;
+
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("AzerothMemories.WebServer.Tests")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("AzerothMemories.WebServer.TestsFake")]
 var config = new CommonConfig();
@@ -64,7 +66,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapBlazorHub();
-//app.MapRpcServer();
+//app.MapRpcWebSocketServer();
+//app.MapFusionAuth();
 app.MapControllers();
 app.MapFallbackToPage("/_Host");
 

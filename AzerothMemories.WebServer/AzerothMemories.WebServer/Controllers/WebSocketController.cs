@@ -11,9 +11,9 @@ public sealed class WebSocketController : ControllerBase
         _webSocketServer = webSocketServer;
     }
 
-    [Route("/rpc/ws")]
+    [Route("/rpc/ws"), ApiExplorerSettings(IgnoreApi = true)]
     public Task Get()
     {
-        return _webSocketServer.HandleRequest(HttpContext);
+        return _webSocketServer.Invoke(HttpContext);
     }
 }
