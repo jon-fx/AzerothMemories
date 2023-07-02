@@ -36,13 +36,13 @@
         <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
         <PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.8" />
         <PackageReference Include="Markdig" Version="0.31.0" />
-        <PackageReference Include="MudBlazor" Version="6.5.0" />
+        <PackageReference Include="MudBlazor" Version="6.6.0" />
         <PackageReference Include="NodaTime" Version="3.1.9" />
-        <PackageReference Include="Stl.Fusion" Version="6.1.18" />
-        <PackageReference Include="Stl.CommandR" Version="6.1.18" />
-        <PackageReference Include="Stl.Fusion.Blazor" Version="6.1.18" />
-        <PackageReference Include="Stl.Fusion.Blazor.Authentication" Version="6.1.18" />
-        <PackageReference Include="Stl.Generators" Version="6.1.18">
+        <PackageReference Include="Stl.Fusion" Version="6.1.60" />
+        <PackageReference Include="Stl.CommandR" Version="6.1.60" />
+        <PackageReference Include="Stl.Fusion.Blazor" Version="6.1.60" />
+        <PackageReference Include="Stl.Fusion.Blazor.Authentication" Version="6.1.60" />
+        <PackageReference Include="Stl.Generators" Version="6.1.60">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>

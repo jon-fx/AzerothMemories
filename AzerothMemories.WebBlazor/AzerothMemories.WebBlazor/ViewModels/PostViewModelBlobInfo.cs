@@ -1,10 +1,11 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed record PostViewModelBlobInfo
+[DataContract, MemoryPackable]
+public sealed partial record PostViewModelBlobInfo
 {
-    [JsonInclude, JsonPropertyName("title")] public string Title { get; init; }
-    [JsonInclude, JsonPropertyName("description")] public string Description { get; init; }
-    [JsonInclude, JsonPropertyName("src")] public string Source { get; init; }
+    [JsonInclude, JsonPropertyName("title"), DataMember, MemoryPackInclude] public string Title { get; init; }
+    [JsonInclude, JsonPropertyName("description"), DataMember, MemoryPackInclude] public string Description { get; init; }
+    [JsonInclude, JsonPropertyName("src"), DataMember, MemoryPackInclude] public string Source { get; init; }
 
     public static PostViewModelBlobInfo[] CreateBlobInfo(string username, string comment, string[] blobNames)
     {

@@ -8,7 +8,7 @@ ProgramEx.Initialize(builder.Services);
 var fusion = builder.Services.AddFusion();
 fusion.Rpc.AddWebSocketClient(builder.HostEnvironment.BaseAddress);
 fusion.AddAuthClient();
-fusion.AddRpcPeerConnectionMonitor();
+fusion.AddRpcPeerStateMonitor();
 fusion.AddBlazor().AddAuthentication().AddPresenceReporter();
 
 //builder.Services.AddSingleton<RpcPeerFactory>(_ => static (hub, peerRef) => peerRef.IsServer ? throw new NotSupportedException() : new RpcClientPeer(hub, peerRef) { CallLogLevel = LogLevel.Debug });

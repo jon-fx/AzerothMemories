@@ -8,7 +8,7 @@ public class SearchServices : ISearchServices
     private readonly CommonServices _commonServices;
 
     private readonly int _startYear = 2000;
-    private readonly int _endYear = 2023;
+    private readonly int _endYear = DateTime.UtcNow.Year;
     private readonly int _totalYearValue = 0;
 
     private readonly List<PostTagType> _tagsToIncludeInTop = new()
@@ -531,15 +531,17 @@ public class SearchServices : ISearchServices
                 blobNames = memory.BlobNames.Split('|');
             }
 
-            var activitySet = results[itemZonedDateTime.Year];
-            activitySet.MyMemories.Add(new DailyActivityResultsUserPostInfo
+            if (results.TryGetValue(itemZonedDateTime.Year, out var activitySet))
             {
-                PostId = memory.Id,
-                AccountId = memory.AccountId,
-                PostTime = memory.PostTime.ToUnixTimeMilliseconds(),
-                PostCreatedTime = memory.PostCreatedTime.ToUnixTimeMilliseconds(),
-                BlobInfo = PostViewModelBlobInfo.CreateBlobInfo(userTagInfo.Name, memory.PostCommentMark, blobNames),
-            });
+                activitySet.MyMemories.Add(new DailyActivityResultsUserPostInfo
+                {
+                    PostId = memory.Id,
+                    AccountId = memory.AccountId,
+                    PostTime = memory.PostTime.ToUnixTimeMilliseconds(),
+                    PostCreatedTime = memory.PostCreatedTime.ToUnixTimeMilliseconds(),
+                    BlobInfo = PostViewModelBlobInfo.CreateBlobInfo(userTagInfo.Name, memory.PostCommentMark, blobNames),
+                });
+            }
         }
 
         return results;

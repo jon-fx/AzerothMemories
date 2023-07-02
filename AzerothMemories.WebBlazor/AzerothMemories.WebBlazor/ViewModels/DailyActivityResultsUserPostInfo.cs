@@ -1,12 +1,13 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
-public sealed record DailyActivityResultsUserPostInfo
+[DataContract, MemoryPackable]
+public sealed partial record DailyActivityResultsUserPostInfo
 {
-    public int AccountId { get; init; }
-    public int PostId { get; init; }
-    public long PostTime { get; init; }
-    public long PostCreatedTime { get; init; }
-    public PostViewModelBlobInfo[] BlobInfo { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int AccountId { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int PostId { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public long PostTime { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public long PostCreatedTime { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public PostViewModelBlobInfo[] BlobInfo { get; init; }
 
     public PostViewModelBlobInfo[] GetBlobPreviewInfo(string description)
     {
