@@ -8,8 +8,6 @@
 
 @{
     Layout = "_Layout";
-
-    var sessionId = _serverAuthHelper.Session.Id.Value;
 }
 
-<component type="typeof(App)" render-mode="WebAssemblyPrerendered" param-SessionId="@sessionId" />
+<component type="typeof(App)" render-mode="WebAssemblyPrerendered" />

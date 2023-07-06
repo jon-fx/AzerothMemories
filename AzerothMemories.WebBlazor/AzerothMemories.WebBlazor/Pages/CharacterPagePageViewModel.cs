@@ -63,7 +63,7 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel
 
         if (id > 0)
         {
-            viewModel = await Services.ComputeServices.CharacterServices.TryGetCharacter(Services.ClientServices.ActiveAccountServices.ActiveSession, id);
+            viewModel = await Services.ComputeServices.CharacterServices.TryGetCharacter(Session.Default, id);
         }
         else
         {
@@ -97,7 +97,7 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel
                 return null;
             }
 
-            viewModel = await Services.ComputeServices.CharacterServices.TryGetCharacter(Services.ClientServices.ActiveAccountServices.ActiveSession, regionInfo.Region, _realm, _name);
+            viewModel = await Services.ComputeServices.CharacterServices.TryGetCharacter(Session.Default, regionInfo.Region, _realm, _name);
         }
 
         if (viewModel == null || viewModel.CharacterViewModel == null)

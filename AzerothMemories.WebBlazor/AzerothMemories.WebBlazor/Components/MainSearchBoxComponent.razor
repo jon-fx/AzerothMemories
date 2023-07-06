@@ -37,8 +37,6 @@
 
     [Inject] public NavigationManager NavigationManager { get; init; }
 
-    [Inject] public ActiveAccountServices ActiveAccountServices { get; init; }
-
     private async Task OnValueChanged(MainSearchResult value)
     {
         if (value == null)
@@ -65,7 +63,7 @@
             return Enumerable.Empty<MainSearchResult>();
         }
 
-        var results = await SearchServices.TrySearch(ActiveAccountServices.ActiveSession, SearchType, searchString);
+        var results = await SearchServices.TrySearch(Session.Default, SearchType, searchString);
         return results;
     }
 

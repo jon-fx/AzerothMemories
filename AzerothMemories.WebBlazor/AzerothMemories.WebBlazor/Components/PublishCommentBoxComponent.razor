@@ -80,7 +80,7 @@
 
         var postId = PostId;
         var parentId = CommentId;
-        var result = await Services.ClientServices.CommandRunner.Run(new Post_TryPublishComment(Services.ClientServices.ActiveAccountServices.ActiveSession, postId, parentId, commentText));
+        var result = await Services.ClientServices.CommandRunner.Run(new Post_TryPublishComment(Session.Default, postId, parentId, commentText));
         if (result.Value > 0)
         {
             _commentComponent.Reset();

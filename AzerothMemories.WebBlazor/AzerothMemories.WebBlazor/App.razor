@@ -18,13 +18,11 @@
     <NavigationTracker />
 </CascadingAuthState>
 
-@code {
-
-    [Parameter] public string SessionId { get; set; } = "";
-
+@code
+{
     protected override void OnInitialized()
     {
-        SessionResolver.Session = new Session(SessionId);
+        SessionResolver.Session = Session.Default;
 
         if (OSInfo.IsWebAssembly)
         {

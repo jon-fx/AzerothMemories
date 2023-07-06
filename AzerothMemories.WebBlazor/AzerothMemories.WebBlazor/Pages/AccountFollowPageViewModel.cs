@@ -22,7 +22,7 @@ public sealed class AccountFollowPageViewModel : ViewModelBase
         var accountViewModel = AccountViewModel;
         if (_accountId > 0)
         {
-            accountViewModel = await Services.ComputeServices.AccountServices.TryGetAccountById(Services.ClientServices.ActiveAccountServices.ActiveSession, _accountId);
+            accountViewModel = await Services.ComputeServices.AccountServices.TryGetAccountById(Session.Default, _accountId);
         }
 
         if (accountViewModel == null)

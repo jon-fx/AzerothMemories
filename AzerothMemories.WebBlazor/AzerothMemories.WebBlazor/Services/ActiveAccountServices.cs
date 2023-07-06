@@ -4,18 +4,16 @@ public sealed class ActiveAccountServices
 {
     private readonly IAccountServices _accountServices;
     private readonly ICharacterServices _characterServices;
-    private readonly ClientAuthHelper _clientAuthHelper;
     private readonly TimeProvider _timeProvider;
     private readonly ISnackbar _snackbarService;
     private readonly IStringLocalizer<BlizzardResources> _stringLocalizer;
 
     private IActiveCommentContext _activeCommentContext;
 
-    public ActiveAccountServices(IAccountServices accountServices, ICharacterServices characterServices, ClientAuthHelper clientAuthHelper, TimeProvider timeProvider, ISnackbar snackbar, IStringLocalizer<BlizzardResources> stringLocalizer)
+    public ActiveAccountServices(IAccountServices accountServices, ICharacterServices characterServices, TimeProvider timeProvider, ISnackbar snackbar, IStringLocalizer<BlizzardResources> stringLocalizer)
     {
         _accountServices = accountServices;
         _characterServices = characterServices;
-        _clientAuthHelper = clientAuthHelper;
         _timeProvider = timeProvider;
         _snackbarService = snackbar;
         _stringLocalizer = stringLocalizer;
@@ -43,8 +41,6 @@ public sealed class ActiveAccountServices
         }
     }
 
-    public Session ActiveSession => _clientAuthHelper.Session;
-
     public bool IsActiveAccount(int accountId)
     {
         if (AccountViewModel == null)
@@ -59,7 +55,7 @@ public sealed class ActiveAccountServices
     {
         var previousAccountId = AccountViewModel?.Id;
 
-        AccountViewModel = await _accountServices.TryGetActiveAccount(ActiveSession);
+        AccountViewModel = await _accountServices.TryGetActiveAccount(Session.Default);
 
         if (AccountViewModel == null)
         {
@@ -67,7 +63,7 @@ public sealed class ActiveAccountServices
         }
         else
         {
-            var newHistory = await _accountServices.TryGetAccountHistory(ActiveSession);
+            var newHistory = await _accountServices.TryGetAccountHistory(Session.Default);
             var oldHistory = AccountHistoryViewModels;
 
             if (oldHistory != null && oldHistory.Length != 0)

@@ -192,7 +192,7 @@
 
         _userReacting = true;
 
-        var result = await Services.ClientServices.CommandRunner.Run(new Post_TryReactToPostComment(Services.ClientServices.ActiveAccountServices.ActiveSession, postId, commentId, newReaction));
+        var result = await Services.ClientServices.CommandRunner.Run(new Post_TryReactToPostComment(Session.Default, postId, commentId, newReaction));
         if (result.Value > 0)
         {
             node.ReactionId = result.Value;
@@ -228,7 +228,7 @@
             var postId = comment.PostId;
             var commentId = comment.Id;
 
-            var result = await Services.ClientServices.CommandRunner.Run(new Post_TryDeleteComment(Services.ClientServices.ActiveAccountServices.ActiveSession, postId, commentId));
+            var result = await Services.ClientServices.CommandRunner.Run(new Post_TryDeleteComment(Session.Default, postId, commentId));
 
             comment.DeletedTimeStamp = result.Value;
 

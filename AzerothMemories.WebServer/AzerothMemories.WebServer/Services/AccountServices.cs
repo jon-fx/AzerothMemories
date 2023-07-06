@@ -410,6 +410,11 @@ public class AccountServices : IAccountServices
             return null;
         }
 
+        if (session.IsDefault())
+        {
+            return null;
+        }
+
         var user = await _commonServices.Auth.GetUser(session).ConfigureAwait(false);
         if (user == null || user.IsGuest())
         {

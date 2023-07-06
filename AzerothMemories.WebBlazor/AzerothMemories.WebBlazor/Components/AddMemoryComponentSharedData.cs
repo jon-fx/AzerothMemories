@@ -89,7 +89,7 @@ public sealed class AddMemoryComponentSharedData
         var timeStamp = PostTimeStamp.ToUnixTimeMilliseconds();
         if (timeStamp > 0 && PostTimeStamp < SystemClock.Instance.GetCurrentInstant())
         {
-            var achievements = await _viewModel.Services.ComputeServices.AccountServices.TryGetAchievementsByTime(_viewModel.Services.ClientServices.ActiveAccountServices.ActiveSession, timeStamp, 120, ServerSideLocaleExt.GetServerSideLocale());
+            var achievements = await _viewModel.Services.ComputeServices.AccountServices.TryGetAchievementsByTime(Session.Default, timeStamp, 120, ServerSideLocaleExt.GetServerSideLocale());
 
             if (_selectedAchievementTags.Count > 0)
             {
@@ -225,7 +225,7 @@ public sealed class AddMemoryComponentSharedData
 
         var serverUploadResult = await _viewModel.Services.ComputeServices.PostServices.TryPostMemory(new Post_TryPostMemory
         {
-            Session = _viewModel.Services.ClientServices.ActiveAccountServices.ActiveSession,
+            Session = Session.Default,
             TimeStamp = timeStamp.ToUnixTimeMilliseconds(),
             AvatarTag = avatarTag ?? string.Empty,
             IsPrivate = PrivatePost,
@@ -247,7 +247,7 @@ public sealed class AddMemoryComponentSharedData
             avatarTag = PostAvatarImages[SelectedPostAvatarImage].Tag.TagString;
         }
 
-        var result = await _viewModel.Services.ClientServices.CommandRunner.Run(new Post_TryUpdateSystemTags(_viewModel.Services.ClientServices.ActiveAccountServices.ActiveSession, currentPost.Id, avatarTag, newTags));
+        var result = await _viewModel.Services.ClientServices.CommandRunner.Run(new Post_TryUpdateSystemTags(Session.Default, currentPost.Id, avatarTag, newTags));
         return result.Value;
     }
 
