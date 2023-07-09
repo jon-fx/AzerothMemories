@@ -9,7 +9,7 @@ public class CharacterAccountSyncTests : BaseTestHelper
     [Fact]
     public async Task DefaultIsFalse()
     {
-        var session1 = SessionFactory.CreateSession();
+        var session1 = Session.New();
         var account1 = await CreateUser(session1, "Bob");
         var count = 20;
 
@@ -30,7 +30,7 @@ public class CharacterAccountSyncTests : BaseTestHelper
     [Fact]
     public async Task CanChangeOwnCharacterAccountsSync()
     {
-        var session1 = SessionFactory.CreateSession();
+        var session1 = Session.New();
         var account1 = await CreateUser(session1, "Bob");
 
         await CreateRandomCharacters(account1, 3);
@@ -46,7 +46,7 @@ public class CharacterAccountSyncTests : BaseTestHelper
     [Fact]
     public async Task CanNotChangeOtherAccountsSync1()
     {
-        var session1 = SessionFactory.CreateSession();
+        var session1 = Session.New();
         var account1 = await CreateUser(session1, "Bob");
 
         await CreateRandomCharacters(account1, 3);
@@ -54,7 +54,7 @@ public class CharacterAccountSyncTests : BaseTestHelper
         var characters = await CommonServices.CharacterServices.TryGetAllAccountCharacters(account1.Id);
         foreach (var character in characters)
         {
-            var session2 = SessionFactory.CreateSession();
+            var session2 = Session.New();
             var result = await CommonServices.Commander.Call(new Character_TryChangeCharacterAccountSync(session2, character.Key, true));
             result.Should().BeFalse();
         }
@@ -63,7 +63,7 @@ public class CharacterAccountSyncTests : BaseTestHelper
     [Fact]
     public async Task CanNotChangeOtherAccountsSync2()
     {
-        var session1 = SessionFactory.CreateSession();
+        var session1 = Session.New();
         var account1 = await CreateUser(session1, "Bob");
 
         await CreateRandomCharacters(account1, 3);
@@ -71,7 +71,7 @@ public class CharacterAccountSyncTests : BaseTestHelper
         var characters = await CommonServices.CharacterServices.TryGetAllAccountCharacters(account1.Id);
         foreach (var character in characters)
         {
-            var session2 = SessionFactory.CreateSession();
+            var session2 = Session.New();
             var account2 = await CreateUser(session2, "Bob");
 
             var result = await CommonServices.Commander.Call(new Character_TryChangeCharacterAccountSync(session2, character.Key, true));

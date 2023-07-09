@@ -10,7 +10,7 @@ public sealed class PostCreateTests : BaseTestHelper
     [Fact]
     public async Task CantCreatePostWhenNotLoggedIn1()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var result = await CommonServices.Commander.Call(new Post_TryPostMemory
         {
             Session = session,
@@ -36,7 +36,7 @@ public sealed class PostCreateTests : BaseTestHelper
     [Fact]
     public async Task CantCreatePostWithLongCommentText()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var commentTextBuilder = new StringBuilder();
         for (var i = 0; i < ZExtensions.MaxCommentLength; i++)
         {
@@ -57,7 +57,7 @@ public sealed class PostCreateTests : BaseTestHelper
     [Fact]
     public async Task CantCreatePostWithLowTimeStamp()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var result = await CommonServices.Commander.Call(new Post_TryPostMemory
         {
             Session = session,
@@ -71,7 +71,7 @@ public sealed class PostCreateTests : BaseTestHelper
     [Fact]
     public async Task CantCreatePostWithHighTimeStamp()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var result = await CommonServices.Commander.Call(new Post_TryPostMemory
         {
             Session = session,
@@ -85,7 +85,7 @@ public sealed class PostCreateTests : BaseTestHelper
     [Fact]
     public async Task CanNotCreatePostWithoutAccountTag()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var result = await CommonServices.Commander.Call(new Post_TryPostMemory
@@ -108,7 +108,7 @@ public sealed class PostCreateTests : BaseTestHelper
     [Fact]
     public async Task CanNotCreatePostWithoutRegionTag()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var result = await CommonServices.Commander.Call(new Post_TryPostMemory
@@ -131,7 +131,7 @@ public sealed class PostCreateTests : BaseTestHelper
     [Fact]
     public async Task CanNotCreatePostWithoutTypeTag()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var result = await CommonServices.Commander.Call(new Post_TryPostMemory
@@ -154,7 +154,7 @@ public sealed class PostCreateTests : BaseTestHelper
     [Fact]
     public async Task CanCreatePostWithoutMainTag()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var result = await CommonServices.Commander.Call(new Post_TryPostMemory
@@ -183,7 +183,7 @@ public sealed class PostCreateTests : BaseTestHelper
     [Fact]
     public async Task CanNotCreatePostWithoutImageData()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var result = await CommonServices.Commander.Call(new Post_TryPostMemory
@@ -209,7 +209,7 @@ public sealed class PostCreateTests : BaseTestHelper
     [Fact]
     public async Task CanCreatePost()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var result = await CommonServices.Commander.Call(new Post_TryPostMemory
@@ -239,7 +239,7 @@ public sealed class PostCreateTests : BaseTestHelper
     [Fact]
     public async Task CanNotCreatePostWithNullData()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var result = await CommonServices.Commander.Call(new Post_TryPostMemory
@@ -269,7 +269,7 @@ public sealed class PostCreateTests : BaseTestHelper
     [Fact]
     public async Task CanNotCreatePostWithZeroData_BAD_TEST_SINCE_WE_CAN_CREATE_POSTS_WITHOUT_IMAGES()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var result = await CommonServices.Commander.Call(new Post_TryPostMemory
@@ -303,7 +303,7 @@ public sealed class PostCreateTests : BaseTestHelper
     [Fact]
     public async Task CanNotCreatePostWithTooManyImages()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var result = await CommonServices.Commander.Call(new Post_TryPostMemory

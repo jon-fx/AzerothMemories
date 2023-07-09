@@ -18,7 +18,7 @@ public sealed class PostCommentReactTests : BaseTestHelper
     [InlineData(PostReaction.Reaction9)]
     public async Task CanReactToComment(PostReaction reaction)
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
@@ -35,21 +35,21 @@ public sealed class PostCommentReactTests : BaseTestHelper
     [Fact]
     public async Task ReactWithoutAccountDoesNothing()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
         var validComment = await CommonServices.Commander.Call(new Post_TryPublishComment(session, validPost.PostId, 0, "Test Comment"));
         validComment.Should().BeGreaterThan(0);
 
-        var result = await CommonServices.Commander.Call(new Post_TryReactToPostComment(SessionFactory.CreateSession(), validPost.PostId, validComment, PostReaction.Reaction1));
+        var result = await CommonServices.Commander.Call(new Post_TryReactToPostComment(Session.New(), validPost.PostId, validComment, PostReaction.Reaction1));
         result.Should().Be(0);
     }
 
     [Fact]
     public async Task ReactWithInvliadPost()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
@@ -61,7 +61,7 @@ public sealed class PostCommentReactTests : BaseTestHelper
     [Fact]
     public async Task ReactWithInvliadComment()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
@@ -73,7 +73,7 @@ public sealed class PostCommentReactTests : BaseTestHelper
     [Fact]
     public async Task ReactNoneDoesNothing()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
@@ -87,7 +87,7 @@ public sealed class PostCommentReactTests : BaseTestHelper
     [Fact]
     public async Task ReactWithInvliadReaction()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
@@ -110,7 +110,7 @@ public sealed class PostCommentReactTests : BaseTestHelper
     [InlineData(PostReaction.Reaction9)]
     public async Task ReactCanChange(PostReaction reaction)
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);

@@ -18,7 +18,7 @@ public sealed class PostReactTests : BaseTestHelper
     [InlineData(PostReaction.Reaction9)]
     public async Task CanReactToPost(PostReaction reaction)
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
@@ -32,19 +32,19 @@ public sealed class PostReactTests : BaseTestHelper
     [Fact]
     public async Task ReactWithoutAccountDoesNothing()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
 
-        var result = await CommonServices.Commander.Call(new Post_TryReactToPost(SessionFactory.CreateSession(), validPost.PostId, PostReaction.Reaction1));
+        var result = await CommonServices.Commander.Call(new Post_TryReactToPost(Session.New(), validPost.PostId, PostReaction.Reaction1));
         result.Should().Be(0);
     }
 
     [Fact]
     public async Task ReactNoneDoesNothing()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
@@ -56,7 +56,7 @@ public sealed class PostReactTests : BaseTestHelper
     [Fact]
     public async Task ReactWithInvliadReaction()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
@@ -68,7 +68,7 @@ public sealed class PostReactTests : BaseTestHelper
     [Fact]
     public async Task ReactWithInvliadPost()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var result = await CommonServices.Commander.Call(new Post_TryReactToPost(session, 99, PostReaction.Reaction1));
@@ -87,7 +87,7 @@ public sealed class PostReactTests : BaseTestHelper
     [InlineData(PostReaction.Reaction9)]
     public async Task ReactCanChange(PostReaction reaction)
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);

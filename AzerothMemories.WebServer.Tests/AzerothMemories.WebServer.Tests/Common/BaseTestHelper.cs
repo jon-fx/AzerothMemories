@@ -24,8 +24,6 @@ public class BaseTestHelper : IAsyncLifetime
 
     protected CommonServices CommonServices => _commonServices;
 
-    protected ISessionFactory SessionFactory => _serviceProvider.GetRequiredService<ISessionFactory>();
-
     public async Task InitializeAsync()
     {
         await using var dbContext = CreateDbContext();

@@ -9,19 +9,19 @@ public sealed class PostCommentTests : BaseTestHelper
     [Fact]
     public async Task CanNotCommentWithoutAccount()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
 
-        var result = await CommonServices.Commander.Call(new Post_TryPublishComment(SessionFactory.CreateSession(), validPost.PostId, 0, "Test Comment"));
+        var result = await CommonServices.Commander.Call(new Post_TryPublishComment(Session.New(), validPost.PostId, 0, "Test Comment"));
         result.Should().Be(0);
     }
 
     [Fact]
     public async Task CanNotCommentOnInvalidPost()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var result = await CommonServices.Commander.Call(new Post_TryPublishComment(session, 99, 0, "Test Comment"));
@@ -31,7 +31,7 @@ public sealed class PostCommentTests : BaseTestHelper
     [Fact]
     public async Task CanNotCommentOnInvalidComment()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
@@ -43,7 +43,7 @@ public sealed class PostCommentTests : BaseTestHelper
     [Fact]
     public async Task CanCommentOnPost()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
@@ -55,7 +55,7 @@ public sealed class PostCommentTests : BaseTestHelper
     [Fact]
     public async Task CanCommentOnComment()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
@@ -70,7 +70,7 @@ public sealed class PostCommentTests : BaseTestHelper
     [Fact]
     public async Task CanCommentOnCommentDepthTest()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);

@@ -9,7 +9,7 @@ public sealed class AccountBattleTagTests : BaseTestHelper
     [Fact]
     public async Task BattleTagIsNotPublic()
     {
-        var session1 = SessionFactory.CreateSession();
+        var session1 = Session.New();
         var battleTag = "TestBattleTag123";
         var account1 = await CreateUser(session1, "Bob", 1, battleTag);
 

@@ -9,7 +9,7 @@ public sealed class PostChangeVisibilityTests : BaseTestHelper
     [Fact]
     public async Task CanChangePostVisibility()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
@@ -21,10 +21,10 @@ public sealed class PostChangeVisibilityTests : BaseTestHelper
     [Fact]
     public async Task CanNotChangeOtherAccountsPostVisibility()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
-        var session2 = SessionFactory.CreateSession();
+        var session2 = Session.New();
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
 
@@ -35,7 +35,7 @@ public sealed class PostChangeVisibilityTests : BaseTestHelper
     [Fact]
     public async Task CanNotChangeRandomPostVisibility()
     {
-        var session = SessionFactory.CreateSession();
+        var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
         var result = await CommonServices.Commander.Call(new Post_TrySetPostVisibility(session, 999, 1));

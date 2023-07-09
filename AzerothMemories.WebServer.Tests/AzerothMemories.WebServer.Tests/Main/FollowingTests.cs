@@ -9,10 +9,10 @@ public sealed class FollowingTests : BaseTestHelper
     [Fact]
     public async Task CanNotFollowWithNoSession()
     {
-        var session1 = SessionFactory.CreateSession();
+        var session1 = Session.New();
         //var account1 = await CreateUser(session1, "Bob");
 
-        var session2 = SessionFactory.CreateSession();
+        var session2 = Session.New();
         var account2 = await CreateUser(session2, "Bill");
 
         var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account2.Id));
@@ -22,7 +22,7 @@ public sealed class FollowingTests : BaseTestHelper
     [Fact]
     public async Task CanNotFollowSameAccount()
     {
-        var session1 = SessionFactory.CreateSession();
+        var session1 = Session.New();
         var account1 = await CreateUser(session1, "Bob");
 
         var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account1.Id));
@@ -32,7 +32,7 @@ public sealed class FollowingTests : BaseTestHelper
     [Fact]
     public async Task CanNotFollowInvalidAccount()
     {
-        var session1 = SessionFactory.CreateSession();
+        var session1 = Session.New();
         var account1 = await CreateUser(session1, "Bob");
 
         var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, 99));
@@ -42,10 +42,10 @@ public sealed class FollowingTests : BaseTestHelper
     [Fact]
     public async Task CanFollowWhenAccountIsNotPrivate()
     {
-        var session1 = SessionFactory.CreateSession();
+        var session1 = Session.New();
         var account1 = await CreateUser(session1, "Bob");
 
-        var session2 = SessionFactory.CreateSession();
+        var session2 = Session.New();
         var account2 = await CreateUser(session2, "Bill");
 
         var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account2.Id));
@@ -55,10 +55,10 @@ public sealed class FollowingTests : BaseTestHelper
     [Fact]
     public async Task CanFollowIsPendingWhenAccountIsPrivate()
     {
-        var session1 = SessionFactory.CreateSession();
+        var session1 = Session.New();
         var account1 = await CreateUser(session1, "Bob");
 
-        var session2 = SessionFactory.CreateSession();
+        var session2 = Session.New();
         var account2 = await CreateUser(session2, "Bill");
 
         await CommonServices.Commander.Call(new Account_TryChangeIsPrivate(session2, true));
@@ -70,10 +70,10 @@ public sealed class FollowingTests : BaseTestHelper
     [Fact]
     public async Task CanNotAcceptWithNoSession()
     {
-        var session1 = SessionFactory.CreateSession();
+        var session1 = Session.New();
         //var account1 = await CreateUser(session1, "Bob");
 
-        var session2 = SessionFactory.CreateSession();
+        var session2 = Session.New();
         var account2 = await CreateUser(session2, "Bill");
 
         var startFollowing = await CommonServices.Commander.Call(new Following_TryAcceptFollower(session1, account2.Id));
@@ -83,7 +83,7 @@ public sealed class FollowingTests : BaseTestHelper
     [Fact]
     public async Task CanNotAcceptSameAccount()
     {
-        var session1 = SessionFactory.CreateSession();
+        var session1 = Session.New();
         var account1 = await CreateUser(session1, "Bob");
 
         var startFollowing = await CommonServices.Commander.Call(new Following_TryAcceptFollower(session1, account1.Id));
@@ -93,10 +93,10 @@ public sealed class FollowingTests : BaseTestHelper
     [Fact]
     public async Task CanNotAcceptFollowingWhenNotPending()
     {
-        var session1 = SessionFactory.CreateSession();
+        var session1 = Session.New();
         var account1 = await CreateUser(session1, "Bob");
 
-        var session2 = SessionFactory.CreateSession();
+        var session2 = Session.New();
         var account2 = await CreateUser(session2, "Bill");
 
         var acceptFollowing = await CommonServices.Commander.Call(new Following_TryAcceptFollower(session2, account1.Id));
@@ -106,10 +106,10 @@ public sealed class FollowingTests : BaseTestHelper
     [Fact]
     public async Task CanAcceptFollowingWhenAccountIsPrivate()
     {
-        var session1 = SessionFactory.CreateSession();
+        var session1 = Session.New();
         var account1 = await CreateUser(session1, "Bob");
 
-        var session2 = SessionFactory.CreateSession();
+        var session2 = Session.New();
         var account2 = await CreateUser(session2, "Bill");
 
         await CommonServices.Commander.Call(new Account_TryChangeIsPrivate(session2, true));
@@ -124,10 +124,10 @@ public sealed class FollowingTests : BaseTestHelper
     [Fact]
     public async Task CanStopFollowing()
     {
-        var session1 = SessionFactory.CreateSession();
+        var session1 = Session.New();
         var account1 = await CreateUser(session1, "Bob");
 
-        var session2 = SessionFactory.CreateSession();
+        var session2 = Session.New();
         var account2 = await CreateUser(session2, "Bill");
 
         var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account2.Id));
@@ -140,10 +140,10 @@ public sealed class FollowingTests : BaseTestHelper
     [Fact]
     public async Task CanStopFollowingFails()
     {
-        var session1 = SessionFactory.CreateSession();
+        var session1 = Session.New();
         var account1 = await CreateUser(session1, "Bob");
 
-        var session2 = SessionFactory.CreateSession();
+        var session2 = Session.New();
         var account2 = await CreateUser(session2, "Bill");
 
         var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account2.Id));
@@ -156,10 +156,10 @@ public sealed class FollowingTests : BaseTestHelper
     [Fact]
     public async Task CanRemoveFollower()
     {
-        var session1 = SessionFactory.CreateSession();
+        var session1 = Session.New();
         var account1 = await CreateUser(session1, "Bob");
 
-        var session2 = SessionFactory.CreateSession();
+        var session2 = Session.New();
         var account2 = await CreateUser(session2, "Bill");
 
         var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account2.Id));
@@ -172,10 +172,10 @@ public sealed class FollowingTests : BaseTestHelper
     [Fact]
     public async Task CanRemoveFollowerFails()
     {
-        var session1 = SessionFactory.CreateSession();
+        var session1 = Session.New();
         var account1 = await CreateUser(session1, "Bob");
 
-        var session2 = SessionFactory.CreateSession();
+        var session2 = Session.New();
         var account2 = await CreateUser(session2, "Bill");
 
         var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account2.Id));
