@@ -1933,6 +1933,9 @@
   <data name="CharacterRace-77" xml:space="preserve">
     <value>Windgeborener Velocidrache</value>
   </data>
+  <data name="CharacterRace-80" xml:space="preserve">
+    <value>Grottendrache der Netherschwingen</value>
+  </data>
   <data name="CharacterClass-0" xml:space="preserve">
     <value>Unknown Class</value>
   </data>
@@ -2133,5 +2136,8 @@
   </data>
   <data name="CharacterClassSpecialization-1468" xml:space="preserve">
     <value>Bewahrung (Rufer)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1473" xml:space="preserve">
+    <value>Verstärkung (Rufer)</value>
   </data>
 </root>

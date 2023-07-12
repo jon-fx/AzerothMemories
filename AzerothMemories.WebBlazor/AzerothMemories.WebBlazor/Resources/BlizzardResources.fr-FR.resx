@@ -1933,6 +1933,9 @@
   <data name="CharacterRace-77" xml:space="preserve">
     <value>Vélocidrake vogue-vents</value>
   </data>
+  <data name="CharacterRace-80" xml:space="preserve">
+    <value>Drake de l’Aile-du-Néant cavernicole</value>
+  </data>
   <data name="CharacterClass-0" xml:space="preserve">
     <value>Unknown Class</value>
   </data>
@@ -2133,5 +2136,8 @@
   </data>
   <data name="CharacterClassSpecialization-1468" xml:space="preserve">
     <value>Préservation (Évocateur)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1473" xml:space="preserve">
+    <value>Augmentation (Évocateur)</value>
   </data>
 </root>

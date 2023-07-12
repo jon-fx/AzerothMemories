@@ -56,7 +56,10 @@ internal sealed class MoaResourceWriter
 
     public void TryAddServerSideLocalizationMedia(PostTagType tagType, int tagId, string mediaPath)
     {
-        Exceptions.ThrowIf(string.IsNullOrEmpty(mediaPath));
+        if (string.IsNullOrEmpty(mediaPath))
+        {
+            return;
+        }
 
         var fileInfo = SeederConfig.GetLocalMediaFileInfo(Path.GetFileNameWithoutExtension(mediaPath));
         if (tagType == PostTagType.Realm)
