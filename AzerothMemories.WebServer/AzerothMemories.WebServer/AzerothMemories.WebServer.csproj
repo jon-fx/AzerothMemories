@@ -26,7 +26,7 @@
         </PackageReference>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.9" />
         <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="7.0.9" />
-        <PackageReference Include="MudBlazor" Version="6.7.0" />
+        <PackageReference Include="MudBlazor" Version="6.8.0" />
         <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.20.0" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="7.0.4" />
@@ -35,9 +35,9 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
-        <PackageReference Include="Stl.Fusion.EntityFramework.Npgsql" Version="6.1.76" />
-        <PackageReference Include="Stl.Fusion.Server" Version="6.1.76" />
-        <PackageReference Include="Stl.Generators" Version="6.1.76">
+        <PackageReference Include="Stl.Fusion.EntityFramework.Npgsql" Version="6.1.108" />
+        <PackageReference Include="Stl.Fusion.Server" Version="6.1.108" />
+        <PackageReference Include="Stl.Generators" Version="6.1.108">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
