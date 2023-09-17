@@ -48,18 +48,20 @@ internal sealed class WowToolsInternal
     private Dictionary<int, string> GetListFile()
     {
         var dictionary = new Dictionary<int, string>();
-        var fileInfo = DownloadIfNotExists("_list-file.csv", "https://raw.githubusercontent.com/wowdev/wow-listfile/master/community-listfile.csv");
+        var fileInfo = DownloadIfNotExists("_list-file.csv", "https://github.com/wowdev/wow-listfile/releases/latest/download/community-listfile.csv");
         if (fileInfo == null)
         {
             return dictionary;
         }
 
-        using var stream = fileInfo.OpenRead();
-        using var reader = new StreamReader(stream);
-
-        while (!reader.EndOfStream)
+        var allLines = File.ReadAllLines(fileInfo.FullName).ToArray();
+        foreach (var line in allLines)
         {
-            var line = reader.ReadLine();
+            if (string.IsNullOrWhiteSpace(line))
+            {
+                continue;
+            }
+
             var split = line.Split(';');
             var result = int.TryParse(split[0], out var id);
             if (!result)

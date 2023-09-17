@@ -17,34 +17,34 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Azure.Storage.Blobs" Version="12.17.0" />
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.18.0" />
         <PackageReference Include="BlazorWasmAntivirusProtection" Version="2.4.5" />
         <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="7.1.4" />
         <PackageReference Include="MemoryPack.Generator" Version="1.9.16">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.10" />
-        <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="7.0.10" />
-        <PackageReference Include="MudBlazor" Version="6.9.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.11" />
+        <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="7.0.11" />
+        <PackageReference Include="MudBlazor" Version="6.10.0" />
         <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.20.0" />
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="7.0.4" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.10">
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="7.0.11" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.11">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="SixLabors.ImageSharp" Version="3.0.2" />
-        <PackageReference Include="Stl.Fusion.EntityFramework.Npgsql" Version="6.2.18" />
-        <PackageReference Include="Stl.Fusion.Server" Version="6.2.18" />
-        <PackageReference Include="Stl.Generators" Version="6.2.18">
+        <PackageReference Include="Stl.Fusion.EntityFramework.Npgsql" Version="6.4.26" />
+        <PackageReference Include="Stl.Fusion.Server" Version="6.4.26" />
+        <PackageReference Include="Stl.Generators" Version="6.4.26">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
         <PackageReference Include="AspNet.Security.OAuth.BattleNet" Version="7.0.4" />
         <PackageReference Include="AspNet.Security.OAuth.Patreon" Version="7.0.4" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.10" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.11" />
     </ItemGroup>
 
     <ItemGroup>
