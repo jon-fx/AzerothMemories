@@ -259,5 +259,8 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
-/AzerothMemories.WebBlazor/AzerothMemories.WebBlazor/wwwroot/Media
-/AzerothMemories.X-DoNotCommit
+*.ncrunchsolution
+/AzerothMemories.X-DoNotCommit/
+/AzerothMemories.WebServer/AzerothMemories.WebServer/Properties/PublishProfiles/
+/AzerothMemories.WebServer/AzerothMemories.WebServer/Properties/ServiceDependencies/
+/AzerothMemories.WebServer/AzerothMemories.WebServer/.config/

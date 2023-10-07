@@ -42,11 +42,11 @@
         <PackageReference Include="Markdig" Version="0.33.0" />
         <PackageReference Include="MudBlazor" Version="6.10.0" />
         <PackageReference Include="NodaTime" Version="3.1.9" />
-        <PackageReference Include="Stl.Fusion" Version="6.4.26" />
-        <PackageReference Include="Stl.CommandR" Version="6.4.26" />
-        <PackageReference Include="Stl.Fusion.Blazor" Version="6.4.26" />
-        <PackageReference Include="Stl.Fusion.Blazor.Authentication" Version="6.4.26" />
-        <PackageReference Include="Stl.Generators" Version="6.4.26">
+        <PackageReference Include="Stl.Fusion" Version="6.4.63" />
+        <PackageReference Include="Stl.CommandR" Version="6.4.63" />
+        <PackageReference Include="Stl.Fusion.Blazor" Version="6.4.63" />
+        <PackageReference Include="Stl.Fusion.Blazor.Authentication" Version="6.4.63" />
+        <PackageReference Include="Stl.Generators" Version="6.4.63">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
