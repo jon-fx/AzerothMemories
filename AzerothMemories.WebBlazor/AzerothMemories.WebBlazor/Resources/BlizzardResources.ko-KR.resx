@@ -1939,6 +1939,9 @@
   <data name="CharacterRace-80" xml:space="preserve">
     <value>동굴 황천날개 비룡</value>
   </data>
+  <data name="CharacterRace-82" xml:space="preserve">
+    <value>알가리안 폭풍기수</value>
+  </data>
   <data name="CharacterClass-0" xml:space="preserve">
     <value>Unknown Class</value>
   </data>

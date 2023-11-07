@@ -35,18 +35,18 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.11" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.11" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.13" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.13" PrivateAssets="all" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.11" />
+        <PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.13" />
         <PackageReference Include="Markdig" Version="0.33.0" />
-        <PackageReference Include="MudBlazor" Version="6.10.0" />
+        <PackageReference Include="MudBlazor" Version="6.11.0" />
         <PackageReference Include="NodaTime" Version="3.1.9" />
-        <PackageReference Include="Stl.Fusion" Version="6.4.63" />
-        <PackageReference Include="Stl.CommandR" Version="6.4.63" />
-        <PackageReference Include="Stl.Fusion.Blazor" Version="6.4.63" />
-        <PackageReference Include="Stl.Fusion.Blazor.Authentication" Version="6.4.63" />
-        <PackageReference Include="Stl.Generators" Version="6.4.63">
+        <PackageReference Include="Stl.Fusion" Version="6.5.43" />
+        <PackageReference Include="Stl.CommandR" Version="6.5.43" />
+        <PackageReference Include="Stl.Fusion.Blazor" Version="6.5.43" />
+        <PackageReference Include="Stl.Fusion.Blazor.Authentication" Version="6.5.43" />
+        <PackageReference Include="Stl.Generators" Version="6.5.43">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>

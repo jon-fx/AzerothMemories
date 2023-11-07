@@ -247,7 +247,7 @@ internal static class PostServices_TryPostMemory
                 var bufferCount = buffer.Length;
                 if (bufferCount == 0 || bufferCount > ZExtensions.MaxAddMemoryFileSizeInBytes)
                 {
-                    break;
+                    return AddMemoryResultCode.UploadFailed;
                 }
 
                 await using var memoryStream = new MemoryStream();

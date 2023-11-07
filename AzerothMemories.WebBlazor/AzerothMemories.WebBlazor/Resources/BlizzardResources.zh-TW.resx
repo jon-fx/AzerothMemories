@@ -1939,6 +1939,9 @@
   <data name="CharacterRace-80" xml:space="preserve">
     <value>岩洞虛空之翼龍</value>
   </data>
+  <data name="CharacterRace-82" xml:space="preserve">
+    <value>阿爾加風暴飛騎</value>
+  </data>
   <data name="CharacterClass-0" xml:space="preserve">
     <value>Unknown Class</value>
   </data>
