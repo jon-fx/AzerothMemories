@@ -1942,6 +1942,9 @@
   <data name="CharacterRace-82" xml:space="preserve">
     <value>Algarischer Sturmreiter</value>
   </data>
+  <data name="CharacterRace-83" xml:space="preserve">
+    <value>Blühender Launendrache</value>
+  </data>
   <data name="CharacterClass-0" xml:space="preserve">
     <value>Unknown Class</value>
   </data>

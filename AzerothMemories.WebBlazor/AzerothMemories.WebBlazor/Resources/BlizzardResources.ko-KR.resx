@@ -1942,6 +1942,9 @@
   <data name="CharacterRace-82" xml:space="preserve">
     <value>알가리안 폭풍기수</value>
   </data>
+  <data name="CharacterRace-83" xml:space="preserve">
+    <value>만개하는 변덕비룡</value>
+  </data>
   <data name="CharacterClass-0" xml:space="preserve">
     <value>Unknown Class</value>
   </data>
