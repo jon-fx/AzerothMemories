@@ -1,4 +1,4 @@
-﻿@inject TimeProvider _timeProvider;
+﻿@inject TimeProviderEx _timeProvider;
 
 <MudDatePicker @ref="_datePicker" @bind-Date="@_postDate" OpenTo="OpenTo.Year" Label="Date" MinDate="@_minDateTime" MaxDate="System.DateTime.Now" AutoClose="true" PickerOpened="@OnPickerOpened" PickerClosed="@OnPickerClosed">
     <PickerActions>

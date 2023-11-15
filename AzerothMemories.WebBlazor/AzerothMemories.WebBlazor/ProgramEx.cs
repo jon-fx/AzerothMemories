@@ -34,7 +34,7 @@ public static class ProgramEx
         services.AddSingleton<MarkdownServices>();
 
         services.AddSingleton<TagHelpers>();
-        services.AddSingleton<TimeProvider>();
+        services.AddSingleton<TimeProviderEx>();
 
         services.AddScoped<ClientServices>();
         services.AddScoped<ActiveAccountServices>();

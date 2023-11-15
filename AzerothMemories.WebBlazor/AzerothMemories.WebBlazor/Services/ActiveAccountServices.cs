@@ -4,13 +4,13 @@ public sealed class ActiveAccountServices
 {
     private readonly IAccountServices _accountServices;
     private readonly ICharacterServices _characterServices;
-    private readonly TimeProvider _timeProvider;
+    private readonly TimeProviderEx _timeProvider;
     private readonly ISnackbar _snackbarService;
     private readonly IStringLocalizer<BlizzardResources> _stringLocalizer;
 
     private IActiveCommentContext _activeCommentContext;
 
-    public ActiveAccountServices(IAccountServices accountServices, ICharacterServices characterServices, TimeProvider timeProvider, ISnackbar snackbar, IStringLocalizer<BlizzardResources> stringLocalizer)
+    public ActiveAccountServices(IAccountServices accountServices, ICharacterServices characterServices, TimeProviderEx timeProvider, ISnackbar snackbar, IStringLocalizer<BlizzardResources> stringLocalizer)
     {
         _accountServices = accountServices;
         _characterServices = characterServices;

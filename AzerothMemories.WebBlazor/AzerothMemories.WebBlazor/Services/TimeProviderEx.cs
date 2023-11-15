@@ -2,7 +2,7 @@
 
 namespace AzerothMemories.WebBlazor.Services;
 
-public sealed class TimeProvider
+public sealed class TimeProviderEx
 {
     private bool _alwaysUseUtc;
 

@@ -13,7 +13,7 @@ public sealed class ClientServices
         JsRuntime = serviceProvider.GetRequiredService<IJSRuntime>();
         ScrollManager = serviceProvider.GetRequiredService<IScrollManager>();
         TagHelpers = serviceProvider.GetRequiredService<TagHelpers>();
-        TimeProvider = serviceProvider.GetRequiredService<TimeProvider>();
+        TimeProvider = serviceProvider.GetRequiredService<TimeProviderEx>();
         BlizzardStringLocalizer = serviceProvider.GetRequiredService<IStringLocalizer<BlizzardResources>>();
         PersistentComponentState = serviceProvider.GetRequiredService<PersistentComponentState>();
     }
@@ -32,7 +32,7 @@ public sealed class ClientServices
 
     public TagHelpers TagHelpers { get; }
 
-    public TimeProvider TimeProvider { get; }
+    public TimeProviderEx TimeProvider { get; }
 
     public IStringLocalizer<BlizzardResources> BlizzardStringLocalizer { get; }
 

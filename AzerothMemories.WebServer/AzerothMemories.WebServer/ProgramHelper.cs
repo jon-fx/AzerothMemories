@@ -2,10 +2,9 @@
 using Stl.Fusion.Blazor.Authentication;
 using Stl.Fusion.EntityFramework.Npgsql;
 using Stl.Fusion.Server.Authentication;
-using Stl.Fusion.Server.Controllers;
+using Stl.Fusion.Server.Endpoints;
 using System.Net.Http.Headers;
 using System.Text;
-using Stl.Fusion.Server.Endpoints;
 
 namespace AzerothMemories.WebServer;
 
@@ -87,7 +86,7 @@ public abstract class ProgramHelper
         _services.AddSingleton<CommonServices>();
         _services.AddSingleton<BlizzardUpdateHandler>();
         _services.AddSingleton<HttpClientProvider>();
-        
+
         _fusion.AddService<MediaServices>(RpcServiceMode.None);
         _fusion.AddService<BlizzardUpdateServices>(RpcServiceMode.None);
 
@@ -123,6 +122,6 @@ public abstract class ProgramHelper
     {
         services.GetRequiredService<CommonServices>().Initialize();
         services.GetRequiredService<ComputeServices>().Initialize();
-        services.GetRequiredService<TimeProvider>().AlwaysUseUtc(true);
+        services.GetRequiredService<TimeProviderEx>().AlwaysUseUtc(true);
     }
 }
