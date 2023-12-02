@@ -6,7 +6,7 @@ namespace AzerothMemories.WebServer.Common;
 
 internal sealed class CustomBattleNetAuthenticationHandler : BattleNetAuthenticationHandler
 {
-    public CustomBattleNetAuthenticationHandler(IOptionsMonitor<BattleNetAuthenticationOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
+    public CustomBattleNetAuthenticationHandler(IOptionsMonitor<BattleNetAuthenticationOptions> options, ILoggerFactory logger, UrlEncoder encoder) : base(options, logger, encoder)
     {
     }
 

@@ -1,5 +1,7 @@
 ﻿using Azure.Storage.Blobs;
 using NodaTime.Extensions;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace AzerothMemories.WebServer.Services;
 

@@ -1,5 +1,6 @@
 ﻿using Azure.Storage.Blobs;
 using Humanizer;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Gif;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using System.Security.Cryptography;
