@@ -3,6 +3,7 @@ using Stl.Fusion.Diagnostics;
 using Stl.Fusion.Extensions;
 using Stl.Fusion.Internal;
 using Stl.OS;
+using Stl.Rpc;
 using Stl.Time;
 
 namespace AzerothMemories.WebBlazor;
@@ -39,6 +40,8 @@ public static class ProgramEx
         services.AddScoped<ClientServices>();
         services.AddScoped<ActiveAccountServices>();
         services.AddScoped<DialogHelperService>();
+
+        services.AddScoped(c => new RpcPeerStateMonitor(c, OSInfo.IsAnyClient ? RpcPeerRef.Default : null));
 
         var fusion = services.AddFusion();
         fusion.AddComputedGraphPruner(_ => new ComputedGraphPruner.Options { CheckPeriod = TimeSpan.FromSeconds(30) });

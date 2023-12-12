@@ -66,7 +66,6 @@ public abstract class ProgramHelper
 
         _fusionServer.ConfigureAuthEndpoint(_ => new AuthEndpoints.Options
         {
-            DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme,
             SignInPropertiesBuilder = (_, properties) =>
             {
                 properties.IsPersistent = true;
