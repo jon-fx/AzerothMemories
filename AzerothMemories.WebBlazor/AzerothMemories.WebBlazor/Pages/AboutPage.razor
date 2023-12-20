@@ -10,5 +10,49 @@
     <MudDivider />
 
     <MudCardContent Class="@ClassPresets.CardContent">
+        <MudStack>
+            <MudText Typo="Typo.body1">Memories of Azeroth is a learning exercise dedicated to organising, storing and sharing your World of Warcraft screenshots.</MudText>
+        </MudStack>
     </MudCardContent>
 </MudCard>
+
+<MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+    <MudCardHeader Class="@ClassPresets.CardHeader">
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">Projects Used</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+
+    <MudDivider />
+
+    <MudCardContent Class="@ClassPresets.CardContent">
+        <MudStack>
+            @foreach (var specialThank in _specialThanks)
+            {
+                <MudLink Typo="Typo.body1" Href="@specialThank.Link" Color="Color.Default">@specialThank.Title</MudLink>
+            }
+        </MudStack>
+    </MudCardContent>
+</MudCard>
+
+@code
+{
+    private readonly (string Title, string Link, string Desc)[]  _specialThanks = 
+    {
+        ("ArgentPonyWarcraftClient","https://github.com/blizzard-net/warcraft", null),
+        ("AspNet.Security.OAuth.Providers","https://github.com/aspnet-contrib/AspNet.Security.OAuth.Providers", null),
+        ("AzureStorage","https://github.com/Azure/azure-sdk-for-net/blob/Azure.Storage.Blobs_12.16.0/sdk/storage/Azure.Storage.Blobs/README.md", null),
+        ("Blazor","https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor", null),
+        ("CsvHelper","https://joshclose.github.io/CsvHelper", null),
+        ("EntityFrameworkCore","https://learn.microsoft.com/en-us/ef/core/", null),
+        ("FluentAssertions","https://fluentassertions.com", null),
+        ("FluentMigrator","https://github.com/fluentmigrator/fluentmigrator/wiki", null),
+        ("Humanizer","https://github.com/Humanizr/Humanizer", null),
+        ("ImageSharp","https://github.com/SixLabors/ImageSharp", null),
+        ("MarkDig","https://github.com/lunet-io/markdig", null),
+        ("MudBlazor","https://mudblazor.com", null),
+        ("NodaTime","https://nodatime.org", null),
+        ("Stl.Fusion","https://github.com/servicetitan/Stl.Fusion", null),
+        ("wow.tools","https://github.com/Marlamin/wow.tools.local", null)
+    };
+}
