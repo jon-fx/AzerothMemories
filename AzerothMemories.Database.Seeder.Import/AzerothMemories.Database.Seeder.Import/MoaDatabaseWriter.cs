@@ -2,11 +2,11 @@
 using AzerothMemories.WebBlazor.Common;
 using AzerothMemories.WebServer.Database;
 using AzerothMemories.WebServer.Database.Records;
+using KGySoft.Resources;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Stl.Collections;
 using System.Globalization;
-using System.Resources;
 
 namespace AzerothMemories.Database.Seeder.Import;
 
