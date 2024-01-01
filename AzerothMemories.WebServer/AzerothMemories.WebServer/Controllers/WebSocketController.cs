@@ -1,4 +1,4 @@
-﻿using Stl.Rpc.Server;
+﻿using ActualLab.Rpc.Server;
 
 namespace AzerothMemories.WebServer.Controllers;
 

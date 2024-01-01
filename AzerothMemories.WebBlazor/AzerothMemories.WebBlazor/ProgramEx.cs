@@ -1,10 +1,10 @@
-﻿using Stl.Fusion.Client.Interception;
-using Stl.Fusion.Diagnostics;
-using Stl.Fusion.Extensions;
-using Stl.Fusion.Internal;
-using Stl.OS;
-using Stl.Rpc;
-using Stl.Time;
+﻿using ActualLab.Fusion.Client.Interception;
+using ActualLab.Fusion.Diagnostics;
+using ActualLab.Fusion.Extensions;
+using ActualLab.Fusion.Internal;
+using ActualLab.OS;
+using ActualLab.Rpc;
+using ActualLab.Time;
 
 namespace AzerothMemories.WebBlazor;
 
@@ -13,7 +13,7 @@ public static class ProgramEx
     public static void Initialize(IServiceCollection services)
     {
 #if !DEBUG
-        Stl.Interception.Interceptors.InterceptorBase.Options.Defaults.IsValidationEnabled = false;
+        ActualLab.Interception.Interceptors.InterceptorBase.Options.Defaults.IsValidationEnabled = false;
 #endif
 
         services.AddMudServices(config =>

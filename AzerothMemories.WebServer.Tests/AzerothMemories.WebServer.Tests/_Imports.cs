@@ -1,4 +1,7 @@
-﻿global using AzerothMemories.WebBlazor.Blizzard;
+﻿global using ActualLab.CommandR;
+global using ActualLab.Fusion;
+global using ActualLab.Fusion.Authentication;
+global using AzerothMemories.WebBlazor.Blizzard;
 global using AzerothMemories.WebBlazor.Common;
 global using AzerothMemories.WebBlazor.Services.Commands;
 global using AzerothMemories.WebBlazor.ViewModels;
@@ -8,7 +11,4 @@ global using AzerothMemories.WebServer.Database.Records;
 global using AzerothMemories.WebServer.Services;
 global using Microsoft.EntityFrameworkCore;
 global using NodaTime;
-global using Stl.CommandR;
-global using Stl.Fusion;
-global using Stl.Fusion.Authentication;
 global using SystemClock = NodaTime.SystemClock;

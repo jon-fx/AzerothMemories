@@ -1,8 +1,8 @@
-﻿using AzerothMemories.WebBlazor;
-using Stl.Fusion.Blazor.Authentication;
-using Stl.Fusion.EntityFramework.Npgsql;
-using Stl.Fusion.Server.Authentication;
-using Stl.Fusion.Server.Endpoints;
+﻿using ActualLab.Fusion.Blazor.Authentication;
+using ActualLab.Fusion.EntityFramework.Npgsql;
+using ActualLab.Fusion.Server.Authentication;
+using ActualLab.Fusion.Server.Endpoints;
+using AzerothMemories.WebBlazor;
 using System.Net.Http.Headers;
 using System.Text;
 
