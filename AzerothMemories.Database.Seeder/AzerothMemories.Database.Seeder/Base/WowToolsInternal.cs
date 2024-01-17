@@ -123,7 +123,7 @@ internal sealed class WowToolsInternal
 
     public void LoadDataFromWowTools(string fileName, string primaryKeyName, ref Dictionary<int, WowToolsData> dictionary, string locale, string[] fieldsToLoad = null)
     {
-        var fileInfo = DownloadIfNotExists($"{fileName}-{locale}.csv", $"{CommonConfigDoNotCommit.LocalWowToolsUrl}/dbc/export/?name={fileName}&build={_buildString}&locale={locale}");
+        var fileInfo = DownloadIfNotExists($"{fileName}-{locale}.csv", CommonConfigDoNotCommit.GetLocalWowToolsUrl(fileName, _buildString, locale));
         if (fileInfo == null)
         {
             return;

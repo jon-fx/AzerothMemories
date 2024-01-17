@@ -2,8 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http.Headers;
 
-Console.BufferHeight = short.MaxValue - 1;
-
 var config = new CommonConfig();
 var services = new ServiceCollection();
 services.AddSingleton(config);

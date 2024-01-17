@@ -5,8 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-Console.BufferHeight = short.MaxValue - 1;
-
 var config = new CommonConfig();
 var services = new ServiceCollection();
 services.AddSingleton(config);
