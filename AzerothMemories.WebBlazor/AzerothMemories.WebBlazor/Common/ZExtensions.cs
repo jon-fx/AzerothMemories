@@ -339,6 +339,11 @@ public static class ZExtensions
         return Color.Default;
     }
 
+    public static Color GetChipSelectedColor(this PostTagInfo tagInfo)
+    {
+        return Color.Primary;
+    }
+
     public static string BuildReactionString(int totalReactionCount, int[] reactionCounters)
     {
         if (totalReactionCount == 0)

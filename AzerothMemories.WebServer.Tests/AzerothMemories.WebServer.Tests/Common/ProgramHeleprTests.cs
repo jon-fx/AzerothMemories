@@ -11,7 +11,7 @@ internal sealed class ProgramHeleprTests : ProgramHelper
 
     protected override void ConfigureDbContextFactory(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseInMemoryDatabase("Database").ConfigureWarnings(warnings =>
+        optionsBuilder.UseInMemoryDatabase($"Database-{Guid.NewGuid()}").ConfigureWarnings(warnings =>
         {
             warnings.Ignore(InMemoryEventId.TransactionIgnoredWarning);
         });

@@ -6,7 +6,7 @@ else if (TagInfo.WowHeadLink == null)
 {
     @if (TagInfo.IsChipClosable)
     {
-        <MudChip @key="TagInfo.TagString" Variant="@Variant" Color="TagInfo.GetChipColor()" Default="Default" Value="TagInfo" OnClick="OnClick" OnClose="OnClose">
+        <MudChip @key="TagInfo.TagString" Variant="@Variant" Color="TagInfo.GetChipColor()" SelectedColor="TagInfo.GetChipSelectedColor()" Default="Default" Value="TagInfo" OnClick="OnClick" OnClose="OnClose">
             @if (TagInfo.Image != null)
             {
                 <MudAvatar Class="mr-2" Size="Size.Small">
@@ -19,7 +19,7 @@ else if (TagInfo.WowHeadLink == null)
     }
     else
     {
-        <MudChip @key="TagInfo.TagString" Variant="@Variant" Color="TagInfo.GetChipColor()" Default="Default" Value="TagInfo" OnClick="OnClick">
+        <MudChip @key="TagInfo.TagString" Variant="@Variant" Color="TagInfo.GetChipColor()" SelectedColor="TagInfo.GetChipSelectedColor()" Default="Default" Value="TagInfo" OnClick="OnClick">
             @if (TagInfo.Image != null)
             {
                 <MudAvatar Class="mr-2" Size="Size.Small">
@@ -36,7 +36,7 @@ else
     <a class="cardlink2" data-wowhead="@TagInfo.WowHeadLink" href="" onclick="return false;">
         @if (TagInfo.IsChipClosable)
         {
-            <MudChip @key="TagInfo.TagString" Variant="@Variant" Color="TagInfo.GetChipColor()" Default="Default" Value="TagInfo" OnClick="OnClick" OnClose="OnClose">
+            <MudChip @key="TagInfo.TagString" Variant="@Variant" Color="TagInfo.GetChipColor()" SelectedColor="TagInfo.GetChipSelectedColor()" Default="Default" Value="TagInfo" OnClick="OnClick" OnClose="OnClose">
                 @if (TagInfo.Image != null)
                 {
                     <MudAvatar Class="mr-2" Size="Size.Small">
@@ -49,7 +49,7 @@ else
         }
         else
         {
-            <MudChip @key="TagInfo.TagString" Variant="@Variant" Color="TagInfo.GetChipColor()" Default="Default" Value="TagInfo" OnClick="OnClick">
+            <MudChip @key="TagInfo.TagString" Variant="@Variant" Color="TagInfo.GetChipColor()" SelectedColor="TagInfo.GetChipSelectedColor()" Default="Default" Value="TagInfo" OnClick="OnClick">
                 @if (TagInfo.Image != null)
                 {
                     <MudAvatar Class="mr-2" Size="Size.Small">
