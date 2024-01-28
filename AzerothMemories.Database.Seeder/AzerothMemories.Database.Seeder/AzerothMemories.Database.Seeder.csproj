@@ -14,8 +14,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="CsvHelper" Version="30.0.1" />
-        <PackageReference Include="KGySoft.CoreLibraries" Version="8.0.0" />
+        <PackageReference Include="CsvHelper" Version="30.1.0" />
+        <PackageReference Include="KGySoft.CoreLibraries" Version="8.1.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
     </ItemGroup>
 </Project>

@@ -39,9 +39,11 @@
             </CardHeaderContent>
             <CardHeaderActions>
                 <MudMenu Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Dense="true">
-                    <MudMenuItem Href="@($"/post/{item.PostersAccountId}/{comment.PostId}?comment={comment.Id}")">
+                    <MudMenuItem>
                         <MudTooltip Text="Link" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
-                            <MudIcon Icon="@Icons.Material.Filled.AddLink" Size="Size.Small" />
+                            <MudLink Href="@($"/post/{item.PostersAccountId}/{comment.PostId}?comment={comment.Id}")" Color="Color.Default">
+                                <MudIcon Icon="@Icons.Material.Filled.AddLink" Size="Size.Small"/>
+                            </MudLink>
                         </MudTooltip>
                     </MudMenuItem>
 
