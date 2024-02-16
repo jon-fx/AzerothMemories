@@ -26,6 +26,14 @@ else
         <AdminInfoText Text="Uploads" Value="@ViewModel.Counters.UploadCount.ToString("N0")" />
     </MudStack>
 
+    <MudStack Justify="Justify.Center" Row="true">
+        <AdminInfoText Text="Updates - None" Value="@ViewModel.Counters.UpdateCounters.NoneCount.ToString("N0")" />
+        <AdminInfoText Text="Updates - Queued" Value="@ViewModel.Counters.UpdateCounters.QueuedCount.ToString("N0")" />
+
+        <AdminInfoText Text="Updates - Progress" Value="@ViewModel.Counters.UpdateCounters.ProgressCount.ToString("N0")" />
+        <AdminInfoText Text="Updates - Required" Value="@ViewModel.Counters.UpdateCounters.RequiredCount.ToString("N0")" />
+    </MudStack>
+
     <MudDivider />
 
     <MudExpansionPanels Class="@ClassPresets.Card" MultiExpansion="true">

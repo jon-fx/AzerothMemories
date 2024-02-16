@@ -23,27 +23,27 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.1" />
-        <PackageReference Include="MudBlazor" Version="6.14.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.2" />
+        <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.2" />
+        <PackageReference Include="MudBlazor" Version="6.15.0" />
         <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.21.0" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="8.0.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="SixLabors.ImageSharp" Version="3.1.2" />
-        <PackageReference Include="ActualLab.Fusion.EntityFramework.Npgsql" Version="7.0.14" />
-        <PackageReference Include="ActualLab.Fusion.Server" Version="7.0.14" />
-        <PackageReference Include="ActualLab.Generators" Version="7.0.14">
+        <PackageReference Include="ActualLab.Fusion.EntityFramework.Npgsql" Version="7.0.29" />
+        <PackageReference Include="ActualLab.Fusion.Server" Version="7.0.29" />
+        <PackageReference Include="ActualLab.Generators" Version="7.0.29">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
         <PackageReference Include="AspNet.Security.OAuth.BattleNet" Version="8.0.0" />
         <PackageReference Include="AspNet.Security.OAuth.Patreon" Version="8.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.2" />
     </ItemGroup>
 
     <ItemGroup>

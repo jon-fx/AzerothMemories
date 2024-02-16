@@ -25,6 +25,36 @@ public class AdminServices : IAdminServices
         return await database.Operations.CountAsync().ConfigureAwait(false);
     }
 
+    [ComputeMethod(AutoInvalidationDelay = 60)]
+    public virtual async Task<AdminUpdateCountersViewModel> GetUpdateRecordCounters()
+    {
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+
+        var noneCount = await database.BlizzardUpdates
+            .Where(x => x.UpdateStatus == BlizzardUpdateStatus.None)
+            .CountAsync().ConfigureAwait(false);
+
+        var queuedCount = await database.BlizzardUpdates
+            .Where(x => x.UpdateStatus == BlizzardUpdateStatus.Queued)
+            .CountAsync().ConfigureAwait(false);
+
+        var progressCount = await database.BlizzardUpdates
+            .Where(x => x.UpdateStatus == BlizzardUpdateStatus.Progress)
+            .CountAsync().ConfigureAwait(false);
+
+        var requiredCount = await database.BlizzardUpdates
+            .Where(x => x.UpdateStatus == BlizzardUpdateStatus.Required)
+            .CountAsync().ConfigureAwait(false);
+
+        return new AdminUpdateCountersViewModel
+        {
+            NoneCount = noneCount,
+            QueuedCount = queuedCount,
+            ProgressCount = progressCount,
+            RequiredCount = requiredCount,
+        };
+    }
+
     [ComputeMethod]
     public virtual async Task<int> GetAccountCount()
     {
@@ -98,6 +128,8 @@ public class AdminServices : IAdminServices
         var commentCount = await GetCommentCount().ConfigureAwait(false);
         var uploadCount = await GetUploadCount().ConfigureAwait(false);
 
+        var updateCounters = await GetUpdateRecordCounters().ConfigureAwait(false);
+
         return new AdminCountersViewModel
         {
             TimeStamp = SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds(),
@@ -111,6 +143,8 @@ public class AdminServices : IAdminServices
             PostCount = postCount,
             CommentCount = commentCount,
             UploadCount = uploadCount,
+
+            UpdateCounters = updateCounters
         };
     }
 

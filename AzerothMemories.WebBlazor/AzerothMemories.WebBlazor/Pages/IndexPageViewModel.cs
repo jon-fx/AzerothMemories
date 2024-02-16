@@ -40,7 +40,13 @@ public sealed class IndexPageViewModel : PersistentStateViewModel
         OnThisDay = await TryUpdateOnThisDay();
         AccountViewModel = await Services.ComputeServices.AccountServices.TryGetActiveAccount(Session.Default);
 
-        await RecentPostsHelper.ComputeState(_currentPageString, _sortModeString, _postTypeString);
+        if (RecentPostsHelper == null)
+        {
+        }
+        else
+        {
+            await RecentPostsHelper.ComputeState(_currentPageString, _sortModeString, _postTypeString);
+        }
     }
 
     private Task<DailyActivityResults> TryUpdateOnThisDay()
