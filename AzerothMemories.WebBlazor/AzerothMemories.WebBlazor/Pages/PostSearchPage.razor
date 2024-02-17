@@ -1,6 +1,11 @@
 ﻿@page "/postsearch/"
 @inherits MoaComponentBase<PostSearchPageViewModel>
 
+@{
+    var pageHeaderInfo = new DefaultPageHeaderInfo("Post Search");
+    <HeadContentTest ClientServices="@ClientServices" PageInfo="@pageHeaderInfo" />
+}
+
 @if (ViewModel.PostSearchHelper != null)
 {
     <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">

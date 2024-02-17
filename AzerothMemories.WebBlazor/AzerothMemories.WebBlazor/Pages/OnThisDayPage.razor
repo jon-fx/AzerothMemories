@@ -2,6 +2,9 @@
 @inherits MoaComponentBase<OnThisDayPageViewModel>
 
 @{
+    var pageHeaderInfo = new DefaultPageHeaderInfo("On This Day");
+    <HeadContentTest ClientServices="@ClientServices" PageInfo="@pageHeaderInfo" />
+
     var results = ViewModel?.DailyActivityResults;
     if (results == null)
     {

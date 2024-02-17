@@ -1,4 +1,10 @@
 ﻿@page "/privacy-policy"
+@inject ClientServices ClientServices;
+
+@{
+    var pageHeaderInfo = new DefaultPageHeaderInfo("Privacy Policy");
+    <HeadContentTest ClientServices="@ClientServices" PageInfo="@pageHeaderInfo" />
+}
 
 <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
     <MudCardHeader Class="@ClassPresets.CardHeader">

@@ -15,7 +15,6 @@ else if (ViewModel.Helper.AccountViewModel == null || ViewModel.Helper.PostViewM
 }
 else
 {
-    <PageTitle>@ViewModel.GetPageTitle()</PageTitle>
     <HeadContentTest ClientServices="@ClientServices" PageInfo="@ViewModel" />
 
     <AccountHeaderCardComponent Services="@(this)" AccountViewModel="@ViewModel.Helper.AccountViewModel" />

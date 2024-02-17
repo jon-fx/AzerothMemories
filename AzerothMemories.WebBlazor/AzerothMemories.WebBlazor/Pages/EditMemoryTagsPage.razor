@@ -1,6 +1,11 @@
 ﻿@page "/edittags/{Id}/{PostId}"
 @inherits MoaComponentBase<EditMemoryTagsPageViewModel>
 
+@{
+    var pageHeaderInfo = new DefaultPageHeaderInfo("Edit Memory");
+    <HeadContentTest ClientServices="@ClientServices" PageInfo="@pageHeaderInfo" />
+}
+
 @if (ViewModel.Helper == null)
 {
     <CardLoadingComponent />

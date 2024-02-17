@@ -2,7 +2,10 @@
 @inject ClientAuthHelper _clientAuthHelper
 @inherits MoaComponentBase<AccountManagePageViewModel>
 
-<PageTitle>Manage Account - Memories of Azeroth</PageTitle>
+@{
+    var pageHeaderInfo = new DefaultPageHeaderInfo("Manage Account");
+    <HeadContentTest ClientServices="@ClientServices" PageInfo="@pageHeaderInfo" />
+}
 
 <AuthorizeView>
     <Authorized>

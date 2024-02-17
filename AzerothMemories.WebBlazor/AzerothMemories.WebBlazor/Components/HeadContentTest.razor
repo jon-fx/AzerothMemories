@@ -1,13 +1,14 @@
-﻿<HeadContent>
+﻿@{
+    var title = PageInfo.GetPageTitle();
+    var description = PageInfo.GetPageDescription();
+    var image = PageInfo.GetPageImage();
+    var altImage = PageInfo.GetPageImageAlt();
+    var imagePath = GetImagePath(image);
+}
 
-    @{
-        var title = PageInfo.GetPageTitle();
-        var description = PageInfo.GetPageDescription();
-        var image = PageInfo.GetPageImage();
-        var altImage = PageInfo.GetPageImageAlt();
-        var imagePath = GetImagePath(image);
-    }
+<PageTitle>@title</PageTitle>
 
+<HeadContent>
     <meta name="description" content="@description">
 
     <meta property="og:title" content="@title">

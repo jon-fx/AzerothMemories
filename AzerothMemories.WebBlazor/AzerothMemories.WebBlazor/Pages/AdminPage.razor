@@ -1,6 +1,11 @@
 ﻿@page "/admin"
 @inherits MoaComponentBase<AdminPageViewModel>
 
+@{
+    var pageHeaderInfo = new DefaultPageHeaderInfo("Admin");
+    <HeadContentTest ClientServices="@ClientServices" PageInfo="@pageHeaderInfo" />
+}
+
 @if (ViewModel.Counters == null || ViewModel.ReportedPosts == null || ViewModel.ReportedTags == null || ViewModel.ReportedComments == null)
 {
     <CardInfoComponent Message="Insufficient permissions." />

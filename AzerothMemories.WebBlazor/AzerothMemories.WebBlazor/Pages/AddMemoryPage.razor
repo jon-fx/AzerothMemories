@@ -1,6 +1,11 @@
 ﻿@page "/addmemory/"
 @inherits MoaComponentBase<AddMemoryPageViewModel>
 
+@{
+    var pageHeaderInfo = new DefaultPageHeaderInfo("Add Memory");
+    <HeadContentTest ClientServices="@ClientServices" PageInfo="@pageHeaderInfo" />
+}
+
 <AuthorizeView>
     <Authorized>
         @if (ViewModel == null)

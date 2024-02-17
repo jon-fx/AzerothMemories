@@ -1,6 +1,11 @@
 ﻿@page "/follow/{Id}"
 @inherits MoaComponentBase<AccountFollowPageViewModel>
 
+@{
+    var pageHeaderInfo = new DefaultPageHeaderInfo("Account Following");
+    <HeadContentTest ClientServices="@ClientServices" PageInfo="@pageHeaderInfo" />
+}
+
 @if (!string.IsNullOrWhiteSpace(ViewModel.ErrorMessage))
 {
     <CardErrorComponent ErrorMessage="@ViewModel.ErrorMessage" />

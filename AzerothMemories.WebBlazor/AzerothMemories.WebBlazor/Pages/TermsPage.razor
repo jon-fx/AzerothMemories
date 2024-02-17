@@ -1,4 +1,10 @@
 ﻿@page "/terms-of-use"
+@inject ClientServices ClientServices;
+
+@{
+    var pageHeaderInfo = new DefaultPageHeaderInfo("Terms of Use");
+    <HeadContentTest ClientServices="@ClientServices" PageInfo="@pageHeaderInfo" />
+}
 
 <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
     <MudCardHeader Class="@ClassPresets.CardHeader">

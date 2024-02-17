@@ -2,8 +2,8 @@
 @inherits MoaComponentBase<IndexPageViewModel>
 
 @{
-    <PageTitle>@ViewModel.GetPageTitle()</PageTitle>
-    <HeadContentTest ClientServices="@ClientServices" PageInfo="@ViewModel" />
+    var pageHeaderInfo = new DefaultPageHeaderInfo();
+    <HeadContentTest ClientServices="@ClientServices" PageInfo="@pageHeaderInfo" />
 }
 
 <AuthorizeView>

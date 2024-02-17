@@ -1,6 +1,11 @@
 ﻿@page "/accounthistory/"
 @inherits MoaComponentBase<AccountHistoryPageViewModel>
 
+@{
+    var pageHeaderInfo = new DefaultPageHeaderInfo("Account History");
+    <HeadContentTest ClientServices="@ClientServices" PageInfo="@pageHeaderInfo" />
+}
+
 @if (ViewModel == null)
 {
 
