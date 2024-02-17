@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebBlazor.Pages;
 
-public sealed class CharacterPagePageViewModel : PersistentStateViewModel
+public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IPageHeaderInfoProvider
 {
     private string _idString;
     private string _region;
@@ -131,5 +131,25 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel
 
         var characterTag = new PostTagInfo(PostTagType.Character, CharacterViewModel.Id, CharacterViewModel.Name, CharacterViewModel.AvatarLinkWithFallBack);
         return PostSearchHelper.ComputeState(new[] { characterTag.TagString }, _sortModeString, _currentPageString, null, null);
+    }
+
+    public string GetPageTitle()
+    {
+        return $"{CharacterViewModel.GetDisplayName()}'s Memories of Azeroth";
+    }
+
+    public string GetPageDescription()
+    {
+        return $"A collection of Memories of Azeroth from the character {CharacterViewModel.GetDisplayName()}";
+    }
+
+    public string GetPageImage()
+    {
+        return CharacterViewModel.AvatarLinkWithFallBack;
+    }
+
+    public string GetPageImageAlt()
+    {
+        return $"{CharacterViewModel.GetDisplayName()}'s Avatar";
     }
 }

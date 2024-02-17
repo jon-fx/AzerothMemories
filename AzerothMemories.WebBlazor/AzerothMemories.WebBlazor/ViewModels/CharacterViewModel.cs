@@ -39,14 +39,14 @@ public sealed partial class CharacterViewModel
 
     [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] public string TagString => PostTagInfo.GetTagString(PostTagType.Character, Id);
 
-    public string GetPageTitle()
+    public string GetDisplayName()
     {
         if (string.IsNullOrWhiteSpace(Name))
         {
-            return "Memories of Azeroth";
+            return "Unknown";
         }
 
-        return $"{Name}'s Memories of Azeroth";
+        return Name;
     }
 
     public static string GetAvatarStringWithFallBack(string avatarLink, byte race, byte gender)

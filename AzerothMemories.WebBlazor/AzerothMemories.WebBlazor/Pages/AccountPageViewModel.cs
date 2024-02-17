@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebBlazor.Pages;
 
-public sealed class AccountPageViewModel : PersistentStateViewModel
+public sealed class AccountPageViewModel : PersistentStateViewModel, IPageHeaderInfoProvider
 {
     private string _accountIdString;
     private string _sortModeString;
@@ -79,5 +79,25 @@ public sealed class AccountPageViewModel : PersistentStateViewModel
 
         var accountTag = new PostTagInfo(PostTagType.Account, AccountViewModel.Id, AccountViewModel.Username, AccountViewModel.Avatar);
         return PostSearchHelper.ComputeState(new[] { accountTag.TagString }, _sortModeString, _currentPageString, null, null);
+    }
+
+    public string GetPageTitle()
+    {
+        return $"{AccountViewModel.GetDisplayName()}'s Memories of Azeroth";
+    }
+
+    public string GetPageDescription()
+    {
+        return $"A collection of Memories of Azeroth from the account {AccountViewModel.GetDisplayName()}";
+    }
+
+    public string GetPageImage()
+    {
+        return AccountViewModel.Avatar;
+    }
+
+    public string GetPageImageAlt()
+    {
+        return $"{AccountViewModel.GetDisplayName()}'s Avatar";
     }
 }

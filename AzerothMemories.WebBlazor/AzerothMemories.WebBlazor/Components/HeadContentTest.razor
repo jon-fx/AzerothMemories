@@ -1,36 +1,37 @@
 ﻿<HeadContent>
 
     @{
-        var imagePath = GetImagePath(Image);
+        var title = PageInfo.GetPageTitle();
+        var description = PageInfo.GetPageDescription();
+        var image = PageInfo.GetPageImage();
+        var altImage = PageInfo.GetPageImageAlt();
+        var imagePath = GetImagePath(image);
     }
 
-    <meta name="description" content="@Description">
+    <meta name="description" content="@description">
 
-    <meta property="og:title" content="@Title">
-    <meta property="og:description" content="@Description">
+    <meta property="og:title" content="@title">
+    <meta property="og:description" content="@description">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="@Url">
+    <meta property="og:url" content="@ClientServices.NavigationManager.Uri">
     <meta property="og:image" content="@imagePath">
-    <meta property="og:image:alt" content="@AltImage">
+    <meta property="og:image:alt" content="@altImage">
     <meta property="og:site_name" content="Memories of Azeroth">
 
-    <meta name="twitter:title" content="@Title">
-    <meta name="twitter:description" content="@Description">
+    <meta name="twitter:title" content="@title">
+    <meta name="twitter:description" content="@description">
     <meta name="twitter:image" content="@imagePath">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image:alt" content="@AltImage">
+    <meta name="twitter:image:alt" content="@altImage">
 </HeadContent>
 
 @code {
-    [Parameter, EditorRequired] public string Url { get; init; }
-    [Parameter, EditorRequired] public string Title { get; init; }
-    [Parameter, EditorRequired] public string Image { get; init; }
-    [Parameter, EditorRequired] public string AltImage { get; init; }
-    [Parameter, EditorRequired] public string Description { get; init; }
+    [Parameter, EditorRequired] public ClientServices ClientServices { get; init; }
+    [Parameter, EditorRequired] public IPageHeaderInfoProvider PageInfo { get; init; }
 
     private string GetImagePath(string imageAddress)
     {
-        var uri = new Uri(Url);
+        var uri = new Uri(ClientServices.NavigationManager.Uri);
 
         if (string.IsNullOrWhiteSpace(imageAddress))
         {

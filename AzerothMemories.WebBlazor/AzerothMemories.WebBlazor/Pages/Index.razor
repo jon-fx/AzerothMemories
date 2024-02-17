@@ -2,8 +2,8 @@
 @inherits MoaComponentBase<IndexPageViewModel>
 
 @{
-    <PageTitle>Memories of Azeroth</PageTitle>
-    <HeadContentTest Url="@ClientServices.NavigationManager.Uri" Title="Memories of Azeroth" Description="Memories of Azeroth" Image="@null" AltImage="@null" />
+    <PageTitle>@ViewModel.GetPageTitle()</PageTitle>
+    <HeadContentTest ClientServices="@ClientServices" PageInfo="@ViewModel" />
 }
 
 <AuthorizeView>

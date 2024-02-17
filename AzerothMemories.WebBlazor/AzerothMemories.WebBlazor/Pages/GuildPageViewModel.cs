@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebBlazor.Pages;
 
-public sealed class GuildPageViewModel : PersistentStateViewModel
+public sealed class GuildPageViewModel : PersistentStateViewModel, IPageHeaderInfoProvider
 {
     private string _idString;
     private string _region;
@@ -114,5 +114,25 @@ public sealed class GuildPageViewModel : PersistentStateViewModel
 
         var guildTag = new PostTagInfo(PostTagType.Guild, GuildViewModel.Id, GuildViewModel.Name, null);// GuildViewModel.AvatarLinkWithFallBack);
         return PostSearchHelper.ComputeState(new[] { guildTag.TagString }, _sortModeString, _currentPageString, null, null);
+    }
+
+    public string GetPageTitle()
+    {
+        return $"{GuildViewModel.GetDisplayName()}'s Memories of Azeroth";
+    }
+
+    public string GetPageDescription()
+    {
+        return $"A collection of Memories of Azeroth from the guild {GuildViewModel.GetDisplayName()}";
+    }
+
+    public string GetPageImage()
+    {
+        return GuildViewModel.Avatar;
+    }
+
+    public string GetPageImageAlt()
+    {
+        return $"{GuildViewModel.GetDisplayName()}'s Avatar";
     }
 }

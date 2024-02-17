@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebBlazor.Pages;
 
-public sealed class IndexPageViewModel : PersistentStateViewModel
+public sealed class IndexPageViewModel : PersistentStateViewModel, IPageHeaderInfoProvider
 {
     private string _currentPageString;
     private string _sortModeString;
@@ -55,5 +55,25 @@ public sealed class IndexPageViewModel : PersistentStateViewModel
         var inZone = SystemClock.Instance.GetCurrentInstant().InZone(timeZone).Date;
 
         return Services.ComputeServices.SearchServices.TryGetDailyActivity(Session.Default, timeZone.Id, (byte)inZone.Day, (byte)inZone.Month, ServerSideLocaleExt.GetServerSideLocale());
+    }
+
+    public string GetPageTitle()
+    {
+        return "Memories of Azeroth";
+    }
+
+    public string GetPageDescription()
+    {
+        return "Memories of Azeroth is a site dedicated to organising, storing and sharing your World of Warcraft screenshots.";
+    }
+
+    public string GetPageImage()
+    {
+        return "header-banner.png";
+    }
+
+    public string GetPageImageAlt()
+    {
+        return "Memories of Azeroth header banner";
     }
 }

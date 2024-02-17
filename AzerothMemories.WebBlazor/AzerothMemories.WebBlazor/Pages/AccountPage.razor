@@ -13,12 +13,8 @@
     }
     else
     {
-        var name = ViewModel.AccountViewModel.GetPageTitle();
-        var image = ViewModel.AccountViewModel.Avatar;
-        var altImage = name;
-
-        <PageTitle>@name</PageTitle>
-        <HeadContentTest Url="@ClientServices.NavigationManager.Uri" Title="@name" Description="@name" Image="@image" AltImage="@altImage" />
+        <PageTitle>@ViewModel.GetPageTitle()</PageTitle>
+        <HeadContentTest ClientServices="@ClientServices" PageInfo="@ViewModel"/>
 
         <AccountHeaderCardComponent Services="@(this)" AccountViewModel="@ViewModel.AccountViewModel" />
         <SearchPostViewComponent PostSearchHelper="@ViewModel.PostSearchHelper" />

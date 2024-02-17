@@ -13,12 +13,8 @@
     }
     else
     {
-        var name = ViewModel.GuildViewModel.GetPageTitle();
-        var image = ViewModel.GuildViewModel.Avatar;
-        var altImage = name;
-
-        <PageTitle>@name</PageTitle>
-        <HeadContentTest Url="@ClientServices.NavigationManager.Uri" Title="@name" Description="@name" Image="@image" AltImage="@altImage" />
+        <PageTitle>@ViewModel.GetPageTitle()</PageTitle>
+        <HeadContentTest ClientServices="@ClientServices" PageInfo="@ViewModel"/>
 
         <GuildHeaderCardComponent Services="@(this)" GuildViewModel="@ViewModel.GuildViewModel" />
         <SearchPostViewComponent PostSearchHelper="@ViewModel.PostSearchHelper" />

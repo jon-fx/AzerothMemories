@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebBlazor.Pages;
 
-public sealed class PostPageViewModel : PersistentStateViewModel
+public sealed class PostPageViewModel : PersistentStateViewModel, IPageHeaderInfoProvider
 {
     private string _accountString;
     private string _postIdString;
@@ -39,5 +39,35 @@ public sealed class PostPageViewModel : PersistentStateViewModel
         await Helper.UpdateAccount(_accountString);
         await Helper.UpdatePost(_postIdString);
         await Helper.UpdateComments(_currentPageString, _focusedCommentId);
+    }
+
+    public string GetPageTitle()
+    {
+        return $"{Helper.AccountViewModel.GetDisplayName()}'s Memory of Azeroth";
+    }
+
+    public string GetPageDescription()
+    {
+        var title = GetPageTitle();
+        var systemTags = Helper.PostViewModel.SystemTags.Select(x => x.Name);
+        var systemTagStr = string.Join(", ", systemTags);
+
+        return $"{title} that is tagged with: {systemTagStr}";
+    }
+
+    public string GetPageImage()
+    {
+        var allBlobInfo = Helper.PostViewModel.GetImageBlobInfo();
+        if (allBlobInfo.Length > 0)
+        {
+            return allBlobInfo[0].Source;
+        }
+
+        return null;
+    }
+
+    public string GetPageImageAlt()
+    {
+        return $"An image that shows {GetPageDescription()}";
     }
 }

@@ -38,7 +38,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.2" PrivateAssets="all" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.2" />
-        <PackageReference Include="Markdig" Version="0.34.0" />
+        <PackageReference Include="Markdig" Version="0.35.0" />
         <PackageReference Include="MudBlazor" Version="6.15.0" />
         <PackageReference Include="NodaTime" Version="3.1.11" />
         <PackageReference Include="ActualLab.Fusion" Version="7.0.29" />

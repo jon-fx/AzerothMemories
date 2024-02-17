@@ -27,14 +27,14 @@ public sealed partial class GuildViewModel
 
     [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] public bool IsLoadingFromArmory => UpdateJobLastResults == null || UpdateJobLastResults.IsLoadingFromArmory || RealmId == 0;
 
-    public string GetPageTitle()
+    public string GetDisplayName()
     {
         if (string.IsNullOrWhiteSpace(Name))
         {
-            return "Memories of Azeroth";
+            return "Unknown";
         }
 
-        return $"{Name}'s Memories of Azeroth";
+        return Name;
     }
 
     public string GetAvatarText()

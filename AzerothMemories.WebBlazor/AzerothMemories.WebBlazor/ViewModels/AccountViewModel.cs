@@ -61,16 +61,6 @@ public sealed partial class AccountViewModel
         return Username;
     }
 
-    public string GetPageTitle()
-    {
-        if (string.IsNullOrWhiteSpace(Username))
-        {
-            return "Memories of Azeroth";
-        }
-
-        return $"{Username}'s Memories of Azeroth";
-    }
-
     public string GetAvatarText()
     {
         if (string.IsNullOrWhiteSpace(Username))
