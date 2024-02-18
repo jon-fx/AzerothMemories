@@ -2,9 +2,9 @@
 
 namespace AzerothMemories.WebBlazor.Pages;
 
-public sealed class AddMemoryPageViewModel : ViewModelBase
+public sealed class AddMemoryPageViewModel : ViewModelBase, IViewModel<AddMemoryPageViewModel>
 {
-    public AddMemoryPageViewModel()
+    public AddMemoryPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
         UploadedImages = new List<AddMemoryImageData>();
     }
@@ -125,5 +125,10 @@ public sealed class AddMemoryPageViewModel : ViewModelBase
         };
 
         UploadedImages.Add(uploadResult);
+    }
+
+    public static AddMemoryPageViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)
+    {
+        return new AddMemoryPageViewModel(services, onViewModelChanged);
     }
 }

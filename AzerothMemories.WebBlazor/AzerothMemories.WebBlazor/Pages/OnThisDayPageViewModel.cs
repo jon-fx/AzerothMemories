@@ -1,13 +1,13 @@
 ﻿namespace AzerothMemories.WebBlazor.Pages;
 
-public sealed class OnThisDayPageViewModel : PersistentStateViewModel
+public sealed class OnThisDayPageViewModel : PersistentStateViewModel, IViewModel<OnThisDayPageViewModel>
 {
     private string _currentDay;
     private string _currentMonth;
 
     public DailyActivityResults[] DailyActivityResults { get; set; }
 
-    public OnThisDayPageViewModel()
+    public OnThisDayPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
         AddPersistentState(() => DailyActivityResults, x => DailyActivityResults = x, UpdateDailyActivityResults);
     }
@@ -40,5 +40,10 @@ public sealed class OnThisDayPageViewModel : PersistentStateViewModel
         }
 
         return Services.ComputeServices.SearchServices.TryGetDailyActivityFull(Session.Default, timeZone.Id, day, month, ServerSideLocaleExt.GetServerSideLocale());
+    }
+
+    public static OnThisDayPageViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)
+    {
+        return new OnThisDayPageViewModel(services, onViewModelChanged);
     }
 }

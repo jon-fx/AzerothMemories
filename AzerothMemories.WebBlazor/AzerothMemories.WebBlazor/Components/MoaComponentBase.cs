@@ -1,14 +1,10 @@
 ﻿namespace AzerothMemories.WebBlazor.Components;
 
-public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TViewModel>, IMoaServices, IDisposable where TViewModel : ViewModelBase, new()
+public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TViewModel>, IMoaServices, IDisposable where TViewModel : ViewModelBase, IViewModel<TViewModel>
 {
     protected MoaComponentBase()
     {
-        ViewModel = new TViewModel
-        {
-            Services = this,
-            OnViewModelChanged = StateHasChanged
-        };
+        ViewModel = TViewModel.CreateViewModel(this, StateHasChanged);
     }
 
     protected TViewModel ViewModel { get; }

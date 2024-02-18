@@ -1,13 +1,15 @@
 ﻿namespace AzerothMemories.WebBlazor.Pages;
 
-public sealed class AccountPageViewModel : PersistentStateViewModel, IPageHeaderInfoProvider
+public sealed class AccountPageViewModel : PersistentStateViewModel, IViewModel<AccountPageViewModel>, IPageHeaderInfoProvider
 {
     private string _accountIdString;
     private string _sortModeString;
     private string _currentPageString;
 
-    public AccountPageViewModel()
+    public AccountPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
+        PostSearchHelper = new PostSearchHelper(Services);
+
         AddPersistentState(() => ErrorMessage, x => ErrorMessage = x, () => Task.FromResult<string>(null));
         AddPersistentState(() => AccountViewModel, x => AccountViewModel = x, GetAccountViewModel);
         AddPersistentState(() => PostSearchHelper.SearchResults, x => PostSearchHelper.SetSearchResults(x), UpdateSearchResults);
@@ -17,7 +19,7 @@ public sealed class AccountPageViewModel : PersistentStateViewModel, IPageHeader
 
     public AccountViewModel AccountViewModel { get; private set; }
 
-    public PostSearchHelper PostSearchHelper { get; private set; }
+    public PostSearchHelper PostSearchHelper { get; }
 
     public bool IsLoading => AccountViewModel == null || PostSearchHelper == null;
 
@@ -26,13 +28,6 @@ public sealed class AccountPageViewModel : PersistentStateViewModel, IPageHeader
         _accountIdString = accountIdString;
         _sortModeString = sortModeString;
         _currentPageString = currentPageString;
-    }
-
-    public override async Task OnInitialized()
-    {
-        PostSearchHelper = new PostSearchHelper(Services);
-
-        await base.OnInitialized();
     }
 
     public override async Task ComputeState(CancellationToken cancellationToken)
@@ -88,7 +83,11 @@ public sealed class AccountPageViewModel : PersistentStateViewModel, IPageHeader
 
     public string GetPageDescription()
     {
-        return $"A collection of Memories of Azeroth from the account {AccountViewModel.GetDisplayName()}";
+        var name = AccountViewModel.GetDisplayName();
+        var totalPostCount = AccountViewModel.TotalPostCount;
+        var totalMemoriesCount = AccountViewModel.TotalPostCount + AccountViewModel.TotalMemoriesCount;
+
+        return $"A collection of Memories of Azeroth from the account {name}. {name} has {totalPostCount.ToMetric()} posts and {totalMemoriesCount.ToMetric()} memories.";
     }
 
     public string GetPageImage()
@@ -99,5 +98,10 @@ public sealed class AccountPageViewModel : PersistentStateViewModel, IPageHeader
     public string GetPageImageAlt()
     {
         return $"{AccountViewModel.GetDisplayName()}'s Avatar";
+    }
+
+    public static AccountPageViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)
+    {
+        return new AccountPageViewModel(services, onViewModelChanged);
     }
 }

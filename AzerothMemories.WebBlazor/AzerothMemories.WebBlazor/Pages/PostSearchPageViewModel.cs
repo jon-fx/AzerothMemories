@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebBlazor.Pages;
 
-public sealed class PostSearchPageViewModel : PersistentStateViewModel
+public sealed class PostSearchPageViewModel : PersistentStateViewModel, IViewModel<PostSearchPageViewModel>
 {
     private string[] _tagStrings;
     private string _sortModeString;
@@ -8,10 +8,12 @@ public sealed class PostSearchPageViewModel : PersistentStateViewModel
     private string _minTimeString;
     private string _maxTimeString;
 
-    public PostSearchHelper PostSearchHelper { get; private set; }
+    public PostSearchHelper PostSearchHelper { get; }
 
-    public PostSearchPageViewModel()
+    public PostSearchPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
+        PostSearchHelper = new PostSearchHelper(Services);
+
         AddPersistentState(() => PostSearchHelper.SearchResults, x => PostSearchHelper.SetSearchResults(x), ComputeStateInternal);
     }
 
@@ -24,13 +26,6 @@ public sealed class PostSearchPageViewModel : PersistentStateViewModel
         _maxTimeString = maxTimeString;
     }
 
-    public override async Task OnInitialized()
-    {
-        PostSearchHelper = new PostSearchHelper(Services);
-
-        await base.OnInitialized();
-    }
-
     public override async Task ComputeState(CancellationToken cancellationToken)
     {
         await base.ComputeState(cancellationToken);
@@ -41,5 +36,10 @@ public sealed class PostSearchPageViewModel : PersistentStateViewModel
     private Task<SearchPostsResults> ComputeStateInternal()
     {
         return PostSearchHelper.ComputeState(_tagStrings, _sortModeString, _currentPageString, _minTimeString, _maxTimeString);
+    }
+
+    public static PostSearchPageViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)
+    {
+        return new PostSearchPageViewModel(services, onViewModelChanged);
     }
 }

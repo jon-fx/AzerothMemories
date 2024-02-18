@@ -1,7 +1,11 @@
 ﻿namespace AzerothMemories.WebBlazor.Pages;
 
-public sealed class AdminPageViewModel : ViewModelBase
+public sealed class AdminPageViewModel : ViewModelBase, IViewModel<AdminPageViewModel>
 {
+    public AdminPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
+    {
+    }
+
     public AdminCountersViewModel Counters { get; private set; }
 
     public ReportedPostViewModel[] ReportedPosts { get; private set; }
@@ -34,5 +38,10 @@ public sealed class AdminPageViewModel : ViewModelBase
     public async Task ResolveReportedTag(bool delete, ReportedPostTagsViewModel viewModel, ReportedChildViewModel row)
     {
         await Services.ClientServices.CommandRunner.Run(new Admin_SetPostTagReportResolved(Session.Default, delete, viewModel.PostViewModel.Id, row.ReportedTag.TagString, row.ReportedTagId));
+    }
+
+    public static AdminPageViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)
+    {
+        return new AdminPageViewModel(services, onViewModelChanged);
     }
 }

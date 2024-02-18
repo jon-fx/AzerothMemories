@@ -1,10 +1,10 @@
 ﻿namespace AzerothMemories.WebBlazor.Components.Dialogs
 {
-    public sealed class AdminUserDialogViewModel : ViewModelBase
+    public sealed class AdminUserDialogViewModel : ViewModelBase, IViewModel<AdminUserDialogViewModel>
     {
         private int _accountId;
 
-        public AdminUserDialogViewModel()
+        public AdminUserDialogViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
         {
             BanTimers = new[]
             {
@@ -71,6 +71,11 @@
         public async Task BanUser(Duration duration)
         {
             await Services.ClientServices.CommandRunner.Run(new Admin_TryBanUser(Session.Default, AccountViewModel.Id, (long)duration.TotalMilliseconds, BanReasonText));
+        }
+
+        public static AdminUserDialogViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)
+        {
+            return new AdminUserDialogViewModel(services, onViewModelChanged);
         }
     }
 }

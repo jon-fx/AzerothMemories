@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebBlazor.Pages;
 
-public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IPageHeaderInfoProvider
+public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IViewModel<CharacterPagePageViewModel>, IPageHeaderInfoProvider
 {
     private string _idString;
     private string _region;
@@ -11,8 +11,10 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IPage
 
     private CharacterAccountViewModel _characterAccountViewModel;
 
-    public CharacterPagePageViewModel()
+    public CharacterPagePageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
+        PostSearchHelper = new PostSearchHelper(Services);
+
         AddPersistentState(() => ErrorMessage, x => ErrorMessage = x, () => Task.FromResult<string>(null));
         AddPersistentState(() => _characterAccountViewModel, x => _characterAccountViewModel = x, UpdateCharacterAccount);
         AddPersistentState(() => PostSearchHelper.SearchResults, x => PostSearchHelper.SetSearchResults(x), UpdateSearchResults);
@@ -24,7 +26,7 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IPage
 
     public CharacterViewModel CharacterViewModel => _characterAccountViewModel?.CharacterViewModel;
 
-    public PostSearchHelper PostSearchHelper { get; private set; }
+    public PostSearchHelper PostSearchHelper { get; }
 
     public bool IsLoading => CharacterViewModel == null || PostSearchHelper == null;
 
@@ -36,13 +38,6 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IPage
         _name = name;
         _sortModeString = sortModeString;
         _currentPageString = currentPageString;
-    }
-
-    public override async Task OnInitialized()
-    {
-        PostSearchHelper = new PostSearchHelper(Services);
-
-        await base.OnInitialized();
     }
 
     public override async Task ComputeState(CancellationToken cancellationToken)
@@ -151,5 +146,10 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IPage
     public string GetPageImageAlt()
     {
         return $"{CharacterViewModel.GetDisplayName()}'s Avatar";
+    }
+
+    public static CharacterPagePageViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)
+    {
+        return new CharacterPagePageViewModel(services, onViewModelChanged);
     }
 }

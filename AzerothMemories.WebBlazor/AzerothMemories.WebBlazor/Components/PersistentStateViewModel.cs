@@ -8,6 +8,10 @@ public abstract class PersistentStateViewModel : ViewModelBase
 
     private PersistingComponentStateSubscription _componentStateSubscription;
 
+    protected PersistentStateViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
+    {
+    }
+
     public override async Task OnInitialized()
     {
         await base.OnInitialized();

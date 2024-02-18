@@ -2,9 +2,15 @@
 
 public abstract class ViewModelBase
 {
-    public IMoaServices Services { get; init; }
+    protected ViewModelBase(IMoaServices services, Action onViewModelChanged)
+    {
+        Services = services;
+        OnViewModelChanged = onViewModelChanged;
+    }
 
-    public Action OnViewModelChanged { get; set; }
+    public IMoaServices Services { get; }
+
+    public Action OnViewModelChanged { get; }
 
     public virtual Task OnInitialized()
     {

@@ -2,8 +2,12 @@
 
 namespace AzerothMemories.WebBlazor.Pages;
 
-public sealed class AccountManagePageViewModel : ViewModelBase
+public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<AccountManagePageViewModel>
 {
+    public AccountManagePageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
+    {
+    }
+
     public string NewUsername { get; set; }
 
     public bool NewUsernameValid { get; private set; }
@@ -372,5 +376,10 @@ public sealed class AccountManagePageViewModel : ViewModelBase
     public async Task OnDisconnect(ClientAuthHelper clientAuthHelper, string schema, string key)
     {
         await Services.ClientServices.CommandRunner.Run(new Account_TryDisconnectAccount(Session.Default, schema, key));
+    }
+
+    public static AccountManagePageViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)
+    {
+        return new AccountManagePageViewModel(services, onViewModelChanged);
     }
 }

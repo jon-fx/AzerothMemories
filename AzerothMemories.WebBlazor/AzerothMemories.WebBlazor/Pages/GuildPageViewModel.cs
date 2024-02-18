@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebBlazor.Pages;
 
-public sealed class GuildPageViewModel : PersistentStateViewModel, IPageHeaderInfoProvider
+public sealed class GuildPageViewModel : PersistentStateViewModel, IViewModel<GuildPageViewModel>, IPageHeaderInfoProvider
 {
     private string _idString;
     private string _region;
@@ -9,8 +9,10 @@ public sealed class GuildPageViewModel : PersistentStateViewModel, IPageHeaderIn
     private string _sortModeString;
     private string _currentPageString;
 
-    public GuildPageViewModel()
+    public GuildPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
+        PostSearchHelper = new PostSearchHelper(Services);
+
         AddPersistentState(() => ErrorMessage, x => ErrorMessage = x, () => Task.FromResult<string>(null));
         AddPersistentState(() => GuildViewModel, x => GuildViewModel = x, UpdateGuildViewModel);
         AddPersistentState(() => PostSearchHelper.SearchResults, x => PostSearchHelper.SetSearchResults(x), UpdateSearchResults);
@@ -32,13 +34,6 @@ public sealed class GuildPageViewModel : PersistentStateViewModel, IPageHeaderIn
         _name = name;
         _sortModeString = sortModeString;
         _currentPageString = currentPageString;
-    }
-
-    public override async Task OnInitialized()
-    {
-        PostSearchHelper = new PostSearchHelper(Services);
-
-        await base.OnInitialized();
     }
 
     public override async Task ComputeState(CancellationToken cancellationToken)
@@ -134,5 +129,10 @@ public sealed class GuildPageViewModel : PersistentStateViewModel, IPageHeaderIn
     public string GetPageImageAlt()
     {
         return $"{GuildViewModel.GetDisplayName()}'s Avatar";
+    }
+
+    public static GuildPageViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)
+    {
+        return new GuildPageViewModel(services, onViewModelChanged);
     }
 }

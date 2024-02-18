@@ -1,18 +1,16 @@
 ﻿namespace AzerothMemories.WebBlazor.Pages;
 
-public sealed class EditMemoryTagsPageViewModel : ViewModelBase
+public sealed class EditMemoryTagsPageViewModel : ViewModelBase, IViewModel<EditMemoryTagsPageViewModel>
 {
-    private PostPageViewModelHelper _postPageHelper;
+    private readonly PostPageViewModelHelper _postPageHelper;
     private string _accountString;
     private string _postIdString;
     private string _currentPageString;
     private string _focusedCommentId;
 
-    public override async Task OnInitialized()
+    public EditMemoryTagsPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
         _postPageHelper = new PostPageViewModelHelper(Services);
-
-        await base.OnInitialized();
     }
 
     public PostPageViewModelHelper Helper => _postPageHelper;
@@ -109,5 +107,10 @@ public sealed class EditMemoryTagsPageViewModel : ViewModelBase
         }
 
         Services.ClientServices.NavigationManager.NavigateTo($"post/{postViewModel.AccountId}/{postViewModel.Id}");
+    }
+
+    public static EditMemoryTagsPageViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)
+    {
+        return new EditMemoryTagsPageViewModel(services, onViewModelChanged);
     }
 }

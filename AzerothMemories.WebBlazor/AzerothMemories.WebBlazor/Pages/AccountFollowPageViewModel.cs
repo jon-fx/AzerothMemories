@@ -1,10 +1,14 @@
 ﻿namespace AzerothMemories.WebBlazor.Pages;
 
-public sealed class AccountFollowPageViewModel : ViewModelBase
+public sealed class AccountFollowPageViewModel : ViewModelBase, IViewModel<AccountFollowPageViewModel>
 {
     private int _accountId;
 
     public bool IsLoading => string.IsNullOrWhiteSpace(ErrorMessage) && AccountViewModel == null;
+
+    public AccountFollowPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
+    {
+    }
 
     public string ErrorMessage { get; private set; }
 
@@ -35,5 +39,10 @@ public sealed class AccountFollowPageViewModel : ViewModelBase
         }
 
         AccountViewModel = accountViewModel;
+    }
+
+    public static AccountFollowPageViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)
+    {
+        return new AccountFollowPageViewModel(services, onViewModelChanged);
     }
 }

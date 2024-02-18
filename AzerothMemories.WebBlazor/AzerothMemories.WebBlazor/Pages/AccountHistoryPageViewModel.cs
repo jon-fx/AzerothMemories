@@ -1,11 +1,11 @@
 ﻿namespace AzerothMemories.WebBlazor.Pages;
 
-public sealed class AccountHistoryPageViewModel : ViewModelBase
+public sealed class AccountHistoryPageViewModel : ViewModelBase, IViewModel<AccountHistoryPageViewModel>
 {
     private AccountHistoryPageResult _searchResults;
     private string _currentPageString;
 
-    public AccountHistoryPageViewModel()
+    public AccountHistoryPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
         _searchResults = new AccountHistoryPageResult();
     }
@@ -50,5 +50,10 @@ public sealed class AccountHistoryPageViewModel : ViewModelBase
 
         var newPath = Services.ClientServices.NavigationManager.GetUriWithQueryParameter("page", currentPage);
         Services.ClientServices.NavigationManager.NavigateTo(newPath);
+    }
+
+    public static AccountHistoryPageViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)
+    {
+        return new AccountHistoryPageViewModel(services, onViewModelChanged);
     }
 }

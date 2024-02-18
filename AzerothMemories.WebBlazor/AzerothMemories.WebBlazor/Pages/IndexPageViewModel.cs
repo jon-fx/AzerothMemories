@@ -1,13 +1,15 @@
 ﻿namespace AzerothMemories.WebBlazor.Pages;
 
-public sealed class IndexPageViewModel : PersistentStateViewModel
+public sealed class IndexPageViewModel : PersistentStateViewModel, IViewModel<IndexPageViewModel>
 {
     private string _currentPageString;
     private string _sortModeString;
     private string _postTypeString;
 
-    public IndexPageViewModel()
+    public IndexPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
+        RecentPostsHelper = new RecentPostsHelper(Services);
+
         AddPersistentState(() => AccountViewModel, x => AccountViewModel = x, () => Services.ComputeServices.AccountServices.TryGetActiveAccount(Session.Default));
         AddPersistentState(() => OnThisDay, x => OnThisDay = x, TryUpdateOnThisDay);
         AddPersistentState(() => RecentPostsHelper.SearchResults, x => RecentPostsHelper.SetSearchResults(x), () => RecentPostsHelper.ComputeState(_currentPageString, _sortModeString, _postTypeString));
@@ -17,20 +19,13 @@ public sealed class IndexPageViewModel : PersistentStateViewModel
 
     public DailyActivityResults OnThisDay { get; private set; }
 
-    public RecentPostsHelper RecentPostsHelper { get; private set; }
+    public RecentPostsHelper RecentPostsHelper { get; }
 
     public void OnParametersChanged(string currentPageString, string sortModeString, string postTypeString)
     {
         _currentPageString = currentPageString;
         _sortModeString = sortModeString;
         _postTypeString = postTypeString;
-    }
-
-    public override async Task OnInitialized()
-    {
-        RecentPostsHelper = new RecentPostsHelper(Services);
-
-        await base.OnInitialized();
     }
 
     public override async Task ComputeState(CancellationToken cancellationToken)
@@ -40,13 +35,7 @@ public sealed class IndexPageViewModel : PersistentStateViewModel
         OnThisDay = await TryUpdateOnThisDay();
         AccountViewModel = await Services.ComputeServices.AccountServices.TryGetActiveAccount(Session.Default);
 
-        if (RecentPostsHelper == null)
-        {
-        }
-        else
-        {
-            await RecentPostsHelper.ComputeState(_currentPageString, _sortModeString, _postTypeString);
-        }
+        await RecentPostsHelper.ComputeState(_currentPageString, _sortModeString, _postTypeString);
     }
 
     private Task<DailyActivityResults> TryUpdateOnThisDay()
@@ -55,5 +44,10 @@ public sealed class IndexPageViewModel : PersistentStateViewModel
         var inZone = SystemClock.Instance.GetCurrentInstant().InZone(timeZone).Date;
 
         return Services.ComputeServices.SearchServices.TryGetDailyActivity(Session.Default, timeZone.Id, (byte)inZone.Day, (byte)inZone.Month, ServerSideLocaleExt.GetServerSideLocale());
+    }
+
+    public static IndexPageViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)
+    {
+        return new IndexPageViewModel(services, onViewModelChanged);
     }
 }
