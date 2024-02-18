@@ -39,6 +39,7 @@ public sealed class MarkdownServices
         }
 
         _postMarkdownPipeline = GetCommonSetup()
+                               .DisableHeadings()
                                .Build();
 
         _commentMarkdownPipeline = GetCommonSetup()

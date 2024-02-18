@@ -90,6 +90,12 @@ public class AccountServices : IAccountServices
     {
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
         var accountRecord = await database.Accounts.FirstOrDefaultAsync(a => a.Username == username).ConfigureAwait(false);
+
+        if (accountRecord == null)
+        {
+            accountRecord = await database.Accounts.FirstOrDefaultAsync(a => a.UsernameSearchable == username).ConfigureAwait(false);
+        }
+
         if (accountRecord != null)
         {
             await DependsOnAccountRecord(accountRecord.Id).ConfigureAwait(false);
