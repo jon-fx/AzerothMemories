@@ -9,4 +9,6 @@ public interface IPageHeaderInfoProvider
     string GetPageImage();
 
     string GetPageImageAlt();
+
+    string GetCanonicalLink();
 }

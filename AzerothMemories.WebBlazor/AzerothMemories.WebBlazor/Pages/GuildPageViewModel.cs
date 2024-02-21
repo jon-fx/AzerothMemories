@@ -131,6 +131,11 @@ public sealed class GuildPageViewModel : PersistentStateViewModel, IViewModel<Gu
         return $"{GuildViewModel.GetDisplayName()}'s Avatar";
     }
 
+    public string GetCanonicalLink()
+    {
+        return $"guild/{GuildViewModel.Id}";
+    }
+
     public static GuildPageViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)
     {
         return new GuildPageViewModel(services, onViewModelChanged);

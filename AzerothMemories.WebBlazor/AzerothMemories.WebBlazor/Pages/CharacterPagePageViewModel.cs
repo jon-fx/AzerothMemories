@@ -148,6 +148,11 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IView
         return $"{CharacterViewModel.GetDisplayName()}'s Avatar";
     }
 
+    public string GetCanonicalLink()
+    {
+        return $"character/{CharacterViewModel.Id}";
+    }
+
     public static CharacterPagePageViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)
     {
         return new CharacterPagePageViewModel(services, onViewModelChanged);

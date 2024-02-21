@@ -66,6 +66,11 @@ public sealed class PostPageViewModel : PersistentStateViewModel, IPageHeaderInf
         return $"An image that shows {GetPageDescription()}";
     }
 
+    public string GetCanonicalLink()
+    {
+        return null;
+    }
+
     public static PostPageViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)
     {
         return new PostPageViewModel(services, onViewModelChanged);

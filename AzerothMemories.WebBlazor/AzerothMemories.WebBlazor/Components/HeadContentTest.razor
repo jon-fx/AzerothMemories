@@ -1,15 +1,20 @@
 ﻿@{
     var title = PageInfo.GetPageTitle();
     var description = PageInfo.GetPageDescription();
-    var image = PageInfo.GetPageImage();
     var altImage = PageInfo.GetPageImageAlt();
-    var imagePath = GetImagePath(image);
+    var imagePath = GetImagePath();
+    var canonicalLink = GetCanonicalLink();
 }
 
 <PageTitle>@title</PageTitle>
 
 <HeadContent>
     <meta name="description" content="@description">
+
+    @if (!string.IsNullOrWhiteSpace(canonicalLink))
+    {
+        <link rel="canonical" href="@canonicalLink" />
+    }
 
     <meta property="og:title" content="@title">
     <meta property="og:description" content="@description">
@@ -30,10 +35,15 @@
     [Parameter, EditorRequired] public ClientServices ClientServices { get; init; }
     [Parameter, EditorRequired] public IPageHeaderInfoProvider PageInfo { get; init; }
 
-    private string GetImagePath(string imageAddress)
+    private string GetImagePath()
     {
-        var uri = new Uri(ClientServices.NavigationManager.Uri);
+        var imageAddress = PageInfo.GetPageImage();
+        if (string.IsNullOrWhiteSpace(imageAddress))
+        {
+            return null;
+        }
 
+        var uri = new Uri(ClientServices.NavigationManager.Uri);
         if (string.IsNullOrWhiteSpace(imageAddress))
         {
             imageAddress = ZExtensions.DefaultSocialImage;
@@ -52,4 +62,19 @@
 
         return leftPart + "/" + imageAddress;
     }
+
+    private string GetCanonicalLink()
+    {
+        var canonicalLink = PageInfo.GetCanonicalLink();
+        if (string.IsNullOrWhiteSpace(canonicalLink))
+        {
+            return null;
+        }
+
+        var uri = new Uri(ClientServices.NavigationManager.Uri);
+        var leftPart = uri.GetLeftPart(UriPartial.Authority);
+
+        return leftPart + "/" + canonicalLink;
+    }
+
 }

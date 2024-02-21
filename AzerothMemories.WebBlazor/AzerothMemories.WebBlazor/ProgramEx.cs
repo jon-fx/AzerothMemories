@@ -18,7 +18,7 @@ public static class ProgramEx
 
         services.AddMudServices(config =>
         {
-            config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopRight;
+            config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopCenter;
 
             config.SnackbarConfiguration.PreventDuplicates = true;
             config.SnackbarConfiguration.NewestOnTop = true;

@@ -37,4 +37,9 @@ public sealed class DefaultPageHeaderInfo : IPageHeaderInfoProvider
     {
         return "Memories of Azeroth header banner";
     }
+
+    public string GetCanonicalLink()
+    {
+        return null;
+    }
 }

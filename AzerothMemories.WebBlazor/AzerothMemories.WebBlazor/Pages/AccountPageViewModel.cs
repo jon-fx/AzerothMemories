@@ -100,6 +100,11 @@ public sealed class AccountPageViewModel : PersistentStateViewModel, IViewModel<
         return $"{AccountViewModel.GetDisplayName()}'s Avatar";
     }
 
+    public string GetCanonicalLink()
+    {
+        return $"account/{AccountViewModel.Id}";
+    }
+
     public static AccountPageViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)
     {
         return new AccountPageViewModel(services, onViewModelChanged);
