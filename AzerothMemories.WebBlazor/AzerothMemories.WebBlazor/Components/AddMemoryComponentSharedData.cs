@@ -13,7 +13,7 @@ public sealed class AddMemoryComponentSharedData
 
     private CharacterViewModel _selectedCharacter;
     private Func<AccountViewModel> _accountViewModelProvider;
-    private PostViewModel[] _myPostsAroundPostTimeStamp;
+    private PostViewModel[] _myPostsAroundPostTimeStamp = Array.Empty<PostViewModel>();
 
     public AddMemoryComponentSharedData(ViewModelBase viewModel)
     {
@@ -114,7 +114,15 @@ public sealed class AddMemoryComponentSharedData
         await InitializeAchievements();
 
         var timeStamp = PostTimeStamp.ToUnixTimeMilliseconds();
-        _myPostsAroundPostTimeStamp = await _viewModel.Services.ComputeServices.AccountServices.TrySearchPostsByTime(Session.Default, timeStamp, 120, ServerSideLocaleExt.GetServerSideLocale());
+        var myPostsAroundPostTimeStamp = await _viewModel.Services.ComputeServices.AccountServices.TrySearchPostsByTime(Session.Default, timeStamp, 120, ServerSideLocaleExt.GetServerSideLocale());
+        if (myPostsAroundPostTimeStamp.SequenceEqual(_myPostsAroundPostTimeStamp))
+        {
+        }
+        else
+        {
+            _myPostsAroundPostTimeStamp = myPostsAroundPostTimeStamp;
+            _viewModel.OnViewModelChanged?.Invoke();
+        }
     }
 
     public async Task OnEditingPost(PostViewModel currentPost)
@@ -640,7 +648,7 @@ public sealed class AddMemoryComponentSharedData
             }
         }
 
-        var myPostsAroundPostTimeStamp = _myPostsAroundPostTimeStamp ?? Array.Empty<PostViewModel>();
+        var myPostsAroundPostTimeStamp = _myPostsAroundPostTimeStamp;
 
         return (errorStrings.ToArray(), myPostsAroundPostTimeStamp);
     }

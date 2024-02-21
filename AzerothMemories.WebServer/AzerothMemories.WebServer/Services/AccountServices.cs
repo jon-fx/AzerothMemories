@@ -318,17 +318,14 @@ public class AccountServices : IAccountServices
 
         await _commonServices.PostServices.DependsOnPostsBy(accountRecord.Id).ConfigureAwait(false);
 
-        diffInSeconds = Math.Clamp(diffInSeconds, 0, 300);
-
-        var min = Instant.FromUnixTimeMilliseconds(timeStamp).Minus(Duration.FromSeconds(diffInSeconds));
-        var max = Instant.FromUnixTimeMilliseconds(timeStamp).Plus(Duration.FromSeconds(diffInSeconds));
-
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
-        var query = from a in database.Posts
-                    where a.AccountId == accountRecord.Id && a.PostTime > min && a.PostTime < max
-                    select a.Id;
 
-        var results = await query.ToArrayAsync().ConfigureAwait(false);
+        var (min, max) = ClampMinMax(timeStamp, diffInSeconds);
+        var query = from r in database.Posts
+                    where r.AccountId == accountRecord.Id && r.DeletedTimeStamp == 0 && r.PostTime > min && r.PostTime < max
+                    select r.Id;
+
+        var results = await query.Take(10).ToArrayAsync().ConfigureAwait(false);
         var allPostViewModel = new List<PostViewModel>();
         foreach (var postId in results)
         {
@@ -350,12 +347,9 @@ public class AccountServices : IAccountServices
 
         await DependsOnAccountAchievements(accountRecord.Id).ConfigureAwait(false);
 
-        diffInSeconds = Math.Clamp(diffInSeconds, 0, 300);
-
-        var min = Instant.FromUnixTimeMilliseconds(timeStamp).Minus(Duration.FromSeconds(diffInSeconds));
-        var max = Instant.FromUnixTimeMilliseconds(timeStamp).Plus(Duration.FromSeconds(diffInSeconds));
-
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
+
+        var (min, max) = ClampMinMax(timeStamp, diffInSeconds);
         var query = from a in database.CharacterAchievements
                     where a.AccountId == accountRecord.Id && a.AchievementTimeStamp > min && a.AchievementTimeStamp < max
                     select a.AchievementId;
@@ -374,6 +368,20 @@ public class AccountServices : IAccountServices
         }
 
         return postTagSet.ToArray();
+    }
+
+    private (Instant Min, Instant Max) ClampMinMax(long timeStamp, int diffInSeconds)
+    {
+        const int maxDiff = 300;
+        var maxDiffMs = (int)Duration.FromSeconds(maxDiff).TotalMilliseconds;
+
+        diffInSeconds = Math.Clamp(diffInSeconds, 0, maxDiff);
+        timeStamp = Math.Clamp(timeStamp, maxDiffMs, SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
+
+        var min = Instant.FromUnixTimeMilliseconds(timeStamp).Minus(Duration.FromSeconds(diffInSeconds));
+        var max = Instant.FromUnixTimeMilliseconds(timeStamp).Plus(Duration.FromSeconds(diffInSeconds));
+
+        return (min, max);
     }
 
     [ComputeMethod]
