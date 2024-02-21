@@ -307,6 +307,38 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
+    public virtual async Task<PostViewModel[]> TrySearchPostsByTime(Session session, long timeStamp, int diffInSeconds, ServerSideLocale locale)
+    {
+        var accountRecord = await TryGetActiveAccountRecord(session).ConfigureAwait(false);
+        if (accountRecord == null)
+        {
+            return Array.Empty<PostViewModel>();
+        }
+
+        await _commonServices.PostServices.DependsOnPostsBy(accountRecord.Id).ConfigureAwait(false);
+
+        diffInSeconds = Math.Clamp(diffInSeconds, 0, 300);
+
+        var min = Instant.FromUnixTimeMilliseconds(timeStamp).Minus(Duration.FromSeconds(diffInSeconds));
+        var max = Instant.FromUnixTimeMilliseconds(timeStamp).Plus(Duration.FromSeconds(diffInSeconds));
+
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        var query = from a in database.Posts
+                    where a.AccountId == accountRecord.Id && a.PostTime > min && a.PostTime < max
+                    select a.Id;
+
+        var results = await query.ToArrayAsync().ConfigureAwait(false);
+        var allPostViewModel = new List<PostViewModel>();
+        foreach (var postId in results)
+        {
+            var postViewModel = await _commonServices.PostServices.TryGetPostViewModel(accountRecord.Id, postId, locale).ConfigureAwait(false);
+            allPostViewModel.Add(postViewModel);
+        }
+
+        return allPostViewModel.ToArray();
+    }
+
+    [ComputeMethod]
     public virtual async Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, long timeStamp, int diffInSeconds, ServerSideLocale locale)
     {
         var accountRecord = await TryGetActiveAccountRecord(session).ConfigureAwait(false);

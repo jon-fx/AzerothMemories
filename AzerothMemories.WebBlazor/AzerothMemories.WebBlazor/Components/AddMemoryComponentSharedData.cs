@@ -13,6 +13,7 @@ public sealed class AddMemoryComponentSharedData
 
     private CharacterViewModel _selectedCharacter;
     private Func<AccountViewModel> _accountViewModelProvider;
+    private PostViewModel[] _myPostsAroundPostTimeStamp;
 
     public AddMemoryComponentSharedData(ViewModelBase viewModel)
     {
@@ -111,6 +112,9 @@ public sealed class AddMemoryComponentSharedData
         PostTimeStamp = postTimeStamp;
 
         await InitializeAchievements();
+
+        var timeStamp = PostTimeStamp.ToUnixTimeMilliseconds();
+        _myPostsAroundPostTimeStamp = await _viewModel.Services.ComputeServices.AccountServices.TrySearchPostsByTime(Session.Default, timeStamp, 120, ServerSideLocaleExt.GetServerSideLocale());
     }
 
     public async Task OnEditingPost(PostViewModel currentPost)
@@ -550,7 +554,7 @@ public sealed class AddMemoryComponentSharedData
         OnTagsChanged?.Invoke();
     }
 
-    public string[] GetErrorStrings()
+    public (string[] ErrorMessages, PostViewModel[] PostViewModels) GetErrorStrings()
     {
         var errorStrings = new List<string>();
         var allTagCounters = new int[ZExtensions.TagCountsPerPost.Length];
@@ -636,6 +640,8 @@ public sealed class AddMemoryComponentSharedData
             }
         }
 
-        return errorStrings.ToArray();
+        var myPostsAroundPostTimeStamp = _myPostsAroundPostTimeStamp ?? Array.Empty<PostViewModel>();
+
+        return (errorStrings.ToArray(), myPostsAroundPostTimeStamp);
     }
 }

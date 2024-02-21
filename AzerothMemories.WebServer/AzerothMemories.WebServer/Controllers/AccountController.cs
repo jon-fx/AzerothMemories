@@ -85,6 +85,12 @@ public sealed class AccountController : ControllerBase, IAccountServices
     }
 
     [HttpGet("{timeStamp}/{diffInSeconds}")]
+    public Task<PostViewModel[]> TrySearchPostsByTime(Session session, [FromRoute] long timeStamp, [FromRoute] int diffInSeconds, [FromQuery] ServerSideLocale locale)
+    {
+        return _commonServices.AccountServices.TrySearchPostsByTime(session, timeStamp, diffInSeconds, locale);
+    }
+
+    [HttpGet("{timeStamp}/{diffInSeconds}")]
     public Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, [FromRoute] long timeStamp, [FromRoute] int diffInSeconds, [FromQuery] ServerSideLocale locale)
     {
         return _commonServices.AccountServices.TryGetAchievementsByTime(session, timeStamp, diffInSeconds, locale);

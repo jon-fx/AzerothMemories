@@ -1,13 +1,31 @@
 ﻿<MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
     <MudGrid>
         @{
-            var errorStrings = SharedData.GetErrorStrings();
+            var (errorStrings, postViewModels) = SharedData.GetErrorStrings();
             if (errorStrings.Length > 0)
             {
                 foreach (var errorString in errorStrings)
                 {
                     <MudItem xs="12">
                         <MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Center">@errorString</MudAlert>
+                    </MudItem>
+                }
+            }
+
+            if (postViewModels.Length > 0)
+            {
+                foreach (var postViewModel in postViewModels)
+                {
+                    var link = $"post/{postViewModel.AccountId}/{postViewModel.Id}";
+
+                    <MudItem xs="12">
+                        <MudAlert Severity="Severity.Warning" ContentAlignment="HorizontalAlignment.Center">
+                            You may have already restored this memory! There is a <a href="@link" target="_blank">post</a> around this time with the tags:<br/>
+                            @foreach (var tagInfo in postViewModel.SystemTags)
+                            {
+                                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" />
+                            }
+                        </MudAlert>
                     </MudItem>
                 }
             }

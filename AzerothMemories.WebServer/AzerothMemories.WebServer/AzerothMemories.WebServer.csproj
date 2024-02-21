@@ -25,7 +25,7 @@
         </PackageReference>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.2" />
         <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.2" />
-        <PackageReference Include="MudBlazor" Version="6.15.0" />
+        <PackageReference Include="MudBlazor" Version="6.16.0" />
         <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.21.0" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="8.0.2" />
