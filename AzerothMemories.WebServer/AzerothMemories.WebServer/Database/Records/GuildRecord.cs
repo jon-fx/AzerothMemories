@@ -46,6 +46,7 @@ public sealed class GuildRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVers
         {
             Id = Id,
             Name = Name,
+            MoaRef = MoaRef,
             RealmId = RealmId,
             RegionId = BlizzardRegionId,
             MemberCount = MemberCount,

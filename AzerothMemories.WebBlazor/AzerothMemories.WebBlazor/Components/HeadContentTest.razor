@@ -74,7 +74,13 @@
         var uri = new Uri(ClientServices.NavigationManager.Uri);
         var leftPart = uri.GetLeftPart(UriPartial.Authority);
 
-        return leftPart + "/" + canonicalLink;
+        var fullLink = leftPart + "/" + canonicalLink;
+        if (fullLink == uri.AbsoluteUri)
+        {
+            return null;
+        }
+
+        return fullLink;
     }
 
 }

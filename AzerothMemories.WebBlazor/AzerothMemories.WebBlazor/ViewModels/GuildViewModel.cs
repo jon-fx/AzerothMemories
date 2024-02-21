@@ -13,6 +13,8 @@ public sealed partial class GuildViewModel
 
     [JsonInclude, DataMember, MemoryPackInclude] public string Name;
 
+    [JsonInclude, DataMember, MemoryPackInclude] public string MoaRef;
+
     [JsonInclude, DataMember, MemoryPackInclude] public int MemberCount;
 
     [JsonInclude, DataMember, MemoryPackInclude] public int AchievementPoints;

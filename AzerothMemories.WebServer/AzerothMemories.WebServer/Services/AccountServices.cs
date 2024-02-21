@@ -93,7 +93,8 @@ public class AccountServices : IAccountServices
 
         if (accountRecord == null)
         {
-            accountRecord = await database.Accounts.FirstOrDefaultAsync(a => a.UsernameSearchable == username).ConfigureAwait(false);
+            var usernameSearchable = DatabaseHelpers.GetSearchableName(username);
+            accountRecord = await database.Accounts.FirstOrDefaultAsync(a => a.UsernameSearchable == usernameSearchable).ConfigureAwait(false);
         }
 
         if (accountRecord != null)
