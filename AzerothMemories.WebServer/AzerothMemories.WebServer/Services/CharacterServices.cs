@@ -20,6 +20,8 @@ public class CharacterServices : ICharacterServices
     [ComputeMethod]
     public virtual async Task<CharacterRecord> TryGetCharacterRecord(int id)
     {
+        await DependsOnCharacterRecord(id).ConfigureAwait(false);
+
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
         var record = await database.Characters.FirstOrDefaultAsync(a => a.Id == id).ConfigureAwait(false);
 
@@ -30,7 +32,7 @@ public class CharacterServices : ICharacterServices
             Exceptions.ThrowIf(!moaRef.IsValidCharacter);
             Exceptions.ThrowIf(moaRef.Id != record.BlizzardId);
 
-            await DependsOnCharacterRecord(record.Id).ConfigureAwait(false);
+            await _commonServices.BlizzardUpdateHandler.TryUpdate(record, BlizzardUpdatePriority.CharacterMed).ConfigureAwait(false);
         }
 
         return record;
