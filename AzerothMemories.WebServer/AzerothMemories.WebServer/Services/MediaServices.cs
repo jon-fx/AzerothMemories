@@ -1,7 +1,9 @@
-﻿using Azure.Storage.Blobs;
+﻿using AzerothMemories.WebBlazor;
+using Azure.Storage.Blobs;
 using NodaTime.Extensions;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using System.Reflection;
 
 namespace AzerothMemories.WebServer.Services;
 
@@ -11,11 +13,18 @@ public class MediaServices : IComputeService
     private readonly CommonServices _commonServices;
     private readonly int[] _imageSizes;
 
+    private const int SiteMapItemsPerFile = 20_000;
+#if DEBUG
+    private const string BaseUrl = "https://localhost:7048";
+#else
+    private const string BaseUrl = "https://memoriesofazeroth.com";
+#endif
+
     public MediaServices(ILogger<MediaServices> logger, CommonServices commonServices)
     {
         _logger = logger;
         _commonServices = commonServices;
-        _imageSizes = new[] { 600, 960, 1280, 1920, 2560, 0 };
+        _imageSizes = [600, 960, 1280, 1920, 2560, 0];
     }
 
     [ComputeMethod]
@@ -192,5 +201,152 @@ public class MediaServices : IComputeService
         var properties = await blobClient.GetPropertiesAsync().ConfigureAwait(false);
 
         return new MediaResult(properties.Value.LastModified.ToInstant(), properties.Value.ETag, "image/*", binaryData);
+    }
+
+    [ComputeMethod(AutoInvalidationDelay = 60 * 10)]
+    public virtual async Task<int[]> GetSiteMapCounters()
+    {
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+
+        var accountMax = await database.Accounts.MaxAsync(x => (int?)x.Id).ConfigureAwait(false);
+        var charactersMax = await database.Characters.MaxAsync(x => (int?)x.Id).ConfigureAwait(false);
+        var guildsMax = await database.Guilds.MaxAsync(x => (int?)x.Id).ConfigureAwait(false);
+        var postsMax = await database.Posts.MaxAsync(x => (int?)x.Id).ConfigureAwait(false);
+
+        var results = new int[(int)SiteMapType.Count];
+
+        results[(int)SiteMapType.Accounts] = Math.Max(accountMax == null ? 0 : accountMax.Value / SiteMapItemsPerFile, 1);
+        results[(int)SiteMapType.Characters] = Math.Max(charactersMax == null ? 0 : charactersMax.Value / SiteMapItemsPerFile, 1);
+        results[(int)SiteMapType.Guilds] = Math.Max(guildsMax == null ? 0 : guildsMax.Value / SiteMapItemsPerFile, 1);
+        results[(int)SiteMapType.Posts] = Math.Max(postsMax == null ? 0 : postsMax.Value / SiteMapItemsPerFile, 1);
+
+        return results;
+    }
+
+    [ComputeMethod]
+    public virtual async Task<MediaResult> TryGetSiteMapIndex()
+    {
+        var counters = await GetSiteMapCounters().ConfigureAwait(false);
+
+        var maps = new List<(string Url, DateTime LastModified)>
+        {
+            new() { Url = "/sitemaps/sitemap-main.xml", LastModified = DateTime.UtcNow }
+        };
+
+        Add(SiteMapType.Accounts);
+        Add(SiteMapType.Characters);
+        Add(SiteMapType.Guilds);
+        Add(SiteMapType.Posts);
+
+        return await SiteMapHelper.BuildSiteMap(BaseUrl, "sitemapindex", "sitemap", maps);
+
+        void Add(SiteMapType siteMapType)
+        {
+            var count = counters[(int)siteMapType];
+            var nameType = siteMapType.ToString();
+            var results = Enumerable.Range(0, count).Select(x => ($"/sitemaps/sitemap-{char.ToLower(nameType[0]) + nameType[1..]}-{x}.xml", DateTime.UtcNow));
+
+            maps.AddRange(results);
+        }
+    }
+
+    [ComputeMethod(AutoInvalidationDelay = 60 * 10)]
+    public virtual async Task<MediaResult> TryGetSiteMapMain()
+    {
+        var pages = new List<(string Url, DateTime LastModified)>
+        {
+            new() { Url = "/", LastModified = DateTime.Now }
+        };
+
+        var allComponents = typeof(App).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(Microsoft.AspNetCore.Components.ComponentBase)));
+        var allRoutedComponent = allComponents.Select(x => new { Type = x, Route = x.GetCustomAttributes<Microsoft.AspNetCore.Components.RouteAttribute>().FirstOrDefault() }).Where(x => x.Route != null).ToList();
+        var toAddToSiteNap = allRoutedComponent.Where(x => x.Route.Template != "/" && x.Route.Template != "/admin" && !x.Route.Template.Contains('{') && !x.Route.Template.Contains('}')).ToList();
+
+        foreach (var routedComponent in toAddToSiteNap)
+        {
+            pages.Add((routedComponent.Route.Template, DateTime.Now));
+        }
+
+        return await SiteMapHelper.BuildSiteMap(BaseUrl, "urlset", "url", pages);
+    }
+
+    [ComputeMethod]
+    public virtual async Task<MediaResult> TryGetSiteMapNamed(SiteMapType nameType, int fileIndex)
+    {
+        var counters = await _commonServices.MediaServices.GetSiteMapCounters().ConfigureAwait(false);
+        if (fileIndex >= counters[(int)nameType])
+        {
+            return null;
+        }
+
+        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+
+        var pages = new List<(string Url, DateTime LastModified)>();
+        if (nameType == SiteMapType.Accounts)
+        {
+            var query = from r in database.Accounts
+                        orderby r.Id
+                        select new { r.Id, r.Username };
+
+            var items = await query.Skip(SiteMapItemsPerFile * fileIndex).Take(SiteMapItemsPerFile).ToArrayAsync().ConfigureAwait(false);
+
+            foreach (var item in items)
+            {
+                pages.Add(($"/account/{item.Id}", DateTime.Now));
+                pages.Add(($"/account/{item.Username}", DateTime.Now));
+            }
+        }
+        else if (nameType == SiteMapType.Characters)
+        {
+            var query = from r in database.Characters
+                        where r.CharacterStatus == CharacterStatus2.None
+                        orderby r.Id
+                        select new { r.Id, r.MoaRef };
+
+            var items = await query.Skip(SiteMapItemsPerFile * fileIndex).Take(SiteMapItemsPerFile).ToArrayAsync().ConfigureAwait(false);
+
+            foreach (var item in items)
+            {
+                var moaRef = new MoaRef(item.MoaRef);
+
+                pages.Add(($"/character/{item.Id}", DateTime.Now));
+                pages.Add(($"/character/{moaRef.Region.ToInfo().TwoLettersLower}/{moaRef.Realm}/{moaRef.Name}", DateTime.Now));
+            }
+        }
+        else if (nameType == SiteMapType.Guilds)
+        {
+            var query = from r in database.Guilds
+                        orderby r.Id
+                        select new { r.Id, r.MoaRef };
+
+            var items = await query.Skip(SiteMapItemsPerFile * fileIndex).Take(SiteMapItemsPerFile).ToArrayAsync().ConfigureAwait(false);
+
+            foreach (var item in items)
+            {
+                var moaRef = new MoaRef(item.MoaRef);
+
+                pages.Add(($"/guild/{item.Id}", DateTime.Now));
+                pages.Add(($"/guild/{moaRef.Region.ToInfo().TwoLettersLower}/{moaRef.Realm}/{moaRef.Name}", DateTime.Now));
+            }
+        }
+        else if (nameType == SiteMapType.Posts)
+        {
+            var query = from r in database.Posts
+                        where r.PostVisibility == 0 && r.DeletedTimeStamp == 0
+                        orderby r.Id
+                        select new { r.Id, r.AccountId };
+
+            var items = await query.ToListAsync().ConfigureAwait(false);
+            foreach (var item in items)
+            {
+                pages.Add(($"/post/{item.AccountId}/{item.Id}", DateTime.Now));
+            }
+        }
+        else
+        {
+            return await TryGetSiteMapMain().ConfigureAwait(false);
+        }
+
+        return await SiteMapHelper.BuildSiteMap(BaseUrl, "urlset", "url", pages);
     }
 }
