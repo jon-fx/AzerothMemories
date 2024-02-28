@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace AzerothMemories.Database.Seeder.Base;
+﻿namespace AzerothMemories.Database.Seeder.Base;
 
 internal sealed class MoaResourceCache
 {
@@ -19,9 +17,9 @@ internal sealed class MoaResourceCache
 
     public bool RequestData { get; set; } = true;
 
-    public async Task<T> GetOrRequestData<T>(string key, Func<string, Task<RequestResult<T>>> callback, [CallerArgumentExpression("callback")] string callbackExpression = default) where T : class
+    public async Task<T?> GetOrRequestData<T>(string key, Func<string, Task<RequestResult<T>>> callback, [CallerArgumentExpression("callback")] string? callbackExpression = null) where T : class
     {
-        T jsonData = null;
+        T? jsonData = null;
 
         key += $"-||-{callbackExpression}";
 

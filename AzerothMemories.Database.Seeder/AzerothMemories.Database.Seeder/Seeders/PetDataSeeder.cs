@@ -13,7 +13,7 @@ internal sealed class PetDataSeeder : GenericBase<PetDataSeeder>
 
         foreach (var reference in data.Values)
         {
-            BlizzardData dataToCopy = null;
+            BlizzardData? dataToCopy = null;
             if (reference.TryGetData<int>("SummonSpellID", out var spellId) && ResourceWriter.TryGetServerSideResource(PostTagType.Spell, spellId, out dataToCopy))
             {
             }

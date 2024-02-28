@@ -2,6 +2,4 @@
 
 namespace AzerothMemories.WebServer.Database.Records;
 
-public interface IDatabaseRecord : IHasId<int>
-{
-}
+public interface IDatabaseRecord : IHasId<int>;

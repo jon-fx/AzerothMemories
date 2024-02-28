@@ -32,12 +32,7 @@ public static class ServerSideLocaleExt
     public static ServerSideLocale GetServerSideLocale()
     {
         var cultureInfo = CultureInfo.CurrentCulture;
-        if (_namesToLocales.TryGetValue(cultureInfo, out var serverSideLocale))
-        {
-            return serverSideLocale;
-        }
-
-        return ServerSideLocale.None;
+        return _namesToLocales.GetValueOrDefault(cultureInfo, ServerSideLocale.None);
     }
 
     public static string GetWowHeadDomain()

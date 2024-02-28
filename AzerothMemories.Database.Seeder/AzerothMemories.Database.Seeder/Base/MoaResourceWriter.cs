@@ -1,4 +1,5 @@
-﻿using System.Text.Encodings.Web;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
 
 namespace AzerothMemories.Database.Seeder.Base;
@@ -44,7 +45,7 @@ internal sealed class MoaResourceWriter
         }
     }
 
-    public void AddServerSideLocalizationName(PostTagType tagType, int tagId, string[] data)
+    public void AddServerSideLocalizationName(PostTagType tagType, int tagId, string?[] data)
     {
         var resource = GetOrCreateServerSideResource(tagType, tagId);
 
@@ -54,7 +55,7 @@ internal sealed class MoaResourceWriter
         }
     }
 
-    public void TryAddServerSideLocalizationMedia(PostTagType tagType, int tagId, string mediaPath)
+    public void TryAddServerSideLocalizationMedia(PostTagType tagType, int tagId, string? mediaPath)
     {
         if (string.IsNullOrEmpty(mediaPath))
         {
@@ -90,7 +91,7 @@ internal sealed class MoaResourceWriter
             return;
         }
 
-        string remotePath = null;
+        string? remotePath = null;
         if (_wowTools.Main.TryGetIconName(mediaId, out var iconName))
         {
             remotePath = $"https://render.worldofwarcraft.com/eu/icons/56/{iconName}.jpg";
@@ -127,7 +128,7 @@ internal sealed class MoaResourceWriter
         TryAddServerSideLocalizationMedia(tagType, tagId, Path.GetFileNameWithoutExtension(fileInfo.Name));
     }
 
-    private async Task<bool> TryDownloadImage(string fileName, string[] pathsToTry)
+    private async Task<bool> TryDownloadImage(string fileName, string?[] pathsToTry)
     {
         await using var memoryStream = new MemoryStream();
 
@@ -150,7 +151,7 @@ internal sealed class MoaResourceWriter
         return false;
     }
 
-    private async Task<bool> TryDownloadImage(MemoryStream fileStream, string remotePath)
+    private async Task<bool> TryDownloadImage(MemoryStream fileStream, string? remotePath)
     {
         if (string.IsNullOrEmpty(remotePath))
         {
@@ -184,7 +185,7 @@ internal sealed class MoaResourceWriter
         return value;
     }
 
-    public bool TryGetServerSideResource(PostTagType tagType, int tagId, out BlizzardData dataRecord)
+    public bool TryGetServerSideResource(PostTagType tagType, int tagId, [NotNullWhen(true)] out BlizzardData? dataRecord)
     {
         var key = PostTagInfo.GetTagString(tagType, tagId);
 

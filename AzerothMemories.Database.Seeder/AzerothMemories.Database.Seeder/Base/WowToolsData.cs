@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.Database.Seeder.Base;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace AzerothMemories.Database.Seeder.Base;
 
 internal sealed class WowToolsData
 {
@@ -31,7 +33,7 @@ internal sealed class WowToolsData
         }
     }
 
-    public bool TryGetData<TValue>(string fieldHeader, out TValue valueOut)
+    public bool TryGetData<TValue>(string fieldHeader, [NotNullWhen(true)] out TValue? valueOut)
     {
         if (_data.TryGetValue(fieldHeader, out var valueObject) && valueObject is TValue value)
         {
@@ -66,7 +68,7 @@ internal sealed class WowToolsData
                 continue;
             }
 
-            if (!TryGetData(header, out string value))
+            if (!TryGetData(header, out string? value))
             {
                 continue;
             }

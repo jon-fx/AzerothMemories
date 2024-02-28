@@ -1,4 +1,5 @@
 ﻿using AzerothMemories.WebServer.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
 namespace AzerothMemories.Database.Seeder.Base;
@@ -9,7 +10,7 @@ internal sealed class WowToolsInternal
     private readonly string _buildString;
     private readonly bool _throwIfNotFound;
     private readonly MoaResourceCache _resourceCache;
-    private Dictionary<int, string> _listFile;
+    private Dictionary<int, string>? _listFile;
 
     public WowToolsInternal(string buildString, bool throwIfNotFound)
     {
@@ -31,7 +32,7 @@ internal sealed class WowToolsInternal
 
     public MoaResourceCache ResourceCache => _resourceCache;
 
-    public bool TryGetIconName(int iconId, out string iconName)
+    public bool TryGetIconName(int iconId, [NotNullWhen(true)] out string? iconName)
     {
         _listFile ??= GetListFile();
 
@@ -81,7 +82,7 @@ internal sealed class WowToolsInternal
         return dictionary;
     }
 
-    private FileInfo DownloadIfNotExists(string fileName, string remotePath)
+    private FileInfo? DownloadIfNotExists(string fileName, string remotePath)
     {
         var filePath = Path.Combine(_buildFilePath, fileName);
         var fileInfo = new FileInfo(filePath);
@@ -113,7 +114,7 @@ internal sealed class WowToolsInternal
         return fileInfo;
     }
 
-    public void LoadDataFromWowTools(string fileName, string primaryKeyName, ref Dictionary<int, WowToolsData> dictionary, string[] fieldsToLoad = null)
+    public void LoadDataFromWowTools(string fileName, string primaryKeyName, ref Dictionary<int, WowToolsData> dictionary, string[]? fieldsToLoad = null)
     {
         foreach (var locale in WowToolsData.AllLocales)
         {
@@ -121,7 +122,7 @@ internal sealed class WowToolsInternal
         }
     }
 
-    public void LoadDataFromWowTools(string fileName, string primaryKeyName, ref Dictionary<int, WowToolsData> dictionary, string locale, string[] fieldsToLoad = null)
+    public void LoadDataFromWowTools(string fileName, string primaryKeyName, ref Dictionary<int, WowToolsData> dictionary, string locale, string[]? fieldsToLoad = null)
     {
         var fileInfo = DownloadIfNotExists($"{fileName}-{locale}.csv", CommonConfigDoNotCommit.GetLocalWowToolsUrl(fileName, _buildString, locale));
         if (fileInfo == null)

@@ -7,4 +7,5 @@ global using AzerothMemories.WebServer.Blizzard.Models;
 global using AzerothMemories.WebServer.Blizzard.Models.GameDataApi;
 global using Microsoft.Extensions.Logging;
 global using System.Globalization;
+global using System.Runtime.CompilerServices;
 global using System.Text.Json;

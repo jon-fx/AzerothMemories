@@ -28,7 +28,7 @@ internal static class SetExtensions
         return results;
     }
 
-    public static void Update(string[] dataDictionary, Func<ServerSideLocale, string, string> func)
+    public static void Update(string?[] dataDictionary, Func<ServerSideLocale, string, string> func)
     {
         var defaultValue = dataDictionary[(int)ServerSideLocale.En_Us];
         if (string.IsNullOrWhiteSpace(defaultValue))

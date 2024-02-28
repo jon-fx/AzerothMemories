@@ -24,6 +24,10 @@ public static class SeederConfig
         {
             await using var stream = File.OpenRead(file);
             var blizzardDataSet = JsonSerializer.Deserialize<BlizzardData[]>(stream);
+            if (blizzardDataSet == null)
+            {
+                throw new NotImplementedException();
+            }
 
             foreach (var blizzardData in blizzardDataSet)
             {

@@ -1,4 +1,5 @@
 ﻿using NodaTime;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 namespace AzerothMemories.Database.Seeder.Base
@@ -23,24 +24,24 @@ namespace AzerothMemories.Database.Seeder.Base
 
         [JsonIgnore] public Instant MinTagTime { get; init; }
 
-        [JsonInclude] public string[] Names { get; init; } = new string[(int)ServerSideLocale.Count];
+        [JsonInclude] public string?[] Names { get; init; } = new string[(int)ServerSideLocale.Count];
 
-        [JsonInclude] public string Media { get; set; }
+        [JsonInclude] public string? Media { get; set; }
 
-        public bool TryGetNameOrDefault(ServerSideLocale key, out string result)
+        public bool TryGetNameOrDefault(ServerSideLocale key, [NotNullWhen(true)] out string? result)
         {
             if (!string.IsNullOrWhiteSpace(Names[(int)key]))
             {
                 result = Names[(int)key];
 
-                return true;
+                return result != null;
             }
 
             if (!string.IsNullOrWhiteSpace(Names[(int)ServerSideLocale.En_Us]))
             {
                 result = Names[(int)ServerSideLocale.En_Us];
 
-                return true;
+                return result != null;
             }
 
             throw new NotImplementedException();
