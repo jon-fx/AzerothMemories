@@ -41,11 +41,11 @@
         <PackageReference Include="Markdig" Version="0.35.0" />
         <PackageReference Include="MudBlazor" Version="6.16.0" />
         <PackageReference Include="NodaTime" Version="3.1.11" />
-        <PackageReference Include="ActualLab.Fusion" Version="7.0.42" />
-        <PackageReference Include="ActualLab.CommandR" Version="7.0.42" />
-        <PackageReference Include="ActualLab.Fusion.Blazor" Version="7.0.42" />
-        <PackageReference Include="ActualLab.Fusion.Blazor.Authentication" Version="7.0.42" />
-        <PackageReference Include="ActualLab.Generators" Version="7.0.42">
+        <PackageReference Include="ActualLab.Fusion" Version="7.1.1" />
+        <PackageReference Include="ActualLab.CommandR" Version="7.1.1" />
+        <PackageReference Include="ActualLab.Fusion.Blazor" Version="7.1.1" />
+        <PackageReference Include="ActualLab.Fusion.Blazor.Authentication" Version="7.1.1" />
+        <PackageReference Include="ActualLab.Generators" Version="7.1.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
