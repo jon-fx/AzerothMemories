@@ -256,6 +256,11 @@ public class SearchServices : ISearchServices
 
         for (var year = _startYear; year < _endYear; year++)
         {
+            if (inZoneMonth == 2 && inZoneDay == 29 && CalendarSystem.Iso.IsLeapYear(year) == false)
+            {
+                continue;
+            }
+
             var set = new ActivitySetMain
             {
                 Year = year,
@@ -451,6 +456,11 @@ public class SearchServices : ISearchServices
         Exceptions.ThrowIf(timeZone == null);
         for (var year = _startYear; year < _endYear; year++)
         {
+            if (inZoneMonth == 2 && inZoneDay == 29 && CalendarSystem.Iso.IsLeapYear(year) == false)
+            {
+                continue;
+            }
+
             var set = new ActivitySetUser
             {
                 Year = year,
