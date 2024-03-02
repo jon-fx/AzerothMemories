@@ -1765,6 +1765,9 @@
   <data name="Type-3">
     <value>Hardcore</value>
   </data>
+  <data name="Type-4">
+    <value>Season of Discovery</value>
+  </data>
   <data name="Main-0">
     <value>None</value>
   </data>
