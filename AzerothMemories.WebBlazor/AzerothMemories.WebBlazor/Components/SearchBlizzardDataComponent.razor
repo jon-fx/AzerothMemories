@@ -1,9 +1,10 @@
 ﻿<AutoCompleteComponent @ref="_autoComplete"
+                       @bind-Value="_autoCompleteValue"
+                       @bind-Value:after="OnValueChanged"
                        Placeholder="Search tags..."
                        T="PostTagInfo"
-                       SearchFunc="SearchMemoryItems"
-                       ToStringFunc="ToStringFunc"
-                       ValueChanged="OnValueChanged">
+                       SearchFuncWithCancel="SearchMemoryItems"
+                       ToStringFunc="ToStringFunc">
 
     <ItemTemplate Context="e">
         <SearchBlizzardDataChildComponent TagInfo="@e" />
@@ -12,27 +13,28 @@
 
 @code
 {
+    private PostTagInfo _autoCompleteValue;
     private AutoCompleteComponent<PostTagInfo> _autoComplete;
 
     [Parameter, EditorRequired] public IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired] public EventCallback<PostTagInfo> OnSelectedItemChanged { get; init; }
 
-    private async Task OnValueChanged(PostTagInfo value)
+    private async Task OnValueChanged()
     {
-        if (value == null)
+        if (_autoCompleteValue == null)
         {
             return;
         }
 
-        await OnSelectedItemChanged.InvokeAsync(value);
+        await OnSelectedItemChanged.InvokeAsync(_autoCompleteValue);
 
         await _autoComplete.Clear();
 
         Services.ClientServices.JsRuntime.InvokeVoidAsync("HideWowheadToolTips").AndForget();
     }
 
-    private async Task<IEnumerable<PostTagInfo>> SearchMemoryItems(string searchString)
+    private async Task<IEnumerable<PostTagInfo>> SearchMemoryItems(string searchString, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(searchString) || searchString.Length < 3)
         {
@@ -40,6 +42,11 @@
         }
 
         var results = await Services.ComputeServices.TagServices.Search(Session.Default, searchString, ServerSideLocaleExt.GetServerSideLocale());
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Enumerable.Empty<PostTagInfo>();
+        }
+
         return results;
     }
 

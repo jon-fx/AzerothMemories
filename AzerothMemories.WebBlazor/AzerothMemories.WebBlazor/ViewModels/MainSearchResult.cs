@@ -1,7 +1,7 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
 [DataContract, MemoryPackable]
-public sealed partial class MainSearchResult
+public sealed partial record MainSearchResult
 {
     [JsonInclude, DataMember, MemoryPackInclude] public int Id { get; init; }
 

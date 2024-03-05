@@ -1,9 +1,10 @@
 ﻿<AutoCompleteComponent @ref="_autoComplete"
+                       @bind-Value="_autoCompleteValue"
+                       @bind-Value:after="OnValueChanged"
                        Placeholder="@Placeholder"
                        T="MainSearchResult"
-                       SearchFunc="SearchFunc"
+                       SearchFuncWithCancel="SearchFunc"
                        ToStringFunc="ToStringFunc"
-                       ValueChanged="OnValueChanged"
                        Class="@ExtraClasses">
     <ItemTemplate Context="e">
         @if (UseCallback)
@@ -21,6 +22,7 @@
 
 @code
 {
+    private MainSearchResult _autoCompleteValue;
     private AutoCompleteComponent<MainSearchResult> _autoComplete;
 
     [Parameter] public string Placeholder { get; init; } = "Search...";
@@ -37,26 +39,26 @@
 
     [Inject] public NavigationManager NavigationManager { get; init; }
 
-    private async Task OnValueChanged(MainSearchResult value)
+    private async Task OnValueChanged()
     {
-        if (value == null)
+        if (_autoCompleteValue == null)
         {
             return;
         }
 
         if (UseCallback)
         {
-            await OnSelectedItemChanged.InvokeAsync(value);
+            await OnSelectedItemChanged.InvokeAsync(_autoCompleteValue);
         }
         else
         {
-            NavigationManager.NavigateTo(value.GetLink());
+            NavigationManager.NavigateTo(_autoCompleteValue.GetLink());
         }
 
         await _autoComplete.Clear();
     }
 
-    private async Task<IEnumerable<MainSearchResult>> SearchFunc(string searchString)
+    private async Task<IEnumerable<MainSearchResult>> SearchFunc(string searchString, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(searchString) || searchString.Length < 3)
         {
@@ -64,6 +66,11 @@
         }
 
         var results = await SearchServices.TrySearch(Session.Default, SearchType, searchString);
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Enumerable.Empty<MainSearchResult>();
+        }
+
         return results;
     }
 
@@ -76,5 +83,4 @@
 
         return arg.Name;
     }
-
 }
