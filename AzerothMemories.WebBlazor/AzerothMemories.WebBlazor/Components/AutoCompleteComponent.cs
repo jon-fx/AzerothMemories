@@ -14,5 +14,6 @@ public sealed class AutoCompleteComponent<T> : MudAutocomplete<T>
         MaxItems = null;
         InputMode = InputMode.search;
         DebounceInterval = 500;
+        SelectOnClick = false;
     }
 }

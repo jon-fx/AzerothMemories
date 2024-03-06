@@ -1,6 +1,8 @@
 ﻿<AutoCompleteComponent @ref="_autoComplete"
                        @bind-Value="_autoCompleteValue"
                        @bind-Value:after="OnValueChanged"
+                       Text="@_autoCompleteText"
+                       TextChanged="OnTextChanged"
                        Placeholder="Search tags..."
                        T="PostTagInfo"
                        SearchFuncWithCancel="SearchMemoryItems"
@@ -13,6 +15,7 @@
 
 @code
 {
+    private string _autoCompleteText;
     private PostTagInfo _autoCompleteValue;
     private AutoCompleteComponent<PostTagInfo> _autoComplete;
 
@@ -32,6 +35,14 @@
         await _autoComplete.Clear();
 
         Services.ClientServices.JsRuntime.InvokeVoidAsync("HideWowheadToolTips").AndForget();
+    }
+
+    private void OnTextChanged(string text)
+    {
+        if (text != null)
+        {
+            _autoCompleteText = text;
+        }
     }
 
     private async Task<IEnumerable<PostTagInfo>> SearchMemoryItems(string searchString, CancellationToken cancellationToken)

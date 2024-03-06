@@ -1,6 +1,8 @@
 ﻿<AutoCompleteComponent @ref="_autoComplete"
                        @bind-Value="_autoCompleteValue"
                        @bind-Value:after="OnValueChanged"
+                       Text="@_autoCompleteText"
+                       TextChanged="OnTextChanged"
                        Placeholder="@Placeholder"
                        T="MainSearchResult"
                        SearchFuncWithCancel="SearchFunc"
@@ -22,6 +24,7 @@
 
 @code
 {
+    private string _autoCompleteText;
     private MainSearchResult _autoCompleteValue;
     private AutoCompleteComponent<MainSearchResult> _autoComplete;
 
@@ -56,6 +59,14 @@
         }
 
         await _autoComplete.Clear();
+    }
+
+    private void OnTextChanged(string text)
+    {
+        if (text != null)
+        {
+            _autoCompleteText = text;
+        }
     }
 
     private async Task<IEnumerable<MainSearchResult>> SearchFunc(string searchString, CancellationToken cancellationToken)
