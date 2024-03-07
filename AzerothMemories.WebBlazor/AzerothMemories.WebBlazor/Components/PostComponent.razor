@@ -57,11 +57,11 @@ else
             <CardHeaderActions>
                 <MudMenu Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Dense="true">
                     <MudMenuItem>
-                            <MudTooltip Text="Link" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
-                                <MudLink Href="@($"/post/{Post.AccountId}/{Post.Id}")" Color="Color.Default">
-                                    <MudIcon Icon="@Icons.Material.Filled.AddLink" Size="Size.Small" />
-                                </MudLink>
-                            </MudTooltip>
+                        <MudTooltip Text="Link" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
+                            <MudLink Href="@($"/post/{Post.AccountId}/{Post.Id}")" Color="Color.Default">
+                                <MudIcon Icon="@Icons.Material.Filled.AddLink" Size="Size.Small" />
+                            </MudLink>
+                        </MudTooltip>
                     </MudMenuItem>
 
                     @if (Services.ClientServices.ActiveAccountServices.IsActiveAccount(Post.AccountId) || Services.ClientServices.ActiveAccountServices.AccountViewModel.IsAdmin())
@@ -334,11 +334,10 @@ else
     private bool _showTagMenu;
     private bool _isChangingTags;
 
-    [Parameter, EditorRequired]
-    public IMoaServices Services { get; init; }
+    [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired]
-    public PostViewModel Post
+    public required PostViewModel Post
     {
         get => _post;
         init

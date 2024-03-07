@@ -42,7 +42,7 @@
 </MudCardHeader>
 
 @code {
-    [Parameter, EditorRequired] public MainSearchResult Result { get; init; }
+    [Parameter, EditorRequired] public required MainSearchResult Result { get; init; }
 
     protected override bool ShouldRender()
     {

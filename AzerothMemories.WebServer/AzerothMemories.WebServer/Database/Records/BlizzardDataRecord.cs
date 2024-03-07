@@ -8,17 +8,17 @@ public sealed class BlizzardDataRecord : IDatabaseRecord
 {
     public const string TableName = "Blizzard_Data";
 
-    [Key] public int Id { get; set; }
+    [Key] public int Id { get; init; }
 
-    [Column] public int TagId { get; set; }
+    [Column] public int TagId { get; init; }
 
-    [Column] public PostTagType TagType { get; set; }
+    [Column] public PostTagType TagType { get; init; }
 
-    [Column] public string Key { get; set; }
+    [Column] public string Key { get; init; }
 
     [Column] public string Media { get; set; }
 
-    [Column, Required] public BlizzardDataRecordLocal Name { get; set; }
+    [Column, Required] public BlizzardDataRecordLocal Name { get; init; }
 
     [Column] public Instant MinTagTime { get; set; }
 

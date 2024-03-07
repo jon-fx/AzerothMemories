@@ -47,7 +47,7 @@ else
 
 @code
 {
-    [Parameter, EditorRequired] public PostTagInfo TagInfo { get; init; }
+    [Parameter, EditorRequired] public required PostTagInfo TagInfo { get; init; }
 
     protected override bool ShouldRender()
     {

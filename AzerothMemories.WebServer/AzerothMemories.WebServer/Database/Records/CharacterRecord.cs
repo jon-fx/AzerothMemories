@@ -8,7 +8,7 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord, IDatabaseRecordWith
 {
     public const string TableName = "Characters";
 
-    [Key] public int Id { get; set; }
+    [Key] public int Id { get; init; }
 
     [Column] public string MoaRef { get; set; }
 
@@ -22,7 +22,7 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord, IDatabaseRecordWith
 
     [Column] public string NameSearchable { get; set; }
 
-    [Column] public Instant CreatedDateTime { get; set; }
+    [Column] public Instant CreatedDateTime { get; init; }
 
     [Column] public CharacterStatus2 CharacterStatus { get; set; }
 

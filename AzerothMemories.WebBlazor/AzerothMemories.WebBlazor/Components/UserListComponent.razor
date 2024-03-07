@@ -111,10 +111,10 @@
     private AccountFollowingViewModel[] _pendingViewModels;
     private AccountFollowingViewModel[] _activeViewModels;
 
-    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
+    [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired]
-    public AccountViewModel AccountViewModel
+    public required AccountViewModel AccountViewModel
     {
         get => _account;
         init
@@ -124,9 +124,9 @@
         }
     }
 
-    [Parameter, EditorRequired] public bool Following { get; init; }
+    [Parameter, EditorRequired] public required bool Following { get; init; }
 
-    [Parameter, EditorRequired] public AccountViewModel ActiveAccountViewModel { get; init; }
+    [Parameter, EditorRequired] public required AccountViewModel ActiveAccountViewModel { get; init; }
 
     protected override void OnParametersSet()
     {

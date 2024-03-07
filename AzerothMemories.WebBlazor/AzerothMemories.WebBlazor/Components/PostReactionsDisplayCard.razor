@@ -33,9 +33,9 @@ else if (reactionData.Length > 0)
 }
 
 @code {
-    [Parameter, EditorRequired] public PostReactionViewModel[] ReactionData { get; init; }
+    [Parameter, EditorRequired] public required PostReactionViewModel[] ReactionData { get; init; }
 
-    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
+    [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
     private void OnReactionChipClickedCallback(PostReactionViewModel reaction)
     {

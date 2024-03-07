@@ -8,17 +8,17 @@ public sealed class AccountFollowingRecord : IDatabaseRecordWithVersion
 {
     public const string TableName = "Accounts_Following";
 
-    [Key] public int Id { get; set; }
+    [Key] public int Id { get; init; }
 
-    [Column] public int AccountId { get; set; }
+    [Column] public int AccountId { get; init; }
 
-    [Column] public int FollowerId { get; set; }
+    [Column] public int FollowerId { get; init; }
 
     [Column] public AccountFollowingStatus Status { get; set; }
 
     [Column] public Instant LastUpdateTime { get; set; }
 
-    [Column] public Instant CreatedTime { get; set; }
+    [Column] public Instant CreatedTime { get; init; }
 
     public uint RowVersion { get; set; }
 }

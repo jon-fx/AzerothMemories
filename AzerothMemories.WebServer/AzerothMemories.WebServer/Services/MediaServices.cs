@@ -238,7 +238,7 @@ public class MediaServices : IComputeService
         Add(SiteMapType.Guilds);
         Add(SiteMapType.Posts);
 
-        return await SiteMapHelper.BuildSiteMap(BaseUrl, "sitemapindex", "sitemap", maps);
+        return await SiteMapHelper.BuildSiteMap(BaseUrl, "sitemapindex", "sitemap", maps).ConfigureAwait(false);
 
         void Add(SiteMapType siteMapType)
         {
@@ -267,7 +267,7 @@ public class MediaServices : IComputeService
             pages.Add((routedComponent.Route.Template, DateTime.Now));
         }
 
-        return await SiteMapHelper.BuildSiteMap(BaseUrl, "urlset", "url", pages);
+        return await SiteMapHelper.BuildSiteMap(BaseUrl, "urlset", "url", pages).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -347,6 +347,6 @@ public class MediaServices : IComputeService
             return await TryGetSiteMapMain().ConfigureAwait(false);
         }
 
-        return await SiteMapHelper.BuildSiteMap(BaseUrl, "urlset", "url", pages);
+        return await SiteMapHelper.BuildSiteMap(BaseUrl, "urlset", "url", pages).ConfigureAwait(false);
     }
 }

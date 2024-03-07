@@ -25,7 +25,7 @@
     [Parameter] public bool LinkDisabled { get; init; }
     [Parameter] public int CharacterRealmId { get; set; }
     [Parameter] public string CharacterRealmSlug { get; set; }
-    [Parameter, EditorRequired] public string CharacterName { get; set; }
-    [Parameter, EditorRequired] public byte CharacterClass { get; set; }
-    [Parameter, EditorRequired] public BlizzardRegionInfo CharacterRegionInfo { get; set; }
+    [Parameter, EditorRequired] public required string CharacterName { get; set; }
+    [Parameter, EditorRequired] public required byte CharacterClass { get; set; }
+    [Parameter, EditorRequired] public required BlizzardRegionInfo CharacterRegionInfo { get; set; }
 }

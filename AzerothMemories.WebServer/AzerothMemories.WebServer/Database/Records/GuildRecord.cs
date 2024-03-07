@@ -8,13 +8,13 @@ public sealed class GuildRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVers
 {
     public const string TableName = "Guilds";
 
-    [Key] public int Id { get; set; }
+    [Key] public int Id { get; init; }
 
-    [Column] public string MoaRef { get; set; }
+    [Column] public string MoaRef { get; init; }
 
     [Column] public long BlizzardId { get; set; }
 
-    [Column] public BlizzardRegion BlizzardRegionId { get; set; }
+    [Column] public BlizzardRegion BlizzardRegionId { get; init; }
 
     [Column] public string Name { get; set; }
 
@@ -28,7 +28,7 @@ public sealed class GuildRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVers
 
     [Column] public int AchievementPoints { get; set; }
 
-    [Column] public Instant CreatedDateTime { get; set; }
+    [Column] public Instant CreatedDateTime { get; init; }
 
     [Column] public Instant BlizzardCreatedTimestamp { get; set; }
 

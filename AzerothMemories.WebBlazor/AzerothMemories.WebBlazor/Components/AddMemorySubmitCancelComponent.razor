@@ -45,7 +45,7 @@
     private readonly AddMemoryComponentSharedData _sharedData;
 
     [Parameter, EditorRequired]
-    public AddMemoryComponentSharedData SharedData
+    public required AddMemoryComponentSharedData SharedData
     {
         get => _sharedData;
         init
@@ -69,7 +69,7 @@
         }
     }
 
-    [Parameter, EditorRequired] public EventCallback OnSubmit { get; init; }
+    [Parameter, EditorRequired] public required EventCallback OnSubmit { get; init; }
 
-    [Parameter, EditorRequired] public EventCallback OnCancel { get; init; }
+    [Parameter, EditorRequired] public required EventCallback OnCancel { get; init; }
 }

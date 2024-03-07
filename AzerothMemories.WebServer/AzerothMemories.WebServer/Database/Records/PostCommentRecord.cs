@@ -8,19 +8,19 @@ public sealed class PostCommentRecord : IDatabaseRecordWithVersion
 {
     public const string TableName = "Posts_Comments";
 
-    [Key] public int Id { get; set; }
+    [Key] public int Id { get; init; }
 
-    [Column] public int AccountId { get; set; }
+    [Column] public int AccountId { get; init; }
 
-    [Column] public int PostId { get; set; }
+    [Column] public int PostId { get; init; }
 
-    [Column] public int? ParentId { get; set; }
+    [Column] public int? ParentId { get; init; }
 
-    [Column] public string PostCommentRaw { get; set; }
+    [Column] public string PostCommentRaw { get; init; }
 
-    [Column] public string PostCommentMark { get; set; }
+    [Column] public string PostCommentMark { get; init; }
 
-    [Column] public string PostCommentUserMap { get; set; }
+    [Column] public string PostCommentUserMap { get; init; }
 
     [Column] public int ReactionCount1 { get; set; }
 
@@ -44,7 +44,7 @@ public sealed class PostCommentRecord : IDatabaseRecordWithVersion
 
     [Column] public int TotalReportCount { get; set; }
 
-    [Column] public Instant CreatedTime { get; set; }
+    [Column] public Instant CreatedTime { get; init; }
 
     [Column] public long DeletedTimeStamp { get; set; }
 

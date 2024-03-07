@@ -83,9 +83,9 @@ else
     private int _guildMemberPageIndex = 0;
     private List<CharacterViewModel> _guildMembers;
 
-    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
+    [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
-    [Parameter, EditorRequired] public GuildViewModel GuildViewModel { get; init; }
+    [Parameter, EditorRequired] public required GuildViewModel GuildViewModel { get; init; }
 
     protected override void OnParametersSet()
     {

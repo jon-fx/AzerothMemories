@@ -8,7 +8,7 @@ public sealed class AccountHistoryRecord : IDatabaseRecordWithVersion
 {
     public const string TableName = "Accounts_History";
 
-    [Key] public int Id { get; set; }
+    [Key] public int Id { get; init; }
 
     [Column] public int AccountId { get; set; }
 

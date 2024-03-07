@@ -6,13 +6,13 @@ public class AppDbContextBase : DbContextBase
     {
     }
 
-    public DbSet<DbUser<string>> Users { get; protected set; } = null!;
+    public DbSet<DbUser<string>> Users { get; protected init; } = null!;
 
-    public DbSet<DbUserIdentity<string>> UserIdentities { get; protected set; } = null!;
+    public DbSet<DbUserIdentity<string>> UserIdentities { get; protected init; } = null!;
 
-    public DbSet<DbSessionInfo<string>> Sessions { get; protected set; } = null!;
+    public DbSet<DbSessionInfo<string>> Sessions { get; protected init; } = null!;
 
-    public DbSet<DbKeyValue> KeyValues { get; protected set; } = null!;
+    public DbSet<DbKeyValue> KeyValues { get; protected init; } = null!;
 
-    public DbSet<DbOperation> Operations { get; protected set; } = null!;
+    public DbSet<DbOperation> Operations { get; protected init; } = null!;
 }

@@ -36,7 +36,7 @@ public sealed class CommonServices
 
     internal CommonConfig Config { get; private set; }
 
-    internal DbHub<AppDbContext> DatabaseHub { get; set; }
+    internal DbHub<AppDbContext> DatabaseHub { get; private set; }
 
     internal HttpClientProvider HttpClientProvider { get; private set; }
 

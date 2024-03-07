@@ -215,11 +215,10 @@ else
     private int _followerCount;
     private int _followingCount;
 
-    [Parameter, EditorRequired]
-    public IMoaServices Services { get; init; }
+    [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired]
-    public AccountViewModel AccountViewModel
+    public required AccountViewModel AccountViewModel
     {
         get => _account;
         init

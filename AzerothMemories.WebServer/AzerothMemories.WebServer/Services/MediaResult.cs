@@ -19,11 +19,11 @@ public record MediaResult
 
     public bool IsDefault { get; init; }
 
-    public Instant LastModified { get; init; }
+    public Instant LastModified { get; }
 
-    public ETag ETag { get; init; }
+    public ETag ETag { get; }
 
-    public string MediaType { get; init; }
+    public string MediaType { get; }
 
-    public byte[] MediaBytes { get; init; }
+    public byte[] MediaBytes { get; }
 }

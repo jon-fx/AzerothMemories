@@ -66,7 +66,7 @@
         }
     }
 
-    [Parameter, EditorRequired] public EventCallback<Instant?> OnInstantEventCallback { get; set; }
+    [Parameter, EditorRequired] public required EventCallback<Instant?> OnInstantEventCallback { get; set; }
 
     private void OnPickerOpened()
     {

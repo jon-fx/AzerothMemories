@@ -14,11 +14,11 @@
 
     [Parameter] public Color Color { get; init; } = Color.Inherit;
 
-    [Parameter, EditorRequired] public Typo Typo { get; init; }
+    [Parameter, EditorRequired] public required Typo Typo { get; init; }
 
-    [Parameter, EditorRequired] public long Time { get; init; }
+    [Parameter, EditorRequired] public required long Time { get; init; }
 
-    [Parameter, EditorRequired] public TimeProviderEx TimeProvider { get; init; }
+    [Parameter, EditorRequired] public required TimeProviderEx TimeProvider { get; init; }
 
     protected override void OnParametersSet()
     {

@@ -8,15 +8,15 @@ public sealed class AccountRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVe
 {
     public const string TableName = "Accounts";
 
-    [Key] public int Id { get; set; }
+    [Key] public int Id { get; init; }
 
-    [Column] public string FusionId { get; set; }
+    [Column] public string FusionId { get; init; }
 
     [Column] public AccountType AccountType { get; set; }
 
     [Column] public AccountFlags AccountFlags { get; set; }
 
-    [Column] public Instant CreatedDateTime { get; set; }
+    [Column] public Instant CreatedDateTime { get; init; }
 
     [Column] public long BlizzardId { get; set; }
 
@@ -52,7 +52,7 @@ public sealed class AccountRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVe
 
     public BlizzardUpdateRecord UpdateRecord { get; set; }
 
-    public ICollection<AuthTokenRecord> AuthTokens { get; set; } = new List<AuthTokenRecord>();
+    public ICollection<AuthTokenRecord> AuthTokens { get; init; } = new List<AuthTokenRecord>();
 
     public uint RowVersion { get; set; }
 

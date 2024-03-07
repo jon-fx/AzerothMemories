@@ -23,9 +23,9 @@ else
 
 @code
 {
-    [Parameter, EditorRequired] public string Id { get; set; }
+    [Parameter, EditorRequired] public required string Id { get; set; }
 
-    [Parameter, EditorRequired] public string PostId { get; set; }
+    [Parameter, EditorRequired] public required string PostId { get; set; }
 
     [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }
 

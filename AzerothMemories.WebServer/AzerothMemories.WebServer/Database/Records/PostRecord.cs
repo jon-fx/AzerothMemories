@@ -8,27 +8,27 @@ public sealed class PostRecord : IDatabaseRecordWithVersion
 {
     public const string TableName = "Posts";
 
-    [Key] public int Id { get; set; }
+    [Key] public int Id { get; init; }
 
-    [Column] public int AccountId { get; set; }
+    [Column] public int AccountId { get; init; }
 
-    [Column] public string PostCommentRaw { get; set; }
+    [Column] public string PostCommentRaw { get; init; }
 
-    [Column] public string PostCommentMark { get; set; }
+    [Column] public string PostCommentMark { get; init; }
 
-    [Column] public string PostCommentUserMap { get; set; }
+    [Column] public string PostCommentUserMap { get; init; }
 
     [Column] public string PostAvatar { get; set; }
 
     [Column] public byte PostVisibility { get; set; }
 
-    [Column] public PostFlags PostFlags { get; set; }
+    [Column] public PostFlags PostFlags { get; init; }
 
-    [Column] public Instant PostTime { get; set; }
+    [Column] public Instant PostTime { get; init; }
 
     [Column] public Instant PostEditedTime { get; set; }
 
-    [Column] public Instant PostCreatedTime { get; set; }
+    [Column] public Instant PostCreatedTime { get; init; }
 
     [Column] public string BlobNames { get; set; }
 

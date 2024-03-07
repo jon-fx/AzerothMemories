@@ -25,7 +25,7 @@
 
 @code {
 
-    [Parameter, EditorRequired] public IStringLocalizer<BlizzardResources> BlizzardStringLocalizer { get; init; }
+    [Parameter, EditorRequired] public required IStringLocalizer<BlizzardResources> BlizzardStringLocalizer { get; init; }
 
-    [Parameter, EditorRequired] public CharacterViewModel CharacterViewModel { get; init; }
+    [Parameter, EditorRequired] public required CharacterViewModel CharacterViewModel { get; init; }
 }

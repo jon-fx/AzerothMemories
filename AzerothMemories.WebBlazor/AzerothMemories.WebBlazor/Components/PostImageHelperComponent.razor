@@ -10,7 +10,7 @@
 
 @code
 {
-    [Parameter, EditorRequired] public string Source { get; init; }
+    [Parameter, EditorRequired] public required string Source { get; init; }
 
-    [Parameter, EditorRequired] public EventCallback<MouseEventArgs> OnClick { get; init; }
+    [Parameter, EditorRequired] public required EventCallback<MouseEventArgs> OnClick { get; init; }
 }

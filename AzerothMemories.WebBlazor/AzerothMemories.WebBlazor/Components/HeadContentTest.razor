@@ -32,8 +32,8 @@
 </HeadContent>
 
 @code {
-    [Parameter, EditorRequired] public ClientServices ClientServices { get; init; }
-    [Parameter, EditorRequired] public IPageHeaderInfoProvider PageInfo { get; init; }
+    [Parameter, EditorRequired] public required ClientServices ClientServices { get; init; }
+    [Parameter, EditorRequired] public required IPageHeaderInfoProvider PageInfo { get; init; }
 
     private string GetImagePath()
     {

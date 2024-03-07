@@ -73,9 +73,9 @@ else if (Helper.PostViewModel.DeletedTimeStamp == 0)
 
 @code
 {
-    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
+    [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
-    [Parameter, EditorRequired] public PostPageViewModelHelper Helper { get; init; }
+    [Parameter, EditorRequired] public required PostPageViewModelHelper Helper { get; init; }
 
     private void AddComment()
     {

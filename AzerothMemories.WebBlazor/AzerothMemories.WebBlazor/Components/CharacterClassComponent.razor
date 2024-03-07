@@ -20,5 +20,5 @@
     [Parameter] public bool Inline { get; init; }
     [Parameter] public Typo Typo { get; init; } = Typo.body1;
     [Parameter] public bool LinkDisabled { get; init; }
-    [Parameter, EditorRequired] public byte CharacterClass { get; init; }
+    [Parameter, EditorRequired] public required byte CharacterClass { get; init; }
 }

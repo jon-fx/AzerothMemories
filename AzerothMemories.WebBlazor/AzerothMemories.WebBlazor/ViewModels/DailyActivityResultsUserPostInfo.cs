@@ -15,7 +15,7 @@ public sealed partial record DailyActivityResultsUserPostInfo
         for (var i = 0; i < results.Length; i++)
         {
             var blobInfo = BlobInfo[i];
-            var newBlobInfo = blobInfo with
+            var newBlobInfo = new PostViewModelBlobInfo
             {
                 Title = blobInfo.Title + $": {i + 1}/{BlobInfo.Length}",
                 Description = description,

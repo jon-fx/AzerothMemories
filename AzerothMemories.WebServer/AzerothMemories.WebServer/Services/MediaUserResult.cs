@@ -14,7 +14,7 @@ public record MediaUserResult : MediaResult
         PostAccountId = postAccountId;
     }
 
-    public int PostId { get; init; }
+    public int PostId { get; }
 
-    public int PostAccountId { get; init; }
+    public int PostAccountId { get; }
 }

@@ -1,8 +1,8 @@
 ﻿<MudText Inline="@Inline" Typo="@Typo" Class=@($"wowclass-{CharacterClass}")>@CharacterName</MudText>
 
 @code {
-    [Parameter, EditorRequired] public bool Inline { get; init; }
-    [Parameter, EditorRequired] public Typo Typo { get; set; } = Typo.body1;
-    [Parameter, EditorRequired] public string CharacterName { get; set; }
-    [Parameter, EditorRequired] public byte CharacterClass { get; set; }
+    [Parameter, EditorRequired] public required bool Inline { get; init; }
+    [Parameter, EditorRequired] public required Typo Typo { get; set; } = Typo.body1;
+    [Parameter, EditorRequired] public required string CharacterName { get; set; }
+    [Parameter, EditorRequired] public required byte CharacterClass { get; set; }
 }

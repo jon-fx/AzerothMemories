@@ -8,17 +8,17 @@ public sealed class PostTagReportRecord : IDatabaseRecordWithVersion
 {
     public const string TableName = "Posts_Reports_Tags";
 
-    [Key] public int Id { get; set; }
+    [Key] public int Id { get; init; }
 
-    [Column] public int AccountId { get; set; }
+    [Column] public int AccountId { get; init; }
 
-    [Column] public int PostId { get; set; }
+    [Column] public int PostId { get; init; }
 
-    [Column] public int TagId { get; set; }
+    [Column] public int TagId { get; init; }
 
-    [Column] public Instant CreatedTime { get; set; }
+    [Column] public Instant CreatedTime { get; init; }
 
-    [Column] public PostTagRecord Tag { get; set; }
+    [Column] public PostTagRecord Tag { get; init; }
 
     [Column] public int? ResolvedByAccountId { get; set; }
 

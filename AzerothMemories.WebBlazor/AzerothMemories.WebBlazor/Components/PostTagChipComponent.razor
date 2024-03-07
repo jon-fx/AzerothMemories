@@ -65,7 +65,7 @@ else
 
 @code {
 
-    [Parameter, EditorRequired] public PostTagInfo TagInfo { get; init; }
+    [Parameter, EditorRequired] public required PostTagInfo TagInfo { get; init; }
 
     [Parameter] public Variant Variant { get; init; } = Variant.Filled;
 

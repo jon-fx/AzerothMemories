@@ -154,8 +154,8 @@ else
     private readonly List<PostViewModelBlobInfo> _allBlobInfos = new();
     private readonly int[] _otherTuplesShowCount = Enumerable.Repeat(10, 6).ToArray();
 
-    [Parameter, EditorRequired] public DailyActivityResults HeaderData { get; init; }
-    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
+    [Parameter, EditorRequired] public required DailyActivityResults HeaderData { get; init; }
+    [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
     private void OnMainTagClicked(PostTagInfo postTagInfo)
     {

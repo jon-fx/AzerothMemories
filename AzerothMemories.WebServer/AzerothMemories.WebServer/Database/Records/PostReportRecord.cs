@@ -8,17 +8,17 @@ public sealed class PostReportRecord : IDatabaseRecordWithVersion
 {
     public const string TableName = "Posts_Reports";
 
-    [Key] public int Id { get; set; }
+    [Key] public int Id { get; init; }
 
-    [Column] public int AccountId { get; set; }
+    [Column] public int AccountId { get; init; }
 
-    [Column] public int PostId { get; set; }
+    [Column] public int PostId { get; init; }
 
     [Column] public PostReportedReason Reason { get; set; }
 
     [Column] public string ReasonText { get; set; }
 
-    [Column] public Instant CreatedTime { get; set; }
+    [Column] public Instant CreatedTime { get; init; }
 
     [Column] public Instant ModifiedTime { get; set; }
 

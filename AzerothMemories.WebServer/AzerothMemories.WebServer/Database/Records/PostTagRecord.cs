@@ -8,19 +8,19 @@ public sealed class PostTagRecord : IDatabaseRecordWithVersion
 {
     public const string TableName = "Posts_Tags";
 
-    [Key] public int Id { get; set; }
+    [Key] public int Id { get; init; }
 
     [Column] public PostTagKind TagKind { get; set; }
 
-    [Column] public PostTagType TagType { get; set; }
+    [Column] public PostTagType TagType { get; init; }
 
     [Column] public int PostId { get; set; }
 
-    [Column] public PostRecord Post { get; set; }
+    [Column] public PostRecord Post { get; init; }
 
     [Column] public int? CommentId { get; set; }
 
-    [Column] public PostCommentRecord Comment { get; set; }
+    [Column] public PostCommentRecord Comment { get; init; }
 
     [Column] public int TagId { get; set; }
 
@@ -28,7 +28,7 @@ public sealed class PostTagRecord : IDatabaseRecordWithVersion
 
     [Column] public int TotalReportCount { get; set; }
 
-    [Column] public Instant CreatedTime { get; set; }
+    [Column] public Instant CreatedTime { get; init; }
 
     public uint RowVersion { get; set; }
 

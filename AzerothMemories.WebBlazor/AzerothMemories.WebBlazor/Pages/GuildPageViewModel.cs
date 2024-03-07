@@ -22,7 +22,7 @@ public sealed class GuildPageViewModel : PersistentStateViewModel, IViewModel<Gu
 
     public GuildViewModel GuildViewModel { get; private set; }
 
-    public PostSearchHelper PostSearchHelper { get; private set; }
+    public PostSearchHelper PostSearchHelper { get; }
 
     public bool IsLoading => GuildViewModel == null || PostSearchHelper == null;
 

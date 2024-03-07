@@ -165,9 +165,9 @@
 {
     private bool _userReacting;
 
-    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
+    [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
-    [Parameter, EditorRequired] public PostCommentTreeNode Comment { get; init; }
+    [Parameter, EditorRequired] public required PostCommentTreeNode Comment { get; init; }
 
     [Parameter] public bool Indent { get; init; } = true;
 

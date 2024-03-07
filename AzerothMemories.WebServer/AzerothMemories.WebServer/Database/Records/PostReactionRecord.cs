@@ -8,11 +8,11 @@ public sealed class PostReactionRecord : IDatabaseRecordWithVersion
 {
     public const string TableName = "Posts_Reactions";
 
-    [Key] public int Id { get; set; }
+    [Key] public int Id { get; init; }
 
-    [Column] public int AccountId { get; set; }
+    [Column] public int AccountId { get; init; }
 
-    [Column] public int PostId { get; set; }
+    [Column] public int PostId { get; init; }
 
     [Column] public PostReaction Reaction { get; set; }
 

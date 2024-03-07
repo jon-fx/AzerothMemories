@@ -120,11 +120,10 @@
 @code {
     private readonly AddMemoryComponentSharedData _sharedData;
 
-    [Parameter, EditorRequired]
-    public IMoaServices Services { get; init; }
+    [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired]
-    public AddMemoryComponentSharedData SharedData
+    public required AddMemoryComponentSharedData SharedData
     {
         get => _sharedData;
         init

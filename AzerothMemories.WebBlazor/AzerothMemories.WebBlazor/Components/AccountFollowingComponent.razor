@@ -42,17 +42,17 @@ else
     private AccountFollowingStatus _followingStatus;
     private AccountFollowingStatus _followerStatus;
 
-    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
+    [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
-    [Parameter, EditorRequired] public AccountViewModel ActiveAccountViewModel { get; init; }
+    [Parameter, EditorRequired] public required AccountViewModel ActiveAccountViewModel { get; init; }
 
-    [Parameter, EditorRequired] public int OtherAccountId { get; init; }
+    [Parameter, EditorRequired] public required int OtherAccountId { get; init; }
 
-    [Parameter, EditorRequired] public AccountFollowingViewModel FollowingViewModel { get; init; }
+    [Parameter, EditorRequired] public required AccountFollowingViewModel FollowingViewModel { get; init; }
 
-    [Parameter, EditorRequired] public AccountFollowingViewModel FollowerViewModel { get; init; }
+    [Parameter, EditorRequired] public required AccountFollowingViewModel FollowerViewModel { get; init; }
 
-    [Parameter, EditorRequired] public bool ButtonFullWidth { get; init; }
+    [Parameter, EditorRequired] public required bool ButtonFullWidth { get; init; }
 
     public bool IsDisabled => !Services.ClientServices.ActiveAccountServices.AccountViewModel.CanChangeFollowing();
 

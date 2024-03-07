@@ -50,10 +50,10 @@ else
 
 @code {
 
-    [Parameter, EditorRequired] public int Index { get; init; }
-    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
-    [Parameter, EditorRequired] public AddMemoryImageData UploadedImage { get; init; }
-    [Parameter, EditorRequired] public AddMemoryPageViewModel ViewModel { get; init; }
+    [Parameter, EditorRequired] public required int Index { get; init; }
+    [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
+    [Parameter, EditorRequired] public required AddMemoryImageData UploadedImage { get; init; }
+    [Parameter, EditorRequired] public required AddMemoryPageViewModel ViewModel { get; init; }
 
     private string GetImageId => $"imageBox-{Index}";
     private DotNetObjectReference<AddMemoryPreviewScreenShotComponent> _objReference;

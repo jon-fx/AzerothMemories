@@ -19,9 +19,9 @@
     private PostTagInfo _autoCompleteValue;
     private AutoCompleteComponent<PostTagInfo> _autoComplete;
 
-    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
+    [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
-    [Parameter, EditorRequired] public EventCallback<PostTagInfo> OnSelectedItemChanged { get; init; }
+    [Parameter, EditorRequired] public required EventCallback<PostTagInfo> OnSelectedItemChanged { get; init; }
 
     private async Task OnValueChanged()
     {

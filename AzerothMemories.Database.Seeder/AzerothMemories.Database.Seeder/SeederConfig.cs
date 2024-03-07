@@ -2,13 +2,13 @@
 
 public static class SeederConfig
 {
-    public static string RootPath = "D:\\AzerothMemories";
+    public static readonly string RootPath = "D:\\AzerothMemories";
 
-    public static string ToolsPath = Path.Combine(RootPath, "AzerothMemories.Tools");
+    public static readonly string ToolsPath = Path.Combine(RootPath, "AzerothMemories.Tools");
 
-    public static string JsonDataPath = Path.Combine(RootPath, "AzerothMemories.Data");
+    public static readonly string JsonDataPath = Path.Combine(RootPath, "AzerothMemories.Data");
 
-    public static string MediaDataPath = Path.Combine(RootPath, "AzerothMemories.Media");
+    public static readonly string MediaDataPath = Path.Combine(RootPath, "AzerothMemories.Media");
 
     public static FileInfo GetLocalMediaFileInfo(string mediaPath)
     {

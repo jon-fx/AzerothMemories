@@ -18,6 +18,6 @@ else if (!string.IsNullOrWhiteSpace(GuildRealmSlug))
     [Parameter] public Typo Typo { get; set; } = Typo.body1;
     [Parameter] public int GuildRealmId { get; set; }
     [Parameter] public string GuildRealmSlug { get; set; }
-    [Parameter, EditorRequired] public string GuildName { get; set; }
-    [Parameter, EditorRequired] public BlizzardRegionInfo GuildRegionInfo { get; set; }
+    [Parameter, EditorRequired] public required string GuildName { get; set; }
+    [Parameter, EditorRequired] public required BlizzardRegionInfo GuildRegionInfo { get; set; }
 }

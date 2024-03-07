@@ -8,13 +8,13 @@ public sealed class AuthTokenRecord : IDatabaseRecordWithVersion
 {
     public const string TableName = "Accounts_AuthTokens";
 
-    [Key] public int Id { get; set; }
+    [Key] public int Id { get; init; }
 
     [Column] public int? AccountId { get; set; }
 
     [Column] public AccountRecord Account { get; set; }
 
-    [Column] public string Key { get; set; }
+    [Column] public string Key { get; init; }
 
     [Column] public string Name { get; set; }
 
@@ -34,7 +34,7 @@ public sealed class AuthTokenRecord : IDatabaseRecordWithVersion
 
     public uint RowVersion { get; set; }
 
-    public static long GetIdFrom(string key)
+    private static long GetIdFrom(string key)
     {
         var nameSplit = key.Split('/');
 

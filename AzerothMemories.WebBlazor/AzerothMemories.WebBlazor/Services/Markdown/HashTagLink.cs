@@ -5,5 +5,5 @@ namespace AzerothMemories.WebBlazor.Services.Markdown;
 
 internal sealed class HashTagLink : LeafInline
 {
-    public StringSlice HashSlice { get; set; }
+    public StringSlice HashSlice { get; init; }
 }

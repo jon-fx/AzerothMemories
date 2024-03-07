@@ -18,7 +18,7 @@ public sealed class PostCommentTreeNode
     public PostReactionViewModel[] ReactionData;
 
     public PostCommentTreeNode Parent;
-    public List<PostCommentTreeNode> Children = new();
+    public readonly List<PostCommentTreeNode> Children = new();
 
     public PostCommentTreeNode(int postersAccountId, int postId, int commentId)
     {

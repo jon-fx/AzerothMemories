@@ -8,15 +8,15 @@ public sealed class BlizzardUpdateChildRecord : IDatabaseRecord
 {
     public const string TableName = "Blizzard_Updates_Children";
 
-    [Key] public int Id { get; set; }
+    [Key] public int Id { get; init; }
 
-    [Column] public int ParentId { get; set; }
+    [Column] public int ParentId { get; init; }
 
-    [Column] public BlizzardUpdateRecord Parent { get; set; }
+    [Column] public BlizzardUpdateRecord Parent { get; init; }
 
-    [Column] public BlizzardUpdateType UpdateType { get; set; }
+    [Column] public BlizzardUpdateType UpdateType { get; init; }
 
-    [Column] public string UpdateTypeString { get; set; }
+    [Column] public string UpdateTypeString { get; init; }
 
     [Column] public byte UpdateFailCounter { get; set; }
 

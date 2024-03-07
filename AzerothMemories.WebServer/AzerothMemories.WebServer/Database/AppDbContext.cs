@@ -11,45 +11,45 @@ public class AppDbContext : AppDbContextBase
             .ToArray();
     }
 
-    public DbSet<AccountRecord> Accounts { get; protected set; } = null!;
+    public DbSet<AccountRecord> Accounts { get; protected init; } = null!;
 
-    public DbSet<AuthTokenRecord> AuthTokens { get; protected set; } = null!;
+    public DbSet<AuthTokenRecord> AuthTokens { get; protected init; } = null!;
 
-    public DbSet<AccountFollowingRecord> AccountFollowing { get; protected set; } = null!;
+    public DbSet<AccountFollowingRecord> AccountFollowing { get; protected init; } = null!;
 
-    public DbSet<AccountHistoryRecord> AccountHistory { get; protected set; } = null!;
+    public DbSet<AccountHistoryRecord> AccountHistory { get; protected init; } = null!;
 
-    public DbSet<AccountUploadLog> UploadLogs { get; protected set; } = null!;
+    public DbSet<AccountUploadLog> UploadLogs { get; protected init; } = null!;
 
-    public DbSet<CharacterRecord> Characters { get; protected set; } = null!;
+    public DbSet<CharacterRecord> Characters { get; protected init; } = null!;
 
-    public DbSet<CharacterAchievementRecord> CharacterAchievements { get; protected set; } = null!;
+    public DbSet<CharacterAchievementRecord> CharacterAchievements { get; protected init; } = null!;
 
-    public DbSet<GuildRecord> Guilds { get; protected set; } = null!;
+    public DbSet<GuildRecord> Guilds { get; protected init; } = null!;
 
-    public DbSet<GuildAchievementRecord> GuildAchievements { get; protected set; } = null!;
+    public DbSet<GuildAchievementRecord> GuildAchievements { get; protected init; } = null!;
 
-    public DbSet<PostRecord> Posts { get; protected set; } = null!;
+    public DbSet<PostRecord> Posts { get; protected init; } = null!;
 
-    public DbSet<PostTagRecord> PostTags { get; protected set; } = null!;
+    public DbSet<PostTagRecord> PostTags { get; protected init; } = null!;
 
-    public DbSet<PostReactionRecord> PostReactions { get; protected set; } = null!;
+    public DbSet<PostReactionRecord> PostReactions { get; protected init; } = null!;
 
-    public DbSet<PostCommentRecord> PostComments { get; protected set; } = null!;
+    public DbSet<PostCommentRecord> PostComments { get; protected init; } = null!;
 
-    public DbSet<PostCommentReactionRecord> PostCommentReactions { get; protected set; } = null!;
+    public DbSet<PostCommentReactionRecord> PostCommentReactions { get; protected init; } = null!;
 
-    public DbSet<PostReportRecord> PostReports { get; protected set; } = null!;
+    public DbSet<PostReportRecord> PostReports { get; protected init; } = null!;
 
-    public DbSet<PostTagReportRecord> PostTagReports { get; protected set; } = null!;
+    public DbSet<PostTagReportRecord> PostTagReports { get; protected init; } = null!;
 
-    public DbSet<PostCommentReportRecord> PostCommentReports { get; protected set; } = null!;
+    public DbSet<PostCommentReportRecord> PostCommentReports { get; protected init; } = null!;
 
-    public DbSet<BlizzardDataRecord> BlizzardData { get; protected set; } = null!;
+    public DbSet<BlizzardDataRecord> BlizzardData { get; protected init; } = null!;
 
-    public DbSet<BlizzardUpdateRecord> BlizzardUpdates { get; protected set; } = null!;
+    public DbSet<BlizzardUpdateRecord> BlizzardUpdates { get; protected init; } = null!;
 
-    public DbSet<BlizzardUpdateChildRecord> BlizzardUpdateChildren { get; protected set; } = null!;
+    public DbSet<BlizzardUpdateChildRecord> BlizzardUpdateChildren { get; protected init; } = null!;
 
     public AppDbContext(DbContextOptions options) : base(options)
     {

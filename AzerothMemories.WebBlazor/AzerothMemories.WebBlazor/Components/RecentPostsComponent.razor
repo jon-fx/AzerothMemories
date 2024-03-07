@@ -39,9 +39,9 @@ else
 }
 
 @code {
-    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
+    [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
-    [Parameter, EditorRequired] public AccountViewModel AccountViewModel { get; init; }
+    [Parameter, EditorRequired] public required AccountViewModel AccountViewModel { get; init; }
 
-    [Parameter, EditorRequired] public RecentPostsHelper RecentPostsHelper { get; init; }
+    [Parameter, EditorRequired] public required RecentPostsHelper RecentPostsHelper { get; init; }
 }

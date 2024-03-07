@@ -49,11 +49,11 @@
 }
 
 @code {
-    [Parameter, EditorRequired] public IMoaServices Services { get; init; }
+    [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
-    [Parameter, EditorRequired] public AddMemoryPageViewModel ViewModel { get; init; }
+    [Parameter, EditorRequired] public required AddMemoryPageViewModel ViewModel { get; init; }
 
-    [Parameter, EditorRequired] public EventCallback<AddMemoryResult> OnPostMemoryResult { get; init; }
+    [Parameter, EditorRequired] public required EventCallback<AddMemoryResult> OnPostMemoryResult { get; init; }
 
     private async Task Submit()
     {

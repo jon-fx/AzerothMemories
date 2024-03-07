@@ -144,7 +144,7 @@ internal static class PostServices_TryReactToPostComment
         return reactionRecord.Id;
     }
 
-    public static void ModifyPostCommentWithReaction(PostCommentRecord record, PostReaction reaction, int change, bool modifyTotal)
+    private static void ModifyPostCommentWithReaction(PostCommentRecord record, PostReaction reaction, int change, bool modifyTotal)
     {
         switch (reaction)
         {

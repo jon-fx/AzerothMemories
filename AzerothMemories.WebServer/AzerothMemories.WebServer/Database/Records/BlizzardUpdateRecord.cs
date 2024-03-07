@@ -8,19 +8,19 @@ public sealed class BlizzardUpdateRecord : IDatabaseRecord
 {
     public const string TableName = "Blizzard_Updates";
 
-    [Key] public int Id { get; set; }
+    [Key] public int Id { get; init; }
 
-    [Column] public int? AccountId { get; set; }
+    [Column] public int? AccountId { get; init; }
 
-    [Column] public AccountRecord Account { get; set; }
+    [Column] public AccountRecord Account { get; init; }
 
-    [Column] public int? CharacterId { get; set; }
+    [Column] public int? CharacterId { get; init; }
 
-    [Column] public CharacterRecord Character { get; set; }
+    [Column] public CharacterRecord Character { get; init; }
 
-    [Column] public int? GuildId { get; set; }
+    [Column] public int? GuildId { get; init; }
 
-    [Column] public GuildRecord Guild { get; set; }
+    [Column] public GuildRecord Guild { get; init; }
 
     [Column] public Instant UpdateLastModified { get; set; }
 
@@ -30,7 +30,7 @@ public sealed class BlizzardUpdateRecord : IDatabaseRecord
 
     [Column] public BlizzardUpdatePriority UpdatePriority { get; set; }
 
-    public ICollection<BlizzardUpdateChildRecord> Children { get; set; }
+    public ICollection<BlizzardUpdateChildRecord> Children { get; init; }
 
     public ICommand<HttpStatusCode> GetUpdateCommand()
     {
