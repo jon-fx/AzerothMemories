@@ -83,7 +83,7 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord, IDatabaseRecordWith
             //AchievementTotalPoints = AchievementTotalPoints,
             //AchievementTotalQuantity = AchievementTotalQuantity,
 
-            UpdateJobLastResults = UpdateRecord?.GetUpdateJobResults(),
+            UpdateJobLastResults = UpdateRecord?.GetUpdateJobResults()
         };
     }
 }

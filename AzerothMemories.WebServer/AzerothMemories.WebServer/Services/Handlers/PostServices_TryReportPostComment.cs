@@ -69,7 +69,7 @@ internal static class PostServices_TryReportPostComment
                 Reason = reason,
                 ReasonText = reasonText,
                 CreatedTime = SystemClock.Instance.GetCurrentInstant(),
-                ModifiedTime = SystemClock.Instance.GetCurrentInstant(),
+                ModifiedTime = SystemClock.Instance.GetCurrentInstant()
             };
 
             database.PostCommentReports.Add(reportQueryResult);
@@ -94,7 +94,7 @@ internal static class PostServices_TryReportPostComment
             TargetId = postRecord.AccountId,
             TargetPostId = postRecord.Id,
             TargetCommentId = commentId,
-            OtherAccountId = commentViewModel.AccountId,
+            OtherAccountId = commentViewModel.AccountId
         }, cancellationToken).ConfigureAwait(false);
 
         return true;

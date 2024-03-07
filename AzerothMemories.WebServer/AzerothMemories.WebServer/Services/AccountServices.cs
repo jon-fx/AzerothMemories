@@ -445,7 +445,7 @@ public class AccountServices : IAccountServices
         {
             CurrentPage = currentPage,
             TotalPages = totalPages,
-            ViewModels = recentHistoryViewModels,
+            ViewModels = recentHistoryViewModels
         };
     }
 

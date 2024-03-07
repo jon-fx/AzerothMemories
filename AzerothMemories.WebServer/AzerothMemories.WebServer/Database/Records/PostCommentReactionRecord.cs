@@ -29,7 +29,7 @@ public sealed class PostCommentReactionRecord : IDatabaseRecordWithVersion
             AccountId = AccountId,
             AccountUsername = username,
             Reaction = Reaction,
-            LastUpdateTime = LastUpdateTime.ToUnixTimeMilliseconds(),
+            LastUpdateTime = LastUpdateTime.ToUnixTimeMilliseconds()
         };
 
         return viewModel;

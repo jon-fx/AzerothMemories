@@ -206,7 +206,7 @@ public class BlizzardUpdateServices : IComputeService
         {
             if (sortedRecords[i] == null)
             {
-                sortedRecords[i] = new BlizzardUpdateChildRecord { UpdateType = allHandlers[i].UpdateType, UpdateTypeString = allHandlers[i].UpdateTypeString, };
+                sortedRecords[i] = new BlizzardUpdateChildRecord { UpdateType = allHandlers[i].UpdateType, UpdateTypeString = allHandlers[i].UpdateTypeString };
                 record.UpdateRecord.Children.Add(sortedRecords[i]);
             }
         }

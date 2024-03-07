@@ -17,5 +17,5 @@ public enum AddMemoryResultCode
     InvalidTime,
     InvalidTags,
     TooManyTags,
-    NoImageMustContainText,
+    NoImageMustContainText
 }

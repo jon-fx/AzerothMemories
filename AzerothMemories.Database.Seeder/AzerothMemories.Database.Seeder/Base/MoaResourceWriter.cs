@@ -111,7 +111,7 @@ internal sealed class MoaResourceWriter
             {
                 remotePath,
                 $"https://wow.zamimg.com/images/wow/icons/large/{iconName.Replace(" ", "-")}.jpg",
-                $"https://wow.zamimg.com/images/wow/icons/large/{mediaId}.jpg",
+                $"https://wow.zamimg.com/images/wow/icons/large/{mediaId}.jpg"
             };
 
             var result = await TryDownloadImage(fileInfo.FullName, pathsToTry);

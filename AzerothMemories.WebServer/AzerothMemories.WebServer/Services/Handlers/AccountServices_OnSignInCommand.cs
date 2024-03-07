@@ -114,7 +114,7 @@ internal static class AccountServices_OnSignInCommand
             {
                 FusionId = userId,
                 AccountFlags = AccountFlags.AlphaUser,
-                CreatedDateTime = SystemClock.Instance.GetCurrentInstant(),
+                CreatedDateTime = SystemClock.Instance.GetCurrentInstant()
             };
 
             await database.Accounts.AddAsync(accountRecord).ConfigureAwait(false);

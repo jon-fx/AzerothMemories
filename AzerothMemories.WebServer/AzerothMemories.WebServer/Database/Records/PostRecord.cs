@@ -97,7 +97,7 @@ public sealed class PostRecord : IDatabaseRecordWithVersion
             TotalReactionCount = TotalReactionCount,
             TotalCommentCount = TotalCommentCount,
             DeletedTimeStamp = DeletedTimeStamp,
-            SystemTags = postTagRecords,
+            SystemTags = postTagRecords
         };
 
         if (PostAvatar != null)

@@ -6,5 +6,5 @@ public enum AccountType
     Tier1 = 1,
     Tier2 = 2,
     Tier3 = 3,
-    Admin = 10,
+    Admin = 10
 }

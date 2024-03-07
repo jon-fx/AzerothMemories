@@ -4,5 +4,5 @@ public enum AccountUploadLogStatus
 {
     None,
     DeletePending,
-    Deleted,
+    Deleted
 }

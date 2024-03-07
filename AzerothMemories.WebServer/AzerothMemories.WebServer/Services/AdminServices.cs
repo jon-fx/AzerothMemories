@@ -51,7 +51,7 @@ public class AdminServices : IAdminServices
             NoneCount = noneCount,
             QueuedCount = queuedCount,
             ProgressCount = progressCount,
-            RequiredCount = requiredCount,
+            RequiredCount = requiredCount
         };
     }
 
@@ -185,7 +185,7 @@ public class AdminServices : IAdminServices
                     UserTag = userTag,
                     RecordId = reportRecord.Id,
                     Reason = reportRecord.Reason,
-                    ReasonText = reportRecord.ReasonText,
+                    ReasonText = reportRecord.ReasonText
                 });
             }
 
@@ -209,7 +209,7 @@ public class AdminServices : IAdminServices
                     {
                         PostId = g.Key,
                         ReportCount = g.Count(),
-                        ReportRecords = g.ToArray(),
+                        ReportRecords = g.ToArray()
                     };
 
         var queryResults = await query.OrderBy(x => x.ReportCount).Take(25).ToArrayAsync().ConfigureAwait(false);
@@ -244,7 +244,7 @@ public class AdminServices : IAdminServices
 
             var viewModel = new ReportedPostCommentsViewModel
             {
-                CommentViewModel = commentViewModel,
+                CommentViewModel = commentViewModel
             };
 
             foreach (var reportRecord in result.ReportRecords)
@@ -260,7 +260,7 @@ public class AdminServices : IAdminServices
                     UserTag = userTag,
                     RecordId = reportRecord.Id,
                     Reason = reportRecord.Reason,
-                    ReasonText = reportRecord.ReasonText,
+                    ReasonText = reportRecord.ReasonText
                 });
             }
 
@@ -284,7 +284,7 @@ public class AdminServices : IAdminServices
                     {
                         CommentId = g.Key,
                         ReportCount = g.Count(),
-                        ReportRecords = g.ToArray(),
+                        ReportRecords = g.ToArray()
                     };
 
         var queryResults = await query.OrderBy(x => x.ReportCount).Take(25).ToArrayAsync().ConfigureAwait(false);
@@ -334,7 +334,7 @@ public class AdminServices : IAdminServices
                     UserTag = userTag,
                     RecordId = reportRecord.Id,
                     ReportedTag = reportedTag,
-                    ReportedTagId = reportRecord.TagId,
+                    ReportedTagId = reportRecord.TagId
                 });
             }
 
@@ -358,7 +358,7 @@ public class AdminServices : IAdminServices
                      {
                          PostId = g.Key,
                          ReportCount = g.Count(),
-                         ReportRecords = g.ToArray(),
+                         ReportRecords = g.ToArray()
                      };
 
         var queryResults = await query2.OrderBy(x => x.ReportCount).Take(25).ToArrayAsync().ConfigureAwait(false);

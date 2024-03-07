@@ -23,7 +23,7 @@ internal static class AccountServices_TryUpdateAuthToken
         {
             record = new AuthTokenRecord
             {
-                Key = key,
+                Key = key
             };
 
             database.AuthTokens.Add(record);

@@ -172,7 +172,7 @@ public static class ZExtensions
             return false;
         }
 
-        int id = -1;
+        var id = -1;
         if (type == PostTagType.HashTag)
         {
         }

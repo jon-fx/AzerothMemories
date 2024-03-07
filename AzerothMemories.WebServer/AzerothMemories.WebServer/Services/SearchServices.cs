@@ -24,7 +24,7 @@ public class SearchServices : ISearchServices
         PostTagType.Quest,
         PostTagType.ItemSet,
         PostTagType.Toy,
-        PostTagType.Title,
+        PostTagType.Title
     };
 
     public SearchServices(ILogger<SearchServices> logger, CommonServices commonServices)
@@ -153,7 +153,7 @@ public class SearchServices : ISearchServices
                 Year = year,
                 ZoneId = timeZoneId,
                 StartTimeMs = currentActivitySet.StartTime.ToUnixTimeMilliseconds(),
-                EndTimeMs = currentActivitySet.EndTime.ToUnixTimeMilliseconds(),
+                EndTimeMs = currentActivitySet.EndTime.ToUnixTimeMilliseconds()
             };
 
             var dailyTopAchievements = currentActivitySet.AchievementCounts.OrderByDescending(x => x.Value).Take(topValueCount);
@@ -265,7 +265,7 @@ public class SearchServices : ISearchServices
             {
                 Year = year,
                 StartTime = timeZone.AtStartOfDay(new LocalDate(year, inZoneMonth, inZoneDay)).ToInstant(),
-                EndTime = timeZone.AtStartOfDay(new LocalDate(year, inZoneMonth, inZoneDay).PlusDays(1)).ToInstant(),
+                EndTime = timeZone.AtStartOfDay(new LocalDate(year, inZoneMonth, inZoneDay).PlusDays(1)).ToInstant()
             };
 
             results[year] = set;
@@ -365,7 +365,7 @@ public class SearchServices : ISearchServices
                              select new
                              {
                                  post.PostTime,
-                                 tag.TagString,
+                                 tag.TagString
                              };
 
         var firstTagsGroupedQuery = from kvp in firstTagsQuery
@@ -399,7 +399,7 @@ public class SearchServices : ISearchServices
                 Year = year,
                 ZoneId = timeZoneId,
                 StartTimeMs = currentActivitySet.StartTime.ToUnixTimeMilliseconds(),
-                EndTimeMs = currentActivitySet.EndTime.ToUnixTimeMilliseconds(),
+                EndTimeMs = currentActivitySet.EndTime.ToUnixTimeMilliseconds()
             };
 
             foreach (var achievement in currentActivitySet.Achievements)
@@ -465,7 +465,7 @@ public class SearchServices : ISearchServices
             {
                 Year = year,
                 StartTime = timeZone.AtStartOfDay(new LocalDate(year, inZoneMonth, inZoneDay)).ToInstant(),
-                EndTime = timeZone.AtStartOfDay(new LocalDate(year, inZoneMonth, inZoneDay).PlusDays(1)).ToInstant(),
+                EndTime = timeZone.AtStartOfDay(new LocalDate(year, inZoneMonth, inZoneDay).PlusDays(1)).ToInstant()
             };
 
             results[year] = set;
@@ -494,7 +494,7 @@ public class SearchServices : ISearchServices
                                      select new
                                      {
                                          AchievementId = g.Key,
-                                         AchievementTimeStamp = g.Min(e => e.AchievementTimeStamp),
+                                         AchievementTimeStamp = g.Min(e => e.AchievementTimeStamp)
                                      };
 
         var firstAchievements = await firstAchievementsQuery.ToArrayAsync().ConfigureAwait(false);
@@ -549,7 +549,7 @@ public class SearchServices : ISearchServices
                     AccountId = memory.AccountId,
                     PostTime = memory.PostTime.ToUnixTimeMilliseconds(),
                     PostCreatedTime = memory.PostCreatedTime.ToUnixTimeMilliseconds(),
-                    BlobInfo = PostViewModelBlobInfo.CreateBlobInfo(userTagInfo.Name, memory.PostCommentMark, blobNames),
+                    BlobInfo = PostViewModelBlobInfo.CreateBlobInfo(userTagInfo.Name, memory.PostCommentMark, blobNames)
                 });
             }
         }
@@ -669,7 +669,7 @@ public class SearchServices : ISearchServices
             TotalPages = totalPages,
             SortMode = sortMode,
             PostsType = postsType,
-            PostViewModels = allPostViewModels.ToArray(),
+            PostViewModels = allPostViewModels.ToArray()
         };
     }
 
@@ -753,7 +753,7 @@ public class SearchServices : ISearchServices
             Tags = searchPostTags,
             TotalPages = totalPages,
             SortMode = sortMode,
-            PostViewModels = allPostViewModels.ToArray(),
+            PostViewModels = allPostViewModels.ToArray()
         };
     }
 

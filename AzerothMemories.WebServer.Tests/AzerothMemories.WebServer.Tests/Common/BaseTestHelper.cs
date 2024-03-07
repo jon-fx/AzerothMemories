@@ -67,7 +67,7 @@ public class BaseTestHelper : IAsyncLifetime
         var config = new CommonConfig
         {
             DatabaseConnectionString = null,
-            UploadToBlobStorage = false,
+            UploadToBlobStorage = false
         };
 
         if (config.DatabaseConnectionString != null)

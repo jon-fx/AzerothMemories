@@ -259,7 +259,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
         var result = await Services.ComputeServices.AccountServices.TryChangeAvatarUpload(new Account_TryChangeAvatarUpload
         {
             Session = Session.Default,
-            ImageData = buffer,
+            ImageData = buffer
         });
 
         if (result != null && !string.IsNullOrWhiteSpace(result) && result != AccountViewModel.Avatar)

@@ -82,7 +82,7 @@ internal static class PostServices_TryReportPost
             Type = AccountHistoryType.PostReported,
             TargetId = postRecord.AccountId,
             TargetPostId = postRecord.Id,
-            OtherAccountId = postRecord.AccountId,
+            OtherAccountId = postRecord.AccountId
         }, cancellationToken).ConfigureAwait(false);
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

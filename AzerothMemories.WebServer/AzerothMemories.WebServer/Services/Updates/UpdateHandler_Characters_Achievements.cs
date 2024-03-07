@@ -40,7 +40,7 @@ internal sealed class UpdateHandler_Characters_Achievements : UpdateHandlerBaseR
                 {
                     AccountId = record.AccountId,
                     CharacterId = record.Id,
-                    AchievementId = achievement.Id,
+                    AchievementId = achievement.Id
                 };
 
                 database.CharacterAchievements.Add(achievementRecord);

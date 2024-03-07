@@ -89,7 +89,7 @@ internal static class PostServices_TryDeletePost
             Type = AccountHistoryType.MemoryDeleted,
             TargetId = postRecord.AccountId,
             TargetPostId = postRecord.Id,
-            OtherAccountId = activeAccount.Id,
+            OtherAccountId = activeAccount.Id
         }, cancellationToken).ConfigureAwait(false);
 
         context.Operation().Items.Set(new Post_InvalidatePost(postId));

@@ -1,11 +1,13 @@
-﻿namespace AzerothMemories.WebBlazor.ViewModels;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace AzerothMemories.WebBlazor.ViewModels;
 
 public static class AccountPermissionExt
 {
     public static readonly AccountType Permission_CanUploadAvatar = AccountType.Tier1;
     public static readonly AccountType Permission_CanChangeSocialLinks = AccountType.Tier2;
 
-    public static bool IsAdmin(this AccountViewModel accountViewModel)
+    public static bool IsAdmin([NotNullWhen(true)] this AccountViewModel accountViewModel)
     {
         if (accountViewModel == null)
         {
@@ -15,7 +17,7 @@ public static class AccountPermissionExt
         return accountViewModel.AccountType >= AccountType.Admin;
     }
 
-    public static bool IsBanned(this AccountViewModel accountViewModel)
+    public static bool IsBanned([NotNullWhen(true)] this AccountViewModel accountViewModel)
     {
         if (accountViewModel == null)
         {
@@ -25,7 +27,7 @@ public static class AccountPermissionExt
         return Instant.FromUnixTimeMilliseconds(accountViewModel.BanExpireTime) > SystemClock.Instance.GetCurrentInstant();
     }
 
-    public static bool CanChangeFollowing(this AccountViewModel accountViewModel)
+    public static bool CanChangeFollowing([NotNullWhen(true)] this AccountViewModel accountViewModel)
     {
         if (accountViewModel == null)
         {
@@ -35,7 +37,7 @@ public static class AccountPermissionExt
         return accountViewModel.CanInteract;
     }
 
-    public static bool CanChangeAvatar(this AccountViewModel accountViewModel)
+    public static bool CanChangeAvatar([NotNullWhen(true)] this AccountViewModel accountViewModel)
     {
         if (accountViewModel == null)
         {
@@ -45,7 +47,7 @@ public static class AccountPermissionExt
         return accountViewModel.CanInteract;
     }
 
-    public static bool CanUploadAvatar(this AccountViewModel accountViewModel)
+    public static bool CanUploadAvatar([NotNullWhen(true)] this AccountViewModel accountViewModel)
     {
         if (accountViewModel == null)
         {
@@ -60,7 +62,7 @@ public static class AccountPermissionExt
         return accountViewModel.CanInteract;
     }
 
-    public static bool CanChangeSocialLinks(this AccountViewModel accountViewModel)
+    public static bool CanChangeSocialLinks([NotNullWhen(true)] this AccountViewModel accountViewModel)
     {
         if (accountViewModel == null)
         {
@@ -70,7 +72,7 @@ public static class AccountPermissionExt
         return accountViewModel.AccountType >= Permission_CanChangeSocialLinks;
     }
 
-    public static bool CanAddMemory(this AccountViewModel accountViewModel)
+    public static bool CanAddMemory([NotNullWhen(true)] this AccountViewModel accountViewModel)
     {
         if (accountViewModel == null)
         {
@@ -80,7 +82,7 @@ public static class AccountPermissionExt
         return accountViewModel.CanInteract;
     }
 
-    public static bool CanReactToPost(this AccountViewModel accountViewModel)
+    public static bool CanReactToPost([NotNullWhen(true)] this AccountViewModel accountViewModel)
     {
         if (accountViewModel == null)
         {
@@ -90,7 +92,7 @@ public static class AccountPermissionExt
         return accountViewModel.CanInteract;
     }
 
-    public static bool CanPublishComment(this AccountViewModel accountViewModel)
+    public static bool CanPublishComment([NotNullWhen(true)] this AccountViewModel accountViewModel)
     {
         if (accountViewModel == null)
         {
@@ -100,7 +102,7 @@ public static class AccountPermissionExt
         return accountViewModel.CanInteract;
     }
 
-    public static bool CanReactToComment(this AccountViewModel accountViewModel)
+    public static bool CanReactToComment([NotNullWhen(true)] this AccountViewModel accountViewModel)
     {
         if (accountViewModel == null)
         {
@@ -110,7 +112,7 @@ public static class AccountPermissionExt
         return accountViewModel.CanInteract;
     }
 
-    public static bool CanRestoreMemory(this AccountViewModel accountViewModel)
+    public static bool CanRestoreMemory([NotNullWhen(true)] this AccountViewModel accountViewModel)
     {
         if (accountViewModel == null)
         {
@@ -120,7 +122,7 @@ public static class AccountPermissionExt
         return accountViewModel.CanInteract;
     }
 
-    public static bool CanUpdateSystemTags(this AccountViewModel accountViewModel)
+    public static bool CanUpdateSystemTags([NotNullWhen(true)] this AccountViewModel accountViewModel)
     {
         if (accountViewModel == null)
         {
@@ -130,7 +132,7 @@ public static class AccountPermissionExt
         return accountViewModel.CanInteract;
     }
 
-    public static bool CanDeleteAnyPost(this AccountViewModel accountViewModel)
+    public static bool CanDeleteAnyPost([NotNullWhen(true)] this AccountViewModel accountViewModel)
     {
         if (accountViewModel == null)
         {
@@ -140,7 +142,7 @@ public static class AccountPermissionExt
         return accountViewModel.IsAdmin();
     }
 
-    public static bool CanDeleteAnyComment(this AccountViewModel accountViewModel)
+    public static bool CanDeleteAnyComment([NotNullWhen(true)] this AccountViewModel accountViewModel)
     {
         if (accountViewModel == null)
         {
@@ -150,7 +152,7 @@ public static class AccountPermissionExt
         return accountViewModel.IsAdmin();
     }
 
-    public static bool CanChangeAnyPostVisibility(this AccountViewModel accountViewModel)
+    public static bool CanChangeAnyPostVisibility([NotNullWhen(true)] this AccountViewModel accountViewModel)
     {
         if (accountViewModel == null)
         {
@@ -160,7 +162,7 @@ public static class AccountPermissionExt
         return accountViewModel.IsAdmin();
     }
 
-    public static bool CanUpdateSystemTagsOnAnyPost(this AccountViewModel accountViewModel)
+    public static bool CanUpdateSystemTagsOnAnyPost([NotNullWhen(true)] this AccountViewModel accountViewModel)
     {
         if (accountViewModel == null)
         {
@@ -170,7 +172,7 @@ public static class AccountPermissionExt
         return accountViewModel.IsAdmin();
     }
 
-    public static bool CanChangeAnyUsersAvatar(this AccountViewModel accountViewModel)
+    public static bool CanChangeAnyUsersAvatar([NotNullWhen(true)] this AccountViewModel accountViewModel)
     {
         if (accountViewModel == null)
         {
@@ -180,7 +182,7 @@ public static class AccountPermissionExt
         return accountViewModel.IsAdmin();
     }
 
-    public static bool CanReport(this AccountViewModel accountViewModel)
+    public static bool CanReport([NotNullWhen(true)] this AccountViewModel accountViewModel)
     {
         if (accountViewModel == null)
         {

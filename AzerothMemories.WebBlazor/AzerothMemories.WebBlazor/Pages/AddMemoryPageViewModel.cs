@@ -121,7 +121,7 @@ public sealed class AddMemoryPageViewModel : ViewModelBase, IViewModel<AddMemory
             FileName = file.Name,
             FileTimeStamp = screenShotUnixTime,
             FileContent = buffer,
-            ContentType = file.ContentType,
+            ContentType = file.ContentType
         };
 
         UploadedImages.Add(uploadResult);

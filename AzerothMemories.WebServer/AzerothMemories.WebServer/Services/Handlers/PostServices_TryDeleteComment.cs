@@ -75,7 +75,7 @@ internal static class PostServices_TryDeleteComment
             TargetId = postRecord.AccountId,
             TargetPostId = postRecord.Id,
             TargetCommentId = commentId,
-            OtherAccountId = activeAccount.Id,
+            OtherAccountId = activeAccount.Id
         }, cancellationToken).ConfigureAwait(false);
 
         if (reports.Length > 0)

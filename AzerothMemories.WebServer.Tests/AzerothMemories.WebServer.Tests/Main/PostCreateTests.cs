@@ -14,7 +14,7 @@ public sealed class PostCreateTests : BaseTestHelper
         var result = await CommonServices.Commander.Call(new Post_TryPostMemory
         {
             Session = session,
-            TimeStamp = ZExtensions.MinPostTime.ToUnixTimeMilliseconds(),
+            TimeStamp = ZExtensions.MinPostTime.ToUnixTimeMilliseconds()
         });
 
         result.Should().NotBeNull();
@@ -26,7 +26,7 @@ public sealed class PostCreateTests : BaseTestHelper
     {
         var result = await CommonServices.Commander.Call(new Post_TryPostMemory
         {
-            TimeStamp = ZExtensions.MinPostTime.ToUnixTimeMilliseconds(),
+            TimeStamp = ZExtensions.MinPostTime.ToUnixTimeMilliseconds()
         });
 
         result.Should().NotBeNull();
@@ -47,7 +47,7 @@ public sealed class PostCreateTests : BaseTestHelper
         {
             Session = session,
             Comment = commentTextBuilder.ToString(),
-            TimeStamp = ZExtensions.MinPostTime.ToUnixTimeMilliseconds(),
+            TimeStamp = ZExtensions.MinPostTime.ToUnixTimeMilliseconds()
         });
 
         result.Should().NotBeNull();
@@ -61,7 +61,7 @@ public sealed class PostCreateTests : BaseTestHelper
         var result = await CommonServices.Commander.Call(new Post_TryPostMemory
         {
             Session = session,
-            TimeStamp = (ZExtensions.MinPostTime - Duration.FromMilliseconds(1)).ToUnixTimeMilliseconds(),
+            TimeStamp = (ZExtensions.MinPostTime - Duration.FromMilliseconds(1)).ToUnixTimeMilliseconds()
         });
 
         result.Should().NotBeNull();
@@ -75,7 +75,7 @@ public sealed class PostCreateTests : BaseTestHelper
         var result = await CommonServices.Commander.Call(new Post_TryPostMemory
         {
             Session = session,
-            TimeStamp = (SystemClock.Instance.GetCurrentInstant() + Duration.FromSeconds(5)).ToUnixTimeMilliseconds(),
+            TimeStamp = (SystemClock.Instance.GetCurrentInstant() + Duration.FromSeconds(5)).ToUnixTimeMilliseconds()
         });
 
         result.Should().NotBeNull();
@@ -98,7 +98,7 @@ public sealed class PostCreateTests : BaseTestHelper
                 PostTagInfo.GetTagString(PostTagType.Region, BlizzardRegion.None.ToValue()),
                 PostTagInfo.GetTagString(PostTagType.Type, 1),
                 PostTagInfo.GetTagString(PostTagType.Main, 1)
-            },
+            }
         });
 
         result.Should().NotBeNull();
@@ -121,7 +121,7 @@ public sealed class PostCreateTests : BaseTestHelper
                 PostTagInfo.GetTagString(PostTagType.Account, account.Id),
                 PostTagInfo.GetTagString(PostTagType.Type, 1),
                 PostTagInfo.GetTagString(PostTagType.Main, 1)
-            },
+            }
         });
 
         result.Should().NotBeNull();
@@ -144,7 +144,7 @@ public sealed class PostCreateTests : BaseTestHelper
                 PostTagInfo.GetTagString(PostTagType.Account, account.Id),
                 PostTagInfo.GetTagString(PostTagType.Region, BlizzardRegion.None.ToValue()),
                 PostTagInfo.GetTagString(PostTagType.Main, 1)
-            },
+            }
         });
 
         result.Should().NotBeNull();
@@ -166,13 +166,13 @@ public sealed class PostCreateTests : BaseTestHelper
             {
                 PostTagInfo.GetTagString(PostTagType.Account, account.Id),
                 PostTagInfo.GetTagString(PostTagType.Region, BlizzardRegion.None.ToValue()),
-                PostTagInfo.GetTagString(PostTagType.Type, 1),
+                PostTagInfo.GetTagString(PostTagType.Type, 1)
             },
 
             ImageData = new List<byte[]>
             {
                 GetImageData(128, 128),
-                GetImageData(128, 128),
+                GetImageData(128, 128)
             }
         });
 
@@ -228,7 +228,7 @@ public sealed class PostCreateTests : BaseTestHelper
             ImageData = new List<byte[]>
             {
                 GetImageData(128, 128),
-                GetImageData(128, 128),
+                GetImageData(128, 128)
             }
         });
 
@@ -258,7 +258,7 @@ public sealed class PostCreateTests : BaseTestHelper
             ImageData = new List<byte[]>
             {
                 null,
-                null,
+                null
             }
         });
 
@@ -292,7 +292,7 @@ public sealed class PostCreateTests : BaseTestHelper
                 GetImageData(128, 128),
                 GetImageData(128, 128),
                 GetImageData(128, 128),
-                GetImageData(128, 128),
+                GetImageData(128, 128)
             }
         });
 
@@ -322,7 +322,7 @@ public sealed class PostCreateTests : BaseTestHelper
             ImageData = new List<byte[]>
             {
                 new byte[128],
-                new byte[128],
+                new byte[128]
             }
         });
 
@@ -347,7 +347,7 @@ public sealed class PostCreateTests : BaseTestHelper
 
             ImageData = new List<byte[]>
             {
-                GetImageData(128, 128),
+                GetImageData(128, 128)
             }
         });
 

@@ -135,7 +135,7 @@ internal static class PostServices_TryPublishComment
             PostCommentRaw = parseResult.CommentText,
             PostCommentMark = parseResult.CommentTextMarkdown,
             PostCommentUserMap = parseResult.AccountsTaggedInCommentMap,
-            CreatedTime = SystemClock.Instance.GetCurrentInstant(),
+            CreatedTime = SystemClock.Instance.GetCurrentInstant()
         };
 
         foreach (var tagRecord in tagRecords)

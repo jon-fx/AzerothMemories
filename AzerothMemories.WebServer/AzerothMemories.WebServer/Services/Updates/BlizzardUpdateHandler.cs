@@ -97,12 +97,7 @@ internal sealed class BlizzardUpdateHandler
                 duration /= 2;
             }
 
-            if (now > updateRecord.UpdateJobLastEndTime + duration)
-            {
-                return true;
-            }
-
-            return false;
+            return now > updateRecord.UpdateJobLastEndTime + duration;
         }
 
         if (inUpdateLoop)

@@ -64,14 +64,14 @@ public sealed class BlizzardUpdateRecord : IDatabaseRecord
             Id = x.Id,
             UpdateType = (byte)x.UpdateType,
             UpdateTypeString = x.UpdateTypeString,
-            UpdateJobLastResult = x.UpdateJobLastResult,
+            UpdateJobLastResult = x.UpdateJobLastResult
         });
 
         return new BlizzardUpdateViewModel
         {
             Children = children.OrderBy(x => x.UpdateType).ToArray(),
             UpdateLastModified = UpdateLastModified.ToUnixTimeMilliseconds(),
-            UpdateJobLastEndTime = UpdateJobLastEndTime.ToUnixTimeMilliseconds(),
+            UpdateJobLastEndTime = UpdateJobLastEndTime.ToUnixTimeMilliseconds()
         };
     }
 }

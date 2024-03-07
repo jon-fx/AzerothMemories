@@ -91,7 +91,7 @@ public sealed class DialogHelperService
 
         var parameters = new DialogParameters
         {
-            ["post"] = viewModel,
+            ["post"] = viewModel
         };
 
         var result = await ShowDialog<ReportPostTagsDialog>(title, parameters, options);
@@ -109,7 +109,7 @@ public sealed class DialogHelperService
 
         var parameters = new DialogParameters
         {
-            ["accountId"] = accountId,
+            ["accountId"] = accountId
         };
 
         var result = await ShowDialog<AdminUserDialog>(title, parameters, options);

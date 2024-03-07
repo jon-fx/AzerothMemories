@@ -181,7 +181,7 @@ public class PostServices : IPostServices
                         AccountId = r.AccountId,
                         AccountUsername = a.Username,
                         AccountAvatar = a.Avatar,
-                        LastUpdateTime = r.LastUpdateTime.ToUnixTimeMilliseconds(),
+                        LastUpdateTime = r.LastUpdateTime.ToUnixTimeMilliseconds()
                     };
 
         return await query.ToDictionaryAsync(x => x.AccountId, x => x).ConfigureAwait(false);
@@ -202,7 +202,7 @@ public class PostServices : IPostServices
                         AccountId = r.AccountId,
                         AccountUsername = a.Username,
                         AccountAvatar = a.Avatar,
-                        LastUpdateTime = r.LastUpdateTime.ToUnixTimeMilliseconds(),
+                        LastUpdateTime = r.LastUpdateTime.ToUnixTimeMilliseconds()
                     };
 
         return await query.ToDictionaryAsync(x => x.AccountId, x => x).ConfigureAwait(false);

@@ -91,7 +91,7 @@ internal static class PostServices_TryPostMemory
             PostTime = dateTime,
             PostCreatedTime = SystemClock.Instance.GetCurrentInstant(),
             PostEditedTime = SystemClock.Instance.GetCurrentInstant(),
-            PostVisibility = command.IsPrivate ? (byte)1 : (byte)0,
+            PostVisibility = command.IsPrivate ? (byte)1 : (byte)0
         };
 
         var buildSystemTagsResult = await CreateSystemTags(commonServices, postRecord, activeAccount, command.SystemTags, tagRecords).ConfigureAwait(false);

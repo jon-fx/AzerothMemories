@@ -30,7 +30,7 @@ internal sealed class UpdateHandler_Guilds_Achievements : UpdateHandlerBaseResul
                 achievementRecord = new GuildAchievementRecord
                 {
                     GuildId = record.Id,
-                    AchievementId = achievement.Id,
+                    AchievementId = achievement.Id
                 };
 
                 database.GuildAchievements.Add(achievementRecord);

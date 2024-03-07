@@ -9,5 +9,5 @@ public enum PostTagKind
     Deleted,
     DeletedByPoster,
     DeletedByAdmin,
-    UserComment,
+    UserComment
 }

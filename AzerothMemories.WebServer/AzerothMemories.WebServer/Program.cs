@@ -54,7 +54,7 @@ app.UseStaticFiles();
 
 var webSocketOptions = new WebSocketOptions
 {
-    KeepAliveInterval = TimeSpan.FromSeconds(30),
+    KeepAliveInterval = TimeSpan.FromSeconds(30)
 };
 
 app.UseWebSockets(webSocketOptions);

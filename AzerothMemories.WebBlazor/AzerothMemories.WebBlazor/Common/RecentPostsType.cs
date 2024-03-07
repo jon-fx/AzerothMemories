@@ -3,5 +3,5 @@
 public enum RecentPostsType
 {
     Default,
-    Two,
+    Two
 }

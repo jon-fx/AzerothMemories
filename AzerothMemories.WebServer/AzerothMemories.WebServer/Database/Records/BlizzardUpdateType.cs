@@ -22,5 +22,5 @@ public enum BlizzardUpdateType
     Guild = 0,
     Guild_Roster,
     Guild_Achievements,
-    Guild_Count,
+    Guild_Count
 }

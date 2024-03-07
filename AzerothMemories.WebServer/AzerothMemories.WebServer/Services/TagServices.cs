@@ -303,7 +303,7 @@ public class TagServices : ITagServices
             CreatedTime = SystemClock.Instance.GetCurrentInstant(),
             TagKind = tagKind,
             TagType = PostTagType.HashTag,
-            TagString = hashTag,
+            TagString = hashTag
         };
 
         return Task.FromResult(result);

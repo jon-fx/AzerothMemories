@@ -8,7 +8,7 @@ public sealed class BlizzardRegionInfo
 
     public static readonly BlizzardRegionInfo China = new(BlizzardRegion.China, "cn", "CN")
     {
-        Host = "https://gateway.battlenet.com.cn",
+        Host = "https://gateway.battlenet.com.cn"
     };
 
     public static readonly BlizzardRegionInfo Europe = new(BlizzardRegion.Europe, "eu", "EU");

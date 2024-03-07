@@ -58,7 +58,7 @@ public static class ProgramEx
                 CollectPeriod = TimeSpan.FromSeconds(isWasm ? 3 : 60),
                 AccessFilter = isWasm ? static computed => computed.Input.Function is IClientComputeMethodFunction : static computed => true,
                 AccessStatisticsPreprocessor = StatisticsPreprocessor,
-                RegistrationStatisticsPreprocessor = StatisticsPreprocessor,
+                RegistrationStatisticsPreprocessor = StatisticsPreprocessor
             };
 
             static void StatisticsPreprocessor(Dictionary<string, (int, int)> stats)

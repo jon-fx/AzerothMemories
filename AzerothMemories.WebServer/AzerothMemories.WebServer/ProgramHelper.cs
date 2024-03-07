@@ -52,7 +52,7 @@ public abstract class ProgramHelper
             {
                 operations.ConfigureOperationLogReader(_ => new DbOperationLogReader<AppDbContext>.Options
                 {
-                    UnconditionalCheckPeriod = TimeSpan.FromSeconds(5),
+                    UnconditionalCheckPeriod = TimeSpan.FromSeconds(5)
                 });
 
                 operations.AddNpgsqlOperationLogChangeTracking();
@@ -74,7 +74,7 @@ public abstract class ProgramHelper
 
         _fusionServer.ConfigureServerAuthHelper(_ => new ServerAuthHelper.Options
         {
-            NameClaimKeys = Array.Empty<string>(),
+            NameClaimKeys = Array.Empty<string>()
         });
 
         OnInitializeAuth();

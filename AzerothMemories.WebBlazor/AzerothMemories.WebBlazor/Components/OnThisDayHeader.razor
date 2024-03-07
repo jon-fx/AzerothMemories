@@ -32,7 +32,7 @@ else
                     var strings = new List<string>
                     {
                         $"Total Tags: {(mainData.TotalTags > 0 ? mainData.TotalTags.ToString("N0") : none)}",
-                        $"Total Achievements: {(mainData.TotalAchievements > 0 ? mainData.TotalAchievements.ToString("N0") : none)}",
+                        $"Total Achievements: {(mainData.TotalAchievements > 0 ? mainData.TotalAchievements.ToString("N0") : none)}"
                     };
 
                     if (userData.AccountId > 0)
@@ -57,7 +57,7 @@ else
                     new("First Tags", mainData.FirstTags),
                     new("First Achievements", mainData.FirstAchievements),
                     new("My Achievements", userData.Achievements),
-                    new("My First Achievements", userData.FirstAchievements),
+                    new("My First Achievements", userData.FirstAchievements)
                 };
 
                 for (var i = 0; i < otherTuples.Length; i++)
@@ -161,7 +161,7 @@ else
     {
         var tagStrings = new List<string>
         {
-            postTagInfo.TagString,
+            postTagInfo.TagString
         };
 
         var dictionary = new Dictionary<string, object>

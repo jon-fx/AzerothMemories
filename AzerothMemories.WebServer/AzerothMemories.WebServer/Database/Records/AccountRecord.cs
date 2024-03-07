@@ -74,7 +74,7 @@ public sealed class AccountRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVe
                SocialDiscord,
                SocialTwitter,
                SocialTwitch,
-               SocialYouTube,
+               SocialYouTube
             },
             LinkedLogins = GetLinkedLogins(activeOrAdmin),
             BanReason = BanReason,
@@ -82,7 +82,7 @@ public sealed class AccountRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVe
             FollowingViewModels = RemoveNoneStatus(followingViewModels),
             FollowersViewModels = RemoveNoneStatus(followersViewModels),
 
-            UpdateJobLastResults = UpdateRecord?.GetUpdateJobResults(),
+            UpdateJobLastResults = UpdateRecord?.GetUpdateJobResults()
         };
 
         if (viewModel.BattleTagIsPublic || activeOrAdmin)

@@ -89,7 +89,7 @@ internal static class PostServices_TryReportPostTags
             Type = AccountHistoryType.PostReportedTags,
             TargetId = postRecord.AccountId,
             TargetPostId = postRecord.Id,
-            OtherAccountId = postRecord.AccountId,
+            OtherAccountId = postRecord.AccountId
         }, cancellationToken).ConfigureAwait(false);
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

@@ -6,5 +6,5 @@ public enum CharacterStatus2
     Deleted,
     DeletePending,
     RenamedOrTransferred,
-    MaybeDeleted,
+    MaybeDeleted
 }

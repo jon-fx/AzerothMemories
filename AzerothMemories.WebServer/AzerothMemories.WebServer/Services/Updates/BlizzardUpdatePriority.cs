@@ -8,5 +8,5 @@ public enum BlizzardUpdatePriority
     CharacterMed,
     Guild,
     CharacterLow,
-    Count,
+    Count
 }

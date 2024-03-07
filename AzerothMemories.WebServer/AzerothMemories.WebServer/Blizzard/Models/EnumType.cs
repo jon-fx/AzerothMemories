@@ -19,21 +19,26 @@ public record EnumType
 
     public CharacterFaction AsFaction()
     {
+        if (string.IsNullOrWhiteSpace(Type))
+        {
+            return CharacterFaction.None;
+        }
+        
         if (Type[0] == 'A')
         {
             return CharacterFaction.Alliance;
         }
 
-        if (Type[0] == 'H')
-        {
-            return CharacterFaction.Horde;
-        }
-
-        return CharacterFaction.None;
+        return Type[0] == 'H' ? CharacterFaction.Horde : CharacterFaction.None;
     }
 
     public byte AsGender()
     {
-        return Type.StartsWith("M") ? (byte)0 : (byte)1;
+        if (string.IsNullOrWhiteSpace(Type))
+        {
+            return 0;
+        }
+        
+        return Type.StartsWith('M') ? (byte)0 : (byte)1;
     }
 }

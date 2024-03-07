@@ -2,34 +2,34 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
-namespace AzerothMemories.Database.Seeder.Base
+namespace AzerothMemories.Database.Seeder.Base;
+
+public sealed class BlizzardData
 {
-    public sealed class BlizzardData
+    public BlizzardData()
     {
-        public BlizzardData()
-        {
         }
 
-        public BlizzardData(PostTagType tagType, int tagId) : this()
-        {
+    public BlizzardData(PostTagType tagType, int tagId) : this()
+    {
             TagId = tagId;
             TagType = tagType;
         }
 
-        [JsonInclude] public int TagId { get; init; }
+    [JsonInclude] public int TagId { get; init; }
 
-        [JsonInclude] public PostTagType TagType { get; init; }
+    [JsonInclude] public PostTagType TagType { get; init; }
 
-        [JsonIgnore] public string Key => $"{TagType}-{TagId}";
+    [JsonIgnore] public string Key => $"{TagType}-{TagId}";
 
-        [JsonIgnore] public Instant MinTagTime { get; init; }
+    [JsonIgnore] public Instant MinTagTime { get; init; }
 
-        [JsonInclude] public string?[] Names { get; init; } = new string[(int)ServerSideLocale.Count];
+    [JsonInclude] public string?[] Names { get; init; } = new string[(int)ServerSideLocale.Count];
 
-        [JsonInclude] public string? Media { get; set; }
+    [JsonInclude] public string? Media { get; set; }
 
-        public bool TryGetNameOrDefault(ServerSideLocale key, [NotNullWhen(true)] out string? result)
-        {
+    public bool TryGetNameOrDefault(ServerSideLocale key, [NotNullWhen(true)] out string? result)
+    {
             if (!string.IsNullOrWhiteSpace(Names[(int)key]))
             {
                 result = Names[(int)key];
@@ -47,8 +47,8 @@ namespace AzerothMemories.Database.Seeder.Base
             throw new NotImplementedException();
         }
 
-        public string GetNameOrDefault(ServerSideLocale serverSideLocale)
-        {
+    public string GetNameOrDefault(ServerSideLocale serverSideLocale)
+    {
             var current = Names[(int)serverSideLocale];
             if (!string.IsNullOrWhiteSpace(current))
             {
@@ -63,5 +63,4 @@ namespace AzerothMemories.Database.Seeder.Base
 
             return Key;
         }
-    }
 }

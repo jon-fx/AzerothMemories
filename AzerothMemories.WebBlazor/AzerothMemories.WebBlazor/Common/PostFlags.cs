@@ -3,5 +3,5 @@
 [Flags]
 public enum PostFlags
 {
-    None,
+    None
 }
