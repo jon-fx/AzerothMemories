@@ -58,7 +58,7 @@ public sealed class EditMemoryTagsPageViewModel : ViewModelBase, IViewModel<Edit
 
         if (SharedData == null)
         {
-            SharedData = new AddMemoryComponentSharedData(this);
+            SharedData = new AddMemoryComponentSharedData(this, false);
 
             await SharedData.InitializeAccount(() => _postPageHelper.AccountViewModel);
             await SharedData.SetPostTimeStamp(Instant.FromUnixTimeMilliseconds(postViewModel.PostTime));

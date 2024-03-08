@@ -2,6 +2,7 @@
 
 public sealed class AddMemoryComponentSharedData
 {
+    private readonly bool _isAddMemoryPage;
     private readonly ViewModelBase _viewModel;
 
     private PostTagInfo[] _achievementTags;
@@ -15,9 +16,10 @@ public sealed class AddMemoryComponentSharedData
     private Func<AccountViewModel> _accountViewModelProvider;
     private PostViewModel[] _myPostsAroundPostTimeStamp = Array.Empty<PostViewModel>();
 
-    public AddMemoryComponentSharedData(ViewModelBase viewModel)
+    public AddMemoryComponentSharedData(ViewModelBase viewModel, bool isAddMemoryPage)
     {
         _viewModel = viewModel;
+        _isAddMemoryPage = isAddMemoryPage;
 
         TypeTags = _viewModel.Services.ClientServices.TagHelpers.TypeTags;
         RegionTags = _viewModel.Services.ClientServices.TagHelpers.RegionTags;
@@ -113,15 +115,18 @@ public sealed class AddMemoryComponentSharedData
 
         await InitializeAchievements();
 
-        var timeStamp = PostTimeStamp.ToUnixTimeMilliseconds();
-        var myPostsAroundPostTimeStamp = await _viewModel.Services.ComputeServices.AccountServices.TrySearchPostsByTime(Session.Default, timeStamp, 120, ServerSideLocaleExt.GetServerSideLocale());
-        if (myPostsAroundPostTimeStamp.SequenceEqual(_myPostsAroundPostTimeStamp))
+        if (_isAddMemoryPage)
         {
-        }
-        else
-        {
-            _myPostsAroundPostTimeStamp = myPostsAroundPostTimeStamp;
-            _viewModel.OnViewModelChanged?.Invoke();
+            var timeStamp = PostTimeStamp.ToUnixTimeMilliseconds();
+            var myPostsAroundPostTimeStamp = await _viewModel.Services.ComputeServices.AccountServices.TrySearchPostsByTime(Session.Default, timeStamp, 120, ServerSideLocaleExt.GetServerSideLocale());
+            if (myPostsAroundPostTimeStamp.SequenceEqual(_myPostsAroundPostTimeStamp))
+            {
+            }
+            else
+            {
+                _myPostsAroundPostTimeStamp = myPostsAroundPostTimeStamp;
+                _viewModel.OnViewModelChanged?.Invoke();
+            }
         }
     }
 

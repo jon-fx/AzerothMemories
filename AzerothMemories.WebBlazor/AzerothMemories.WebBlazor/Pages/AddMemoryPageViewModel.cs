@@ -71,7 +71,7 @@ public sealed class AddMemoryPageViewModel : ViewModelBase, IViewModel<AddMemory
     {
         UploadedImages.Clear();
         PublishCommentComponent = null;
-        SharedData = new AddMemoryComponentSharedData(this);
+        SharedData = new AddMemoryComponentSharedData(this, true);
 
         return Task.CompletedTask;
     }
