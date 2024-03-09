@@ -2,7 +2,7 @@
 
 public sealed class AdminPageViewModel : ViewModelBase, IViewModel<AdminPageViewModel>
 {
-    public AdminPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
+    private AdminPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
     }
 

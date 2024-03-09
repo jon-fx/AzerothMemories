@@ -8,7 +8,7 @@ public sealed class EditMemoryTagsPageViewModel : ViewModelBase, IViewModel<Edit
     private string _currentPageString;
     private string _focusedCommentId;
 
-    public EditMemoryTagsPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
+    private EditMemoryTagsPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
         _postPageHelper = new PostPageViewModelHelper(Services);
     }

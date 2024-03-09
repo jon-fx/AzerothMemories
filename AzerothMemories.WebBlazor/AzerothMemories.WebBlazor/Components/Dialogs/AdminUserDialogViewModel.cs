@@ -4,7 +4,7 @@ public sealed class AdminUserDialogViewModel : ViewModelBase, IViewModel<AdminUs
 {
     private int _accountId;
 
-    public AdminUserDialogViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
+    private AdminUserDialogViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
         BanTimers = new[]
         {

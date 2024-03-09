@@ -6,7 +6,7 @@ public sealed class AccountFollowPageViewModel : ViewModelBase, IViewModel<Accou
 
     public bool IsLoading => string.IsNullOrWhiteSpace(ErrorMessage) && AccountViewModel == null;
 
-    public AccountFollowPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
+    private AccountFollowPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
     }
 

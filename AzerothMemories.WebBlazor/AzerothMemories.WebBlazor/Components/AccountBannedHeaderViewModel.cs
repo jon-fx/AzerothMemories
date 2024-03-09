@@ -2,7 +2,7 @@
 
 public sealed class AccountBannedHeaderViewModel : ViewModelBase, IViewModel<AccountBannedHeaderViewModel>
 {
-    public AccountBannedHeaderViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
+    private AccountBannedHeaderViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
     }
 

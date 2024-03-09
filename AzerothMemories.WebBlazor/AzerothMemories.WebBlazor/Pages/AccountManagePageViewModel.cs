@@ -4,7 +4,7 @@ namespace AzerothMemories.WebBlazor.Pages;
 
 public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<AccountManagePageViewModel>
 {
-    public AccountManagePageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
+    private AccountManagePageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
     }
 

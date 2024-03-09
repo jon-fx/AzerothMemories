@@ -5,7 +5,7 @@ public sealed class AccountHistoryPageViewModel : ViewModelBase, IViewModel<Acco
     private AccountHistoryPageResult _searchResults;
     private string _currentPageString;
 
-    public AccountHistoryPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
+    private AccountHistoryPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
         _searchResults = new AccountHistoryPageResult();
     }
