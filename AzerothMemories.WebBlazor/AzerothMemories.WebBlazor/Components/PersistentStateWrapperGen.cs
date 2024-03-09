@@ -1,7 +1,11 @@
-﻿namespace AzerothMemories.WebBlazor.Components;
+﻿using System.Diagnostics.CodeAnalysis;
 
-public sealed class PersistentStateWrapperGen<TState> : PersistentStateWrapper
+namespace AzerothMemories.WebBlazor.Components;
+
+public sealed class PersistentStateWrapperGen<[DynamicallyAccessedMembers(JsonSerialized)] TState> : PersistentStateWrapper
 {
+    public const DynamicallyAccessedMemberTypes JsonSerialized = DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.PublicProperties;
+
     private readonly string _key;
     private readonly PersistentStateViewModel _viewModel;
 
