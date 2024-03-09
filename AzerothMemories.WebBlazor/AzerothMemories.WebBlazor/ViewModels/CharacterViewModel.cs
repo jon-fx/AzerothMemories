@@ -3,35 +3,35 @@
 [DataContract, MemoryPackable]
 public sealed partial class CharacterViewModel
 {
-    [JsonInclude, DataMember, MemoryPackInclude] public int Id;
+    [JsonInclude, DataMember, MemoryPackInclude] public int Id { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public string Ref;
+    [JsonInclude, DataMember, MemoryPackInclude] public string Ref { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public BlizzardRegion RegionId;
+    [JsonInclude, DataMember, MemoryPackInclude] public BlizzardRegion RegionId { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public int RealmId;
+    [JsonInclude, DataMember, MemoryPackInclude] public int RealmId { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public string Name;
+    [JsonInclude, DataMember, MemoryPackInclude] public string Name { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public byte Class;
+    [JsonInclude, DataMember, MemoryPackInclude] public byte Class { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public byte Race;
+    [JsonInclude, DataMember, MemoryPackInclude] public byte Race { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public byte Gender;
+    [JsonInclude, DataMember, MemoryPackInclude] public byte Gender { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public byte Level;
+    [JsonInclude, DataMember, MemoryPackInclude] public byte Level { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public CharacterStatus2 CharacterStatus;
+    [JsonInclude, DataMember, MemoryPackInclude] public CharacterStatus2 CharacterStatus { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public bool AccountSync;
+    [JsonInclude, DataMember, MemoryPackInclude] public bool AccountSync { get; set; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public string AvatarLink;
+    [JsonInclude, DataMember, MemoryPackInclude] public string AvatarLink { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public string GuildRef;
+    [JsonInclude, DataMember, MemoryPackInclude] public string GuildRef { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public string GuildName;
+    [JsonInclude, DataMember, MemoryPackInclude] public string GuildName { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public BlizzardUpdateViewModel UpdateJobLastResults;
+    [JsonInclude, DataMember, MemoryPackInclude] public BlizzardUpdateViewModel UpdateJobLastResults { get; init; }
 
     [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] public string AvatarLinkWithFallBack => GetAvatarStringWithFallBack(AvatarLink, Race, Gender);
 

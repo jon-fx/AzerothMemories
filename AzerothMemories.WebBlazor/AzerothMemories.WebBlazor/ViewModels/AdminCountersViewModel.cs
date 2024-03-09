@@ -3,18 +3,18 @@
 [DataContract, MemoryPackable]
 public sealed partial class AdminCountersViewModel
 {
-    [JsonInclude, DataMember, MemoryPackInclude] public long TimeStamp;
+    [JsonInclude, DataMember, MemoryPackInclude] public long TimeStamp { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public int SessionCount;
-    [JsonInclude, DataMember, MemoryPackInclude] public int OperationCount;
+    [JsonInclude, DataMember, MemoryPackInclude] public int SessionCount { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int OperationCount { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public int AcountCount;
-    [JsonInclude, DataMember, MemoryPackInclude] public int CharacterCount;
-    [JsonInclude, DataMember, MemoryPackInclude] public int GuildCount;
+    [JsonInclude, DataMember, MemoryPackInclude] public int AccountCount { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int CharacterCount { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int GuildCount { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public int PostCount;
-    [JsonInclude, DataMember, MemoryPackInclude] public int CommentCount;
-    [JsonInclude, DataMember, MemoryPackInclude] public int UploadCount;
+    [JsonInclude, DataMember, MemoryPackInclude] public int PostCount { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int CommentCount { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int UploadCount { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public AdminUpdateCountersViewModel UpdateCounters;
+    [JsonInclude, DataMember, MemoryPackInclude] public AdminUpdateCountersViewModel UpdateCounters { get; init; }
 }

@@ -3,23 +3,23 @@
 [DataContract, MemoryPackable]
 public sealed partial class PostCommentViewModel
 {
-    [JsonInclude, DataMember, MemoryPackInclude] public int Id;
-    [JsonInclude, DataMember, MemoryPackInclude] public int AccountId;
-    [JsonInclude, DataMember, MemoryPackInclude] public string AccountAvatar;
-    [JsonInclude, DataMember, MemoryPackInclude] public string AccountUsername;
+    [JsonInclude, DataMember, MemoryPackInclude] public int Id { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int AccountId { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public string AccountAvatar { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public string AccountUsername { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public int PostId;
-    [JsonInclude, DataMember, MemoryPackInclude] public int ParentId;
+    [JsonInclude, DataMember, MemoryPackInclude] public int PostId { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int ParentId { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public string PostComment;
-    [JsonInclude, DataMember, MemoryPackInclude] public int[] ReactionCounters;
-    [JsonInclude, DataMember, MemoryPackInclude] public int TotalReactionCount;
+    [JsonInclude, DataMember, MemoryPackInclude] public string PostComment { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int[] ReactionCounters { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int TotalReactionCount { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public long CreatedTime;
-    [JsonInclude, DataMember, MemoryPackInclude] public long DeletedTimeStamp;
+    [JsonInclude, DataMember, MemoryPackInclude] public long CreatedTime { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public long DeletedTimeStamp { get; set; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public int CommentPage;
-    [JsonInclude, DataMember, MemoryPackInclude] public List<PostCommentViewModel> Children = new();
+    [JsonInclude, DataMember, MemoryPackInclude] public int CommentPage { get; set; }
+    [JsonInclude, DataMember, MemoryPackInclude] public List<PostCommentViewModel> Children { get; init; } = new();
 
     public string GetAccountUsernameSafe()
     {

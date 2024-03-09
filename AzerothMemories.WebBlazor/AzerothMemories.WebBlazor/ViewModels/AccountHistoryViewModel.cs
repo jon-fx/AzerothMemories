@@ -3,18 +3,18 @@
 [DataContract, MemoryPackable]
 public sealed partial class AccountHistoryViewModel
 {
-    [JsonInclude, DataMember, MemoryPackInclude] public int Id;
-    [JsonInclude, DataMember, MemoryPackInclude] public AccountHistoryType Type;
+    [JsonInclude, DataMember, MemoryPackInclude] public int Id { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public AccountHistoryType Type { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public int AccountId;
-    [JsonInclude, DataMember, MemoryPackInclude] public int OtherAccountId;
-    [JsonInclude, DataMember, MemoryPackInclude] public string OtherAccountUsername;
+    [JsonInclude, DataMember, MemoryPackInclude] public int AccountId { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int OtherAccountId { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public string OtherAccountUsername { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public int TargetId;
-    [JsonInclude, DataMember, MemoryPackInclude] public int TargetPostId;
-    [JsonInclude, DataMember, MemoryPackInclude] public int TargetCommentId;
+    [JsonInclude, DataMember, MemoryPackInclude] public int TargetId { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int TargetPostId { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public int TargetCommentId { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public long CreatedTime;
+    [JsonInclude, DataMember, MemoryPackInclude] public long CreatedTime { get; init; }
 
     public string GetDisplayText(AccountViewModel activeAccountViewModel, IStringLocalizer<BlizzardResources> stringLocalizer)
     {
