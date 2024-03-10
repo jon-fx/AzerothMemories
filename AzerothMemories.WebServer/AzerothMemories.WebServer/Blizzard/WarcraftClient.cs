@@ -40,6 +40,11 @@ public sealed class WarcraftClient : IDisposable
         return Get<CharacterMediaSummary>(BlizzardNamespace.Profile, $"/profile/wow/character/{realmName}/{characterName}/character-media", null, null, false, lastModified);
     }
 
+    public Task<RequestResult<CharacterMountsCollectionSummary>> GetCharacterMountsSummaryAsync(string realmName, string characterName, Instant lastModified)
+    {
+        return Get<CharacterMountsCollectionSummary>(BlizzardNamespace.Profile, $"/profile/wow/character/{realmName}/{characterName}/collections/mounts", null, null, false, lastModified);
+    }
+
     public Task<RequestResult<Guild>> GetGuildProfileSummaryAsync(string realmName, string guildName, Instant lastModified)
     {
         return Get<Guild>(BlizzardNamespace.Profile, $"/data/wow/guild/{realmName}/{guildName}", null, null, false, lastModified);
