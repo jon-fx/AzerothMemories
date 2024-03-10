@@ -52,4 +52,16 @@ public record PlayableClass
     /// </summary>
     [JsonPropertyName("pvp_talent_slots")]
     public Self PvpTalentSlots { get; init; }
+
+    /// <summary>
+    /// Gets references to the playable races that are compatible with this playable class.
+    /// </summary>
+    [JsonPropertyName("playable_races")]
+    public PlayableRaceReference[] PlayableRaces { get; init; }
+
+    /// <summary>
+    /// Gets references to the additional power types that are used by this playable class.
+    /// </summary>
+    [JsonPropertyName("additional_power_types")]
+    public PowerTypeReference[] AdditionalPowerTypes { get; init; }
 }
