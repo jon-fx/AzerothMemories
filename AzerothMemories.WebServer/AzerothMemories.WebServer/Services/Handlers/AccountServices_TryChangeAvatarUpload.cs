@@ -6,7 +6,7 @@ namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class AccountServices_TryChangeAvatarUpload
 {
-    public static async Task<string> TryHandle(ILogger<AccountServices> services, CommonServices commonServices, Account_TryChangeAvatarUpload command, CancellationToken cancellationToken)
+    public static async Task<string> TryHandle(ILogger<AccountServices> logger, CommonServices commonServices, Account_TryChangeAvatarUpload command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -85,8 +85,10 @@ internal static class AccountServices_TryChangeAvatarUpload
 
             newAvatar = $"{ZExtensions.BlobUserAvatarsStoragePath}{blobName}";
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            logger.LogError(exception, "AccountServices_TryChangeAvatarUpload failed for user {UserId} ({Username})", accountViewModel.Id, accountViewModel.Username);
+
             return newAvatar;
         }
 

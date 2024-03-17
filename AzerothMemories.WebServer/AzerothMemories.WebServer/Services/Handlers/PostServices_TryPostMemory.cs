@@ -10,7 +10,7 @@ namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class PostServices_TryPostMemory
 {
-    public static async Task<AddMemoryResult> TryHandle(ILogger<PostServices> services, CommonServices commonServices, Post_TryPostMemory command, CancellationToken cancellationToken)
+    public static async Task<AddMemoryResult> TryHandle(ILogger<PostServices> logger, CommonServices commonServices, Post_TryPostMemory command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
@@ -94,13 +94,13 @@ internal static class PostServices_TryPostMemory
             PostVisibility = command.IsPrivate ? (byte)1 : (byte)0
         };
 
-        var buildSystemTagsResult = await CreateSystemTags(commonServices, postRecord, activeAccount, command.SystemTags, tagRecords).ConfigureAwait(false);
+        var buildSystemTagsResult = await CreateSystemTags(logger, commonServices, postRecord, activeAccount, command.SystemTags, tagRecords).ConfigureAwait(false);
         if (buildSystemTagsResult != AddMemoryResultCode.Success)
         {
             return new AddMemoryResult(buildSystemTagsResult);
         }
 
-        var addCommentTagResult = await AddCommentTags(commonServices, postRecord, parseResult.AccountsTaggedInComment, parseResult.HashTagsTaggedInComment, tagRecords).ConfigureAwait(false);
+        var addCommentTagResult = await AddCommentTags(logger, commonServices, postRecord, parseResult.AccountsTaggedInComment, parseResult.HashTagsTaggedInComment, tagRecords).ConfigureAwait(false);
         if (addCommentTagResult != AddMemoryResultCode.Success)
         {
             return new AddMemoryResult(addCommentTagResult);
@@ -118,7 +118,7 @@ internal static class PostServices_TryPostMemory
 
         await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
 
-        var uploadAndSortResult = await UploadAndSortImages(commonServices, database, activeAccount, postRecord, command.ImageData, cancellationToken).ConfigureAwait(false);
+        var uploadAndSortResult = await UploadAndSortImages(logger, commonServices, database, activeAccount, postRecord, command.ImageData, cancellationToken).ConfigureAwait(false);
         if (uploadAndSortResult != AddMemoryResultCode.Success)
         {
             return new AddMemoryResult(uploadAndSortResult);
@@ -176,7 +176,7 @@ internal static class PostServices_TryPostMemory
         return new AddMemoryResult(AddMemoryResultCode.Success, postRecord.AccountId, postRecord.Id);
     }
 
-    private static async Task<AddMemoryResultCode> CreateSystemTags(CommonServices commonServices, PostRecord postRecord, AccountViewModel accountViewModel, HashSet<string> systemTags, HashSet<PostTagRecord> tagRecords)
+    private static async Task<AddMemoryResultCode> CreateSystemTags(ILogger<PostServices> logger, CommonServices commonServices, PostRecord postRecord, AccountViewModel accountViewModel, HashSet<string> systemTags, HashSet<PostTagRecord> tagRecords)
     {
         if (!string.IsNullOrWhiteSpace(postRecord.PostAvatar) && !systemTags.Contains(postRecord.PostAvatar))
         {
@@ -198,7 +198,7 @@ internal static class PostServices_TryPostMemory
         return AddMemoryResultCode.Success;
     }
 
-    private static async Task<AddMemoryResultCode> AddCommentTags(CommonServices commonServices, PostRecord postRecord, HashSet<int> accountsTaggedInComment, HashSet<string> hashTagsTaggedInComment, HashSet<PostTagRecord> tagRecords)
+    private static async Task<AddMemoryResultCode> AddCommentTags(ILogger<PostServices> logger, CommonServices commonServices, PostRecord postRecord, HashSet<int> accountsTaggedInComment, HashSet<string> hashTagsTaggedInComment, HashSet<PostTagRecord> tagRecords)
     {
         foreach (var accountId in accountsTaggedInComment)
         {
@@ -225,7 +225,7 @@ internal static class PostServices_TryPostMemory
         return AddMemoryResultCode.Success;
     }
 
-    private static async Task<AddMemoryResultCode> UploadAndSortImages(CommonServices commonServices, AppDbContext database, AccountViewModel accountViewModel, PostRecord postRecord, List<byte[]> imageDataList, CancellationToken cancellationToken)
+    private static async Task<AddMemoryResultCode> UploadAndSortImages(ILogger<PostServices> logger, CommonServices commonServices, AppDbContext database, AccountViewModel accountViewModel, PostRecord postRecord, List<byte[]> imageDataList, CancellationToken cancellationToken)
     {
         if (imageDataList.Count > ZExtensions.MaxPostScreenShots)
         {
@@ -287,8 +287,10 @@ internal static class PostServices_TryPostMemory
                 var hashBytes = MD5.HashData(blobData);
                 dataToUpload[i] = (extension, new BinaryData(blobData), CreateHashString(hashBytes));
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                logger.LogError(exception, "PostServices_TryPostMemory failed for user {UserId} ({Username})", accountViewModel.Id, accountViewModel.Username);
+
                 return AddMemoryResultCode.UploadFailed;
             }
         }
@@ -352,8 +354,10 @@ internal static class PostServices_TryPostMemory
 
             return AddMemoryResultCode.Success;
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            logger.LogError(exception, "PostServices_TryPostMemory failed for user {UserId} ({Username})", accountViewModel.Id, accountViewModel.Username);
+
             return AddMemoryResultCode.UploadFailed;
         }
     }
