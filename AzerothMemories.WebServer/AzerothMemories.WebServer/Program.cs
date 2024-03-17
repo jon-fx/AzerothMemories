@@ -54,8 +54,12 @@ app.UseStaticFiles();
 
 var webSocketOptions = new WebSocketOptions
 {
-    KeepAliveInterval = TimeSpan.FromSeconds(30)
+    KeepAliveInterval = TimeSpan.FromSeconds(120),
 };
+
+webSocketOptions.AllowedOrigins.Add("https://localhost:7048");
+webSocketOptions.AllowedOrigins.Add("https://memoriesofazeroth.com");
+webSocketOptions.AllowedOrigins.Add("https://moa-app.azurewebsites.net");
 
 app.UseWebSockets(webSocketOptions);
 app.UseFusionSession();
