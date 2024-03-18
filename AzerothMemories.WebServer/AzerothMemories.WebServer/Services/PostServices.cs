@@ -479,20 +479,19 @@ public class PostServices : IPostServices
     [ComputeMethod]
     protected virtual async Task<PostTagInfo[]> GetAllPostTagRecord(int postId, ServerSideLocale locale)
     {
-        var allTagInfo = new List<PostTagInfo>();
         var allTagRecords = await GetAllPostTags(postId).ConfigureAwait(false);
+        var tasks = new List<Task<PostTagInfo>>();
 
         foreach (var tagRecord in allTagRecords)
         {
-            var tagInfo = await _commonServices.TagServices.GetTagInfo(tagRecord.TagType, tagRecord.TagId, tagRecord.TagString, locale).ConfigureAwait(false);
-            if (tagInfo == null)
-            {
-                throw new NotImplementedException();
-            }
-            else
-            {
-                allTagInfo.Add(tagInfo);
-            }
+            var task = _commonServices.TagServices.GetTagInfo(tagRecord.TagType, tagRecord.TagId, tagRecord.TagString, locale);
+            tasks.Add(task);
+        }
+
+        var allTagInfo = await Task.WhenAll(tasks).ConfigureAwait(false);
+        if (allTagInfo.Any(x => x is null))
+        {
+            throw new NotImplementedException();
         }
 
         return allTagInfo.OrderBy(x => x.Type).ThenBy(x => x.Id).ToArray();

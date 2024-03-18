@@ -644,7 +644,7 @@ public class SearchServices : ISearchServices
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         var activeAccountId = activeAccount?.Id ?? 0;
 
-        var allSearchResult = Array.Empty<int>();
+        var allSearchResult = Array.Empty<PostInfo>();
         if (activeAccountId > 0 && postsType == RecentPostsType.Default)
         {
             allSearchResult = await TryGetRecentPosts(activeAccountId).ConfigureAwait(false);
@@ -669,27 +669,36 @@ public class SearchServices : ISearchServices
             TotalPages = totalPages,
             SortMode = sortMode,
             PostsType = postsType,
-            PostViewModels = allPostViewModels.ToArray()
+            PostViewModels = allPostViewModels
         };
     }
 
     [ComputeMethod]
-    protected virtual async Task<int[]> TryGetRecentPosts()
+    protected virtual async Task<PostInfo[]> TryGetRecentPosts()
     {
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
-        await _commonServices.PostServices.DependsOnNewPosts().ConfigureAwait(false);
+        var taskList = new List<Task>
+        {
+            _commonServices.PostServices.DependsOnNewPosts()
+        };
 
         var query = from p in database.Posts
                     where p.DeletedTimeStamp == 0 && p.PostVisibility == 0
                     orderby p.PostCreatedTime descending
-                    select p.Id;
+                    select new PostInfo(p.Id, p.AccountId, p.PostVisibility);
 
-        return await query.TagWith("TryGetRecentPosts").ToArrayAsync().ConfigureAwait(false);
+        var results = await query.TagWith("TryGetRecentPosts").ToArrayAsync().ConfigureAwait(false);
+
+        taskList.AddRange(results.Select(x => _commonServices.PostServices.DependsOnPost(x.PostId)));
+
+        await Task.WhenAll(taskList).ConfigureAwait(false);
+
+        return results;
     }
 
     [ComputeMethod]
-    protected virtual async Task<int[]> TryGetRecentPosts(int accountId)
+    protected virtual async Task<PostInfo[]> TryGetRecentPosts(int accountId)
     {
         var following = await _commonServices.FollowingServices.TryGetAccountFollowing(accountId).ConfigureAwait(false);
         var allFollowingIds = new HashSet<int> { accountId };
@@ -703,18 +712,22 @@ public class SearchServices : ISearchServices
             allFollowingIds.Add(kvp.Key);
         }
 
-        foreach (var followingViewModel in allFollowingIds)
-        {
-            await _commonServices.PostServices.DependsOnPostsBy(followingViewModel).ConfigureAwait(false);
-        }
+        var taskList = new List<Task>();
+        taskList.AddRange(allFollowingIds.Select(_commonServices.PostServices.DependsOnPostsBy));
 
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
         var query = from p in database.Posts
                     where p.DeletedTimeStamp == 0 && allFollowingIds.Contains(p.AccountId)
                     orderby p.PostCreatedTime descending
-                    select p.Id;
+                    select new PostInfo(p.Id, p.AccountId, p.PostVisibility);
 
-        return await query.TagWith("TryGetRecentPostsAccount").ToArrayAsync().ConfigureAwait(false);
+        var results = await query.TagWith("TryGetRecentPostsAccount").ToArrayAsync().ConfigureAwait(false);
+
+        taskList.AddRange(results.Select(x => _commonServices.PostServices.DependsOnPost(x.PostId)));
+
+        await Task.WhenAll(taskList).ConfigureAwait(false);
+
+        return results;
     }
 
     [ComputeMethod]
@@ -753,26 +766,31 @@ public class SearchServices : ISearchServices
             Tags = searchPostTags,
             TotalPages = totalPages,
             SortMode = sortMode,
-            PostViewModels = allPostViewModels.ToArray()
+            PostViewModels = allPostViewModels
         };
     }
 
-    private async Task<PostViewModel[]> GetPostViewModelsForPage(int activeAccountId, int[] allSearchResult, int currentPage, int postsPerPage, ServerSideLocale locale)
+    private async Task<PostViewModel[]> GetPostViewModelsForPage(int activeAccountId, PostInfo[] allSearchResult, int currentPage, int postsPerPage, ServerSideLocale locale)
     {
         var viewModels = new List<PostViewModel>();
         for (var i = (currentPage - 1) * postsPerPage; i < allSearchResult.Length; i++)
         {
-            var postViewModel = await _commonServices.PostServices.TryGetPostViewModel(activeAccountId, allSearchResult[i], locale).ConfigureAwait(false);
-            if (postViewModel == null)
+            var postInfo = allSearchResult[i];
+            var canSeePost = await _commonServices.PostServices.CanAccountSeePost(activeAccountId, postInfo.AccountId, postInfo.PostVisibility).ConfigureAwait(false);
+            if (canSeePost)
             {
-            }
-            else
-            {
-                viewModels.Add(postViewModel);
-
-                if (viewModels.Count >= postsPerPage)
+                var postViewModel = await _commonServices.PostServices.TryGetPostViewModel(activeAccountId, postInfo.PostId, locale).ConfigureAwait(false);
+                if (postViewModel == null)
                 {
-                    break;
+                }
+                else
+                {
+                    viewModels.Add(postViewModel);
+
+                    if (viewModels.Count >= postsPerPage)
+                    {
+                        break;
+                    }
                 }
             }
         }
@@ -804,9 +822,12 @@ public class SearchServices : ISearchServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<int[]> TrySearchPosts(HashSet<string> tagStrings, PostSortMode sortMode, long minTime, long maxTime)
+    protected virtual async Task<PostInfo[]> TrySearchPosts(HashSet<string> tagStrings, PostSortMode sortMode, long minTime, long maxTime)
     {
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
+
+        var taskList = new List<Task>();
+        taskList.AddRange(tagStrings.Select(_commonServices.PostServices.DependsOnPostsWithTagString));
 
         foreach (var tagString in tagStrings)
         {
@@ -814,9 +835,15 @@ public class SearchServices : ISearchServices
         }
 
         var query = from p in GetPostSearchQuery(database, tagStrings, sortMode, minTime, maxTime)
-                    select p.Id;
+                    select new PostInfo(p.Id, p.AccountId, p.PostVisibility);
 
-        return await query.TagWith("TrySearchPosts").ToArrayAsync().ConfigureAwait(false);
+        var results = await query.TagWith("TrySearchPosts").ToArrayAsync().ConfigureAwait(false);
+
+        taskList.AddRange(results.Select(x => _commonServices.PostServices.DependsOnPost(x.PostId)));
+
+        await Task.WhenAll(taskList).ConfigureAwait(false);
+
+        return results;
     }
 
     private IQueryable<PostRecord> GetPostSearchQuery(AppDbContext database, HashSet<string> serverSideTagStrings, PostSortMode sortMode, long minTimeStamp, long maxTimeStamp)
