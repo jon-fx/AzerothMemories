@@ -187,17 +187,17 @@ public class AccountServices : IAccountServices
         var characters = await _commonServices.CharacterServices.TryGetAllAccountCharacters(accountRecord.Id).ConfigureAwait(false);
         var followingViewModels = await _commonServices.FollowingServices.TryGetAccountFollowing(accountRecord.Id).ConfigureAwait(false);
         var followersViewModels = await _commonServices.FollowingServices.TryGetAccountFollowers(accountRecord.Id).ConfigureAwait(false);
-        var postCount = await GetPostCount(accountRecord.Id).ConfigureAwait(false);
-        var memoryCount = await GetMemoryCount(accountRecord.Id).ConfigureAwait(false);
-        var commentCount = await GetCommentCount(accountRecord.Id).ConfigureAwait(false);
-        var reactionCount = await GetReactionCount(accountRecord.Id).ConfigureAwait(false);
+        var postCount = GetPostCount(accountRecord.Id).ConfigureAwait(false);
+        var memoryCount = GetMemoryCount(accountRecord.Id).ConfigureAwait(false);
+        var commentCount = GetCommentCount(accountRecord.Id).ConfigureAwait(false);
+        var reactionCount = GetReactionCount(accountRecord.Id).ConfigureAwait(false);
 
         var viewModel = accountRecord.CreateViewModel(_commonServices, activeOrAdmin, followingViewModels, followersViewModels);
 
-        viewModel.TotalPostCount = postCount;
-        viewModel.TotalCommentCount = commentCount;
-        viewModel.TotalMemoriesCount = memoryCount;
-        viewModel.TotalReactionsCount = reactionCount;
+        viewModel.TotalPostCount = await postCount;
+        viewModel.TotalCommentCount = await commentCount;
+        viewModel.TotalMemoriesCount = await memoryCount;
+        viewModel.TotalReactionsCount = await reactionCount;
 
         viewModel.CharactersArray = activeOrAdmin ? characters.Values.ToArray() : characters.Values.Where(x => x.AccountSync && x.CharacterStatus == CharacterStatus2.None).ToArray();
 
