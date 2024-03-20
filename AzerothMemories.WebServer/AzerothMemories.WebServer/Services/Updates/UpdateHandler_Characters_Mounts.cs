@@ -24,16 +24,32 @@ internal sealed class UpdateHandler_Characters_Mounts : UpdateHandlerBaseResult<
 
     protected override async Task InternalExecuteWithResult(CommandContext context, AppDbContext database, CharacterRecord record, CharacterMountsCollectionSummary requestResult)
     {
-        var currentMounts = await database.CharacterMounts.Where(x => x.CharacterId == record.Id).ToDictionaryAsync(x => x.MountId, x => x).ConfigureAwait(false);
+        var currentMounts = await database.CharacterMounts.Where(x => x.CharacterId == record.Id).ToArrayAsync().ConfigureAwait(false);
+        var currentMountsDict = new Dictionary<int, CharacterMountRecord>();
+        foreach (var currentMount in currentMounts)
+        {
+            if (currentMountsDict.TryAdd(currentMount.MountId, currentMount))
+            {
+            }
+            else
+            {
+                database.CharacterMounts.Remove(currentMount);
+            }
+        }
+
         var currentTimeStamp = SystemClock.Instance.GetCurrentInstant();
-        if (currentMounts.Count == 0)
+        if (currentMountsDict.Count == 0)
         {
             currentTimeStamp = Instant.FromUnixTimeMilliseconds(0);
         }
 
         foreach (var mount in requestResult.Mounts)
         {
-            if (!currentMounts.TryGetValue(mount.Mount.Id, out var mountRecord))
+            if (currentMountsDict.TryGetValue(mount.Mount.Id, out var mountRecord))
+            {
+                mountRecord.AccountId = record.AccountId;
+            }
+            else
             {
                 mountRecord = new CharacterMountRecord
                 {
@@ -43,7 +59,10 @@ internal sealed class UpdateHandler_Characters_Mounts : UpdateHandlerBaseResult<
                     MountTimeStamp = currentTimeStamp
                 };
 
-                database.CharacterMounts.Add(mountRecord);
+                if (currentMountsDict.TryAdd(mountRecord.MountId, mountRecord))
+                {
+                    database.CharacterMounts.Add(mountRecord);
+                }
             }
         }
     }
