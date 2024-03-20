@@ -1735,6 +1735,12 @@
   <data name="Realm-5736">
     <value>TW-Old Blanchy</value>
   </data>
+  <data name="Realm-5909">
+    <value>US-US PS Realm 222</value>
+  </data>
+  <data name="Realm-5911">
+    <value>EU-EU PS Realm 222</value>
+  </data>
   <data name="Region-0">
     <value>None</value>
   </data>
@@ -1931,10 +1937,10 @@
     <value>Dracobrado della Rupe</value>
   </data>
   <data name="CharacterRace-75">
-    <value>Volto</value>
+    <value>Sembianza</value>
   </data>
   <data name="CharacterRace-76">
-    <value>Volto</value>
+    <value>Sembianza</value>
   </data>
   <data name="CharacterRace-77">
     <value>Velocidraco del Vento</value>
@@ -2151,5 +2157,8 @@
   </data>
   <data name="CharacterClassSpecialization-1473">
     <value>Fortificazione (Evocatore)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1478">
+    <value>Avventuriero (Avventuriera)</value>
   </data>
 </root>

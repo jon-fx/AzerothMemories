@@ -1735,6 +1735,12 @@
   <data name="Realm-5736">
     <value>TW-Old Blanchy</value>
   </data>
+  <data name="Realm-5909">
+    <value>US-US PS Realm 222</value>
+  </data>
+  <data name="Realm-5911">
+    <value>EU-EU PS Realm 222</value>
+  </data>
   <data name="Region-0">
     <value>None</value>
   </data>
@@ -2151,5 +2157,8 @@
   </data>
   <data name="CharacterClassSpecialization-1473">
     <value>증강 (기원사)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1478">
+    <value>모험가 (모험가)</value>
   </data>
 </root>
