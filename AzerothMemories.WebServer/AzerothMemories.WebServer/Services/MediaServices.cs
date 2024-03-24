@@ -215,10 +215,10 @@ public class MediaServices : IComputeService
 
         var results = new int[(int)SiteMapType.Count];
 
-        results[(int)SiteMapType.Accounts] = Math.Max(accountMax == null ? 0 : accountMax.Value / SiteMapItemsPerFile, 1);
-        results[(int)SiteMapType.Characters] = Math.Max(charactersMax == null ? 0 : charactersMax.Value / SiteMapItemsPerFile, 1);
-        results[(int)SiteMapType.Guilds] = Math.Max(guildsMax == null ? 0 : guildsMax.Value / SiteMapItemsPerFile, 1);
-        results[(int)SiteMapType.Posts] = Math.Max(postsMax == null ? 0 : postsMax.Value / SiteMapItemsPerFile, 1);
+        results[(int)SiteMapType.Accounts] = accountMax == null ? 0 : accountMax.Value / SiteMapItemsPerFile + 1;
+        results[(int)SiteMapType.Characters] = charactersMax == null ? 0 : charactersMax.Value / SiteMapItemsPerFile + 1;
+        results[(int)SiteMapType.Guilds] = guildsMax == null ? 0 : guildsMax.Value / SiteMapItemsPerFile + 1;
+        results[(int)SiteMapType.Posts] = postsMax == null ? 0 : postsMax.Value / SiteMapItemsPerFile + 1;
 
         return results;
     }
