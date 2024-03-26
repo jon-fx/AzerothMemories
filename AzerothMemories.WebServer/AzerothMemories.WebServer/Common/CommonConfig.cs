@@ -25,13 +25,13 @@ public sealed class CommonConfig
 
     public Duration UpdateAccountDelay { get; } = Duration.FromHours(1);
 
-    public Duration UpdateCharacterHighDelay { get; } = Duration.FromHours(6);
+    public Duration UpdateCharacterHighDelay { get; } = Duration.FromHours(12);
 
-    public Duration UpdateCharacterMedDelay { get; } = Duration.FromHours(12);
+    public Duration UpdateCharacterMedDelay { get; } = Duration.FromHours(24);
 
-    public Duration UpdateCharacterLowDelay { get; } = Duration.FromDays(1);
+    public Duration UpdateCharacterLowDelay { get; } = Duration.FromHours(72);
 
-    public Duration UpdateGuildDelay { get; } = Duration.FromDays(1);
+    public Duration UpdateGuildDelay { get; } = Duration.FromHours(24);
 
     public Duration UsernameChangeDelay { get; set; } = Duration.FromDays(7);
 

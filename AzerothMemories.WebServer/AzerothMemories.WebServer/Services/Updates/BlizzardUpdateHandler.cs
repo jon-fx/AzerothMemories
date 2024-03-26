@@ -167,6 +167,11 @@ internal sealed class BlizzardUpdateHandler
             queue.Enqueue(record.GetUpdateCommand());
         }
 
+        if (queue.IsEmpty)
+        {
+            return;
+        }
+
         await database.SaveChangesAsync().ConfigureAwait(false);
 
         var tasks = new Task[1];
