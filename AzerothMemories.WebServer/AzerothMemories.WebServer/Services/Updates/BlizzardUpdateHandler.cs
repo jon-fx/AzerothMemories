@@ -148,6 +148,11 @@ internal sealed class BlizzardUpdateHandler
 
     private async Task RunUpdatesOn(AppDbContext database, BlizzardUpdateRecord[] updateRecords)
     {
+        if (updateRecords == null || updateRecords.Length == 0)
+        {
+            return;
+        }
+
         var queue = new ConcurrentQueue<ICommand<HttpStatusCode>>();
         foreach (var record in updateRecords)
         {
@@ -164,7 +169,7 @@ internal sealed class BlizzardUpdateHandler
 
         await database.SaveChangesAsync().ConfigureAwait(false);
 
-        var tasks = new Task[Environment.ProcessorCount];
+        var tasks = new Task[1];
         for (var i = 0; i < tasks.Length; i++)
         {
             tasks[i] = RunUpdatesOn(queue);

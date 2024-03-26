@@ -131,7 +131,7 @@ public class BlizzardUpdateServices : IComputeService
 
         var resultStatusCode = await RunUpdateHandlers(_characterHandlers, context, database, record, cancellationToken).ConfigureAwait(false);
 
-        if (record.AccountId.HasValue)
+        if (record.AccountId.HasValue && resultStatusCode.IsSuccess2())
         {
             await _commonServices.Commander.Call(new Account_AddNewHistoryItem
             {

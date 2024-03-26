@@ -43,25 +43,31 @@ internal sealed class UpdateHandler_Characters_Mounts : UpdateHandlerBaseResult<
             currentTimeStamp = Instant.FromUnixTimeMilliseconds(0);
         }
 
-        foreach (var mount in requestResult.Mounts)
+        if (requestResult.Mounts == null)
         {
-            if (currentMountsDict.TryGetValue(mount.Mount.Id, out var mountRecord))
+        }
+        else
+        {
+            foreach (var mount in requestResult.Mounts)
             {
-                mountRecord.AccountId = record.AccountId;
-            }
-            else
-            {
-                mountRecord = new CharacterMountRecord
+                if (currentMountsDict.TryGetValue(mount.Mount.Id, out var mountRecord))
                 {
-                    AccountId = record.AccountId,
-                    CharacterId = record.Id,
-                    MountId = mount.Mount.Id,
-                    MountTimeStamp = currentTimeStamp
-                };
+                    mountRecord.AccountId = record.AccountId;
+                }
+                else
+                {
+                    mountRecord = new CharacterMountRecord
+                    {
+                        AccountId = record.AccountId,
+                        CharacterId = record.Id,
+                        MountId = mount.Mount.Id,
+                        MountTimeStamp = currentTimeStamp
+                    };
 
-                if (currentMountsDict.TryAdd(mountRecord.MountId, mountRecord))
-                {
-                    database.CharacterMounts.Add(mountRecord);
+                    if (currentMountsDict.TryAdd(mountRecord.MountId, mountRecord))
+                    {
+                        database.CharacterMounts.Add(mountRecord);
+                    }
                 }
             }
         }
