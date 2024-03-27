@@ -86,8 +86,8 @@ public abstract class ProgramHelper
         _services.AddSingleton<BlizzardUpdateHandler>();
         _services.AddSingleton<HttpClientProvider>();
 
-        _fusion.AddService<MediaServices>(RpcServiceMode.None);
-        _fusion.AddService<BlizzardUpdateServices>(RpcServiceMode.None);
+        _fusion.AddService<MediaServices>(RpcServiceMode.Local);
+        _fusion.AddService<BlizzardUpdateServices>(RpcServiceMode.Local);
 
         _services.AddHttpClient("Blizzard", x =>
         {
