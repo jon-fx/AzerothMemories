@@ -5,11 +5,13 @@ namespace AzerothMemories.WebServer.Services.Updates;
 internal sealed class BlizzardUpdateHandler
 {
     private readonly CommonServices _commonServices;
+    private readonly ILogger<BlizzardUpdateHandler> _logger;
     private readonly BlizzardUpdateServices _blizzardUpdateServices;
     private readonly Duration[] _durationsBetweenUpdates;
 
-    public BlizzardUpdateHandler(CommonServices commonServices, BlizzardUpdateServices blizzardUpdateServices)
+    public BlizzardUpdateHandler(CommonServices commonServices, ILogger<BlizzardUpdateHandler> logger, BlizzardUpdateServices blizzardUpdateServices)
     {
+        _logger = logger;
         _commonServices = commonServices;
         _blizzardUpdateServices = blizzardUpdateServices;
 
@@ -73,6 +75,8 @@ internal sealed class BlizzardUpdateHandler
             record.UpdateRecord.UpdateLastModified = SystemClock.Instance.GetCurrentInstant();
 
             await database.SaveChangesAsync().ConfigureAwait(false);
+
+            _logger.LogInformation("TryUpdate: Update Required Id: {RecordId} UpdateRecordId: {UpdateRecordId} UpdatePriority: {UpdatePriority}", record.Id, record.UpdateRecord.Id, record.UpdateRecord.UpdatePriority);
         }
     }
 
@@ -141,7 +145,7 @@ internal sealed class BlizzardUpdateHandler
     {
         await using var database = _commonServices.DatabaseHub.CreateDbContext(true);
 
-        var updateRecords = await database.BlizzardUpdates.Where(x => x.UpdateStatus == BlizzardUpdateStatus.Queued).OrderBy(x => x.UpdatePriority).ThenBy(x => x.UpdateLastModified).Take(25).ToArrayAsync().ConfigureAwait(false);
+        var updateRecords = await database.BlizzardUpdates.Where(x => x.UpdateStatus == BlizzardUpdateStatus.Queued).OrderBy(x => x.UpdatePriority).ThenBy(x => x.UpdateLastModified).Take(5).ToArrayAsync().ConfigureAwait(false);
 
         await RunUpdatesOn(database, updateRecords).ConfigureAwait(false);
     }
@@ -165,6 +169,8 @@ internal sealed class BlizzardUpdateHandler
             record.UpdateLastModified = SystemClock.Instance.GetCurrentInstant();
 
             queue.Enqueue(record.GetUpdateCommand());
+
+            _logger.LogInformation("RunUpdatesOn: Update Required UpdateRecordId: {UpdateRecordId} UpdatePriority: {UpdatePriority}", record.Id, record.UpdatePriority);
         }
 
         if (queue.IsEmpty)
