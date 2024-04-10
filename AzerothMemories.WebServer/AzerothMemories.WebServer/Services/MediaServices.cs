@@ -30,12 +30,14 @@ public class MediaServices : IComputeService
     [ComputeMethod]
     public virtual Task<MediaResult> TryGetStaticMedia(Session session, string fileName)
     {
+        using var _ = new MethodTimeLogger(_logger);
         return TryGetStaticMedia(fileName);
     }
 
     [ComputeMethod]
     public virtual async Task<MediaResult> TryGetStaticMedia(string fileName)
     {
+        using var _ = new MethodTimeLogger(_logger);
         var result = await TryGetBlobData(ZExtensions.BlobStaticMedia, fileName).ConfigureAwait(false);
         if (result != null)
         {
@@ -48,6 +50,7 @@ public class MediaServices : IComputeService
     [ComputeMethod]
     protected virtual async Task<MediaResult> TryGetMedia_Default()
     {
+        using var _ = new MethodTimeLogger(_logger);
         var result = await TryGetBlobData(ZExtensions.BlobStaticMedia, "inv_misc_questionmark.jpg").ConfigureAwait(false);
         return result with { IsDefault = true };
     }
@@ -55,12 +58,14 @@ public class MediaServices : IComputeService
     [ComputeMethod]
     public virtual Task<MediaResult> TryGetUserAvatar(Session session, string fileName)
     {
+        using var _ = new MethodTimeLogger(_logger);
         return TryGetUserAvatar(fileName);
     }
 
     [ComputeMethod]
     public virtual async Task<MediaResult> TryGetUserAvatar(string fileName)
     {
+        using var _ = new MethodTimeLogger(_logger);
         var result = await TryGetBlobData(ZExtensions.BlobUserAvatars, fileName).ConfigureAwait(false);
         if (result != null)
         {
@@ -73,6 +78,7 @@ public class MediaServices : IComputeService
     [ComputeMethod]
     protected virtual async Task<MediaResult> TryGetAvatar_Default()
     {
+        using var _ = new MethodTimeLogger(_logger);
         var result = await TryGetBlobData(ZExtensions.BlobStaticMedia, "inv_misc_questionmark.jpg").ConfigureAwait(false);
         return result with { IsDefault = true };
     }
@@ -80,6 +86,7 @@ public class MediaServices : IComputeService
     [ComputeMethod]
     public virtual async Task<MediaResult> TryGetUserUpload(Session session, string fileName, MediaSize size)
     {
+        using var _ = new MethodTimeLogger(_logger);
         var accountId = 0;
         var account = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         if (account != null)
@@ -101,6 +108,7 @@ public class MediaServices : IComputeService
     [ComputeMethod]
     protected virtual async Task<MediaUserResult> TryGetUserUpload_Default()
     {
+        using var _ = new MethodTimeLogger(_logger);
         var blobData = await TryGetBlobData(ZExtensions.BlobStaticMedia, "inv_misc_questionmark.jpg").ConfigureAwait(false);
         return new MediaUserResult(blobData.LastModified, blobData.ETag, blobData.MediaType, blobData.MediaBytes, 0, 0) { IsDefault = true };
     }
@@ -108,6 +116,7 @@ public class MediaServices : IComputeService
     [ComputeMethod]
     public virtual async Task<MediaResult> TryGetUserUpload(int accountId, string fileName, MediaSize size)
     {
+        using var _ = new MethodTimeLogger(_logger);
         var blobData = await TryGetUserUpload(fileName, size).ConfigureAwait(false);
         if (blobData.IsDefault)
         {
@@ -135,6 +144,7 @@ public class MediaServices : IComputeService
     [ComputeMethod]
     protected virtual async Task<MediaUserResult> TryGetUserUpload(string fileName, MediaSize size)
     {
+        using var _ = new MethodTimeLogger(_logger);
         var blobData = await TryGetUserUploadBlobData(fileName).ConfigureAwait(false);
         if (blobData.IsDefault)
         {
@@ -162,6 +172,7 @@ public class MediaServices : IComputeService
     [ComputeMethod]
     protected virtual async Task<MediaUserResult> TryGetUserUploadBlobData(string fileName)
     {
+        using var _ = new MethodTimeLogger(_logger);
         var blobData = await TryGetBlobData(ZExtensions.BlobUserUploads, fileName).ConfigureAwait(false);
         if (blobData == null)
         {
@@ -187,6 +198,7 @@ public class MediaServices : IComputeService
     [ComputeMethod]
     public virtual async Task<MediaResult> TryGetBlobData(string container, string fileName)
     {
+        using var _ = new MethodTimeLogger(_logger);
         var blobClient = new BlobClient(_commonServices.Config.BlobStorageConnectionString, container, fileName);
         var blobExists = await blobClient.ExistsAsync().ConfigureAwait(false);
         if (!blobExists.Value)
@@ -206,6 +218,7 @@ public class MediaServices : IComputeService
     [ComputeMethod(AutoInvalidationDelay = 60 * 10)]
     public virtual async Task<int[]> GetSiteMapCounters()
     {
+        using var _ = new MethodTimeLogger(_logger);
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var accountMax = await database.Accounts.MaxAsync(x => (int?)x.Id).ConfigureAwait(false);
@@ -226,6 +239,7 @@ public class MediaServices : IComputeService
     [ComputeMethod]
     public virtual async Task<MediaResult> TryGetSiteMapIndex()
     {
+        using var _ = new MethodTimeLogger(_logger);
         var counters = await GetSiteMapCounters().ConfigureAwait(false);
 
         var maps = new List<(string Url, DateTime LastModified)>
@@ -253,6 +267,7 @@ public class MediaServices : IComputeService
     [ComputeMethod(AutoInvalidationDelay = 60 * 10)]
     public virtual async Task<MediaResult> TryGetSiteMapMain()
     {
+        using var _ = new MethodTimeLogger(_logger);
         var pages = new List<(string Url, DateTime LastModified)>
         {
             new() { Url = "/", LastModified = DateTime.Now }
@@ -273,6 +288,7 @@ public class MediaServices : IComputeService
     [ComputeMethod]
     public virtual async Task<MediaResult> TryGetSiteMapNamed(SiteMapType nameType, int fileIndex)
     {
+        using var _ = new MethodTimeLogger(_logger);
         var counters = await _commonServices.MediaServices.GetSiteMapCounters().ConfigureAwait(false);
         if (fileIndex >= counters[(int)nameType])
         {
@@ -284,7 +300,7 @@ public class MediaServices : IComputeService
         var pages = new List<(string Url, DateTime LastModified)>();
         if (nameType == SiteMapType.Accounts)
         {
-            var query = from r in database.Accounts
+            var query = from r in database.Accounts.AsNoTracking()
                         orderby r.Id
                         select new { r.Id, r.Username };
 
@@ -298,8 +314,8 @@ public class MediaServices : IComputeService
         }
         else if (nameType == SiteMapType.Characters)
         {
-            var query = from r in database.Characters
-                        where r.CharacterStatus == CharacterStatus2.None
+            var query = from r in database.Characters.AsNoTracking()
+                        where r.CharacterStatus == CharacterStatus2.None && r.UpdateRecord != null
                         orderby r.Id
                         select new { r.Id, r.MoaRef };
 
@@ -315,7 +331,7 @@ public class MediaServices : IComputeService
         }
         else if (nameType == SiteMapType.Guilds)
         {
-            var query = from r in database.Guilds
+            var query = from r in database.Guilds.AsNoTracking()
                         orderby r.Id
                         select new { r.Id, r.MoaRef };
 
@@ -331,7 +347,7 @@ public class MediaServices : IComputeService
         }
         else if (nameType == SiteMapType.Posts)
         {
-            var query = from r in database.Posts
+            var query = from r in database.Posts.AsNoTracking()
                         where r.PostVisibility == 0 && r.DeletedTimeStamp == 0
                         orderby r.Id
                         select new { r.Id, r.AccountId };

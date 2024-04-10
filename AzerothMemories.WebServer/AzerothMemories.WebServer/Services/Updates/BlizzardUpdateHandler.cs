@@ -134,6 +134,7 @@ internal sealed class BlizzardUpdateHandler
 
     public async Task OnStarting()
     {
+        using var _ = new MethodTimeLogger(_logger);
         await using var database = _commonServices.DatabaseHub.CreateDbContext(true);
 
         var updateRecords = await database.BlizzardUpdates.Where(x => x.UpdateStatus == BlizzardUpdateStatus.Progress).OrderBy(x => x.UpdateLastModified).ToArrayAsync().ConfigureAwait(false);
@@ -143,6 +144,7 @@ internal sealed class BlizzardUpdateHandler
 
     public async Task OnUpdating()
     {
+        using var _ = new MethodTimeLogger(_logger);
         await using var database = _commonServices.DatabaseHub.CreateDbContext(true);
 
         var updateRecords = await database.BlizzardUpdates.Where(x => x.UpdateStatus == BlizzardUpdateStatus.Queued).OrderBy(x => x.UpdatePriority).ThenBy(x => x.UpdateLastModified).Take(5).ToArrayAsync().ConfigureAwait(false);
@@ -152,6 +154,7 @@ internal sealed class BlizzardUpdateHandler
 
     private async Task RunUpdatesOn(AppDbContext database, BlizzardUpdateRecord[] updateRecords)
     {
+        using var _ = new MethodTimeLogger(_logger);
         if (updateRecords == null || updateRecords.Length == 0)
         {
             return;
@@ -191,6 +194,7 @@ internal sealed class BlizzardUpdateHandler
 
     private async Task RunUpdatesOn(ConcurrentQueue<ICommand<HttpStatusCode>> commandQueue)
     {
+        using var _ = new MethodTimeLogger(_logger);
         while (commandQueue.TryDequeue(out var command))
         {
             await _commonServices.Commander.Call(command).ConfigureAwait(false);

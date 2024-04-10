@@ -20,6 +20,7 @@ public class CharacterServices : ICharacterServices
     [ComputeMethod]
     public virtual async Task<CharacterRecord> TryGetCharacterRecord(int id)
     {
+        using var _ = new MethodTimeLogger(_logger);
         await DependsOnCharacterRecord(id).ConfigureAwait(false);
 
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
@@ -41,6 +42,7 @@ public class CharacterServices : ICharacterServices
     [ComputeMethod]
     public virtual async Task<CharacterRecord> GetOrCreateCharacterRecord(string refFull)
     {
+        using var _ = new MethodTimeLogger(_logger);
         var moaRef = new MoaRef(refFull);
         Exceptions.ThrowIf(moaRef.IsValidGuild);
         Exceptions.ThrowIf(moaRef.IsWildCard);
@@ -74,6 +76,7 @@ public class CharacterServices : ICharacterServices
     [ComputeMethod]
     public virtual async Task<CharacterRecord> GetOrCreateCharacterRecord(string refFull, BlizzardUpdatePriority priority)
     {
+        using var _ = new MethodTimeLogger(_logger);
         Exceptions.ThrowIf(priority != BlizzardUpdatePriority.CharacterLow && priority != BlizzardUpdatePriority.CharacterMed && priority != BlizzardUpdatePriority.CharacterHigh);
 
         var characterRecord = await GetOrCreateCharacterRecord(refFull).ConfigureAwait(false);
@@ -92,6 +95,7 @@ public class CharacterServices : ICharacterServices
     [ComputeMethod]
     public virtual async Task<Dictionary<int, CharacterViewModel>> TryGetAllAccountCharacters(int accountId)
     {
+        using var _ = new MethodTimeLogger(_logger);
         //await _commonServices.AccountServices.DependsOnAccountRecord(accountId);
 
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
@@ -112,12 +116,14 @@ public class CharacterServices : ICharacterServices
     [CommandHandler]
     public virtual async Task<bool> TryChangeCharacterAccountSync(Character_TryChangeCharacterAccountSync command, CancellationToken cancellationToken = default)
     {
+        using var _ = new MethodTimeLogger(_logger);
         return await CharacterServices_TryChangeCharacterAccountSync.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [ComputeMethod]
     public virtual async Task<CharacterAccountViewModel> TryGetCharacter(Session session, int characterId)
     {
+        using var _ = new MethodTimeLogger(_logger);
         var results = new CharacterAccountViewModel();
         var characterRecord = await TryGetCharacterRecord(characterId).ConfigureAwait(false);
         if (characterRecord == null)
@@ -139,6 +145,7 @@ public class CharacterServices : ICharacterServices
     [ComputeMethod]
     public virtual async Task<CharacterAccountViewModel> TryGetCharacter(Session session, BlizzardRegion region, string realmSlug, string characterName)
     {
+        using var _ = new MethodTimeLogger(_logger);
         if (region is <= 0 or >= BlizzardRegion.Count || string.IsNullOrWhiteSpace(realmSlug) || string.IsNullOrWhiteSpace(characterName))
         {
             return null;
@@ -166,34 +173,37 @@ public class CharacterServices : ICharacterServices
         return await TryGetCharacter(session, characterRecord.Id).ConfigureAwait(false);
     }
 
-    public async Task<bool> TryEnqueueUpdate(Session session, BlizzardRegion region, string realmSlug, string characterName)
-    {
-        var characterRef = await GetFullCharacterRef(region, realmSlug, characterName).ConfigureAwait(false);
-        if (characterRef == null)
-        {
-            return false;
-        }
+    //public async Task<bool> TryEnqueueUpdate(Session session, BlizzardRegion region, string realmSlug, string characterName)
+    //{
+    //    var characterRef = await GetFullCharacterRef(region, realmSlug, characterName).ConfigureAwait(false);
+    //    if (characterRef == null)
+    //    {
+    //        return false;
+    //    }
 
-        await GetOrCreateCharacterRecord(characterRef.Full, BlizzardUpdatePriority.CharacterMed).ConfigureAwait(false);
+    //    await GetOrCreateCharacterRecord(characterRef.Full, BlizzardUpdatePriority.CharacterMed).ConfigureAwait(false);
 
-        return true;
-    }
+    //    return true;
+    //}
 
     [CommandHandler]
     public virtual async Task<bool> TrySetCharacterDeleted(Character_TrySetCharacterDeleted command, CancellationToken cancellationToken = default)
     {
+        using var _ = new MethodTimeLogger(_logger);
         return await CharacterServices_TrySetCharacterDeleted.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<bool> TrySetCharacterRenamedOrTransferred(Character_TrySetCharacterRenamedOrTransferred command, CancellationToken cancellationToken = default)
     {
+        using var _ = new MethodTimeLogger(_logger);
         return await CharacterServices_TrySetCharacterRenamedOrTransferred.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [ComputeMethod]
     protected virtual async Task<MoaRef> GetFullCharacterRef(BlizzardRegion region, string realmSlug, string characterName)
     {
+        using var _ = new MethodTimeLogger(_logger);
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var moaRef = MoaRef.GetCharacterRef(region, realmSlug, characterName, -1);
@@ -201,7 +211,7 @@ public class CharacterServices : ICharacterServices
                     where r.MoaRef.StartsWith(moaRef.GetLikeQuery())
                     select new { r.Id, r.AccountId, r.MoaRef, r.CharacterStatus };
 
-        var allResults = await query.ToArrayAsync().ConfigureAwait(false);
+        var allResults = await query.AsNoTracking().ToArrayAsync().ConfigureAwait(false);
         if (allResults.Length == 0)
         {
         }

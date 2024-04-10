@@ -14,6 +14,7 @@ public class FollowingServices : IFollowingServices
     [ComputeMethod]
     public virtual async Task<Dictionary<int, AccountFollowingViewModel>> TryGetAccountFollowing(int accountId)
     {
+        using var _ = new MethodTimeLogger(_logger);
         if (accountId == 0)
         {
             return new Dictionary<int, AccountFollowingViewModel>();
@@ -40,6 +41,7 @@ public class FollowingServices : IFollowingServices
     [ComputeMethod]
     public virtual async Task<Dictionary<int, AccountFollowingViewModel>> TryGetAccountFollowers(int accountId)
     {
+        using var _ = new MethodTimeLogger(_logger);
         if (accountId == 0)
         {
             return new Dictionary<int, AccountFollowingViewModel>();
@@ -66,24 +68,28 @@ public class FollowingServices : IFollowingServices
     [CommandHandler]
     public virtual async Task<AccountFollowingStatus?> TryStartFollowing(Following_TryStartFollowing command, CancellationToken cancellationToken = default)
     {
+        using var _ = new MethodTimeLogger(_logger);
         return await FollowingServices_TryStartFollowing.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<AccountFollowingStatus?> TryStopFollowing(Following_TryStopFollowing command, CancellationToken cancellationToken = default)
     {
+        using var _ = new MethodTimeLogger(_logger);
         return await FollowingServices_TryStopFollowing.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<AccountFollowingStatus?> TryAcceptFollower(Following_TryAcceptFollower command, CancellationToken cancellationToken = default)
     {
+        using var _ = new MethodTimeLogger(_logger);
         return await FollowingServices_TryAcceptFollower.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
     public virtual async Task<AccountFollowingStatus?> TryRemoveFollower(Following_TryRemoveFollower command, CancellationToken cancellationToken = default)
     {
+        using var _ = new MethodTimeLogger(_logger);
         return await FollowingServices_TryRemoveFollower.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 

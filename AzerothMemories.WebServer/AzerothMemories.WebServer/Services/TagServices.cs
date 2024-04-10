@@ -14,6 +14,7 @@ public class TagServices : ITagServices
     [ComputeMethod]
     public virtual async Task<bool> IsValidRealmSlug(string realmSlug)
     {
+        using var _ = new MethodTimeLogger(_logger);
         var allRealmSlugs = await GetAllRealmSlugs().ConfigureAwait(false);
         return allRealmSlugs.Contains(realmSlug);
     }
@@ -21,6 +22,7 @@ public class TagServices : ITagServices
     [ComputeMethod]
     protected virtual async Task<HashSet<string>> GetAllRealmSlugs()
     {
+        using var _ = new MethodTimeLogger(_logger);
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var query = from r in database.BlizzardData
@@ -40,6 +42,7 @@ public class TagServices : ITagServices
     [ComputeMethod]
     public virtual async Task<PostTagInfo> GetTagInfo(PostTagType tagType, int tagId, string hashTagText, ServerSideLocale locale)
     {
+        using var _ = new MethodTimeLogger(_logger);
         if (tagType == PostTagType.Account || tagType == PostTagType.Character || tagType == PostTagType.Guild)
         {
             return await TryGetUserTagInfo(tagType, tagId).ConfigureAwait(false);
@@ -81,9 +84,10 @@ public class TagServices : ITagServices
     [ComputeMethod]
     protected virtual async Task<BlizzardDataRecord> GetBlizzardDataRecord(string tagString)
     {
+        using var _ = new MethodTimeLogger(_logger);
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
-        return await database.BlizzardData.FirstOrDefaultAsync(r => r.Key == tagString).ConfigureAwait(false);
+        return await database.BlizzardData.AsNoTracking().FirstOrDefaultAsync(r => r.Key == tagString).ConfigureAwait(false);
     }
 
     //[ComputeMethod]
@@ -97,13 +101,14 @@ public class TagServices : ITagServices
     [ComputeMethod]
     public virtual async Task<PostTagInfo> TryGetUserTagInfo(PostTagType tagType, int tagId)
     {
+        using var _ = new MethodTimeLogger(_logger);
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         if (tagType == PostTagType.Account)
         {
             var data = await (from r in database.Accounts
                               where r.Id == tagId
-                              select new { r.Username, r.Avatar }).FirstOrDefaultAsync().ConfigureAwait(false);
+                              select new { r.Username, r.Avatar }).AsNoTracking().FirstOrDefaultAsync().ConfigureAwait(false);
 
             if (data != null)
             {
@@ -117,7 +122,7 @@ public class TagServices : ITagServices
         {
             var data = await (from r in database.Characters
                               where r.Id == tagId
-                              select new { r.Name, r.AvatarLink, r.Gender, r.Race }).FirstOrDefaultAsync().ConfigureAwait(false);
+                              select new { r.Name, r.AvatarLink, r.Gender, r.Race }).AsNoTracking().FirstOrDefaultAsync().ConfigureAwait(false);
 
             if (data != null)
             {
@@ -131,7 +136,7 @@ public class TagServices : ITagServices
         {
             var data = await (from r in database.Guilds
                               where r.Id == tagId
-                              select new { r.Name }).FirstOrDefaultAsync().ConfigureAwait(false);
+                              select new { r.Name }).AsNoTracking().FirstOrDefaultAsync().ConfigureAwait(false);
 
             if (data != null)
             {
@@ -147,6 +152,7 @@ public class TagServices : ITagServices
     [ComputeMethod]
     public virtual async Task<PostTagInfo[]> Search(Session session, string searchString, ServerSideLocale locale)
     {
+        using var _ = new MethodTimeLogger(_logger);
         if (string.IsNullOrWhiteSpace(searchString) || searchString.Length < 3)
         {
             return Array.Empty<PostTagInfo>();
@@ -164,6 +170,7 @@ public class TagServices : ITagServices
     [ComputeMethod]
     protected virtual async Task<PostTagInfo[]> Search(string searchString, ServerSideLocale locale)
     {
+        using var _ = new MethodTimeLogger(_logger);
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var query = ServerLocaleHelpers.GetSearchQuery(database, locale, searchString);
@@ -201,6 +208,7 @@ public class TagServices : ITagServices
 
     public async Task<PostTagRecord> TryCreateTagRecord(string systemTag, PostRecord postRecord, AccountViewModel accountViewModel, PostTagKind tagKind)
     {
+        using var _ = new MethodTimeLogger(_logger);
         if (!ZExtensions.ParseTagInfoFrom(systemTag, out var postTagInfo))
         {
             return null;
@@ -312,6 +320,7 @@ public class TagServices : ITagServices
     [ComputeMethod]
     protected virtual async Task<(bool Exists, Instant MinTagTime)> IsValidTagIdWithBlizzardDataSanityChecks(PostTagType tagType, int tagId)
     {
+        using var _ = new MethodTimeLogger(_logger);
         await using var database = _commonServices.DatabaseHub.CreateDbContext();
 
         var tagString = PostTagInfo.GetTagString(tagType, tagId);
@@ -319,7 +328,7 @@ public class TagServices : ITagServices
                     where record.Key == tagString
                     select new { record.Id, record.MinTagTime };
 
-        var exists = await query.FirstOrDefaultAsync().ConfigureAwait(false);
+        var exists = await query.AsNoTracking().FirstOrDefaultAsync().ConfigureAwait(false);
         if (exists == null)
         {
             return (false, Instant.FromUnixTimeMilliseconds(0));

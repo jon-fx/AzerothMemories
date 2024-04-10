@@ -11,7 +11,7 @@ public interface ICharacterServices : IComputeService
     [ComputeMethod]
     Task<CharacterAccountViewModel> TryGetCharacter(Session session, BlizzardRegion region, string realmSlug, string characterName);
 
-    Task<bool> TryEnqueueUpdate(Session session, BlizzardRegion region, string realmSlug, string characterName);
+    //Task<bool> TryEnqueueUpdate(Session session, BlizzardRegion region, string realmSlug, string characterName);
 
     [CommandHandler]
     Task<bool> TrySetCharacterDeleted(Character_TrySetCharacterDeleted command, CancellationToken cancellationToken = default);

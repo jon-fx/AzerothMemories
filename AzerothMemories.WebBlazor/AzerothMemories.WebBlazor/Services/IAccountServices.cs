@@ -11,7 +11,7 @@ public interface IAccountServices : IComputeService
     [ComputeMethod]
     Task<AccountViewModel> TryGetAccountByUsername(Session session, string username);
 
-    Task<bool> TryEnqueueUpdate(Session session);
+    //Task<bool> TryEnqueueUpdate(Session session);
 
     [ComputeMethod]
     Task<bool> CheckIsValidUsername(Session session, string username);
