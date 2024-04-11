@@ -7,7 +7,7 @@ internal static class AccountServices_TryUpdateAuthToken
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
         {
-            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
+            var invRecord = context.Operation.Items.Get<Account_InvalidateAccountRecord>();
             if (invRecord != null)
             {
                 _ = commonServices.AccountServices.DependsOnAccountRecord(invRecord.Id);
@@ -40,7 +40,7 @@ internal static class AccountServices_TryUpdateAuthToken
 
         if (record.AccountId.HasValue)
         {
-            context.Operation().Items.Set(new Account_InvalidateAccountRecord(record.AccountId.Value, null, null));
+            context.Operation.Items.Set(new Account_InvalidateAccountRecord(record.AccountId.Value, null, null));
         }
 
         var result = !command.AccountId.HasValue || command.AccountId == record.AccountId;

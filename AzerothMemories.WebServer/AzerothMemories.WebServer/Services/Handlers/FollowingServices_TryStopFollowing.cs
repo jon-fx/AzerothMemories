@@ -7,7 +7,7 @@ internal static class FollowingServices_TryStopFollowing
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
         {
-            var invRecord = context.Operation().Items.Get<Following_InvalidateRecord>();
+            var invRecord = context.Operation.Items.Get<Following_InvalidateRecord>();
             commonServices.FollowingServices.InvalidateFollowing(invRecord);
 
             return default;
@@ -51,7 +51,7 @@ internal static class FollowingServices_TryStopFollowing
             Type = AccountHistoryType.StoppedFollowing
         }, cancellationToken).ConfigureAwait(false);
 
-        context.Operation().Items.Set(new Following_InvalidateRecord(activeAccount.Id, otherAccountId));
+        context.Operation.Items.Set(new Following_InvalidateRecord(activeAccount.Id, otherAccountId));
 
         return viewModel.Status;
     }

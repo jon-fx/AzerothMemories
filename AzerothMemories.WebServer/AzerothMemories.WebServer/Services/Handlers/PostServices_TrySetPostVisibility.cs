@@ -7,13 +7,13 @@ internal static class PostServices_TrySetPostVisibility
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
         {
-            var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
+            var invPost = context.Operation.Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)
             {
                 _ = commonServices.PostServices.DependsOnPost(invPost.PostId);
             }
 
-            var invRecentPosts = context.Operation().Items.Get<Post_InvalidateRecentPost>();
+            var invRecentPosts = context.Operation.Items.Get<Post_InvalidateRecentPost>();
             if (invRecentPosts != null)
             {
                 _ = commonServices.PostServices.DependsOnNewPosts();
@@ -54,8 +54,8 @@ internal static class PostServices_TrySetPostVisibility
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        context.Operation().Items.Set(new Post_InvalidatePost(postId));
-        context.Operation().Items.Set(new Post_InvalidateRecentPost(true));
+        context.Operation.Items.Set(new Post_InvalidatePost(postId));
+        context.Operation.Items.Set(new Post_InvalidateRecentPost(true));
 
         return newVisibility;
     }

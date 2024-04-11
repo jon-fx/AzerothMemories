@@ -21,7 +21,7 @@ public class GuildServices : IGuildServices
     public virtual async Task<GuildRecord> TryGetGuildRecord(int id)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         var record = await database.Guilds.FirstOrDefaultAsync(r => r.Id == id).ConfigureAwait(false);
 
         if (record != null)
@@ -54,7 +54,7 @@ public class GuildServices : IGuildServices
         Exceptions.ThrowIf(moaRef.IsWildCard);
         Exceptions.ThrowIf(!moaRef.IsValidGuild);
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext(true);
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext(true).ConfigureAwait(false);
         var guildRecord = await (from r in database.Guilds
                                  where r.MoaRef == moaRef.Full
                                  select r).FirstOrDefaultAsync().ConfigureAwait(false);
@@ -128,7 +128,7 @@ public class GuildServices : IGuildServices
             return Array.Empty<CharacterRecord>();
         }
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var characterQuery = from characterRecord in database.Characters
                              where characterRecord.GuildId == guildId

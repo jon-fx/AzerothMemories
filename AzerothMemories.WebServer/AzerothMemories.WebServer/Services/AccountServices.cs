@@ -71,7 +71,7 @@ public class AccountServices : IAccountServices
         using var _ = new MethodTimeLogger(_logger);
         await DependsOnAccountRecord(id).ConfigureAwait(false);
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         var accountRecord = await database.Accounts.FirstOrDefaultAsync(a => a.Id == id).ConfigureAwait(false);
 
         return accountRecord;
@@ -81,7 +81,7 @@ public class AccountServices : IAccountServices
     public virtual async Task<AccountRecord> TryGetAccountRecordFusionId(string fusionId)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         var accountRecord = await database.Accounts.FirstOrDefaultAsync(a => a.FusionId == fusionId).ConfigureAwait(false);
         if (accountRecord != null)
         {
@@ -95,7 +95,7 @@ public class AccountServices : IAccountServices
     public virtual async Task<AccountRecord> TryGetAccountRecordUsername(string username)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         var accountRecord = await database.Accounts.FirstOrDefaultAsync(a => a.Username == username).ConfigureAwait(false);
 
         if (accountRecord == null)
@@ -219,7 +219,7 @@ public class AccountServices : IAccountServices
     public virtual async Task<int> GetPostCount(int accountId)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         return await database.Posts.Where(x => x.AccountId == accountId).CountAsync().ConfigureAwait(false);
     }
 
@@ -227,7 +227,7 @@ public class AccountServices : IAccountServices
     public virtual async Task<int> GetMemoryCount(int accountId)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         return await database.PostTags.Where(x => x.TagType == PostTagType.Account && x.TagId == accountId && x.TagKind == PostTagKind.PostRestored).CountAsync().ConfigureAwait(false);
     }
 
@@ -235,7 +235,7 @@ public class AccountServices : IAccountServices
     public virtual async Task<int> GetCommentCount(int accountId)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         return await database.PostComments.Where(x => x.AccountId == accountId).CountAsync().ConfigureAwait(false);
     }
 
@@ -243,7 +243,7 @@ public class AccountServices : IAccountServices
     public virtual async Task<int> GetReactionCount(int accountId)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         var postCount = await database.PostReactions.Where(x => x.AccountId == accountId && x.Reaction > PostReaction.None).CountAsync().ConfigureAwait(false);
         var commentCount = await database.PostCommentReactions.Where(x => x.AccountId == accountId && x.Reaction > PostReaction.None).CountAsync().ConfigureAwait(false);
 
@@ -265,7 +265,7 @@ public class AccountServices : IAccountServices
             return false;
         }
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         var usernameExists = await database.Accounts.AnyAsync(x => x.Username == username).ConfigureAwait(false);
         if (usernameExists)
         {
@@ -343,7 +343,7 @@ public class AccountServices : IAccountServices
 
         await _commonServices.PostServices.DependsOnPostsBy(accountRecord.Id).ConfigureAwait(false);
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var (min, max) = ClampMinMax(timeStamp, diffInSeconds);
         var query = from r in database.Posts
@@ -373,7 +373,7 @@ public class AccountServices : IAccountServices
 
         await DependsOnAccountAchievements(accountRecord.Id).ConfigureAwait(false);
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var (min, max) = ClampMinMax(timeStamp, diffInSeconds);
         var query = from a in database.CharacterAchievements
@@ -435,7 +435,7 @@ public class AccountServices : IAccountServices
         Exceptions.ThrowIf(activeAccountId == 0);
         Exceptions.ThrowIf(currentPage == 0);
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var historyQuery = from record in database.AccountHistory
                            where record.AccountId == activeAccountId

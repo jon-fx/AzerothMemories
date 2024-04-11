@@ -179,7 +179,7 @@ public class MediaServices : IComputeService
             return await TryGetUserUpload_Default().ConfigureAwait(false);
         }
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var postRecord = await database.UploadLogs.Where(x => x.BlobName == fileName).FirstOrDefaultAsync().ConfigureAwait(false);
         if (postRecord == null)
@@ -219,7 +219,7 @@ public class MediaServices : IComputeService
     public virtual async Task<int[]> GetSiteMapCounters()
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var accountMax = await database.Accounts.MaxAsync(x => (int?)x.Id).ConfigureAwait(false);
         var charactersMax = await database.Characters.MaxAsync(x => (int?)x.Id).ConfigureAwait(false);
@@ -295,7 +295,7 @@ public class MediaServices : IComputeService
             return null;
         }
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var pages = new List<(string Url, DateTime LastModified)>();
         if (nameType == SiteMapType.Accounts)

@@ -7,14 +7,14 @@ internal static class PostServices_TryReactToPost
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
         {
-            var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
+            var invPost = context.Operation.Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)
             {
                 _ = commonServices.PostServices.DependsOnPost(invPost.PostId);
                 _ = commonServices.PostServices.TryGetPostReactions(invPost.PostId);
             }
 
-            var invAccount = context.Operation().Items.Get<Post_InvalidateAccount>();
+            var invAccount = context.Operation.Items.Get<Post_InvalidateAccount>();
             if (invAccount != null && invAccount.AccountId > 0)
             {
                 _ = commonServices.AccountServices.GetReactionCount(invAccount.AccountId);
@@ -125,8 +125,8 @@ internal static class PostServices_TryReactToPost
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        context.Operation().Items.Set(new Post_InvalidatePost(postId));
-        context.Operation().Items.Set(new Post_InvalidateAccount(activeAccount.Id));
+        context.Operation.Items.Set(new Post_InvalidatePost(postId));
+        context.Operation.Items.Set(new Post_InvalidateAccount(activeAccount.Id));
 
         return reactionRecord.Id;
     }

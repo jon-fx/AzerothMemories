@@ -20,7 +20,7 @@ public class FollowingServices : IFollowingServices
             return new Dictionary<int, AccountFollowingViewModel>();
         }
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var followingQuery = from record in database.AccountFollowing
                              where record.AccountId == accountId
@@ -47,7 +47,7 @@ public class FollowingServices : IFollowingServices
             return new Dictionary<int, AccountFollowingViewModel>();
         }
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var followersQuery = from record in database.AccountFollowing
                              where record.FollowerId == accountId

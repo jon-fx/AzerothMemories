@@ -7,7 +7,7 @@ internal static class CharacterServices_TryChangeCharacterAccountSync
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
         {
-            var invRecord = context.Operation().Items.Get<Character_InvalidateCharacterRecord>();
+            var invRecord = context.Operation.Items.Get<Character_InvalidateCharacterRecord>();
             if (invRecord != null)
             {
                 _ = commonServices.CharacterServices.DependsOnCharacterRecord(invRecord.CharacterId);
@@ -43,7 +43,7 @@ internal static class CharacterServices_TryChangeCharacterAccountSync
         characterRecord.AccountSync = command.NewValue;
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        context.Operation().Items.Set(new Character_InvalidateCharacterRecord(command.CharacterId, activeAccount.Id));
+        context.Operation.Items.Set(new Character_InvalidateCharacterRecord(command.CharacterId, activeAccount.Id));
 
         return command.NewValue;
     }

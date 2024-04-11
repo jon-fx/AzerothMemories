@@ -54,11 +54,12 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IView
         int.TryParse(_idString, out var id);
 
         ErrorMessage = null;
-        CharacterAccountViewModel viewModel;
+        CharacterAccountViewModel viewModel = null;
 
         if (id > 0)
         {
-            viewModel = await Services.ComputeServices.CharacterServices.TryGetCharacter(Session.Default, id);
+            //TODO: FIX THIS SHIT
+            //viewModel = await Services.ComputeServices.CharacterServices.TryGetCharacter(Session.Default, id);
         }
         else
         {

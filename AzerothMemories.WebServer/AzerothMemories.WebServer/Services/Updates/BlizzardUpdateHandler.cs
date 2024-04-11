@@ -66,7 +66,7 @@ internal sealed class BlizzardUpdateHandler
 
         if (requiresUpdate)
         {
-            await using var database = _commonServices.DatabaseHub.CreateDbContext(true);
+            await using var database = await _commonServices.DatabaseHub.CreateDbContext(true).ConfigureAwait(false);
             database.Attach(record);
 
             record.UpdateRecord ??= new BlizzardUpdateRecord();
@@ -135,7 +135,7 @@ internal sealed class BlizzardUpdateHandler
     public async Task OnStarting()
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext(true);
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext(true).ConfigureAwait(false);
 
         var updateRecords = await database.BlizzardUpdates.Where(x => x.UpdateStatus == BlizzardUpdateStatus.Progress).OrderBy(x => x.UpdateLastModified).ToArrayAsync().ConfigureAwait(false);
 
@@ -145,7 +145,7 @@ internal sealed class BlizzardUpdateHandler
     public async Task OnUpdating()
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext(true);
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext(true).ConfigureAwait(false);
 
         var updateRecords = await database.BlizzardUpdates.Where(x => x.UpdateStatus == BlizzardUpdateStatus.Queued).OrderBy(x => x.UpdatePriority).ThenBy(x => x.UpdateLastModified).Take(5).ToArrayAsync().ConfigureAwait(false);
 

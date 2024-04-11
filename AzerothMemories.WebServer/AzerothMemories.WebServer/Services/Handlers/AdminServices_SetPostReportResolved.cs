@@ -7,7 +7,7 @@ internal static class AdminServices_SetPostReportResolved
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
         {
-            var invalidateReports = context.Operation().Items.Get<Admin_InvalidateReports>();
+            var invalidateReports = context.Operation.Items.Get<Admin_InvalidateReports>();
             if (invalidateReports != null)
             {
                 _ = commonServices.PostServices.DependsOnPostReports();
@@ -43,7 +43,7 @@ internal static class AdminServices_SetPostReportResolved
 
         //if (result)
         {
-            context.Operation().Items.Set(new Admin_InvalidateReports(true));
+            context.Operation.Items.Set(new Admin_InvalidateReports(true));
         }
 
         return result;

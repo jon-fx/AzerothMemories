@@ -7,7 +7,7 @@ internal static class AccountServices_TryDisconnectAccount
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
         {
-            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
+            var invRecord = context.Operation.Items.Get<Account_InvalidateAccountRecord>();
             if (invRecord != null)
             {
                 _ = commonServices.AccountServices.DependsOnAccountRecord(invRecord.Id);
@@ -48,7 +48,7 @@ internal static class AccountServices_TryDisconnectAccount
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+        context.Operation.Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
 
         return true;
     }

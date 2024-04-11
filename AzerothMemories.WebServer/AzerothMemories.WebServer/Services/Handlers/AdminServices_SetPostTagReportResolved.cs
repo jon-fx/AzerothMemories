@@ -7,7 +7,7 @@ internal static class AdminServices_SetPostTagReportResolved
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
         {
-            var invalidateReports = context.Operation().Items.Get<Admin_InvalidateReports>();
+            var invalidateReports = context.Operation.Items.Get<Admin_InvalidateReports>();
             if (invalidateReports != null)
             {
                 _ = commonServices.PostServices.DependsOnPostTagReports();
@@ -55,7 +55,7 @@ internal static class AdminServices_SetPostTagReportResolved
             await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        context.Operation().Items.Set(new Admin_InvalidateReports(true));
+        context.Operation.Items.Set(new Admin_InvalidateReports(true));
 
         return false;
     }

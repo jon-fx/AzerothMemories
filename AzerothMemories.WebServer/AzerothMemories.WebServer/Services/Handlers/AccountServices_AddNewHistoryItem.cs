@@ -7,7 +7,7 @@ internal static class AccountServices_AddNewHistoryItem
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
         {
-            var invRecord = context.Operation().Items.Get<Account_InvalidateFollowing>();
+            var invRecord = context.Operation.Items.Get<Account_InvalidateFollowing>();
             if (invRecord != null)
             {
                 _ = commonServices.AccountServices.TryGetAccountHistory(invRecord.AccountId, invRecord.Page);
@@ -49,7 +49,7 @@ internal static class AccountServices_AddNewHistoryItem
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        context.Operation().Items.Set(new Account_InvalidateFollowing(record.AccountId, 1));
+        context.Operation.Items.Set(new Account_InvalidateFollowing(record.AccountId, 1));
 
         return true;
     }

@@ -79,6 +79,6 @@ internal sealed class UpdateHandler_Accounts_Blizzard : UpdateHandlerBaseResult<
             character.CharacterStatus = CharacterStatus2.MaybeDeleted;
         }
 
-        context.Operation().Items.Set(new Updates_UpdateAccountInvalidate(record.Id, record.FusionId, record.Username, characters.Values.Select(x => x.Id).ToHashSet()));
+        context.Operation.Items.Set(new Updates_UpdateAccountInvalidate(record.Id, record.FusionId, record.Username, characters.Values.Select(x => x.Id).ToHashSet()));
     }
 }

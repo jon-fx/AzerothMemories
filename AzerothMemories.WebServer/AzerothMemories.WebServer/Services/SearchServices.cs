@@ -281,7 +281,7 @@ public class SearchServices : ISearchServices
             achievementRecordPredicate = achievementRecordPredicate.Or(x => x.AchievementTimeStamp >= set.StartTime && x.AchievementTimeStamp < set.EndTime);
         }
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         database.Database.SetCommandTimeout(180);
 
         var dailyAchievementsQuery = database.CharacterAchievements.AsExpandableEFCore().Where(achievementRecordPredicate).Select(x => new { x.Id, x.AchievementId, x.AchievementTimeStamp });
@@ -355,7 +355,7 @@ public class SearchServices : ISearchServices
     protected virtual async Task<Tuple<int, Instant>[]> GetAllFirstAchievements()
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         database.Database.SetCommandTimeout(180);
 
         var firstAchievementsQuery = database.CharacterAchievements.TagWith("GetAllFirstAchievements").GroupBy(achievements => achievements.AchievementId).Select(g => new Tuple<int, Instant>(g.Key, g.Min(e => e.AchievementTimeStamp)));
@@ -367,7 +367,7 @@ public class SearchServices : ISearchServices
     [ComputeMethod(MinCacheDuration = 60 * 10)]
     protected virtual async Task<Tuple<string, Instant>[]> GetAllFirstTags()
     {
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         database.Database.SetCommandTimeout(180);
 
         var firstTagsQuery = from tag in database.PostTags
@@ -489,7 +489,7 @@ public class SearchServices : ISearchServices
             achievementRecordPredicate = achievementRecordPredicate.Or(x => x.AchievementTimeStamp >= set.StartTime && x.AchievementTimeStamp < set.EndTime);
         }
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         database.Database.SetCommandTimeout(180);
 
         var achievementRecords = database.CharacterAchievements.Where(x => x.AccountId == accountId).Where(achievementRecordPredicate).Select(x => new { x.AchievementId, x.AchievementTimeStamp });
@@ -621,7 +621,7 @@ public class SearchServices : ISearchServices
     protected virtual async Task<MainSearchResult[]> TrySearchAccounts(string searchString)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         var query = from r in database.Accounts
                     where r.UsernameSearchable.StartsWith(searchString)
                     orderby r.UsernameSearchable.Length
@@ -635,7 +635,7 @@ public class SearchServices : ISearchServices
     protected virtual async Task<MainSearchResult[]> TrySearchCharacters(string searchString)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         var query = from r in database.Characters
                     where r.NameSearchable.StartsWith(searchString)
                     orderby r.NameSearchable.Length
@@ -649,7 +649,7 @@ public class SearchServices : ISearchServices
     protected virtual async Task<MainSearchResult[]> TrySearchGuilds(string searchString)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         var query = from r in database.Guilds
                     where r.NameSearchable.StartsWith(searchString)
                     orderby r.NameSearchable.Length
@@ -699,7 +699,7 @@ public class SearchServices : ISearchServices
     protected virtual async Task<PostInfo[]> TryGetRecentPosts()
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var taskList = new List<Task>
         {
@@ -739,7 +739,7 @@ public class SearchServices : ISearchServices
         var taskList = new List<Task>();
         taskList.AddRange(allFollowingIds.Select(_commonServices.PostServices.DependsOnPostsBy));
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         var query = from p in database.Posts
                     where p.DeletedTimeStamp == 0 && allFollowingIds.Contains(p.AccountId)
                     orderby p.PostCreatedTime descending
@@ -853,7 +853,7 @@ public class SearchServices : ISearchServices
     protected virtual async Task<PostInfo[]> TrySearchPosts(HashSet<string> tagStrings, PostSortMode sortMode, long minTime, long maxTime)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var taskList = new List<Task>();
         taskList.AddRange(tagStrings.Select(_commonServices.PostServices.DependsOnPostsWithTagString));

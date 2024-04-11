@@ -7,13 +7,13 @@ internal static class PostServices_TryDeleteComment
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
         {
-            var invPost = context.Operation().Items.Get<Post_InvalidatePost>();
+            var invPost = context.Operation.Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)
             {
                 _ = commonServices.PostServices.TryGetAllPostComments(invPost.PostId);
             }
 
-            var invalidateReports = context.Operation().Items.Get<Admin_InvalidateReports>();
+            var invalidateReports = context.Operation.Items.Get<Admin_InvalidateReports>();
             if (invalidateReports != null)
             {
                 _ = commonServices.PostServices.DependsOnPostCommentReports();
@@ -80,10 +80,10 @@ internal static class PostServices_TryDeleteComment
 
         if (reports.Length > 0)
         {
-            context.Operation().Items.Set(new Admin_InvalidateReports(true));
+            context.Operation.Items.Set(new Admin_InvalidateReports(true));
         }
 
-        context.Operation().Items.Set(new Post_InvalidatePost(postId));
+        context.Operation.Items.Set(new Post_InvalidatePost(postId));
 
         return now;
     }

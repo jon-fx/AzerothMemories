@@ -23,7 +23,7 @@ public class CharacterServices : ICharacterServices
         using var _ = new MethodTimeLogger(_logger);
         await DependsOnCharacterRecord(id).ConfigureAwait(false);
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         var record = await database.Characters.FirstOrDefaultAsync(a => a.Id == id).ConfigureAwait(false);
 
         if (record != null)
@@ -48,7 +48,7 @@ public class CharacterServices : ICharacterServices
         Exceptions.ThrowIf(moaRef.IsWildCard);
         Exceptions.ThrowIf(!moaRef.IsValidCharacter);
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext(true);
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext(true).ConfigureAwait(false);
         var characterRecord = await (from r in database.Characters
                                      where r.MoaRef == moaRef.Full
                                      select r).FirstOrDefaultAsync().ConfigureAwait(false);
@@ -98,7 +98,7 @@ public class CharacterServices : ICharacterServices
         using var _ = new MethodTimeLogger(_logger);
         //await _commonServices.AccountServices.DependsOnAccountRecord(accountId);
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var allCharacters = await database.Characters.Where(x => x.AccountId == accountId).ToArrayAsync().ConfigureAwait(false);
         var results = new Dictionary<int, CharacterViewModel>();
@@ -168,7 +168,15 @@ public class CharacterServices : ICharacterServices
             return null;
         }
 
-        var characterRecord = await GetOrCreateCharacterRecord(characterRef.Full, BlizzardUpdatePriority.CharacterMed).ConfigureAwait(false);
+        //TODO: FIX THIS SHIT
+        var updatePriority = BlizzardUpdatePriority.CharacterMed;
+        var activeAccount = _commonServices.AccountServices.TryGetActiveAccount(session);
+        if (activeAccount == null)
+        {
+            updatePriority = BlizzardUpdatePriority.CharacterLow;
+        }
+
+        var characterRecord = await GetOrCreateCharacterRecord(characterRef.Full, updatePriority).ConfigureAwait(false);
 
         return await TryGetCharacter(session, characterRecord.Id).ConfigureAwait(false);
     }
@@ -204,7 +212,7 @@ public class CharacterServices : ICharacterServices
     protected virtual async Task<MoaRef> GetFullCharacterRef(BlizzardRegion region, string realmSlug, string characterName)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var moaRef = MoaRef.GetCharacterRef(region, realmSlug, characterName, -1);
         var query = from r in database.Characters

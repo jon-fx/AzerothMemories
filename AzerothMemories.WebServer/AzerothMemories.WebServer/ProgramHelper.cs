@@ -50,12 +50,7 @@ public abstract class ProgramHelper
         {
             dbContext.AddOperations(operations =>
             {
-                operations.ConfigureOperationLogReader(_ => new DbOperationLogReader<AppDbContext>.Options
-                {
-                    UnconditionalCheckPeriod = TimeSpan.FromSeconds(5)
-                });
-
-                operations.AddNpgsqlOperationLogChangeTracking();
+                operations.AddNpgsqlOperationLogWatchers();
             });
         });
 

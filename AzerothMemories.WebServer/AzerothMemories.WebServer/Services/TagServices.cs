@@ -23,7 +23,7 @@ public class TagServices : ITagServices
     protected virtual async Task<HashSet<string>> GetAllRealmSlugs()
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var query = from r in database.BlizzardData
                     where r.TagType == PostTagType.Realm
@@ -63,7 +63,7 @@ public class TagServices : ITagServices
             return new PostTagInfo(tagType, tagId, hashTagText, null);
         }
 
-        //await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        //await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var tagString = PostTagInfo.GetTagString(tagType, tagId);
         //var allRecords = await GetAllBlizzardDataRecord().ConfigureAwait(false);
@@ -85,7 +85,7 @@ public class TagServices : ITagServices
     protected virtual async Task<BlizzardDataRecord> GetBlizzardDataRecord(string tagString)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         return await database.BlizzardData.AsNoTracking().FirstOrDefaultAsync(r => r.Key == tagString).ConfigureAwait(false);
     }
@@ -93,7 +93,7 @@ public class TagServices : ITagServices
     //[ComputeMethod]
     //protected virtual async Task<Dictionary<string, BlizzardDataRecord>> GetAllBlizzardDataRecord()
     //{
-    //    await using var database = _commonServices.DatabaseHub.CreateDbContext();
+    //    await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
     //    return await database.BlizzardData.ToDictionaryAsync(r => r.Key, r => r).ConfigureAwait(false);
     //}
@@ -102,7 +102,7 @@ public class TagServices : ITagServices
     public virtual async Task<PostTagInfo> TryGetUserTagInfo(PostTagType tagType, int tagId)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         if (tagType == PostTagType.Account)
         {
@@ -171,7 +171,7 @@ public class TagServices : ITagServices
     protected virtual async Task<PostTagInfo[]> Search(string searchString, ServerSideLocale locale)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var query = ServerLocaleHelpers.GetSearchQuery(database, locale, searchString);
         var records = await query.ToArrayAsync().ConfigureAwait(false);
@@ -321,7 +321,7 @@ public class TagServices : ITagServices
     protected virtual async Task<(bool Exists, Instant MinTagTime)> IsValidTagIdWithBlizzardDataSanityChecks(PostTagType tagType, int tagId)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var tagString = PostTagInfo.GetTagString(tagType, tagId);
         var query = from record in database.BlizzardData

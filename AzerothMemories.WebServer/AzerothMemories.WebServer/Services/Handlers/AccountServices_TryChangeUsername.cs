@@ -7,7 +7,7 @@ internal static class AccountServices_TryChangeUsername
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
         {
-            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
+            var invRecord = context.Operation.Items.Get<Account_InvalidateAccountRecord>();
             if (invRecord != null)
             {
                 _ = commonServices.AccountServices.DependsOnAccountRecord(invRecord.Id);
@@ -20,7 +20,7 @@ internal static class AccountServices_TryChangeUsername
                 }
             }
 
-            var invPreviousUsername = context.Operation().Items.Get<string>();
+            var invPreviousUsername = context.Operation.Items.Get<string>();
             if (!string.IsNullOrWhiteSpace(invPreviousUsername))
             {
                 _ = commonServices.AccountServices.CheckIsValidUsername(invPreviousUsername);
@@ -94,8 +94,8 @@ internal static class AccountServices_TryChangeUsername
             Type = AccountHistoryType.UsernameChanged
         }, cancellationToken).ConfigureAwait(false);
 
-        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
-        context.Operation().Items.Set(previousUsername);
+        context.Operation.Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+        context.Operation.Items.Set(previousUsername);
 
         return true;
     }

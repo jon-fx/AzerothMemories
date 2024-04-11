@@ -14,21 +14,21 @@ public class AdminServices : IAdminServices
     [ComputeMethod]
     public virtual async Task<int> GetSessionCount()
     {
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         return await database.Sessions.CountAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod(AutoInvalidationDelay = 60)]
     public virtual async Task<int> GetOperationCount()
     {
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         return await database.Operations.CountAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod(AutoInvalidationDelay = 60)]
     public virtual async Task<AdminUpdateCountersViewModel> GetUpdateRecordCounters()
     {
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var noneCount = await database.BlizzardUpdates
             .Where(x => x.UpdateStatus == BlizzardUpdateStatus.None)
@@ -58,21 +58,21 @@ public class AdminServices : IAdminServices
     [ComputeMethod]
     public virtual async Task<int> GetAccountCount()
     {
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         return await database.Accounts.CountAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod]
     public virtual async Task<int> GetCharacterCount()
     {
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         return await database.Characters.CountAsync().ConfigureAwait(false);
     }
 
     [ComputeMethod]
     public virtual async Task<int> GetGuildCount()
     {
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         return await database.Guilds.CountAsync().ConfigureAwait(false);
     }
 
@@ -81,7 +81,7 @@ public class AdminServices : IAdminServices
     {
         await _commonServices.PostServices.DependsOnNewPosts().ConfigureAwait(false);
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         return await database.Posts.CountAsync().ConfigureAwait(false);
     }
 
@@ -90,7 +90,7 @@ public class AdminServices : IAdminServices
     {
         await _commonServices.PostServices.DependsOnNewComments().ConfigureAwait(false);
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         return await database.PostComments.CountAsync().ConfigureAwait(false);
     }
 
@@ -99,7 +99,7 @@ public class AdminServices : IAdminServices
     {
         await _commonServices.PostServices.DependsOnNewPosts().ConfigureAwait(false);
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         return await database.UploadLogs.CountAsync().ConfigureAwait(false);
     }
 
@@ -200,7 +200,7 @@ public class AdminServices : IAdminServices
     {
         await _commonServices.PostServices.DependsOnPostReports().ConfigureAwait(false);
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var query = from report in database.PostReports
                     where report.ResolvedByAccountId == null
@@ -227,7 +227,7 @@ public class AdminServices : IAdminServices
 
         var resultViewModels = new List<ReportedPostCommentsViewModel>();
         var queryResults = await TryGetReportedComments().ConfigureAwait(false);
-        var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         foreach (var result in queryResults)
         {
@@ -275,7 +275,7 @@ public class AdminServices : IAdminServices
     {
         await _commonServices.PostServices.DependsOnPostCommentReports().ConfigureAwait(false);
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var query = from report in database.PostCommentReports
                     where report.ResolvedByAccountId == null
@@ -349,7 +349,7 @@ public class AdminServices : IAdminServices
     {
         await _commonServices.PostServices.DependsOnPostTagReports().ConfigureAwait(false);
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var query2 = from report in database.PostTagReports.Include(x => x.Tag)
                      where report.ResolvedByAccountId == null

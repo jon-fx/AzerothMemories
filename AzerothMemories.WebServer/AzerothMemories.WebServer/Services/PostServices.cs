@@ -175,7 +175,7 @@ public class PostServices : IPostServices
     public virtual async Task<Dictionary<int, PostReactionViewModel>> TryGetPostReactions(int postId)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var query = from r in database.PostReactions
                     where r.PostId == postId && r.Reaction != PostReaction.None
@@ -197,7 +197,7 @@ public class PostServices : IPostServices
     public virtual async Task<Dictionary<int, PostReactionViewModel>> TryGetPostCommentReactions(int commentId)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var query = from r in database.PostCommentReactions
                     where r.CommentId == commentId && r.Reaction != PostReaction.None
@@ -291,7 +291,7 @@ public class PostServices : IPostServices
     protected virtual async Task<PostCommentPageViewModel> TryGetPostCommentsByPage(int postId, int page, int focusedCommentId)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var allCommentPages = await TryGetAllPostComments(postId).ConfigureAwait(false);
         if (allCommentPages.Length == 1)
@@ -316,7 +316,7 @@ public class PostServices : IPostServices
     public virtual async Task<PostCommentPageViewModel[]> TryGetAllPostComments(int postId)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var query = from c in database.PostComments
                     from a in database.Accounts.Where(r => r.Id == c.AccountId)
@@ -481,7 +481,7 @@ public class PostServices : IPostServices
     public virtual async Task<Dictionary<int, PostCommentReactionViewModel>> TryGetMyCommentReactions(int activeAccountId, int postId)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var query = from reaction in database.PostCommentReactions
                     from comment in database.PostComments.Where(pr => pr.Id == reaction.CommentId)
@@ -497,7 +497,7 @@ public class PostServices : IPostServices
         using var _ = new MethodTimeLogger(_logger);
         await DependsOnPost(postId).ConfigureAwait(false);
 
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         return await database.Posts.FirstOrDefaultAsync(p => p.DeletedTimeStamp == 0 && p.Id == postId).ConfigureAwait(false);
     }
@@ -528,7 +528,7 @@ public class PostServices : IPostServices
     public virtual async Task<PostTagRecord[]> GetAllPostTags(int postId)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await using var database = _commonServices.DatabaseHub.CreateDbContext();
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var query = from tag in database.PostTags
                     where tag.PostId == postId

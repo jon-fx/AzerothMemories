@@ -7,7 +7,7 @@ internal static class CharacterServices_TrySetCharacterRenamedOrTransferred
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
         {
-            var invRecord = context.Operation().Items.Get<Character_TrySetCharacterRenamedOrTransferredInvalidate>();
+            var invRecord = context.Operation.Items.Get<Character_TrySetCharacterRenamedOrTransferredInvalidate>();
             if (invRecord != null)
             {
                 _ = commonServices.CharacterServices.DependsOnCharacterRecord(invRecord.OldCharacterId);
@@ -86,7 +86,7 @@ internal static class CharacterServices_TrySetCharacterRenamedOrTransferred
         hashSet.UnionWith(allPostTags.Select(x => x.PostId));
 
         var item = new Character_TrySetCharacterRenamedOrTransferredInvalidate(oldCharacterRecord.AccountId.GetValueOrDefault(), oldCharacterRecord.Id, newCharacterRecord.AccountId.GetValueOrDefault(), newCharacterRecord.Id, hashSet);
-        context.Operation().Items.Set(item);
+        context.Operation.Items.Set(item);
 
         return true;
     }

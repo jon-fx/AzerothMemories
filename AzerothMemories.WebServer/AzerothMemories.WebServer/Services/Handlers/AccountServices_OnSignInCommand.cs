@@ -10,7 +10,7 @@ internal static class AccountServices_OnSignInCommand
         {
             await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
 
-            var invRecord = context.Operation().Items.Get<Account_InvalidateAccountRecord>();
+            var invRecord = context.Operation.Items.Get<Account_InvalidateAccountRecord>();
             if (invRecord != null)
             {
                 _ = commonServices.AccountServices.DependsOnAccountRecord(invRecord.Id);
@@ -54,7 +54,7 @@ internal static class AccountServices_OnSignInCommand
 
         if (accountRecord == null)
         {
-            var sessionInfo = context.Operation().Items.Get<SessionInfo>();
+            var sessionInfo = context.Operation.Items.Get<SessionInfo>();
             if (sessionInfo == null)
             {
                 throw new NotImplementedException();
@@ -102,7 +102,7 @@ internal static class AccountServices_OnSignInCommand
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        context.Operation().Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+        context.Operation.Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
     }
 
     private static async Task<AccountRecord> GetOrCreateAccount(ICommander commander, AppDbContext database, string userId)

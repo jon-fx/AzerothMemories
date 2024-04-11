@@ -68,7 +68,7 @@ public class BlizzardUpdateServices : IComputeService
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
         {
-            var invRecord = context.Operation().Items.Get<Updates_UpdateAccountInvalidate>();
+            var invRecord = context.Operation.Items.Get<Updates_UpdateAccountInvalidate>();
             if (invRecord != null)
             {
                 _ = _commonServices.AdminServices.GetAccountCount();
@@ -104,7 +104,7 @@ public class BlizzardUpdateServices : IComputeService
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
         {
-            var invRecord = context.Operation().Items.Get<Character_InvalidateCharacterRecord>();
+            var invRecord = context.Operation.Items.Get<Character_InvalidateCharacterRecord>();
             if (invRecord != null)
             {
                 _ = _commonServices.AdminServices.GetCharacterCount();
@@ -145,7 +145,7 @@ public class BlizzardUpdateServices : IComputeService
             }, cancellationToken).ConfigureAwait(false);
         }
 
-        context.Operation().Items.Set(new Character_InvalidateCharacterRecord(record.Id, record.AccountId.GetValueOrDefault()));
+        context.Operation.Items.Set(new Character_InvalidateCharacterRecord(record.Id, record.AccountId.GetValueOrDefault()));
 
         return resultStatusCode;
     }
@@ -156,7 +156,7 @@ public class BlizzardUpdateServices : IComputeService
         var context = CommandContext.GetCurrent();
         if (Computed.IsInvalidating())
         {
-            var invRecord = context.Operation().Items.Get<Guild_InvalidateGuildRecord>();
+            var invRecord = context.Operation.Items.Get<Guild_InvalidateGuildRecord>();
             if (invRecord != null)
             {
                 _ = _commonServices.AdminServices.GetGuildCount();
@@ -189,7 +189,7 @@ public class BlizzardUpdateServices : IComputeService
 
         var characterIds = await characterQuery.ToArrayAsync(cancellationToken).ConfigureAwait(false);
 
-        context.Operation().Items.Set(new Guild_InvalidateGuildRecord(record.Id, characterIds.ToHashSet()));
+        context.Operation.Items.Set(new Guild_InvalidateGuildRecord(record.Id, characterIds.ToHashSet()));
 
         return resultStatusCode;
     }
