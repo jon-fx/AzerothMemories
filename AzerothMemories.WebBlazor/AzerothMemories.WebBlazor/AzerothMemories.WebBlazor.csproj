@@ -45,10 +45,7 @@
         <PackageReference Include="ActualLab.CommandR" Version="7.5.26" />
         <PackageReference Include="ActualLab.Fusion.Blazor" Version="7.5.26" />
         <PackageReference Include="ActualLab.Fusion.Blazor.Authentication" Version="7.5.26" />
-        <PackageReference Include="ActualLab.Generators" Version="7.5.26">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-        </PackageReference>
+        <PackageReference Include="ActualLab.Generators" Version="7.5.26" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Update="Resources\AzerothResources.resx">

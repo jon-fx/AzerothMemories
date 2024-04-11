@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer;
+﻿using ActualLab.Fusion.EntityFramework.Npgsql;
+
+namespace AzerothMemories.WebServer;
 
 internal sealed class ProgramHeleprMain : ProgramHelper
 {
@@ -9,6 +11,7 @@ internal sealed class ProgramHeleprMain : ProgramHelper
     protected override void ConfigureDbContextFactory(DbContextOptionsBuilder optionsBuilder)
     {
         //optionsBuilder.EnableSensitiveDataLogging();
+        optionsBuilder.UseNpgsqlHintFormatter();
         optionsBuilder.UseNpgsql(Config.DatabaseConnectionString, o => o.UseNodaTime());
     }
 
