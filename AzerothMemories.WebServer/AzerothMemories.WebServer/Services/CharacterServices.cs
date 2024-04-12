@@ -170,7 +170,7 @@ public class CharacterServices : ICharacterServices
 
         //TODO: FIX THIS SHIT
         var updatePriority = BlizzardUpdatePriority.CharacterMed;
-        var activeAccount = _commonServices.AccountServices.TryGetActiveAccount(session);
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         if (activeAccount == null)
         {
             updatePriority = BlizzardUpdatePriority.CharacterLow;
