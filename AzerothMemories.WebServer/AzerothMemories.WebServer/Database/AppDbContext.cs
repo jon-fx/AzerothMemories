@@ -25,6 +25,8 @@ public class AppDbContext : AppDbContextBase
 
     public DbSet<CharacterAchievementRecord> CharacterAchievements { get; protected init; } = null!;
 
+    public DbSet<CharacterFirstAchievementRecord> CharacterFirstAchievements { get; protected init; } = null!;
+
     public DbSet<CharacterMountRecord> CharacterMounts { get; protected init; } = null!;
 
     public DbSet<GuildRecord> Guilds { get; protected init; } = null!;

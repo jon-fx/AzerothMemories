@@ -282,7 +282,6 @@ public class SearchServices : ISearchServices
         }
 
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
-        database.Database.SetCommandTimeout(180);
 
         var dailyAchievementsQuery = database.CharacterAchievements.AsExpandableEFCore().Where(achievementRecordPredicate).Select(x => new { x.Id, x.AchievementId, x.AchievementTimeStamp });
         var dailyAchievementsById = await dailyAchievementsQuery.AsNoTracking().ToArrayAsync().ConfigureAwait(false);
@@ -329,11 +328,11 @@ public class SearchServices : ISearchServices
         var firstAchievements = await GetAllFirstAchievements().ConfigureAwait(false);
         foreach (var firstAchievement in firstAchievements)
         {
-            var itemZonedDateTime = firstAchievement.Item2.InZone(timeZone);
+            var itemZonedDateTime = firstAchievement.AchievementTimeStamp.InZone(timeZone);
             if (itemZonedDateTime.Day == inZoneDay && itemZonedDateTime.Month == inZoneMonth && results.TryGetValue(itemZonedDateTime.Year, out var activitySet))
             {
-                activitySet.FirstAchievements.Add(firstAchievement.Item1);
-                totals.FirstAchievements.Add(firstAchievement.Item1);
+                activitySet.FirstAchievements.Add(firstAchievement.AchievementId);
+                totals.FirstAchievements.Add(firstAchievement.AchievementId);
             }
         }
 
@@ -352,15 +351,12 @@ public class SearchServices : ISearchServices
     }
 
     [ComputeMethod(MinCacheDuration = 60 * 10)]
-    protected virtual async Task<Tuple<int, Instant>[]> GetAllFirstAchievements()
+    protected virtual async Task<CharacterFirstAchievementRecord[]> GetAllFirstAchievements()
     {
         using var _ = new MethodTimeLogger(_logger);
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
-        database.Database.SetCommandTimeout(180);
 
-        var firstAchievementsQuery = database.CharacterAchievements.TagWith("GetAllFirstAchievements").GroupBy(achievements => achievements.AchievementId).Select(g => new Tuple<int, Instant>(g.Key, g.Min(e => e.AchievementTimeStamp)));
-        var firstAchievementsResults = await firstAchievementsQuery.AsNoTracking().ToArrayAsync().ConfigureAwait(false);
-
+        var firstAchievementsResults = await database.CharacterFirstAchievements.AsNoTracking().ToArrayAsync().ConfigureAwait(false);
         return firstAchievementsResults;
     }
 
@@ -368,7 +364,6 @@ public class SearchServices : ISearchServices
     protected virtual async Task<Tuple<string, Instant>[]> GetAllFirstTags()
     {
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
-        database.Database.SetCommandTimeout(180);
 
         var firstTagsQuery = from tag in database.PostTags
                              join post in database.Posts
@@ -490,7 +485,6 @@ public class SearchServices : ISearchServices
         }
 
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
-        database.Database.SetCommandTimeout(180);
 
         var achievementRecords = database.CharacterAchievements.Where(x => x.AccountId == accountId).Where(achievementRecordPredicate).Select(x => new { x.AchievementId, x.AchievementTimeStamp });
         var dailyAchievementsId = await achievementRecords.AsNoTracking().ToArrayAsync().ConfigureAwait(false);

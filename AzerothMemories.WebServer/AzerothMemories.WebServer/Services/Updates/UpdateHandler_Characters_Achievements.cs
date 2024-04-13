@@ -25,6 +25,7 @@ internal sealed class UpdateHandler_Characters_Achievements : UpdateHandlerBaseR
     protected override async Task InternalExecuteWithResult(CommandContext context, AppDbContext database, CharacterRecord record, CharacterAchievementsSummary requestResult)
     {
         var currentAchievements = await database.CharacterAchievements.Where(x => x.CharacterId == record.Id).ToDictionaryAsync(x => x.AchievementId, x => x).ConfigureAwait(false);
+        var firstEverAchievements = await database.CharacterFirstAchievements.ToDictionaryAsync(x => x.AchievementId, x => x).ConfigureAwait(false);
 
         foreach (var achievement in requestResult.Achievements)
         {
@@ -47,6 +48,25 @@ internal sealed class UpdateHandler_Characters_Achievements : UpdateHandlerBaseR
             }
 
             achievementRecord.AchievementTimeStamp = Instant.FromUnixTimeMilliseconds(timeStamp);
+
+            if (firstEverAchievements.TryGetValue(achievementRecord.AchievementId, out var firstEverAchievementRecord))
+            {
+                if (firstEverAchievementRecord.AchievementTimeStamp > achievementRecord.AchievementTimeStamp)
+                {
+                    firstEverAchievementRecord.AchievementTimeStamp = achievementRecord.AchievementTimeStamp;
+                }
+            }
+            else
+            {
+                firstEverAchievementRecord = new CharacterFirstAchievementRecord
+                {
+                    AchievementId = achievementRecord.AchievementId,
+                    AchievementTimeStamp = achievementRecord.AchievementTimeStamp
+                };
+
+                database.CharacterFirstAchievements.Add(firstEverAchievementRecord);
+                firstEverAchievements.Add(firstEverAchievementRecord.AchievementId, firstEverAchievementRecord);
+            }
         }
 
         record.AchievementTotalPoints = requestResult.TotalPoints;
