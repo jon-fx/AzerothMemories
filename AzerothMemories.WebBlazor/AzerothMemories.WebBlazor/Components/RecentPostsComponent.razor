@@ -34,7 +34,12 @@ else
     }
 
     <div class="d-flex justify-center @ClassPresets.DefaultPadding">
-        <MudPagination Selected="@RecentPostsHelper.CurrentPage" SelectedChanged="@RecentPostsHelper.TryChangePage" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@RecentPostsHelper.TotalPages" />
+        <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+            <MudPagination Selected="@RecentPostsHelper.CurrentPage" SelectedChanged="@RecentPostsHelper.TryChangePage" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@RecentPostsHelper.TotalPages" />
+        </MudHidden>
+        <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
+            <MudPagination Selected="@RecentPostsHelper.CurrentPage" SelectedChanged="@RecentPostsHelper.TryChangePage" BoundaryCount="1" MiddleCount="1" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="false" ShowLastButton="false" Count="@RecentPostsHelper.TotalPages" Size="Size.Small" />
+        </MudHidden>
     </div>
 }
 

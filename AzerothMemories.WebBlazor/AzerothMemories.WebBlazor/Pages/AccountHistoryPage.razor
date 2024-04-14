@@ -35,7 +35,12 @@ else
             }
         </MudTimeline>
         <div class="d-flex justify-center @ClassPresets.DefaultPadding">
-            <MudPagination Selected="@ViewModel.CurrentPage" SelectedChanged="@ViewModel.TryChangePage" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@ViewModel.TotalPages" />
+            <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+                <MudPagination Selected="@ViewModel.CurrentPage" SelectedChanged="@ViewModel.TryChangePage" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@ViewModel.TotalPages" />
+            </MudHidden>
+            <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
+                <MudPagination Selected="@ViewModel.CurrentPage" SelectedChanged="@ViewModel.TryChangePage" BoundaryCount="1" MiddleCount="1" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="false" ShowLastButton="false" Count="@ViewModel.TotalPages" Size="Size.Small" />
+            </MudHidden>
         </div>
     }
 }

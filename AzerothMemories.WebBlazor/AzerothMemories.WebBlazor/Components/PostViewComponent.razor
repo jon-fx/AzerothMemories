@@ -66,7 +66,12 @@ else if (Helper.PostViewModel.DeletedTimeStamp == 0)
         }
 
         <div class="d-flex justify-center @ClassPresets.DefaultPadding">
-            <MudPagination Selected="@Helper.Page" SelectedChanged="OnPageChanged" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@Helper.TotalPages" />
+            <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+                <MudPagination Selected="@Helper.Page" SelectedChanged="@OnPageChanged" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@Helper.TotalPages" />
+            </MudHidden>
+            <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
+                <MudPagination Selected="@Helper.Page" SelectedChanged="@OnPageChanged" BoundaryCount="1" MiddleCount="1" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="false" ShowLastButton="false" Count="@Helper.TotalPages" Size="Size.Small" />
+            </MudHidden>
         </div>
     }
 }
