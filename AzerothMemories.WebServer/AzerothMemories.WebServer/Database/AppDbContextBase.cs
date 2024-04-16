@@ -16,7 +16,5 @@ public class AppDbContextBase : DbContextBase
 
     public DbSet<DbOperation> Operations { get; protected init; } = null!;
 
-    public DbSet<DbOperationEvent> OperationEvents { get; protected set; } = null!;
-
-    public DbSet<DbOperationTimer> OperationTimers { get; protected set; } = null!;
+    public DbSet<DbEvent> Events { get; protected set; } = null!;
 }
