@@ -51,7 +51,7 @@ public abstract class ProgramHelper
             dbContext.AddOperations(operations =>
             {
                 operations.ConfigureOperationLogReader(_ => new());
-                operations.AddNpgsqlOperationLogWatchers();
+                operations.AddNpgsqlOperationLogWatcher();
             });
         });
 

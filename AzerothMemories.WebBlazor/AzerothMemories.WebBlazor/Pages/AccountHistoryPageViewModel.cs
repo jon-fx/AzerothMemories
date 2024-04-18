@@ -34,7 +34,7 @@ public sealed class AccountHistoryPageViewModel : ViewModelBase, IViewModel<Acco
             }
             else
             {
-                currentPage = Math.Clamp(currentPage, 1, currentPage);
+                currentPage = Math.Clamp(currentPage, 0, TotalPages);
             }
         }
 

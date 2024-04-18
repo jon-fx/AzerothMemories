@@ -50,7 +50,7 @@ public sealed class PostSearchHelper
             }
             else
             {
-                _currentPage = Math.Clamp(_currentPage, 1, _currentPage);
+                _currentPage = Math.Clamp(_currentPage, 0, TotalPages);
             }
         }
 
