@@ -6,7 +6,7 @@
     {
         <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
             <MudCardContent Class="@ClassPresets.PaddingNone">
-                <MudSwitch T="bool" Checked="@(RecentPostsHelper.CurrentType != RecentPostsType.Default)" Color="Color.Primary" Class="d-flex justify-end" Label="" Disabled="AccountViewModel == null || RecentPostsHelper == null" CheckedChanged="RecentPostsHelper.OnShowAllChanged" />
+                <MudSwitch T="bool" Value="@(RecentPostsHelper.CurrentType != RecentPostsType.Default)" Color="Color.Primary" Class="d-flex justify-end" Label="" Disabled="AccountViewModel == null || RecentPostsHelper == null" ValueChanged="RecentPostsHelper.OnShowAllChanged" />
             </MudCardContent>
         </MudCard>
     }
