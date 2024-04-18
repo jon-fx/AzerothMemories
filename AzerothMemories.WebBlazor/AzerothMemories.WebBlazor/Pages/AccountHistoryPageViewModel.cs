@@ -27,7 +27,7 @@ public sealed class AccountHistoryPageViewModel : ViewModelBase, IViewModel<Acco
     {
         await base.ComputeState(cancellationToken);
 
-        if (int.TryParse(_currentPageString, out var currentPage) && currentPage > 0)
+        if (int.TryParse(_currentPageString, out var currentPage) && currentPage != 0)
         {
             if (NoResults)
             {

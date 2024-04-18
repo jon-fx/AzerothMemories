@@ -44,7 +44,7 @@ public sealed class RecentPostsHelper
 
     public async Task<RecentPostsResults> ComputeState(string currentPageString, string sortModeString, string postTypeString)
     {
-        if (int.TryParse(currentPageString, out _currentPage) && _currentPage > 0)
+        if (int.TryParse(currentPageString, out _currentPage) && _currentPage != 0)
         {
             if (NoResults)
             {

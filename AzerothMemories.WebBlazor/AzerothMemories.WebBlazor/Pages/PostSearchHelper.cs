@@ -43,7 +43,7 @@ public sealed class PostSearchHelper
     {
         _tagStrings = tagStrings.ToHashSet();
 
-        if (int.TryParse(currentPageString, out _currentPage) && _currentPage > 0)
+        if (int.TryParse(currentPageString, out _currentPage) && _currentPage != 0)
         {
             if (NoResults)
             {
