@@ -12,7 +12,11 @@ public sealed class IndexPageViewModel : PersistentStateViewModel, IViewModel<In
 
         AddPersistentState(() => AccountViewModel, x => AccountViewModel = x, () => Services.ComputeServices.AccountServices.TryGetActiveAccount(Session.Default));
         AddPersistentState(() => OnThisDay, x => OnThisDay = x, TryUpdateOnThisDay);
-        AddPersistentState(() => RecentPostsHelper.SearchResults, x => RecentPostsHelper.SetSearchResults(x), () => RecentPostsHelper.ComputeState(_currentPageString, _sortModeString, _postTypeString));
+        AddPersistentState(() => SearchResults, x =>
+        {
+            SearchResults = x;
+            RecentPostsHelper.SetSearchResults(x);
+        }, () => RecentPostsHelper.ComputeState(_currentPageString, _sortModeString, _postTypeString));
     }
 
     public AccountViewModel AccountViewModel { get; private set; }
@@ -20,6 +24,8 @@ public sealed class IndexPageViewModel : PersistentStateViewModel, IViewModel<In
     public DailyActivityResults OnThisDay { get; private set; }
 
     public RecentPostsHelper RecentPostsHelper { get; }
+
+    public RecentPostsResults SearchResults { get; private set; } = new();
 
     public void OnParametersChanged(string currentPageString, string sortModeString, string postTypeString)
     {
@@ -34,8 +40,7 @@ public sealed class IndexPageViewModel : PersistentStateViewModel, IViewModel<In
 
         OnThisDay = await TryUpdateOnThisDay();
         AccountViewModel = await Services.ComputeServices.AccountServices.TryGetActiveAccount(Session.Default);
-
-        await RecentPostsHelper.ComputeState(_currentPageString, _sortModeString, _postTypeString);
+        SearchResults = await RecentPostsHelper.ComputeState(_currentPageString, _sortModeString, _postTypeString);
     }
 
     private Task<DailyActivityResults> TryUpdateOnThisDay()

@@ -9,10 +9,6 @@ public sealed class PostSearchHelper
     public Instant? MinDateTime;
     public Instant? MaxDateTime;
 
-    private int _currentPage;
-    private PostSortMode _sortMode;
-    private HashSet<string> _tagStrings;
-
     public PostSearchHelper(IMoaServices services)
     {
         _services = services;
@@ -41,23 +37,25 @@ public sealed class PostSearchHelper
 
     public async Task<SearchPostsResults> ComputeState(string[] tagStrings, string sortModeString, string currentPageString, string postMinTimeString, string postMaxTimeString)
     {
-        _tagStrings = tagStrings.ToHashSet();
-
-        if (int.TryParse(currentPageString, out _currentPage) && _currentPage != 0)
+        if (int.TryParse(currentPageString, out var currentPage) && currentPage != 0)
         {
             if (NoResults)
             {
             }
             else
             {
-                _currentPage = Math.Clamp(_currentPage, 0, TotalPages);
+                currentPage = Math.Clamp(currentPage, 1, TotalPages);
             }
         }
 
-        _sortMode = PostSortMode.PostTimeStampDescending;
+        PostSortMode sortMode;
         if (int.TryParse(sortModeString, out var sortModeInt) && Enum.IsDefined(typeof(PostSortMode), sortModeInt))
         {
-            _sortMode = (PostSortMode)sortModeInt;
+            sortMode = (PostSortMode)sortModeInt;
+        }
+        else
+        {
+            sortMode = PostSortMode.PostTimeStampDescending;
         }
 
         if (long.TryParse(postMinTimeString, out var minTime))
@@ -72,7 +70,7 @@ public sealed class PostSearchHelper
 
         IsLoading = true;
 
-        var searchResults = await _services.ComputeServices.SearchServices.TrySearchPosts(Session.Default, _tagStrings.ToArray(), _sortMode, _currentPage, minTime, maxTime, ServerSideLocaleExt.GetServerSideLocale());
+        var searchResults = await _services.ComputeServices.SearchServices.TrySearchPosts(Session.Default, tagStrings, sortMode, currentPage, minTime, maxTime, ServerSideLocaleExt.GetServerSideLocale());
 
         _searchResults = searchResults;
 
@@ -92,8 +90,6 @@ public sealed class PostSearchHelper
     public void SetSearchResults(SearchPostsResults searchPostsResults)
     {
         _searchResults = searchPostsResults;
-        _currentPage = _searchResults.CurrentPage;
-        _sortMode = _searchResults.SortMode;
 
         MinDateTime = _searchResults.MinTime > 0 ? Instant.FromUnixTimeMilliseconds(_searchResults.MinTime) : null;
         MaxDateTime = _searchResults.MaxTime > 0 ? Instant.FromUnixTimeMilliseconds(_searchResults.MaxTime) : null;
@@ -103,14 +99,12 @@ public sealed class PostSearchHelper
 
     public void OnSortChanged(PostSortMode sortMode)
     {
-        if (_sortMode == sortMode)
+        if (_searchResults.SortMode == sortMode)
         {
             return;
         }
 
-        _sortMode = sortMode;
-
-        NavigateToNewQuery(false);
+        NavigateToNewQuery(_searchResults.CurrentPage, _searchResults.SortMode, _searchResults.Tags.Select(x => x.TagString).ToArray(), MinDateTime, MaxDateTime, false);
     }
 
     public void OnMinDateTimeChanged(Instant? instant)
@@ -122,7 +116,7 @@ public sealed class PostSearchHelper
 
         MinDateTime = instant;
 
-        NavigateToNewQuery(true);
+        NavigateToNewQuery(_searchResults.CurrentPage, _searchResults.SortMode, _searchResults.Tags.Select(x => x.TagString).ToArray(), MinDateTime, MaxDateTime, true);
     }
 
     public void OnMaxDateTimeChanged(Instant? instant)
@@ -134,7 +128,7 @@ public sealed class PostSearchHelper
 
         MaxDateTime = instant;
 
-        NavigateToNewQuery(true);
+        NavigateToNewQuery(_searchResults.CurrentPage, _searchResults.SortMode, _searchResults.Tags.Select(x => x.TagString).ToArray(), MinDateTime, instant, true);
     }
 
     public void AddSearchDataToTags(PostTagInfo tagInfo)
@@ -165,26 +159,28 @@ public sealed class PostSearchHelper
 
     private bool Add(PostTagInfo tagInfo)
     {
-        if (_tagStrings.Contains(tagInfo.TagString) || _tagStrings.Contains(tagInfo.GetTagValue()))
+        var tagStrings = _searchResults.Tags.Select(x => x.TagString).ToHashSet();
+        if (tagStrings.Contains(tagInfo.TagString) || tagStrings.Contains(tagInfo.GetTagValue()))
         {
             return false;
         }
 
-        if (!_tagStrings.Add(tagInfo.TagString))
+        if (!tagStrings.Add(tagInfo.TagString))
         {
             return false;
         }
 
-        NavigateToNewQuery(true);
+        NavigateToNewQuery(_searchResults.CurrentPage, _searchResults.SortMode, tagStrings.ToArray(), MinDateTime, MaxDateTime, true);
 
         return true;
     }
 
     private bool Remove(PostTagInfo tagInfo)
     {
-        if (_tagStrings.Remove(tagInfo.TagString) || _tagStrings.Remove(tagInfo.GetTagValue()))
+        var tagStrings = _searchResults.Tags.Select(x => x.TagString).ToHashSet();
+        if (tagStrings.Remove(tagInfo.TagString) || tagStrings.Remove(tagInfo.GetTagValue()))
         {
-            NavigateToNewQuery(true);
+            NavigateToNewQuery(_searchResults.CurrentPage, _searchResults.SortMode, tagStrings.ToArray(), MinDateTime, MaxDateTime, true);
             return true;
         }
 
@@ -193,33 +189,26 @@ public sealed class PostSearchHelper
 
     public void TryChangePage(int currentPage)
     {
-        if (_currentPage == currentPage)
-        {
-            return;
-        }
-
         if (_searchResults.CurrentPage == currentPage)
         {
             return;
         }
 
-        _currentPage = currentPage;
-
-        NavigateToNewQuery(false);
+        NavigateToNewQuery(currentPage, _searchResults.SortMode, _searchResults.Tags.Select(x => x.TagString).ToArray(), MinDateTime, MaxDateTime, false);
     }
 
-    private void NavigateToNewQuery(bool resetPage)
+    private void NavigateToNewQuery(int currentPage, PostSortMode sortMode, string[] tagStrings, Instant? minDateTime, Instant? maxDateTime, bool resetPage)
     {
         var dictionary = new Dictionary<string, object>
         {
-            { "tag", _tagStrings.ToArray() }
+            { "tag", tagStrings}
         };
 
-        ZExtensions.AddToDictOrNull(dictionary, "sort", (int)_sortMode, _sortMode == 0);
-        ZExtensions.AddToDictOrNull(dictionary, "page", _currentPage, _currentPage <= 1 || resetPage);
+        ZExtensions.AddToDictOrNull(dictionary, "sort", (int)sortMode, sortMode == 0);
+        ZExtensions.AddToDictOrNull(dictionary, "page", currentPage, currentPage <= 1 || resetPage);
 
-        dictionary.Add("ptmin", MinDateTime?.ToUnixTimeMilliseconds());
-        dictionary.Add("ptmax", MaxDateTime?.ToUnixTimeMilliseconds());
+        dictionary.Add("ptmin", minDateTime?.ToUnixTimeMilliseconds());
+        dictionary.Add("ptmax", maxDateTime?.ToUnixTimeMilliseconds());
 
         var oldPath = _services.ClientServices.NavigationManager.Uri;
         var newPath = _services.ClientServices.NavigationManager.GetUriWithQueryParameters(dictionary);

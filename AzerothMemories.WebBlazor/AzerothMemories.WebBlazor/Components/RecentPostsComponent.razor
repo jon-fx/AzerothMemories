@@ -1,31 +1,36 @@
 ﻿<div id="moa-top-header">
-    @if (AccountViewModel == null || RecentPostsHelper == null)
+    @if (AccountViewModel == null || SearchResults == null)
     {
     }
     else
     {
         <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
             <MudCardContent Class="@ClassPresets.PaddingNone">
-                <MudSwitch T="bool" Value="@(RecentPostsHelper.CurrentType != RecentPostsType.Default)" Color="Color.Primary" Class="d-flex justify-end" Label="" Disabled="AccountViewModel == null || RecentPostsHelper == null" ValueChanged="RecentPostsHelper.OnShowAllChanged" />
+                <MudSwitch T="bool" 
+                           Value="@(SearchResults.PostsType != RecentPostsType.Default)"
+                           Color="Color.Primary" 
+                           Class="d-flex justify-end" Label="" 
+                           Disabled="AccountViewModel == null" 
+                           ValueChanged="OnTryChangeShowAllEventCallback" />
             </MudCardContent>
         </MudCard>
     }
 </div>
 
-@if (RecentPostsHelper == null || RecentPostsHelper.IsLoading)
+@if (IsLoading)
 {
     <CardLoadingComponent />
 }
-else if (RecentPostsHelper.NoResults)
+else if (SearchResults == null || SearchResults.PostViewModels == null || SearchResults.PostViewModels.Length == 0)
 {
     <CardInfoComponent Message="None" />
 }
 else
 {
-    for (var i = 0; i < RecentPostsHelper.CurrentPosts.Length; i++)
+    for (var i = 0; i < SearchResults.PostViewModels.Length; i++)
     {
         var index = i;
-        var post = RecentPostsHelper.CurrentPosts[index];
+        var post = SearchResults.PostViewModels[index];
         var postId = $"moa-post-{index}";
 
         <div id="@postId">
@@ -35,18 +40,25 @@ else
 
     <div class="d-flex justify-center @ClassPresets.DefaultPadding">
         <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
-            <MudPagination Selected="@RecentPostsHelper.CurrentPage" SelectedChanged="@RecentPostsHelper.TryChangePage" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@RecentPostsHelper.TotalPages" />
+            <MudPagination Selected="@SearchResults.CurrentPage" SelectedChanged="@OnTryChangePageEventCallback" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@SearchResults.TotalPages" />
         </MudHidden>
         <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
-            <MudPagination Selected="@RecentPostsHelper.CurrentPage" SelectedChanged="@RecentPostsHelper.TryChangePage" BoundaryCount="1" MiddleCount="1" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="false" ShowLastButton="false" Count="@RecentPostsHelper.TotalPages" Size="Size.Small" />
+            <MudPagination Selected="@SearchResults.CurrentPage" SelectedChanged="@OnTryChangePageEventCallback" BoundaryCount="1" MiddleCount="1" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="false" ShowLastButton="false" Count="@SearchResults.TotalPages" Size="Size.Small" />
         </MudHidden>
     </div>
 }
 
-@code {
+@code
+{
+    [Parameter, EditorRequired] public required bool IsLoading { get; init; }
+
     [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired] public required AccountViewModel AccountViewModel { get; init; }
 
-    [Parameter, EditorRequired] public required RecentPostsHelper RecentPostsHelper { get; init; }
+    [Parameter, EditorRequired] public required RecentPostsResults SearchResults { get; init; }
+
+    [Parameter, EditorRequired] public required EventCallback<bool> OnTryChangeShowAllEventCallback { get; init; }
+
+    [Parameter, EditorRequired] public required EventCallback<int> OnTryChangePageEventCallback { get; init; }
 }

@@ -13,7 +13,13 @@
 </AuthorizeView>
 
 <OnThisDayHeader HeaderData="@ViewModel.OnThisDay" Services="@(this)" />
-<RecentPostsComponent Services="@(this)" AccountViewModel="@ViewModel.AccountViewModel" RecentPostsHelper="@ViewModel.RecentPostsHelper" />
+
+<RecentPostsComponent Services="@(this)" 
+                      AccountViewModel="@ViewModel.AccountViewModel"
+                      SearchResults="@ViewModel.SearchResults"
+                      IsLoading="@ViewModel.RecentPostsHelper.IsLoading" 
+                      OnTryChangeShowAllEventCallback="ViewModel.RecentPostsHelper.OnTryChangeShowAll"
+                      OnTryChangePageEventCallback="ViewModel.RecentPostsHelper.OnTryChangePage" />
 
 @code {
     [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }

@@ -6,10 +6,6 @@ public sealed class RecentPostsHelper
 
     private RecentPostsResults _searchResults;
 
-    private int _currentPage;
-    private PostSortMode _sortMode;
-    private RecentPostsType _recentPostType;
-
     public RecentPostsHelper(IMoaServices services)
     {
         _services = services;
@@ -18,108 +14,89 @@ public sealed class RecentPostsHelper
         IsLoading = true;
     }
 
-    public bool NoResults => _searchResults.PostViewModels.Length == 0;
-
-    public int CurrentPage => _searchResults.CurrentPage;
-
-    public int TotalPages => _searchResults.TotalPages;
-
-    public RecentPostsType CurrentType => _searchResults.PostsType;
-
-    public PostViewModel[] CurrentPosts => _searchResults.PostViewModels;
-
-    public RecentPostsResults SearchResults => _searchResults;
-
     public bool IsLoading { get; private set; }
 
     public void SetSearchResults(RecentPostsResults recentPostsResults)
     {
         _searchResults = recentPostsResults;
-        _currentPage = _searchResults.CurrentPage;
-        _recentPostType = _searchResults.PostsType;
-        _sortMode = _searchResults.SortMode;
 
         IsLoading = false;
     }
 
     public async Task<RecentPostsResults> ComputeState(string currentPageString, string sortModeString, string postTypeString)
     {
-        if (int.TryParse(currentPageString, out _currentPage) && _currentPage != 0)
+        if (int.TryParse(currentPageString, out var currentPage) && currentPage != 0)
         {
-            if (NoResults)
+            if (_searchResults.PostViewModels == null || _searchResults.PostViewModels.Length == 0)
             {
             }
             else
             {
-                _currentPage = Math.Clamp(_currentPage, 0, TotalPages);
+                currentPage = Math.Clamp(currentPage, 1, _searchResults.TotalPages);
             }
         }
-
-        _recentPostType = RecentPostsType.Default;
-        if (int.TryParse(postTypeString, out var typeInt) && Enum.IsDefined(typeof(RecentPostsType), typeInt))
+        else
         {
-            _recentPostType = (RecentPostsType)typeInt;
+            currentPage = 0;
         }
 
-        _sortMode = PostSortMode.PostTimeStampDescending;
+        RecentPostsType recentPostType;
+        if (int.TryParse(postTypeString, out var typeInt) && Enum.IsDefined(typeof(RecentPostsType), typeInt))
+        {
+            recentPostType = (RecentPostsType)typeInt;
+        }
+        else
+        {
+            recentPostType = RecentPostsType.Default;
+        }
+
+        PostSortMode sortMode;
         if (int.TryParse(sortModeString, out var sortModeInt) && Enum.IsDefined(typeof(PostSortMode), sortModeInt))
         {
-            _sortMode = (PostSortMode)sortModeInt;
+            sortMode = (PostSortMode)sortModeInt;
+        }
+        else
+        {
+            sortMode = PostSortMode.PostTimeStampDescending;
         }
 
         IsLoading = true;
 
-        var searchResults = await _services.ComputeServices.SearchServices.TryGetRecentPosts(Session.Default, _recentPostType, _sortMode, _currentPage, ServerSideLocaleExt.GetServerSideLocale());
-
-        _searchResults = searchResults;
+        _searchResults = await _services.ComputeServices.SearchServices.TryGetRecentPosts(Session.Default, recentPostType, sortMode, currentPage, ServerSideLocaleExt.GetServerSideLocale());
 
         IsLoading = false;
 
         return _searchResults;
     }
 
-    public void OnShowAllChanged(bool showAll)
+    public void OnTryChangeShowAll(bool showAll)
     {
         var newValue = showAll ? RecentPostsType.Two : RecentPostsType.Default;
-        if (_recentPostType == newValue)
-        {
-            return;
-        }
-
         if (_searchResults.PostsType == newValue)
         {
             return;
         }
 
-        _recentPostType = newValue;
-
-        NavigateToNewQuery(false);
+        NavigateToNewQuery(newValue, _searchResults.SortMode, _searchResults.CurrentPage, false);
     }
 
-    public void TryChangePage(int currentPage)
+    public void OnTryChangePage(int currentPage)
     {
-        if (_currentPage == currentPage)
-        {
-            return;
-        }
-
         if (_searchResults.CurrentPage == currentPage)
         {
             return;
         }
 
-        _currentPage = currentPage;
-
-        NavigateToNewQuery(false);
+        NavigateToNewQuery(_searchResults.PostsType, _searchResults.SortMode, currentPage, false);
     }
 
-    private void NavigateToNewQuery(bool resetPage)
+    private void NavigateToNewQuery(RecentPostsType recentPostType, PostSortMode sortMode, int currentPage, bool resetPage)
     {
         var dictionary = new Dictionary<string, object>();
 
-        ZExtensions.AddToDictOrNull(dictionary, "sort", (int)_sortMode, _sortMode == 0);
-        ZExtensions.AddToDictOrNull(dictionary, "page", _currentPage, _currentPage <= 1 || resetPage);
-        ZExtensions.AddToDictOrNull(dictionary, "type", (int)_recentPostType, _recentPostType == 0);
+        ZExtensions.AddToDictOrNull(dictionary, "sort", (int)sortMode, sortMode == 0);
+        ZExtensions.AddToDictOrNull(dictionary, "page", currentPage, currentPage <= 1 || resetPage);
+        ZExtensions.AddToDictOrNull(dictionary, "type", (int)recentPostType, recentPostType == 0);
 
         var oldPath = _services.ClientServices.NavigationManager.Uri;
         var newPath = _services.ClientServices.NavigationManager.GetUriWithQueryParameters(dictionary);
