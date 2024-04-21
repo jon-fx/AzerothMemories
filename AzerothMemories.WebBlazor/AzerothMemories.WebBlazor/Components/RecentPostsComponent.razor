@@ -39,12 +39,13 @@ else
     }
 
     <div class="d-flex justify-center @ClassPresets.DefaultPadding">
-        <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
-            <MudPagination Selected="@SearchResults.CurrentPage" SelectedChanged="@OnTryChangePageEventCallback" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@SearchResults.TotalPages" />
-        </MudHidden>
-        <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
+        <div class="d-block d-sm-none">
             <MudPagination Selected="@SearchResults.CurrentPage" SelectedChanged="@OnTryChangePageEventCallback" BoundaryCount="1" MiddleCount="1" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="false" ShowLastButton="false" Count="@SearchResults.TotalPages" Size="Size.Small" />
-        </MudHidden>
+        </div>
+
+        <div class="d-none d-sm-flex">
+            <MudPagination Selected="@SearchResults.CurrentPage" SelectedChanged="@OnTryChangePageEventCallback" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@SearchResults.TotalPages" />
+        </div>
     </div>
 }
 

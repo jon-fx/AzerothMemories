@@ -35,12 +35,13 @@ else if (PostSearchHelper.CurrentPosts.Length > 0)
     }
 
     <div class="d-flex justify-center @ClassPresets.DefaultPadding">
-        <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
-            <MudPagination Selected="@PostSearchHelper.CurrentPage" SelectedChanged="@PostSearchHelper.TryChangePage" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@PostSearchHelper.TotalPages" />
-        </MudHidden>
-        <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
+        <div class="d-block d-sm-none">
             <MudPagination Selected="@PostSearchHelper.CurrentPage" SelectedChanged="@PostSearchHelper.TryChangePage" BoundaryCount="1" MiddleCount="1" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="false" ShowLastButton="false" Count="@PostSearchHelper.TotalPages" Size="Size.Small" />
-        </MudHidden>
+        </div>
+
+        <div class="d-none d-sm-flex">
+            <MudPagination Selected="@PostSearchHelper.CurrentPage" SelectedChanged="@PostSearchHelper.TryChangePage" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@PostSearchHelper.TotalPages" />
+        </div>
     </div>
 }
 else
