@@ -16,10 +16,7 @@
 
 <RecentPostsComponent Services="@(this)" 
                       AccountViewModel="@ViewModel.AccountViewModel"
-                      SearchResults="@ViewModel.SearchResults"
-                      IsLoading="@ViewModel.RecentPostsHelper.IsLoading" 
-                      OnTryChangeShowAllEventCallback="ViewModel.RecentPostsHelper.OnTryChangeShowAll"
-                      OnTryChangePageEventCallback="ViewModel.RecentPostsHelper.OnTryChangePage" />
+                      RecentPostsHelper="@ViewModel.RecentPostsHelper" />
 
 @code {
     [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }

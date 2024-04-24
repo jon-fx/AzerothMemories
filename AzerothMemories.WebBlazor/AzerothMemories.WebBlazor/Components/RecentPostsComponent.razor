@@ -1,36 +1,36 @@
 ﻿<div id="moa-top-header">
-    @if (AccountViewModel == null || SearchResults == null)
+    @if (AccountViewModel == null || RecentPostsHelper == null)
     {
     }
     else
     {
         <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
             <MudCardContent Class="@ClassPresets.PaddingNone">
-                <MudSwitch T="bool" 
-                           Value="@(SearchResults.PostsType != RecentPostsType.Default)"
+                <MudSwitch T="bool"
+                           Value="@(RecentPostsHelper.SearchResults.PostsType != RecentPostsType.Default)"
                            Color="Color.Primary" 
                            Class="d-flex justify-end" Label="" 
-                           Disabled="AccountViewModel == null" 
-                           ValueChanged="OnTryChangeShowAllEventCallback" />
+                           Disabled="AccountViewModel == null"
+                           ValueChanged="RecentPostsHelper.OnTryChangeShowAll" />
             </MudCardContent>
         </MudCard>
     }
 </div>
 
-@if (IsLoading)
+@if (RecentPostsHelper == null || RecentPostsHelper.IsLoading)
 {
     <CardLoadingComponent />
 }
-else if (SearchResults == null || SearchResults.PostViewModels == null || SearchResults.PostViewModels.Length == 0)
+else if (RecentPostsHelper.SearchResults == null || RecentPostsHelper.SearchResults.PostViewModels == null || RecentPostsHelper.SearchResults.PostViewModels.Length == 0)
 {
     <CardInfoComponent Message="None" />
 }
 else
 {
-    for (var i = 0; i < SearchResults.PostViewModels.Length; i++)
+    for (var i = 0; i < RecentPostsHelper.SearchResults.PostViewModels.Length; i++)
     {
         var index = i;
-        var post = SearchResults.PostViewModels[index];
+        var post = RecentPostsHelper.SearchResults.PostViewModels[index];
         var postId = $"moa-post-{index}";
 
         <div id="@postId">
@@ -40,26 +40,20 @@ else
 
     <div class="d-flex justify-center @ClassPresets.DefaultPadding">
         <div class="d-block d-sm-none">
-            <MudPagination Selected="@SearchResults.CurrentPage" SelectedChanged="@OnTryChangePageEventCallback" BoundaryCount="1" MiddleCount="1" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="false" ShowLastButton="false" Count="@SearchResults.TotalPages" Size="Size.Small" />
+            <MudPagination Selected="@RecentPostsHelper.SearchResults.CurrentPage" SelectedChanged="@RecentPostsHelper.OnTryChangePage" BoundaryCount="1" MiddleCount="1" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="false" ShowLastButton="false" Count="@RecentPostsHelper.SearchResults.TotalPages" Size="Size.Small" />
         </div>
 
         <div class="d-none d-sm-flex">
-            <MudPagination Selected="@SearchResults.CurrentPage" SelectedChanged="@OnTryChangePageEventCallback" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@SearchResults.TotalPages" />
+            <MudPagination Selected="@RecentPostsHelper.SearchResults.CurrentPage" SelectedChanged="@RecentPostsHelper.OnTryChangePage" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@RecentPostsHelper.SearchResults.TotalPages" />
         </div>
     </div>
 }
 
 @code
 {
-    [Parameter, EditorRequired] public required bool IsLoading { get; init; }
-
     [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired] public required AccountViewModel AccountViewModel { get; init; }
 
-    [Parameter, EditorRequired] public required RecentPostsResults SearchResults { get; init; }
-
-    [Parameter, EditorRequired] public required EventCallback<bool> OnTryChangeShowAllEventCallback { get; init; }
-
-    [Parameter, EditorRequired] public required EventCallback<int> OnTryChangePageEventCallback { get; init; }
+    [Parameter, EditorRequired] public required RecentPostsHelper RecentPostsHelper { get; init; }
 }

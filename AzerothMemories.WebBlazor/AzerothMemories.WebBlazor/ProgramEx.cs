@@ -47,7 +47,7 @@ public static class ProgramEx
         fusion.AddComputedGraphPruner(_ => new ComputedGraphPruner.Options { CheckPeriod = TimeSpan.FromSeconds(30) });
         fusion.AddFusionTime();
 
-        services.AddScoped<IUpdateDelayer>(c => new UpdateDelayer(c.UIActionTracker(), 0.5));
+        services.AddScoped<IUpdateDelayer>(c => new UpdateDelayer(c.UIActionTracker(), 0.1));
 
         services.AddHostedService(c =>
         {

@@ -22,7 +22,7 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
     {
         await base.OnInitializedAsync();
 
-        OnParametersChanged();
+        //OnParametersChanged();
 
         await ViewModel.OnInitialized();
 
@@ -32,13 +32,13 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
     protected override sealed void OnParametersSet()
     {
         base.OnParametersSet();
-
-        OnParametersChanged();
     }
 
-    protected override sealed Task OnParametersSetAsync()
+    protected override sealed async Task OnParametersSetAsync()
     {
-        return base.OnParametersSetAsync();
+        OnParametersChanged();
+
+        await base.OnParametersSetAsync();
     }
 
     //protected override Task OnAfterRenderAsync(bool firstRender)

@@ -2,9 +2,9 @@
 
 public sealed class IndexPageViewModel : PersistentStateViewModel, IViewModel<IndexPageViewModel>
 {
-    private string _currentPageString;
-    private string _sortModeString;
-    private string _postTypeString;
+    private int _currentPage;
+    private PostSortMode _sortMode;
+    private RecentPostsType _postType;
 
     public IndexPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
@@ -12,11 +12,7 @@ public sealed class IndexPageViewModel : PersistentStateViewModel, IViewModel<In
 
         AddPersistentState(() => AccountViewModel, x => AccountViewModel = x, () => Services.ComputeServices.AccountServices.TryGetActiveAccount(Session.Default));
         AddPersistentState(() => OnThisDay, x => OnThisDay = x, TryUpdateOnThisDay);
-        AddPersistentState(() => SearchResults, x =>
-        {
-            SearchResults = x;
-            RecentPostsHelper.SetSearchResults(x);
-        }, () => RecentPostsHelper.ComputeState(_currentPageString, _sortModeString, _postTypeString));
+        AddPersistentState(() => RecentPostsHelper.SearchResults, x => RecentPostsHelper.SetSearchResults(x), () => RecentPostsHelper.ComputeState(_currentPage, _sortMode, _postType));
     }
 
     public AccountViewModel AccountViewModel { get; private set; }
@@ -25,13 +21,34 @@ public sealed class IndexPageViewModel : PersistentStateViewModel, IViewModel<In
 
     public RecentPostsHelper RecentPostsHelper { get; }
 
-    public RecentPostsResults SearchResults { get; private set; } = new();
-
     public void OnParametersChanged(string currentPageString, string sortModeString, string postTypeString)
     {
-        _currentPageString = currentPageString;
-        _sortModeString = sortModeString;
-        _postTypeString = postTypeString;
+        if (int.TryParse(currentPageString, out _currentPage) && _currentPage != 0)
+        {
+            _currentPage = Math.Clamp(_currentPage, 1, RecentPostsHelper.SearchResults.TotalPages);
+        }
+        else
+        {
+            _currentPage = 0;
+        }
+
+        if (int.TryParse(postTypeString, out var typeInt) && Enum.IsDefined(typeof(RecentPostsType), typeInt))
+        {
+            _postType = (RecentPostsType)typeInt;
+        }
+        else
+        {
+            _postType = RecentPostsType.Default;
+        }
+
+        if (int.TryParse(sortModeString, out var sortModeInt) && Enum.IsDefined(typeof(PostSortMode), sortModeInt))
+        {
+            _sortMode = (PostSortMode)sortModeInt;
+        }
+        else
+        {
+            _sortMode = PostSortMode.PostTimeStampDescending;
+        }
     }
 
     public override async Task ComputeState(CancellationToken cancellationToken)
@@ -40,7 +57,8 @@ public sealed class IndexPageViewModel : PersistentStateViewModel, IViewModel<In
 
         OnThisDay = await TryUpdateOnThisDay();
         AccountViewModel = await Services.ComputeServices.AccountServices.TryGetActiveAccount(Session.Default);
-        SearchResults = await RecentPostsHelper.ComputeState(_currentPageString, _sortModeString, _postTypeString);
+
+        await RecentPostsHelper.ComputeState(_currentPage, _sortMode, _postType);
     }
 
     private Task<DailyActivityResults> TryUpdateOnThisDay()
