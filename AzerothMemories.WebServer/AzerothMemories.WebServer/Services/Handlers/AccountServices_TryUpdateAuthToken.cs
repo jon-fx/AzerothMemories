@@ -5,7 +5,7 @@ internal static class AccountServices_TryUpdateAuthToken
     public static async Task<bool> TryHandle(ILogger<AccountServices> logger, CommonServices commonServices, Account_TryUpdateAuthToken command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
-        if (Computed.IsInvalidating())
+        if (InvalidationMode.IsOn)
         {
             var invRecord = context.Operation.Items.Get<Account_InvalidateAccountRecord>();
             if (invRecord != null)

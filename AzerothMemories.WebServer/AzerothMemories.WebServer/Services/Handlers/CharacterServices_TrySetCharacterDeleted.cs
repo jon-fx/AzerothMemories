@@ -5,7 +5,7 @@ internal static class CharacterServices_TrySetCharacterDeleted
     public static async Task<bool> TryHandle(ILogger<CharacterServices> logger, CommonServices commonServices, Character_TrySetCharacterDeleted command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
-        if (Computed.IsInvalidating())
+        if (InvalidationMode.IsOn)
         {
             var invRecord = context.Operation.Items.Get<Character_InvalidateCharacterRecord>();
             if (invRecord != null)

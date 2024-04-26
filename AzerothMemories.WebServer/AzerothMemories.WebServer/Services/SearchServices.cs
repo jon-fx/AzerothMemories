@@ -108,12 +108,12 @@ public class SearchServices : ISearchServices
         }
 
         var resultList = new List<DailyActivityResults>();
-        for (var i = _startYear; i < _endYear; i++)
+        foreach (var year in GetActivitySetYears())
         {
-            allResults.TryGetValue(i, out var mainActivity);
-            userResults.TryGetValue(i, out var userActivity);
+            allResults.TryGetValue(year, out var mainActivity);
+            userResults.TryGetValue(year, out var userActivity);
 
-            var data = new DailyActivityResults { Year = i, Main = mainActivity, User = userActivity };
+            var data = new DailyActivityResults { Year = year, Main = mainActivity, User = userActivity };
             if (data.Main == null && data.User == null)
             {
             }
@@ -145,7 +145,7 @@ public class SearchServices : ISearchServices
         var topValueCount = 10;
         var results = new Dictionary<int, DailyActivityResultsMain>();
         var totals = new DailyActivityResultsMain { Year = _totalYearValue };
-        for (var year = _startYear; year < _endYear; year++)
+        foreach (var year in GetActivitySetYears())
         {
             var currentActivitySet = await TryGetMainActivitySet(timeZoneId, inZoneDay, inZoneMonth, year).ConfigureAwait(false);
             if (currentActivitySet.AchievementCounts.Count == 0 && currentActivitySet.PostTags.Count == 0)
@@ -255,37 +255,22 @@ public class SearchServices : ISearchServices
         var totals = new ActivitySetMain { Year = _totalYearValue };
         results.Add(totals.Year, totals);
 
-        var postRecordPredicate = PredicateBuilder.New<PostRecord>();
-        var achievementRecordPredicate = PredicateBuilder.New<CharacterAchievementRecord>();
         var timeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(timeZoneId);
 
         Exceptions.ThrowIf(timeZone == null);
 
-        for (var year = _startYear; year < _endYear; year++)
+        foreach (var set in GetActivitySetInfo(timeZone, inZoneMonth, inZoneDay))
         {
-            if (inZoneMonth == 2 && inZoneDay == 29 && CalendarSystem.Iso.IsLeapYear(year) == false)
+            results[set.Year] = new ActivitySetMain
             {
-                continue;
-            }
-
-            var set = new ActivitySetMain
-            {
-                Year = year,
-                StartTime = timeZone.AtStartOfDay(new LocalDate(year, inZoneMonth, inZoneDay)).ToInstant(),
-                EndTime = timeZone.AtStartOfDay(new LocalDate(year, inZoneMonth, inZoneDay).PlusDays(1)).ToInstant()
+                Year = set.Year,
+                StartTime = set.StartTime,
+                EndTime = set.EndTime
             };
-
-            results[year] = set;
-
-            postRecordPredicate = postRecordPredicate.Or(x => x.PostTime >= set.StartTime && x.PostTime < set.EndTime);
-            achievementRecordPredicate = achievementRecordPredicate.Or(x => x.AchievementTimeStamp >= set.StartTime && x.AchievementTimeStamp < set.EndTime);
         }
 
-        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
-
-        var dailyAchievementsQuery = database.CharacterAchievements.AsExpandableEFCore().Where(achievementRecordPredicate).Select(x => new { x.Id, x.AchievementId, x.AchievementTimeStamp });
-        var dailyAchievementsById = await dailyAchievementsQuery.AsNoTracking().ToArrayAsync().ConfigureAwait(false);
-        foreach (var kvp in dailyAchievementsById)
+        var dailyAchievements = await TryGetDailyAchievements(timeZoneId, inZoneDay, inZoneMonth).ConfigureAwait(false);
+        foreach (var kvp in dailyAchievements)
         {
             var localDateTime = kvp.AchievementTimeStamp.InZone(timeZone).LocalDateTime;
             var activitySet = results[localDateTime.Year];
@@ -299,8 +284,7 @@ public class SearchServices : ISearchServices
             totals.TotalAchievements++;
         }
 
-        var dailyPostsQuery = database.Posts.AsExpandableEFCore().Include(p => p.PostTags).Where(postRecordPredicate).Select(x => new { x.Id, x.PostTags, x.PostTime });
-        var dailyPosts = await dailyPostsQuery.AsNoTracking().ToArrayAsync().ConfigureAwait(false);
+        var dailyPosts = await TryGetDailyPosts(timeZoneId, inZoneDay, inZoneMonth).ConfigureAwait(false);
         foreach (var postRecord in dailyPosts)
         {
             var localDateTime = postRecord.PostTime.InZone(timeZone).LocalDateTime;
@@ -350,6 +334,75 @@ public class SearchServices : ISearchServices
         return results;
     }
 
+    private IEnumerable<(int Year, Instant StartTime, Instant EndTime)> GetActivitySetInfo(DateTimeZone timeZone, int inZoneMonth, int inZoneDay)
+    {
+        foreach (var year in GetActivitySetYears())
+        {
+            if (inZoneMonth == 2 && inZoneDay == 29 && CalendarSystem.Iso.IsLeapYear(year) == false)
+            {
+            }
+            else
+            {
+                var startTime = timeZone.AtStartOfDay(new LocalDate(year, inZoneMonth, inZoneDay)).ToInstant();
+                var endTime = timeZone.AtStartOfDay(new LocalDate(year, inZoneMonth, inZoneDay).PlusDays(1)).ToInstant();
+
+                yield return (year, startTime, endTime);
+            }
+        }
+    }
+
+    private IEnumerable<int> GetActivitySetYears()
+    {
+        for (var year = _startYear; year < _endYear; year++)
+        {
+            yield return year;
+        }
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<(int AchievementId, Instant AchievementTimeStamp)[]> TryGetDailyAchievements(string timeZoneId, int inZoneDay, int inZoneMonth)
+    {
+        using var _ = new MethodTimeLogger(_logger);
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
+
+        var achievementRecordPredicate = PredicateBuilder.New<CharacterAchievementRecord>();
+        var timeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(timeZoneId);
+
+        Exceptions.ThrowIf(timeZone == null);
+
+        foreach (var set in GetActivitySetInfo(timeZone, inZoneMonth, inZoneDay))
+        {
+            achievementRecordPredicate = achievementRecordPredicate.Or(x => x.AchievementTimeStamp >= set.StartTime && x.AchievementTimeStamp < set.EndTime);
+        }
+
+        var dailyAchievementsQuery = database.CharacterAchievements.AsExpandableEFCore().Where(achievementRecordPredicate).Select(x => new { x.Id, x.AchievementId, x.AchievementTimeStamp });
+        var dailyAchievements = await dailyAchievementsQuery.AsNoTracking().ToArrayAsync().ConfigureAwait(false);
+
+        return dailyAchievements.Select(arg => (arg.AchievementId, arg.AchievementTimeStamp)).ToArray();
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<(int Id, Instant PostTime, ICollection<PostTagRecord> PostTags)[]> TryGetDailyPosts(string timeZoneId, int inZoneDay, int inZoneMonth)
+    {
+        using var _ = new MethodTimeLogger(_logger);
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
+
+        var postRecordPredicate = PredicateBuilder.New<PostRecord>();
+        var timeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(timeZoneId);
+
+        Exceptions.ThrowIf(timeZone == null);
+
+        foreach (var set in GetActivitySetInfo(timeZone, inZoneMonth, inZoneDay))
+        {
+            postRecordPredicate = postRecordPredicate.Or(x => x.PostTime >= set.StartTime && x.PostTime < set.EndTime);
+        }
+
+        var dailyPostsQuery = database.Posts.AsExpandableEFCore().Include(p => p.PostTags).Where(postRecordPredicate).Select(x => new { x.Id, x.PostTags, x.PostTime });
+        var dailyAchievements = await dailyPostsQuery.AsNoTracking().ToArrayAsync().ConfigureAwait(false);
+
+        return dailyAchievements.Select(arg => (arg.Id, arg.PostTime, arg.PostTags)).ToArray();
+    }
+
     [ComputeMethod(MinCacheDuration = 60 * 10)]
     protected virtual async Task<CharacterFirstAchievementRecord[]> GetAllFirstAchievements()
     {
@@ -394,7 +447,7 @@ public class SearchServices : ISearchServices
 
         var results = new Dictionary<int, DailyActivityResultsUser>();
         var totals = new DailyActivityResultsUser { Year = _totalYearValue };
-        for (var year = _startYear; year < _endYear; year++)
+        foreach (var year in GetActivitySetYears())
         {
             var currentActivitySet = await TryGetUserActivitySet(accountId, timeZoneId, inZoneDay, inZoneMonth, year).ConfigureAwait(false);
             if (currentActivitySet.Achievements.Count == 0 && currentActivitySet.FirstAchievements.Count == 0 && currentActivitySet.MyMemories.Count == 0)
@@ -464,21 +517,14 @@ public class SearchServices : ISearchServices
         var achievementRecordPredicate = PredicateBuilder.New<CharacterAchievementRecord>();
         var timeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(timeZoneId);
         Exceptions.ThrowIf(timeZone == null);
-        for (var year = _startYear; year < _endYear; year++)
+        foreach (var set in GetActivitySetInfo(timeZone, inZoneMonth, inZoneDay))
         {
-            if (inZoneMonth == 2 && inZoneDay == 29 && CalendarSystem.Iso.IsLeapYear(year) == false)
+            results[set.Year] = new ActivitySetUser
             {
-                continue;
-            }
-
-            var set = new ActivitySetUser
-            {
-                Year = year,
-                StartTime = timeZone.AtStartOfDay(new LocalDate(year, inZoneMonth, inZoneDay)).ToInstant(),
-                EndTime = timeZone.AtStartOfDay(new LocalDate(year, inZoneMonth, inZoneDay).PlusDays(1)).ToInstant()
+                Year = set.Year,
+                StartTime = set.StartTime,
+                EndTime = set.EndTime
             };
-
-            results[year] = set;
 
             postRecordPredicate = postRecordPredicate.Or(x => x.PostTime >= set.StartTime && x.PostTime < set.EndTime);
             achievementRecordPredicate = achievementRecordPredicate.Or(x => x.AchievementTimeStamp >= set.StartTime && x.AchievementTimeStamp < set.EndTime);

@@ -5,7 +5,7 @@ internal static class PostServices_TryPublishComment
     public static async Task<int> TryHandle(ILogger<PostServices> logger, CommonServices commonServices, Post_TryPublishComment command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
-        if (Computed.IsInvalidating())
+        if (InvalidationMode.IsOn)
         {
             var invPost = context.Operation.Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)

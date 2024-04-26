@@ -13,7 +13,7 @@ internal static class PostServices_TryPostMemory
     public static async Task<AddMemoryResult> TryHandle(ILogger<PostServices> logger, CommonServices commonServices, Post_TryPostMemory command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
-        if (Computed.IsInvalidating())
+        if (InvalidationMode.IsOn)
         {
             var invPost = context.Operation.Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)

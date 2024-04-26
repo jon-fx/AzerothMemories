@@ -5,7 +5,7 @@ internal static class AdminServices_TryBanUser
     public static async Task<bool> TryHandle(ILogger<AdminServices> logger, CommonServices commonServices, Admin_TryBanUser command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
-        if (Computed.IsInvalidating())
+        if (InvalidationMode.IsOn)
         {
             var invRecord = context.Operation.Items.Get<Account_InvalidateAccountRecord>();
             if (invRecord != null)

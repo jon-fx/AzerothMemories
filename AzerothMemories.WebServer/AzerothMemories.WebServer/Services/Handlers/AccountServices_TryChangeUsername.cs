@@ -5,7 +5,7 @@ internal static class AccountServices_TryChangeUsername
     public static async Task<bool> TryHandle(ILogger<AccountServices> logger, CommonServices commonServices, Account_TryChangeUsername command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
-        if (Computed.IsInvalidating())
+        if (InvalidationMode.IsOn)
         {
             var invRecord = context.Operation.Items.Get<Account_InvalidateAccountRecord>();
             if (invRecord != null)

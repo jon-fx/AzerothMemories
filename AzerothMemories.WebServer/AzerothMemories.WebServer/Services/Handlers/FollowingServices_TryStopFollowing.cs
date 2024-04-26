@@ -5,7 +5,7 @@ internal static class FollowingServices_TryStopFollowing
     public static async Task<AccountFollowingStatus?> TryHandle(ILogger<FollowingServices> logger, CommonServices commonServices, Following_TryStopFollowing command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
-        if (Computed.IsInvalidating())
+        if (InvalidationMode.IsOn)
         {
             var invRecord = context.Operation.Items.Get<Following_InvalidateRecord>();
             commonServices.FollowingServices.InvalidateFollowing(invRecord);

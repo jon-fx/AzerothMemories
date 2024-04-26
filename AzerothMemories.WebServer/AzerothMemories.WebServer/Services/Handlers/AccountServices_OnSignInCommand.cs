@@ -6,7 +6,7 @@ internal static class AccountServices_OnSignInCommand
     {
         var context = CommandContext.GetCurrent();
 
-        if (Computed.IsInvalidating())
+        if (InvalidationMode.IsOn)
         {
             await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
 

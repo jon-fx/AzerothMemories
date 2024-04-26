@@ -66,7 +66,7 @@ public class BlizzardUpdateServices : IComputeService
     public virtual async Task<HttpStatusCode> UpdateAccount(Updates_UpdateAccountCommand command, CancellationToken cancellationToken = default)
     {
         var context = CommandContext.GetCurrent();
-        if (Computed.IsInvalidating())
+        if (InvalidationMode.IsOn)
         {
             var invRecord = context.Operation.Items.Get<Updates_UpdateAccountInvalidate>();
             if (invRecord != null)
@@ -102,7 +102,7 @@ public class BlizzardUpdateServices : IComputeService
     public virtual async Task<HttpStatusCode> UpdateCharacter(Updates_UpdateCharacterCommand command, CancellationToken cancellationToken = default)
     {
         var context = CommandContext.GetCurrent();
-        if (Computed.IsInvalidating())
+        if (InvalidationMode.IsOn)
         {
             var invRecord = context.Operation.Items.Get<Character_InvalidateCharacterRecord>();
             if (invRecord != null)
@@ -154,7 +154,7 @@ public class BlizzardUpdateServices : IComputeService
     public virtual async Task<HttpStatusCode> UpdateGuild(Updates_UpdateGuildCommand command, CancellationToken cancellationToken = default)
     {
         var context = CommandContext.GetCurrent();
-        if (Computed.IsInvalidating())
+        if (InvalidationMode.IsOn)
         {
             var invRecord = context.Operation.Items.Get<Guild_InvalidateGuildRecord>();
             if (invRecord != null)
