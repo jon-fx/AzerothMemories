@@ -17,4 +17,9 @@ public sealed class ActivitySetMain
     public Dictionary<int, int> AchievementCounts { get; } = new();
 
     public Dictionary<string, int> PostTags { get; } = new();
+
+    public bool IsEmpty()
+    {
+        return FirstTags.Count == 0 && FirstAchievements.Count == 0 && AchievementCounts.Count == 0 && PostTags.Count == 0;
+    }
 }

@@ -22,7 +22,7 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
     {
         await base.OnInitializedAsync();
 
-        //OnParametersChanged();
+        OnParametersChanged();
 
         await ViewModel.OnInitialized();
 

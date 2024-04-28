@@ -159,6 +159,11 @@ else
 
     private void OnMainTagClicked(PostTagInfo postTagInfo)
     {
+        if (postTagInfo == null)
+        {
+            return;
+        }
+
         var tagStrings = new List<string>
         {
             postTagInfo.TagString
@@ -178,6 +183,11 @@ else
 
     private void OnUserTagClicked(PostTagInfo postTagInfo)
     {
+        if (postTagInfo == null)
+        {
+            return;
+        }
+
         var tagStrings = new List<string>();
         if (HeaderData.User.AccountId > 0)
         {
