@@ -125,7 +125,7 @@ public class BaseTestHelper : IAsyncLifetime
 
         await database.SaveChangesAsync();
 
-        using (InvalidationMode.Begin())
+        using (Invalidation.Begin())
         {
             _ = CommonServices.AccountServices.DependsOnAccountRecord(accountViewModel.Id);
             _ = CommonServices.AccountServices.DependsOnAccountRecord(accountViewModel.Id);

@@ -5,7 +5,7 @@ internal static class CharacterServices_TryChangeCharacterAccountSync
     public static async Task<bool> TryHandle(ILogger<CharacterServices> logger, CommonServices commonServices, Character_TryChangeCharacterAccountSync command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
-        if (InvalidationMode.IsOn)
+        if (Invalidation.IsActive)
         {
             var invRecord = context.Operation.Items.Get<Character_InvalidateCharacterRecord>();
             if (invRecord != null)

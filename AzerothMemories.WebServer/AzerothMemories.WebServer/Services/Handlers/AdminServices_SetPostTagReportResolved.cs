@@ -5,7 +5,7 @@ internal static class AdminServices_SetPostTagReportResolved
     public static async Task<bool> TryHandle(ILogger<AdminServices> logger, CommonServices commonServices, Admin_SetPostTagReportResolved command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
-        if (InvalidationMode.IsOn)
+        if (Invalidation.IsActive)
         {
             var invalidateReports = context.Operation.Items.Get<Admin_InvalidateReports>();
             if (invalidateReports != null)

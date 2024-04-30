@@ -5,7 +5,7 @@ internal static class PostServices_TryRestoreMemory
     public static async Task<bool> TryHandle(ILogger<PostServices> logger, CommonServices commonServices, Post_TryRestoreMemory command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
-        if (InvalidationMode.IsOn)
+        if (Invalidation.IsActive)
         {
             var invPost = context.Operation.Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)

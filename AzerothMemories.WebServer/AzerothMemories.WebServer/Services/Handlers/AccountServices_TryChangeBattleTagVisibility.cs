@@ -5,7 +5,7 @@ internal static class AccountServices_TryChangeBattleTagVisibility
     public static async Task<bool> TryHandle(ILogger<AccountServices> logger, CommonServices commonServices, Account_TryChangeBattleTagVisibility command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
-        if (InvalidationMode.IsOn)
+        if (Invalidation.IsActive)
         {
             var invRecord = context.Operation.Items.Get<Account_InvalidateAccountRecord>();
             if (invRecord != null)

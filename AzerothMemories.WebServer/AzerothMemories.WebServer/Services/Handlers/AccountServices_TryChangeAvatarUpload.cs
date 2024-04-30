@@ -9,7 +9,7 @@ internal static class AccountServices_TryChangeAvatarUpload
     public static async Task<string> TryHandle(ILogger<AccountServices> logger, CommonServices commonServices, Account_TryChangeAvatarUpload command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
-        if (InvalidationMode.IsOn)
+        if (Invalidation.IsActive)
         {
             var invRecord = context.Operation.Items.Get<Account_InvalidateAccountRecord>();
             if (invRecord != null)

@@ -7,7 +7,7 @@ internal static class AccountServices_OnSignOutCommand
         var context = CommandContext.GetCurrent();
         await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
 
-        if (InvalidationMode.IsOn)
+        if (Invalidation.IsActive)
         {
             var invRecord = context.Operation.Items.Get<Account_InvalidateAccountRecord>();
             if (invRecord != null)

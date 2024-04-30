@@ -5,7 +5,7 @@ internal static class PostServices_TryReactToPostComment
     public static async Task<int> TryHandle(ILogger<PostServices> logger, CommonServices commonServices, Post_TryReactToPostComment command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
-        if (InvalidationMode.IsOn)
+        if (Invalidation.IsActive)
         {
             var invPost = context.Operation.Items.Get<Post_InvalidatePost>();
             if (invPost != null && invPost.PostId > 0)

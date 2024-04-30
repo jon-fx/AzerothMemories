@@ -5,7 +5,7 @@ internal static class PostServices_TryReportPostTags
     public static async Task<bool> TryHandle(ILogger<PostServices> logger, CommonServices commonServices, Post_TryReportPostTags command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
-        if (InvalidationMode.IsOn)
+        if (Invalidation.IsActive)
         {
             _ = commonServices.PostServices.DependsOnPostTagReports();
 
