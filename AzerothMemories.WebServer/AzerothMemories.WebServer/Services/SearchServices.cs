@@ -148,7 +148,7 @@ public class SearchServices : ISearchServices
         foreach (var year in GetActivitySetYears())
         {
             var currentActivitySet = await TryGetMainActivitySet(timeZoneId, inZoneDay, inZoneMonth, year).ConfigureAwait(false);
-            if (currentActivitySet.AchievementCounts.Count == 0 && currentActivitySet.PostTags.Count == 0)
+            if (currentActivitySet.IsEmpty())
             {
                 continue;
             }
@@ -362,23 +362,25 @@ public class SearchServices : ISearchServices
     [ComputeMethod]
     protected virtual async Task<(int AchievementId, Instant AchievementTimeStamp)[]> TryGetDailyAchievements(string timeZoneId, int inZoneDay, int inZoneMonth)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        //using var _ = new MethodTimeLogger(_logger);
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
-        var achievementRecordPredicate = PredicateBuilder.New<CharacterAchievementRecord>();
-        var timeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(timeZoneId);
+        //var achievementRecordPredicate = PredicateBuilder.New<CharacterAchievementRecord>();
+        //var timeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(timeZoneId);
 
-        Exceptions.ThrowIf(timeZone == null);
+        //Exceptions.ThrowIf(timeZone == null);
 
-        foreach (var set in GetActivitySetInfo(timeZone, inZoneMonth, inZoneDay))
-        {
-            achievementRecordPredicate = achievementRecordPredicate.Or(x => x.AchievementTimeStamp >= set.StartTime && x.AchievementTimeStamp < set.EndTime);
-        }
+        //foreach (var set in GetActivitySetInfo(timeZone, inZoneMonth, inZoneDay))
+        //{
+        //    achievementRecordPredicate = achievementRecordPredicate.Or(x => x.AchievementTimeStamp >= set.StartTime && x.AchievementTimeStamp < set.EndTime);
+        //}
 
-        var dailyAchievementsQuery = database.CharacterAchievements.AsExpandableEFCore().Where(achievementRecordPredicate).Select(x => new { x.Id, x.AchievementId, x.AchievementTimeStamp });
-        var dailyAchievements = await dailyAchievementsQuery.AsNoTracking().ToArrayAsync().ConfigureAwait(false);
+        //var dailyAchievementsQuery = database.CharacterAchievements.AsExpandableEFCore().Where(achievementRecordPredicate).Select(x => new { x.Id, x.AchievementId, x.AchievementTimeStamp });
+        //var dailyAchievements = await dailyAchievementsQuery.AsNoTracking().ToArrayAsync().ConfigureAwait(false);
 
-        return dailyAchievements.Select(arg => (arg.AchievementId, arg.AchievementTimeStamp)).ToArray();
+        //return dailyAchievements.Select(arg => (arg.AchievementId, arg.AchievementTimeStamp)).ToArray();
+
+        return [];
     }
 
     [ComputeMethod]

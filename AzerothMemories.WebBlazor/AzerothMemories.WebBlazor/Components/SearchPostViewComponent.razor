@@ -16,11 +16,9 @@ else if (PostSearchHelper.CurrentPosts.Length > 0)
         </MudCardContent>
     </MudCard>
 
-    for (var i = 0; i < PostSearchHelper.CurrentPosts.Length; i++)
+    foreach (var post in PostSearchHelper.CurrentPosts)
     {
-        var index = i;
-        var post = PostSearchHelper.CurrentPosts[index];
-        var postId = $"moa-post-{index}";
+        var postId = $"moa-post-{post.Id}";
 
         <div id="@postId">
             @if (IsSearchPage)
