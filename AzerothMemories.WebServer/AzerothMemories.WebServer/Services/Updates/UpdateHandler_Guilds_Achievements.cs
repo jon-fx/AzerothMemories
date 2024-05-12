@@ -15,28 +15,34 @@ internal sealed class UpdateHandler_Guilds_Achievements : UpdateHandlerBaseResul
 
     protected override async Task InternalExecuteWithResult(CommandContext context, AppDbContext database, GuildRecord record, GuildAchievements requestResult)
     {
-        var currentAchievements = await database.GuildAchievements.Where(x => x.GuildId == record.Id).ToDictionaryAsync(x => x.AchievementId, x => x).ConfigureAwait(false);
-
-        foreach (var achievement in requestResult.Achievements)
+        if (requestResult.Achievements == null)
         {
-            var timeStamp = achievement.CompletedTimestamp.GetValueOrDefault(0);
-            if (timeStamp <= 0)
-            {
-                continue;
-            }
+        }
+        else
+        {
+            var currentAchievements = await database.GuildAchievements.Where(x => x.GuildId == record.Id).ToDictionaryAsync(x => x.AchievementId, x => x).ConfigureAwait(false);
 
-            if (!currentAchievements.TryGetValue(achievement.Id, out var achievementRecord))
+            foreach (var achievement in requestResult.Achievements)
             {
-                achievementRecord = new GuildAchievementRecord
+                var timeStamp = achievement.CompletedTimestamp.GetValueOrDefault(0);
+                if (timeStamp <= 0)
                 {
-                    GuildId = record.Id,
-                    AchievementId = achievement.Id
-                };
+                    continue;
+                }
 
-                database.GuildAchievements.Add(achievementRecord);
+                if (!currentAchievements.TryGetValue(achievement.Id, out var achievementRecord))
+                {
+                    achievementRecord = new GuildAchievementRecord
+                    {
+                        GuildId = record.Id,
+                        AchievementId = achievement.Id
+                    };
+
+                    database.GuildAchievements.Add(achievementRecord);
+                }
+
+                achievementRecord.AchievementTimeStamp = Instant.FromUnixTimeMilliseconds(timeStamp);
             }
-
-            achievementRecord.AchievementTimeStamp = Instant.FromUnixTimeMilliseconds(timeStamp);
         }
 
         record.AchievementTotalPoints = requestResult.TotalPoints;
