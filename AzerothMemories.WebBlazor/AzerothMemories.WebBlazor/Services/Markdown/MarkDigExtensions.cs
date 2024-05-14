@@ -4,7 +4,7 @@ namespace AzerothMemories.WebBlazor.Services.Markdown;
 
 internal static class MarkDigExtensions
 {
-    public static MarkdownContextHelper TryGetContextHelper(this MarkdownParserContext parserContext)
+    public static MarkdownContextHelper? TryGetContextHelper(this MarkdownParserContext? parserContext)
     {
         if (parserContext == null)
         {

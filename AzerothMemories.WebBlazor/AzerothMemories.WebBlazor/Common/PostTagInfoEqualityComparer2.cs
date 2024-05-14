@@ -2,7 +2,7 @@
 
 internal sealed class PostTagInfoEqualityComparer2 : IEqualityComparer<object>
 {
-    public new bool Equals(object x, object y)
+    public new bool Equals(object? x, object? y)
     {
         var postTagInfo1 = x as PostTagInfo;
         var postTagInfo2 = y as PostTagInfo;

@@ -18,7 +18,7 @@ public sealed class PostTagReportRecord : IDatabaseRecordWithVersion
 
     [Column] public Instant CreatedTime { get; init; }
 
-    [Column] public PostTagRecord Tag { get; init; }
+    [Column] public PostTagRecord? Tag { get; init; }
 
     [Column] public int? ResolvedByAccountId { get; set; }
 

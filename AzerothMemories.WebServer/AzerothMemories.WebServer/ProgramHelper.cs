@@ -70,7 +70,7 @@ public abstract class ProgramHelper
 
         _fusionServer.ConfigureServerAuthHelper(_ => new ServerAuthHelper.Options
         {
-            NameClaimKeys = Array.Empty<string>()
+            NameClaimKeys = []
         });
 
         OnInitializeAuth();

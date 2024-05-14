@@ -11,7 +11,7 @@ public sealed partial record Post_TryReactToPostComment : ISessionCommand<int>
         NewReaction = newReaction;
     }
 
-    [DataMember, MemoryPackInclude] public Session Session { get; init; }
+    [DataMember, MemoryPackInclude] public Session Session { get; init; } = null!;
 
     [DataMember, MemoryPackInclude] public int PostId { get; init; }
 

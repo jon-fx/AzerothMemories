@@ -7,7 +7,7 @@ internal sealed class AccountLinkInlineParser : InlineParser
 {
     public AccountLinkInlineParser()
     {
-        OpeningCharacters = new[] { '@' };
+        OpeningCharacters = ['@'];
     }
 
     public override bool Match(InlineProcessor processor, ref StringSlice slice)

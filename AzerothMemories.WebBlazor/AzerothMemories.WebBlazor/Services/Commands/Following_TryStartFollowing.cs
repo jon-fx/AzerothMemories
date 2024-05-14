@@ -9,7 +9,7 @@ public sealed partial record Following_TryStartFollowing : ISessionCommand<Accou
         OtherAccountId = otherAccountId;
     }
 
-    [DataMember, MemoryPackInclude] public Session Session { get; init; }
+    [DataMember, MemoryPackInclude] public Session Session { get; init; } = null!;
 
     [DataMember, MemoryPackInclude] public int OtherAccountId { get; init; }
 }

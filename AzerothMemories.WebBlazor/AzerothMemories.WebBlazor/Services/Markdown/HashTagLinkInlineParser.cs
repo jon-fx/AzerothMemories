@@ -7,7 +7,7 @@ internal sealed class HashTagLinkInlineParser : InlineParser
 {
     public HashTagLinkInlineParser()
     {
-        OpeningCharacters = new[] { '#' };
+        OpeningCharacters = ['#'];
     }
 
     public override bool Match(InlineProcessor processor, ref StringSlice slice)

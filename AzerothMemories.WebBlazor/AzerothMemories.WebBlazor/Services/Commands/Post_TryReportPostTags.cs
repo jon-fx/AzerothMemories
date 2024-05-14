@@ -10,7 +10,7 @@ public sealed partial record Post_TryReportPostTags : ISessionCommand<bool>
         TagStrings = tagStrings;
     }
 
-    [DataMember, MemoryPackInclude] public Session Session { get; init; }
+    [DataMember, MemoryPackInclude] public Session Session { get; init; } = null!;
 
     [DataMember, MemoryPackInclude] public int PostId { get; init; }
 

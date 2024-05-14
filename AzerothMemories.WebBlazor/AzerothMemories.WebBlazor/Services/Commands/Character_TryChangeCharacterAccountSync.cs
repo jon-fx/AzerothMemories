@@ -10,7 +10,7 @@ public sealed partial record Character_TryChangeCharacterAccountSync : ISessionC
         NewValue = newValue;
     }
 
-    [DataMember, MemoryPackInclude] public Session Session { get; init; }
+    [DataMember, MemoryPackInclude] public Session Session { get; init; } = null!;
 
     [DataMember, MemoryPackInclude] public int CharacterId { get; init; }
 

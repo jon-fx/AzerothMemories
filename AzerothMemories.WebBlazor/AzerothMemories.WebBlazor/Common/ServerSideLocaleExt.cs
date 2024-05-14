@@ -2,7 +2,7 @@
 
 public static class ServerSideLocaleExt
 {
-    private static readonly string[] _wowheadLocales;
+    private static readonly string?[] _wowheadLocales;
     private static readonly Dictionary<CultureInfo, ServerSideLocale> _namesToLocales;
 
     static ServerSideLocaleExt()

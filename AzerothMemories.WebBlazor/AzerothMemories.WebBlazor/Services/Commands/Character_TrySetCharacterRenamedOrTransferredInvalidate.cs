@@ -20,5 +20,5 @@ public sealed partial record Character_TrySetCharacterRenamedOrTransferredInvali
 
     [DataMember, MemoryPackInclude] public int NewCharacterId { get; init; }
 
-    [DataMember, MemoryPackInclude] public HashSet<int> PostIds { get; init; }
+    [DataMember, MemoryPackInclude] public HashSet<int>? PostIds { get; init; }
 }

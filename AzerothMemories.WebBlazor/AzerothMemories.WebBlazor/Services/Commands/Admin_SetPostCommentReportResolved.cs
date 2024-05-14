@@ -11,7 +11,7 @@ public sealed partial record Admin_SetPostCommentReportResolved : ISessionComman
         CommentId = commentId;
     }
 
-    [DataMember, MemoryPackInclude] public Session Session { get; init; }
+    [DataMember, MemoryPackInclude] public Session Session { get; init; } = null!;
 
     [DataMember, MemoryPackInclude] public bool Delete { get; init; }
 

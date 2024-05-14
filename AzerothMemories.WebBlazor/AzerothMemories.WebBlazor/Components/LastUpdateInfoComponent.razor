@@ -30,7 +30,7 @@ else
 @code {
     [Parameter, EditorRequired] public required TimeProviderEx TimeProvider { get; init; }
 
-    [Parameter, EditorRequired] public required BlizzardUpdateViewModel UpdateViewModel { get; init; }
+    [Parameter, EditorRequired] public required BlizzardUpdateViewModel? UpdateViewModel { get; init; }
 
     private (string Icon, Color IconColor) GetIconAndColor(bool isSuccess)
     {

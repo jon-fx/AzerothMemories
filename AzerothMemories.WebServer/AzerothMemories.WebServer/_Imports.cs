@@ -7,7 +7,6 @@ global using ActualLab.Fusion.Blazor;
 global using ActualLab.Fusion.EntityFramework;
 global using ActualLab.Fusion.EntityFramework.Operations;
 global using ActualLab.Fusion.Extensions.Services;
-global using ActualLab.Fusion.Operations;
 global using ActualLab.Fusion.Server;
 global using ActualLab.Rpc;
 global using AzerothMemories.WebBlazor.Blizzard;

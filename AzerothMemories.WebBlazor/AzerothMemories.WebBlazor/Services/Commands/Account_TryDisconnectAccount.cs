@@ -10,7 +10,7 @@ public sealed partial record Account_TryDisconnectAccount : ISessionCommand<bool
         Key = key;
     }
 
-    [DataMember, MemoryPackInclude] public Session Session { get; init; }
+    [DataMember, MemoryPackInclude] public Session Session { get; init; } = null!;
 
     [DataMember, MemoryPackInclude] public string Schema { get; init; }
 

@@ -60,7 +60,7 @@ internal static class FollowingServices_TryStartFollowing
                                               Id = record.Id,
                                               AccountId = record.AccountId,
                                               FollowerId = record.FollowerId,
-                                              FollowerUsername = follower.Username,
+                                              FollowerUsername = follower.GetUsernameSafe(),
                                               FollowerAvatarLink = follower.Avatar,
                                               Status = record.Status
                                           };

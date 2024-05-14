@@ -77,7 +77,7 @@
 
     private async Task OnDateTimeChanged(Instant? arg)
     {
-        if (arg.HasValue)
+        if (arg.HasValue && ViewModel.SharedData != null)
         {
             await ViewModel.SharedData.SetPostTimeStamp(arg.Value);
         }

@@ -16,5 +16,5 @@ public sealed partial class AdminCountersViewModel
     [JsonInclude, DataMember, MemoryPackInclude] public int CommentCount { get; init; }
     [JsonInclude, DataMember, MemoryPackInclude] public int UploadCount { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public AdminUpdateCountersViewModel UpdateCounters { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public AdminUpdateCountersViewModel? UpdateCounters { get; init; }
 }

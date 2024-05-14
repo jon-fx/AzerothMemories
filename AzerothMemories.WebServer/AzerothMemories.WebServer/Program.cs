@@ -1,6 +1,5 @@
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("AzerothMemories.WebServer.Tests")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("AzerothMemories.WebServer.TestsFake")]
-
 var config = new CommonConfig();
 var builder = WebApplication.CreateBuilder(args);
 var helper = new ProgramHeleprMain(config, builder.Services);
@@ -54,7 +53,7 @@ app.UseStaticFiles();
 
 var webSocketOptions = new WebSocketOptions
 {
-    KeepAliveInterval = TimeSpan.FromSeconds(120),
+    KeepAliveInterval = TimeSpan.FromSeconds(120)
 };
 
 webSocketOptions.AllowedOrigins.Add("https://localhost:7048");

@@ -8,7 +8,7 @@ public record MediaUserResult : MediaResult
     {
     }
 
-    public MediaUserResult(Instant lastModified, ETag eTag, string mediaType, byte[] mediaBytes, int postId, int postAccountId) : base(lastModified, eTag, mediaType, mediaBytes)
+    public MediaUserResult(Instant lastModified, ETag eTag, string mediaType, byte[]? mediaBytes, int postId, int postAccountId) : base(lastModified, eTag, mediaType, mediaBytes)
     {
         PostId = postId;
         PostAccountId = postAccountId;

@@ -60,7 +60,7 @@ internal static class PostServices_TryPublishComment
             return 0;
         }
 
-        PostCommentViewModel parentComment = null;
+        PostCommentViewModel? parentComment = null;
         var parentCommentId = command.ParentCommentId;
         var allCommentPages = await commonServices.PostServices.TryGetAllPostComments(postId).ConfigureAwait(false);
         var allComments = allCommentPages[0].AllComments;

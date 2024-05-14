@@ -10,7 +10,7 @@ public sealed partial record Admin_SetPostReportResolved : ISessionCommand<bool>
         PostId = postId;
     }
 
-    [DataMember, MemoryPackInclude] public Session Session { get; init; }
+    [DataMember, MemoryPackInclude] public Session Session { get; init; } = null!;
 
     [DataMember, MemoryPackInclude] public bool Delete { get; init; }
 

@@ -71,7 +71,7 @@ internal static class PostServices_TryUpdateSystemTags
         await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
 
         var postRecord = await database.Posts.Include(x => x.PostTags).FirstOrDefaultAsync(p => p.DeletedTimeStamp == 0 && p.Id == postId, cancellationToken).ConfigureAwait(false);
-        if (postRecord == null)
+        if (postRecord == null || postRecord.PostTags == null)
         {
             return AddMemoryResultCode.Failed;
         }

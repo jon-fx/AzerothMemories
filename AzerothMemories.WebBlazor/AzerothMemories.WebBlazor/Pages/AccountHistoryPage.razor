@@ -47,7 +47,7 @@ else
 }
 
 @code {
-    [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }
+    [Parameter, SupplyParameterFromQuery(Name = "page")] public string? CurrentPage { get; init; }
 
     protected override void OnParametersChanged()
     {

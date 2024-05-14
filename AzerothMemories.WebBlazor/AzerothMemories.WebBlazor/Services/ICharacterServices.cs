@@ -9,7 +9,7 @@ public interface ICharacterServices : IComputeService
     Task<CharacterAccountViewModel> TryGetCharacter(Session session, int characterId);
 
     [ComputeMethod]
-    Task<CharacterAccountViewModel> TryGetCharacter(Session session, BlizzardRegion region, string realmSlug, string characterName);
+    Task<CharacterAccountViewModel?> TryGetCharacter(Session session, BlizzardRegion region, string realmSlug, string characterName);
 
     //Task<bool> TryEnqueueUpdate(Session session, BlizzardRegion region, string realmSlug, string characterName);
 

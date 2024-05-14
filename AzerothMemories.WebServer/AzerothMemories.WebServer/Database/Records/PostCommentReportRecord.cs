@@ -16,7 +16,7 @@ public sealed class PostCommentReportRecord : IDatabaseRecordWithVersion
 
     [Column] public PostReportedReason Reason { get; set; }
 
-    [Column] public string ReasonText { get; set; }
+    [Column] public string? ReasonText { get; set; }
 
     [Column] public Instant CreatedTime { get; init; }
 

@@ -2,5 +2,5 @@
 
 public interface IBlizzardUpdateRecord : IDatabaseRecord
 {
-    BlizzardUpdateRecord UpdateRecord { get; set; }
+    BlizzardUpdateRecord? UpdateRecord { get; set; }
 }

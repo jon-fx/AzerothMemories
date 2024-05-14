@@ -9,7 +9,7 @@ public sealed partial class PostCommentReactionViewModel
 
     [JsonInclude, DataMember, MemoryPackInclude] public int AccountId { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public string AccountUsername { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public string AccountUsername { get; init; } = null!;
 
     [JsonInclude, DataMember, MemoryPackInclude] public PostReaction Reaction { get; init; }
 

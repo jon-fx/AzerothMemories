@@ -2,7 +2,7 @@
 
 internal sealed class PostTagInfoEqualityComparer1 : IEqualityComparer<PostTagInfo>
 {
-    public bool Equals(PostTagInfo x, PostTagInfo y)
+    public bool Equals(PostTagInfo? x, PostTagInfo? y)
     {
         if (ReferenceEquals(x, y)) return true;
         if (x is null) return false;

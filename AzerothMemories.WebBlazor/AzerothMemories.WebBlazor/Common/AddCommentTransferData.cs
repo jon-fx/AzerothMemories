@@ -3,5 +3,5 @@
 [DataContract, MemoryPackable]
 public sealed partial class AddCommentTransferData
 {
-    [JsonInclude, DataMember, MemoryPackInclude] public string Comment { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public string? Comment { get; init; }
 }

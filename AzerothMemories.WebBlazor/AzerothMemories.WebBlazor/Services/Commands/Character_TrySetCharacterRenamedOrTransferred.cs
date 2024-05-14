@@ -10,7 +10,7 @@ public sealed partial record Character_TrySetCharacterRenamedOrTransferred : ISe
         NewCharacterId = newCharacterId;
     }
 
-    [DataMember, MemoryPackInclude] public Session Session { get; init; }
+    [DataMember, MemoryPackInclude] public Session Session { get; init; } = null!;
 
     [DataMember, MemoryPackInclude] public int OldCharacterId { get; init; }
 

@@ -9,7 +9,7 @@ public sealed partial record Account_TryChangeIsPrivate : ISessionCommand<bool>
         NewValue = newValue;
     }
 
-    [DataMember, MemoryPackInclude] public Session Session { get; init; }
+    [DataMember, MemoryPackInclude] public Session Session { get; init; } = null!;
 
     [DataMember, MemoryPackInclude] public bool NewValue { get; init; }
 }

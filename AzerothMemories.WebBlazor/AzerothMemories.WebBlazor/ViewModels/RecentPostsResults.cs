@@ -8,5 +8,5 @@ public sealed partial class RecentPostsResults
     [JsonInclude, DataMember, MemoryPackInclude] public PostSortMode SortMode { get; set; }
     [JsonInclude, DataMember, MemoryPackInclude] public RecentPostsType PostsType { get; set; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public PostViewModel[] PostViewModels { get; init; } = Array.Empty<PostViewModel>();
+    [JsonInclude, DataMember, MemoryPackInclude] public PostViewModel[] PostViewModels { get; init; } = [];
 }

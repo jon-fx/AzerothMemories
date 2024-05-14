@@ -9,7 +9,7 @@ public sealed partial record Character_TrySetCharacterDeleted : ISessionCommand<
         CharacterId = characterId;
     }
 
-    [DataMember, MemoryPackInclude] public Session Session { get; init; }
+    [DataMember, MemoryPackInclude] public Session Session { get; init; } = null!;
 
     [DataMember, MemoryPackInclude] public int CharacterId { get; init; }
 }
