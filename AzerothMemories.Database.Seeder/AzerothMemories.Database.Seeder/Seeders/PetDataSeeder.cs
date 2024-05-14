@@ -9,7 +9,7 @@ internal sealed class PetDataSeeder : GenericBase<PetDataSeeder>
     protected override async Task DoSomething()
     {
         var data = new Dictionary<int, WowToolsData>();
-        WowTools.Main.LoadDataFromWowTools("BattlePetSpecies", "ID", ref data, new[] { "ID", "SummonSpellID", "IconFileDataID", "CreatureID" });
+        WowTools.Main.LoadDataFromWowTools("BattlePetSpecies", "ID", ref data, ["ID", "SummonSpellID", "IconFileDataID", "CreatureID"]);
 
         foreach (var reference in data.Values)
         {

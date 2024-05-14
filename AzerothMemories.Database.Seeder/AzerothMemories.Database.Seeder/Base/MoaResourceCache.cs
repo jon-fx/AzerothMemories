@@ -44,10 +44,16 @@ internal sealed class MoaResourceCache
                 jsonData = result.ResultData;
             }
 
-            _allResources[key] = result.ResultString;
+            if (string.IsNullOrWhiteSpace(result.ResultString))
+            {
+            }
+            else
+            {
+                _allResources[key] = result.ResultString;
 
-            var line = $"{key}{_seperator}{result.ResultString}";
-            await File.AppendAllLinesAsync(_resourceFilePath, new[] { line });
+                var line = $"{key}{_seperator}{result.ResultString}";
+                await File.AppendAllLinesAsync(_resourceFilePath, new[] { line });
+            }
         }
 
         return jsonData;

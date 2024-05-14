@@ -4,7 +4,7 @@ namespace AzerothMemories.Database.Seeder.Base;
 
 internal sealed class WowToolsData
 {
-    public static readonly string[] AllLocales = { "enUS", "koKR", "frFR", "deDE", "zhCN", "esES", "zhTW", "enGB", "esMX", "ruRU", "ptBR", "itIT", "ptPT" };
+    public static readonly string[] AllLocales = ["enUS", "koKR", "frFR", "deDE", "zhCN", "esES", "zhTW", "enGB", "esMX", "ruRU", "ptBR", "itIT", "ptPT"];
 
     public readonly int Id;
     private readonly Dictionary<string, object> _data;

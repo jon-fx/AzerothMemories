@@ -10,7 +10,7 @@ public sealed class Migration0005_FirstAchievement : Migration
 
     public override void Up()
     {
-        const string Id = "Id";
+        //const string Id = "Id";
 
         Create.Table(CharacterFirstAchievementRecord.TableName)
             .WithColumn(nameof(CharacterFirstAchievementRecord.Id)).AsInt32().PrimaryKey().Identity()

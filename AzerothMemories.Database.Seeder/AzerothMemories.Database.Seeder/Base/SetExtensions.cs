@@ -4,9 +4,13 @@ namespace AzerothMemories.Database.Seeder.Base;
 
 internal static class SetExtensions
 {
-    public static string[] ToArray(this Name name)
+    public static string?[] ToArray(this Name? name)
     {
-        var results = new string[(int)ServerSideLocale.Count];
+        var results = new string?[(int)ServerSideLocale.Count];
+        if (name == null)
+        {
+            return results;
+        }
 
         results[(int)ServerSideLocale.En_Us] = name.En_US;
         results[(int)ServerSideLocale.Es_Mx] = name.Es_MX;

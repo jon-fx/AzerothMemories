@@ -18,7 +18,7 @@ internal sealed class MountDataSeeder : GenericBase<MountDataSeeder>
             if (reference.TryGetData<int>("SourceSpellID", out var sourceSpellId))
             {
                 var spellResource = ResourceWriter.GetOrCreateServerSideResource(PostTagType.Spell, sourceSpellId);
-                if (spellResource?.Media != null)
+                if (spellResource.Media != null)
                 {
                     ResourceWriter.TryAddServerSideLocalizationMedia(PostTagType.Mount, reference.Id, spellResource.Media);
                 }

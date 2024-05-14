@@ -12,7 +12,7 @@ internal static class CsvHelpers
     static CsvHelpers()
     {
         _config = new CsvConfiguration(CultureInfo.InvariantCulture);
-        _converters = new List<(Type type, ITypeConverter converter)>();
+        _converters = [];
 
         _config.AllowComments = true;
         _config.ShouldSkipRecord = args => args.Row.Parser.Record == null || args.Row.Parser.Record.All(string.IsNullOrEmpty);

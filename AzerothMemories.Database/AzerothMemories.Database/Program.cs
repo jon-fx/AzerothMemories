@@ -14,7 +14,7 @@ services.AddFluentMigratorCore()
         .WithGlobalConnectionString(config.DatabaseConnectionString)
         .ScanIn(typeof(Migration0001_EntiyFramework).Assembly).For.Migrations());
 
-if (config.DatabaseConnectionString.Contains("azure"))
+if (config.DatabaseConnectionString != null && config.DatabaseConnectionString.Contains("azure"))
 {
     if (ConfigHelpers.SafetyCheck("DO YOU REALLY WANT TO MODIFY AN AZURE DATABASE?!"))
     {

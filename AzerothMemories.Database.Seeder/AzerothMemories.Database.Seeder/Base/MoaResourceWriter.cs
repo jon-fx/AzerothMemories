@@ -41,7 +41,7 @@ internal sealed class MoaResourceWriter
         var fileInfo = SeederConfig.GetLocalMediaFileInfo(iconName);
         if (!fileInfo.Exists)
         {
-            await TryDownloadImage(fileInfo.FullName, new[] { "https://render.worldofwarcraft.com/eu/icons/56/inv_misc_questionmark.jpg" });
+            await TryDownloadImage(fileInfo.FullName, ["https://render.worldofwarcraft.com/eu/icons/56/inv_misc_questionmark.jpg"]);
         }
     }
 

@@ -18,7 +18,7 @@ internal sealed class RealmDataSeeder : GenericBase<RealmDataSeeder>
             var allRealmSearchResults = await ResourceCache.GetOrRequestData($"RealmData-{region.ToInfo().TwoLettersUpper}", async k => await client.GetRealmData());
             if (allRealmSearchResults != null)
             {
-                foreach (var realmData in allRealmSearchResults.Realms)
+                foreach (var realmData in allRealmSearchResults.Realms.SafeEnumerable())
                 {
                     var realmRecord = realmData.Name.ToArray();
                     SetExtensions.Update(realmRecord, (l, x) => $"{twoLetters}-{x}");

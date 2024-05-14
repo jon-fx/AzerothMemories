@@ -10,7 +10,7 @@ internal sealed class SpellDataSeeder : GenericBase<SpellDataSeeder>
     {
         var data = new Dictionary<int, WowToolsData>();
         WowTools.Main.LoadDataFromWowTools("SpellName", "ID", ref data);
-        WowTools.Main.LoadDataFromWowTools("SpellMisc", "SpellID", ref data, "engb", new[] { "ID", "SpellID", "SpellIconFileDataID" });
+        WowTools.Main.LoadDataFromWowTools("SpellMisc", "SpellID", ref data, "engb", ["ID", "SpellID", "SpellIconFileDataID"]);
 
         foreach (var reference in data.Values)
         {
