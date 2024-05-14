@@ -3,7 +3,7 @@
 [DataContract, MemoryPackable]
 public sealed partial class ReportedPostViewModel
 {
-    [JsonInclude, DataMember, MemoryPackInclude] public PostViewModel PostViewModel { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public required PostViewModel PostViewModel { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public List<ReportedChildViewModel> Reports { get; init; } = new();
+    [JsonInclude, DataMember, MemoryPackInclude] public List<ReportedChildViewModel> Reports { get; init; } = [];
 }

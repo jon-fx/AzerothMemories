@@ -8,7 +8,7 @@ public sealed partial class AccountHistoryViewModel
 
     [JsonInclude, DataMember, MemoryPackInclude] public int AccountId { get; init; }
     [JsonInclude, DataMember, MemoryPackInclude] public int OtherAccountId { get; init; }
-    [JsonInclude, DataMember, MemoryPackInclude] public string OtherAccountUsername { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public string? OtherAccountUsername { get; init; }
 
     [JsonInclude, DataMember, MemoryPackInclude] public int TargetId { get; init; }
     [JsonInclude, DataMember, MemoryPackInclude] public int TargetPostId { get; init; }
@@ -16,7 +16,7 @@ public sealed partial class AccountHistoryViewModel
 
     [JsonInclude, DataMember, MemoryPackInclude] public long CreatedTime { get; init; }
 
-    public string GetDisplayText(AccountViewModel activeAccountViewModel, IStringLocalizer<BlizzardResources> stringLocalizer)
+    public string GetDisplayText(AccountViewModel? activeAccountViewModel, IStringLocalizer<BlizzardResources> stringLocalizer)
     {
         switch (Type)
         {

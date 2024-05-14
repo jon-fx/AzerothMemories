@@ -8,9 +8,9 @@ public sealed class ActivitySetUser
 
     public Instant EndTime { get; init; }
 
-    public HashSet<int> Achievements { get; } = new();
+    public HashSet<int> Achievements { get; } = [];
 
-    public HashSet<int> FirstAchievements { get; } = new();
+    public HashSet<int> FirstAchievements { get; } = [];
 
-    public HashSet<DailyActivityResultsUserPostInfo> MyMemories { get; } = new();
+    public HashSet<DailyActivityResultsUserPostInfo> MyMemories { get; } = [];
 }

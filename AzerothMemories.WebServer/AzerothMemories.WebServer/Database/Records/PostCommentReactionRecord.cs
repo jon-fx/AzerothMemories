@@ -20,14 +20,14 @@ public sealed class PostCommentReactionRecord : IDatabaseRecordWithVersion
 
     public uint RowVersion { get; set; }
 
-    public PostCommentReactionViewModel CreatePostCommentReactionViewModel(string username)
+    public PostCommentReactionViewModel CreatePostCommentReactionViewModel(string? username)
     {
         var viewModel = new PostCommentReactionViewModel
         {
             Id = Id,
             CommentId = CommentId,
             AccountId = AccountId,
-            AccountUsername = username,
+            AccountUsername = username ?? $"User-{AccountId}",
             Reaction = Reaction,
             LastUpdateTime = LastUpdateTime.ToUnixTimeMilliseconds()
         };

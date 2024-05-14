@@ -12,9 +12,9 @@ public sealed class AccountUploadLog : IDatabaseRecordWithVersion
 
     [Column] public int AccountId { get; init; }
 
-    [Column] public string BlobName { get; init; }
+    [Column] public string BlobName { get; init; } = null!;
 
-    [Column] public string BlobHash { get; init; }
+    [Column] public string BlobHash { get; init; } = null!;
 
     [Column] public AccountUploadLogStatus UploadStatus { get; set; }
 
@@ -22,7 +22,7 @@ public sealed class AccountUploadLog : IDatabaseRecordWithVersion
 
     [Column] public int? PostId { get; init; }
 
-    [Column] public PostRecord Post { get; init; }
+    [Column] public PostRecord Post { get; init; } = null!;
 
     public uint RowVersion { get; set; }
 }

@@ -8,7 +8,7 @@ public class UpdateHandlerBase<TRecord> where TRecord : IBlizzardUpdateRecord
     private readonly CommonServices _commonServices;
     private readonly string _updateTypeString;
 
-    public UpdateHandlerBase(BlizzardUpdateType updateType, CommonServices commonServices, [CallerArgumentExpression("updateType")] string updateTypeString = null)
+    public UpdateHandlerBase(BlizzardUpdateType updateType, CommonServices commonServices, [CallerArgumentExpression("updateType")] string? updateTypeString = null)
     {
         _updateType = updateType;
         _commonServices = commonServices;
@@ -28,7 +28,7 @@ public class UpdateHandlerBase<TRecord> where TRecord : IBlizzardUpdateRecord
 
     public CommonServices CommonServices => _commonServices;
 
-    protected virtual bool ShouldExecuteOn(CommandContext context, AppDbContext database, TRecord record, out AuthTokenRecord authTokenRecord)
+    protected virtual bool ShouldExecuteOn(CommandContext context, AppDbContext database, TRecord record, out AuthTokenRecord? authTokenRecord)
     {
         authTokenRecord = null;
         return true;
@@ -44,7 +44,7 @@ public class UpdateHandlerBase<TRecord> where TRecord : IBlizzardUpdateRecord
         return HttpStatusCode.OK;
     }
 
-    protected virtual Task<HttpStatusCode> InternalExecuteOn(CommandContext context, AppDbContext database, TRecord record, AuthTokenRecord authTokenRecord, BlizzardUpdateChildRecord childRecord)
+    protected virtual Task<HttpStatusCode> InternalExecuteOn(CommandContext context, AppDbContext database, TRecord record, AuthTokenRecord? authTokenRecord, BlizzardUpdateChildRecord childRecord)
     {
         return Task.FromResult(HttpStatusCode.OK);
     }

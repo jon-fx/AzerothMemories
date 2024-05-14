@@ -17,9 +17,9 @@ public sealed class RecentPostsHelper
 
     public bool IsLoading { get; private set; }
 
-    public void SetSearchResults(RecentPostsResults recentPostsResults)
+    public void SetSearchResults(RecentPostsResults? recentPostsResults)
     {
-        _searchResults = recentPostsResults;
+        _searchResults = recentPostsResults ?? new RecentPostsResults();
 
         IsLoading = false;
     }
@@ -56,7 +56,7 @@ public sealed class RecentPostsHelper
 
     private async Task NavigateToNewQuery(RecentPostsType recentPostType, PostSortMode sortMode, int currentPage, bool resetPage)
     {
-        var dictionary = new Dictionary<string, object>();
+        var dictionary = new Dictionary<string, object?>();
 
         ZExtensions.AddToDictOrNull(dictionary, "sort", (int)sortMode, sortMode == 0);
         ZExtensions.AddToDictOrNull(dictionary, "page", currentPage, currentPage <= 1 || resetPage);

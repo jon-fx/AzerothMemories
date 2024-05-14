@@ -10,9 +10,9 @@ public sealed class ActivitySetMain
 
     public int TotalAchievements { get; set; }
 
-    public HashSet<string> FirstTags { get; } = new();
+    public HashSet<string> FirstTags { get; } = [];
 
-    public HashSet<int> FirstAchievements { get; } = new();
+    public HashSet<int> FirstAchievements { get; } = [];
 
     public Dictionary<int, int> AchievementCounts { get; } = new();
 

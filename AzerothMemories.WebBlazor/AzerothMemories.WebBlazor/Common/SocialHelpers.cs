@@ -30,7 +30,7 @@ public sealed class SocialHelpers
             ValidatorFunc = BasicValidator
         };
 
-        Exceptions.ThrowIf(All.Any(x => x == null));
+        Exceptions.ThrowIf(All.Any(x => x == null!));
     }
 
     private static bool BasicValidator(string arg)
@@ -74,7 +74,7 @@ public sealed class SocialHelpers
 
     public int LinkId => (int)SocialLink;
 
-    public string LinkPrefix { get; private init; }
+    public string? LinkPrefix { get; private init; }
 
-    public Func<string, bool> ValidatorFunc { get; private init; }
+    public Func<string, bool>? ValidatorFunc { get; private init; }
 }

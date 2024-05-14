@@ -3,7 +3,7 @@
 [DataContract, MemoryPackable]
 public sealed partial record Post_TryUpdateSystemTags : ISessionCommand<AddMemoryResultCode>
 {
-    public Post_TryUpdateSystemTags(Session session, int postId, string avatar, HashSet<string> newTags)
+    public Post_TryUpdateSystemTags(Session session, int postId, string? avatar, HashSet<string> newTags)
     {
         Session = session;
         PostId = postId;
@@ -13,11 +13,11 @@ public sealed partial record Post_TryUpdateSystemTags : ISessionCommand<AddMemor
 
     [DataMember, MemoryPackInclude] public const string DefaultAvatar = "*USE-DEFAULT*";
 
-    [DataMember, MemoryPackInclude] public Session Session { get; init; }
+    [DataMember, MemoryPackInclude] public Session Session { get; init; } = null!;
 
     [DataMember, MemoryPackInclude] public int PostId { get; init; }
 
-    [DataMember, MemoryPackInclude] public string Avatar { get; init; }
+    [DataMember, MemoryPackInclude] public string? Avatar { get; init; }
 
     [DataMember, MemoryPackInclude] public HashSet<string> NewTags { get; init; }
 }

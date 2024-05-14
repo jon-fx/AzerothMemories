@@ -4,7 +4,7 @@ internal sealed class BlizzardUpdateHostedService : IHostedService, IDisposable
 {
     private readonly BlizzardUpdateHandler _blizzardUpdateHandler;
 
-    private Timer _mainTimer;
+    private Timer? _mainTimer;
     private int _mainTimerTickCounter;
     private int _mainTimerUpdateThreadId;
 
@@ -33,7 +33,7 @@ internal sealed class BlizzardUpdateHostedService : IHostedService, IDisposable
         _mainTimer = null;
     }
 
-    private async void OnMainTimerTick(object state)
+    private async void OnMainTimerTick(object? state)
     {
         if (Interlocked.CompareExchange(ref _mainTimerUpdateThreadId, Environment.CurrentManagedThreadId, 0) == 0)
         {

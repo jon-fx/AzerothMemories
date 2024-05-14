@@ -7,9 +7,9 @@ public sealed partial class PostReactionViewModel
 
     [JsonInclude, DataMember, MemoryPackInclude] public int AccountId { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public string AccountUsername { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public string? AccountUsername { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public string AccountAvatar { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public string? AccountAvatar { get; init; }
 
     [JsonInclude, DataMember, MemoryPackInclude] public PostReaction Reaction { get; init; }
 

@@ -30,7 +30,7 @@ public class FollowingServices : IFollowingServices
                                  Id = record.Id,
                                  AccountId = record.AccountId,
                                  FollowerId = record.FollowerId,
-                                 FollowerUsername = follower.Username,
+                                 FollowerUsername = follower.GetUsernameSafe(),
                                  FollowerAvatarLink = follower.Avatar,
                                  Status = record.Status
                              };
@@ -57,7 +57,7 @@ public class FollowingServices : IFollowingServices
                                  Id = record.Id,
                                  AccountId = record.FollowerId,
                                  FollowerId = record.AccountId,
-                                 FollowerUsername = follower.Username,
+                                 FollowerUsername = follower.GetUsernameSafe(),
                                  FollowerAvatarLink = follower.Avatar,
                                  Status = record.Status
                              };
@@ -93,7 +93,7 @@ public class FollowingServices : IFollowingServices
         return await FollowingServices_TryRemoveFollower.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
-    public void InvalidateFollowing(Following_InvalidateRecord record)
+    public void InvalidateFollowing(Following_InvalidateRecord? record)
     {
         if (record == null)
         {

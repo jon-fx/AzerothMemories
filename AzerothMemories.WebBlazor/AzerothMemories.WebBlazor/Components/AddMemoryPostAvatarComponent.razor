@@ -57,12 +57,12 @@
 </MudPaper>
 
 @code {
-    private readonly AddMemoryComponentSharedData _sharedData;
+    private readonly AddMemoryComponentSharedData? _sharedData;
 
     [Parameter, EditorRequired]
     public required AddMemoryComponentSharedData SharedData
     {
-        get => _sharedData;
+        get => _sharedData.ThrowIfNull();
         init
         {
             if (_sharedData == value)

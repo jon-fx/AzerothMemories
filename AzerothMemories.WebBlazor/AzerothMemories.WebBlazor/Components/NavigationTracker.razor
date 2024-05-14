@@ -4,9 +4,9 @@
 {
     private bool _isTrackingEnabled;
 
-    [Inject] public IJSRuntime JsRuntime { get; init; }
+    [Inject] public IJSRuntime JsRuntime { get; init; } = null!;
 
-    [Inject] public NavigationManager NavigationManager { get; init; }
+    [Inject] public NavigationManager NavigationManager { get; init; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -31,7 +31,7 @@
         }
     }
 
-    private void OnLocationChanged(object sender, LocationChangedEventArgs args)
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs args)
     {
         OnLocationChanged(args.Location).AndForget();
     }

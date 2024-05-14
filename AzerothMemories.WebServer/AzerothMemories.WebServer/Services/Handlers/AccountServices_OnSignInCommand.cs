@@ -132,7 +132,7 @@ internal static class AccountServices_OnSignInCommand
         return accountRecord;
     }
 
-    private static async Task<AccountRecord> GetCurrentAccount(AppDbContext database, Session session, IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> sessionRepo, AccountServices accountServices, CancellationToken cancellationToken)
+    private static async Task<AccountRecord?> GetCurrentAccount(AppDbContext database, Session session, IDbSessionInfoRepo<AppDbContext, DbSessionInfo<string>, string> sessionRepo, AccountServices accountServices, CancellationToken cancellationToken)
     {
         var dbSessionInfo = await sessionRepo.Get(database, session.Id, false, cancellationToken).ConfigureAwait(false);
         if (dbSessionInfo != null)
@@ -143,7 +143,7 @@ internal static class AccountServices_OnSignInCommand
         return null;
     }
 
-    private static bool CanBlizzardAccountSignIn(AuthBackend_SignIn command, AccountRecord tempAccount, AuthTokenRecord authToken)
+    private static bool CanBlizzardAccountSignIn(AuthBackend_SignIn command, AccountRecord? tempAccount, AuthTokenRecord? authToken)
     {
         if (tempAccount == null)
         {
@@ -168,7 +168,7 @@ internal static class AccountServices_OnSignInCommand
         return false;
     }
 
-    private static bool CanPatreonAccountSignIn(AuthBackend_SignIn command, AccountRecord tempAccount, AuthTokenRecord authToken)
+    private static bool CanPatreonAccountSignIn(AuthBackend_SignIn command, AccountRecord? tempAccount, AuthTokenRecord? authToken)
     {
         if (tempAccount == null)
         {

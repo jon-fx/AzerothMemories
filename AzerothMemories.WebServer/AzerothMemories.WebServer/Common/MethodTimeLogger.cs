@@ -7,10 +7,10 @@ namespace AzerothMemories.WebServer.Common;
 internal sealed class MethodTimeLogger : IDisposable
 {
     private readonly ILogger _logger;
-    private readonly string _callerMemberName;
-    private readonly Stopwatch _stopwatch;
+    private readonly string? _callerMemberName;
+    private readonly Stopwatch? _stopwatch;
 
-    public MethodTimeLogger(ILogger logger, [CallerMemberName] string callerMemberName = null)
+    public MethodTimeLogger(ILogger logger, [CallerMemberName] string? callerMemberName = null)
     {
         _logger = logger;
         _callerMemberName = callerMemberName;

@@ -65,8 +65,8 @@ internal static class PostServices_TryDeletePost
         database.Attach(postRecord);
         postRecord.DeletedTimeStamp = now;
 
-        var imageBlobNames = postRecord.BlobNames.Split('|');
-        foreach (var blobName in imageBlobNames)
+        var imageBlobNames = postRecord.BlobNames?.Split('|');
+        foreach (var blobName in imageBlobNames.SafeEnumerable())
         {
             var record = await database.UploadLogs.FirstOrDefaultAsync(x => x.AccountId == postRecord.AccountId && x.BlobName == blobName, cancellationToken).ConfigureAwait(false);
             if (record != null)

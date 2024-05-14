@@ -12,11 +12,11 @@ public sealed class BlizzardUpdateChildRecord : IDatabaseRecord
 
     [Column] public int ParentId { get; init; }
 
-    [Column] public BlizzardUpdateRecord Parent { get; init; }
+    [Column] public BlizzardUpdateRecord Parent { get; init; } = null!;
 
     [Column] public BlizzardUpdateType UpdateType { get; init; }
 
-    [Column] public string UpdateTypeString { get; init; }
+    [Column] public string UpdateTypeString { get; init; } = null!;
 
     [Column] public byte UpdateFailCounter { get; set; }
 

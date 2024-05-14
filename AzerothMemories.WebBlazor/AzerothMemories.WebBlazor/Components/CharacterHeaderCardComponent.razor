@@ -13,8 +13,8 @@ else
             <CardHeaderAvatar>
                 <MudAvatar Size="Size.Large">
                     @{
-                        var avatarSource = CharacterViewModel.AvatarLinkWithFallBack;
-                        var avatarAlt = CharacterViewModel.Name[0];
+                        var avatarSource = CharacterViewModel.GetAvatarLinkWithFallBack();
+                        var avatarAlt = CharacterViewModel.GetAvatarText();
 
                         if (string.IsNullOrWhiteSpace(avatarSource))
                         {

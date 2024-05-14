@@ -9,9 +9,9 @@ public abstract class MoaComponentBase<TViewModel> : ComputedStateComponent<TVie
 
     protected TViewModel ViewModel { get; }
 
-    [Inject] public ClientServices ClientServices { get; init; }
+    [Inject] public ClientServices ClientServices { get; init; } = null!;
 
-    [Inject] public ComputeServices ComputeServices { get; init; }
+    [Inject] public ComputeServices ComputeServices { get; init; } = null!;
 
     protected override sealed void OnInitialized()
     {

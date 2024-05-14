@@ -14,9 +14,9 @@ public sealed class BlizzardDataRecord : IDatabaseRecord
 
     [Column] public PostTagType TagType { get; init; }
 
-    [Column] public string Key { get; init; }
+    [Column] public string Key { get; init; } = null!;
 
-    [Column] public string Media { get; set; }
+    [Column] public string? Media { get; set; }
 
     [Column, Required] public BlizzardDataRecordLocal Name { get; init; }
 

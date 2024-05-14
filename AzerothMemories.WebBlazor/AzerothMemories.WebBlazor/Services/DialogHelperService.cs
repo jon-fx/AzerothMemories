@@ -6,12 +6,12 @@ public sealed class DialogHelperService
 {
     private readonly IDialogService _dialogService;
     private readonly List<IDialogReference> _activeDialogs;
-    private IDialogReference _loadingDialog;
+    private IDialogReference? _loadingDialog;
 
     public DialogHelperService(IDialogService dialogService)
     {
         _dialogService = dialogService;
-        _activeDialogs = new List<IDialogReference>();
+        _activeDialogs = [];
     }
 
     public void ShowLoadingDialog()
@@ -116,7 +116,7 @@ public sealed class DialogHelperService
         return result;
     }
 
-    public async Task<bool?> ShowMessageBox(string title, string message = null, string yesText = null, string noText = null, string cancelText = null, DialogOptions options = null)
+    public async Task<bool?> ShowMessageBox(string title, string? message = null, string? yesText = null, string? noText = null, string? cancelText = null, DialogOptions? options = null)
     {
         var result = await _dialogService.ShowMessageBox(title, message, yesText, noText, cancelText, options);
 

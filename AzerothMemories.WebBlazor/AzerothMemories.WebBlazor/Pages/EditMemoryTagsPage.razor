@@ -35,11 +35,11 @@ else
 }
 
 @code {
-    [Parameter, EditorRequired] public required string Id { get; set; }
+    [Parameter, EditorRequired] public required string? Id { get; set; }
 
-    [Parameter, EditorRequired] public required string PostId { get; set; }
+    [Parameter, EditorRequired] public required string? PostId { get; set; }
 
-    [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }
+    [Parameter, SupplyParameterFromQuery(Name = "page")] public string? CurrentPage { get; init; }
 
     protected override void OnParametersChanged()
     {

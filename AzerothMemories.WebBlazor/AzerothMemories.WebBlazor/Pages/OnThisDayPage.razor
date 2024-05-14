@@ -5,7 +5,7 @@
     var pageHeaderInfo = new DefaultPageHeaderInfo("On This Day");
     <HeadContentTest ClientServices="@ClientServices" PageInfo="@pageHeaderInfo" />
 
-    var results = ViewModel?.DailyActivityResults;
+    var results = ViewModel.DailyActivityResults;
     if (results == null)
     {
         <CardLoadingComponent />
@@ -25,9 +25,9 @@
 
 @code
 {
-    [Parameter, SupplyParameterFromQuery(Name = "day")] public string CurrentDay { get; init; }
+    [Parameter, SupplyParameterFromQuery(Name = "day")] public string? CurrentDay { get; init; }
 
-    [Parameter, SupplyParameterFromQuery(Name = "month")] public string CurrentMonth { get; init; }
+    [Parameter, SupplyParameterFromQuery(Name = "month")] public string? CurrentMonth { get; init; }
 
     protected override void OnParametersChanged()
     {

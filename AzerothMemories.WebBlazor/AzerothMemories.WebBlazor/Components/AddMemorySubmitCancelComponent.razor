@@ -21,7 +21,7 @@
                     <MudItem xs="12">
                         <MudAlert Severity="Severity.Warning" ContentAlignment="HorizontalAlignment.Center">
                             You may have already restored this memory! There is a <a href="@link" target="_blank">post</a> around this time with the tags:<br/>
-                            @foreach (var tagInfo in postViewModel.SystemTags)
+                            @foreach (var tagInfo in postViewModel.SystemTags.SafeEnumerable())
                             {
                                 <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" />
                             }
@@ -42,12 +42,12 @@
 </MudPaper>
 
 @code {
-    private readonly AddMemoryComponentSharedData _sharedData;
+    private readonly AddMemoryComponentSharedData? _sharedData;
 
     [Parameter, EditorRequired]
     public required AddMemoryComponentSharedData SharedData
     {
-        get => _sharedData;
+        get => _sharedData.ThrowIfNull();
         init
         {
             if (_sharedData == value)

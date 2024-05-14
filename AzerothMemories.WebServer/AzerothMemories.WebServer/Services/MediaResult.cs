@@ -7,9 +7,10 @@ public record MediaResult
     public MediaResult()
     {
         IsDefault = true;
+        MediaType = "Unknown";
     }
 
-    public MediaResult(Instant lastModified, ETag eTag, string mediaType, byte[] mediaBytes)
+    public MediaResult(Instant lastModified, ETag eTag, string mediaType, byte[]? mediaBytes)
     {
         LastModified = lastModified;
         ETag = eTag;
@@ -25,5 +26,5 @@ public record MediaResult
 
     public string MediaType { get; }
 
-    public byte[] MediaBytes { get; }
+    public byte[]? MediaBytes { get; }
 }

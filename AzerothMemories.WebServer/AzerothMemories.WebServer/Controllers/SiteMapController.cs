@@ -18,7 +18,7 @@ public sealed class SiteMapController : ControllerBase
     public async Task<IActionResult> TryGetSiteMapIndex()
     {
         var results = await _commonServices.MediaServices.TryGetSiteMapIndex().ConfigureAwait(false);
-        if (results?.MediaBytes != null)
+        if (results.MediaBytes != null)
         {
             return File(results.MediaBytes, results.MediaType, results.LastModified.ToDateTimeOffset(), EntityTagHeaderValue.Any);
         }
@@ -34,7 +34,7 @@ public sealed class SiteMapController : ControllerBase
         if (nameType == SiteMapType.Main)
         {
             var results = await _commonServices.MediaServices.TryGetSiteMapMain().ConfigureAwait(false);
-            if (results?.MediaBytes != null)
+            if (results.MediaBytes != null)
             {
                 return File(results.MediaBytes, results.MediaType, results.LastModified.ToDateTimeOffset(), EntityTagHeaderValue.Any);
             }

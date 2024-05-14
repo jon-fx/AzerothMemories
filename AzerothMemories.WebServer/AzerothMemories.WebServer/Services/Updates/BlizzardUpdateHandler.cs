@@ -48,7 +48,7 @@ internal sealed class BlizzardUpdateHandler
         await TryUpdate(guildRecord, updatePriority, _blizzardUpdateServices.GuildHandlerCount).ConfigureAwait(false);
     }
 
-    private async Task TryUpdate<TRecord>(TRecord record, BlizzardUpdatePriority updatePriority, int requiredChildrenCount) where TRecord : class, IBlizzardUpdateRecord, new()
+    private async Task TryUpdate<TRecord>(TRecord? record, BlizzardUpdatePriority updatePriority, int requiredChildrenCount) where TRecord : class, IBlizzardUpdateRecord, new()
     {
         if (record == null)
         {
@@ -80,7 +80,7 @@ internal sealed class BlizzardUpdateHandler
         }
     }
 
-    public bool RecordRequiresUpdate(BlizzardUpdateRecord updateRecord, BlizzardUpdatePriority updatePriority, bool inUpdateLoop)
+    public bool RecordRequiresUpdate(BlizzardUpdateRecord? updateRecord, BlizzardUpdatePriority updatePriority, bool inUpdateLoop)
     {
         if (updateRecord == null)
         {
@@ -152,7 +152,7 @@ internal sealed class BlizzardUpdateHandler
         await RunUpdatesOn(database, updateRecords).ConfigureAwait(false);
     }
 
-    private async Task RunUpdatesOn(AppDbContext database, BlizzardUpdateRecord[] updateRecords)
+    private async Task RunUpdatesOn(AppDbContext database, BlizzardUpdateRecord[]? updateRecords)
     {
         using var _ = new MethodTimeLogger(_logger);
         if (updateRecords == null || updateRecords.Length == 0)

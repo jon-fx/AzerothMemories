@@ -35,7 +35,7 @@
     [Parameter, EditorRequired] public required ClientServices ClientServices { get; init; }
     [Parameter, EditorRequired] public required IPageHeaderInfoProvider PageInfo { get; init; }
 
-    private string GetImagePath()
+    private string? GetImagePath()
     {
         var imageAddress = PageInfo.GetPageImage();
         if (string.IsNullOrWhiteSpace(imageAddress))
@@ -63,7 +63,7 @@
         return leftPart + "/" + imageAddress;
     }
 
-    private string GetCanonicalLink()
+    private string? GetCanonicalLink()
     {
         var canonicalLink = PageInfo.GetCanonicalLink();
         if (string.IsNullOrWhiteSpace(canonicalLink))

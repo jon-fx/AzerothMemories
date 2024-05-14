@@ -13,13 +13,10 @@ internal static class CharacterServices_TrySetCharacterRenamedOrTransferred
                 _ = commonServices.CharacterServices.DependsOnCharacterRecord(invRecord.OldCharacterId);
                 _ = commonServices.CharacterServices.DependsOnCharacterRecord(invRecord.NewCharacterId);
 
-                if (invRecord.PostIds != null)
+                foreach (var postId in invRecord.PostIds.SafeEnumerable())
                 {
-                    foreach (var postId in invRecord.PostIds)
-                    {
-                        _ = commonServices.PostServices.DependsOnPost(postId);
-                        _ = commonServices.PostServices.GetAllPostTags(postId);
-                    }
+                    _ = commonServices.PostServices.DependsOnPost(postId);
+                    _ = commonServices.PostServices.GetAllPostTags(postId);
                 }
             }
 

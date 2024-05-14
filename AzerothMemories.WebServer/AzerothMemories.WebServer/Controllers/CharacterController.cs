@@ -18,14 +18,14 @@ public sealed class CharacterController : ControllerBase, ICharacterServices
         return _commonServices.Commander.Call(command, cancellationToken);
     }
 
-    [HttpGet("{characterId}")]
+    [HttpGet("{characterId:int}")]
     public Task<CharacterAccountViewModel> TryGetCharacter(Session session, [FromRoute] int characterId)
     {
         return _commonServices.CharacterServices.TryGetCharacter(session, characterId);
     }
 
     [HttpGet("{region}/{realmSlug}/{characterName}")]
-    public Task<CharacterAccountViewModel> TryGetCharacter(Session session, [FromRoute] BlizzardRegion region, [FromRoute] string realmSlug, [FromRoute] string characterName)
+    public Task<CharacterAccountViewModel?> TryGetCharacter(Session session, [FromRoute] BlizzardRegion region, [FromRoute] string realmSlug, [FromRoute] string characterName)
     {
         return _commonServices.CharacterServices.TryGetCharacter(session, region, realmSlug, characterName);
     }

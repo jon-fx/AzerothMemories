@@ -10,9 +10,9 @@
 @code
 {
     [Parameter] public bool Success { get; init; }
-    [Parameter] public string Message { get; init; }
+    [Parameter] public string? Message { get; init; }
 
-    [CascadingParameter] public MudDialogInstance MudDialog { get; init; }
+    [CascadingParameter] public MudDialogInstance MudDialog { get; init; } = null!;
 
     private void Submit()
     {

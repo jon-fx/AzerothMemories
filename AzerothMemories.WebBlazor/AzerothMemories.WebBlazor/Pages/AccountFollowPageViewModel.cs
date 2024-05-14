@@ -10,9 +10,9 @@ public sealed class AccountFollowPageViewModel : ViewModelBase, IViewModel<Accou
     {
     }
 
-    public string ErrorMessage { get; private set; }
+    public string? ErrorMessage { get; private set; }
 
-    public AccountViewModel AccountViewModel { get; private set; }
+    public AccountViewModel? AccountViewModel { get; private set; }
 
     public void OnParametersChanged(int id)
     {

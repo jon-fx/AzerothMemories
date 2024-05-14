@@ -16,15 +16,15 @@ public sealed class PostTagRecord : IDatabaseRecordWithVersion
 
     [Column] public int PostId { get; set; }
 
-    [Column] public PostRecord Post { get; init; }
+    [Column] public PostRecord? Post { get; init; }
 
     [Column] public int? CommentId { get; set; }
 
-    [Column] public PostCommentRecord Comment { get; init; }
+    [Column] public PostCommentRecord? Comment { get; init; }
 
     [Column] public int TagId { get; set; }
 
-    [Column] public string TagString { get; set; }
+    [Column] public string TagString { get; set; } = null!;
 
     [Column] public int TotalReportCount { get; set; }
 

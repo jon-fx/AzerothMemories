@@ -10,6 +10,6 @@ public sealed partial class SearchPostsResults
     [JsonInclude, DataMember, MemoryPackInclude] public long MaxTime { get; set; }
     [JsonInclude, DataMember, MemoryPackInclude] public PostSortMode SortMode { get; set; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public PostTagInfo[] Tags { get; set; } = Array.Empty<PostTagInfo>();
-    [JsonInclude, DataMember, MemoryPackInclude] public PostViewModel[] PostViewModels { get; set; } = Array.Empty<PostViewModel>();
+    [JsonInclude, DataMember, MemoryPackInclude] public PostTagInfo[] Tags { get; set; } = [];
+    [JsonInclude, DataMember, MemoryPackInclude] public PostViewModel[] PostViewModels { get; set; } = [];
 }

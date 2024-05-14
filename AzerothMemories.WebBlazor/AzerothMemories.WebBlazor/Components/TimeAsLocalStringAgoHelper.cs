@@ -5,7 +5,7 @@ public sealed class TimeAsLocalStringAgoHelper : IDisposable
     private readonly Action _tickCallbackAction;
 
     private long _time;
-    private Timer _timer;
+    private Timer? _timer;
     private Duration _timerTick;
 
     public TimeAsLocalStringAgoHelper(Action tickCallbackAction)
@@ -67,11 +67,11 @@ public sealed class TimeAsLocalStringAgoHelper : IDisposable
         }
     }
 
-    private void OnTimerTick(object state)
+    private void OnTimerTick(object? state)
     {
         TrySetTimer();
 
-        _tickCallbackAction?.Invoke();
+        _tickCallbackAction.Invoke();
     }
 
     public void Dispose()

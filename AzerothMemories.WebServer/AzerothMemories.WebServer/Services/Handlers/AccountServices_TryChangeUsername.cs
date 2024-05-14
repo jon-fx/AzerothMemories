@@ -51,7 +51,7 @@ internal static class AccountServices_TryChangeUsername
         {
             return false;
         }
-        else if (accountRecord.Username.StartsWith("User-"))
+        else if (accountRecord.GetUsernameSafe().StartsWith("User-"))
         {
         }
         else if (accountRecord.UsernameChangedTime + commonServices.Config.UsernameChangeDelay > SystemClock.Instance.GetCurrentInstant())
@@ -80,7 +80,7 @@ internal static class AccountServices_TryChangeUsername
             return false;
         }
 
-        var previousUsername = accountRecord.Username;
+        var previousUsername = accountRecord.GetUsernameSafe();
         database.Attach(accountRecord);
         accountRecord.Username = newUsername;
         accountRecord.UsernameSearchable = DatabaseHelpers.GetSearchableName(newUsername);
