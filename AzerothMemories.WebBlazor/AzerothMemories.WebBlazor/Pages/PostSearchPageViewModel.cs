@@ -2,11 +2,11 @@
 
 public sealed class PostSearchPageViewModel : PersistentStateViewModel, IViewModel<PostSearchPageViewModel>
 {
-    private string[] _tagStrings;
-    private string _sortModeString;
-    private string _currentPageString;
-    private string _minTimeString;
-    private string _maxTimeString;
+    private string[] _tagStrings = [];
+    private string? _sortModeString;
+    private string? _currentPageString;
+    private string? _minTimeString;
+    private string? _maxTimeString;
 
     public PostSearchHelper PostSearchHelper { get; }
 
@@ -14,12 +14,13 @@ public sealed class PostSearchPageViewModel : PersistentStateViewModel, IViewMod
     {
         PostSearchHelper = new PostSearchHelper(Services);
 
-        AddPersistentState(() => PostSearchHelper.SearchResults, x => PostSearchHelper.SetSearchResults(x), ComputeStateInternal);
+        AddPersistentState(() => PostSearchHelper.SearchResults, x => PostSearchHelper.SetSearchResults(x), ComputeStateInternal!);
     }
 
-    public void OnParametersChanged(string[] tagStrings, string sortModeString, string currentPageString, string minTimeString, string maxTimeString)
+    public void OnParametersChanged(string[]? tagStrings, string? sortModeString, string? currentPageString, string? minTimeString, string? maxTimeString)
     {
-        _tagStrings = tagStrings;
+        _tagStrings = tagStrings ?? [];
+        _tagStrings = _tagStrings.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
         _sortModeString = sortModeString;
         _currentPageString = currentPageString;
         _minTimeString = minTimeString;

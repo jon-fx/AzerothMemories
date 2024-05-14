@@ -8,17 +8,24 @@ namespace AzerothMemories.WebServer.Controllers;
 public sealed class MediaController : ControllerBase
 {
     private readonly CommonServices _commonServices;
+    private readonly ISessionResolver _sessionResolver;
 
-    public MediaController(CommonServices commonServices)
+    public MediaController(CommonServices commonServices, ISessionResolver sessionResolver)
     {
         _commonServices = commonServices;
+        _sessionResolver = sessionResolver;
     }
 
     [HttpGet]
     [Route("~/media/{container}/{fileName}")]
-    public async Task<IActionResult> Get(Session session, [FromRoute] string container, [FromRoute] string fileName, [FromQuery] MediaSize size = MediaSize.True)
+    public async Task<IActionResult> Get(Session? session, [FromRoute] string container, [FromRoute] string fileName, [FromQuery] MediaSize size = MediaSize.True)
     {
-        MediaResult results = null;
+        if (session == null)
+        {
+            session = await _sessionResolver.GetSession().ConfigureAwait(false);
+        }
+
+        MediaResult? results = null;
         container = container.ToLowerInvariant();
         if (container == ZExtensions.BlobStaticMedia)
         {

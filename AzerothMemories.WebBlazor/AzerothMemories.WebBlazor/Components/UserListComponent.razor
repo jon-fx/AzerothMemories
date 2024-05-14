@@ -4,7 +4,7 @@
         var showActive = _activeViewModels != null && _activeViewModels.Length > 0;
         if (showPending)
         {
-            foreach (var viewModel in _pendingViewModels)
+            foreach (var viewModel in _pendingViewModels!)
             {
                 <MudCard @key="viewModel.Id" Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
                     <MudCardHeader Class="@ClassPresets.CardHeader">
@@ -54,7 +54,7 @@
 
         if (showActive)
         {
-            foreach (var viewModel in _activeViewModels)
+            foreach (var viewModel in _activeViewModels.SafeEnumerable())
             {
                 <MudCard @key="viewModel.Id" Class="@ClassPresets.CardHeaderPostCard" Outlined="true" Elevation="10">
                     <MudCardHeader Class="@ClassPresets.CardHeader">
@@ -105,16 +105,16 @@
 </MudTabPanel>
 
 @code {
-    private string _header;
+    private string? _header;
     private bool _accountChanged;
-    private AccountViewModel _account;
-    private AccountFollowingViewModel[] _pendingViewModels;
-    private AccountFollowingViewModel[] _activeViewModels;
+    private AccountViewModel? _account;
+    private AccountFollowingViewModel[]? _pendingViewModels;
+    private AccountFollowingViewModel[]? _activeViewModels;
 
     [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired]
-    public required AccountViewModel AccountViewModel
+    public required AccountViewModel? AccountViewModel
     {
         get => _account;
         init
@@ -126,7 +126,7 @@
 
     [Parameter, EditorRequired] public required bool Following { get; init; }
 
-    [Parameter, EditorRequired] public required AccountViewModel ActiveAccountViewModel { get; init; }
+    [Parameter, EditorRequired] public required AccountViewModel? ActiveAccountViewModel { get; init; }
 
     protected override void OnParametersSet()
     {
@@ -148,7 +148,7 @@
             var isActiveAccount = ActiveAccountViewModel != null && AccountViewModel != null && ActiveAccountViewModel.Id == AccountViewModel.Id;
             if (isActiveAccount)
             {
-                _pendingViewModels = viewModels?.Values.Where(x => x.Status == AccountFollowingStatus.Pending).OrderBy(x => x.AccountId).ToArray() ?? Array.Empty<AccountFollowingViewModel>();
+                _pendingViewModels = viewModels?.Values.Where(x => x.Status == AccountFollowingStatus.Pending).OrderBy(x => x.AccountId).ToArray() ?? [];
 
                 if (_pendingViewModels.Length == 0)
                 {
@@ -160,7 +160,7 @@
                 _pendingViewModels = null;
             }
 
-            _activeViewModels = viewModels?.Values.Where(x => x.Status == AccountFollowingStatus.Active).OrderBy(x => x.AccountId).ToArray() ?? Array.Empty<AccountFollowingViewModel>();
+            _activeViewModels = viewModels?.Values.Where(x => x.Status == AccountFollowingStatus.Active).OrderBy(x => x.AccountId).ToArray() ?? [];
             _header = $"{header}";
         }
     }

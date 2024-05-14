@@ -151,13 +151,13 @@ else
 }
 
 @code {
-    private readonly List<PostViewModelBlobInfo> _allBlobInfos = new();
+    private readonly List<PostViewModelBlobInfo> _allBlobInfos = [];
     private readonly int[] _otherTuplesShowCount = Enumerable.Repeat(10, 6).ToArray();
 
-    [Parameter, EditorRequired] public required DailyActivityResults HeaderData { get; init; }
+    [Parameter, EditorRequired] public required DailyActivityResults? HeaderData { get; init; }
     [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
-    private void OnMainTagClicked(PostTagInfo postTagInfo)
+    private void OnMainTagClicked(PostTagInfo? postTagInfo)
     {
         if (postTagInfo == null)
         {
@@ -169,19 +169,22 @@ else
             postTagInfo.TagString
         };
 
-        var dictionary = new Dictionary<string, object>
+        var dictionary = new Dictionary<string, object?>
         {
             { "tag", tagStrings.ToArray() }
         };
 
-        ZExtensions.AddToDictOrNull(dictionary, "ptmin", HeaderData.Main.StartTimeMs, HeaderData.Main.StartTimeMs == 0);
-        ZExtensions.AddToDictOrNull(dictionary, "ptmax", HeaderData.Main.EndTimeMs, HeaderData.Main.EndTimeMs == 0);
+        if (HeaderData?.Main != null)
+        {
+            ZExtensions.AddToDictOrNull(dictionary, "ptmin", HeaderData.Main.StartTimeMs, HeaderData.Main.StartTimeMs == 0);
+            ZExtensions.AddToDictOrNull(dictionary, "ptmax", HeaderData.Main.EndTimeMs, HeaderData.Main.EndTimeMs == 0);
+        }
 
         var newPath = Services.ClientServices.NavigationManager.GetUriWithQueryParameters("postsearch", dictionary);
         Services.ClientServices.NavigationManager.NavigateTo(newPath);
     }
 
-    private void OnUserTagClicked(PostTagInfo postTagInfo)
+    private void OnUserTagClicked(PostTagInfo? postTagInfo)
     {
         if (postTagInfo == null)
         {
@@ -189,20 +192,23 @@ else
         }
 
         var tagStrings = new List<string>();
-        if (HeaderData.User.AccountId > 0)
+        if (HeaderData?.User != null && HeaderData.User.AccountId > 0)
         {
             tagStrings.Add(PostTagInfo.GetTagString(PostTagType.Account, HeaderData.User.AccountId));
         }
 
         tagStrings.Add(postTagInfo.TagString);
 
-        var dictionary = new Dictionary<string, object>
+        var dictionary = new Dictionary<string, object?>
         {
             { "tag", tagStrings.ToArray() }
         };
 
-        ZExtensions.AddToDictOrNull(dictionary, "ptmin", HeaderData.User.StartTimeMs, HeaderData.User.StartTimeMs == 0);
-        ZExtensions.AddToDictOrNull(dictionary, "ptmax", HeaderData.User.EndTimeMs, HeaderData.User.EndTimeMs == 0);
+        if (HeaderData?.User != null)
+        {
+            ZExtensions.AddToDictOrNull(dictionary, "ptmin", HeaderData.User.StartTimeMs, HeaderData.User.StartTimeMs == 0);
+            ZExtensions.AddToDictOrNull(dictionary, "ptmax", HeaderData.User.EndTimeMs, HeaderData.User.EndTimeMs == 0);
+        }
 
         var newPath = Services.ClientServices.NavigationManager.GetUriWithQueryParameters("postsearch", dictionary);
         Services.ClientServices.NavigationManager.NavigateTo(newPath);

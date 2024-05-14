@@ -43,7 +43,7 @@ internal static class PostServices_TryPostMemory
                 _ = commonServices.PostServices.DependsOnNewPosts();
             }
 
-            return default;
+            return new AddMemoryResult(AddMemoryResultCode.None);
         }
 
         var commentText = command.Comment;
@@ -94,7 +94,7 @@ internal static class PostServices_TryPostMemory
             PostVisibility = command.IsPrivate ? (byte)1 : (byte)0
         };
 
-        var buildSystemTagsResult = await CreateSystemTags(logger, commonServices, postRecord, activeAccount, command.SystemTags, tagRecords).ConfigureAwait(false);
+        var buildSystemTagsResult = await CreateSystemTags(logger, commonServices, postRecord, activeAccount, command.SystemTags ?? [], tagRecords).ConfigureAwait(false);
         if (buildSystemTagsResult != AddMemoryResultCode.Success)
         {
             return new AddMemoryResult(buildSystemTagsResult);
@@ -118,7 +118,7 @@ internal static class PostServices_TryPostMemory
 
         await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
 
-        var uploadAndSortResult = await UploadAndSortImages(logger, commonServices, database, activeAccount, postRecord, command.ImageData, cancellationToken).ConfigureAwait(false);
+        var uploadAndSortResult = await UploadAndSortImages(logger, commonServices, database, activeAccount, postRecord, command.ImageData ?? [], cancellationToken).ConfigureAwait(false);
         if (uploadAndSortResult != AddMemoryResultCode.Success)
         {
             return new AddMemoryResult(uploadAndSortResult);
@@ -137,7 +137,7 @@ internal static class PostServices_TryPostMemory
             }
         }
 
-        command.ImageData.Clear();
+        command.ImageData?.Clear();
 
         postRecord.PostTags = tagRecords;
 
@@ -225,7 +225,7 @@ internal static class PostServices_TryPostMemory
         return AddMemoryResultCode.Success;
     }
 
-    private static async Task<AddMemoryResultCode> UploadAndSortImages(ILogger<PostServices> logger, CommonServices commonServices, AppDbContext database, AccountViewModel accountViewModel, PostRecord postRecord, List<byte[]> imageDataList, CancellationToken cancellationToken)
+    private static async Task<AddMemoryResultCode> UploadAndSortImages(ILogger<PostServices> logger, CommonServices commonServices, AppDbContext database, AccountViewModel accountViewModel, PostRecord postRecord, List<byte[]?> imageDataList, CancellationToken cancellationToken)
     {
         if (imageDataList.Count > ZExtensions.MaxPostScreenShots)
         {
@@ -245,6 +245,11 @@ internal static class PostServices_TryPostMemory
             try
             {
                 var buffer = imageDataList[i];
+                if (buffer == null)
+                {
+                    return AddMemoryResultCode.UploadFailed;
+                }
+
                 var bufferCount = buffer.Length;
                 if (bufferCount == 0 || bufferCount > ZExtensions.MaxAddMemoryFileSizeInBytes)
                 {

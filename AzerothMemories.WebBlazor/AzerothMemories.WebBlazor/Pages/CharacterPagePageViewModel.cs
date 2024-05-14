@@ -2,35 +2,35 @@
 
 public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IViewModel<CharacterPagePageViewModel>, IPageHeaderInfoProvider
 {
-    private string _idString;
-    private string _region;
-    private string _realm;
-    private string _name;
-    private string _sortModeString;
-    private string _currentPageString;
+    private string? _idString;
+    private string? _region;
+    private string? _realm;
+    private string? _name;
+    private string? _sortModeString;
+    private string? _currentPageString;
 
-    private CharacterAccountViewModel _characterAccountViewModel;
+    private CharacterAccountViewModel? _characterAccountViewModel;
 
     public CharacterPagePageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
         PostSearchHelper = new PostSearchHelper(Services);
 
-        AddPersistentState(() => ErrorMessage, x => ErrorMessage = x, () => Task.FromResult<string>(null));
+        AddPersistentState(() => ErrorMessage, x => ErrorMessage = x, () => Task.FromResult<string?>(null));
         AddPersistentState(() => _characterAccountViewModel, x => _characterAccountViewModel = x, UpdateCharacterAccount);
-        AddPersistentState(() => PostSearchHelper.SearchResults, x => PostSearchHelper.SetSearchResults(x), UpdateSearchResults);
+        AddPersistentState(() => PostSearchHelper.SearchResults, x => PostSearchHelper.SetSearchResults(x), UpdateSearchResults!);
     }
 
-    public string ErrorMessage { get; private set; }
+    public string? ErrorMessage { get; private set; }
 
-    public AccountViewModel AccountViewModel => _characterAccountViewModel?.AccountViewModel;
+    public AccountViewModel? AccountViewModel => _characterAccountViewModel?.AccountViewModel;
 
-    public CharacterViewModel CharacterViewModel => _characterAccountViewModel?.CharacterViewModel;
+    public CharacterViewModel? CharacterViewModel => _characterAccountViewModel?.CharacterViewModel;
 
     public PostSearchHelper PostSearchHelper { get; }
 
     public bool IsLoading => CharacterViewModel == null || PostSearchHelper == null;
 
-    public void OnParametersChanged(string idString, string region, string realm, string name, string sortModeString, string currentPageString)
+    public void OnParametersChanged(string? idString, string? region, string? realm, string? name, string? sortModeString, string? currentPageString)
     {
         _idString = idString;
         _region = region;
@@ -49,12 +49,12 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IView
         await UpdateSearchResults();
     }
 
-    private async Task<CharacterAccountViewModel> UpdateCharacterAccount()
+    private async Task<CharacterAccountViewModel?> UpdateCharacterAccount()
     {
         int.TryParse(_idString, out var id);
 
         ErrorMessage = null;
-        CharacterAccountViewModel viewModel = null;
+        CharacterAccountViewModel? viewModel = null;
 
         if (id > 0)
         {
@@ -125,8 +125,8 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IView
             return Task.FromResult(new SearchPostsResults());
         }
 
-        var characterTag = new PostTagInfo(PostTagType.Character, CharacterViewModel.Id, CharacterViewModel.Name, CharacterViewModel.AvatarLinkWithFallBack);
-        return PostSearchHelper.ComputeState(new[] { characterTag.TagString }, _sortModeString, _currentPageString, null, null);
+        var characterTag = new PostTagInfo(PostTagType.Character, CharacterViewModel.Id, CharacterViewModel.Name, CharacterViewModel.GetAvatarLinkWithFallBack());
+        return PostSearchHelper.ComputeState([characterTag.TagString], _sortModeString, _currentPageString, null, null);
     }
 
     public string GetPageTitle()
@@ -139,9 +139,9 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IView
         return $"A collection of Memories of Azeroth from the character {CharacterViewModel.GetDisplayName()}";
     }
 
-    public string GetPageImage()
+    public string? GetPageImage()
     {
-        return CharacterViewModel.AvatarLinkWithFallBack;
+        return CharacterViewModel.GetAvatarLinkWithFallBack();
     }
 
     public string GetPageImageAlt()
@@ -149,8 +149,13 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IView
         return $"{CharacterViewModel.GetDisplayName()}'s Avatar";
     }
 
-    public string GetCanonicalLink()
+    public string? GetCanonicalLink()
     {
+        if (CharacterViewModel == null)
+        {
+            return null;
+        }
+
         return $"character/{CharacterViewModel.Id}";
     }
 

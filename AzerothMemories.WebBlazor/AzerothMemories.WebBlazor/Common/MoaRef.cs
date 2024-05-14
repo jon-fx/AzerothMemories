@@ -1,12 +1,14 @@
-﻿namespace AzerothMemories.WebBlazor.Common;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace AzerothMemories.WebBlazor.Common;
 
 public sealed class MoaRef
 {
-    private MoaRef(char type, BlizzardRegion region, string realm, string name, long id)
+    private MoaRef(char type, BlizzardRegion region, string? realm, string? name, long id)
     {
         Id = id;
         Type = type;
-        Name = name.Replace(' ', '-');
+        Name = name?.Replace(' ', '-');
         Realm = realm;
         Region = region;
 
@@ -43,14 +45,15 @@ public sealed class MoaRef
 
     public long Id { get; }
 
-    public string Name { get; }
+    public string? Name { get; }
 
-    public string Realm { get; }
+    public string? Realm { get; }
 
     public BlizzardRegion Region { get; }
 
     public string Full { get; }
 
+    [MemberNotNullWhen(true, nameof(Name), nameof(Realm))]
     public bool IsValidCharacter
     {
         get
@@ -64,6 +67,7 @@ public sealed class MoaRef
         }
     }
 
+    [MemberNotNullWhen(true, nameof(Name), nameof(Realm))]
     public bool IsValidGuild
     {
         get
@@ -81,12 +85,12 @@ public sealed class MoaRef
 
     public bool IsWildCard => Id < 0;
 
-    public static MoaRef GetCharacterRef(BlizzardRegion region, string realm, string name, long id)
+    public static MoaRef GetCharacterRef(BlizzardRegion region, string? realm, string? name, long id)
     {
         return new MoaRef('c', region, realm, name, id);
     }
 
-    public static MoaRef GetGuildRef(BlizzardRegion region, string realm, string name)
+    public static MoaRef GetGuildRef(BlizzardRegion region, string? realm, string? name)
     {
         return new MoaRef('g', region, realm, name, 0);
     }

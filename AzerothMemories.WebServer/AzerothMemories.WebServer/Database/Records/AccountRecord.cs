@@ -10,7 +10,7 @@ public sealed class AccountRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVe
 
     [Key] public int Id { get; init; }
 
-    [Column] public string FusionId { get; init; }
+    [Column] public string FusionId { get; init; } = null!;
 
     [Column] public AccountType AccountType { get; set; }
 
@@ -20,13 +20,13 @@ public sealed class AccountRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVe
 
     [Column] public long BlizzardId { get; set; }
 
-    [Column] public string BattleTag { get; set; }
+    [Column] public string? BattleTag { get; set; }
 
     [Column] public bool BattleTagIsPublic { get; set; }
 
-    [Column] public string Username { get; set; }
+    [Column] public string? Username { get; set; }
 
-    [Column] public string UsernameSearchable { get; set; }
+    [Column] public string? UsernameSearchable { get; set; }
 
     [Column] public Instant UsernameChangedTime { get; set; }
 
@@ -36,21 +36,21 @@ public sealed class AccountRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVe
 
     [Column] public bool IsPrivate { get; set; }
 
-    [Column] public string Avatar { get; set; }
+    [Column] public string? Avatar { get; set; }
 
-    [Column] public string SocialDiscord { get; set; }
+    [Column] public string? SocialDiscord { get; set; }
 
-    [Column] public string SocialTwitter { get; set; }
+    [Column] public string? SocialTwitter { get; set; }
 
-    [Column] public string SocialTwitch { get; set; }
+    [Column] public string? SocialTwitch { get; set; }
 
-    [Column] public string SocialYouTube { get; set; }
+    [Column] public string? SocialYouTube { get; set; }
 
-    [Column] public string BanReason { get; set; }
+    [Column] public string? BanReason { get; set; }
 
     [Column] public Instant BanExpireTime { get; set; }
 
-    public BlizzardUpdateRecord UpdateRecord { get; set; }
+    public BlizzardUpdateRecord? UpdateRecord { get; set; }
 
     public ICollection<AuthTokenRecord> AuthTokens { get; init; } = new List<AuthTokenRecord>();
 
@@ -63,19 +63,19 @@ public sealed class AccountRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVe
             Id = Id,
             Avatar = Avatar,
             AccountFlags = AccountFlags,
-            Username = Username,
+            Username = GetUsernameSafe(),
             AccountType = AccountType,
             BattleTag = BattleTag,
             BattleTagIsPublic = BattleTagIsPublic,
             CreatedDateTime = CreatedDateTime.ToUnixTimeMilliseconds(),
             IsPrivate = IsPrivate,
-            SocialLinks = new[]
-            {
-               SocialDiscord,
-               SocialTwitter,
-               SocialTwitch,
-               SocialYouTube
-            },
+            SocialLinks =
+            [
+                SocialDiscord,
+                SocialTwitter,
+                SocialTwitch,
+                SocialYouTube
+            ],
             LinkedLogins = GetLinkedLogins(activeOrAdmin),
             BanReason = BanReason,
             BanExpireTime = BanExpireTime.ToUnixTimeMilliseconds(),
@@ -99,6 +99,16 @@ public sealed class AccountRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVe
         }
 
         return viewModel;
+    }
+
+    public string GetUsernameSafe()
+    {
+        if (string.IsNullOrWhiteSpace(Username))
+        {
+            return $"User-{Id}";
+        }
+
+        return Username;
     }
 
     private AccountViewModelLinks[] GetLinkedLogins(bool activeOrAdmin)

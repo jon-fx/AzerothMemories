@@ -226,11 +226,11 @@ else
                 if (systemTags != null)
                 {
                     var characters = Services.ClientServices.ActiveAccountServices.AccountViewModel.GetCharactersSafe();
-                    var accountIsTagged = systemTags.FirstOrDefault(x => x.Type == PostTagType.Account && x.Id == Services.ClientServices.ActiveAccountServices.AccountViewModel.Id) != null;
+                    var accountIsTagged = systemTags.FirstOrDefault(x => x.Type == PostTagType.Account && x.Id == Services.ClientServices.ActiveAccountServices.AccountViewModel.GetIdSafe()) != null;
 
                     if (accountIsTagged || characters.Length > 0)
                     {
-                        CharacterViewModel taggedCharacter = null;
+                        CharacterViewModel? taggedCharacter = null;
                         foreach (var moaCharacterViewModel in characters)
                         {
                             var tagInfo = systemTags.FirstOrDefault(x => x.Type == PostTagType.Character && x.Id == moaCharacterViewModel.Id);
@@ -244,19 +244,22 @@ else
 
                         <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
                             <MudCardContent Class="@ClassPresets.CardContent">
-
-                                @if (Services.ClientServices.ActiveAccountServices.AccountViewModel.Id != Post.AccountId)
-                                {
-                                    <MudTooltip Placement="Placement.End" Color="Color.Dark">
-                                        <ChildContent>
-                                            <MudButton Variant="Variant.Filled" Disabled="!accountIsTagged && taggedCharacter == null" OnClick="() => OnRestoreButtonClicked(-1)">
-                                                <MudAvatar Size="Size.Medium">?</MudAvatar>
-                                            </MudButton>
-                                        </ChildContent>
-                                        <TooltipContent>
-                                            <MudText>None</MudText>
-                                        </TooltipContent>
-                                    </MudTooltip>
+                                
+                                @{
+                                    var activeAccountId = Services.ClientServices.ActiveAccountServices.AccountViewModel.GetIdSafe();
+                                    if (activeAccountId > 0 && activeAccountId != Post.AccountId)
+                                    {
+                                        <MudTooltip Placement="Placement.End" Color="Color.Dark">
+                                            <ChildContent>
+                                                <MudButton Variant="Variant.Filled" Disabled="!accountIsTagged && taggedCharacter == null" OnClick="() => OnRestoreButtonClicked(-1)">
+                                                    <MudAvatar Size="Size.Medium">?</MudAvatar>
+                                                </MudButton>
+                                            </ChildContent>
+                                            <TooltipContent>
+                                                <MudText>None</MudText>
+                                            </TooltipContent>
+                                        </MudTooltip>
+                                    }
                                 }
 
                                 <MudTooltip Placement="Placement.End" Color="Color.Dark">
@@ -264,7 +267,7 @@ else
                                         <MudButton Variant="Variant.Filled" Disabled="accountIsTagged && taggedCharacter == null" OnClick="() => OnRestoreButtonClicked(0)">
                                             <MudAvatar Size="Size.Medium">
                                                 @{
-                                                    var avatarSource = Services.ClientServices.ActiveAccountServices.AccountViewModel.Avatar;
+                                                    var avatarSource = Services.ClientServices.ActiveAccountServices.AccountViewModel?.Avatar;
                                                     var avatarAlt = Services.ClientServices.ActiveAccountServices.AccountViewModel.GetAvatarText();
 
                                                     if (string.IsNullOrWhiteSpace(avatarSource))
@@ -293,7 +296,7 @@ else
                                         <ChildContent>
                                             <MudButton Id="@index" Variant="Variant.Filled" Disabled="taggedCharacter != null && taggedCharacter.Id == character.Id" OnClick="() => OnRestoreButtonClicked(character.Id)">
                                                 <MudAvatar Size="Size.Medium">
-                                                    <MudImage Src="@character.AvatarLinkWithFallBack" loading="lazy" />
+                                                    <MudImage Src="@character.GetAvatarLinkWithFallBack()" loading="lazy" />
                                                 </MudAvatar>
                                             </MudButton>
                                         </ChildContent>
@@ -324,12 +327,12 @@ else
 
 @code {
     private bool _postChanged;
-    private readonly PostViewModel _post;
+    private readonly PostViewModel? _post;
 
     private bool _userReacting;
     private bool _showReactions;
     private bool _reactionAreLoading;
-    private PostReactionViewModel[] _postReactions;
+    private PostReactionViewModel[]? _postReactions;
 
     private bool _showTagMenu;
     private bool _isChangingTags;
@@ -337,7 +340,7 @@ else
     [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired]
-    public required PostViewModel Post
+    public required PostViewModel? Post
     {
         get => _post;
         init
@@ -351,7 +354,7 @@ else
 
     [Parameter] public EventCallback<PostTagInfo> OnTagChipClickedCallback { get; init; }
 
-    public bool DoseNotHavePermission => Post.PostVisibility == 255;
+    public bool DoseNotHavePermission => Post == null || Post.PostVisibility == 255;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -373,7 +376,7 @@ else
 
     private async Task OnReactButtonClicked(PostReaction newReaction)
     {
-        if (_userReacting)
+        if (_userReacting || Post == null)
         {
             return;
         }
@@ -426,6 +429,11 @@ else
             return;
         }
 
+        if (Post == null)
+        {
+            return;
+        }
+
         _reactionAreLoading = true;
 
         var postId = Post.Id;
@@ -436,7 +444,7 @@ else
         }
         else if (reactionData.Length == 0)
         {
-            _postReactions = Array.Empty<PostReactionViewModel>();
+            _postReactions = [];
         }
         else
         {
@@ -448,11 +456,21 @@ else
 
     private void OnCommentButtonClicked()
     {
+        if (Post == null)
+        {
+            return;
+        }
+
         Services.ClientServices.NavigationManager.NavigateTo($"/post/{Post.AccountId}/{Post.Id}");
     }
 
     private async Task OnRestoreButtonClicked(int characterId)
     {
+        if (Post == null)
+        {
+            return;
+        }
+
         if (_isChangingTags)
         {
             return;
@@ -472,6 +490,11 @@ else
 
     private async Task OnDeletePost()
     {
+        if (Post == null)
+        {
+            return;
+        }
+
         if (Post.DeletedTimeStamp != 0)
         {
             return;
@@ -491,11 +514,21 @@ else
 
     private void OnEditPostTags()
     {
+        if (Post == null)
+        {
+            return;
+        }
+
         Services.ClientServices.NavigationManager.NavigateTo($"/edittags/{Post.AccountId}/{Post.Id}");
     }
 
     private async Task OnTogglePostVisibility()
     {
+        if (Post == null)
+        {
+            return;
+        }
+
         var postId = Post.Id;
         var newVisibility = Post.PostVisibility == 1 ? (byte)0 : (byte)1;
         var result = await Services.ClientServices.CommandRunner.Run(new Post_TrySetPostVisibility(Session.Default, postId, newVisibility));
@@ -513,11 +546,21 @@ else
 
     private async Task OnReportPost()
     {
+        if (Post == null)
+        {
+            return;
+        }
+
         await Services.ClientServices.DialogService.ShowReportPostDialog($"Report {Post.AccountUsername}'s Post ({Post.Id})", Post.Id, 0);
     }
 
     private async Task OnReportPostTags()
     {
+        if (Post == null)
+        {
+            return;
+        }
+
         await Services.ClientServices.DialogService.ShowReportPostTagsDialog($"Report Post Tags ({Post.Id})", Post);
     }
 

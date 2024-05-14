@@ -12,13 +12,13 @@ public sealed class PostRecord : IDatabaseRecordWithVersion
 
     [Column] public int AccountId { get; init; }
 
-    [Column] public string PostCommentRaw { get; init; }
+    [Column] public string? PostCommentRaw { get; init; }
 
-    [Column] public string PostCommentMark { get; init; }
+    [Column] public string? PostCommentMark { get; init; }
 
-    [Column] public string PostCommentUserMap { get; init; }
+    [Column] public string? PostCommentUserMap { get; init; }
 
-    [Column] public string PostAvatar { get; set; }
+    [Column] public string? PostAvatar { get; set; }
 
     [Column] public byte PostVisibility { get; set; }
 
@@ -30,7 +30,7 @@ public sealed class PostRecord : IDatabaseRecordWithVersion
 
     [Column] public Instant PostCreatedTime { get; init; }
 
-    [Column] public string BlobNames { get; set; }
+    [Column] public string? BlobNames { get; set; }
 
     [Column] public int ReactionCount1 { get; set; }
 
@@ -62,28 +62,28 @@ public sealed class PostRecord : IDatabaseRecordWithVersion
 
     public uint RowVersion { get; set; }
 
-    public ICollection<PostTagRecord> PostTags { get; set; }
+    public ICollection<PostTagRecord>? PostTags { get; set; }
 
-    public ICollection<AccountUploadLog> Uploads { get; set; }
+    public ICollection<AccountUploadLog>? Uploads { get; set; }
 
-    public PostViewModel CreatePostViewModel(AccountRecord accountRecord, bool canSeePost, PostReactionViewModel reactionRecord, PostTagInfo[] postTagRecords)
+    public PostViewModel CreatePostViewModel(AccountRecord accountRecord, bool canSeePost, PostReactionViewModel? reactionRecord, PostTagInfo[] postTagRecords)
     {
         var viewModel = new PostViewModel
         {
             Id = Id,
             AccountId = AccountId,
-            AccountUsername = accountRecord.Username,
+            AccountUsername = accountRecord.GetUsernameSafe(),
             AccountAvatar = accountRecord.Avatar,
             PostComment = PostCommentMark,
             PostVisibility = PostVisibility,
             PostTime = PostTime.ToUnixTimeMilliseconds(),
             PostCreatedTime = PostCreatedTime.ToUnixTimeMilliseconds(),
             PostEditedTime = PostEditedTime.ToUnixTimeMilliseconds(),
-            ImageBlobNames = BlobNames.Split('|'),
+            ImageBlobNames = BlobNames?.Split('|'),
             ReactionId = reactionRecord?.Id ?? 0,
             Reaction = reactionRecord?.Reaction ?? 0,
-            ReactionCounters = new[]
-            {
+            ReactionCounters =
+            [
                 ReactionCount1,
                 ReactionCount2,
                 ReactionCount3,
@@ -93,7 +93,7 @@ public sealed class PostRecord : IDatabaseRecordWithVersion
                 ReactionCount7,
                 ReactionCount8,
                 ReactionCount9
-            },
+            ],
             TotalReactionCount = TotalReactionCount,
             TotalCommentCount = TotalCommentCount,
             DeletedTimeStamp = DeletedTimeStamp,
@@ -109,7 +109,7 @@ public sealed class PostRecord : IDatabaseRecordWithVersion
         {
             viewModel.PostComment = null;
             viewModel.PostVisibility = 255;
-            viewModel.ImageBlobNames = Array.Empty<string>();
+            viewModel.ImageBlobNames = [];
             viewModel.TotalReactionCount = 0;
             viewModel.TotalCommentCount = 0;
 

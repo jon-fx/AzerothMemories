@@ -6,8 +6,8 @@ public sealed class AdminUserDialogViewModel : ViewModelBase, IViewModel<AdminUs
 
     private AdminUserDialogViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
-        BanTimers = new[]
-        {
+        BanTimers =
+        [
             ("None", Duration.FromMilliseconds(0)),
             ("1 Hour", Duration.FromHours(1)),
             ("1 Day", Duration.FromDays(1)),
@@ -15,16 +15,16 @@ public sealed class AdminUserDialogViewModel : ViewModelBase, IViewModel<AdminUs
             ("14 Days", Duration.FromDays(14)),
             ("28 Days", Duration.FromDays(28)),
             ("1 Year", Duration.FromDays(365))
-        };
+        ];
     }
 
-    public string ErrorMessage { get; private set; }
+    public string? ErrorMessage { get; private set; }
 
-    public AccountViewModel AccountViewModel { get; private set; }
+    public AccountViewModel? AccountViewModel { get; private set; }
 
     public (string Text, Duration Time)[] BanTimers { get; init; }
 
-    public string BanReasonText { get; set; }
+    public string? BanReasonText { get; set; }
 
     public void OnParametersChanged(int id)
     {
@@ -55,21 +55,41 @@ public sealed class AdminUserDialogViewModel : ViewModelBase, IViewModel<AdminUs
 
     public async Task ResetUsername()
     {
+        if (AccountViewModel == null)
+        {
+            return;
+        }
+
         await Services.ClientServices.CommandRunner.Run(new Account_TryChangeUsername(Session.Default, AccountViewModel.Id, null));
     }
 
     public async Task ResetAvatar()
     {
+        if (AccountViewModel == null)
+        {
+            return;
+        }
+
         await Services.ClientServices.CommandRunner.Run(new Account_TryChangeAvatar(Session.Default, AccountViewModel.Id, null));
     }
 
     public async Task ResetSocialLink(int linkId)
     {
+        if (AccountViewModel == null)
+        {
+            return;
+        }
+
         await Services.ClientServices.CommandRunner.Run(new Account_TryChangeSocialLink(Session.Default, AccountViewModel.Id, linkId, null));
     }
 
     public async Task BanUser(Duration duration)
     {
+        if (AccountViewModel == null)
+        {
+            return;
+        }
+
         await Services.ClientServices.CommandRunner.Run(new Admin_TryBanUser(Session.Default, AccountViewModel.Id, (long)duration.TotalMilliseconds, BanReasonText));
     }
 

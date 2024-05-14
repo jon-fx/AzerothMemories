@@ -6,9 +6,14 @@ internal sealed class UpdateHandler_Characters_Renders : UpdateHandlerBaseResult
     {
     }
 
-    protected override async Task<RequestResult<CharacterMediaSummary>> TryExecuteRequest(CharacterRecord record, AuthTokenRecord authTokenRecord, Instant blizzardLastModified)
+    protected override async Task<RequestResult<CharacterMediaSummary>> TryExecuteRequest(CharacterRecord record, AuthTokenRecord? authTokenRecord, Instant blizzardLastModified)
     {
         var characterRef = new MoaRef(record.MoaRef);
+        if (!characterRef.IsValidCharacter)
+        {
+            throw new NotImplementedException();
+        }
+
         using var client = CommonServices.HttpClientProvider.GetWarcraftClient(record.BlizzardRegionId);
         return await client.GetCharacterRendersAsync(characterRef.Realm, characterRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
@@ -20,7 +25,7 @@ internal sealed class UpdateHandler_Characters_Renders : UpdateHandlerBaseResult
         if (assets != null)
         {
             var avatar = assets.FirstOrDefault(x => x.Key == "avatar");
-            characterAvatarRender = avatar?.Value.AbsoluteUri;
+            characterAvatarRender = avatar?.Value?.AbsoluteUri;
         }
 
         record.AvatarLink = characterAvatarRender;

@@ -3,13 +3,13 @@
 public interface IAccountServices : IComputeService
 {
     [ComputeMethod]
-    Task<AccountViewModel> TryGetActiveAccount(Session session);
+    Task<AccountViewModel?> TryGetActiveAccount(Session session);
 
     [ComputeMethod]
-    Task<AccountViewModel> TryGetAccountById(Session session, int accountId);
+    Task<AccountViewModel?> TryGetAccountById(Session session, int accountId);
 
     [ComputeMethod]
-    Task<AccountViewModel> TryGetAccountByUsername(Session session, string username);
+    Task<AccountViewModel?> TryGetAccountByUsername(Session session, string username);
 
     //Task<bool> TryEnqueueUpdate(Session session);
 
@@ -26,13 +26,13 @@ public interface IAccountServices : IComputeService
     Task<bool> TryChangeBattleTagVisibility(Account_TryChangeBattleTagVisibility command, CancellationToken cancellationToken = default);
 
     [CommandHandler]
-    Task<string> TryChangeAvatar(Account_TryChangeAvatar command, CancellationToken cancellationToken = default);
+    Task<string?> TryChangeAvatar(Account_TryChangeAvatar command, CancellationToken cancellationToken = default);
 
     [CommandHandler]
-    Task<string> TryChangeAvatarUpload(Account_TryChangeAvatarUpload command, CancellationToken cancellationToken = default);
+    Task<string?> TryChangeAvatarUpload(Account_TryChangeAvatarUpload command, CancellationToken cancellationToken = default);
 
     [CommandHandler]
-    Task<string> TryChangeSocialLink(Account_TryChangeSocialLink command, CancellationToken cancellationToken = default);
+    Task<string?> TryChangeSocialLink(Account_TryChangeSocialLink command, CancellationToken cancellationToken = default);
 
     [CommandHandler]
     Task<bool> TryDisconnectAccount(Account_TryDisconnectAccount command, CancellationToken cancellationToken = default);
@@ -44,5 +44,5 @@ public interface IAccountServices : IComputeService
     Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, long timeStamp, int diffInSeconds, ServerSideLocale locale);
 
     [ComputeMethod]
-    Task<AccountHistoryPageResult> TryGetAccountHistory(Session session, int currentPage = 0);
+    Task<AccountHistoryPageResult?> TryGetAccountHistory(Session session, int currentPage = 0);
 }

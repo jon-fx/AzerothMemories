@@ -66,7 +66,7 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountRecord> TryGetAccountRecord(int id)
+    public virtual async Task<AccountRecord?> TryGetAccountRecord(int id)
     {
         using var _ = new MethodTimeLogger(_logger);
         await DependsOnAccountRecord(id).ConfigureAwait(false);
@@ -78,8 +78,13 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountRecord> TryGetAccountRecordFusionId(string fusionId)
+    public virtual async Task<AccountRecord?> TryGetAccountRecordFusionId(string? fusionId)
     {
+        if (string.IsNullOrWhiteSpace(fusionId))
+        {
+            return null;
+        }
+
         using var _ = new MethodTimeLogger(_logger);
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         var accountRecord = await database.Accounts.FirstOrDefaultAsync(a => a.FusionId == fusionId).ConfigureAwait(false);
@@ -92,8 +97,13 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountRecord> TryGetAccountRecordUsername(string username)
+    public virtual async Task<AccountRecord?> TryGetAccountRecordUsername(string? username)
     {
+        if (string.IsNullOrWhiteSpace(username))
+        {
+            return null;
+        }
+
         using var _ = new MethodTimeLogger(_logger);
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         var accountRecord = await database.Accounts.FirstOrDefaultAsync(a => a.Username == username).ConfigureAwait(false);
@@ -113,7 +123,7 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountViewModel> TryGetActiveAccount(Session session)
+    public virtual async Task<AccountViewModel?> TryGetActiveAccount(Session session)
     {
         using var _ = new MethodTimeLogger(_logger);
         var accountRecord = await TryGetActiveAccountRecord(session).ConfigureAwait(false);
@@ -127,7 +137,7 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountViewModel> TryGetAccountById(Session session, int accountId)
+    public virtual async Task<AccountViewModel?> TryGetAccountById(Session session, int accountId)
     {
         using var _ = new MethodTimeLogger(_logger);
         await DependsOnAccountRecord(accountId).ConfigureAwait(false);
@@ -151,7 +161,7 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountViewModel> TryGetAccountByUsername(Session session, string username)
+    public virtual async Task<AccountViewModel?> TryGetAccountByUsername(Session session, string username)
     {
         using var _ = new MethodTimeLogger(_logger);
         var sessionAccount = await TryGetActiveAccount(session).ConfigureAwait(false);
@@ -297,21 +307,21 @@ public class AccountServices : IAccountServices
     }
 
     [CommandHandler]
-    public virtual async Task<string> TryChangeAvatar(Account_TryChangeAvatar command, CancellationToken cancellationToken = default)
+    public virtual async Task<string?> TryChangeAvatar(Account_TryChangeAvatar command, CancellationToken cancellationToken = default)
     {
         using var _ = new MethodTimeLogger(_logger);
         return await AccountServices_TryChangeAvatar.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
-    public virtual async Task<string> TryChangeAvatarUpload(Account_TryChangeAvatarUpload command, CancellationToken cancellationToken = default)
+    public virtual async Task<string?> TryChangeAvatarUpload(Account_TryChangeAvatarUpload command, CancellationToken cancellationToken = default)
     {
         using var _ = new MethodTimeLogger(_logger);
         return await AccountServices_TryChangeAvatarUpload.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
 
     [CommandHandler]
-    public virtual async Task<string> TryChangeSocialLink(Account_TryChangeSocialLink command, CancellationToken cancellationToken = default)
+    public virtual async Task<string?> TryChangeSocialLink(Account_TryChangeSocialLink command, CancellationToken cancellationToken = default)
     {
         using var _ = new MethodTimeLogger(_logger);
         return await AccountServices_TryChangeSocialLink.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
@@ -338,7 +348,7 @@ public class AccountServices : IAccountServices
         var accountRecord = await TryGetActiveAccountRecord(session).ConfigureAwait(false);
         if (accountRecord == null)
         {
-            return Array.Empty<PostViewModel>();
+            return [];
         }
 
         await _commonServices.PostServices.DependsOnPostsBy(accountRecord.Id).ConfigureAwait(false);
@@ -355,7 +365,10 @@ public class AccountServices : IAccountServices
         foreach (var postId in results)
         {
             var postViewModel = await _commonServices.PostServices.TryGetPostViewModel(accountRecord.Id, postId, locale).ConfigureAwait(false);
-            allPostViewModel.Add(postViewModel);
+            if (postViewModel != null)
+            {
+                allPostViewModel.Add(postViewModel);
+            }
         }
 
         return allPostViewModel.ToArray();
@@ -368,7 +381,7 @@ public class AccountServices : IAccountServices
         var accountRecord = await TryGetActiveAccountRecord(session).ConfigureAwait(false);
         if (accountRecord == null)
         {
-            return Array.Empty<PostTagInfo>();
+            return [];
         }
 
         await DependsOnAccountAchievements(accountRecord.Id).ConfigureAwait(false);
@@ -411,7 +424,7 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountHistoryPageResult> TryGetAccountHistory(Session session, int currentPage)
+    public virtual async Task<AccountHistoryPageResult?> TryGetAccountHistory(Session session, int currentPage)
     {
         using var _ = new MethodTimeLogger(_logger);
         var activeAccount = await TryGetActiveAccount(session).ConfigureAwait(false);
@@ -448,7 +461,7 @@ public class AccountServices : IAccountServices
                                Type = record.Type,
                                AccountId = record.AccountId,
                                OtherAccountId = record.OtherAccountId.GetValueOrDefault(),
-                               OtherAccountUsername = otherAccount == null ? null : otherAccount.Username,
+                               OtherAccountUsername = otherAccount == null ? null : otherAccount.GetUsernameSafe(),
                                TargetId = record.TargetId,
                                TargetPostId = record.TargetPostId.GetValueOrDefault(),
                                TargetCommentId = record.TargetCommentId.GetValueOrDefault(),
@@ -461,7 +474,7 @@ public class AccountServices : IAccountServices
         AccountHistoryViewModel[] recentHistoryViewModels;
         if (totalPages == 0)
         {
-            recentHistoryViewModels = Array.Empty<AccountHistoryViewModel>();
+            recentHistoryViewModels = [];
         }
         else
         {
@@ -478,7 +491,7 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountRecord> TryGetActiveAccountRecord(Session session)
+    public virtual async Task<AccountRecord?> TryGetActiveAccountRecord(Session? session)
     {
         using var _ = new MethodTimeLogger(_logger);
         if (session == null)

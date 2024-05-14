@@ -24,9 +24,9 @@
 
 @code
 {
-    private string _autoCompleteText;
-    private MainSearchResult _autoCompleteValue;
-    private AutoCompleteComponent<MainSearchResult> _autoComplete;
+    private string? _autoCompleteText;
+    private MainSearchResult? _autoCompleteValue;
+    private AutoCompleteComponent<MainSearchResult>? _autoComplete;
 
     [Parameter] public string Placeholder { get; init; } = "Search...";
 
@@ -38,13 +38,13 @@
 
     [Parameter] public EventCallback<MainSearchResult> OnSelectedItemChanged { get; init; }
 
-    [Inject] public ISearchServices SearchServices { get; init; }
+    [Inject] public ISearchServices SearchServices { get; init; } = null!;
 
-    [Inject] public NavigationManager NavigationManager { get; init; }
+    [Inject] public NavigationManager NavigationManager { get; init; } = null!;
 
     private async Task OnValueChanged()
     {
-        if (_autoCompleteValue == null)
+        if (_autoComplete == null || _autoCompleteValue == null)
         {
             return;
         }
@@ -61,7 +61,7 @@
         await _autoComplete.Clear();
     }
 
-    private void OnTextChanged(string text)
+    private void OnTextChanged(string? text)
     {
         if (text != null)
         {
@@ -85,7 +85,7 @@
         return results;
     }
 
-    private string ToStringFunc(MainSearchResult arg)
+    private string ToStringFunc(MainSearchResult? arg)
     {
         if (arg == null)
         {

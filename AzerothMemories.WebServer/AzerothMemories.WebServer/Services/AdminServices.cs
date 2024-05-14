@@ -104,7 +104,7 @@ public class AdminServices : IAdminServices
     }
 
     [ComputeMethod]
-    public virtual async Task<AdminCountersViewModel> TryGetUserCounts(Session session)
+    public virtual async Task<AdminCountersViewModel?> TryGetUserCounts(Session session)
     {
         var account = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         if (!account.IsAdmin())
@@ -149,7 +149,7 @@ public class AdminServices : IAdminServices
     }
 
     [ComputeMethod]
-    public virtual async Task<ReportedPostViewModel[]> TryGetReportedPosts(Session session)
+    public virtual async Task<ReportedPostViewModel[]?> TryGetReportedPosts(Session session)
     {
         var account = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         if (!account.IsAdmin())
@@ -217,7 +217,7 @@ public class AdminServices : IAdminServices
     }
 
     [ComputeMethod]
-    public virtual async Task<ReportedPostCommentsViewModel[]> TryGetReportedComments(Session session)
+    public virtual async Task<ReportedPostCommentsViewModel[]?> TryGetReportedComments(Session session)
     {
         var account = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         if (!account.IsAdmin())
@@ -234,7 +234,7 @@ public class AdminServices : IAdminServices
             var query = from c in database.PostComments
                         from a in database.Accounts.Where(r => r.Id == c.AccountId)
                         where c.Id == result.CommentId
-                        select c.CreateCommentViewModel(a.Username, a.Avatar);
+                        select c.CreateCommentViewModel(a.GetUsernameSafe(), a.Avatar);
 
             var commentViewModel = await query.FirstOrDefaultAsync().ConfigureAwait(false);
             if (commentViewModel == null)
@@ -292,7 +292,7 @@ public class AdminServices : IAdminServices
     }
 
     [ComputeMethod]
-    public virtual async Task<ReportedPostTagsViewModel[]> TryGetReportedTags(Session session)
+    public virtual async Task<ReportedPostTagsViewModel[]?> TryGetReportedTags(Session session)
     {
         var account = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         if (!account.IsAdmin())
@@ -317,6 +317,11 @@ public class AdminServices : IAdminServices
 
             foreach (var reportRecord in result.ReportRecords)
             {
+                if (reportRecord.Tag == null)
+                {
+                    continue;
+                }
+
                 var userTag = await _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Account, reportRecord.AccountId).ConfigureAwait(false);
                 if (userTag == null)
                 {

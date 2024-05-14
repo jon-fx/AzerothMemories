@@ -13,19 +13,19 @@ public sealed class AccountController : ControllerBase, IAccountServices
     }
 
     [HttpGet]
-    public Task<AccountViewModel> TryGetActiveAccount(Session session)
+    public Task<AccountViewModel?> TryGetActiveAccount(Session session)
     {
         return _commonServices.AccountServices.TryGetActiveAccount(session);
     }
 
-    [HttpGet("{accountId}")]
-    public Task<AccountViewModel> TryGetAccountById(Session session, [FromRoute] int accountId)
+    [HttpGet("{accountId:int}")]
+    public Task<AccountViewModel?> TryGetAccountById(Session session, [FromRoute] int accountId)
     {
         return _commonServices.AccountServices.TryGetAccountById(session, accountId);
     }
 
     [HttpGet("{username}")]
-    public Task<AccountViewModel> TryGetAccountByUsername(Session session, [FromRoute] string username)
+    public Task<AccountViewModel?> TryGetAccountByUsername(Session session, [FromRoute] string username)
     {
         return _commonServices.AccountServices.TryGetAccountByUsername(session, username);
     }
@@ -61,19 +61,19 @@ public sealed class AccountController : ControllerBase, IAccountServices
     }
 
     [HttpPost]
-    public Task<string> TryChangeAvatar([FromBody] Account_TryChangeAvatar command, CancellationToken cancellationToken = default)
+    public Task<string?> TryChangeAvatar([FromBody] Account_TryChangeAvatar command, CancellationToken cancellationToken = default)
     {
         return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]
-    public Task<string> TryChangeAvatarUpload([FromBody] Account_TryChangeAvatarUpload command, CancellationToken cancellationToken = default)
+    public Task<string?> TryChangeAvatarUpload([FromBody] Account_TryChangeAvatarUpload command, CancellationToken cancellationToken = default)
     {
         return _commonServices.Commander.Call(command, cancellationToken);
     }
 
     [HttpPost]
-    public Task<string> TryChangeSocialLink([FromBody] Account_TryChangeSocialLink command, CancellationToken cancellationToken = default)
+    public Task<string?> TryChangeSocialLink([FromBody] Account_TryChangeSocialLink command, CancellationToken cancellationToken = default)
     {
         return _commonServices.Commander.Call(command, cancellationToken);
     }
@@ -84,20 +84,20 @@ public sealed class AccountController : ControllerBase, IAccountServices
         return _commonServices.Commander.Call(command, cancellationToken);
     }
 
-    [HttpGet("{timeStamp}/{diffInSeconds}")]
+    [HttpGet("{timeStamp:long}/{diffInSeconds:int}")]
     public Task<PostViewModel[]> TrySearchPostsByTime(Session session, [FromRoute] long timeStamp, [FromRoute] int diffInSeconds, [FromQuery] ServerSideLocale locale)
     {
         return _commonServices.AccountServices.TrySearchPostsByTime(session, timeStamp, diffInSeconds, locale);
     }
 
-    [HttpGet("{timeStamp}/{diffInSeconds}")]
+    [HttpGet("{timeStamp:long}/{diffInSeconds:int}")]
     public Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, [FromRoute] long timeStamp, [FromRoute] int diffInSeconds, [FromQuery] ServerSideLocale locale)
     {
         return _commonServices.AccountServices.TryGetAchievementsByTime(session, timeStamp, diffInSeconds, locale);
     }
 
     [HttpGet]
-    public Task<AccountHistoryPageResult> TryGetAccountHistory(Session session, [FromQuery] int currentPage)
+    public Task<AccountHistoryPageResult?> TryGetAccountHistory(Session session, [FromQuery] int currentPage)
     {
         return _commonServices.AccountServices.TryGetAccountHistory(session, currentPage);
     }

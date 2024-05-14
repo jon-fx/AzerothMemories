@@ -2,16 +2,16 @@
 
 public sealed class PostPageViewModel : PersistentStateViewModel, IPageHeaderInfoProvider, IViewModel<PostPageViewModel>
 {
-    private string _accountString;
-    private string _postIdString;
-    private string _currentPageString;
-    private string _focusedCommentId;
+    private string? _accountString;
+    private string? _postIdString;
+    private string? _currentPageString;
+    private string? _focusedCommentId;
 
     public PostPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
         Helper = new PostPageViewModelHelper(Services);
 
-        AddPersistentState(() => Helper.ErrorMessage, x => Helper.SetErrorMessage(x), () => Task.FromResult<string>(null));
+        AddPersistentState(() => Helper.ErrorMessage, x => Helper.SetErrorMessage(x), () => Task.FromResult<string?>(null));
         AddPersistentState(() => Helper.AccountViewModel, x => Helper.SetAccountViewModel(x), () => Helper.UpdateAccount(_accountString));
         AddPersistentState(() => Helper.PostViewModel, x => Helper.SetPostViewModel(x), () => Helper.UpdatePost(_postIdString));
         AddPersistentState(() => Helper.PostCommentPageViewModel, x => Helper.SetPostCommentPageViewModel(_currentPageString, _focusedCommentId, x), () => Helper.UpdateComments(_currentPageString, _focusedCommentId));
@@ -19,7 +19,7 @@ public sealed class PostPageViewModel : PersistentStateViewModel, IPageHeaderInf
 
     public PostPageViewModelHelper Helper { get; }
 
-    public void OnParametersChanged(string idString, string postIdString, string currentPageString, string focusedCommentId)
+    public void OnParametersChanged(string? idString, string? postIdString, string? currentPageString, string? focusedCommentId)
     {
         _accountString = idString;
         _postIdString = postIdString;
@@ -44,15 +44,15 @@ public sealed class PostPageViewModel : PersistentStateViewModel, IPageHeaderInf
     public string GetPageDescription()
     {
         var title = GetPageTitle();
-        var systemTags = Helper.PostViewModel.SystemTags.Select(x => x.Name);
+        var systemTags = Helper.PostViewModel?.SystemTags.SafeEnumerable().Select(x => x.Name) ?? [];
         var systemTagStr = string.Join(", ", systemTags);
 
         return $"{title} that is tagged with: {systemTagStr}";
     }
 
-    public string GetPageImage()
+    public string? GetPageImage()
     {
-        var allBlobInfo = Helper.PostViewModel.GetImageBlobInfo();
+        var allBlobInfo = Helper.PostViewModel?.GetImageBlobInfo() ?? [];
         if (allBlobInfo.Length > 0)
         {
             return allBlobInfo[0].Source;
@@ -66,7 +66,7 @@ public sealed class PostPageViewModel : PersistentStateViewModel, IPageHeaderInf
         return $"An image that shows {GetPageDescription()}";
     }
 
-    public string GetCanonicalLink()
+    public string? GetCanonicalLink()
     {
         return null;
     }

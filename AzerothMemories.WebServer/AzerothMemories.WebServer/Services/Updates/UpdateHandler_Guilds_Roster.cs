@@ -6,23 +6,39 @@ internal sealed class UpdateHandler_Guilds_Roster : UpdateHandlerBaseResult<Guil
     {
     }
 
-    protected override async Task<RequestResult<GuildRoster>> TryExecuteRequest(GuildRecord record, AuthTokenRecord authTokenRecord, Instant blizzardLastModified)
+    protected override async Task<RequestResult<GuildRoster>> TryExecuteRequest(GuildRecord record, AuthTokenRecord? authTokenRecord, Instant blizzardLastModified)
     {
         var guildRef = new MoaRef(record.MoaRef);
+        if (!guildRef.IsValidGuild)
+        {
+            throw new NotImplementedException();
+        }
+
         using var client = CommonServices.HttpClientProvider.GetWarcraftClient(guildRef.Region);
         return await client.GetGuildRosterAsync(guildRef.Realm, guildRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
 
     protected override async Task InternalExecuteWithResult(CommandContext context, AppDbContext database, GuildRecord record, GuildRoster requestResult)
     {
-        foreach (var guildMember in requestResult.Members)
+        foreach (var guildMember in requestResult.Members.SafeEnumerable())
         {
-            var characterId = guildMember.Character.Id;
-            var characterName = guildMember.Character.Name;
-            var characterRealm = guildMember.Character.Realm.Slug;
+            var guildMemberCharacter = guildMember.Character;
+            if (guildMemberCharacter == null)
+            {
+                continue;
+            }
+
+            var characterId = guildMemberCharacter.Id;
+            var characterName = guildMemberCharacter.Name;
+            var characterRealm = guildMemberCharacter.Realm?.Slug;
             var characterRef = MoaRef.GetCharacterRef(record.BlizzardRegionId, characterRealm, characterName, characterId);
             var characterRecord = await CommonServices.CharacterServices.GetOrCreateCharacterRecord(characterRef.Full, BlizzardUpdatePriority.CharacterLow).ConfigureAwait(false);
-            if (characterRecord.BlizzardId != guildMember.Character.Id)
+            if (characterRecord == null)
+            {
+                continue;
+            }
+
+            if (characterRecord.BlizzardId != guildMemberCharacter.Id)
             {
                 throw new NotImplementedException();
             }
@@ -30,14 +46,14 @@ internal sealed class UpdateHandler_Guilds_Roster : UpdateHandlerBaseResult<Guil
             database.Attach(characterRecord);
             characterRecord.GuildId = record.Id;
             characterRecord.GuildRef = record.MoaRef;
-            characterRecord.BlizzardGuildName = requestResult.Guild.Name;
-            characterRecord.Name = guildMember.Character.Name;
-            characterRecord.NameSearchable = DatabaseHelpers.GetSearchableName(guildMember.Character.Name);
-            characterRecord.RealmId = guildMember.Character.Realm.Id;
-            characterRecord.Class = (byte)guildMember.Character.PlayableClass.Id;
-            characterRecord.Race = (byte)guildMember.Character.PlayableRace.Id;
+            characterRecord.BlizzardGuildName = requestResult.Guild?.Name;
+            characterRecord.Name = guildMemberCharacter.Name ?? $"Character-{characterRecord.Id}";
+            characterRecord.NameSearchable = DatabaseHelpers.GetSearchableName(characterRecord.Name);
+            characterRecord.RealmId = guildMemberCharacter.Realm?.Id ?? 0;
+            characterRecord.Class = (byte)(guildMemberCharacter.PlayableClass?.Id ?? 0);
+            characterRecord.Race = (byte)(guildMemberCharacter.PlayableRace?.Id ?? 0);
             characterRecord.BlizzardGuildRank = (byte)guildMember.Rank;
-            characterRecord.Level = (byte)guildMember.Character.Level;
+            characterRecord.Level = (byte)guildMemberCharacter.Level;
         }
     }
 }

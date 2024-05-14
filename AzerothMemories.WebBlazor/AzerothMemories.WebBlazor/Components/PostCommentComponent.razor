@@ -74,7 +74,7 @@
             var commentIsDisabled = !Services.ClientServices.ActiveAccountServices.AccountViewModel.CanPublishComment() || Comment.Comment.DeletedTimeStamp != 0;
 
             <MudCardContent Class="@ClassPresets.CardContent">
-                <MudText Typo="Typo.body2" Style="overflow-wrap: break-word;">@(new MarkupString(comment.PostComment))</MudText>
+                <MudText Typo="Typo.body2" Style="overflow-wrap: break-word;">@(new MarkupString(comment.PostComment ?? string.Empty))</MudText>
                     <MudText Class="cardLinkText" Typo="Typo.body2" @onclick="OnReactionLinkClicked">@ZExtensions.BuildReactionString(comment.TotalReactionCount, comment.ReactionCounters)</MudText>
                 </MudCardContent>
 
@@ -100,7 +100,7 @@
 
                 @if (Services.ClientServices.ActiveAccountServices.AccountViewModel.IsAdmin())
                 {
-                    <MudText Typo="Typo.body2" Style="overflow-wrap: break-word;">@(new MarkupString(comment.PostComment))</MudText>
+                    <MudText Typo="Typo.body2" Style="overflow-wrap: break-word;">@(new MarkupString(comment.PostComment ?? string.Empty))</MudText>
                     <MudText Class="cardLinkText" Typo="Typo.body2" @onclick="OnReactionLinkClicked">@ZExtensions.BuildReactionString(comment.TotalReactionCount, comment.ReactionCounters)</MudText>
                 }
             </MudCardContent>
@@ -219,6 +219,11 @@
     private async Task OnDeleteComment()
     {
         var comment = Comment.Comment;
+        if (comment == null)
+        {
+            return;
+        }
+
         if (comment.DeletedTimeStamp != 0)
         {
             return;
@@ -241,7 +246,13 @@
 
     private async Task OnReportComment()
     {
-        await Services.ClientServices.DialogService.ShowReportPostDialog($"Report {Comment.Comment.AccountUsername}'s Comment ({Comment.Comment.Id})", Comment.Comment.PostId, Comment.Comment.Id);
+        var comment = Comment.Comment;
+        if (comment == null)
+        {
+            return;
+        }
+
+        await Services.ClientServices.DialogService.ShowReportPostDialog($"Report {comment.AccountUsername}'s Comment ({comment.Id})", comment.PostId, comment.Id);
     }
 
     private async Task OnReactionLinkClicked()

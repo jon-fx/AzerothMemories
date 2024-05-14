@@ -12,9 +12,9 @@ public sealed class AddMemoryComponentSharedData
     private HashSet<object> _selectedAchievementTags;
     private HashSet<PostTagInfo> _selectedExtraTags;
 
-    private CharacterViewModel _selectedCharacter;
-    private Func<AccountViewModel> _accountViewModelProvider;
-    private PostViewModel[] _myPostsAroundPostTimeStamp = Array.Empty<PostViewModel>();
+    private CharacterViewModel? _selectedCharacter;
+    private Func<AccountViewModel?>? _accountViewModelProvider;
+    private PostViewModel[] _myPostsAroundPostTimeStamp = [];
 
     public AddMemoryComponentSharedData(ViewModelBase viewModel, bool isAddMemoryPage)
     {
@@ -26,9 +26,9 @@ public sealed class AddMemoryComponentSharedData
         CommonTags = _viewModel.Services.ClientServices.TagHelpers.CommonTags;
 
         SelectedPostAvatarImage = 0;
-        PostAvatarImages = new List<(PostTagInfo Tag, string ImageLink, string ImageText, string ToolTipText)>();
+        PostAvatarImages = [];
 
-        _achievementTags = Array.Empty<PostTagInfo>();
+        _achievementTags = [];
         _selectedTypeTags = new HashSet<object>(PostTagInfo.EqualityComparer2) { TypeTags[0] };
         _selectedRegionTags = new HashSet<object>(PostTagInfo.EqualityComparer2) { RegionTags[0] };
         _selectedCommonTags = new HashSet<object>(PostTagInfo.EqualityComparer2);
@@ -62,25 +62,30 @@ public sealed class AddMemoryComponentSharedData
 
     public int SelectedPostAvatarImage { get; set; }
 
-    public List<(PostTagInfo Tag, string ImageLink, string ImageText, string ToolTipText)> PostAvatarImages { get; }
+    public List<(PostTagInfo? Tag, string ImageLink, string ImageText, string ToolTipText)> PostAvatarImages { get; }
 
-    public Action OnTagsChanged { get; set; }
+    public Action? OnTagsChanged { get; set; }
 
-    public AccountViewModel TryGetAccountViewModel => _accountViewModelProvider();
+    public AccountViewModel? TryGetAccountViewModel => _accountViewModelProvider?.Invoke();
 
-    public Task InitializeAccount(Func<AccountViewModel> accountViewModelFunc)
+    public Task InitializeAccount(Func<AccountViewModel?> accountViewModelFunc)
     {
         Exceptions.ThrowIf(accountViewModelFunc == null);
 
         _accountViewModelProvider = accountViewModelFunc;
 
         var accountViewModel = _accountViewModelProvider();
+        if (accountViewModel != null)
+        {
+            _selectedExtraTags = new HashSet<PostTagInfo>(PostTagInfo.EqualityComparer2);
 
-        _selectedExtraTags = new HashSet<PostTagInfo>(PostTagInfo.EqualityComparer2);
+            if (!string.IsNullOrWhiteSpace(accountViewModel.Avatar))
+            {
+                PostAvatarImages.Add((null, accountViewModel.Avatar, accountViewModel.GetAvatarText(), "Default"));
+            }
 
-        PostAvatarImages.Add((null, accountViewModel.Avatar, accountViewModel.GetAvatarText(), "Default"));
-
-        _selectedExtraTags.Add(new PostTagInfo(PostTagType.Account, accountViewModel.Id, accountViewModel.GetDisplayName(), null) { IsChipClosable = false });
+            _selectedExtraTags.Add(new PostTagInfo(PostTagType.Account, accountViewModel.Id, accountViewModel.GetDisplayName(), null) { IsChipClosable = false });
+        }
 
         OnTagsChanged?.Invoke();
 
@@ -100,7 +105,7 @@ public sealed class AddMemoryComponentSharedData
             }
 
             _achievementTags = achievements;
-            _viewModel.OnViewModelChanged?.Invoke();
+            _viewModel.OnViewModelChanged();
         }
     }
 
@@ -125,14 +130,14 @@ public sealed class AddMemoryComponentSharedData
             else
             {
                 _myPostsAroundPostTimeStamp = myPostsAroundPostTimeStamp;
-                _viewModel.OnViewModelChanged?.Invoke();
+                _viewModel.OnViewModelChanged();
             }
         }
     }
 
     public async Task OnEditingPost(PostViewModel currentPost)
     {
-        foreach (var tagInfo in currentPost.SystemTags)
+        foreach (var tagInfo in currentPost.SystemTags.SafeEnumerable())
         {
             var mainTag = TypeTags.FirstOrDefault(x => PostTagInfo.EqualityComparer1.Equals(x, tagInfo));
             if (mainTag != null)
@@ -184,7 +189,7 @@ public sealed class AddMemoryComponentSharedData
 
             if (tagInfo.Type == PostTagType.Character)
             {
-                var accountViewModel = _accountViewModelProvider();
+                var accountViewModel = _accountViewModelProvider?.Invoke();
                 var character = accountViewModel.GetCharactersSafe().FirstOrDefault(x => x.Id == tagInfo.Id);
                 if (character != null)
                 {
@@ -211,7 +216,7 @@ public sealed class AddMemoryComponentSharedData
             }
         }
 
-        _viewModel.OnViewModelChanged?.Invoke();
+        _viewModel.OnViewModelChanged();
 
         OnTagsChanged?.Invoke();
     }
@@ -222,13 +227,13 @@ public sealed class AddMemoryComponentSharedData
         var finalText = commentComponent.GetCommentText();
         var systemTags = GetSystemHashTags();
 
-        string avatarTag = null;
+        string? avatarTag = null;
         if (SelectedPostAvatarImage > 0 && SelectedPostAvatarImage < PostAvatarImages.Count)
         {
-            avatarTag = PostAvatarImages[SelectedPostAvatarImage].Tag.TagString;
+            avatarTag = PostAvatarImages[SelectedPostAvatarImage].Tag?.TagString;
         }
 
-        var imageData = new List<byte[]>();
+        var imageData = new List<byte[]?>();
         foreach (var uploadResult in uploadResults)
         {
             if (uploadResult.EditedFileContent != null)
@@ -237,7 +242,10 @@ public sealed class AddMemoryComponentSharedData
                 uploadResult.EditedFileContent = null;
             }
 
-            imageData.Add(uploadResult.FileContent);
+            if (uploadResult.FileContent != null)
+            {
+                imageData.Add(uploadResult.FileContent);
+            }
         }
 
         var serverUploadResult = await _viewModel.Services.ComputeServices.PostServices.TryPostMemory(new Post_TryPostMemory
@@ -247,7 +255,7 @@ public sealed class AddMemoryComponentSharedData
             AvatarTag = avatarTag ?? string.Empty,
             IsPrivate = PrivatePost,
             Comment = finalText ?? string.Empty,
-            SystemTags = new HashSet<string>(systemTags),
+            SystemTags = [.. systemTags],
             ImageData = imageData
         });
 
@@ -258,10 +266,10 @@ public sealed class AddMemoryComponentSharedData
     {
         var newTags = GetSystemHashTags();
 
-        string avatarTag = null;
+        string? avatarTag = null;
         if (SelectedPostAvatarImage > 0 && SelectedPostAvatarImage < PostAvatarImages.Count)
         {
-            avatarTag = PostAvatarImages[SelectedPostAvatarImage].Tag.TagString;
+            avatarTag = PostAvatarImages[SelectedPostAvatarImage].Tag?.TagString;
         }
 
         var result = await _viewModel.Services.ClientServices.CommandRunner.Run(new Post_TryUpdateSystemTags(Session.Default, currentPost.Id, avatarTag, newTags));
@@ -376,14 +384,14 @@ public sealed class AddMemoryComponentSharedData
 
         TryRemoveSelectedCharacterInfo();
 
-        var accountViewModel = _accountViewModelProvider();
+        var accountViewModel = _accountViewModelProvider?.Invoke();
 
         _selectedCharacter = accountViewModel.GetCharactersSafe().FirstOrDefault(x => x.Id == newSelectedCharacter);
         if (_selectedCharacter != null)
         {
             var stringLocalizer = _viewModel.Services.ClientServices.BlizzardStringLocalizer;
             var characterName = $"{_selectedCharacter.Name} ({stringLocalizer[$"Realm-{_selectedCharacter.RealmId}"]})";
-            var characterNameTag = new PostTagInfo(PostTagType.Character, _selectedCharacter.Id, characterName, _selectedCharacter.AvatarLinkWithFallBack);
+            var characterNameTag = new PostTagInfo(PostTagType.Character, _selectedCharacter.Id, characterName, _selectedCharacter.GetAvatarLinkWithFallBack());
             var characterRealmTag = new PostTagInfo(PostTagType.Realm, _selectedCharacter.RealmId, stringLocalizer[$"Realm-{_selectedCharacter.RealmId}"], null);
 
             var selectedRegionTags = (PostTagInfo)_selectedRegionTags.First();
@@ -393,7 +401,7 @@ public sealed class AddMemoryComponentSharedData
                 var characterRegionTag = RegionTags.FirstOrDefault(x => x.Id == characterRegionId);
                 if (characterRegionTag != null)
                 {
-                    _selectedRegionTags = new HashSet<object> { characterRegionTag };
+                    _selectedRegionTags = [characterRegionTag];
                 }
             }
 
@@ -433,7 +441,7 @@ public sealed class AddMemoryComponentSharedData
         }
     }
 
-    private void AddImageToSelection(PostTagInfo postTag)
+    private void AddImageToSelection(PostTagInfo? postTag)
     {
         if (postTag == null)
         {
@@ -452,7 +460,7 @@ public sealed class AddMemoryComponentSharedData
         }
     }
 
-    private void RemoveImageFromSelection(PostTagInfo postTag)
+    private void RemoveImageFromSelection(PostTagInfo? postTag)
     {
         if (postTag == null)
         {

@@ -2,23 +2,23 @@
 
 public sealed class AccountHistoryPageViewModel : ViewModelBase, IViewModel<AccountHistoryPageViewModel>
 {
-    private AccountHistoryPageResult _searchResults;
-    private string _currentPageString;
+    private AccountHistoryPageResult? _searchResults;
+    private string? _currentPageString;
 
     private AccountHistoryPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
         _searchResults = new AccountHistoryPageResult();
     }
 
-    public int CurrentPage => _searchResults.CurrentPage;
+    public int CurrentPage => _searchResults?.CurrentPage ?? 0;
 
-    public int TotalPages => _searchResults.TotalPages;
+    public int TotalPages => _searchResults?.TotalPages ?? 0;
 
-    public AccountHistoryViewModel[] HistoryViewModels => _searchResults?.ViewModels;
+    public AccountHistoryViewModel[]? HistoryViewModels => _searchResults?.ViewModels;
 
-    public bool NoResults => _searchResults.ViewModels.Length == 0;
+    public bool NoResults => _searchResults == null || _searchResults.ViewModels.Length == 0;
 
-    public void OnParametersChanged(string currentPageString)
+    public void OnParametersChanged(string? currentPageString)
     {
         _currentPageString = currentPageString;
     }

@@ -2,7 +2,7 @@
 
 public static class ServerLocaleHelpers
 {
-    private static readonly Func<BlizzardDataRecordLocal, string>[] _getterFunc;
+    private static readonly Func<BlizzardDataRecordLocal, string?>[] _getterFunc;
     private static readonly Func<AppDbContext, string, IQueryable<BlizzardDataRecord>>[] _searchFunc;
 
     static ServerLocaleHelpers()
@@ -26,27 +26,27 @@ public static class ServerLocaleHelpers
         _getterFunc[(int)ServerSideLocale.Zh_Cn] = x => x.ZhCn;
 
         _searchFunc = new Func<AppDbContext, string, IQueryable<BlizzardDataRecord>>[(int)ServerSideLocale.Count];
-        _searchFunc[(int)ServerSideLocale.None] = (database, searchString) => database.BlizzardData.Where(r => r.Name.EnUs.ToLower().StartsWith(searchString));
-        _searchFunc[(int)ServerSideLocale.En_Us] = (database, searchString) => database.BlizzardData.Where(r => r.Name.EnUs.ToLower().StartsWith(searchString));
-        _searchFunc[(int)ServerSideLocale.Es_Mx] = (database, searchString) => database.BlizzardData.Where(r => r.Name.EsMx.ToLower().StartsWith(searchString));
-        _searchFunc[(int)ServerSideLocale.Pt_Br] = (database, searchString) => database.BlizzardData.Where(r => r.Name.PtBr.ToLower().StartsWith(searchString));
+        _searchFunc[(int)ServerSideLocale.None] = (database, searchString) => database.BlizzardData.Where(r => r.Name.EnUs!.ToLower().StartsWith(searchString));
+        _searchFunc[(int)ServerSideLocale.En_Us] = (database, searchString) => database.BlizzardData.Where(r => r.Name.EnUs!.ToLower().StartsWith(searchString));
+        _searchFunc[(int)ServerSideLocale.Es_Mx] = (database, searchString) => database.BlizzardData.Where(r => r.Name.EsMx!.ToLower().StartsWith(searchString));
+        _searchFunc[(int)ServerSideLocale.Pt_Br] = (database, searchString) => database.BlizzardData.Where(r => r.Name.PtBr!.ToLower().StartsWith(searchString));
 
-        _searchFunc[(int)ServerSideLocale.En_Gb] = (database, searchString) => database.BlizzardData.Where(r => r.Name.EnGb.ToLower().StartsWith(searchString));
-        _searchFunc[(int)ServerSideLocale.Es_Es] = (database, searchString) => database.BlizzardData.Where(r => r.Name.EsEs.ToLower().StartsWith(searchString));
-        _searchFunc[(int)ServerSideLocale.Fr_Fr] = (database, searchString) => database.BlizzardData.Where(r => r.Name.FrFr.ToLower().StartsWith(searchString));
-        _searchFunc[(int)ServerSideLocale.Ru_Ru] = (database, searchString) => database.BlizzardData.Where(r => r.Name.RuRu.ToLower().StartsWith(searchString));
-        _searchFunc[(int)ServerSideLocale.De_De] = (database, searchString) => database.BlizzardData.Where(r => r.Name.DeDe.ToLower().StartsWith(searchString));
-        _searchFunc[(int)ServerSideLocale.Pt_Pt] = (database, searchString) => database.BlizzardData.Where(r => r.Name.PtPt.ToLower().StartsWith(searchString));
-        _searchFunc[(int)ServerSideLocale.It_It] = (database, searchString) => database.BlizzardData.Where(r => r.Name.ItIt.ToLower().StartsWith(searchString));
+        _searchFunc[(int)ServerSideLocale.En_Gb] = (database, searchString) => database.BlizzardData.Where(r => r.Name.EnGb!.ToLower().StartsWith(searchString));
+        _searchFunc[(int)ServerSideLocale.Es_Es] = (database, searchString) => database.BlizzardData.Where(r => r.Name.EsEs!.ToLower().StartsWith(searchString));
+        _searchFunc[(int)ServerSideLocale.Fr_Fr] = (database, searchString) => database.BlizzardData.Where(r => r.Name.FrFr!.ToLower().StartsWith(searchString));
+        _searchFunc[(int)ServerSideLocale.Ru_Ru] = (database, searchString) => database.BlizzardData.Where(r => r.Name.RuRu!.ToLower().StartsWith(searchString));
+        _searchFunc[(int)ServerSideLocale.De_De] = (database, searchString) => database.BlizzardData.Where(r => r.Name.DeDe!.ToLower().StartsWith(searchString));
+        _searchFunc[(int)ServerSideLocale.Pt_Pt] = (database, searchString) => database.BlizzardData.Where(r => r.Name.PtPt!.ToLower().StartsWith(searchString));
+        _searchFunc[(int)ServerSideLocale.It_It] = (database, searchString) => database.BlizzardData.Where(r => r.Name.ItIt!.ToLower().StartsWith(searchString));
 
-        _searchFunc[(int)ServerSideLocale.Ko_Kr] = (database, searchString) => database.BlizzardData.Where(r => r.Name.KoKr.ToLower().StartsWith(searchString));
-        _searchFunc[(int)ServerSideLocale.Zh_Tw] = (database, searchString) => database.BlizzardData.Where(r => r.Name.ZhTw.ToLower().StartsWith(searchString));
-        _searchFunc[(int)ServerSideLocale.Zh_Cn] = (database, searchString) => database.BlizzardData.Where(r => r.Name.ZhCn.ToLower().StartsWith(searchString));
+        _searchFunc[(int)ServerSideLocale.Ko_Kr] = (database, searchString) => database.BlizzardData.Where(r => r.Name.KoKr!.ToLower().StartsWith(searchString));
+        _searchFunc[(int)ServerSideLocale.Zh_Tw] = (database, searchString) => database.BlizzardData.Where(r => r.Name.ZhTw!.ToLower().StartsWith(searchString));
+        _searchFunc[(int)ServerSideLocale.Zh_Cn] = (database, searchString) => database.BlizzardData.Where(r => r.Name.ZhCn!.ToLower().StartsWith(searchString));
 
-        Exceptions.ThrowIf(_getterFunc.Any(x => x == null));
+        Exceptions.ThrowIf(_getterFunc.Any(x => x == null!));
     }
 
-    public static string GetName(ServerSideLocale locale, BlizzardDataRecordLocal record)
+    public static string? GetName(ServerSideLocale locale, BlizzardDataRecordLocal record)
     {
         if (locale < 0 || locale >= ServerSideLocale.Count)
         {

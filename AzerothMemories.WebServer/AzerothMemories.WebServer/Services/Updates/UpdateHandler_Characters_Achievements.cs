@@ -15,9 +15,14 @@ internal sealed class UpdateHandler_Characters_Achievements : UpdateHandlerBaseR
         }
     }
 
-    protected override async Task<RequestResult<CharacterAchievementsSummary>> TryExecuteRequest(CharacterRecord record, AuthTokenRecord authTokenRecord, Instant blizzardLastModified)
+    protected override async Task<RequestResult<CharacterAchievementsSummary>> TryExecuteRequest(CharacterRecord record, AuthTokenRecord? authTokenRecord, Instant blizzardLastModified)
     {
         var characterRef = new MoaRef(record.MoaRef);
+        if (!characterRef.IsValidCharacter)
+        {
+            throw new NotImplementedException();
+        }
+
         using var client = CommonServices.HttpClientProvider.GetWarcraftClient(record.BlizzardRegionId);
         return await client.GetCharacterAchievementsSummaryAsync(characterRef.Realm, characterRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
@@ -27,7 +32,7 @@ internal sealed class UpdateHandler_Characters_Achievements : UpdateHandlerBaseR
         var currentAchievements = await database.CharacterAchievements.Where(x => x.CharacterId == record.Id).ToDictionaryAsync(x => x.AchievementId, x => x).ConfigureAwait(false);
         var firstEverAchievements = await database.CharacterFirstAchievements.ToDictionaryAsync(x => x.AchievementId, x => x).ConfigureAwait(false);
 
-        foreach (var achievement in requestResult.Achievements)
+        foreach (var achievement in requestResult.Achievements.SafeEnumerable())
         {
             var timeStamp = achievement.CompletedTimestamp.GetValueOrDefault(0);
             if (timeStamp <= 0)

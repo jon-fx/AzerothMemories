@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AzerothMemories.WebBlazor.Pages;
 
@@ -8,7 +9,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
     {
     }
 
-    public string NewUsername { get; set; }
+    public string? NewUsername { get; set; }
 
     public bool NewUsernameValid { get; private set; }
 
@@ -16,21 +17,21 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
 
     public Color NewUsernameTextBoxAdornmentColor { get; private set; }
 
-    public string NewUsernameTextBoxAdornmentIcon { get; private set; }
+    public string? NewUsernameTextBoxAdornmentIcon { get; private set; }
 
-    public AccountViewModel AccountViewModel { get; private set; }
+    public AccountViewModel? AccountViewModel { get; private set; }
 
-    public string[] SocialLinks { get; set; }
+    public string?[]? SocialLinks { get; set; }
 
-    public string[] SocialLinksAdornmentIcons { get; private set; }
+    public string[] SocialLinksAdornmentIcons { get; private set; } = [];
 
-    public Color[] SocialLinksAdornmentColors { get; private set; }
+    public Color[] SocialLinksAdornmentColors { get; private set; } = [];
 
-    public string AvatarLink { get; private set; }
+    public string? AvatarLink { get; private set; }
 
-    public string CustomAvatarLink { get; private set; }
+    public string? CustomAvatarLink { get; private set; }
 
-    public List<string> SocialLogins { get; } = new();// { "Patreon" };
+    public List<string> SocialLogins { get; } = [];// { "Patreon" };
 
     public override async Task ComputeState(CancellationToken cancellationToken)
     {
@@ -68,14 +69,14 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
         }
     }
 
-    public Task OnNewUsernameTextChanged(string username)
+    public Task OnNewUsernameTextChanged(string? username)
     {
         NewUsername = username;
 
         return CheckValidUsername(NewUsername);
     }
 
-    public async Task<bool> CheckValidUsername(string username)
+    public async Task<bool> CheckValidUsername([NotNullWhen(true)] string? username)
     {
         if (AccountViewModel == null)
         {
@@ -117,7 +118,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
             NewUsernameTextBoxAdornmentIcon = Icons.Material.Filled.Warning;
         }
 
-        OnViewModelChanged?.Invoke();
+        OnViewModelChanged();
 
         return NewUsernameValid;
     }
@@ -146,6 +147,11 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
             return;
         }
 
+        if (string.IsNullOrWhiteSpace(NewUsername))
+        {
+            return;
+        }
+
         var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeUsername(Session.Default, 0, NewUsername));
         if (result.Value)
         {
@@ -162,7 +168,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
 
         ChangeUsernameButtonVisible = false;
 
-        OnViewModelChanged?.Invoke();
+        OnViewModelChanged();
     }
 
     public async Task OnIsPrivateChanged(bool newValue)
@@ -180,7 +186,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
 
         AccountViewModel.IsPrivate = result.Value;
 
-        OnViewModelChanged?.Invoke();
+        OnViewModelChanged();
     }
 
     public async Task OnBattleTagVisibilityChanged(bool newValue)
@@ -198,10 +204,10 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
 
         AccountViewModel.BattleTagIsPublic = result.Value;
 
-        OnViewModelChanged?.Invoke();
+        OnViewModelChanged();
     }
 
-    public async Task OnChangeAvatarButtonClicked(CharacterViewModel character)
+    public async Task OnChangeAvatarButtonClicked(CharacterViewModel? character)
     {
         if (AccountViewModel == null)
         {
@@ -218,17 +224,27 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
             return;
         }
 
+        if (string.IsNullOrWhiteSpace(character.AvatarLink))
+        {
+            return;
+        }
+
         await OnChangeAvatarButtonClicked(character.AvatarLink);
     }
 
     public async Task OnChangeAvatarButtonClicked(string avatarLink)
     {
+        if (AccountViewModel == null)
+        {
+            return;
+        }
+
         var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeAvatar(Session.Default, 0, avatarLink));
         if (result.Value != AccountViewModel.Avatar)
         {
             AvatarLink = result.Value;
             AccountViewModel.Avatar = result.Value;
-            OnViewModelChanged?.Invoke();
+            OnViewModelChanged();
         }
     }
 
@@ -242,7 +258,12 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
             return;
         }
 
-        byte[] buffer;
+        if (AccountViewModel == null)
+        {
+            return;
+        }
+
+        byte[]? buffer;
         try
         {
             await using var memoryStream = new MemoryStream();
@@ -256,24 +277,19 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
             return;
         }
 
-        var result = await Services.ComputeServices.AccountServices.TryChangeAvatarUpload(new Account_TryChangeAvatarUpload
-        {
-            Session = Session.Default,
-            ImageData = buffer
-        });
-
+        var result = await Services.ComputeServices.AccountServices.TryChangeAvatarUpload(new Account_TryChangeAvatarUpload(Session.Default, buffer));
         if (result != null && !string.IsNullOrWhiteSpace(result) && result != AccountViewModel.Avatar)
         {
             AvatarLink = result;
             CustomAvatarLink = result;
             AccountViewModel.Avatar = result;
-            OnViewModelChanged?.Invoke();
+            OnViewModelChanged();
         }
     }
 
     public async Task OnSocialLinkChanged(SocialHelpers link, string newValue)
     {
-        if (AccountViewModel == null)
+        if (AccountViewModel == null || SocialLinks == null)
         {
             return;
         }
@@ -300,7 +316,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
                 shouldChange = true;
             }
         }
-        else if (link.ValidatorFunc(newValue))
+        else if (link.ValidatorFunc?.Invoke(newValue) ?? true)
         {
             shouldChange = true;
 
@@ -324,7 +340,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
             SocialLinksAdornmentIcons[link.LinkId] = string.Empty;
         }
 
-        OnViewModelChanged?.Invoke();
+        OnViewModelChanged();
     }
 
     public async Task OnAccountSyncToggleChanged(CharacterViewModel character, bool newValue)
@@ -344,7 +360,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
 
             character.AccountSync = result.Value;
 
-            OnViewModelChanged?.Invoke();
+            OnViewModelChanged();
         }
     }
 

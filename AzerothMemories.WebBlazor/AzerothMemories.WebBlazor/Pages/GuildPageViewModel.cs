@@ -2,31 +2,31 @@
 
 public sealed class GuildPageViewModel : PersistentStateViewModel, IViewModel<GuildPageViewModel>, IPageHeaderInfoProvider
 {
-    private string _idString;
-    private string _region;
-    private string _realm;
-    private string _name;
-    private string _sortModeString;
-    private string _currentPageString;
+    private string? _idString;
+    private string? _region;
+    private string? _realm;
+    private string? _name;
+    private string? _sortModeString;
+    private string? _currentPageString;
 
     public GuildPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
         PostSearchHelper = new PostSearchHelper(Services);
 
-        AddPersistentState(() => ErrorMessage, x => ErrorMessage = x, () => Task.FromResult<string>(null));
+        AddPersistentState(() => ErrorMessage, x => ErrorMessage = x, () => Task.FromResult<string?>(null));
         AddPersistentState(() => GuildViewModel, x => GuildViewModel = x, UpdateGuildViewModel);
-        AddPersistentState(() => PostSearchHelper.SearchResults, x => PostSearchHelper.SetSearchResults(x), UpdateSearchResults);
+        AddPersistentState(() => PostSearchHelper.SearchResults, x => PostSearchHelper.SetSearchResults(x), UpdateSearchResults!);
     }
 
-    public string ErrorMessage { get; private set; }
+    public string? ErrorMessage { get; private set; }
 
-    public GuildViewModel GuildViewModel { get; private set; }
+    public GuildViewModel? GuildViewModel { get; private set; }
 
     public PostSearchHelper PostSearchHelper { get; }
 
     public bool IsLoading => GuildViewModel == null || PostSearchHelper == null;
 
-    public void OnParametersChanged(string idString, string region, string realm, string name, string sortModeString, string currentPageString)
+    public void OnParametersChanged(string? idString, string? region, string? realm, string? name, string? sortModeString, string? currentPageString)
     {
         _idString = idString;
         _region = region;
@@ -45,12 +45,12 @@ public sealed class GuildPageViewModel : PersistentStateViewModel, IViewModel<Gu
         await UpdateSearchResults();
     }
 
-    private async Task<GuildViewModel> UpdateGuildViewModel()
+    private async Task<GuildViewModel?> UpdateGuildViewModel()
     {
         int.TryParse(_idString, out var id);
 
         ErrorMessage = null;
-        GuildViewModel guildViewModel;
+        GuildViewModel? guildViewModel;
 
         if (id > 0)
         {
@@ -108,7 +108,7 @@ public sealed class GuildPageViewModel : PersistentStateViewModel, IViewModel<Gu
         }
 
         var guildTag = new PostTagInfo(PostTagType.Guild, GuildViewModel.Id, GuildViewModel.Name, null);// GuildViewModel.AvatarLinkWithFallBack);
-        return PostSearchHelper.ComputeState(new[] { guildTag.TagString }, _sortModeString, _currentPageString, null, null);
+        return PostSearchHelper.ComputeState([guildTag.TagString], _sortModeString, _currentPageString, null, null);
     }
 
     public string GetPageTitle()
@@ -121,9 +121,9 @@ public sealed class GuildPageViewModel : PersistentStateViewModel, IViewModel<Gu
         return $"A collection of Memories of Azeroth from the guild {GuildViewModel.GetDisplayName()}";
     }
 
-    public string GetPageImage()
+    public string? GetPageImage()
     {
-        return GuildViewModel.Avatar;
+        return GuildViewModel?.Avatar;
     }
 
     public string GetPageImageAlt()
@@ -131,8 +131,13 @@ public sealed class GuildPageViewModel : PersistentStateViewModel, IViewModel<Gu
         return $"{GuildViewModel.GetDisplayName()}'s Avatar";
     }
 
-    public string GetCanonicalLink()
+    public string? GetCanonicalLink()
     {
+        if (GuildViewModel == null)
+        {
+            return null;
+        }
+
         return $"guild/{GuildViewModel.Id}";
     }
 

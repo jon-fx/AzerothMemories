@@ -36,13 +36,13 @@ public class BlizzardUpdateServices : IComputeService
 
         void AddUpdateHandler<TRecord>(ref UpdateHandlerBase<TRecord>[] array, UpdateHandlerBase<TRecord> updateHandler) where TRecord : IBlizzardUpdateRecord
         {
-            Exceptions.ThrowIf(array[(int)updateHandler.UpdateType] != null);
+            Exceptions.ThrowIf(array[(int)updateHandler.UpdateType] != null!);
             array[(int)updateHandler.UpdateType] = updateHandler;
         }
 
-        Exceptions.ThrowIf(_accountHandlers.Any(x => x == null));
-        Exceptions.ThrowIf(_characterHandlers.Any(x => x == null));
-        Exceptions.ThrowIf(_guildHandlers.Any(x => x == null));
+        Exceptions.ThrowIf(_accountHandlers.Any(x => x == null!));
+        Exceptions.ThrowIf(_characterHandlers.Any(x => x == null!));
+        Exceptions.ThrowIf(_guildHandlers.Any(x => x == null!));
     }
 
     public int AccountHandlerCount => _accountHandlers.Length;
@@ -77,7 +77,7 @@ public class BlizzardUpdateServices : IComputeService
                 _ = _commonServices.AccountServices.DependsOnAccountAchievements(invRecord.AccountId);
                 _ = _commonServices.CharacterServices.TryGetAllAccountCharacters(invRecord.AccountId);
 
-                foreach (var characterId in invRecord.CharacterIds)
+                foreach (var characterId in invRecord.CharacterIds.SafeEnumerable())
                 {
                     _ = _commonServices.CharacterServices.DependsOnCharacterRecord(characterId);
                 }
@@ -196,13 +196,18 @@ public class BlizzardUpdateServices : IComputeService
 
     private async Task<HttpStatusCode> RunUpdateHandlers<TRecord>(UpdateHandlerBase<TRecord>[] allHandlers, CommandContext context, AppDbContext database, TRecord record, CancellationToken cancellationToken) where TRecord : class, IBlizzardUpdateRecord, new()
     {
+        if (record.UpdateRecord == null || record.UpdateRecord.Children == null)
+        {
+            return HttpStatusCode.FailedDependency;
+        }
+
         if (!_commonServices.BlizzardUpdateHandler.RecordRequiresUpdate(record.UpdateRecord, record.UpdateRecord.UpdatePriority, true))
         {
             return HttpStatusCode.LoopDetected;
         }
 
         var requiredChildrenCount = allHandlers.Length;
-        var sortedRecords = new BlizzardUpdateChildRecord[requiredChildrenCount];
+        var sortedRecords = new BlizzardUpdateChildRecord?[requiredChildrenCount];
         foreach (var childRecord in record.UpdateRecord.Children)
         {
             sortedRecords[(int)childRecord.UpdateType] = childRecord;
@@ -213,7 +218,7 @@ public class BlizzardUpdateServices : IComputeService
             if (sortedRecords[i] == null)
             {
                 sortedRecords[i] = new BlizzardUpdateChildRecord { UpdateType = allHandlers[i].UpdateType, UpdateTypeString = allHandlers[i].UpdateTypeString };
-                record.UpdateRecord.Children.Add(sortedRecords[i]);
+                record.UpdateRecord.Children.Add(sortedRecords[i].ThrowIfNull());
             }
         }
 
@@ -221,7 +226,7 @@ public class BlizzardUpdateServices : IComputeService
         for (var i = 0; i < allHandlers.Length; i++)
         {
             var updateHandler = allHandlers[i];
-            var updateChildRecord = sortedRecords[i];
+            var updateChildRecord = sortedRecords[i].ThrowIfNull();
 
             Exceptions.ThrowIf(updateChildRecord.UpdateType != updateHandler.UpdateType);
 

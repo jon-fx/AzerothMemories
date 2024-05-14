@@ -57,10 +57,10 @@
 
 @code
 {
-    private Timer _timer;
-    private MudTextField<string> _textField;
-    private string _currentTextFieldText;
-    private MarkdownParserResult _parserResult;
+    private Timer? _timer;
+    private MudTextField<string>? _textField;
+    private string? _currentTextFieldText;
+    private MarkdownParserResult? _parserResult;
 
     [Parameter] public bool IsMainPost { get; init; }
 
@@ -70,13 +70,13 @@
 
     [Parameter] public bool AutoFocus { get; init; }
 
-    [Parameter] public Dictionary<int, string> TagsList { get; init; }
+    [Parameter] public Dictionary<int, string> TagsList { get; init; } = [];
 
     [Parameter] public EventCallback<string> OnSingleLineSubmit { get; init; }
 
-    [Inject] public IJSRuntime JsRuntime { get; init; }
+    [Inject] public IJSRuntime JsRuntime { get; init; } = null!;
 
-    [Inject] public MarkdownServices MarkdownServices { get; init; }
+    [Inject] public MarkdownServices MarkdownServices { get; init; } = null!;
 
     public Dictionary<int, string> ExtraTags { get; } = new();
 
@@ -176,7 +176,7 @@
         _timer = null;
     }
 
-    private void OnTimerTick(object obj)
+    private void OnTimerTick(object? obj)
     {
         if (_currentTextFieldText == _parserResult?.CommentText)
         {

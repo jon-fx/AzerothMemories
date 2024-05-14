@@ -30,35 +30,35 @@ public sealed class CommonServices
         MarkdownServices = _serviceProvider.GetRequiredService<MarkdownServices>();
     }
 
-    internal IAuth Auth { get; private set; }
+    internal IAuth Auth { get; private set; } = null!;
 
-    internal ICommander Commander { get; private set; }
+    internal ICommander Commander { get; private set; } = null!;
 
-    internal CommonConfig Config { get; private set; }
+    internal CommonConfig Config { get; private set; } = null!;
 
-    internal DbHub<AppDbContext> DatabaseHub { get; private set; }
+    internal DbHub<AppDbContext> DatabaseHub { get; private set; } = null!;
 
-    internal HttpClientProvider HttpClientProvider { get; private set; }
+    internal HttpClientProvider HttpClientProvider { get; private set; } = null!;
 
-    internal AdminServices AdminServices { get; private set; }
+    internal AdminServices AdminServices { get; private set; } = null!;
 
-    internal AccountServices AccountServices { get; private set; }
+    internal AccountServices AccountServices { get; private set; } = null!;
 
-    internal FollowingServices FollowingServices { get; private set; }
+    internal FollowingServices FollowingServices { get; private set; } = null!;
 
-    internal CharacterServices CharacterServices { get; private set; }
+    internal CharacterServices CharacterServices { get; private set; } = null!;
 
-    internal GuildServices GuildServices { get; private set; }
+    internal GuildServices GuildServices { get; private set; } = null!;
 
-    internal TagServices TagServices { get; private set; }
+    internal TagServices TagServices { get; private set; } = null!;
 
-    internal PostServices PostServices { get; private set; }
+    internal PostServices PostServices { get; private set; } = null!;
 
-    internal SearchServices SearchServices { get; private set; }
+    internal SearchServices SearchServices { get; private set; } = null!;
 
-    internal MediaServices MediaServices { get; private set; }
+    internal MediaServices MediaServices { get; private set; } = null!;
 
-    internal BlizzardUpdateHandler BlizzardUpdateHandler { get; private set; }
+    internal BlizzardUpdateHandler BlizzardUpdateHandler { get; private set; } = null!;
 
-    internal MarkdownServices MarkdownServices { get; private set; }
+    internal MarkdownServices MarkdownServices { get; private set; } = null!;
 }

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace AzerothMemories.WebBlazor.Common;
 
@@ -9,7 +10,7 @@ public static class ZExtensions
     public static readonly string BlobUserUploadsStoragePath = $"media/{BlobUserUploads}/";
     public static readonly string BlobUserAvatarsStoragePath = $"media/{BlobUserAvatars}/";
 
-    public static readonly List<string> ValidUploadExtensions = new() { ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".bmp" };
+    public static readonly List<string> ValidUploadExtensions = [".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".bmp"];
     public static readonly string UploadAcceptExtensions = "image/*";
 
     public static readonly int MaxCommentDepth = 5;
@@ -143,7 +144,7 @@ public static class ZExtensions
         }
     }
 
-    public static bool ParseTagInfoFrom(string key, out (PostTagType Type, int Id, string Text) result)
+    public static bool ParseTagInfoFrom([NotNullWhen(true)] string? key, out (PostTagType Type, int Id, string Text) result)
     {
         if (string.IsNullOrWhiteSpace(key))
         {
@@ -245,9 +246,9 @@ public static class ZExtensions
         return "";
     }
 
-    public static string GetWowHeadLink(this PostTagType tagType, int id)
+    public static string? GetWowHeadLink(this PostTagType tagType, int id)
     {
-        string wowHeadLink = null;
+        string? wowHeadLink = null;
         switch (tagType)
         {
             case PostTagType.None:
@@ -385,7 +386,7 @@ public static class ZExtensions
         return commentStr.ToString();
     }
 
-    public static void AddToDictOrNull<TValue>(Dictionary<string, object> dictionary, string key, TValue value, bool addNull)
+    public static void AddToDictOrNull<TValue>(Dictionary<string, object?> dictionary, string key, TValue value, bool addNull)
     {
         if (addNull)
         {

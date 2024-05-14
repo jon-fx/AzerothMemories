@@ -3,21 +3,23 @@
 public sealed class EditMemoryTagsPageViewModel : ViewModelBase, IViewModel<EditMemoryTagsPageViewModel>
 {
     private readonly PostPageViewModelHelper _postPageHelper;
-    private string _accountString;
-    private string _postIdString;
-    private string _currentPageString;
-    private string _focusedCommentId;
+    private string? _accountString;
+    private string? _postIdString;
+    private string? _currentPageString;
+    private string? _focusedCommentId;
 
     private EditMemoryTagsPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
         _postPageHelper = new PostPageViewModelHelper(Services);
+
+        SharedData = new AddMemoryComponentSharedData(this, false);
     }
 
     public PostPageViewModelHelper Helper => _postPageHelper;
 
-    public AddMemoryComponentSharedData SharedData { get; private set; }
+    public AddMemoryComponentSharedData SharedData { get; }
 
-    public void OnParametersChanged(string idString, string postIdString, string currentPageString, string focusedCommentId)
+    public void OnParametersChanged(string? idString, string? postIdString, string? currentPageString, string? focusedCommentId)
     {
         _accountString = idString;
         _postIdString = postIdString;
@@ -28,11 +30,6 @@ public sealed class EditMemoryTagsPageViewModel : ViewModelBase, IViewModel<Edit
     public override async Task ComputeState(CancellationToken cancellationToken)
     {
         await base.ComputeState(cancellationToken);
-
-        if (_postPageHelper == null)
-        {
-            return;
-        }
 
         await _postPageHelper.UpdateAccount(_accountString);
         await _postPageHelper.UpdatePost(_postIdString);
@@ -56,15 +53,10 @@ public sealed class EditMemoryTagsPageViewModel : ViewModelBase, IViewModel<Edit
             return;
         }
 
-        if (SharedData == null)
-        {
-            SharedData = new AddMemoryComponentSharedData(this, false);
-
-            await SharedData.InitializeAccount(() => _postPageHelper.AccountViewModel);
-            await SharedData.SetPostTimeStamp(Instant.FromUnixTimeMilliseconds(postViewModel.PostTime));
-            await SharedData.InitializeAchievements();
-            await SharedData.OnEditingPost(postViewModel);
-        }
+        await SharedData.InitializeAccount(() => _postPageHelper.AccountViewModel);
+        await SharedData.SetPostTimeStamp(Instant.FromUnixTimeMilliseconds(postViewModel.PostTime));
+        await SharedData.InitializeAchievements();
+        await SharedData.OnEditingPost(postViewModel);
     }
 
     public async Task Submit()
@@ -82,7 +74,7 @@ public sealed class EditMemoryTagsPageViewModel : ViewModelBase, IViewModel<Edit
 
         if (Services.ClientServices.ActiveAccountServices.IsActiveAccount(postViewModel.AccountId) || Services.ClientServices.ActiveAccountServices.AccountViewModel.IsAdmin())
         {
-            var result = await SharedData.SubmitOnEditingPost(Helper.PostViewModel);
+            var result = await SharedData.SubmitOnEditingPost(postViewModel);
             if (result == AddMemoryResultCode.Success)
             {
                 Services.ClientServices.NavigationManager.NavigateTo($"post/{postViewModel.AccountId}/{postViewModel.Id}");

@@ -40,7 +40,7 @@ public class TagServices : ITagServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostTagInfo> GetTagInfo(PostTagType tagType, int tagId, string hashTagText, ServerSideLocale locale)
+    public virtual async Task<PostTagInfo> GetTagInfo(PostTagType tagType, int tagId, string? hashTagText, ServerSideLocale locale)
     {
         using var _ = new MethodTimeLogger(_logger);
         if (tagType == PostTagType.Account || tagType == PostTagType.Character || tagType == PostTagType.Guild)
@@ -82,7 +82,7 @@ public class TagServices : ITagServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<BlizzardDataRecord> GetBlizzardDataRecord(string tagString)
+    protected virtual async Task<BlizzardDataRecord?> GetBlizzardDataRecord(string tagString)
     {
         using var _ = new MethodTimeLogger(_logger);
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
@@ -128,7 +128,7 @@ public class TagServices : ITagServices
             {
                 await _commonServices.CharacterServices.DependsOnCharacterRecord(tagId).ConfigureAwait(false);
 
-                return new PostTagInfo(PostTagType.Character, tagId, data.Name, CharacterViewModel.GetAvatarStringWithFallBack(data.AvatarLink, data.Race, data.Gender));
+                return new PostTagInfo(PostTagType.Character, tagId, data.Name, XExtensions.GetAvatarStringWithFallBack(data.AvatarLink, data.Race, data.Gender));
             }
         }
 
@@ -150,18 +150,18 @@ public class TagServices : ITagServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostTagInfo[]> Search(Session session, string searchString, ServerSideLocale locale)
+    public virtual async Task<PostTagInfo[]> Search(Session session, string? searchString, ServerSideLocale locale)
     {
         using var _ = new MethodTimeLogger(_logger);
         if (string.IsNullOrWhiteSpace(searchString) || searchString.Length < 3)
         {
-            return Array.Empty<PostTagInfo>();
+            return [];
         }
 
         searchString = DatabaseHelpers.GetSearchableName(searchString);
-        if (searchString.Length < 3)
+        if (string.IsNullOrWhiteSpace(searchString) || searchString.Length < 3)
         {
-            return Array.Empty<PostTagInfo>();
+            return [];
         }
 
         return await Search(searchString, locale).ConfigureAwait(false);
@@ -206,7 +206,7 @@ public class TagServices : ITagServices
         return new PostTagInfo(record.TagType, record.TagId, name, media, record.MinTagTime.ToUnixTimeMilliseconds());
     }
 
-    public async Task<PostTagRecord> TryCreateTagRecord(string systemTag, PostRecord postRecord, AccountViewModel accountViewModel, PostTagKind tagKind)
+    public async Task<PostTagRecord?> TryCreateTagRecord(string systemTag, PostRecord postRecord, AccountViewModel accountViewModel, PostTagKind tagKind)
     {
         using var _ = new MethodTimeLogger(_logger);
         if (!ZExtensions.ParseTagInfoFrom(systemTag, out var postTagInfo))
@@ -222,7 +222,7 @@ public class TagServices : ITagServices
                 return null;
             }
 
-            if (postTagInfo.Type == PostTagType.Character && accountViewModel.CharactersArray.FirstOrDefault(x => x.Id == postTagInfo.Id) == null)
+            if (postTagInfo.Type == PostTagType.Character && accountViewModel.CharactersArray.SafeEnumerable().FirstOrDefault(x => x.Id == postTagInfo.Id) == null)
             {
                 return null;
             }
@@ -231,7 +231,7 @@ public class TagServices : ITagServices
         return result;
     }
 
-    public async Task<PostTagRecord> TryCreateTagRecord(PostRecord postRecord, PostTagType tagType, int tagId, PostTagKind tagKind)
+    public async Task<PostTagRecord?> TryCreateTagRecord(PostRecord postRecord, PostTagType tagType, int tagId, PostTagKind tagKind)
     {
         switch (tagType)
         {

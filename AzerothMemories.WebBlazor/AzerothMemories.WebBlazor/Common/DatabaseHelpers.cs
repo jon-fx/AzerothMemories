@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace AzerothMemories.WebBlazor.Common;
 
@@ -103,7 +104,7 @@ public static class DatabaseHelpers
         "wwww"
     };
 
-    public static bool IsValidAccountName(string username)
+    public static bool IsValidAccountName([NotNullWhen(true)] string? username)
     {
         if (string.IsNullOrWhiteSpace(username))
         {
@@ -144,8 +145,14 @@ public static class DatabaseHelpers
         return true;
     }
 
-    public static string GetSearchableName(string name)
+    [return: NotNullIfNotNull(nameof(name))]
+    public static string? GetSearchableName(string? name)
     {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return null;
+        }
+
         var tempBytes = Encoding.GetEncoding("ISO-8859-8").GetBytes(name);
         var asciiStr = Encoding.UTF8.GetString(tempBytes);
         asciiStr = asciiStr.Replace("?", string.Empty).Trim().ToLowerInvariant();

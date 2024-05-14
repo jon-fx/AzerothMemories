@@ -2,16 +2,16 @@
 
 <MudDatePicker @ref="_datePicker" @bind-Date="@_postDate" OpenTo="OpenTo.Year" Label="Date" MinDate="@_minDateTime" MaxDate="System.DateTime.Now" AutoClose="true" PickerOpened="@OnPickerOpened" PickerClosed="@OnPickerClosed">
     <PickerActions>
-        <MudButton Class="mr-auto align-self-start" OnClick="@(() => _datePicker.Clear())">Clear</MudButton>
-        <MudButton OnClick="@(() => _datePicker.Close(false))">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="@(() => _datePicker.Close())">Ok</MudButton>
+        <MudButton Class="mr-auto align-self-start" OnClick="@(() => _datePicker?.Clear())">Clear</MudButton>
+        <MudButton OnClick="@(() => _datePicker?.Close(false))">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="@(() => _datePicker?.Close())">Ok</MudButton>
     </PickerActions>
 </MudDatePicker>
 <MudTimePicker @ref="_timePicker" @bind-Time="@_postTime" Label="Time" AutoClose="true" PickerOpened="@OnPickerOpened" PickerClosed="@OnPickerClosed">
     <PickerActions>
-        <MudButton Class="mr-auto align-self-start" OnClick="@(() => _timePicker.Clear())">Clear</MudButton>
-        <MudButton OnClick="@(() => _timePicker.Close(false))">Cancel</MudButton>
-        <MudButton OnClick="@(() => _timePicker.Close())">Ok</MudButton>
+        <MudButton Class="mr-auto align-self-start" OnClick="@(() => _timePicker?.Clear())">Clear</MudButton>
+        <MudButton OnClick="@(() => _timePicker?.Close(false))">Cancel</MudButton>
+        <MudButton OnClick="@(() => _timePicker?.Close())">Ok</MudButton>
     </PickerActions>
 </MudTimePicker>
 
@@ -22,8 +22,8 @@
     private DateTime? _postDate;
     private TimeSpan? _postTime;
 
-    private MudDatePicker _datePicker;
-    private MudTimePicker _timePicker;
+    private MudDatePicker? _datePicker;
+    private MudTimePicker? _timePicker;
     private bool _isTimePickerOpened;
 
     [Parameter]

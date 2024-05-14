@@ -11,8 +11,8 @@ public class SearchServices : ISearchServices
     private readonly int _endYear = DateTime.UtcNow.Year;
     private readonly int _totalYearValue = 0;
 
-    private readonly List<PostTagType> _tagsToIncludeInTop = new()
-    {
+    private readonly List<PostTagType> _tagsToIncludeInTop =
+    [
         PostTagType.Achievement,
         PostTagType.Item,
         PostTagType.Mount,
@@ -25,7 +25,7 @@ public class SearchServices : ISearchServices
         PostTagType.ItemSet,
         PostTagType.Toy,
         PostTagType.Title
-    };
+    ];
 
     public SearchServices(ILogger<SearchServices> logger, CommonServices commonServices)
     {
@@ -402,7 +402,7 @@ public class SearchServices : ISearchServices
         var dailyPostsQuery = database.Posts.AsExpandableEFCore().Include(p => p.PostTags).Where(postRecordPredicate).Select(x => new { x.Id, x.PostTags, x.PostTime });
         var dailyAchievements = await dailyPostsQuery.AsNoTracking().ToArrayAsync().ConfigureAwait(false);
 
-        return dailyAchievements.Select(arg => (arg.Id, arg.PostTime, arg.PostTags)).ToArray();
+        return dailyAchievements.Select(arg => (arg.Id, arg.PostTime, arg.PostTags!)).ToArray();
     }
 
     [ComputeMethod(MinCacheDuration = 60 * 10)]
@@ -623,18 +623,18 @@ public class SearchServices : ISearchServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<MainSearchResult[]> TrySearch(MainSearchType searchType, string searchString)
+    protected virtual async Task<MainSearchResult[]> TrySearch(MainSearchType searchType, string? searchString)
     {
         using var _ = new MethodTimeLogger(_logger);
         if (string.IsNullOrWhiteSpace(searchString) || searchString.Length < 1)
         {
-            return Array.Empty<MainSearchResult>();
+            return [];
         }
 
         searchString = DatabaseHelpers.GetSearchableName(searchString);
-        if (searchString.Length < 1)
+        if (string.IsNullOrWhiteSpace(searchString) || searchString.Length < 1)
         {
-            return Array.Empty<MainSearchResult>();
+            return [];
         }
 
         var allResults = new List<MainSearchResult>();
@@ -665,9 +665,9 @@ public class SearchServices : ISearchServices
         using var _ = new MethodTimeLogger(_logger);
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         var query = from r in database.Accounts
-                    where r.UsernameSearchable.StartsWith(searchString)
-                    orderby r.UsernameSearchable.Length
-                    select MainSearchResult.CreateAccount(r.Id, r.Username, r.Avatar);
+                    where r.UsernameSearchable != null && r.UsernameSearchable.StartsWith(searchString)
+                    orderby r.UsernameSearchable!.Length
+                    select MainSearchResult.CreateAccount(r.Id, r.GetUsernameSafe(), r.Avatar);
 
         var results = await query.Take(50).AsNoTracking().ToArrayAsync().ConfigureAwait(false);
         return results;
@@ -797,7 +797,7 @@ public class SearchServices : ISearchServices
     }
 
     [ComputeMethod]
-    public virtual async Task<SearchPostsResults> TrySearchPosts(Session session, string[] tagStrings, PostSortMode sortMode, int currentPage, long postMinTime, long postMaxTime, ServerSideLocale locale)
+    public virtual async Task<SearchPostsResults> TrySearchPosts(Session session, string?[]? tagStrings, PostSortMode sortMode, int currentPage, long postMinTime, long postMaxTime, ServerSideLocale locale)
     {
         using var _ = new MethodTimeLogger(_logger);
 
@@ -868,13 +868,13 @@ public class SearchServices : ISearchServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<(PostTagInfo[] Tags, HashSet<string> Strings)> GetPostSearchTags(string[] tagStrings, ServerSideLocale locale)
+    protected virtual async Task<(PostTagInfo[] Tags, HashSet<string> Strings)> GetPostSearchTags(string?[]? tagStrings, ServerSideLocale locale)
     {
         using var _ = new MethodTimeLogger(_logger);
         var searchPostTags = new List<PostTagInfo>();
         var serverSideTagStrings = new HashSet<string>();
 
-        foreach (var tagString in tagStrings)
+        foreach (var tagString in tagStrings.SafeEnumerable())
         {
             if (!ZExtensions.ParseTagInfoFrom(tagString, out var postTagInfo))
             {

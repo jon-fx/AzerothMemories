@@ -5,7 +5,7 @@ public sealed partial class AccountViewModel
 {
     [JsonInclude, DataMember, MemoryPackInclude] public int Id { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public string Username { get; set; }
+    [JsonInclude, DataMember, MemoryPackInclude] public string Username { get; set; } = null!;
 
     [JsonInclude, DataMember, MemoryPackInclude] public long NextUsernameChangedTime { get; set; }
 
@@ -13,17 +13,17 @@ public sealed partial class AccountViewModel
 
     [JsonInclude, DataMember, MemoryPackInclude] public AccountFlags AccountFlags { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public string BattleTag { get; set; }
+    [JsonInclude, DataMember, MemoryPackInclude] public string? BattleTag { get; set; }
 
     [JsonInclude, DataMember, MemoryPackInclude] public bool BattleTagIsPublic { get; set; }
 
     [JsonInclude, DataMember, MemoryPackInclude] public bool IsPrivate { get; set; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public string Avatar { get; set; }
+    [JsonInclude, DataMember, MemoryPackInclude] public string? Avatar { get; set; }
 
     [JsonInclude, DataMember, MemoryPackInclude] public long CreatedDateTime { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public string[] SocialLinks { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public string?[] SocialLinks { get; init; } = [];
 
     [JsonInclude, DataMember, MemoryPackInclude] public int TotalPostCount { get; set; }
 
@@ -33,63 +33,23 @@ public sealed partial class AccountViewModel
 
     [JsonInclude, DataMember, MemoryPackInclude] public int TotalReactionsCount { get; set; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public BlizzardUpdateViewModel UpdateJobLastResults { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public BlizzardUpdateViewModel? UpdateJobLastResults { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public string BanReason { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public string? BanReason { get; init; }
 
     [JsonInclude, DataMember, MemoryPackInclude] public long BanExpireTime { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public CharacterViewModel[] CharactersArray { get; set; } = Array.Empty<CharacterViewModel>();
+    [JsonInclude, DataMember, MemoryPackInclude] public CharacterViewModel[]? CharactersArray { get; set; } = [];
 
     [JsonInclude, DataMember, MemoryPackInclude] public Dictionary<int, AccountFollowingViewModel> FollowingViewModels { get; init; } = new();
 
     [JsonInclude, DataMember, MemoryPackInclude] public Dictionary<int, AccountFollowingViewModel> FollowersViewModels { get; init; } = new();
 
-    [JsonInclude, DataMember, MemoryPackInclude] public AccountViewModelLinks[] LinkedLogins { get; set; }
+    [JsonInclude, DataMember, MemoryPackInclude] public AccountViewModelLinks[] LinkedLogins { get; set; } = [];
 
     [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] public bool CanInteract => SystemClock.Instance.GetCurrentInstant() > Instant.FromUnixTimeMilliseconds(BanExpireTime);
 
     [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] public bool CanChangeUsername => Username.Contains('-') || SystemClock.Instance.GetCurrentInstant() > Instant.FromUnixTimeMilliseconds(NextUsernameChangedTime);
-
-    public string GetDisplayName()
-    {
-        if (string.IsNullOrWhiteSpace(Username))
-        {
-            return "Unknown";
-        }
-
-        return Username;
-    }
-
-    public string GetAvatarText()
-    {
-        if (string.IsNullOrWhiteSpace(Username))
-        {
-            return "?";
-        }
-
-        return Username[0].ToString();
-    }
-
-    public CharacterViewModel[] GetCharactersSafe()
-    {
-        if (CharactersArray == null || CharactersArray.Length == 0)
-        {
-            return Array.Empty<CharacterViewModel>();
-        }
-
-        return CharactersArray.Where(x => x.CharacterStatus == CharacterStatus2.None).OrderByDescending(x => x.Level).ThenBy(x => x.Name).ToArray();
-    }
-
-    public CharacterViewModel[] GetAllCharactersSafe()
-    {
-        if (CharactersArray == null || CharactersArray.Length == 0)
-        {
-            return Array.Empty<CharacterViewModel>();
-        }
-
-        return CharactersArray.OrderByDescending(x => x.Level).ThenBy(x => x.Name).ToArray();
-    }
 
     public Dictionary<int, string> GetUserTagList()
     {

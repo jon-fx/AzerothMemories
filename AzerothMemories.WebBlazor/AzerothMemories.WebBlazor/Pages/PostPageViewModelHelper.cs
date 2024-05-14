@@ -6,7 +6,7 @@ public sealed class PostPageViewModelHelper
 
     private bool _scrollToFocus;
     private int _lastScrollToFocusId;
-    private PostCommentTreeNode _focusedNode;
+    private PostCommentTreeNode? _focusedNode;
 
     private readonly Dictionary<int, PostCommentTreeNode> _allCommentTreeNodes = new();
 
@@ -15,28 +15,28 @@ public sealed class PostPageViewModelHelper
         _services = services;
     }
 
-    public string ErrorMessage { get; private set; }
+    public string? ErrorMessage { get; private set; }
 
-    public AccountViewModel AccountViewModel { get; private set; }
+    public AccountViewModel? AccountViewModel { get; private set; }
 
-    public PostViewModel PostViewModel { get; private set; }
+    public PostViewModel? PostViewModel { get; private set; }
 
     public int Page { get; private set; }
 
     public int TotalPages { get; private set; }
 
-    public List<PostCommentTreeNode> RootComments { get; private set; }
+    public List<PostCommentTreeNode>? RootComments { get; private set; }
 
-    public PostCommentPageViewModel PostCommentPageViewModel { get; private set; }
+    public PostCommentPageViewModel? PostCommentPageViewModel { get; private set; }
 
     public Dictionary<int, PostCommentReactionViewModel> CommentReactions { get; private set; } = new();
 
-    public void SetErrorMessage(string errorMessage)
+    public void SetErrorMessage(string? errorMessage)
     {
         ErrorMessage = errorMessage;
     }
 
-    public async Task<AccountViewModel> UpdateAccount(string accountString)
+    public async Task<AccountViewModel?> UpdateAccount(string? accountString)
     {
         int.TryParse(accountString, out var accountId);
 
@@ -63,12 +63,12 @@ public sealed class PostPageViewModelHelper
         return AccountViewModel;
     }
 
-    public void SetAccountViewModel(AccountViewModel accountViewModel)
+    public void SetAccountViewModel(AccountViewModel? accountViewModel)
     {
         AccountViewModel = accountViewModel;
     }
 
-    public async Task<PostViewModel> UpdatePost(string postIdString)
+    public async Task<PostViewModel?> UpdatePost(string? postIdString)
     {
         int.TryParse(postIdString, out var postId);
 
@@ -91,12 +91,12 @@ public sealed class PostPageViewModelHelper
         return PostViewModel;
     }
 
-    public void SetPostViewModel(PostViewModel postViewModel)
+    public void SetPostViewModel(PostViewModel? postViewModel)
     {
         PostViewModel = postViewModel;
     }
 
-    public async Task<PostCommentPageViewModel> UpdateComments(string pageString, string focusedCommentIdString)
+    public async Task<PostCommentPageViewModel?> UpdateComments(string? pageString, string? focusedCommentIdString)
     {
         if (AccountViewModel == null)
         {
@@ -126,16 +126,16 @@ public sealed class PostPageViewModelHelper
         return PostCommentPageViewModel;
     }
 
-    public void SetPostCommentPageViewModel(string pageString, string focusedCommentIdString, PostCommentPageViewModel postCommentPageViewModel)
+    public void SetPostCommentPageViewModel(string? pageString, string? focusedCommentIdString, PostCommentPageViewModel? postCommentPageViewModel)
     {
         PostCommentPageViewModel = postCommentPageViewModel;
 
         UpdatePostCommentPageViewModel(pageString, focusedCommentIdString).AndForget();
     }
 
-    private async Task UpdatePostCommentPageViewModel(string pageString, string focusedCommentIdString)
+    private async Task UpdatePostCommentPageViewModel(string? pageString, string? focusedCommentIdString)
     {
-        if (PostCommentPageViewModel == null)
+        if (PostViewModel == null || PostCommentPageViewModel == null)
         {
             return;
         }
@@ -155,10 +155,11 @@ public sealed class PostPageViewModelHelper
         {
             if (!_allCommentTreeNodes.TryGetValue(comment.Key, out var treeNode))
             {
-                _allCommentTreeNodes.Add(comment.Key, treeNode = new PostCommentTreeNode(PostViewModel.AccountId, PostViewModel.Id, comment.Key));
+                _allCommentTreeNodes.Add(comment.Key, treeNode = new PostCommentTreeNode(PostViewModel.AccountId, PostViewModel.Id, comment.Key)
+                {
+                    Comment = comment.Value
+                });
             }
-
-            treeNode.Comment = comment.Value;
 
             if (comment.Value.ParentId == 0)
             {
@@ -233,7 +234,7 @@ public sealed class PostPageViewModelHelper
 
     public async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (_scrollToFocus)
+        if (_scrollToFocus && _focusedNode != null)
         {
             _scrollToFocus = false;
 

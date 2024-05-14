@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AzerothMemories.WebBlazor.Pages;
 
@@ -13,13 +14,18 @@ public sealed class AddMemoryPageViewModel : ViewModelBase, IViewModel<AddMemory
 
     public bool MaxUploadReached => UploadedImages.Count >= ZExtensions.MaxPostScreenShots;
 
-    public PublishCommentComponent PublishCommentComponent { get; set; }
+    public PublishCommentComponent? PublishCommentComponent { get; set; }
 
-    public AddMemoryComponentSharedData SharedData { get; private set; }
+    public AddMemoryComponentSharedData? SharedData { get; private set; }
 
-    public async Task Initialize(InputFileChangeEventArgs arg)
+    public async Task Initialize(InputFileChangeEventArgs? arg)
     {
         await Reset();
+
+        if (Services.ClientServices.ActiveAccountServices.AccountViewModel == null)
+        {
+            return;
+        }
 
         await SharedData.InitializeAccount(() => Services.ClientServices.ActiveAccountServices.AccountViewModel);
 
@@ -42,7 +48,7 @@ public sealed class AddMemoryPageViewModel : ViewModelBase, IViewModel<AddMemory
             await SharedData.SetPostTimeStamp(Instant.FromUnixTimeMilliseconds(currentFileTimeStamp));
         }
 
-        OnViewModelChanged?.Invoke();
+        OnViewModelChanged();
     }
 
     public async Task UploadMoreImages(InputFileChangeEventArgs arg)
@@ -64,9 +70,15 @@ public sealed class AddMemoryPageViewModel : ViewModelBase, IViewModel<AddMemory
 
     public Task<AddMemoryResult> Submit()
     {
+        if (SharedData == null || PublishCommentComponent == null)
+        {
+            return Task.FromResult(new AddMemoryResult(AddMemoryResultCode.Failed));
+        }
+
         return SharedData.Submit(PublishCommentComponent, UploadedImages);
     }
 
+    [MemberNotNull(nameof(SharedData))]
     public Task Reset()
     {
         UploadedImages.Clear();

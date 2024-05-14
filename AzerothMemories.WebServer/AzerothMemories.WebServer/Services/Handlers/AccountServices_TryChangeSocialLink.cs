@@ -2,7 +2,7 @@
 
 internal static class AccountServices_TryChangeSocialLink
 {
-    public static async Task<string> TryHandle(ILogger<AccountServices> logger, CommonServices commonServices, Account_TryChangeSocialLink command, CancellationToken cancellationToken)
+    public static async Task<string?> TryHandle(ILogger<AccountServices> logger, CommonServices commonServices, Account_TryChangeSocialLink command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Invalidation.IsActive)
@@ -33,11 +33,25 @@ internal static class AccountServices_TryChangeSocialLink
             accountRecord = await commonServices.AccountServices.TryGetAccountRecord(command.AccountId).ConfigureAwait(false);
         }
 
+        if (accountRecord == null)
+        {
+            return null;
+        }
+
         var helper = SocialHelpers.All[command.LinkId];
         var previous = ServerSocialHelpers.GetterFunc[helper.LinkId](accountRecord);
-        if (!string.IsNullOrWhiteSpace(newValue) && !helper.ValidatorFunc(newValue))
+        if (!string.IsNullOrWhiteSpace(newValue))
         {
-            return previous;
+            if (helper.ValidatorFunc == null)
+            {
+            }
+            else if (helper.ValidatorFunc(newValue))
+            {
+            }
+            else
+            {
+                return previous;
+            }
         }
 
         if (previous == newValue)

@@ -101,7 +101,7 @@ public class PostServices : IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostViewModel> TryGetPostViewModel(int activeAccountId, int postId, ServerSideLocale locale)
+    public virtual async Task<PostViewModel?> TryGetPostViewModel(int activeAccountId, int postId, ServerSideLocale locale)
     {
         using var _ = new MethodTimeLogger(_logger);
         var postRecord = await TryGetPostRecord(postId).ConfigureAwait(false);
@@ -144,7 +144,7 @@ public class PostServices : IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostViewModel> TryGetPostViewModel(Session session, int postAccountId, int postId, ServerSideLocale locale)
+    public virtual async Task<PostViewModel?> TryGetPostViewModel(Session session, int postAccountId, int postId, ServerSideLocale locale)
     {
         using var _ = new MethodTimeLogger(_logger);
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
@@ -185,7 +185,7 @@ public class PostServices : IPostServices
                         Id = r.Id,
                         Reaction = r.Reaction,
                         AccountId = r.AccountId,
-                        AccountUsername = a.Username,
+                        AccountUsername = a.GetUsernameSafe(),
                         AccountAvatar = a.Avatar,
                         LastUpdateTime = r.LastUpdateTime.ToUnixTimeMilliseconds()
                     };
@@ -207,7 +207,7 @@ public class PostServices : IPostServices
                         Id = r.Id,
                         Reaction = r.Reaction,
                         AccountId = r.AccountId,
-                        AccountUsername = a.Username,
+                        AccountUsername = a.GetUsernameSafe(),
                         AccountAvatar = a.Avatar,
                         LastUpdateTime = r.LastUpdateTime.ToUnixTimeMilliseconds()
                     };
@@ -216,7 +216,7 @@ public class PostServices : IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostReactionViewModel[]> TryGetReactions(Session session, int postId)
+    public virtual async Task<PostReactionViewModel[]?> TryGetReactions(Session session, int postId)
     {
         using var _ = new MethodTimeLogger(_logger);
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
@@ -238,7 +238,7 @@ public class PostServices : IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostCommentPageViewModel> TryGetCommentsPage(Session session, int postId, int page, int focusedCommentId)
+    public virtual async Task<PostCommentPageViewModel?> TryGetCommentsPage(Session session, int postId, int page, int focusedCommentId)
     {
         using var _ = new MethodTimeLogger(_logger);
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
@@ -259,7 +259,7 @@ public class PostServices : IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostReactionViewModel[]> TryGetCommentReactionData(Session session, int postId, int commentId)
+    public virtual async Task<PostReactionViewModel[]?> TryGetCommentReactionData(Session session, int postId, int commentId)
     {
         using var _ = new MethodTimeLogger(_logger);
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
@@ -322,7 +322,7 @@ public class PostServices : IPostServices
                     from a in database.Accounts.Where(r => r.Id == c.AccountId)
                     where c.PostId == postId
                     orderby c.CreatedTime
-                    select c.CreateCommentViewModel(a.Username, a.Avatar);
+                    select c.CreateCommentViewModel(a.GetUsernameSafe(), a.Avatar);
 
         var rootCommentNodes = new List<PostCommentViewModel>();
         var allCommentNodes = await query.ToDictionaryAsync(x => x.Id, x => x).ConfigureAwait(false);
@@ -492,7 +492,7 @@ public class PostServices : IPostServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostRecord> TryGetPostRecord(int postId)
+    public virtual async Task<PostRecord?> TryGetPostRecord(int postId)
     {
         using var _ = new MethodTimeLogger(_logger);
         await DependsOnPost(postId).ConfigureAwait(false);

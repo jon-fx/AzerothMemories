@@ -210,7 +210,7 @@ else
 
 @code {
     private bool _accountChanged;
-    private AccountViewModel _account;
+    private AccountViewModel? _account;
 
     private int _followerCount;
     private int _followingCount;
@@ -218,7 +218,7 @@ else
     [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired]
-    public required AccountViewModel AccountViewModel
+    public required AccountViewModel? AccountViewModel
     {
         get => _account;
         init
@@ -236,6 +236,11 @@ else
 
     private async Task OnShowAdminDialog()
     {
+        if (AccountViewModel == null)
+        {
+            return;
+        }
+
         await Services.ClientServices.DialogService.ShowAdminUserDialog($"User Admin: {AccountViewModel.Username} ({AccountViewModel.Id})", AccountViewModel.Id);
     }
 }

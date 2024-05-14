@@ -28,7 +28,7 @@ else
                 </MudTooltip>
 
                 <MudTooltip Text="Use Image Time" Color="Color.Dark">
-                    <MudIconButton Icon="@Icons.Material.Filled.MoreTime" Color="Color.Success" OnClick="UseImageTime" Disabled="@(UploadedImage.FileTimeStamp == 0 || Instant.FromUnixTimeMilliseconds(UploadedImage.FileTimeStamp) == ViewModel.SharedData.PostTimeStamp)" />
+                    <MudIconButton Icon="@Icons.Material.Filled.MoreTime" Color="Color.Success" OnClick="UseImageTime" Disabled="@(ViewModel.SharedData == null || UploadedImage.FileTimeStamp == 0 || Instant.FromUnixTimeMilliseconds(UploadedImage.FileTimeStamp) == ViewModel.SharedData.PostTimeStamp)" />
                 </MudTooltip>
 
                 <MudTooltip Text="Reset" Color="Color.Dark">
@@ -56,7 +56,7 @@ else
     [Parameter, EditorRequired] public required AddMemoryPageViewModel ViewModel { get; init; }
 
     private string GetImageId => $"imageBox-{Index}";
-    private DotNetObjectReference<AddMemoryPreviewScreenShotComponent> _objReference;
+    private DotNetObjectReference<AddMemoryPreviewScreenShotComponent>? _objReference;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -84,7 +84,7 @@ else
         ViewModel.UploadedImages.Remove(viewModel);
         ViewModel.UploadedImages.Insert(currentIndex, viewModel);
 
-        ViewModel.OnViewModelChanged?.Invoke();
+        ViewModel.OnViewModelChanged();
 
         return Task.CompletedTask;
     }
@@ -93,16 +93,21 @@ else
     {
         ViewModel.UploadedImages.Remove(UploadedImage);
 
-        if (ViewModel.SharedData.PostTimeStamp == Instant.FromUnixTimeMilliseconds(UploadedImage.FileTimeStamp))
+        if (ViewModel.SharedData != null && ViewModel.SharedData.PostTimeStamp == Instant.FromUnixTimeMilliseconds(UploadedImage.FileTimeStamp))
         {
             await ViewModel.SharedData.SetPostTimeStamp(Instant.FromUnixTimeMilliseconds(ViewModel.UploadedImages[0].FileTimeStamp));
         }
 
-        ViewModel.OnViewModelChanged?.Invoke();
+        ViewModel.OnViewModelChanged();
     }
 
     private async Task UseImageTime()
     {
+        if (ViewModel.SharedData == null)
+        {
+            return;
+        }
+
         await ViewModel.SharedData.SetPostTimeStamp(Instant.FromUnixTimeMilliseconds(UploadedImage.FileTimeStamp));
     }
 

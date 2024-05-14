@@ -16,11 +16,11 @@ public sealed class PostCommentRecord : IDatabaseRecordWithVersion
 
     [Column] public int? ParentId { get; init; }
 
-    [Column] public string PostCommentRaw { get; init; }
+    [Column] public string? PostCommentRaw { get; init; }
 
-    [Column] public string PostCommentMark { get; init; }
+    [Column] public string? PostCommentMark { get; init; }
 
-    [Column] public string PostCommentUserMap { get; init; }
+    [Column] public string? PostCommentUserMap { get; init; }
 
     [Column] public int ReactionCount1 { get; set; }
 
@@ -50,9 +50,9 @@ public sealed class PostCommentRecord : IDatabaseRecordWithVersion
 
     public uint RowVersion { get; set; }
 
-    public ICollection<PostTagRecord> CommentTags { get; set; }
+    public ICollection<PostTagRecord>? CommentTags { get; set; }
 
-    public PostCommentViewModel CreateCommentViewModel(string username, string avatar)
+    public PostCommentViewModel CreateCommentViewModel(string username, string? avatar)
     {
         var viewModel = new PostCommentViewModel
         {
@@ -66,8 +66,8 @@ public sealed class PostCommentRecord : IDatabaseRecordWithVersion
             CreatedTime = CreatedTime.ToUnixTimeMilliseconds(),
             DeletedTimeStamp = DeletedTimeStamp,
             TotalReactionCount = TotalReactionCount,
-            ReactionCounters = new[]
-            {
+            ReactionCounters =
+            [
                 ReactionCount1,
                 ReactionCount2,
                 ReactionCount3,
@@ -77,7 +77,7 @@ public sealed class PostCommentRecord : IDatabaseRecordWithVersion
                 ReactionCount7,
                 ReactionCount8,
                 ReactionCount9
-            }
+            ]
         };
 
         return viewModel;

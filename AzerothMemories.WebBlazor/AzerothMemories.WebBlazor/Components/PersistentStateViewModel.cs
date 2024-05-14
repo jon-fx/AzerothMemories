@@ -4,7 +4,7 @@ namespace AzerothMemories.WebBlazor.Components;
 
 public abstract class PersistentStateViewModel : ViewModelBase
 {
-    private readonly List<PersistentStateWrapper> _persistentStateWrappers = new();
+    private readonly List<PersistentStateWrapper> _persistentStateWrappers = [];
 
     private PersistingComponentStateSubscription _componentStateSubscription;
 
@@ -31,8 +31,13 @@ public abstract class PersistentStateViewModel : ViewModelBase
         return Task.CompletedTask;
     }
 
-    protected void AddPersistentState<TState>(Func<TState> getFunc, Action<TState> setAction, Func<Task<TState>> createStateFunction, [CallerArgumentExpression("getFunc")] string message = null)
+    protected void AddPersistentState<TState>(Func<TState?> getFunc, Action<TState?> setAction, Func<Task<TState?>> createStateFunction, [CallerArgumentExpression("getFunc")] string? message = null)
     {
+        if (string.IsNullOrWhiteSpace(message))
+        {
+            throw new NotImplementedException();
+        }
+
         _persistentStateWrappers.Add(new PersistentStateWrapperGen<TState>(this, message, getFunc, setAction, createStateFunction));
     }
 

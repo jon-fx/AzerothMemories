@@ -52,7 +52,7 @@ public class MediaServices : IComputeService
     {
         using var _ = new MethodTimeLogger(_logger);
         var result = await TryGetBlobData(ZExtensions.BlobStaticMedia, "inv_misc_questionmark.jpg").ConfigureAwait(false);
-        return result with { IsDefault = true };
+        return result.ThrowIfNull() with { IsDefault = true };
     }
 
     [ComputeMethod]
@@ -80,7 +80,7 @@ public class MediaServices : IComputeService
     {
         using var _ = new MethodTimeLogger(_logger);
         var result = await TryGetBlobData(ZExtensions.BlobStaticMedia, "inv_misc_questionmark.jpg").ConfigureAwait(false);
-        return result with { IsDefault = true };
+        return result.ThrowIfNull() with { IsDefault = true };
     }
 
     [ComputeMethod]
@@ -110,6 +110,8 @@ public class MediaServices : IComputeService
     {
         using var _ = new MethodTimeLogger(_logger);
         var blobData = await TryGetBlobData(ZExtensions.BlobStaticMedia, "inv_misc_questionmark.jpg").ConfigureAwait(false);
+        blobData = blobData.ThrowIfNull();
+
         return new MediaUserResult(blobData.LastModified, blobData.ETag, blobData.MediaType, blobData.MediaBytes, 0, 0) { IsDefault = true };
     }
 
@@ -124,7 +126,7 @@ public class MediaServices : IComputeService
         }
 
         var postRecord = await _commonServices.PostServices.TryGetPostRecord(blobData.PostId).ConfigureAwait(false);
-        if (postRecord.PostVisibility > 0)
+        if (postRecord != null && postRecord.PostVisibility > 0)
         {
             if (accountId == 0)
             {
@@ -196,7 +198,7 @@ public class MediaServices : IComputeService
     }
 
     [ComputeMethod]
-    public virtual async Task<MediaResult> TryGetBlobData(string container, string fileName)
+    public virtual async Task<MediaResult?> TryGetBlobData(string container, string fileName)
     {
         using var _ = new MethodTimeLogger(_logger);
         var blobClient = new BlobClient(_commonServices.Config.BlobStorageConnectionString, container, fileName);
@@ -275,10 +277,15 @@ public class MediaServices : IComputeService
 
         var allComponents = typeof(App).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(Microsoft.AspNetCore.Components.ComponentBase)));
         var allRoutedComponent = allComponents.Select(x => new { Type = x, Route = x.GetCustomAttributes<Microsoft.AspNetCore.Components.RouteAttribute>().FirstOrDefault() }).Where(x => x.Route != null).ToList();
-        var toAddToSiteNap = allRoutedComponent.Where(x => x.Route.Template != "/" && x.Route.Template != "/admin" && !x.Route.Template.Contains('{') && !x.Route.Template.Contains('}')).ToList();
+        var toAddToSiteNap = allRoutedComponent.Where(x => x.Route != null && x.Route.Template != "/" && x.Route.Template != "/admin" && !x.Route.Template.Contains('{') && !x.Route.Template.Contains('}')).ToList();
 
         foreach (var routedComponent in toAddToSiteNap)
         {
+            if (routedComponent.Route == null)
+            {
+                continue;
+            }
+
             pages.Add((routedComponent.Route.Template, DateTime.Now));
         }
 
@@ -286,7 +293,7 @@ public class MediaServices : IComputeService
     }
 
     [ComputeMethod]
-    public virtual async Task<MediaResult> TryGetSiteMapNamed(SiteMapType nameType, int fileIndex)
+    public virtual async Task<MediaResult?> TryGetSiteMapNamed(SiteMapType nameType, int fileIndex)
     {
         using var _ = new MethodTimeLogger(_logger);
         var counters = await _commonServices.MediaServices.GetSiteMapCounters().ConfigureAwait(false);

@@ -8,7 +8,7 @@ public sealed class ActiveAccountServices
     private readonly ISnackbar _snackbarService;
     private readonly IStringLocalizer<BlizzardResources> _stringLocalizer;
 
-    private IActiveCommentContext _activeCommentContext;
+    private IActiveCommentContext? _activeCommentContext;
 
     public ActiveAccountServices(IAccountServices accountServices, ICharacterServices characterServices, TimeProviderEx timeProvider, ISnackbar snackbar, IStringLocalizer<BlizzardResources> stringLocalizer)
     {
@@ -19,11 +19,11 @@ public sealed class ActiveAccountServices
         _stringLocalizer = stringLocalizer;
     }
 
-    public AccountViewModel AccountViewModel { get; private set; }
+    public AccountViewModel? AccountViewModel { get; private set; }
 
-    public AccountHistoryViewModel[] AccountHistoryViewModels { get; private set; }
+    public AccountHistoryViewModel[]? AccountHistoryViewModels { get; private set; }
 
-    public IActiveCommentContext ActiveCommentContext
+    public IActiveCommentContext? ActiveCommentContext
     {
         get => _activeCommentContext;
         set
@@ -59,17 +59,18 @@ public sealed class ActiveAccountServices
 
         if (AccountViewModel == null)
         {
-            AccountHistoryViewModels = Array.Empty<AccountHistoryViewModel>();
+            AccountHistoryViewModels = [];
         }
         else
         {
             var newHistory = await _accountServices.TryGetAccountHistory(Session.Default);
+            var newHistoryViewModels = newHistory?.ViewModels ?? [];
             var oldHistory = AccountHistoryViewModels;
 
             if (oldHistory != null && oldHistory.Length != 0)
             {
                 var oldSet = oldHistory.Select(x => x.Id).ToHashSet();
-                foreach (var newItem in newHistory.ViewModels)
+                foreach (var newItem in newHistoryViewModels)
                 {
                     if (oldSet.Contains(newItem.Id))
                     {
@@ -89,8 +90,8 @@ public sealed class ActiveAccountServices
                 }
             }
 
-            AccountHistoryViewModels = newHistory.ViewModels;
-            AccountHistoryViewModels ??= Array.Empty<AccountHistoryViewModel>();
+            AccountHistoryViewModels = newHistoryViewModels;
+            AccountHistoryViewModels ??= [];
         }
 
         return previousAccountId != AccountViewModel?.Id;

@@ -15,9 +15,14 @@ internal sealed class UpdateHandler_Characters_Mounts : UpdateHandlerBaseResult<
         }
     }
 
-    protected override async Task<RequestResult<CharacterMountsCollectionSummary>> TryExecuteRequest(CharacterRecord record, AuthTokenRecord authTokenRecord, Instant blizzardLastModified)
+    protected override async Task<RequestResult<CharacterMountsCollectionSummary>> TryExecuteRequest(CharacterRecord record, AuthTokenRecord? authTokenRecord, Instant blizzardLastModified)
     {
         var characterRef = new MoaRef(record.MoaRef);
+        if (!characterRef.IsValidCharacter)
+        {
+            throw new NotImplementedException();
+        }
+
         using var client = CommonServices.HttpClientProvider.GetWarcraftClient(record.BlizzardRegionId);
         return await client.GetCharacterMountsSummaryAsync(characterRef.Realm, characterRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
@@ -43,31 +48,30 @@ internal sealed class UpdateHandler_Characters_Mounts : UpdateHandlerBaseResult<
             currentTimeStamp = Instant.FromUnixTimeMilliseconds(0);
         }
 
-        if (requestResult.Mounts == null)
+        foreach (var mount in requestResult.Mounts.SafeEnumerable())
         {
-        }
-        else
-        {
-            foreach (var mount in requestResult.Mounts)
+            if (mount.Mount == null)
             {
-                if (currentMountsDict.TryGetValue(mount.Mount.Id, out var mountRecord))
-                {
-                    mountRecord.AccountId = record.AccountId;
-                }
-                else
-                {
-                    mountRecord = new CharacterMountRecord
-                    {
-                        AccountId = record.AccountId,
-                        CharacterId = record.Id,
-                        MountId = mount.Mount.Id,
-                        MountTimeStamp = currentTimeStamp
-                    };
+                continue;
+            }
 
-                    if (currentMountsDict.TryAdd(mountRecord.MountId, mountRecord))
-                    {
-                        database.CharacterMounts.Add(mountRecord);
-                    }
+            if (currentMountsDict.TryGetValue(mount.Mount.Id, out var mountRecord))
+            {
+                mountRecord.AccountId = record.AccountId;
+            }
+            else
+            {
+                mountRecord = new CharacterMountRecord
+                {
+                    AccountId = record.AccountId,
+                    CharacterId = record.Id,
+                    MountId = mount.Mount.Id,
+                    MountTimeStamp = currentTimeStamp
+                };
+
+                if (currentMountsDict.TryAdd(mountRecord.MountId, mountRecord))
+                {
+                    database.CharacterMounts.Add(mountRecord);
                 }
             }
         }

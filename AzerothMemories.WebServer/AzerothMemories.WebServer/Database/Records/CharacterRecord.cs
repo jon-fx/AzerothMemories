@@ -10,7 +10,7 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord, IDatabaseRecordWith
 
     [Key] public int Id { get; init; }
 
-    [Column] public string MoaRef { get; set; }
+    [Column] public string MoaRef { get; set; } = null!;
 
     [Column] public long BlizzardId { get; set; }
 
@@ -18,9 +18,9 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord, IDatabaseRecordWith
 
     [Column] public BlizzardRegion BlizzardRegionId { get; set; }
 
-    [Column] public string Name { get; set; }
+    [Column] public string Name { get; set; } = null!;
 
-    [Column] public string NameSearchable { get; set; }
+    [Column] public string NameSearchable { get; set; } = null!;
 
     [Column] public Instant CreatedDateTime { get; init; }
 
@@ -42,7 +42,7 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord, IDatabaseRecordWith
 
     [Column] public CharacterFaction Faction { get; set; }
 
-    [Column] public string AvatarLink { get; set; }
+    [Column] public string? AvatarLink { get; set; }
 
     [Column] public int AchievementTotalQuantity { get; set; }
 
@@ -50,15 +50,15 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord, IDatabaseRecordWith
 
     [Column] public int? GuildId { get; set; }
 
-    [Column] public string GuildRef { get; set; }
+    [Column] public string? GuildRef { get; set; }
 
     [Column] public byte BlizzardGuildRank { get; set; }
 
-    [Column] public string BlizzardGuildName { get; set; }
+    [Column] public string? BlizzardGuildName { get; set; }
 
     public uint RowVersion { get; set; }
 
-    public BlizzardUpdateRecord UpdateRecord { get; set; }
+    public BlizzardUpdateRecord? UpdateRecord { get; set; }
 
     public CharacterViewModel CreateViewModel()
     {

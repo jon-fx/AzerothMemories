@@ -3,19 +3,19 @@
 [DataContract, MemoryPackable]
 public sealed partial record MainSearchResult
 {
-    [JsonInclude, DataMember, MemoryPackInclude] public int Id { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public required int Id { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public string RefStr { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public required string RefStr { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public string Name { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public required string Name { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public string Avatar { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public required string? Avatar { get; init; }
 
     [JsonInclude, DataMember, MemoryPackInclude] public byte CharacterClass { get; init; }
 
     [JsonInclude, DataMember, MemoryPackInclude] public int RealmId { get; init; }
 
-    [JsonInclude, DataMember, MemoryPackInclude] public MainSearchType Type { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public required MainSearchType Type { get; init; }
 
     public string GetLink()
     {
@@ -65,18 +65,19 @@ public sealed partial record MainSearchResult
         throw new NotImplementedException();
     }
 
-    public static MainSearchResult CreateAccount(int id, string name, string avatar)
+    public static MainSearchResult CreateAccount(int id, string name, string? avatar)
     {
         return new MainSearchResult
         {
             Id = id,
             Name = name,
             Avatar = avatar,
-            Type = MainSearchType.Account
+            Type = MainSearchType.Account,
+            RefStr = "Account"
         };
     }
 
-    public static MainSearchResult CreateCharacter(int id, string moaRef, string name, string avatar, int realmId, byte characterClass)
+    public static MainSearchResult CreateCharacter(int id, string moaRef, string name, string? avatar, int realmId, byte characterClass)
     {
         return new MainSearchResult
         {
@@ -90,7 +91,7 @@ public sealed partial record MainSearchResult
         };
     }
 
-    public static MainSearchResult CreateGuild(int id, string moaRef, string name, string avatar, int realmId)
+    public static MainSearchResult CreateGuild(int id, string moaRef, string name, string? avatar, int realmId)
     {
         return new MainSearchResult
         {

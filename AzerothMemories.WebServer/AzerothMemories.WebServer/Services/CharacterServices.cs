@@ -18,7 +18,7 @@ public class CharacterServices : ICharacterServices
     }
 
     [ComputeMethod]
-    public virtual async Task<CharacterRecord> TryGetCharacterRecord(int id)
+    public virtual async Task<CharacterRecord?> TryGetCharacterRecord(int id)
     {
         using var _ = new MethodTimeLogger(_logger);
         await DependsOnCharacterRecord(id).ConfigureAwait(false);
@@ -58,6 +58,8 @@ public class CharacterServices : ICharacterServices
             characterRecord = new CharacterRecord
             {
                 MoaRef = moaRef.Full,
+                Name = moaRef.Name,
+                NameSearchable = DatabaseHelpers.GetSearchableName(moaRef.Name),
                 BlizzardId = moaRef.Id,
                 BlizzardRegionId = moaRef.Region,
                 CreatedDateTime = SystemClock.Instance.GetCurrentInstant()
@@ -143,7 +145,7 @@ public class CharacterServices : ICharacterServices
     }
 
     [ComputeMethod]
-    public virtual async Task<CharacterAccountViewModel> TryGetCharacter(Session session, BlizzardRegion region, string realmSlug, string characterName)
+    public virtual async Task<CharacterAccountViewModel?> TryGetCharacter(Session session, BlizzardRegion region, string realmSlug, string characterName)
     {
         using var _ = new MethodTimeLogger(_logger);
         if (region is <= 0 or >= BlizzardRegion.Count || string.IsNullOrWhiteSpace(realmSlug) || string.IsNullOrWhiteSpace(characterName))
@@ -177,6 +179,10 @@ public class CharacterServices : ICharacterServices
         }
 
         var characterRecord = await GetOrCreateCharacterRecord(characterRef.Full, updatePriority).ConfigureAwait(false);
+        if (characterRecord == null)
+        {
+            return null;
+        }
 
         return await TryGetCharacter(session, characterRecord.Id).ConfigureAwait(false);
     }
@@ -209,7 +215,7 @@ public class CharacterServices : ICharacterServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<MoaRef> GetFullCharacterRef(BlizzardRegion region, string realmSlug, string characterName)
+    protected virtual async Task<MoaRef?> GetFullCharacterRef(BlizzardRegion region, string realmSlug, string characterName)
     {
         using var _ = new MethodTimeLogger(_logger);
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
