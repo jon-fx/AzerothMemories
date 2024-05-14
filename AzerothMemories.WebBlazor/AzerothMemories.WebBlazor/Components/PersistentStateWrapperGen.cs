@@ -9,11 +9,11 @@ public sealed class PersistentStateWrapperGen<[DynamicallyAccessedMembers(JsonSe
     private readonly string _key;
     private readonly PersistentStateViewModel _viewModel;
 
-    private readonly Func<TState> _getFunc;
-    private readonly Action<TState> _setAction;
-    private readonly Func<Task<TState>> _createStateFunction;
+    private readonly Func<TState?> _getFunc;
+    private readonly Action<TState?> _setAction;
+    private readonly Func<Task<TState?>> _createStateFunction;
 
-    public PersistentStateWrapperGen(PersistentStateViewModel viewModel, string key, Func<TState> getFunc, Action<TState> setAction, Func<Task<TState>> createStateFunction)
+    public PersistentStateWrapperGen(PersistentStateViewModel viewModel, string key, Func<TState?> getFunc, Action<TState?> setAction, Func<Task<TState?>> createStateFunction)
     {
         _key = key;
         _viewModel = viewModel;
@@ -33,7 +33,7 @@ public sealed class PersistentStateWrapperGen<[DynamicallyAccessedMembers(JsonSe
 
     public override async Task TryLoadPersistentState()
     {
-        if (!_viewModel.Services.ClientServices.PersistentComponentState.TryTakeFromJson(Key, out TState state))
+        if (!_viewModel.Services.ClientServices.PersistentComponentState.TryTakeFromJson(Key, out TState? state))
         {
             state = await _createStateFunction();
         }

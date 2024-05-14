@@ -6,19 +6,19 @@ public interface IPostServices : IComputeService
     Task<AddMemoryResult> TryPostMemory(Post_TryPostMemory command, CancellationToken cancellationToken = default);
 
     [ComputeMethod]
-    Task<PostViewModel> TryGetPostViewModel(Session session, int accountId, int postId, ServerSideLocale locale);
+    Task<PostViewModel?> TryGetPostViewModel(Session session, int accountId, int postId, ServerSideLocale locale);
 
     [CommandHandler]
     Task<int> TryReactToPost(Post_TryReactToPost command, CancellationToken cancellationToken = default);
 
     [ComputeMethod]
-    Task<PostReactionViewModel[]> TryGetReactions(Session session, int postId);
+    Task<PostReactionViewModel[]?> TryGetReactions(Session session, int postId);
 
     [ComputeMethod]
-    Task<PostCommentPageViewModel> TryGetCommentsPage(Session session, int postId, int page = 0, int focusedCommentId = 0);
+    Task<PostCommentPageViewModel?> TryGetCommentsPage(Session session, int postId, int page = 0, int focusedCommentId = 0);
 
     [ComputeMethod]
-    Task<PostReactionViewModel[]> TryGetCommentReactionData(Session session, int postId, int commentId);
+    Task<PostReactionViewModel[]?> TryGetCommentReactionData(Session session, int postId, int commentId);
 
     [ComputeMethod]
     Task<Dictionary<int, PostCommentReactionViewModel>> TryGetMyCommentReactions(Session session, int postId);

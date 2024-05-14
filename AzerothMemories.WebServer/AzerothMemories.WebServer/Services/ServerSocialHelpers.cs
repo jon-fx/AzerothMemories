@@ -2,13 +2,13 @@
 
 public static class ServerSocialHelpers
 {
-    public static readonly Func<AccountRecord, string>[] GetterFunc;
-    public static readonly Action<AccountRecord, string>[] SetterFunc;
+    public static readonly Func<AccountRecord, string?>[] GetterFunc;
+    public static readonly Action<AccountRecord, string?>[] SetterFunc;
 
     static ServerSocialHelpers()
     {
-        GetterFunc = new Func<AccountRecord, string>[(int)SocialLinks.Count];
-        SetterFunc = new Action<AccountRecord, string>[(int)SocialLinks.Count];
+        GetterFunc = new Func<AccountRecord, string?>[(int)SocialLinks.Count];
+        SetterFunc = new Action<AccountRecord, string?>[(int)SocialLinks.Count];
 
         GetterFunc[(int)SocialLinks.Discord] = r => r.SocialDiscord;
         SetterFunc[(int)SocialLinks.Discord] = (r, s) => r.SocialDiscord = s;
@@ -22,7 +22,7 @@ public static class ServerSocialHelpers
         GetterFunc[(int)SocialLinks.YouTube] = r => r.SocialYouTube;
         SetterFunc[(int)SocialLinks.YouTube] = (r, s) => r.SocialYouTube = s;
 
-        Exceptions.ThrowIf(GetterFunc.Any(x => x == null));
-        Exceptions.ThrowIf(SetterFunc.Any(x => x == null));
+        Exceptions.ThrowIf(GetterFunc.Any(x => x == null!));
+        Exceptions.ThrowIf(SetterFunc.Any(x => x == null!));
     }
 }

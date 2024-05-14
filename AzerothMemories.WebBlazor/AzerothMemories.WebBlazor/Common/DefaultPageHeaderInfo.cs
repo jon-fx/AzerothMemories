@@ -6,6 +6,7 @@ public sealed class DefaultPageHeaderInfo : IPageHeaderInfoProvider
 
     public DefaultPageHeaderInfo()
     {
+        _pageTitle = "Memories of Azeroth";
     }
 
     public DefaultPageHeaderInfo(string pageTitle)
@@ -19,6 +20,10 @@ public sealed class DefaultPageHeaderInfo : IPageHeaderInfoProvider
         {
             return "Memories of Azeroth";
         }
+
+#if DEBUG
+        return $"DEBUG - {_pageTitle} - Memories of Azeroth";
+#endif
 
         return $"{_pageTitle} - Memories of Azeroth";
     }
@@ -38,7 +43,7 @@ public sealed class DefaultPageHeaderInfo : IPageHeaderInfoProvider
         return "Memories of Azeroth header banner";
     }
 
-    public string GetCanonicalLink()
+    public string? GetCanonicalLink()
     {
         return null;
     }

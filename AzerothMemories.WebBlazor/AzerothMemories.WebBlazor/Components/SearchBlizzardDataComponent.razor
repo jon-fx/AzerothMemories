@@ -15,9 +15,9 @@
 
 @code
 {
-    private string _autoCompleteText;
-    private PostTagInfo _autoCompleteValue;
-    private AutoCompleteComponent<PostTagInfo> _autoComplete;
+    private string? _autoCompleteText;
+    private PostTagInfo? _autoCompleteValue;
+    private AutoCompleteComponent<PostTagInfo>? _autoComplete;
 
     [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
@@ -25,7 +25,7 @@
 
     private async Task OnValueChanged()
     {
-        if (_autoCompleteValue == null)
+        if (_autoComplete == null || _autoCompleteValue == null)
         {
             return;
         }
@@ -37,7 +37,7 @@
         Services.ClientServices.JsRuntime.InvokeVoidAsync("HideWowheadToolTips").AndForget();
     }
 
-    private void OnTextChanged(string text)
+    private void OnTextChanged(string? text)
     {
         if (text != null)
         {
@@ -61,7 +61,7 @@
         return results;
     }
 
-    private string ToStringFunc(PostTagInfo arg)
+    private string ToStringFunc(PostTagInfo? arg)
     {
         if (arg == null)
         {

@@ -43,8 +43,8 @@
 
 @code
 {
-    private readonly (string Title, string Link, string Desc)[] _specialThanks =
-    {
+    private readonly (string Title, string Link, string? Desc)[] _specialThanks =
+    [
         ("ArgentPonyWarcraftClient","https://github.com/blizzard-net/warcraft", null),
         ("AspNet.Security.OAuth.Providers","https://github.com/aspnet-contrib/AspNet.Security.OAuth.Providers", null),
         ("AzureStorage","https://github.com/Azure/azure-sdk-for-net/blob/Azure.Storage.Blobs_12.16.0/sdk/storage/Azure.Storage.Blobs/README.md", null),
@@ -60,14 +60,14 @@
         ("NodaTime","https://nodatime.org", null),
         ("Stl.Fusion","https://github.com/servicetitan/Stl.Fusion", null),
         ("wow.tools","https://github.com/Marlamin/wow.tools.local", null)
-    };
+    ];
 
     private readonly (string Image, string Alt, string Title)[] _images =
-    {
+    [
         ("AzerothMemories.Assets/img/index-0.png", "Memories of Azeroth Index", "Index"),
         ("AzerothMemories.Assets/img/index-1.png", "Memories of Azeroth Index", "Index"),
         ("AzerothMemories.Assets/img/add-0.png", "Memories of Azeroth Restore Memory", "Restore Memory"),
         ("AzerothMemories.Assets/img/add-1.png", "Memories of Azeroth Restore Memory", "Restore Memory"),
         ("AzerothMemories.Assets/img/post-0.png", "Memories of Azeroth Post", "Post")
-    };
+    ];
 }

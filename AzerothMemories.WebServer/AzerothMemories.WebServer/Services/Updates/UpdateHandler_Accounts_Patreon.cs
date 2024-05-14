@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Services.Updates;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace AzerothMemories.WebServer.Services.Updates;
 
 internal sealed class UpdateHandler_Accounts_Patreon : UpdateHandlerBase<AccountRecord>
 {
@@ -6,7 +8,7 @@ internal sealed class UpdateHandler_Accounts_Patreon : UpdateHandlerBase<Account
     {
     }
 
-    protected override bool ShouldExecuteOn(CommandContext context, AppDbContext database, AccountRecord record, out AuthTokenRecord authTokenRecord)
+    protected override bool ShouldExecuteOn(CommandContext context, AppDbContext database, AccountRecord record, [NotNullWhen(true)] out AuthTokenRecord? authTokenRecord)
     {
         authTokenRecord = record.AuthTokens.FirstOrDefault(x => x.IsPatreon);
         return authTokenRecord != null;

@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebBlazor.Common;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace AzerothMemories.WebBlazor.Common;
 
 public sealed class TagHelpers
 {
@@ -68,7 +70,7 @@ public sealed class TagHelpers
         return _realmSlugsToId.TryGetValue(realmSlug, out realmId);
     }
 
-    public bool GetRealmSlug(string realName, out string realmSlug)
+    public bool GetRealmSlug(string realName, [NotNullWhen(true)] out string? realmSlug)
     {
         return _realmNamesToSlugs.TryGetValue(realName.ToLowerInvariant(), out realmSlug);
     }

@@ -23,17 +23,17 @@
 
 @code
 {
-    [Parameter, EditorRequired] public required string Id { get; set; }
+    [Parameter, EditorRequired] public required string? Id { get; set; }
 
-    [Parameter, EditorRequired] public required string Region { get; set; }
+    [Parameter, EditorRequired] public required string? Region { get; set; }
 
-    [Parameter, EditorRequired] public required string Realm { get; set; }
+    [Parameter, EditorRequired] public required string? Realm { get; set; }
 
-    [Parameter, EditorRequired] public required string Name { get; set; }
+    [Parameter, EditorRequired] public required string? Name { get; set; }
 
-    [Parameter, SupplyParameterFromQuery(Name = "sort")] public string SortMode { get; init; }
+    [Parameter, SupplyParameterFromQuery(Name = "sort")] public string? SortMode { get; init; }
 
-    [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }
+    [Parameter, SupplyParameterFromQuery(Name = "page")] public string? CurrentPage { get; init; }
 
     protected override void OnParametersChanged()
     {

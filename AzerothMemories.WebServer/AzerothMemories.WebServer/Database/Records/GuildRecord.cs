@@ -10,15 +10,15 @@ public sealed class GuildRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVers
 
     [Key] public int Id { get; init; }
 
-    [Column] public string MoaRef { get; init; }
+    [Column] public string MoaRef { get; init; } = null!;
 
     [Column] public long BlizzardId { get; set; }
 
     [Column] public BlizzardRegion BlizzardRegionId { get; init; }
 
-    [Column] public string Name { get; set; }
+    [Column] public string Name { get; set; } = null!;
 
-    [Column] public string NameSearchable { get; set; }
+    [Column] public string NameSearchable { get; set; } = null!;
 
     [Column] public int RealmId { get; set; }
 
@@ -36,7 +36,7 @@ public sealed class GuildRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVers
 
     [Column] public int AchievementTotalPoints { get; set; }
 
-    public BlizzardUpdateRecord UpdateRecord { get; set; }
+    public BlizzardUpdateRecord? UpdateRecord { get; set; }
 
     public uint RowVersion { get; set; }
 

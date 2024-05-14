@@ -13,20 +13,20 @@
 @code
 {
     private static readonly PostSortMode[] _sortModes =
-    {
+    [
         PostSortMode.PostTimeStampDescending,
         PostSortMode.PostTimeStampAscending,
         PostSortMode.PostCreatedTimeStampDescending,
         PostSortMode.PostCreatedTimeStampAscending
-    };
+    ];
 
     private static readonly string[] _allIcons =
-    {
+    [
         Icons.Material.Filled.ArrowDownward,
         Icons.Material.Filled.ArrowUpward,
         Icons.Material.Filled.ArrowDropDown,
         Icons.Material.Filled.ArrowDropUp
-    };
+    ];
 
     [Parameter] public PostSortMode SortMode { get; init; }
     [Parameter] public EventCallback<PostSortMode> OnSortModeChanged { get; init; }

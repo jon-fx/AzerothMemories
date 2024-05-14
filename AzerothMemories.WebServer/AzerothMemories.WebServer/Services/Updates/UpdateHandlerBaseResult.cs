@@ -4,16 +4,16 @@ namespace AzerothMemories.WebServer.Services.Updates;
 
 internal abstract class UpdateHandlerBaseResult<TRecord, TRequestResult> : UpdateHandlerBase<TRecord> where TRecord : IBlizzardUpdateRecord where TRequestResult : class
 {
-    protected UpdateHandlerBaseResult(BlizzardUpdateType updateType, CommonServices commonServices, [CallerArgumentExpression("updateType")] string updateTypeString = null) : base(updateType, commonServices, updateTypeString)
+    protected UpdateHandlerBaseResult(BlizzardUpdateType updateType, CommonServices commonServices, [CallerArgumentExpression("updateType")] string? updateTypeString = null) : base(updateType, commonServices, updateTypeString)
     {
     }
 
-    protected abstract Task<RequestResult<TRequestResult>> TryExecuteRequest(TRecord record, AuthTokenRecord authTokenRecord, Instant blizzardLastModified);
+    protected abstract Task<RequestResult<TRequestResult>> TryExecuteRequest(TRecord record, AuthTokenRecord? authTokenRecord, Instant blizzardLastModified);
 
-    protected override async Task<HttpStatusCode> InternalExecuteOn(CommandContext context, AppDbContext database, TRecord record, AuthTokenRecord authTokenRecord, BlizzardUpdateChildRecord childRecord)
+    protected override async Task<HttpStatusCode> InternalExecuteOn(CommandContext context, AppDbContext database, TRecord record, AuthTokenRecord? authTokenRecord, BlizzardUpdateChildRecord childRecord)
     {
         var requestResult = await TryExecuteRequest(record, authTokenRecord, childRecord.BlizzardLastModified).ConfigureAwait(false);
-        if (requestResult.IsSuccess)
+        if (requestResult.IsSuccess && requestResult.ResultData != null)
         {
             childRecord.UpdateFailCounter = 0;
 

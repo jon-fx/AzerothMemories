@@ -6,13 +6,13 @@ public sealed class AdminPageViewModel : ViewModelBase, IViewModel<AdminPageView
     {
     }
 
-    public AdminCountersViewModel Counters { get; private set; }
+    public AdminCountersViewModel? Counters { get; private set; }
 
-    public ReportedPostViewModel[] ReportedPosts { get; private set; }
+    public ReportedPostViewModel[]? ReportedPosts { get; private set; }
 
-    public ReportedPostTagsViewModel[] ReportedTags { get; private set; }
+    public ReportedPostTagsViewModel[]? ReportedTags { get; private set; }
 
-    public ReportedPostCommentsViewModel[] ReportedComments { get; private set; }
+    public ReportedPostCommentsViewModel[]? ReportedComments { get; private set; }
 
     public override async Task ComputeState(CancellationToken cancellationToken)
     {
@@ -37,7 +37,7 @@ public sealed class AdminPageViewModel : ViewModelBase, IViewModel<AdminPageView
 
     public async Task ResolveReportedTag(bool delete, ReportedPostTagsViewModel viewModel, ReportedChildViewModel row)
     {
-        await Services.ClientServices.CommandRunner.Run(new Admin_SetPostTagReportResolved(Session.Default, delete, viewModel.PostViewModel.Id, row.ReportedTag.TagString, row.ReportedTagId));
+        await Services.ClientServices.CommandRunner.Run(new Admin_SetPostTagReportResolved(Session.Default, delete, viewModel.PostViewModel.Id, row.ReportedTag?.TagString, row.ReportedTagId));
     }
 
     public static AdminPageViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)

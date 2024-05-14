@@ -37,6 +37,11 @@ internal static class AdminServices_TryBanUser
         }
 
         var accountRecord = await commonServices.AccountServices.TryGetAccountRecord(command.AccountId).ConfigureAwait(false);
+        if (accountRecord == null)
+        {
+            return false;
+        }
+
         await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(accountRecord);
         accountRecord.BanExpireTime = SystemClock.Instance.GetCurrentInstant().Plus(Duration.FromMilliseconds(command.Duration));

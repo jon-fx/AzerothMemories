@@ -10,15 +10,14 @@ public sealed class PostCommentTreeNode
     public PostReaction Reaction;
 
     public bool IsFocused;
-    public PostCommentViewModel Comment;
 
     public bool ShowChildren;
     public bool ShowReactions;
     public bool ShowReactionIsLoading;
-    public PostReactionViewModel[] ReactionData;
+    public PostReactionViewModel[]? ReactionData;
 
-    public PostCommentTreeNode Parent;
-    public readonly List<PostCommentTreeNode> Children = new();
+    public PostCommentTreeNode? Parent;
+    public readonly List<PostCommentTreeNode> Children = [];
 
     public PostCommentTreeNode(int postersAccountId, int postId, int commentId)
     {
@@ -26,6 +25,8 @@ public sealed class PostCommentTreeNode
         PostId = postId;
         PostersAccountId = postersAccountId;
     }
+
+    public required PostCommentViewModel Comment { get; set; }
 
     public int ParentId => Comment.ParentId;
 
@@ -52,7 +53,7 @@ public sealed class PostCommentTreeNode
         }
         else if (reactionData.Length == 0)
         {
-            ReactionData = Array.Empty<PostReactionViewModel>();
+            ReactionData = [];
         }
         else
         {

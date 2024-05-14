@@ -2,7 +2,7 @@
 
 internal static class AccountServices_TryChangeAvatar
 {
-    public static async Task<string> TryHandle(ILogger<AccountServices> logger, CommonServices commonServices, Account_TryChangeAvatar command, CancellationToken cancellationToken)
+    public static async Task<string?> TryHandle(ILogger<AccountServices> logger, CommonServices commonServices, Account_TryChangeAvatar command, CancellationToken cancellationToken)
     {
         var context = CommandContext.GetCurrent();
         if (Invalidation.IsActive)
@@ -68,6 +68,11 @@ internal static class AccountServices_TryChangeAvatar
         }
 
         var accountRecord = await commonServices.AccountServices.TryGetAccountRecord(accountViewModel.Id).ConfigureAwait(false);
+        if (accountRecord == null)
+        {
+            return null;
+        }
+
         await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(accountRecord);
         accountRecord.Avatar = newAvatar;

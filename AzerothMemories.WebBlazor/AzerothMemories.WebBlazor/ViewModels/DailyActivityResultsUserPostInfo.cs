@@ -3,11 +3,11 @@
 [DataContract, MemoryPackable]
 public sealed partial record DailyActivityResultsUserPostInfo
 {
-    [JsonInclude, DataMember, MemoryPackInclude] public int AccountId { get; init; }
-    [JsonInclude, DataMember, MemoryPackInclude] public int PostId { get; init; }
-    [JsonInclude, DataMember, MemoryPackInclude] public long PostTime { get; init; }
-    [JsonInclude, DataMember, MemoryPackInclude] public long PostCreatedTime { get; init; }
-    [JsonInclude, DataMember, MemoryPackInclude] public PostViewModelBlobInfo[] BlobInfo { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public required int AccountId { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public required int PostId { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public required long PostTime { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public required long PostCreatedTime { get; init; }
+    [JsonInclude, DataMember, MemoryPackInclude] public required PostViewModelBlobInfo[] BlobInfo { get; init; }
 
     public PostViewModelBlobInfo[] GetBlobPreviewInfo(string description)
     {

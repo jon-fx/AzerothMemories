@@ -100,14 +100,14 @@
 
                         @foreach (var link in SocialHelpers.All)
                         {
-                            if (!string.IsNullOrWhiteSpace(ViewModel.SocialLinks[link.LinkId]) || ViewModel.AccountViewModel.CanChangeSocialLinks())
+                            if (!string.IsNullOrWhiteSpace(ViewModel.SocialLinks?[link.LinkId]) || ViewModel.AccountViewModel.CanChangeSocialLinks())
                             {
                                 <MudItem xs="12" sm="8" md="4" Class="d-flex align-baseline">
                                     <img src="@link.SocialIconLink" width="18" height="18 " />
                                     <MudTextField @key="link"
                                       T="string"
                                       Class="px-2"
-                                      Value="@ViewModel.SocialLinks[link.LinkId]"
+                                      Value="@ViewModel.SocialLinks?[link.LinkId]"
                                       Label="@link.Name"
                                       Adornment="Adornment.End"
                                       AdornmentIcon=@ViewModel.SocialLinksAdornmentIcons[link.LinkId]
@@ -209,8 +209,8 @@
                             <CardHeaderAvatar>
                                 <MudAvatar Size="Size.Large">
                                     @{
-                                        var avatarSource = character.AvatarLinkWithFallBack;
-                                        var avatarAlt = character.Name[0];
+                                        var avatarSource = character.GetAvatarLinkWithFallBack();
+                                        var avatarAlt = character.GetAvatarText();
 
                                         if (string.IsNullOrWhiteSpace(avatarSource))
                                         {
@@ -313,7 +313,7 @@
                                     <tr @key="row.Id">
                                         <MudTd>
                                             <MudAvatar Size="Size.Medium">
-                                                <MudImage Src="@row.AvatarLinkWithFallBack" loading="lazy" />
+                                                <MudImage Src="@row.GetAvatarLinkWithFallBack()" loading="lazy" />
                                             </MudAvatar>
                                         </MudTd>
                                         <MudHidden Breakpoint="Breakpoint.SmAndDown">

@@ -2,17 +2,17 @@
 
 public sealed class OnThisDayPageViewModel : PersistentStateViewModel, IViewModel<OnThisDayPageViewModel>
 {
-    private string _currentDay;
-    private string _currentMonth;
+    private string? _currentDay;
+    private string? _currentMonth;
 
-    public DailyActivityResults[] DailyActivityResults { get; private set; }
+    public DailyActivityResults[]? DailyActivityResults { get; private set; } = [];
 
     public OnThisDayPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
-        AddPersistentState(() => DailyActivityResults, x => DailyActivityResults = x, UpdateDailyActivityResults);
+        AddPersistentState(() => DailyActivityResults, x => DailyActivityResults = x, UpdateDailyActivityResults!);
     }
 
-    public void OnParametersChanged(string currentDay, string currentMonth)
+    public void OnParametersChanged(string? currentDay, string? currentMonth)
     {
         _currentDay = currentDay;
         _currentMonth = currentMonth;

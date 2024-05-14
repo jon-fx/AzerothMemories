@@ -44,13 +44,13 @@
 @code {
     private bool _isFirstRenderDone;
     private bool _isCommentBoxDisabled;
-    private PublishCommentComponent _commentComponent;
+    private PublishCommentComponent? _commentComponent;
 
     [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
     [Parameter] public int ReplyToUserId { get; init; }
 
-    [Parameter] public string ReplyToUsername { get; init; }
+    [Parameter] public string? ReplyToUsername { get; init; }
 
     [Parameter, EditorRequired] public required int PostId { get; init; }
 
@@ -83,13 +83,13 @@
         var result = await Services.ClientServices.CommandRunner.Run(new Post_TryPublishComment(Session.Default, postId, parentId, commentText));
         if (result.Value > 0)
         {
-            _commentComponent.Reset();
+            _commentComponent?.Reset();
 
             Services.ClientServices.ActiveAccountServices.ActiveCommentContext = null;
 
-            var dictionary = new Dictionary<string, object>
+            var dictionary = new Dictionary<string, object?>
             {
-                { "page",null},
+                { "page", null},
                 { "comment", result.Value }
             };
 

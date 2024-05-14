@@ -35,7 +35,7 @@ public sealed class PostSearchHelper
 
     public SearchPostsResults SearchResults => _searchResults;
 
-    public async Task<SearchPostsResults> ComputeState(string[] tagStrings, string sortModeString, string currentPageString, string postMinTimeString, string postMaxTimeString)
+    public async Task<SearchPostsResults> ComputeState(string[] tagStrings, string? sortModeString, string? currentPageString, string? postMinTimeString, string? postMaxTimeString)
     {
         if (int.TryParse(currentPageString, out var currentPage) && currentPage != 0)
         {
@@ -87,9 +87,9 @@ public sealed class PostSearchHelper
         return _searchResults;
     }
 
-    public void SetSearchResults(SearchPostsResults searchPostsResults)
+    public void SetSearchResults(SearchPostsResults? searchPostsResults)
     {
-        _searchResults = searchPostsResults;
+        _searchResults = searchPostsResults ?? new SearchPostsResults();
 
         MinDateTime = _searchResults.MinTime > 0 ? Instant.FromUnixTimeMilliseconds(_searchResults.MinTime) : null;
         MaxDateTime = _searchResults.MaxTime > 0 ? Instant.FromUnixTimeMilliseconds(_searchResults.MaxTime) : null;
@@ -199,7 +199,7 @@ public sealed class PostSearchHelper
 
     private void NavigateToNewQuery(int currentPage, PostSortMode sortMode, string[] tagStrings, Instant? minDateTime, Instant? maxDateTime, bool resetPage)
     {
-        var dictionary = new Dictionary<string, object>
+        var dictionary = new Dictionary<string, object?>
         {
             { "tag", tagStrings}
         };

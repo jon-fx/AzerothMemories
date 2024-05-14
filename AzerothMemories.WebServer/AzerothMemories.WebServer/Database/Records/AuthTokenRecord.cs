@@ -12,15 +12,15 @@ public sealed class AuthTokenRecord : IDatabaseRecordWithVersion
 
     [Column] public int? AccountId { get; set; }
 
-    [Column] public AccountRecord Account { get; set; }
+    [Column] public AccountRecord? Account { get; set; }
 
-    [Column] public string Key { get; init; }
+    [Column] public string Key { get; init; } = null!;
 
-    [Column] public string Name { get; set; }
+    [Column] public string? Name { get; set; }
 
-    [Column] public string Token { get; set; }
+    [Column] public string? Token { get; set; }
 
-    [Column] public string RefreshToken { get; set; }
+    [Column] public string? RefreshToken { get; set; }
 
     [Column] public Instant TokenExpiresAt { get; set; }
 

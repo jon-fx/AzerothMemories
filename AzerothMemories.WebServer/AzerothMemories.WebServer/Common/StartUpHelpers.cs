@@ -48,6 +48,11 @@ internal static class StartUpHelpers
         var id = context.Identity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var name = context.Identity.FindFirst(ClaimTypes.Name)?.Value;
 
+        if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(authenticationType))
+        {
+            throw new CustomAuthException();
+        }
+
         var session = context.HttpContext.RequestServices.GetRequiredService<ISessionResolver>().Session;
         var sessionInfo = await context.HttpContext.RequestServices.GetRequiredService<IAuth>().GetSessionInfo(session).ConfigureAwait(false);
 

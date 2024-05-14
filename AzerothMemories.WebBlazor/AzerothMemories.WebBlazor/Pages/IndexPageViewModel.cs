@@ -11,17 +11,17 @@ public sealed class IndexPageViewModel : PersistentStateViewModel, IViewModel<In
         RecentPostsHelper = new RecentPostsHelper(Services);
 
         AddPersistentState(() => AccountViewModel, x => AccountViewModel = x, () => Services.ComputeServices.AccountServices.TryGetActiveAccount(Session.Default));
-        AddPersistentState(() => OnThisDay, x => OnThisDay = x, TryUpdateOnThisDay);
-        AddPersistentState(() => RecentPostsHelper.SearchResults, x => RecentPostsHelper.SetSearchResults(x), () => RecentPostsHelper.ComputeState(_currentPage, _sortMode, _postType));
+        AddPersistentState(() => OnThisDay, x => OnThisDay = x, TryUpdateOnThisDay!);
+        AddPersistentState(() => RecentPostsHelper.SearchResults, x => RecentPostsHelper.SetSearchResults(x), () => RecentPostsHelper.ComputeState(_currentPage, _sortMode, _postType)!);
     }
 
-    public AccountViewModel AccountViewModel { get; private set; }
+    public AccountViewModel? AccountViewModel { get; private set; }
 
-    public DailyActivityResults OnThisDay { get; private set; }
+    public DailyActivityResults? OnThisDay { get; private set; }
 
     public RecentPostsHelper RecentPostsHelper { get; }
 
-    public void OnParametersChanged(string currentPageString, string sortModeString, string postTypeString)
+    public void OnParametersChanged(string? currentPageString, string? sortModeString, string? postTypeString)
     {
         if (int.TryParse(currentPageString, out _currentPage) && _currentPage != 0)
         {

@@ -13,25 +13,25 @@ public sealed class AdminController : ControllerBase, IAdminServices
     }
 
     [HttpGet]
-    public Task<AdminCountersViewModel> TryGetUserCounts(Session session)
+    public Task<AdminCountersViewModel?> TryGetUserCounts(Session session)
     {
         return _commonServices.AdminServices.TryGetUserCounts(session);
     }
 
     [HttpGet]
-    public Task<ReportedPostViewModel[]> TryGetReportedPosts(Session session)
+    public Task<ReportedPostViewModel[]?> TryGetReportedPosts(Session session)
     {
         return _commonServices.AdminServices.TryGetReportedPosts(session);
     }
 
     [HttpGet]
-    public Task<ReportedPostCommentsViewModel[]> TryGetReportedComments(Session session)
+    public Task<ReportedPostCommentsViewModel[]?> TryGetReportedComments(Session session)
     {
         return _commonServices.AdminServices.TryGetReportedComments(session);
     }
 
     [HttpGet]
-    public Task<ReportedPostTagsViewModel[]> TryGetReportedTags(Session session)
+    public Task<ReportedPostTagsViewModel[]?> TryGetReportedTags(Session session)
     {
         return _commonServices.AdminServices.TryGetReportedTags(session);
     }

@@ -44,15 +44,15 @@ else
 {
     private bool _firstRenderDone;
 
-    [Parameter, SupplyParameterFromQuery(Name = "tag")] public string[] Tags { get; init; }
+    [Parameter, SupplyParameterFromQuery(Name = "tag")] public string[]? Tags { get; init; }
 
-    [Parameter, SupplyParameterFromQuery(Name = "sort")] public string SortMode { get; init; }
+    [Parameter, SupplyParameterFromQuery(Name = "sort")] public string? SortMode { get; init; }
 
-    [Parameter, SupplyParameterFromQuery(Name = "page")] public string CurrentPage { get; init; }
+    [Parameter, SupplyParameterFromQuery(Name = "page")] public string? CurrentPage { get; init; }
 
-    [Parameter, SupplyParameterFromQuery(Name = "ptmin")] public string PostMinTime { get; init; }
+    [Parameter, SupplyParameterFromQuery(Name = "ptmin")] public string? PostMinTime { get; init; }
 
-    [Parameter, SupplyParameterFromQuery(Name = "ptmax")] public string PostMaxTime { get; init; }
+    [Parameter, SupplyParameterFromQuery(Name = "ptmax")] public string? PostMaxTime { get; init; }
 
     protected override void OnParametersChanged()
     {

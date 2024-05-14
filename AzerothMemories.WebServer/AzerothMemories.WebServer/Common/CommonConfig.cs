@@ -11,15 +11,15 @@ public sealed class CommonConfig
         UploadToBlobStorage = false;
         UpdateSkipCharactersOnLowPriority = true;
 #else
-        DatabaseConnectionString = Environment.GetEnvironmentVariable("AZURE_POSTGRESQL_CONNECTIONSTRING");
-        BlobStorageConnectionString = Environment.GetEnvironmentVariable("AZURE_BLOB_CONNECTIONSTRING");
+        DatabaseConnectionString = Environment.GetEnvironmentVariable("AZURE_POSTGRESQL_CONNECTIONSTRING").ThrowIfNull();
+        BlobStorageConnectionString = Environment.GetEnvironmentVariable("AZURE_BLOB_CONNECTIONSTRING").ThrowIfNull();
 
         UploadToBlobStorage = true;
         UpdateSkipCharactersOnLowPriority = true;
 #endif
     }
 
-    public string DatabaseConnectionString { get; init; }
+    public string? DatabaseConnectionString { get; init; }
 
     public string BlobStorageConnectionString { get; init; }
 
@@ -47,11 +47,11 @@ public sealed class CommonConfig
 
     public readonly (string Id, string Secret)?[] BlizzardClientInfo = CommonConfigDoNotCommit.BlizzardClientInfo;
 
-    public string PatreonClientId { get; set; } = CommonConfigDoNotCommit.PatreonClientId;
+    public string? PatreonClientId { get; set; } = CommonConfigDoNotCommit.PatreonClientId;
 
-    public string PatreonClientSecret { get; set; } = CommonConfigDoNotCommit.PatreonClientSecret;
+    public string? PatreonClientSecret { get; set; } = CommonConfigDoNotCommit.PatreonClientSecret;
 
-    public string PatreonCreatorsAccessToken { get; set; } = CommonConfigDoNotCommit.PatreonCreatorsAccessToken;
+    public string? PatreonCreatorsAccessToken { get; set; } = CommonConfigDoNotCommit.PatreonCreatorsAccessToken;
 
     public const int PostsPerPage = 10;
     public const int CommentsPerPage = 20;

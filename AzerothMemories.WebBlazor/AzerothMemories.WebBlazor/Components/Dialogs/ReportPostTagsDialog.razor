@@ -26,13 +26,13 @@
 
 @code
 {
-    private ICollection<object> _selectedChips;
+    private ICollection<object>? _selectedChips;
 
-    [Parameter] public PostViewModel Post { get; init; }
+    [Parameter] public PostViewModel? Post { get; init; }
 
-    [CascadingParameter] public MudDialogInstance MudDialog { get; init; }
+    [CascadingParameter] public MudDialogInstance MudDialog { get; init; } = null!;
 
-    [Inject] public ClientServices ClientServices { get; init; }
+    [Inject] public ClientServices ClientServices { get; init; } = null!;
 
     private async Task Submit()
     {

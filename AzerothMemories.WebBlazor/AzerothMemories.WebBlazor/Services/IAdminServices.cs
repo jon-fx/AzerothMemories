@@ -3,16 +3,16 @@
 public interface IAdminServices : IComputeService
 {
     [ComputeMethod]
-    Task<AdminCountersViewModel> TryGetUserCounts(Session session);
+    Task<AdminCountersViewModel?> TryGetUserCounts(Session session);
 
     [ComputeMethod]
-    Task<ReportedPostViewModel[]> TryGetReportedPosts(Session session);
+    Task<ReportedPostViewModel[]?> TryGetReportedPosts(Session session);
 
     [ComputeMethod]
-    Task<ReportedPostCommentsViewModel[]> TryGetReportedComments(Session session);
+    Task<ReportedPostCommentsViewModel[]?> TryGetReportedComments(Session session);
 
     [ComputeMethod]
-    Task<ReportedPostTagsViewModel[]> TryGetReportedTags(Session session);
+    Task<ReportedPostTagsViewModel[]?> TryGetReportedTags(Session session);
 
     [CommandHandler]
     Task<bool> SetPostReportResolved(Admin_SetPostReportResolved command, CancellationToken cancellationToken = default);

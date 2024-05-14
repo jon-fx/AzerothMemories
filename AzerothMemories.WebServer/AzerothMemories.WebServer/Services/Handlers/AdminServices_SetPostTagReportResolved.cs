@@ -22,6 +22,11 @@ internal static class AdminServices_SetPostTagReportResolved
             return false;
         }
 
+        if (string.IsNullOrWhiteSpace(command.TagString))
+        {
+            return false;
+        }
+
         if (command.Delete)
         {
             var postTags = await commonServices.PostServices.GetAllPostTags(command.PostId).ConfigureAwait(false);

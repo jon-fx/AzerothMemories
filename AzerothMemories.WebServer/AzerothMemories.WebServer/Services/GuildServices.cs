@@ -18,7 +18,7 @@ public class GuildServices : IGuildServices
     }
 
     [ComputeMethod]
-    public virtual async Task<GuildRecord> TryGetGuildRecord(int id)
+    public virtual async Task<GuildRecord?> TryGetGuildRecord(int id)
     {
         using var _ = new MethodTimeLogger(_logger);
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
@@ -64,6 +64,8 @@ public class GuildServices : IGuildServices
             guildRecord = new GuildRecord
             {
                 MoaRef = moaRef.Full,
+                Name = moaRef.Name,
+                NameSearchable = DatabaseHelpers.GetSearchableName(moaRef.Name),
                 BlizzardId = moaRef.Id,
                 BlizzardRegionId = moaRef.Region,
                 CreatedDateTime = SystemClock.Instance.GetCurrentInstant()
@@ -82,7 +84,7 @@ public class GuildServices : IGuildServices
     }
 
     [ComputeMethod]
-    public virtual async Task<GuildViewModel> TryGetGuild(Session session, int guildId)
+    public virtual async Task<GuildViewModel?> TryGetGuild(Session session, int guildId)
     {
         using var _ = new MethodTimeLogger(_logger);
         var guildRecord = await TryGetGuildRecord(guildId).ConfigureAwait(false);
@@ -125,7 +127,7 @@ public class GuildServices : IGuildServices
         var guildRecord = await TryGetGuildRecord(guildId).ConfigureAwait(false);
         if (guildRecord == null)
         {
-            return Array.Empty<CharacterRecord>();
+            return [];
         }
 
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
@@ -139,7 +141,7 @@ public class GuildServices : IGuildServices
     }
 
     [ComputeMethod]
-    public virtual async Task<GuildViewModel> TryGetGuild(Session session, BlizzardRegion region, string realmSlug, string guildName)
+    public virtual async Task<GuildViewModel?> TryGetGuild(Session session, BlizzardRegion region, string? realmSlug, string? guildName)
     {
         using var _ = new MethodTimeLogger(_logger);
         if (region is <= 0 or >= BlizzardRegion.Count || string.IsNullOrWhiteSpace(realmSlug) || string.IsNullOrWhiteSpace(guildName))

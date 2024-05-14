@@ -50,7 +50,7 @@ else
         <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
             <MudCardContent Class="@ClassPresets.CardContent">
                 @{
-                    var remainingCharacters = GuildViewModel.MembersViewModel.TotalCount;
+                    var remainingCharacters = GuildViewModel.MembersViewModel?.TotalCount ?? 0;
                     foreach (var character in characters)
                     {
                         remainingCharacters--;
@@ -80,7 +80,7 @@ else
 @code
 {
     private int _guildMemberPageIndex = 0;
-    private List<CharacterViewModel> _guildMembers;
+    private List<CharacterViewModel>? _guildMembers;
 
     [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
@@ -112,12 +112,12 @@ else
     {
         if (Services == null || GuildViewModel == null || GuildViewModel.MembersViewModel == null)
         {
-            return new List<CharacterViewModel>();
+            return [];
         }
 
         if (_guildMembers == null)
         {
-            _guildMembers = new List<CharacterViewModel>(GuildViewModel.MembersViewModel.CharactersArray);
+            _guildMembers = [..GuildViewModel.MembersViewModel.CharactersArray];
         }
 
         return _guildMembers;

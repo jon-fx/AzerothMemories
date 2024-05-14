@@ -8,14 +8,14 @@ public sealed partial class PostTagInfo
 
     [JsonInclude, DataMember, MemoryPackInclude] public readonly int Id;
     [JsonInclude, DataMember, MemoryPackInclude] public readonly string Name;
-    [JsonInclude, DataMember, MemoryPackInclude] public readonly string Image;
+    [JsonInclude, DataMember, MemoryPackInclude] public readonly string? Image;
     [JsonInclude, DataMember, MemoryPackInclude] public readonly PostTagType Type;
     [JsonInclude, DataMember, MemoryPackInclude] public readonly long MinTagTime;
 
-    [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] private string _nameWithIcon;
-    [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] private string _wowHeadLink;
+    [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] private string? _nameWithIcon;
+    [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] private string? _wowHeadLink;
 
-    public PostTagInfo(PostTagType type, int id, string name, string image, long minTagTime = 0)
+    public PostTagInfo(PostTagType type, int id, string name, string? image, long minTagTime = 0)
     {
         Id = id;
         Image = image;
@@ -28,7 +28,7 @@ public sealed partial class PostTagInfo
 
     [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] public string NameWithIcon => _nameWithIcon ??= $"{Type.GetTagIcon()}{Name}";
 
-    [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] public string WowHeadLink => _wowHeadLink ??= Type.GetWowHeadLink(Id);
+    [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] public string? WowHeadLink => _wowHeadLink ??= Type.GetWowHeadLink(Id);
 
     [JsonIgnore, IgnoreDataMember, MemoryPackIgnore]
     public string TagString

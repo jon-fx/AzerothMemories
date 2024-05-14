@@ -6,9 +6,14 @@ internal sealed class UpdateHandler_Guilds_Achievements : UpdateHandlerBaseResul
     {
     }
 
-    protected override async Task<RequestResult<GuildAchievements>> TryExecuteRequest(GuildRecord record, AuthTokenRecord authTokenRecord, Instant blizzardLastModified)
+    protected override async Task<RequestResult<GuildAchievements>> TryExecuteRequest(GuildRecord record, AuthTokenRecord? authTokenRecord, Instant blizzardLastModified)
     {
         var guildRef = new MoaRef(record.MoaRef);
+        if (!guildRef.IsValidGuild)
+        {
+            throw new NotImplementedException();
+        }
+
         using var client = CommonServices.HttpClientProvider.GetWarcraftClient(guildRef.Region);
         return await client.GetGuildAchievementsAsync(guildRef.Realm, guildRef.Name, blizzardLastModified).ConfigureAwait(false);
     }

@@ -12,15 +12,15 @@ public sealed class BlizzardUpdateRecord : IDatabaseRecord
 
     [Column] public int? AccountId { get; init; }
 
-    [Column] public AccountRecord Account { get; init; }
+    [Column] public AccountRecord? Account { get; init; }
 
     [Column] public int? CharacterId { get; init; }
 
-    [Column] public CharacterRecord Character { get; init; }
+    [Column] public CharacterRecord? Character { get; init; }
 
     [Column] public int? GuildId { get; init; }
 
-    [Column] public GuildRecord Guild { get; init; }
+    [Column] public GuildRecord? Guild { get; init; }
 
     [Column] public Instant UpdateLastModified { get; set; }
 
@@ -30,7 +30,7 @@ public sealed class BlizzardUpdateRecord : IDatabaseRecord
 
     [Column] public BlizzardUpdatePriority UpdatePriority { get; set; }
 
-    public ICollection<BlizzardUpdateChildRecord> Children { get; init; }
+    public ICollection<BlizzardUpdateChildRecord>? Children { get; init; }
 
     public ICommand<HttpStatusCode> GetUpdateCommand()
     {
@@ -52,14 +52,14 @@ public sealed class BlizzardUpdateRecord : IDatabaseRecord
         throw new NotImplementedException();
     }
 
-    public BlizzardUpdateViewModel GetUpdateJobResults()
+    public BlizzardUpdateViewModel? GetUpdateJobResults()
     {
         if (Children == null)
         {
             return null;
         }
 
-        var children = Children.Select(x => new BlizzardUpdateViewModelChild()
+        var children = Children.Select(x => new BlizzardUpdateViewModelChild
         {
             Id = x.Id,
             UpdateType = (byte)x.UpdateType,
