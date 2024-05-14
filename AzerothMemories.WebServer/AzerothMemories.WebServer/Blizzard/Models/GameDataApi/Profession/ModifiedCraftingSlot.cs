@@ -9,7 +9,7 @@ public record ModifiedCraftingSlot
     /// Gets the slot type of the Modified Crafting slot.
     /// </summary>
     [JsonPropertyName("slot_type")]
-    public ModifiedCraftingReagentSlotTypeReferenceWithoutName SlotType { get; init; }
+    public ModifiedCraftingReagentSlotTypeReferenceWithoutName? SlotType { get; init; }
 
     /// <summary>
     /// Gets the display order of the Modified Crafting slot.

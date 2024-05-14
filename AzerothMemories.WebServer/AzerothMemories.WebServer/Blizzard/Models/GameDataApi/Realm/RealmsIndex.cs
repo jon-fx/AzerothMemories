@@ -9,11 +9,11 @@ public record RealmsIndex
     /// Gets links for the index of realms.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets references to the realms.
     /// </summary>
     [JsonPropertyName("realms")]
-    public RealmReference[] Realms { get; init; }
+    public RealmReference[]? Realms { get; init; }
 }

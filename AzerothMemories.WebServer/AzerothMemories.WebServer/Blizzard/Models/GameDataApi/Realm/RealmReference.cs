@@ -9,13 +9,13 @@ public record RealmReference
     /// Gets the key for the realm.
     /// </summary>
     [JsonPropertyName("key")]
-    public Self Key { get; init; }
+    public Self? Key { get; init; }
 
     /// <summary>
     /// Gets the name of the realm.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the ID of the realm.
@@ -27,5 +27,5 @@ public record RealmReference
     /// Gets a slug for the realm.
     /// </summary>
     [JsonPropertyName("slug")]
-    public string Slug { get; init; }
+    public string? Slug { get; init; }
 }

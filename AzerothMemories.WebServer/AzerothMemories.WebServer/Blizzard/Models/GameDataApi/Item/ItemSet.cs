@@ -9,7 +9,7 @@ public record ItemSet
     /// Gets links for the item set.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the item set.
@@ -21,19 +21,19 @@ public record ItemSet
     /// Gets the name of the item set.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets references to the items in the item set.
     /// </summary>
     [JsonPropertyName("items")]
-    public ItemReference[] Items { get; init; }
+    public ItemReference[]? Items { get; init; }
 
     /// <summary>
     /// Gets the item set bonuses.
     /// </summary>
     [JsonPropertyName("effects")]
-    public Effect[] Effects { get; init; }
+    public Effect[]? Effects { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether the effect is active.

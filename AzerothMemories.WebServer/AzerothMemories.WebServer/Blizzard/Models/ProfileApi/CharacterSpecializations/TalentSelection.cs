@@ -11,13 +11,13 @@ public record TalentSelection
     /// Gets a reference to the talent.
     /// </summary>
     [JsonPropertyName("talent")]
-    public TalentReference Talent { get; init; }
+    public TalentReference? Talent { get; init; }
 
     /// <summary>
     /// Gets the spell tooltip for the talent.
     /// </summary>
     [JsonPropertyName("spell_tooltip")]
-    public SpellTooltipForAbility SpellTooltip { get; init; }
+    public SpellTooltipForAbility? SpellTooltip { get; init; }
 
     /// <summary>
     /// Gets the tier index for the talent.

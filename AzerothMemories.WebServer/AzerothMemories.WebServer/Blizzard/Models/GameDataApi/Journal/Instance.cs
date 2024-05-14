@@ -9,7 +9,7 @@ public record Instance
     /// Gets links for the instance.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the instance.
@@ -21,55 +21,55 @@ public record Instance
     /// Gets the name of the instance.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the map of the instance.
     /// </summary>
     [JsonPropertyName("map")]
-    public Map Map { get; init; }
+    public Map? Map { get; init; }
 
     /// <summary>
     /// Gets the area where the instance is found.
     /// </summary>
     [JsonPropertyName("area")]
-    public Area Area { get; init; }
+    public Area? Area { get; init; }
 
     /// <summary>
     /// Gets the description of the instance.
     /// </summary>
     [JsonPropertyName("description")]
-    public Name Description { get; init; }
+    public Name? Description { get; init; }
 
     /// <summary>
     /// Gets the encounters found within the instance.
     /// </summary>
     [JsonPropertyName("encounters")]
-    public EncounterReference[] Encounters { get; init; }
+    public EncounterReference[]? Encounters { get; init; }
 
     /// <summary>
     /// Gets a reference to the game expansion where this instance was introduced.
     /// </summary>
     [JsonPropertyName("expansion")]
-    public ExpansionReference Expansion { get; init; }
+    public ExpansionReference? Expansion { get; init; }
 
     /// <summary>
     /// Gets the location of the instance.
     /// </summary>
     [JsonPropertyName("location")]
-    public Location Location { get; init; }
+    public Location? Location { get; init; }
 
     /// <summary>
     /// Gets the available difficulty modes for the instance.
     /// </summary>
     [JsonPropertyName("modes")]
-    public InstanceMode[] Modes { get; init; }
+    public InstanceMode[]? Modes { get; init; }
 
     /// <summary>
     /// Gets the media associated with the instance.
     /// </summary>
     [JsonPropertyName("media")]
-    public Media Media { get; init; }
+    public Media? Media { get; init; }
 
     /// <summary>
     /// Gets the minimum character level for the instance.
@@ -81,7 +81,7 @@ public record Instance
     /// Gets the category of the instance (i.e., "DUNGEON" or "RAID").
     /// </summary>
     [JsonPropertyName("category")]
-    public InstanceCategory Category { get; init; }
+    public InstanceCategory? Category { get; init; }
 
     /// <summary>
     /// Gets the order index of the instance.

@@ -15,25 +15,25 @@ public record TalentNode
     /// Gets the IDs of the talent nodes that must be unlocked before this talent node can be accessed.
     /// </summary>
     [JsonPropertyName("locked_by")]
-    public long[] LockedBy { get; init; }
+    public long[]? LockedBy { get; init; }
 
     /// <summary>
     /// Gets the IDs of the talent nodes that are unlocked by this talent node.
     /// </summary>
     [JsonPropertyName("unlocks")]
-    public long[] Unlocks { get; init; }
+    public long[]? Unlocks { get; init; }
 
     /// <summary>
     /// Gets the type of the talent node.
     /// </summary>
     [JsonPropertyName("node_type")]
-    public TalentNodeType NodeType { get; init; }
+    public TalentNodeType? NodeType { get; init; }
 
     /// <summary>
     /// Gets the ranks of the talent node.
     /// </summary>
     [JsonPropertyName("ranks")]
-    public TalentNodeRank[] Ranks { get; init; }
+    public TalentNodeRank[]? Ranks { get; init; }
 
     /// <summary>
     /// Gets the row where the talent node is displayed in the talent tree.

@@ -9,11 +9,11 @@ public record AchievementsIndex
     /// Gets links for the index of achievements.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets references to achievements.
     /// </summary>
     [JsonPropertyName("achievements")]
-    public AchievementReference[] Achievements { get; init; }
+    public AchievementReference[]? Achievements { get; init; }
 }

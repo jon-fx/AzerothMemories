@@ -9,7 +9,7 @@ public record Creature
     /// Gets links for the creature.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the creature.
@@ -21,25 +21,25 @@ public record Creature
     /// Gets the name of the creature.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the type of the creature.
     /// </summary>
     [JsonPropertyName("type")]
-    public CreatureTypeReference Type { get; init; }
+    public CreatureTypeReference? Type { get; init; }
 
     /// <summary>
     /// Gets the family of the creature.
     /// </summary>
     [JsonPropertyName("family")]
-    public CreatureFamilyReference Family { get; init; }
+    public CreatureFamilyReference? Family { get; init; }
 
     /// <summary>
     /// Gets the creature display media for this creature.
     /// </summary>
     [JsonPropertyName("creature_displays")]
-    public Media[] CreatureDisplays { get; init; }
+    public Media[]? CreatureDisplays { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether the creature can be tamed.

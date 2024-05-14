@@ -9,11 +9,11 @@ public record TalentsIndex
     /// Gets links for the index of talents.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets references to talents.
     /// </summary>
     [JsonPropertyName("talents")]
-    public TalentReference[] Talents { get; init; }
+    public TalentReference[]? Talents { get; init; }
 }

@@ -15,5 +15,5 @@ public record Armor
     /// Gets a display information for the armor.
     /// </summary>
     [JsonPropertyName("display")]
-    public NameDescription Display { get; init; }
+    public NameDescription? Display { get; init; }
 }

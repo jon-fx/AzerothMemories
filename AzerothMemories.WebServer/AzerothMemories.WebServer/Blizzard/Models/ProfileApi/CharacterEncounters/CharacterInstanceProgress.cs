@@ -21,5 +21,5 @@ public record CharacterInstanceProgress
     /// Gets encounter statistics for the instance.
     /// </summary>
     [JsonPropertyName("encounters")]
-    public CharacterEncounter[] Encounters { get; init; }
+    public CharacterEncounter[]? Encounters { get; init; }
 }

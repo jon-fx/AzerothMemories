@@ -9,11 +9,11 @@ public record JournalEncountersIndex
     /// Gets links for the index of boss encounters.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the boss encounters.
     /// </summary>
     [JsonPropertyName("encounters")]
-    public EncounterReference[] Encounters { get; init; }
+    public EncounterReference[]? Encounters { get; init; }
 }

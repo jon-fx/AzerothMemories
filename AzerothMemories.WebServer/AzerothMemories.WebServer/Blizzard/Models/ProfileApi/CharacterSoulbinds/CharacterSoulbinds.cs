@@ -11,19 +11,19 @@ public record CharacterSoulbinds
     /// Gets links for the character's soulbinds.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets a reference to the character.
     /// </summary>
     [JsonPropertyName("character")]
-    public CharacterReference Character { get; init; }
+    public CharacterReference? Character { get; init; }
 
     /// <summary>
     /// Gets a reference to the character's chosen covenant.
     /// </summary>
     [JsonPropertyName("chosen_covenant")]
-    public CovenantReference ChosenCovenant { get; init; }
+    public CovenantReference? ChosenCovenant { get; init; }
 
     /// <summary>
     /// Gets the renown level for the character with the chosen covenant.
@@ -35,5 +35,5 @@ public record CharacterSoulbinds
     /// Gets the soulbinds for the character.
     /// </summary>
     [JsonPropertyName("soulbinds")]
-    public SoulbindSelection[] Soulbinds { get; init; }
+    public SoulbindSelection[]? Soulbinds { get; init; }
 }

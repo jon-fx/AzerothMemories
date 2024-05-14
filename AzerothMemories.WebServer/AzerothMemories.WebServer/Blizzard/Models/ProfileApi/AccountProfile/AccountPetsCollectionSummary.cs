@@ -9,13 +9,13 @@ public record AccountPetsCollectionSummary
     /// Gets links for the summary of the battle pets the account has obtained.
     /// </summary>
     [JsonPropertyName("_links")]
-    public LinksForAccountProfile Links { get; init; }
+    public LinksForAccountProfile? Links { get; init; }
 
     /// <summary>
     /// Gets the battle pets for the account.
     /// </summary>
     [JsonPropertyName("pets")]
-    public AccountPet[] Pets { get; init; }
+    public AccountPet[]? Pets { get; init; }
 
     /// <summary>
     /// Gets the number of battle pet slots the account has unlocked.

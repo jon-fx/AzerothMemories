@@ -9,7 +9,7 @@ public record AchievementCategory
     /// Gets links for this achievement category.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of this achievement category.
@@ -21,19 +21,19 @@ public record AchievementCategory
     /// Gets the name of this achievement category.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets references to the achievements in this category.
     /// </summary>
     [JsonPropertyName("achievements")]
-    public AchievementReference[] Achievements { get; init; }
+    public AchievementReference[]? Achievements { get; init; }
 
     /// <summary>
     /// Gets references to subcategories of this achievement category.
     /// </summary>
     [JsonPropertyName("subcategories")]
-    public AchievementCategoryReference[] Subcategories { get; init; }
+    public AchievementCategoryReference[]? Subcategories { get; init; }
 
     /// <summary>
     /// Gets a value that indicates whether this is a guild category.
@@ -45,7 +45,7 @@ public record AchievementCategory
     /// Gets the aggregates by faction.
     /// </summary>
     [JsonPropertyName("aggregates_by_faction")]
-    public AggregatesByFaction AggregatesByFaction { get; init; }
+    public AggregatesByFaction? AggregatesByFaction { get; init; }
 
     /// <summary>
     /// Gets the display order.

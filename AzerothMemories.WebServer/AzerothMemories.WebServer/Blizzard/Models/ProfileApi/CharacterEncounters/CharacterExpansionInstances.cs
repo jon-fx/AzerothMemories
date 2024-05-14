@@ -11,11 +11,11 @@ public record CharacterExpansionInstances
     /// Gets a reference to a game expansion.
     /// </summary>
     [JsonPropertyName("expansion")]
-    public ExpansionReference Expansion { get; init; }
+    public ExpansionReference? Expansion { get; init; }
 
     /// <summary>
     /// Gets the character's completed instances for the game expansion.
     /// </summary>
     [JsonPropertyName("instances")]
-    public CharacterInstance[] Instances { get; init; }
+    public CharacterInstance[]? Instances { get; init; }
 }

@@ -9,17 +9,17 @@ public record MythicKeystoneIndex
     /// Gets links for the index of mythic keystone documents.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets a link to mythic keystone seasons.
     /// </summary>
     [JsonPropertyName("seasons")]
-    public Self Seasons { get; init; }
+    public Self? Seasons { get; init; }
 
     /// <summary>
     /// Gets a link to mythic keystone dungeons.
     /// </summary>
     [JsonPropertyName("dungeons")]
-    public Self Dungeons { get; init; }
+    public Self? Dungeons { get; init; }
 }

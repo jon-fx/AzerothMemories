@@ -9,11 +9,11 @@ public record MythicKeystoneAffixesIndex
     /// Gets links for the index of mythic keystone affixes.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets references to the mythic keystone affixes.
     /// </summary>
     [JsonPropertyName("affixes")]
-    public MythicKeystoneAffixReference[] Affixes { get; init; }
+    public MythicKeystoneAffixReference[]? Affixes { get; init; }
 }

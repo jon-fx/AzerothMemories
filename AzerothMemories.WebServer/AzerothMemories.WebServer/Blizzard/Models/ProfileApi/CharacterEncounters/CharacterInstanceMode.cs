@@ -9,17 +9,17 @@ public record CharacterInstanceMode
     /// Gets the difficulty level of the instance.
     /// </summary>
     [JsonPropertyName("difficulty")]
-    public EnumType Difficulty { get; init; }
+    public EnumType? Difficulty { get; init; }
 
     /// <summary>
     /// Gets the status of the instance.
     /// </summary>
     [JsonPropertyName("status")]
-    public EnumType Status { get; init; }
+    public EnumType? Status { get; init; }
 
     /// <summary>
     /// Gets the character progress for the instance.
     /// </summary>
     [JsonPropertyName("progress")]
-    public CharacterInstanceProgress Progress { get; init; }
+    public CharacterInstanceProgress? Progress { get; init; }
 }

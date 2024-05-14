@@ -9,29 +9,29 @@ public record PvpLeaderboard
     /// Gets links for the PvP Leaderboard.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets a reference to the PvP season.
     /// </summary>
     [JsonPropertyName("season")]
-    public PvpSeasonReference Season { get; init; }
+    public PvpSeasonReference? Season { get; init; }
 
     /// <summary>
     /// Gets the name of the PvP leaderboard.
     /// </summary>
     [JsonPropertyName("name")]
-    public string Name { get; init; }
+    public string? Name { get; init; }
 
     /// <summary>
     /// A PvP bracket.
     /// </summary>
     [JsonPropertyName("bracket")]
-    public Bracket Bracket { get; init; }
+    public Bracket? Bracket { get; init; }
 
     /// <summary>
     /// Gets the entries in the PvP leaderboard.
     /// </summary>
     [JsonPropertyName("entries")]
-    public PvpLeaderboardEntry[] Entries { get; init; }
+    public PvpLeaderboardEntry[]? Entries { get; init; }
 }

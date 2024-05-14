@@ -9,7 +9,7 @@ public record MythicKeystonePeriod
     /// Gets links for the mythic keystone period.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the mythic keystone period.

@@ -9,7 +9,7 @@ public record CharacterStatus
     /// Gets links for the character status.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the character.

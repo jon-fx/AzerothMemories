@@ -9,11 +9,11 @@ public record ModifiedCraftingReagentSlotTypeIndex
     /// Gets links for the index of Modified Crafting reagent slot types.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets references to the Modified Crafting reagent slot types.
     /// </summary>
     [JsonPropertyName("slot_types")]
-    public ModifiedCraftingReagentSlotTypeReference[] SlotTypes { get; init; }
+    public ModifiedCraftingReagentSlotTypeReference[]? SlotTypes { get; init; }
 }

@@ -9,17 +9,17 @@ public record Member
     /// Gets the profile of the character.
     /// </summary>
     [JsonPropertyName("profile")]
-    public Profile Profile { get; init; }
+    public Profile? Profile { get; init; }
 
     /// <summary>
     /// Gets the character's faction (Alliance or Horde).
     /// </summary>
     [JsonPropertyName("faction")]
-    public EnumTypeWithoutName Faction { get; init; }
+    public EnumTypeWithoutName? Faction { get; init; }
 
     /// <summary>
     /// Gets the character's specialization.
     /// </summary>
     [JsonPropertyName("specialization")]
-    public PlayableSpecializationReferenceWithoutName Specialization { get; init; }
+    public PlayableSpecializationReferenceWithoutName? Specialization { get; init; }
 }

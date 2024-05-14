@@ -9,7 +9,7 @@ public record ConnectedRealm
     /// Gets links for the connected realm.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the connected realm.
@@ -27,29 +27,29 @@ public record ConnectedRealm
     /// Gets the status of the realm.
     /// </summary>
     [JsonPropertyName("status")]
-    public EnumType Status { get; init; }
+    public EnumType? Status { get; init; }
 
     /// <summary>
     /// Gets a rough indicator of the connected realm population.
     /// </summary>
     [JsonPropertyName("population")]
-    public EnumType Population { get; init; }
+    public EnumType? Population { get; init; }
 
     /// <summary>
     /// Gets the realms in the connected realm.
     /// </summary>
     [JsonPropertyName("realms")]
-    public Realm[] Realms { get; init; }
+    public Realm[]? Realms { get; init; }
 
     /// <summary>
     /// Gets a reference to the Mythic Keystone Leaderboard data for this connected realm.
     /// </summary>
     [JsonPropertyName("mythic_leaderboards")]
-    public Self MythicLeaderboards { get; init; }
+    public Self? MythicLeaderboards { get; init; }
 
     /// <summary>
     /// Gets a reference to the auction house data for this connected realm.
     /// </summary>
     [JsonPropertyName("auctions")]
-    public Self Auctions { get; init; }
+    public Self? Auctions { get; init; }
 }

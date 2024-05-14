@@ -9,7 +9,7 @@ public record PvpSeason
     /// Gets links for the PvP season.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the PvP season.
@@ -21,13 +21,13 @@ public record PvpSeason
     /// Gets a link to PvP leaderboards.
     /// </summary>
     [JsonPropertyName("leaderboards")]
-    public Self Leaderboards { get; init; }
+    public Self? Leaderboards { get; init; }
 
     /// <summary>
     /// Gets a link to PvP rewards.
     /// </summary>
     [JsonPropertyName("rewards")]
-    public Self Rewards { get; init; }
+    public Self? Rewards { get; init; }
 
     /// <summary>
     /// Gets the start timestamp of the PvP season.

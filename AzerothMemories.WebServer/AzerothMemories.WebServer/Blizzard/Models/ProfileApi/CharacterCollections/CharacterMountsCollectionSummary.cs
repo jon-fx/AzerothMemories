@@ -9,11 +9,11 @@ public record CharacterMountsCollectionSummary
     /// Gets links for the character mounts collection summary.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the mounts this character has collected.
     /// </summary>
     [JsonPropertyName("mounts")]
-    public CharacterMount[] Mounts { get; init; }
+    public CharacterMount[]? Mounts { get; init; }
 }

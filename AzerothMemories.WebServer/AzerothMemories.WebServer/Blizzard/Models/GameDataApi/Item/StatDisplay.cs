@@ -9,11 +9,11 @@ public record StatDisplay
     /// Gets the display string for the stat.
     /// </summary>
     [JsonPropertyName("display_string")]
-    public Name DisplayString { get; init; }
+    public Name? DisplayString { get; init; }
 
     /// <summary>
     /// Gets the color associated with the stat.
     /// </summary>
     [JsonPropertyName("color")]
-    public ColorDetails Color { get; init; }
+    public ColorDetails? Color { get; init; }
 }

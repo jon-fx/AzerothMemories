@@ -15,11 +15,11 @@ public record QuestReward
     /// Gets the reputation gains for completing the quest.
     /// </summary>
     [JsonPropertyName("reputations")]
-    public ReputationReward[] Reputations { get; init; }
+    public ReputationReward[]? Reputations { get; init; }
 
     /// <summary>
     /// Get the monetary reward for completing the quest.
     /// </summary>
     [JsonPropertyName("money")]
-    public Money Money { get; init; }
+    public Money? Money { get; init; }
 }

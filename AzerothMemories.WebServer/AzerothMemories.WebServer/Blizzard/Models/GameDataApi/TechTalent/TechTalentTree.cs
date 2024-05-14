@@ -9,7 +9,7 @@ public record TechTalentTree
     /// Gets links for the tech talent tree.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the Id for the tech talent tree.
@@ -27,5 +27,5 @@ public record TechTalentTree
     /// The collection of talents in the tech talent tree.
     /// </summary>
     [JsonPropertyName("talents")]
-    public TechTalentReference[] Talents { get; init; }
+    public TechTalentReference[]? Talents { get; init; }
 }

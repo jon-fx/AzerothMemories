@@ -9,7 +9,7 @@ public record WowTokenIndex
     /// Gets links for the WoW Token index.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the last updated timestamp for the WoW Token index.

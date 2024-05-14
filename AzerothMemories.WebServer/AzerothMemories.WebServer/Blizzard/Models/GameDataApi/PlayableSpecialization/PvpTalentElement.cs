@@ -9,11 +9,11 @@ public record PvpTalentElement
     /// Gets a reference to the PvP talent.
     /// </summary>
     [JsonPropertyName("talent")]
-    public PvpTalentReference Talent { get; init; }
+    public PvpTalentReference? Talent { get; init; }
 
     /// <summary>
     /// Gets the spell tooltip for the PvP talent.
     /// </summary>
     [JsonPropertyName("spell_tooltip")]
-    public SpellTooltip SpellTooltip { get; init; }
+    public SpellTooltip? SpellTooltip { get; init; }
 }

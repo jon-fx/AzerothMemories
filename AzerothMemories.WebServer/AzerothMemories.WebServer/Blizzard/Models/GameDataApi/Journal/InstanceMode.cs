@@ -9,7 +9,7 @@ public record InstanceMode
     /// Gets the difficulty mode.
     /// </summary>
     [JsonPropertyName("mode")]
-    public EnumType Mode { get; init; }
+    public EnumType? Mode { get; init; }
 
     /// <summary>
     /// Gets the number of players.

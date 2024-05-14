@@ -9,7 +9,7 @@ public record AzeriteEssence
     /// Gets links for the azerite essence.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the azerite essence.
@@ -21,23 +21,23 @@ public record AzeriteEssence
     /// Gets the name of the azerite essence.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets references to the allowed specializations for the azerite essence.
     /// </summary>
     [JsonPropertyName("allowed_specializations")]
-    public PlayableSpecializationReference[] AllowedSpecializations { get; init; }
+    public PlayableSpecializationReference[]? AllowedSpecializations { get; init; }
 
     /// <summary>
     /// Gets the powers for the azerite essence.
     /// </summary>
     [JsonPropertyName("powers")]
-    public Power[] Powers { get; init; }
+    public Power[]? Powers { get; init; }
 
     /// <summary>
     /// Gets the media associated with the azerite essence.
     /// </summary>
     [JsonPropertyName("media")]
-    public Media Media { get; init; }
+    public Media? Media { get; init; }
 }

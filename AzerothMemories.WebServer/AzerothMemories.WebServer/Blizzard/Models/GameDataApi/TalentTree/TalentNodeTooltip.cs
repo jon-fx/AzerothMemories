@@ -9,11 +9,11 @@ public record TalentNodeTooltip
     /// Gets a reference to the talent associated with this tooltip.
     /// </summary>
     [JsonPropertyName("talent")]
-    public TalentReference Talent { get; init; }
+    public TalentReference? Talent { get; init; }
 
     /// <summary>
     /// Gets the spell tooltip for the talent node.
     /// </summary>
     [JsonPropertyName("spell_tooltip")]
-    public SpellTooltip SpellTooltip { get; init; }
+    public SpellTooltip? SpellTooltip { get; init; }
 }

@@ -15,5 +15,5 @@ public record GuildCrestBorder
     /// Gets the media associated with the border.
     /// </summary>
     [JsonPropertyName("media")]
-    public Media Media { get; init; }
+    public Media? Media { get; init; }
 }

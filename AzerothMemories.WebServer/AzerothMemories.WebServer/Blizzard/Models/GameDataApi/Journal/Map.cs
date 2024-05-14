@@ -9,7 +9,7 @@ public record Map
     /// Gets the name of the map.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the ID of the map.

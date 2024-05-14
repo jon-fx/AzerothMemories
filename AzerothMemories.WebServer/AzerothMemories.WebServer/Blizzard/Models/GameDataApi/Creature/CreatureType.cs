@@ -9,7 +9,7 @@ public record CreatureType
     /// Gets links for the creature type.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the creature type.
@@ -21,5 +21,5 @@ public record CreatureType
     /// Gets the name of the creature type.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 }

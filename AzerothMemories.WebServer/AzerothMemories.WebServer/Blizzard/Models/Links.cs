@@ -9,5 +9,5 @@ public record Links
     /// Gets a self-reference.
     /// </summary>
     [JsonPropertyName("self")]
-    public Self Self { get; init; }
+    public Self? Self { get; init; }
 }

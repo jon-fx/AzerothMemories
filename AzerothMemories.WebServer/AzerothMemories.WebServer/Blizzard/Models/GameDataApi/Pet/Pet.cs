@@ -9,7 +9,7 @@ public record Pet
     /// Gets links for the pet.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the pet.
@@ -21,19 +21,19 @@ public record Pet
     /// Gets the name of the pet.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the battle pet type.
     /// </summary>
     [JsonPropertyName("battle_pet_type")]
-    public BattlePetType BattlePetType { get; init; }
+    public BattlePetType? BattlePetType { get; init; }
 
     /// <summary>
     /// Gets a description of the pet.
     /// </summary>
     [JsonPropertyName("description")]
-    public Name Description { get; init; }
+    public Name? Description { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether the pet can be captured by a player.
@@ -69,25 +69,25 @@ public record Pet
     /// Gets the pet abilities for this pet.
     /// </summary>
     [JsonPropertyName("abilities")]
-    public SpeciesPetAbility[] Abilities { get; init; }
+    public SpeciesPetAbility[]? Abilities { get; init; }
 
     /// <summary>
     /// Gets the source where the pet can be acquired.
     /// </summary>
     [JsonPropertyName("source")]
-    public EnumType Source { get; init; }
+    public EnumType? Source { get; init; }
 
     /// <summary>
     /// Gets a URI for the pet's icon.
     /// </summary>
     [JsonPropertyName("icon")]
-    public Uri Icon { get; init; }
+    public Uri? Icon { get; init; }
 
     /// <summary>
     /// Gets a reference to the creature data for this pet.
     /// </summary>
     [JsonPropertyName("creature")]
-    public CreatureReference Creature { get; init; }
+    public CreatureReference? Creature { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether the creature display for this pet is random every time the pet is summoned.
@@ -99,5 +99,5 @@ public record Pet
     /// Gets a reference to the pet media.
     /// </summary>
     [JsonPropertyName("media")]
-    public PetMediaReference Media { get; init; }
+    public PetMediaReference? Media { get; init; }
 }

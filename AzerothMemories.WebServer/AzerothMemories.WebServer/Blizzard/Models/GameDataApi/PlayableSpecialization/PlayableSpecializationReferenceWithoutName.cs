@@ -9,7 +9,7 @@ public record PlayableSpecializationReferenceWithoutName
     /// Gets the key for the playable specialization.
     /// </summary>
     [JsonPropertyName("key")]
-    public Self Key { get; init; }
+    public Self? Key { get; init; }
 
     /// <summary>
     /// Gets the ID of the playable specialization.

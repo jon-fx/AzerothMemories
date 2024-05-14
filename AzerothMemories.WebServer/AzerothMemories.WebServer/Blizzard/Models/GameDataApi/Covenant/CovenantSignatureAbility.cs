@@ -15,5 +15,5 @@ public record CovenantSignatureAbility
     /// Gets the spell tooltip for the signature ability.
     /// </summary>
     [JsonPropertyName("spell_tooltip")]
-    public SpellTooltip SpellTooltip { get; init; }
+    public SpellTooltip? SpellTooltip { get; init; }
 }

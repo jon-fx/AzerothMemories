@@ -9,7 +9,7 @@ public record PvpTier
     /// Gets links for the PvP tier.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the PvP tier.
@@ -21,7 +21,7 @@ public record PvpTier
     /// Gets the name of the PvP tier.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the minimum rating for the PvP tier.
@@ -39,13 +39,13 @@ public record PvpTier
     /// Gets the media associated with the PvP tier.
     /// </summary>
     [JsonPropertyName("media")]
-    public Media Media { get; init; }
+    public Media? Media { get; init; }
 
     /// <summary>
     /// Gets the bracket for the PvP tier.
     /// </summary>
     [JsonPropertyName("bracket")]
-    public Bracket Bracket { get; init; }
+    public Bracket? Bracket { get; init; }
 
     /// <summary>
     /// Gets the rating type for the PvP tier.

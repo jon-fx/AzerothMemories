@@ -9,7 +9,7 @@ public record ItemClass
     /// Gets links for the item class.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the class ID for the item class.
@@ -21,11 +21,11 @@ public record ItemClass
     /// Gets the name of the item class.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets references to the subclasses of this item class.
     /// </summary>
     [JsonPropertyName("item_subclasses")]
-    public ItemSubclassReference[] ItemSubclasses { get; init; }
+    public ItemSubclassReference[]? ItemSubclasses { get; init; }
 }

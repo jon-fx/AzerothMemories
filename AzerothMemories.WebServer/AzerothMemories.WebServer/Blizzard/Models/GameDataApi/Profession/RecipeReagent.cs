@@ -9,7 +9,7 @@ public record RecipeReagent
     /// Gets a reference to the reagent item.
     /// </summary>
     [JsonPropertyName("reagent")]
-    public ItemReference Reagent { get; init; }
+    public ItemReference? Reagent { get; init; }
 
     /// <summary>
     /// Gets the quantity of the reagent required.

@@ -9,13 +9,13 @@ public record TitleReferenceWithDisplayString
     /// Gets the key for the title.
     /// </summary>
     [JsonPropertyName("key")]
-    public Self Key { get; init; }
+    public Self? Key { get; init; }
 
     /// <summary>
     /// Gets the name of the title.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the ID of the title.
@@ -27,5 +27,5 @@ public record TitleReferenceWithDisplayString
     /// Gets the display string for the title.
     /// </summary>
     [JsonPropertyName("display_string")]
-    public Name DisplayString { get; init; }
+    public Name? DisplayString { get; init; }
 }

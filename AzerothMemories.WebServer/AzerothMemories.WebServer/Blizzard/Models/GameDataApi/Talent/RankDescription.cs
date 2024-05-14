@@ -15,5 +15,5 @@ public record RankDescription
     /// Gets the rank description.
     /// </summary>
     [JsonPropertyName("description")]
-    public string Description { get; init; }
+    public string? Description { get; init; }
 }

@@ -9,11 +9,11 @@ public record ItemSetsIndex
     /// Gets links for the index of item sets.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets references to item sets.
     /// </summary>
     [JsonPropertyName("item_sets")]
-    public ItemSetReference[] ItemSets { get; init; }
+    public ItemSetReference[]? ItemSets { get; init; }
 }

@@ -9,7 +9,7 @@ public record CreatureDisplayMediaReference
     /// Gets the key for the creature display media.
     /// </summary>
     [JsonPropertyName("key")]
-    public Self Key { get; init; }
+    public Self? Key { get; init; }
 
     /// <summary>
     /// Gets the ID of the creature display media.

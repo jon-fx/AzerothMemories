@@ -9,7 +9,7 @@ public record AzeritEssenceMediaReference
     /// Gets the key for the azerite essence media.
     /// </summary>
     [JsonPropertyName("key")]
-    public Self Key { get; init; }
+    public Self? Key { get; init; }
 
     /// <summary>
     /// Gets the ID of the azerite essence.

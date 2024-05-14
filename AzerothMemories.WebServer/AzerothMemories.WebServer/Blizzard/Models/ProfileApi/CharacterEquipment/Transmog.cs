@@ -11,13 +11,13 @@ public record Transmog
     /// Gets a reference to the item.
     /// </summary>
     [JsonPropertyName("item")]
-    public ItemReference Item { get; init; }
+    public ItemReference? Item { get; init; }
 
     /// <summary>
     /// Gets the display string to describe the transmogrification.
     /// </summary>
     [JsonPropertyName("display_string")]
-    public string DisplayString { get; init; }
+    public string? DisplayString { get; init; }
 
     /// <summary>
     /// Gets the ID of the item that supplied the modified appearance.

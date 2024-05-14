@@ -9,7 +9,7 @@ public record ModifiedCraftingCategory
     /// Gets links for the Modified Crafting category.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the Modified Crafting category.
@@ -21,5 +21,5 @@ public record ModifiedCraftingCategory
     /// Gets the name of the Modified Crafting category.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 }

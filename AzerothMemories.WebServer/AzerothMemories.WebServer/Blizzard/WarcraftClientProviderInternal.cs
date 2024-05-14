@@ -14,7 +14,7 @@ internal sealed class WarcraftClientProviderInternal
     private readonly string _clientId;
     private readonly string _clientSecret;
 
-    private AuthAccessToken _token;
+    private AuthAccessToken? _token;
     private DateTime _tokenExpiration;
 
     public WarcraftClientProviderInternal(IHttpClientFactory clientFactory, BlizzardRegion blizzardRegion, string clientId, string clientSecret)
@@ -22,7 +22,7 @@ internal sealed class WarcraftClientProviderInternal
         _clientFactory = clientFactory;
         _blizzardRegion = blizzardRegion;
         _blizzardRegionInfo = blizzardRegion.ToInfo();
-        _warcraftClients = new ConcurrentBag<WarcraftClient>();
+        _warcraftClients = [];
 
         _clientId = clientId;
         _clientSecret = clientSecret;
@@ -58,7 +58,7 @@ internal sealed class WarcraftClientProviderInternal
             _tokenExpiration = DateTime.UtcNow.AddSeconds(_token.ExpiresIn).AddSeconds(-30);
         }
 
-        return _token.AccessToken;
+        return _token.ThrowIfNull().AccessToken.ThrowIfNull();
     }
 
     public bool TokenHasExpired => _token == null || DateTime.UtcNow >= _tokenExpiration;
@@ -81,6 +81,12 @@ internal sealed class WarcraftClientProviderInternal
         var request = await client.PostAsync(oauthHost, requestBody).ConfigureAwait(false);
         var response = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-        return JsonSerializer.Deserialize<AuthAccessToken>(response);
+        var result = JsonSerializer.Deserialize<AuthAccessToken>(response);
+        if (result == null)
+        {
+            throw new NotImplementedException();
+        }
+
+        return result;
     }
 }

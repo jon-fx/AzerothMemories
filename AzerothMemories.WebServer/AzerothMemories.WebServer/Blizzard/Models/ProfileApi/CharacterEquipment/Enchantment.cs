@@ -11,7 +11,7 @@ public record Enchantment
     /// Gets the display string for the enchantment.
     /// </summary>
     [JsonPropertyName("display_string")]
-    public string DisplayString { get; init; }
+    public string? DisplayString { get; init; }
 
     /// <summary>
     /// Gets the enchantment ID for the enchantment.
@@ -23,5 +23,5 @@ public record Enchantment
     /// Gets a reference to the item.
     /// </summary>
     [JsonPropertyName("source_item")]
-    public ItemReference SourceItem { get; init; }
+    public ItemReference? SourceItem { get; init; }
 }

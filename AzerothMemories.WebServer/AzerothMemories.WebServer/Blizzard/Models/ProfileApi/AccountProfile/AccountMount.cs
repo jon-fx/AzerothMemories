@@ -11,7 +11,7 @@ public record AccountMount
     /// Gets a reference to the mount.
     /// </summary>
     [JsonPropertyName("mount")]
-    public MountReference Mount { get; init; }
+    public MountReference? Mount { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether the mount is a favorite.

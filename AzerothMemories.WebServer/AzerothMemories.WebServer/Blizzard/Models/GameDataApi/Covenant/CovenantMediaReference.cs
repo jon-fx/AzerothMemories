@@ -9,7 +9,7 @@ public record CovenantMediaReference
     /// Gets the key for the covenant media reference.
     /// </summary>
     [JsonPropertyName("key")]
-    public Self Key { get; init; }
+    public Self? Key { get; init; }
 
     /// <summary>
     /// Gets the Id for the covenant media reference.

@@ -15,11 +15,11 @@ public record GuildCrestBorderWithColor
     /// Gets the media associated with the border.
     /// </summary>
     [JsonPropertyName("media")]
-    public Media Media { get; init; }
+    public Media? Media { get; init; }
 
     /// <summary>
     /// Gets the border color.
     /// </summary>
     [JsonPropertyName("color")]
-    public ProfileColor Color { get; init; }
+    public ProfileColor? Color { get; init; }
 }

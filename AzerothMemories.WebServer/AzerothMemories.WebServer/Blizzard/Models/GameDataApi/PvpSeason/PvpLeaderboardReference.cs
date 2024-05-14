@@ -9,13 +9,13 @@ public record PvpLeaderboardReference
     /// Gets the key for the PvP leaderboard.
     /// </summary>
     [JsonPropertyName("key")]
-    public Self Key { get; init; }
+    public Self? Key { get; init; }
 
     /// <summary>
     /// Gets the name of the PvP leaderboard.
     /// </summary>
     [JsonPropertyName("name")]
-    public string Name { get; init; }
+    public string? Name { get; init; }
 
     /// <summary>
     /// Gets the ID of the PvP leaderboard.

@@ -11,13 +11,13 @@ public record Position
     /// Gets the zone.
     /// </summary>
     [JsonPropertyName("zone")]
-    public Map Zone { get; init; }
+    public Map? Zone { get; init; }
 
     /// <summary>
     /// Gets the map.
     /// </summary>
     [JsonPropertyName("map")]
-    public Map Map { get; init; }
+    public Map? Map { get; init; }
 
     /// <summary>
     /// Gets the x coordinate.

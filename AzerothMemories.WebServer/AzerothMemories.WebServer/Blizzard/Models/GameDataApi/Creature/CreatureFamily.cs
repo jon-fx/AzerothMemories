@@ -9,7 +9,7 @@ public record CreatureFamily
     /// Gets links for the creature family.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the creature family.
@@ -21,17 +21,17 @@ public record CreatureFamily
     /// Gets the name of the creature family.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the specialization of the creature family.
     /// </summary>
     [JsonPropertyName("specialization")]
-    public PlayableSpecializationReference Specialization { get; init; }
+    public PlayableSpecializationReference? Specialization { get; init; }
 
     /// <summary>
     /// Gets media for the creature family.
     /// </summary>
     [JsonPropertyName("media")]
-    public Media Media { get; init; }
+    public Media? Media { get; init; }
 }

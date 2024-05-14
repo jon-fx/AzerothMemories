@@ -23,7 +23,7 @@ public record SelectedPower
     /// Gets the spell tooltip for the azerite power.
     /// </summary>
     [JsonPropertyName("spell_tooltip")]
-    public SpellTooltip SpellTooltip { get; init; }
+    public SpellTooltip? SpellTooltip { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether the display is hidden.

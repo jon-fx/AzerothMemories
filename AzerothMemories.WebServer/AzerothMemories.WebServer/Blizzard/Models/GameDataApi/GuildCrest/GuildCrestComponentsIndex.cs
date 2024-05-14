@@ -9,23 +9,23 @@ public record GuildCrestComponentsIndex
     /// Gets links for the index of guild crest media.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the guild crest emblems.
     /// </summary>
     [JsonPropertyName("emblems")]
-    public GuildCrestEmblem[] Emblems { get; init; }
+    public GuildCrestEmblem[]? Emblems { get; init; }
 
     /// <summary>
     /// Gets the guild crest borders.
     /// </summary>
     [JsonPropertyName("borders")]
-    public GuildCrestBorder[] Borders { get; init; }
+    public GuildCrestBorder[]? Borders { get; init; }
 
     /// <summary>
     /// Gets the guild crest colors.
     /// </summary>
     [JsonPropertyName("colors")]
-    public GuildCrestColors Colors { get; init; }
+    public GuildCrestColors? Colors { get; init; }
 }

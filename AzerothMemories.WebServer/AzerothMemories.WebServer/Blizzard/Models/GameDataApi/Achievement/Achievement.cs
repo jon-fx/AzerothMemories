@@ -9,7 +9,7 @@ public record Achievement
     /// Gets links for this achievement.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of this achievement.
@@ -21,19 +21,19 @@ public record Achievement
     /// Gets a reference to the achievement category to which this achievement belongs.
     /// </summary>
     [JsonPropertyName("category")]
-    public AchievementCategoryReference Category { get; init; }
+    public AchievementCategoryReference? Category { get; init; }
 
     /// <summary>
     /// Gets the name of this achievement.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the description of this achievement.
     /// </summary>
     [JsonPropertyName("description")]
-    public Name Description { get; init; }
+    public Name? Description { get; init; }
 
     /// <summary>
     /// Gets the number of achievement points associated with this achievement.
@@ -51,19 +51,19 @@ public record Achievement
     /// Gets the criteria for this achievement.
     /// </summary>
     [JsonPropertyName("criteria")]
-    public AchievementCriteria Criteria { get; init; }
+    public AchievementCriteria? Criteria { get; init; }
 
     /// <summary>
     /// Gets a reference to the next achievement.
     /// </summary>
     [JsonPropertyName("next_achievement")]
-    public AchievementReference NextAchievement { get; init; }
+    public AchievementReference? NextAchievement { get; init; }
 
     /// <summary>
     /// Gets the media associated with this achievement.
     /// </summary>
     [JsonPropertyName("media")]
-    public Media Media { get; init; }
+    public Media? Media { get; init; }
 
     /// <summary>
     /// Gets the display order.

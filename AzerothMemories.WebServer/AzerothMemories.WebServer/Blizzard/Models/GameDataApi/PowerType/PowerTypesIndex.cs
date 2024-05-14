@@ -9,11 +9,11 @@ public record PowerTypesIndex
     /// Gets links for the index of power types.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets references to the power types.
     /// </summary>
     [JsonPropertyName("power_types")]
-    public PowerTypeReference[] PowerTypes { get; init; }
+    public PowerTypeReference[]? PowerTypes { get; init; }
 }

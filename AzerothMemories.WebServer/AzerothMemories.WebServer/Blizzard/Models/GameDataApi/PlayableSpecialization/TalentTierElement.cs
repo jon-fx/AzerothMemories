@@ -9,13 +9,13 @@ public record TalentTierElement
     /// Gets a reference to the talent.
     /// </summary>
     [JsonPropertyName("talent")]
-    public TalentReference Talent { get; init; }
+    public TalentReference? Talent { get; init; }
 
     /// <summary>
     /// Gets the spell tooltip for the talent as it appears in the tier.
     /// </summary>
     [JsonPropertyName("spell_tooltip")]
-    public SpellTooltip SpellTooltip { get; init; }
+    public SpellTooltip? SpellTooltip { get; init; }
 
     /// <summary>
     /// Gets the column index at which the talent appears in the talent tier.

@@ -9,7 +9,7 @@ public record RegionData
     /// Gets links for the region.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the region.
@@ -21,11 +21,11 @@ public record RegionData
     /// Gets the name of the region.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the tag for the region.
     /// </summary>
     [JsonPropertyName("tag")]
-    public string Tag { get; init; }
+    public string? Tag { get; init; }
 }

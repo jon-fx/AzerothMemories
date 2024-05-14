@@ -9,11 +9,11 @@ public record QuestCategoriesIndex
     /// Gets links for the index of quest categories.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets references to the quest categories.
     /// </summary>
     [JsonPropertyName("categories")]
-    public QuestCategoryReference[] Categories { get; init; }
+    public QuestCategoryReference[]? Categories { get; init; }
 }

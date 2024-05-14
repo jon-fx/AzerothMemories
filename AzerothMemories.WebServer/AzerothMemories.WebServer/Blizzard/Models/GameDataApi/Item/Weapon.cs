@@ -9,17 +9,17 @@ public record Weapon
     /// Gets the damage of the weapon.
     /// </summary>
     [JsonPropertyName("damage")]
-    public Damage Damage { get; init; }
+    public Damage? Damage { get; init; }
 
     /// <summary>
     /// Gets the attack speed of the weapon.
     /// </summary>
     [JsonPropertyName("attack_speed")]
-    public DescribedValue AttackSpeed { get; init; }
+    public DescribedValue? AttackSpeed { get; init; }
 
     /// <summary>
     /// Gets the damage per second (DPS) of the weapon.
     /// </summary>
     [JsonPropertyName("dps")]
-    public DescribedValue Dps { get; init; }
+    public DescribedValue? Dps { get; init; }
 }

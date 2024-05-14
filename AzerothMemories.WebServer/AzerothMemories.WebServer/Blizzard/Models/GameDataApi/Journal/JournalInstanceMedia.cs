@@ -9,11 +9,11 @@ public record JournalInstanceMedia
     /// Gets links for the journal instance media.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets a collection of media assets.
     /// </summary>
     [JsonPropertyName("assets")]
-    public AssetWithoutFileDataId[] Assets { get; init; }
+    public AssetWithoutFileDataId[]? Assets { get; init; }
 }

@@ -15,11 +15,11 @@ public record GuildCrestEmblemWithColor
     /// Gets the media associated with the emblem.
     /// </summary>
     [JsonPropertyName("media")]
-    public Media Media { get; init; }
+    public Media? Media { get; init; }
 
     /// <summary>
     /// Gets the emblem color.
     /// </summary>
     [JsonPropertyName("color")]
-    public ProfileColor Color { get; init; }
+    public ProfileColor? Color { get; init; }
 }

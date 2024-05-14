@@ -17,7 +17,7 @@ public record Color
     /// Gets the RGBA color information.
     /// </summary>
     [JsonPropertyName("rgba")]
-    public ColorDetails Rgba { get; init; }
+    public ColorDetails? Rgba { get; init; }
 }
 
 /// <summary>
@@ -35,5 +35,5 @@ public record ProfileColor
     /// Gets the RGBA color information.
     /// </summary>
     [JsonPropertyName("rgba")]
-    public ColorDetails Rgba { get; init; }
+    public ColorDetails? Rgba { get; init; }
 }

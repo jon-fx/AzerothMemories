@@ -9,7 +9,7 @@ public record ItemSubclass
     /// Gets links for the item subclass.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the class ID for the item class.
@@ -27,7 +27,7 @@ public record ItemSubclass
     /// Gets the display name of the item subclass.
     /// </summary>
     [JsonPropertyName("display_name")]
-    public string DisplayName { get; init; }
+    public string? DisplayName { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether the subclass is hidden in tooltips.

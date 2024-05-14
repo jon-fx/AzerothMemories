@@ -11,13 +11,13 @@ public record GuildAchievements
     /// Gets links for the guild's achievements.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets a reference to the guild.
     /// </summary>
     [JsonPropertyName("guild")]
-    public GuildReference Guild { get; init; }
+    public GuildReference? Guild { get; init; }
 
     /// <summary>
     /// Gets the total number of guild achievements.
@@ -35,17 +35,17 @@ public record GuildAchievements
     /// Gets the guild achievements.
     /// </summary>
     [JsonPropertyName("achievements")]
-    public AchievementProgress[] Achievements { get; init; }
+    public AchievementProgress[]? Achievements { get; init; }
 
     /// <summary>
     /// Gets the guild's progress in various achievement categories.
     /// </summary>
     [JsonPropertyName("category_progress")]
-    public CategoryProgress[] CategoryProgress { get; init; }
+    public CategoryProgress[]? CategoryProgress { get; init; }
 
     /// <summary>
     /// Gets recent achievements by the guild.
     /// </summary>
     [JsonPropertyName("recent_events")]
-    public RecentEvent[] RecentEvents { get; init; }
+    public RecentEvent[]? RecentEvents { get; init; }
 }

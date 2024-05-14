@@ -15,23 +15,23 @@ public record EncounterSection
     /// Gets the title of the section.
     /// </summary>
     [JsonPropertyName("title")]
-    public Name Title { get; init; }
+    public Name? Title { get; init; }
 
     /// <summary>
     /// Gets the body text that describes this section of the encounter.
     /// </summary>
     [JsonPropertyName("body_text")]
-    public Name BodyText { get; init; }
+    public Name? BodyText { get; init; }
 
     /// <summary>
     /// Gets the media associated with this section.
     /// </summary>
     [JsonPropertyName("creature_display")]
-    public Media CreatureDisplay { get; init; }
+    public Media? CreatureDisplay { get; init; }
 
     /// <summary>
     /// Gets any child sections within this section.
     /// </summary>
     [JsonPropertyName("sections")]
-    public EncounterSection[] Sections { get; init; }
+    public EncounterSection[]? Sections { get; init; }
 }

@@ -15,11 +15,11 @@ public record CovenantClassAbility
     /// Gets a reference to the playable class associated with this ability.
     /// </summary>
     [JsonPropertyName("playable_class")]
-    public PlayableClassReference PlayableClass { get; init; }
+    public PlayableClassReference? PlayableClass { get; init; }
 
     /// <summary>
     /// Gets the spell tooltip for this ability.
     /// </summary>
     [JsonPropertyName("spell_tooltip")]
-    public SpellTooltip SpellTooltip { get; init; }
+    public SpellTooltip? SpellTooltip { get; init; }
 }

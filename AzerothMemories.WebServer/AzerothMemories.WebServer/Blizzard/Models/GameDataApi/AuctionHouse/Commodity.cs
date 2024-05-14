@@ -15,7 +15,7 @@ public record Commodity
     /// Gets the item being auctioned.
     /// </summary>
     [JsonPropertyName("item")]
-    public CommodityItem Item { get; init; }
+    public CommodityItem? Item { get; init; }
 
     /// <summary>
     /// Gets the quantity of the item being auctioned.
@@ -33,5 +33,5 @@ public record Commodity
     /// Gets the approximate time remaining for the auction (SHORT or VERY_LONG).
     /// </summary>
     [JsonPropertyName("time_left")]
-    public string TimeLeft { get; init; }
+    public string? TimeLeft { get; init; }
 }

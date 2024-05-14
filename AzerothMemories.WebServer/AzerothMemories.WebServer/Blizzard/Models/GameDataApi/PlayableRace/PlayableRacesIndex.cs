@@ -9,11 +9,11 @@ public record PlayableRacesIndex
     /// Gets links for the index of playable races.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets references to the playable races.
     /// </summary>
     [JsonPropertyName("races")]
-    public PlayableRaceReference[] Races { get; init; }
+    public PlayableRaceReference[]? Races { get; init; }
 }

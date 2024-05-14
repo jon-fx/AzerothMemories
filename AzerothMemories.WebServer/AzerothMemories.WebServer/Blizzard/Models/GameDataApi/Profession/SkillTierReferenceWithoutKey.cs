@@ -9,7 +9,7 @@ public record SkillTierReferenceWithoutKey
     /// Gets the name of the skill tier.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the ID of the skill tier.

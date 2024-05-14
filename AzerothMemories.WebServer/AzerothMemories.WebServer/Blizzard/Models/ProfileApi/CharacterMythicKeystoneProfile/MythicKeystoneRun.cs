@@ -29,19 +29,19 @@ public record MythicKeystoneRun
     /// Gets references to the Mythic Keystone affixes for this run.
     /// </summary>
     [JsonPropertyName("keystone_affixes")]
-    public MythicKeystoneAffixReference[] KeystoneAffixes { get; init; }
+    public MythicKeystoneAffixReference[]? KeystoneAffixes { get; init; }
 
     /// <summary>
     /// Gets the party members for the Mythic Keystone run.
     /// </summary>
     [JsonPropertyName("members")]
-    public MythicKeystonePartyMember[] Members { get; init; }
+    public MythicKeystonePartyMember[]? Members { get; init; }
 
     /// <summary>
     /// A reference to the Mythic Keystone dungeon.
     /// </summary>
     [JsonPropertyName("dungeon")]
-    public MythicKeystoneDungeonReference Dungeon { get; init; }
+    public MythicKeystoneDungeonReference? Dungeon { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether the run was completed within the time limit.
@@ -53,11 +53,11 @@ public record MythicKeystoneRun
     /// Gets the mythic rating value.
     /// </summary>
     [JsonPropertyName("mythic_rating")]
-    public MythicRating MythicRating { get; init; }
+    public MythicRating? MythicRating { get; init; }
 
     /// <summary>
     /// Gets the mythic rating value for a map.
     /// </summary>
     [JsonPropertyName("map_rating")]
-    public MythicRating MapRating { get; init; }
+    public MythicRating? MapRating { get; init; }
 }

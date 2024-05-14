@@ -9,7 +9,7 @@ public record PvpSeasonReference
     /// Gets the key for the PvP season.
     /// </summary>
     [JsonPropertyName("key")]
-    public Self Key { get; init; }
+    public Self? Key { get; init; }
 
     /// <summary>
     /// Gets the ID of the PvP season.

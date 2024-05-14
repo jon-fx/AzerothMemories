@@ -9,11 +9,11 @@ public record PetsIndex
     /// Gets links for the index of pets.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets references to pets.
     /// </summary>
     [JsonPropertyName("pets")]
-    public PetReference[] Pets { get; init; }
+    public PetReference[]? Pets { get; init; }
 }

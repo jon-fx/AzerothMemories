@@ -11,7 +11,7 @@ public record CharacterMount
     /// Gets a reference to the type of mount.
     /// </summary>
     [JsonPropertyName("mount")]
-    public MountReference Mount { get; init; }
+    public MountReference? Mount { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether this mount is a favorite for the character.

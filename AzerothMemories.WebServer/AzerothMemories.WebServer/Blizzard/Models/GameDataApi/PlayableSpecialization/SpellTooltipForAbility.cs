@@ -9,23 +9,23 @@ public record SpellTooltipForAbility
     /// Gets a reference to the spell.
     /// </summary>
     [JsonPropertyName("spell")]
-    public SpellReference Spell { get; init; }
+    public SpellReference? Spell { get; init; }
 
     /// <summary>
     /// Gets the description of the spell.
     /// </summary>
     [JsonPropertyName("description")]
-    public Name Description { get; init; }
+    public Name? Description { get; init; }
 
     /// <summary>
     /// Gets the cast time of the spell.
     /// </summary>
     [JsonPropertyName("cast_time")]
-    public string CastTime { get; init; }
+    public string? CastTime { get; init; }
 
     /// <summary>
     /// Gets the cooldown of the spell.
     /// </summary>
     [JsonPropertyName("cooldown")]
-    public string Cooldown { get; init; }
+    public string? Cooldown { get; init; }
 }

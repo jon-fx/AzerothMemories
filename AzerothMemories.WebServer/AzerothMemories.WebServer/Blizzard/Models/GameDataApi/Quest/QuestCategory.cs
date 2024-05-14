@@ -9,7 +9,7 @@ public record QuestCategory
     /// Gets links for the quest category.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the quest category.
@@ -21,11 +21,11 @@ public record QuestCategory
     /// Gets the quest category name.
     /// </summary>
     [JsonPropertyName("category")]
-    public string Category { get; init; }
+    public string? Category { get; init; }
 
     /// <summary>
     /// Gets references to the quests in this category.
     /// </summary>
     [JsonPropertyName("quests")]
-    public QuestReference[] Quests { get; init; }
+    public QuestReference[]? Quests { get; init; }
 }

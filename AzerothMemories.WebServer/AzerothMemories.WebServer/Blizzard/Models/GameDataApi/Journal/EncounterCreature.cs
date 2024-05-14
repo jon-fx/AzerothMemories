@@ -15,11 +15,11 @@ public record EncounterCreature
     /// Gets the name of the creature.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the media associated with the creature.
     /// </summary>
     [JsonPropertyName("creature_display")]
-    public Media CreatureDisplay { get; init; }
+    public Media? CreatureDisplay { get; init; }
 }

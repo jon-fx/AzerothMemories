@@ -21,13 +21,13 @@ public record AuctionItem
     /// Gets the bonus lists for the item.
     /// </summary>
     [JsonPropertyName("bonus_lists")]
-    public int[] BonusLists { get; init; }
+    public int[]? BonusLists { get; init; }
 
     /// <summary>
     /// Gets the modifiers for the item.
     /// </summary>
     [JsonPropertyName("modifiers")]
-    public Modifier[] Modifiers { get; init; }
+    public Modifier[]? Modifiers { get; init; }
 
     /// <summary>
     /// Gets the ID of the pet breed, if the item is a pet.

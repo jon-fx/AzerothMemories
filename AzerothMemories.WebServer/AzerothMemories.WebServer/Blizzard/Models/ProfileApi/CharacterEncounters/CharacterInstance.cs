@@ -11,11 +11,11 @@ public record CharacterInstance
     /// Gets a reference to the instance.
     /// </summary>
     [JsonPropertyName("instance")]
-    public InstanceReference Instance { get; init; }
+    public InstanceReference? Instance { get; init; }
 
     /// <summary>
     /// Gets the dungeon completions for the instance, organized by difficulty mode.
     /// </summary>
     [JsonPropertyName("modes")]
-    public CharacterInstanceMode[] Modes { get; init; }
+    public CharacterInstanceMode[]? Modes { get; init; }
 }

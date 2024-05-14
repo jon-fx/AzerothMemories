@@ -23,11 +23,11 @@ public record CharacterSkillTier
     /// Gets a reference to the skill tier.
     /// </summary>
     [JsonPropertyName("tier")]
-    public SkillTierReferenceWithoutKey Tier { get; init; }
+    public SkillTierReferenceWithoutKey? Tier { get; init; }
 
     /// <summary>
     /// Gets references to the known recipes for this profession skill tier.
     /// </summary>
     [JsonPropertyName("known_recipes")]
-    public RecipeReference[] KnownRecipes { get; init; }
+    public RecipeReference[]? KnownRecipes { get; init; }
 }

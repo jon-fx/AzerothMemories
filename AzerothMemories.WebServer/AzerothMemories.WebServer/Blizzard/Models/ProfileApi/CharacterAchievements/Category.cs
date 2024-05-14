@@ -15,17 +15,17 @@ public record Category
     /// Gets the name of the category.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the subcategories of the category, if any.
     /// </summary>
     [JsonPropertyName("sub_categories")]
-    public Category[] SubCategories { get; init; }
+    public Category[]? SubCategories { get; init; }
 
     /// <summary>
     /// Gets the character achievement statistics in the category.
     /// </summary>
     [JsonPropertyName("statistics")]
-    public Statistic[] Statistics { get; init; }
+    public Statistic[]? Statistics { get; init; }
 }

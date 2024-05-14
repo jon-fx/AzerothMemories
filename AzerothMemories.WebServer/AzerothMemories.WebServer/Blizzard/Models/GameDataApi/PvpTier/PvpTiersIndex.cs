@@ -9,11 +9,11 @@ public record PvpTiersIndex
     /// Gets links for the index of PvP tiers.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets references to the PvP tiers.
     /// </summary>
     [JsonPropertyName("tiers")]
-    public PvpTierReference[] Tiers { get; init; }
+    public PvpTierReference[]? Tiers { get; init; }
 }

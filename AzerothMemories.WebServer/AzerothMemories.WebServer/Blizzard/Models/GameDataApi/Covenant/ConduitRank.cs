@@ -21,5 +21,5 @@ public record ConduitRank
     /// Gets the spell tooltip of the conduit rank.
     /// </summary>
     [JsonPropertyName("spell_tooltip")]
-    public SpellTooltip SpellTooltip { get; init; }
+    public SpellTooltip? SpellTooltip { get; init; }
 }

@@ -9,7 +9,7 @@ public record JournalExpansion
     /// Gets links for the expansion.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the expansion.
@@ -21,17 +21,17 @@ public record JournalExpansion
     /// Gets the name of the expansion.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the dungeons that belong to the expansion.
     /// </summary>
     [JsonPropertyName("dungeons")]
-    public InstanceReference[] Dungeons { get; init; }
+    public InstanceReference[]? Dungeons { get; init; }
 
     /// <summary>
     /// Gets the raids that belong to the expansion.
     /// </summary>
     [JsonPropertyName("raids")]
-    public InstanceReference[] Raids { get; init; }
+    public InstanceReference[]? Raids { get; init; }
 }

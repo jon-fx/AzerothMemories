@@ -9,11 +9,11 @@ public record MythicKeystoneLeaderboardsIndex
     /// Gets links for the index of Mythic Keystone Leaderboards.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets references to the Mythic Keystone Leaderboards.
     /// </summary>
     [JsonPropertyName("current_leaderboards")]
-    public MythicKeystoneLeaderboardReference[] CurrentLeaderboards { get; init; }
+    public MythicKeystoneLeaderboardReference[]? CurrentLeaderboards { get; init; }
 }

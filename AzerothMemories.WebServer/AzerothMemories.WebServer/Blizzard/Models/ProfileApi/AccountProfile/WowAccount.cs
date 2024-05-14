@@ -15,5 +15,5 @@ public record WowAccount
     /// Gets the characters associated with the World of Warcraft account.
     /// </summary>
     [JsonPropertyName("characters")]
-    public AccountCharacter[] Characters { get; init; }
+    public AccountCharacter[]? Characters { get; init; }
 }

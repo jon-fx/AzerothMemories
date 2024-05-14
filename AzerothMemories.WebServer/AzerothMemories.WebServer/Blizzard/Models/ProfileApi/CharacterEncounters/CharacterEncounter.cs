@@ -11,7 +11,7 @@ public record CharacterEncounter
     /// Gets a reference to the encounter.
     /// </summary>
     [JsonPropertyName("encounter")]
-    public EncounterReference Encounter { get; init; }
+    public EncounterReference? Encounter { get; init; }
 
     /// <summary>
     /// Gets the number of times the encounter has been completed by the character.

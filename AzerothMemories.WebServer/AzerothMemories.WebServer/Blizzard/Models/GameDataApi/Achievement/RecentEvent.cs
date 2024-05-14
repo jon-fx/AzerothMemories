@@ -9,7 +9,7 @@ public record RecentEvent
     /// Gets a reference to the achievement.
     /// </summary>
     [JsonPropertyName("achievement")]
-    public AchievementReference Achievement { get; init; }
+    public AchievementReference? Achievement { get; init; }
 
     /// <summary>
     /// Gets the timestamp when the achievement was completed.

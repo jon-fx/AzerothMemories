@@ -9,11 +9,11 @@ public record CreatureTypesIndex
     /// Gets links for the index of creature types.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets references to the creature types.
     /// </summary>
     [JsonPropertyName("creature_types")]
-    public CreatureTypeReference[] CreatureTypes { get; init; }
+    public CreatureTypeReference[]? CreatureTypes { get; init; }
 }

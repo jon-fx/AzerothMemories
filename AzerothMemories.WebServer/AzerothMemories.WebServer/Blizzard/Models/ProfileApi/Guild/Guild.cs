@@ -11,7 +11,7 @@ public record Guild
     /// Gets links for the guild.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the guild.
@@ -23,13 +23,13 @@ public record Guild
     /// Gets the name of the guild.
     /// </summary>
     [JsonPropertyName("name")]
-    public string Name { get; init; }
+    public string? Name { get; init; }
 
     /// <summary>
     /// Gets the guild's faction (Alliance or Horde).
     /// </summary>
     [JsonPropertyName("faction")]
-    public EnumType Faction { get; init; }
+    public EnumType? Faction { get; init; }
 
     /// <summary>
     /// Gets the guild achievement points.
@@ -47,25 +47,25 @@ public record Guild
     /// Gets a reference to the guild's realm.
     /// </summary>
     [JsonPropertyName("realm")]
-    public RealmReference Realm { get; init; }
+    public RealmReference? Realm { get; init; }
 
     /// <summary>
     /// Gets the guild crest.
     /// </summary>
     [JsonPropertyName("crest")]
-    public GuildCrest Crest { get; init; }
+    public GuildCrest? Crest { get; init; }
 
     /// <summary>
     /// Gets a link to the guild roster.
     /// </summary>
     [JsonPropertyName("roster")]
-    public Self Roster { get; init; }
+    public Self? Roster { get; init; }
 
     /// <summary>
     /// Gets a link to the guild achievements.
     /// </summary>
     [JsonPropertyName("achievements")]
-    public Self Achievements { get; init; }
+    public Self? Achievements { get; init; }
 
     /// <summary>
     /// Gets the timestamp when the guild was created.
@@ -77,5 +77,5 @@ public record Guild
     /// Gets a link to the guild activity.
     /// </summary>
     [JsonPropertyName("activity")]
-    public Self Activity { get; init; }
+    public Self? Activity { get; init; }
 }

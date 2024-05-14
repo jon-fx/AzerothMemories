@@ -15,5 +15,5 @@ public record RenownReward
     /// Gets the reward reference.
     /// </summary>
     [JsonPropertyName("reward")]
-    public CovenantRewardReference Reward { get; init; }
+    public CovenantRewardReference? Reward { get; init; }
 }

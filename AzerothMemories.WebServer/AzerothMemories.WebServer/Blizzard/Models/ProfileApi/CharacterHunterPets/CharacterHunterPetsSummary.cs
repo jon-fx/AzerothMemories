@@ -9,17 +9,17 @@ public record CharacterHunterPetsSummary
     /// Gets links for the character hunter pets summary.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets a reference to the character.
     /// </summary>
     [JsonPropertyName("character")]
-    public CharacterReference Character { get; init; }
+    public CharacterReference? Character { get; init; }
 
     /// <summary>
     /// Gets the character's hunter pets.
     /// </summary>
     [JsonPropertyName("hunter_pets")]
-    public HunterPet[] HunterPets { get; init; }
+    public HunterPet[]? HunterPets { get; init; }
 }

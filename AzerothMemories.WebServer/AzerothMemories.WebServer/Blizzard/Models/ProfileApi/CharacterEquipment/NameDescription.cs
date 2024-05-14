@@ -11,11 +11,11 @@ public record NameDescription
     /// Gets the display string for the
     /// </summary>
     [JsonPropertyName("display_string")]
-    public string DisplayString { get; init; }
+    public string? DisplayString { get; init; }
 
     /// <summary>
     /// Gets the RGBA color information.
     /// </summary>
     [JsonPropertyName("color")]
-    public ColorDetails Color { get; init; }
+    public ColorDetails? Color { get; init; }
 }

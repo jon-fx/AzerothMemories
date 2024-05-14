@@ -9,5 +9,5 @@ public record ZoneReferenceSlug
     /// Gets the slug for the zone.
     /// </summary>
     [JsonPropertyName("slug")]
-    public string Slug { get; init; }
+    public string? Slug { get; init; }
 }

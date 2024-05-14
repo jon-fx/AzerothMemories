@@ -15,5 +15,5 @@ public record Money
     /// Gets the monetary amount as gold, silver, and copper units.
     /// </summary>
     [JsonPropertyName("units")]
-    public Units Units { get; init; }
+    public Units? Units { get; init; }
 }

@@ -15,7 +15,7 @@ public record AchievementCriteria
     /// Gets the description of the criteria.
     /// </summary>
     [JsonPropertyName("description")]
-    public Name Description { get; init; }
+    public Name? Description { get; init; }
 
     /// <summary>
     /// Gets the amount of the criteria.

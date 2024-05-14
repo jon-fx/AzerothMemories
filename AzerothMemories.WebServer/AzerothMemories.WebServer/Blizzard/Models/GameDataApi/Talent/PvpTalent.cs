@@ -9,7 +9,7 @@ public record PvpTalent
     /// Gets links for the PvP talent.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the PvP talent.
@@ -21,25 +21,25 @@ public record PvpTalent
     /// Gets a reference to the spell associated with this talent.
     /// </summary>
     [JsonPropertyName("spell")]
-    public SpellReference Spell { get; init; }
+    public SpellReference? Spell { get; init; }
 
     /// <summary>
     /// Gets a reference to the playable specialization associated with this talent.
     /// </summary>
     [JsonPropertyName("playable_specialization")]
-    public PlayableSpecializationReference PlayableSpecialization { get; init; }
+    public PlayableSpecializationReference? PlayableSpecialization { get; init; }
 
     /// <summary>
     /// Gets a reference to the spell that this talent overrides.
     /// </summary>
     [JsonPropertyName("overrides_spell")]
-    public SpellReference OverridesSpell { get; init; }
+    public SpellReference? OverridesSpell { get; init; }
 
     /// <summary>
     /// Gets the description of the PvP talent.
     /// </summary>
     [JsonPropertyName("description")]
-    public Name Description { get; init; }
+    public Name? Description { get; init; }
 
     /// <summary>
     /// Gets the levle at which the player unlocks this PvP talent.
@@ -51,5 +51,5 @@ public record PvpTalent
     /// Gets the compatible slots for this talent.
     /// </summary>
     [JsonPropertyName("compatible_slots")]
-    public int[] CompatibleSlots { get; init; }
+    public int[]? CompatibleSlots { get; init; }
 }

@@ -9,7 +9,7 @@ public record MythicKeystoneDungeon
     /// Gets links for the mythic keystone dungeon.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the mythic keystone dungeon.
@@ -21,31 +21,31 @@ public record MythicKeystoneDungeon
     /// Gets the name of the mythic keystone dungeon.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the map of the mythic keystone dungeon.
     /// </summary>
     [JsonPropertyName("map")]
-    public Map Map { get; init; }
+    public Map? Map { get; init; }
 
     /// <summary>
     /// Gets the zone for the mythic keystone dungeon.
     /// </summary>
     [JsonPropertyName("zone")]
-    public ZoneReferenceSlug Zone { get; init; }
+    public ZoneReferenceSlug? Zone { get; init; }
 
     /// <summary>
     /// Gets a reference to the dungeon instance.
     /// </summary>
     [JsonPropertyName("dungeon")]
-    public InstanceReference Dungeon { get; init; }
+    public InstanceReference? Dungeon { get; init; }
 
     /// <summary>
     /// Gets the keystone upgrades for the mythic keystone dungeon.
     /// </summary>
     [JsonPropertyName("keystone_upgrades")]
-    public MythicKeystoneUpgrade[] KeystoneUpgrades { get; init; }
+    public MythicKeystoneUpgrade[]? KeystoneUpgrades { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether the mythic keystone dungeon is tracked.

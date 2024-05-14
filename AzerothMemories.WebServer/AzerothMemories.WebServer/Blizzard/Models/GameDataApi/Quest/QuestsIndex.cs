@@ -9,23 +9,23 @@ public record QuestsIndex
     /// Gets links for the index of quests.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets a reference to the quest categories.
     /// </summary>
     [JsonPropertyName("categories")]
-    public Self Categories { get; init; }
+    public Self? Categories { get; init; }
 
     /// <summary>
     /// Gets a reference to the quest areas.
     /// </summary>
     [JsonPropertyName("areas")]
-    public Self Areas { get; init; }
+    public Self? Areas { get; init; }
 
     /// <summary>
     /// Gets a reference to the quest types.
     /// </summary>
     [JsonPropertyName("types")]
-    public Self Types { get; init; }
+    public Self? Types { get; init; }
 }

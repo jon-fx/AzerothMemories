@@ -11,17 +11,17 @@ public record Reputation
     /// Gets a reference to the reputation faction.
     /// </summary>
     [JsonPropertyName("faction")]
-    public ReputationFactionReference Faction { get; init; }
+    public ReputationFactionReference? Faction { get; init; }
 
     /// <summary>
     /// Gets the character's standing with the reputation faction.
     /// </summary>
     [JsonPropertyName("standing")]
-    public Standing Standing { get; init; }
+    public Standing? Standing { get; init; }
 
     /// <summary>
     /// Gets the character's paragon status with the reputation faction.
     /// </summary>
     [JsonPropertyName("paragon")]
-    public Paragon Paragon { get; init; }
+    public Paragon? Paragon { get; init; }
 }

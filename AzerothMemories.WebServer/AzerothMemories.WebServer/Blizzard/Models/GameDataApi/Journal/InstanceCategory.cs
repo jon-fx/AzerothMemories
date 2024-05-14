@@ -9,5 +9,5 @@ public record InstanceCategory
     /// Gets the type of the instance category.
     /// </summary>
     [JsonPropertyName("type")]
-    public string Type { get; init; }
+    public string? Type { get; init; }
 }

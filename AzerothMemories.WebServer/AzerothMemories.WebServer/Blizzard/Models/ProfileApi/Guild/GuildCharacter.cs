@@ -11,13 +11,13 @@ public record GuildCharacter
     /// Gets a link to the character's profile.
     /// </summary>
     [JsonPropertyName("key")]
-    public Self Key { get; init; }
+    public Self? Key { get; init; }
 
     /// <summary>
     /// Gets the name of the character.
     /// </summary>
     [JsonPropertyName("name")]
-    public string Name { get; init; }
+    public string? Name { get; init; }
 
     /// <summary>
     /// Gets the ID of the character.
@@ -29,7 +29,7 @@ public record GuildCharacter
     /// Gets a reference to the character's realm.
     /// </summary>
     [JsonPropertyName("realm")]
-    public RealmReference Realm { get; init; }
+    public RealmReference? Realm { get; init; }
 
     /// <summary>
     /// Gets the level of the character.
@@ -41,11 +41,11 @@ public record GuildCharacter
     /// Gets a reference to the character's class.
     /// </summary>
     [JsonPropertyName("playable_class")]
-    public PlayableClassReferenceWithoutName PlayableClass { get; init; }
+    public PlayableClassReferenceWithoutName? PlayableClass { get; init; }
 
     /// <summary>
     /// Gets a reference to the character's race.
     /// </summary>
     [JsonPropertyName("playable_race")]
-    public PlayableRaceReferenceWithoutName PlayableRace { get; init; }
+    public PlayableRaceReferenceWithoutName? PlayableRace { get; init; }
 }

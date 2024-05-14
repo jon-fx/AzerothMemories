@@ -9,7 +9,7 @@ public record Effect
     /// Gets the display string for the effect.
     /// </summary>
     [JsonPropertyName("display_string")]
-    public string DisplayString { get; init; }
+    public string? DisplayString { get; init; }
 
     /// <summary>
     /// Gets the required count of items in the set that must be equipped to activate the effect.

@@ -9,11 +9,11 @@ public record QuestTypesIndex
     /// Gets links for the index of quest types.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets references to the quest types.
     /// </summary>
     [JsonPropertyName("types")]
-    public QuestTypeReference[] Types { get; init; }
+    public QuestTypeReference[]? Types { get; init; }
 }

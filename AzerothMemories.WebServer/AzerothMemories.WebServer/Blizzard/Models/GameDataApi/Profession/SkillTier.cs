@@ -9,7 +9,7 @@ public record SkillTier
     /// Gets links for the skill tier.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the skill tier.
@@ -21,7 +21,7 @@ public record SkillTier
     /// Gets the name of the skill tier.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the minimum skill level for the skill tier.
@@ -39,5 +39,5 @@ public record SkillTier
     /// Gets the categories in the skill tier.
     /// </summary>
     [JsonPropertyName("categories")]
-    public RecipeCategory[] Categories { get; init; }
+    public RecipeCategory[]? Categories { get; init; }
 }

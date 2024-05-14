@@ -9,7 +9,7 @@ public record RealmReferenceWithoutKey
     /// Gets the name of the realm.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the ID of the realm.
@@ -21,5 +21,5 @@ public record RealmReferenceWithoutKey
     /// Gets a slug for the realm.
     /// </summary>
     [JsonPropertyName("slug")]
-    public string Slug { get; init; }
+    public string? Slug { get; init; }
 }

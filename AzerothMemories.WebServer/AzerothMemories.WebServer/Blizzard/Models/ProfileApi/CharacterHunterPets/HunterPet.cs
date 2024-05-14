@@ -11,7 +11,7 @@ public record HunterPet
     /// Gets the name of the hunter pet.
     /// </summary>
     [JsonPropertyName("name")]
-    public string Name { get; init; }
+    public string? Name { get; init; }
 
     /// <summary>
     /// Gets the level of the hunter pet.
@@ -23,7 +23,7 @@ public record HunterPet
     /// Gets a reference to the creature type of the hunter pet.
     /// </summary>
     [JsonPropertyName("creature")]
-    public CreatureReference Creature { get; init; }
+    public CreatureReference? Creature { get; init; }
 
     /// <summary>
     /// Gets the slot to which the hunter pet is assigned.
@@ -41,7 +41,7 @@ public record HunterPet
     /// Gets a reference to creature display media for the hunter pet.
     /// </summary>
     [JsonPropertyName("creature_display")]
-    public CreatureDisplayMediaReference CreatureDisplay { get; init; }
+    public CreatureDisplayMediaReference? CreatureDisplay { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether the hunter pet is summoned.

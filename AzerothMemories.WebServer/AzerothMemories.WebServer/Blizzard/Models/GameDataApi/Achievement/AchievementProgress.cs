@@ -15,13 +15,13 @@ public record AchievementProgress
     /// Gets a reference to the achievement.
     /// </summary>
     [JsonPropertyName("achievement")]
-    public AchievementReference Achievement { get; init; }
+    public AchievementReference? Achievement { get; init; }
 
     /// <summary>
     /// Gets the criteria for the achievement.
     /// </summary>
     [JsonPropertyName("criteria")]
-    public Criteria Criteria { get; init; }
+    public Criteria? Criteria { get; init; }
 
     /// <summary>
     /// Gets the timestamp when the character or guild completed the achievement, or <c>null</c> if it has not been completed.

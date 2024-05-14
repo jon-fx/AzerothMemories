@@ -9,11 +9,11 @@ public record GuildActivity
     /// Gets links for the guild's activity.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets a reference to the guild.
     /// </summary>
     [JsonPropertyName("guild")]
-    public GuildReference Guild { get; init; }
+    public GuildReference? Guild { get; init; }
 }

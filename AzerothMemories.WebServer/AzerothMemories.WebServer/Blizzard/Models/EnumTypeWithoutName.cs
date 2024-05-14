@@ -9,5 +9,5 @@ public record EnumTypeWithoutName
     /// Gets the type code for this enumerated value.
     /// </summary>
     [JsonPropertyName("type")]
-    public string Type { get; init; }
+    public string? Type { get; init; }
 }

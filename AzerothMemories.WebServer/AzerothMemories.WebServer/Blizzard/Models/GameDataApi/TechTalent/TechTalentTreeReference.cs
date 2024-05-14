@@ -9,7 +9,7 @@ public record TechTalentTreeReference
     /// Gets the key for this tech talent tree.
     /// </summary>
     [JsonPropertyName("key")]
-    public Self Key { get; init; }
+    public Self? Key { get; init; }
 
     /// <summary>
     /// Gets the Id for this tech talent tree.
@@ -21,5 +21,5 @@ public record TechTalentTreeReference
     /// Gets the name for this tech talent tree.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 }

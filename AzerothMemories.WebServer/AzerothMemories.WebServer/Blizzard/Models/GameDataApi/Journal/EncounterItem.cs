@@ -15,5 +15,5 @@ public record EncounterItem
     /// Gets a reference to the item.
     /// </summary>
     [JsonPropertyName("item")]
-    public ItemReference Item { get; init; }
+    public ItemReference? Item { get; init; }
 }

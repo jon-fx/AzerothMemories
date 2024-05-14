@@ -21,5 +21,5 @@ public record QuestRequirements
     /// Gets the faction for the question (Alliance or Horde).
     /// </summary>
     [JsonPropertyName("faction")]
-    public EnumType Faction { get; init; }
+    public EnumType? Faction { get; init; }
 }

@@ -9,7 +9,7 @@ public record PlayableRaceReferenceWithoutName
     /// Gets the key for the playable race.
     /// </summary>
     [JsonPropertyName("key")]
-    public Self Key { get; init; }
+    public Self? Key { get; init; }
 
     /// <summary>
     /// Gets the ID of the playable race.

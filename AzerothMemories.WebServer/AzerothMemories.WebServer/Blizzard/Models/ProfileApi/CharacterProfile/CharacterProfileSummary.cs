@@ -11,7 +11,7 @@ public record CharacterProfileSummary
     /// Gets links for the character.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the character.
@@ -23,49 +23,49 @@ public record CharacterProfileSummary
     /// Gets the name of the character.
     /// </summary>
     [JsonPropertyName("name")]
-    public string Name { get; init; }
+    public string? Name { get; init; }
 
     /// <summary>
     /// Gets the gender of the character.
     /// </summary>
     [JsonPropertyName("gender")]
-    public EnumType Gender { get; init; }
+    public EnumType? Gender { get; init; }
 
     /// <summary>
     /// Gets the faction of the character (Alliance or Horde).
     /// </summary>
     [JsonPropertyName("faction")]
-    public EnumType Faction { get; init; }
+    public EnumType? Faction { get; init; }
 
     /// <summary>
     /// Gets the race of the character.
     /// </summary>
     [JsonPropertyName("race")]
-    public PlayableRaceReference Race { get; init; }
+    public PlayableRaceReference? Race { get; init; }
 
     /// <summary>
     /// Gets the class of the character.
     /// </summary>
     [JsonPropertyName("character_class")]
-    public PlayableClassReference CharacterClass { get; init; }
+    public PlayableClassReference? CharacterClass { get; init; }
 
     /// <summary>
     /// Gets the active spec for the character.
     /// </summary>
     [JsonPropertyName("active_spec")]
-    public PlayableSpecializationReference ActiveSpec { get; init; }
+    public PlayableSpecializationReference? ActiveSpec { get; init; }
 
     /// <summary>
     /// Gets a reference to the character's realm.
     /// </summary>
     [JsonPropertyName("realm")]
-    public RealmReference Realm { get; init; }
+    public RealmReference? Realm { get; init; }
 
     /// <summary>
     /// Gets a reference to the character's guild.
     /// </summary>
     [JsonPropertyName("guild")]
-    public GuildReference Guild { get; init; }
+    public GuildReference? Guild { get; init; }
 
     /// <summary>
     /// Gets the level of the character.
@@ -89,31 +89,31 @@ public record CharacterProfileSummary
     /// Gets a link to the character's achievements.
     /// </summary>
     [JsonPropertyName("achievements")]
-    public Self Achievements { get; init; }
+    public Self? Achievements { get; init; }
 
     /// <summary>
     /// Gets a link to the character's titles.
     /// </summary>
     [JsonPropertyName("titles")]
-    public Self Titles { get; init; }
+    public Self? Titles { get; init; }
 
     /// <summary>
     /// Gets a link to the character's PVP summary.
     /// </summary>
     [JsonPropertyName("pvp_summary")]
-    public Self PvpSummary { get; init; }
+    public Self? PvpSummary { get; init; }
 
     /// <summary>
     /// Gets a link to the character's encounters.
     /// </summary>
     [JsonPropertyName("encounters")]
-    public Self Encounters { get; init; }
+    public Self? Encounters { get; init; }
 
     /// <summary>
     /// Gets a link to the media for this character.
     /// </summary>
     [JsonPropertyName("media")]
-    public Self Media { get; init; }
+    public Self? Media { get; init; }
 
     /// <summary>
     /// Gets the last login timestamp for the character.
@@ -137,71 +137,71 @@ public record CharacterProfileSummary
     /// Gets a link to the character's specializations.
     /// </summary>
     [JsonPropertyName("specializations")]
-    public Self Specializations { get; init; }
+    public Self? Specializations { get; init; }
 
     /// <summary>
     /// Gets a link to the character's statistics.
     /// </summary>
     [JsonPropertyName("statistics")]
-    public Self Statistics { get; init; }
+    public Self? Statistics { get; init; }
 
     /// <summary>
     /// Gets a link to the character's mythic keystone profile.
     /// </summary>
     [JsonPropertyName("mythic_keystone_profile")]
-    public Self MythicKeystoneProfile { get; init; }
+    public Self? MythicKeystoneProfile { get; init; }
 
     /// <summary>
     /// Gets a link to the character's equipment.
     /// </summary>
     [JsonPropertyName("equipment")]
-    public Self Equipment { get; init; }
+    public Self? Equipment { get; init; }
 
     /// <summary>
     /// Gets a link to the character's appearance.
     /// </summary>
     [JsonPropertyName("appearance")]
-    public Self Appearance { get; init; }
+    public Self? Appearance { get; init; }
 
     /// <summary>
     /// Gets a link to the character's collections.
     /// </summary>
     [JsonPropertyName("collections")]
-    public Self Collections { get; init; }
+    public Self? Collections { get; init; }
 
     /// <summary>
     /// Gets a reference to the active title for the character.
     /// </summary>
     [JsonPropertyName("active_title")]
-    public TitleReferenceWithDisplayString ActiveTitle { get; init; }
+    public TitleReferenceWithDisplayString? ActiveTitle { get; init; }
 
     /// <summary>
     /// Gets a link to the character's reputations.
     /// </summary>
     [JsonPropertyName("reputations")]
-    public Self Reputations { get; init; }
+    public Self? Reputations { get; init; }
 
     /// <summary>
     /// Gets a link to the character's quests.
     /// </summary>
     [JsonPropertyName("quests")]
-    public Self Quests { get; init; }
+    public Self? Quests { get; init; }
 
     /// <summary>
     /// Gets a link to the character's achievement statistics.
     /// </summary>
     [JsonPropertyName("achievements_statistics")]
-    public Self AchievementsStatistics { get; init; }
+    public Self? AchievementsStatistics { get; init; }
 
     /// <summary>
     /// Gets a link to the character's professions.
     /// </summary>
     [JsonPropertyName("professions")]
-    public Self Professions { get; init; }
+    public Self? Professions { get; init; }
 
     /// <summary>
     /// Gets the covenant progress for the character.
     /// </summary>
     [JsonPropertyName("covenant_progress")]
-    public CovenantProgress CovenantProgress { get; init; }
+    public CovenantProgress? CovenantProgress { get; init; }
 }

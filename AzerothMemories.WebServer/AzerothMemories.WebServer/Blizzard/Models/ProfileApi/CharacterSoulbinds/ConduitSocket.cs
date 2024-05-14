@@ -11,7 +11,7 @@ public record ConduitSocket
     /// Gets a reference to the conduit.
     /// </summary>
     [JsonPropertyName("conduit")]
-    public ConduitReference Conduit { get; init; }
+    public ConduitReference? Conduit { get; init; }
 
     /// <summary>
     /// Gets the rank of the socket.

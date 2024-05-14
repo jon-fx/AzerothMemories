@@ -9,7 +9,7 @@ public record Item
     /// Gets links for the item.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the item.
@@ -21,13 +21,13 @@ public record Item
     /// Gets the name of the item.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the item quality.
     /// </summary>
     [JsonPropertyName("quality")]
-    public EnumType Quality { get; init; }
+    public EnumType? Quality { get; init; }
 
     /// <summary>
     /// Gets the item level of the item.
@@ -45,25 +45,25 @@ public record Item
     /// Gets the media associated with this item.
     /// </summary>
     [JsonPropertyName("media")]
-    public Media Media { get; init; }
+    public Media? Media { get; init; }
 
     /// <summary>
     /// Gets a reference to the item class.
     /// </summary>
     [JsonPropertyName("item_class")]
-    public ItemClassReference ItemClass { get; init; }
+    public ItemClassReference? ItemClass { get; init; }
 
     /// <summary>
     /// Gets a reference to the item subclass.
     /// </summary>
     [JsonPropertyName("item_subclass")]
-    public ItemSubclassReference ItemSubclass { get; init; }
+    public ItemSubclassReference? ItemSubclass { get; init; }
 
     /// <summary>
     /// Gets the inventory type for the item.
     /// </summary>
     [JsonPropertyName("inventory_type")]
-    public EnumType InventoryType { get; init; }
+    public EnumType? InventoryType { get; init; }
 
     /// <summary>
     /// Gets the purchase price of the item.
@@ -99,7 +99,7 @@ public record Item
     /// Gets item preview data.
     /// </summary>
     [JsonPropertyName("preview_item")]
-    public PreviewItem PreviewItem { get; init; }
+    public PreviewItem? PreviewItem { get; init; }
 
     /// <summary>
     /// Gets the purchase quantity for the item.

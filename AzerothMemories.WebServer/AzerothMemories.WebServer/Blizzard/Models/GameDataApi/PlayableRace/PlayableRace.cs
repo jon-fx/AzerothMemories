@@ -9,7 +9,7 @@ public record PlayableRace
     /// Gets links for the playable race.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the playable race.
@@ -21,19 +21,19 @@ public record PlayableRace
     /// Gets the name of the playable race.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the gender-specific names for the playable race.
     /// </summary>
     [JsonPropertyName("gender_name")]
-    public GenderName GenderName { get; init; }
+    public GenderName? GenderName { get; init; }
 
     /// <summary>
     /// Gets the faction of the playable race (Alliance or Horde).
     /// </summary>
     [JsonPropertyName("faction")]
-    public EnumType Faction { get; init; }
+    public EnumType? Faction { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether the playable race can be selected.
@@ -51,5 +51,5 @@ public record PlayableRace
     /// Gets references to the playable classes that are compatible with this playable race.
     /// </summary>
     [JsonPropertyName("playable_classes")]
-    public PlayableClassReference[] PlayableClasses { get; init; }
+    public PlayableClassReference[]? PlayableClasses { get; init; }
 }

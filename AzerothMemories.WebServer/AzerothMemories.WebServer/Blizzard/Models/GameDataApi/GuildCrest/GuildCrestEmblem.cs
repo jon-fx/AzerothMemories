@@ -15,5 +15,5 @@ public record GuildCrestEmblem
     /// Gets the media associated with the emblem.
     /// </summary>
     [JsonPropertyName("media")]
-    public Media Media { get; init; }
+    public Media? Media { get; init; }
 }

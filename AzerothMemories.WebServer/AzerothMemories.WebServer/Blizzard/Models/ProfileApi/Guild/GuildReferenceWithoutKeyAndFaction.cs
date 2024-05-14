@@ -11,7 +11,7 @@ public record GuildReferenceWithoutKeyAndFaction
     /// Gets the name of the guild.
     /// </summary>
     [JsonPropertyName("name")]
-    public string Name { get; init; }
+    public string? Name { get; init; }
 
     /// <summary>
     /// Gets the ID of the guild.
@@ -23,5 +23,5 @@ public record GuildReferenceWithoutKeyAndFaction
     /// Gets a reference to the realm to which the guild belongs.
     /// </summary>
     [JsonPropertyName("realm")]
-    public RealmReferenceWithoutKey Realm { get; init; }
+    public RealmReferenceWithoutKey? Realm { get; init; }
 }

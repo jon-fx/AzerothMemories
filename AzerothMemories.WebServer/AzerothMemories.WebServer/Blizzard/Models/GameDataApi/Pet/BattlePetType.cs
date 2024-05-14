@@ -15,11 +15,11 @@ public record BattlePetType
     /// Gets the type of the battle pet type.
     /// </summary>
     [JsonPropertyName("type")]
-    public string Type { get; init; }
+    public string? Type { get; init; }
 
     /// <summary>
     /// Gets the name of the battle pet type.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 }

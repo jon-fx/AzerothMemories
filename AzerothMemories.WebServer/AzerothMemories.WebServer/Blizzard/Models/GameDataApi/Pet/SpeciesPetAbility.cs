@@ -9,7 +9,7 @@ public record SpeciesPetAbility
     /// Gets a reference to the pet ability.
     /// </summary>
     [JsonPropertyName("ability")]
-    public PetAbilityReference Ability { get; init; }
+    public PetAbilityReference? Ability { get; init; }
 
     /// <summary>
     /// Gets the slot number for the pet ability.

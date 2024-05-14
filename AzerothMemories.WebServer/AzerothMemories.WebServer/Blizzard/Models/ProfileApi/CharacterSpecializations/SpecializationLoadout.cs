@@ -15,17 +15,17 @@ public record SpecializationLoadout
     /// Code for the load out.
     /// </summary>
     [JsonPropertyName("talent_loadout_code")]
-    public string TalentLoadoutCode { get; init; }
+    public string? TalentLoadoutCode { get; init; }
 
     /// <summary>
     /// Gets the selected class talents.
     /// </summary>
     [JsonPropertyName("selected_class_talents")]
-    public LoadoutTalent[] SelectedClassTalents { get; init; }
+    public LoadoutTalent[]? SelectedClassTalents { get; init; }
 
     /// <summary>
     /// Gets the selected spec talents.
     /// </summary>
     [JsonPropertyName("selected_spec_talents")]
-    public LoadoutTalent[] SelectedSpecTalents { get; init; }
+    public LoadoutTalent[]? SelectedSpecTalents { get; init; }
 }

@@ -11,13 +11,13 @@ public record GuildReference
     /// Gets the key for the guild.
     /// </summary>
     [JsonPropertyName("key")]
-    public Self Key { get; init; }
+    public Self? Key { get; init; }
 
     /// <summary>
     /// Gets the name of the guild.
     /// </summary>
     [JsonPropertyName("name")]
-    public string Name { get; init; }
+    public string? Name { get; init; }
 
     /// <summary>
     /// Gets the ID of the guild.
@@ -29,11 +29,11 @@ public record GuildReference
     /// Gets a reference to the guild's realm.
     /// </summary>
     [JsonPropertyName("realm")]
-    public RealmReference Realm { get; init; }
+    public RealmReference? Realm { get; init; }
 
     /// <summary>
     /// Gets the faction of the guild (Alliance or Horde).
     /// </summary>
     [JsonPropertyName("faction")]
-    public EnumType Faction { get; init; }
+    public EnumType? Faction { get; init; }
 }

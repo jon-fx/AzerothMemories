@@ -9,11 +9,11 @@ public record GenderName
     /// Gets the name for male characters.
     /// </summary>
     [JsonPropertyName("male")]
-    public Name Male { get; init; }
+    public Name? Male { get; init; }
 
     /// <summary>
     /// Gets the name for female characters.
     /// </summary>
     [JsonPropertyName("female")]
-    public Name Female { get; init; }
+    public Name? Female { get; init; }
 }

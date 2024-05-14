@@ -21,7 +21,7 @@ public record Criteria
     /// Gets child criteria of the criterion achievment, if any.
     /// </summary>
     [JsonPropertyName("child_criteria")]
-    public Criteria[] ChildCriteria { get; init; }
+    public Criteria[]? ChildCriteria { get; init; }
 
     /// <summary>
     /// Gets an amount associated with this criterion achievment, if any.

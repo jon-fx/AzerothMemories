@@ -9,11 +9,11 @@ public record ConduitSocketTrait
     /// Gets the type of conduit socket.
     /// </summary>
     [JsonPropertyName("type")]
-    public EnumType Type { get; init; }
+    public EnumType? Type { get; init; }
 
     /// <summary>
     /// Gets the socket details for the conduit.
     /// </summary>
     [JsonPropertyName("socket")]
-    public ConduitSocket Socket { get; init; }
+    public ConduitSocket? Socket { get; init; }
 }

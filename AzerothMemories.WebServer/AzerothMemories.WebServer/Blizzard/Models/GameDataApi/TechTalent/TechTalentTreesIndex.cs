@@ -9,11 +9,11 @@ public record TechTalentTreesIndex
     /// Gets links for the index of tech talent trees.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// The collection of tech talent tree references.
     /// </summary>
     [JsonPropertyName("talent_trees")]
-    public TechTalentReference[] TalentTrees { get; init; }
+    public TechTalentReference[]? TalentTrees { get; init; }
 }

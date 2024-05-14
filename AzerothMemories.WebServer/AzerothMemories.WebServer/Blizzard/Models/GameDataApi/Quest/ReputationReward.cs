@@ -9,7 +9,7 @@ public record ReputationReward
     /// Gets a reference to the reputation faction.
     /// </summary>
     [JsonPropertyName("reward")]
-    public ReputationFactionReference Reward { get; init; }
+    public ReputationFactionReference? Reward { get; init; }
 
     /// <summary>
     /// Gets the amount of reputation gained with the reputation faction.

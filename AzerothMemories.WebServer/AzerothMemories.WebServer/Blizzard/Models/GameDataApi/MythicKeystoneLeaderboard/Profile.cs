@@ -9,7 +9,7 @@ public record Profile
     /// Gets the name of the character.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the ID of the character.
@@ -21,5 +21,5 @@ public record Profile
     /// Gets a reference to the character's realm.
     /// </summary>
     [JsonPropertyName("realm")]
-    public RealmReferenceWithoutName Realm { get; init; }
+    public RealmReferenceWithoutName? Realm { get; init; }
 }

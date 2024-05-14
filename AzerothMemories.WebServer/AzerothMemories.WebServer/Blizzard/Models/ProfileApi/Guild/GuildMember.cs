@@ -9,7 +9,7 @@ public record GuildMember
     /// Gets the character.
     /// </summary>
     [JsonPropertyName("character")]
-    public GuildCharacter Character { get; init; }
+    public GuildCharacter? Character { get; init; }
 
     /// <summary>
     /// Gets the character's rank in the guild.

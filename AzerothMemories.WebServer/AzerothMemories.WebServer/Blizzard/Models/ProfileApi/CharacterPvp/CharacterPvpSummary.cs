@@ -9,13 +9,13 @@ public record CharacterPvpSummary
     /// Gets the links for the PvP summary for the character.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets links to the PvP brackets for the character.
     /// </summary>
     [JsonPropertyName("brackets")]
-    public Self[] Brackets { get; init; }
+    public Self[]? Brackets { get; init; }
 
     /// <summary>
     /// Gets the honor level of the character.
@@ -27,7 +27,7 @@ public record CharacterPvpSummary
     /// Gets the PvP map statistics for the character.
     /// </summary>
     [JsonPropertyName("pvp_map_statistics")]
-    public PvpMapStatistic[] PvpMapStatistics { get; init; }
+    public PvpMapStatistic[]? PvpMapStatistics { get; init; }
 
     /// <summary>
     /// Gets the number of honorable kills for the character.
@@ -39,5 +39,5 @@ public record CharacterPvpSummary
     /// Gets a reference to the character.
     /// </summary>
     [JsonPropertyName("character")]
-    public CharacterReference Character { get; init; }
+    public CharacterReference? Character { get; init; }
 }

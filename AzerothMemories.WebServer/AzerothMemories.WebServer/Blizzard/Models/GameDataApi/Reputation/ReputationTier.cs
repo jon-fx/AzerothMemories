@@ -9,7 +9,7 @@ public record ReputationTier
     /// Gets the name of the reputation tier.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the minimum value of the reputation tier.

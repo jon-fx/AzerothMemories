@@ -9,11 +9,11 @@ public record ProfessionsIndex
     /// Gets links for the index of professions.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets references to the professions.
     /// </summary>
     [JsonPropertyName("professions")]
-    public ProfessionReference[] Professions { get; init; }
+    public ProfessionReference[]? Professions { get; init; }
 }

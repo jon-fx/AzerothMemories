@@ -9,7 +9,7 @@ public record MythicKeystoneSeason
     /// Gets links for the mythic keystone season.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the mythic keystone season.
@@ -33,5 +33,5 @@ public record MythicKeystoneSeason
     /// Gets refernces to the periods in the mythic keystone season.
     /// </summary>
     [JsonPropertyName("periods")]
-    public MythicKeystonePeriodReference[] Periods { get; init; }
+    public MythicKeystonePeriodReference[]? Periods { get; init; }
 }

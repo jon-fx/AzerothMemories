@@ -9,17 +9,17 @@ public record CharacterReputationsSummary
     /// Gets links for the summary of the character's reputations.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets a reference to the character.
     /// </summary>
     [JsonPropertyName("character")]
-    public CharacterReference Character { get; init; }
+    public CharacterReference? Character { get; init; }
 
     /// <summary>
     /// Gets
     /// </summary>
     [JsonPropertyName("reputations")]
-    public Reputation[] Reputations { get; init; }
+    public Reputation[]? Reputations { get; init; }
 }

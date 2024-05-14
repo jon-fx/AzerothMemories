@@ -11,7 +11,7 @@ public record AccountPet
     /// Gets a reference to the species of the pet.
     /// </summary>
     [JsonPropertyName("species")]
-    public PetReference Species { get; init; }
+    public PetReference? Species { get; init; }
 
     /// <summary>
     /// Gets the level of the pet.
@@ -23,19 +23,19 @@ public record AccountPet
     /// Gets the quality of the pet.
     /// </summary>
     [JsonPropertyName("quality")]
-    public EnumType Quality { get; init; }
+    public EnumType? Quality { get; init; }
 
     /// <summary>
     /// Gets the pet stats.
     /// </summary>
     [JsonPropertyName("stats")]
-    public PetStats Stats { get; init; }
+    public PetStats? Stats { get; init; }
 
     /// <summary>
     /// Gets a reference to the creature display media for the pet.
     /// </summary>
     [JsonPropertyName("creature_display")]
-    public CreatureDisplayMediaReference CreatureDisplay { get; init; }
+    public CreatureDisplayMediaReference? CreatureDisplay { get; init; }
 
     /// <summary>
     /// Gets the ID of the pet.

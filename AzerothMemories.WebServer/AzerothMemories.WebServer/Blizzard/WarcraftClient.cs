@@ -65,7 +65,7 @@ public sealed class WarcraftClient : IDisposable
         _clientProvider.ReturnClient(this);
     }
 
-    public async Task<RequestResult<T>> Get<T>(BlizzardNamespace blizzardNamespace, string requestUri, string extra, string accessToken, bool readAsString, Instant? lastModified) where T : class
+    public async Task<RequestResult<T>> Get<T>(BlizzardNamespace blizzardNamespace, string requestUri, string? extra, string? accessToken, bool readAsString, Instant? lastModified) where T : class
     {
         using var client = _clientProvider.CreateClient();
 
@@ -92,7 +92,7 @@ public sealed class WarcraftClient : IDisposable
             {
                 await using var contentStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
-                string resultString = null;
+                string? resultString = null;
                 if (readAsString)
                 {
                     resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);

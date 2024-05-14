@@ -9,7 +9,7 @@ public record MythicKeystoneAffix
     /// Gets links for the mythic keystone affix.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the mythic keystone affix.
@@ -21,17 +21,17 @@ public record MythicKeystoneAffix
     /// Gets the name of the mythic keystone affix.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the description of the mythic keystone affix.
     /// </summary>
     [JsonPropertyName("description")]
-    public Name Description { get; init; }
+    public Name? Description { get; init; }
 
     /// <summary>
     /// Gets the media for this mythic keystone affix.
     /// </summary>
     [JsonPropertyName("media")]
-    public Media Media { get; init; }
+    public Media? Media { get; init; }
 }

@@ -23,23 +23,23 @@ public record SelectedEssence
     /// Gets the main spell tooltip.
     /// </summary>
     [JsonPropertyName("main_spell_tooltip")]
-    public SpellTooltip MainSpellTooltip { get; init; }
+    public SpellTooltip? MainSpellTooltip { get; init; }
 
     /// <summary>
     /// Gets the passive spell tooltip.
     /// </summary>
     [JsonPropertyName("passive_spell_tooltip")]
-    public SpellTooltip PassiveSpellTooltip { get; init; }
+    public SpellTooltip? PassiveSpellTooltip { get; init; }
 
     /// <summary>
     /// Gets a reference to the azerite essence.
     /// </summary>
     [JsonPropertyName("essence")]
-    public AzeriteEssenceReference Essence { get; init; }
+    public AzeriteEssenceReference? Essence { get; init; }
 
     /// <summary>
     /// Gets a reference to the azerite essence media.
     /// </summary>
     [JsonPropertyName("media")]
-    public AzeritEssenceMediaReference Media { get; init; }
+    public AzeritEssenceMediaReference? Media { get; init; }
 }

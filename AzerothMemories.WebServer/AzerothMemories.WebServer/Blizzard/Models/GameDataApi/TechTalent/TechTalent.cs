@@ -9,7 +9,7 @@ public record TechTalent
     /// Gets links for the tech talent.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the Id for the tech talent.
@@ -21,25 +21,25 @@ public record TechTalent
     /// Gets the tech talent tree reference for the tech talent.
     /// </summary>
     [JsonPropertyName("talent_tree")]
-    public TechTalentTreeReference TalentTree { get; init; }
+    public TechTalentTreeReference? TalentTree { get; init; }
 
     /// <summary>
     /// Gets the name for the tech talent.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets a description for the tech talent.
     /// </summary>
     [JsonPropertyName("description")]
-    public Name Description { get; init; }
+    public Name? Description { get; init; }
 
     /// <summary>
     /// Gets the spell tooltip for this tech talent.
     /// </summary>
     [JsonPropertyName("spell_tooltip")]
-    public SpellTooltipForAbility SpellTooltip { get; init; }
+    public SpellTooltipForAbility? SpellTooltip { get; init; }
 
     /// <summary>
     /// Gets the tier for the tech talent.
@@ -57,11 +57,11 @@ public record TechTalent
     /// Gets the prerequisite talent for the tech talent.
     /// </summary>
     [JsonPropertyName("prerequisite_talent")]
-    public TalentReference PrerequisiteTalent { get; init; }
+    public TalentReference? PrerequisiteTalent { get; init; }
 
     /// <summary>
     /// Gets the media for the tech talent.
     /// </summary>
     [JsonPropertyName("media")]
-    public Media Media { get; init; }
+    public Media? Media { get; init; }
 }

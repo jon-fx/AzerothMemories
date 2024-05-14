@@ -15,7 +15,7 @@ public record TalentTier
     /// Gets references to the talents for this tier.
     /// </summary>
     [JsonPropertyName("talents")]
-    public TalentTierElement[] Talents { get; init; }
+    public TalentTierElement[]? Talents { get; init; }
 
     /// <summary>
     /// Gets the index of the talent tier.

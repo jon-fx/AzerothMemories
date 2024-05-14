@@ -9,7 +9,7 @@ public record Encounter
     /// Gets links for the encounter.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the encounter.
@@ -21,47 +21,47 @@ public record Encounter
     /// Gets the name of the encounter.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the description of the encounter.
     /// </summary>
     [JsonPropertyName("description")]
-    public Name Description { get; init; }
+    public Name? Description { get; init; }
 
     /// <summary>
     /// Gets the creatures involved in the encounter.
     /// </summary>
     [JsonPropertyName("creatures")]
-    public EncounterCreature[] Creatures { get; init; }
+    public EncounterCreature[]? Creatures { get; init; }
 
     /// <summary>
     /// Gets the items that can appear as loot from the encounter.
     /// </summary>
     [JsonPropertyName("items")]
-    public EncounterItem[] Items { get; init; }
+    public EncounterItem[]? Items { get; init; }
 
     /// <summary>
     /// Gets the stages of the encounter.
     /// </summary>
     [JsonPropertyName("sections")]
-    public EncounterSection[] Sections { get; init; }
+    public EncounterSection[]? Sections { get; init; }
 
     /// <summary>
     /// Gets a reference to the dungeon or raid where this encounter takes place.
     /// </summary>
     [JsonPropertyName("instance")]
-    public InstanceReference Instance { get; init; }
+    public InstanceReference? Instance { get; init; }
 
     /// <summary>
     /// Gets the category of the instance.
     /// </summary>
     [JsonPropertyName("category")]
-    public InstanceCategory Category { get; init; }
+    public InstanceCategory? Category { get; init; }
 
     /// <summary>
     /// Gets the difficulty modes of the encounter.
     /// </summary>
     [JsonPropertyName("modes")]
-    public EnumType[] Modes { get; init; }
+    public EnumType[]? Modes { get; init; }
 }

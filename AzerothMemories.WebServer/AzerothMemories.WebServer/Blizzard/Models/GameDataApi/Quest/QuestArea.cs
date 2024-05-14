@@ -9,7 +9,7 @@ public record QuestArea
     /// Gets links for the quest area.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the quest area.
@@ -21,11 +21,11 @@ public record QuestArea
     /// Gets the quest area name.
     /// </summary>
     [JsonPropertyName("area")]
-    public string Area { get; init; }
+    public string? Area { get; init; }
 
     /// <summary>
     /// Gets references to the quests in this area.
     /// </summary>
     [JsonPropertyName("quests")]
-    public QuestReference[] Quests { get; init; }
+    public QuestReference[]? Quests { get; init; }
 }

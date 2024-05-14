@@ -15,7 +15,7 @@ public record Auction
     /// Gets the item being auctioned.
     /// </summary>
     [JsonPropertyName("item")]
-    public AuctionItem Item { get; init; }
+    public AuctionItem? Item { get; init; }
 
     /// <summary>
     /// Gets the quantity of the item being auctioned.
@@ -33,7 +33,7 @@ public record Auction
     /// Gets the approximate time remaining for the auction (SHORT or VERY_LONG).
     /// </summary>
     [JsonPropertyName("time_left")]
-    public string TimeLeft { get; init; }
+    public string? TimeLeft { get; init; }
 
     /// <summary>
     /// Gets the current bid, if any, for the auction.

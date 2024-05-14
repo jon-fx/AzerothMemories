@@ -23,5 +23,5 @@ public record LoadoutTalent
     /// Gets the tooltip for the loadout talent.
     /// </summary>
     [JsonPropertyName("tooltip")]
-    public TalentNodeTooltip Tooltip { get; init; }
+    public TalentNodeTooltip? Tooltip { get; init; }
 }

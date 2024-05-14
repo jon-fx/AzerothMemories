@@ -9,7 +9,7 @@ public class CovenantProgress
     /// Gets chosen covenant for the character.
     /// </summary>
     [JsonPropertyName("chosen_covenant")]
-    public CovenantReference ChosenCovenant { get; set; }
+    public CovenantReference? ChosenCovenant { get; set; }
 
     /// <summary>
     /// Gets the covenant renown level for the character.
@@ -21,5 +21,5 @@ public class CovenantProgress
     /// Gets a link to the character's soulbinds.
     /// </summary>
     [JsonPropertyName("soulbinds")]
-    public Self Soulbinds { get; set; }
+    public Self? Soulbinds { get; set; }
 }

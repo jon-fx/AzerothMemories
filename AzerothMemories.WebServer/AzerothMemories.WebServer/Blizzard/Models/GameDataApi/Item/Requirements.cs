@@ -9,11 +9,11 @@ public record Requirements
     /// Gets the required level for using an item.
     /// </summary>
     [JsonPropertyName("level")]
-    public DescribedValue Level { get; init; }
+    public DescribedValue? Level { get; init; }
 
     /// <summary>
     /// Gets the required faction for using an item.
     /// </summary>
     [JsonPropertyName("faction")]
-    public FactionRequirement Faction { get; init; }
+    public FactionRequirement? Faction { get; init; }
 }

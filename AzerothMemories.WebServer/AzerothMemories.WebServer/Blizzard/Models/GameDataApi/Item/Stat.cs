@@ -9,7 +9,7 @@ public record Stat
     /// Gets the stat type.
     /// </summary>
     [JsonPropertyName("type")]
-    public EnumType Type { get; init; }
+    public EnumType? Type { get; init; }
 
     /// <summary>
     /// Gets the numerical value of the stat modifier.
@@ -27,7 +27,7 @@ public record Stat
     /// Gets the display details for the stat modifier.
     /// </summary>
     [JsonPropertyName("display")]
-    public StatDisplay Display { get; init; }
+    public StatDisplay? Display { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether the stat modifier is an equip bonus.

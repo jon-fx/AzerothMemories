@@ -11,7 +11,7 @@ public record MemberCharacter
     /// Gets the name of the character.
     /// </summary>
     [JsonPropertyName("name")]
-    public string Name { get; init; }
+    public string? Name { get; init; }
 
     /// <summary>
     /// Gets the ID of the character.
@@ -23,5 +23,5 @@ public record MemberCharacter
     /// Gets a reference to the character's realm.
     /// </summary>
     [JsonPropertyName("realm")]
-    public RealmReferenceWithoutName Realm { get; init; }
+    public RealmReferenceWithoutName? Realm { get; init; }
 }

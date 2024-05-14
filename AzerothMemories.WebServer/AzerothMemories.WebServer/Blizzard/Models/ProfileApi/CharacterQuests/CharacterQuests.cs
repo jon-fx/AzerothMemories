@@ -11,23 +11,23 @@ public record CharacterQuests
     /// Gets links for the character quests.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets a reference to the character.
     /// </summary>
     [JsonPropertyName("character")]
-    public CharacterReference Character { get; init; }
+    public CharacterReference? Character { get; init; }
 
     /// <summary>
     /// Gets references to the character's in-progress quests.
     /// </summary>
     [JsonPropertyName("in_progress")]
-    public QuestReference[] InProgress { get; init; }
+    public QuestReference[]? InProgress { get; init; }
 
     /// <summary>
     /// Gets a link to the character's completed quests.
     /// </summary>
     [JsonPropertyName("completed")]
-    public Self Completed { get; init; }
+    public Self? Completed { get; init; }
 }

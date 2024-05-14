@@ -9,7 +9,7 @@ public record Profession
     /// Gets links for the profession.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the profession.
@@ -21,29 +21,29 @@ public record Profession
     /// Gets the name of the profession.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets a description of the profession.
     /// </summary>
     [JsonPropertyName("description")]
-    public Name Description { get; init; }
+    public Name? Description { get; init; }
 
     /// <summary>
     /// Gets the type of the profession.
     /// </summary>
     [JsonPropertyName("type")]
-    public EnumType Type { get; init; }
+    public EnumType? Type { get; init; }
 
     /// <summary>
     /// Gets media associated with the profession.
     /// </summary>
     [JsonPropertyName("media")]
-    public Media Media { get; init; }
+    public Media? Media { get; init; }
 
     /// <summary>
     /// Gets references to the skill tiers for the profession.
     /// </summary>
     [JsonPropertyName("skill_tiers")]
-    public SkillTierReference[] SkillTiers { get; init; }
+    public SkillTierReference[]? SkillTiers { get; init; }
 }

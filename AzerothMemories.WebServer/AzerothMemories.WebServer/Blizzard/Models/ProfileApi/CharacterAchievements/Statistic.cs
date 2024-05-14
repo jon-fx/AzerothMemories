@@ -15,7 +15,7 @@ public record Statistic
     /// Gets the name of the statistic.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the timestamp when the statistic was last updated.
@@ -33,5 +33,5 @@ public record Statistic
     /// Gets an optional description of the statistic.
     /// </summary>
     [JsonPropertyName("description")]
-    public Name Description { get; init; }
+    public Name? Description { get; init; }
 }

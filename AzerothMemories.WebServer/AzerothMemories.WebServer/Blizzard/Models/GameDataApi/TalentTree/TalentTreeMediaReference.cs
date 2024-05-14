@@ -9,5 +9,5 @@ public record TalentTreeMediaReference
     /// Gets the key for the talent tree media.
     /// </summary>
     [JsonPropertyName("key")]
-    public Self Key { get; init; }
+    public Self? Key { get; init; }
 }

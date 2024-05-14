@@ -9,11 +9,11 @@ public record ModifiedCraftingCategoryIndex
     /// Gets links for the index of Modified Crafting categories.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets references to the Modified Crafting categories.
     /// </summary>
     [JsonPropertyName("categories")]
-    public ModifiedCraftingCategoryReference[] Categories { get; init; }
+    public ModifiedCraftingCategoryReference[]? Categories { get; init; }
 }

@@ -33,5 +33,5 @@ public record Standing
     /// Gets the name of the standing.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 }

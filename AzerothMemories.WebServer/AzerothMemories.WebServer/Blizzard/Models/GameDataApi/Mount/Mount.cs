@@ -9,7 +9,7 @@ public record Mount
     /// Gets links for the mount.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the mount.
@@ -21,35 +21,35 @@ public record Mount
     /// Gets the name of the mount.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the creature displays media for the mount.
     /// </summary>
     [JsonPropertyName("creature_displays")]
-    public Media[] CreatureDisplays { get; init; }
+    public Media[]? CreatureDisplays { get; init; }
 
     /// <summary>
     /// Gets the description of the mount.
     /// </summary>
     [JsonPropertyName("description")]
-    public Name Description { get; init; }
+    public Name? Description { get; init; }
 
     /// <summary>
     /// Gets the source for where the mount is acquired.
     /// </summary>
     [JsonPropertyName("source")]
-    public EnumType Source { get; init; }
+    public EnumType? Source { get; init; }
 
     /// <summary>
     /// Gets the faction for the mount.
     /// </summary>
     [JsonPropertyName("faction")]
-    public EnumType Faction { get; init; }
+    public EnumType? Faction { get; init; }
 
     /// <summary>
     /// Gets the requiements for using the mount.
     /// </summary>
     [JsonPropertyName("requirements")]
-    public MountRequirements Requirements { get; init; }
+    public MountRequirements? Requirements { get; init; }
 }

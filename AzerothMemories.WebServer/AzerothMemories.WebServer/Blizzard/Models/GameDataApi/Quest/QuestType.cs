@@ -9,7 +9,7 @@ public record QuestType
     /// Gets links for the quest type.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the quest type.
@@ -21,11 +21,11 @@ public record QuestType
     /// Gets the quest type name.
     /// </summary>
     [JsonPropertyName("type")]
-    public string Type { get; init; }
+    public string? Type { get; init; }
 
     /// <summary>
     /// Gets references to the quests of this type.
     /// </summary>
     [JsonPropertyName("quests")]
-    public QuestReference[] Quests { get; init; }
+    public QuestReference[]? Quests { get; init; }
 }

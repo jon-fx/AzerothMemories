@@ -11,7 +11,7 @@ public record MythicRating
     /// Gets the mythic rating color.
     /// </summary>
     [JsonPropertyName("color")]
-    public ColorDetails Color { get; init; }
+    public ColorDetails? Color { get; init; }
 
     /// <summary>
     /// Gets the mythic rating value.

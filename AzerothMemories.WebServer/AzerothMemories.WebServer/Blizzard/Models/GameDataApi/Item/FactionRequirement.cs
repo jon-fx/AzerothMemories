@@ -9,11 +9,11 @@ public record FactionRequirement
     /// Gets the faction.
     /// </summary>
     [JsonPropertyName("value")]
-    public EnumType Value { get; init; }
+    public EnumType? Value { get; init; }
 
     /// <summary>
     /// Gets the display string for the faction requirement.
     /// </summary>
     [JsonPropertyName("display_string")]
-    public Name DisplayString { get; init; }
+    public Name? DisplayString { get; init; }
 }

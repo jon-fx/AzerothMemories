@@ -9,7 +9,7 @@ public record Title
     /// Gets links for the title.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the title.
@@ -21,11 +21,11 @@ public record Title
     /// Gets the name of the title.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the gender-specific names for the title.
     /// </summary>
     [JsonPropertyName("gender_name")]
-    public GenderName GenderName { get; init; }
+    public GenderName? GenderName { get; init; }
 }

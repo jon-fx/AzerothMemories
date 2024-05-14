@@ -9,13 +9,13 @@ public record MythicRaidLeaderboardEntry
     /// Gets a reference to the guild.
     /// </summary>
     [JsonPropertyName("guild")]
-    public GuildReferenceWithoutKeyAndFaction Guild { get; init; }
+    public GuildReferenceWithoutKeyAndFaction? Guild { get; init; }
 
     /// <summary>
     /// Gets the faction.
     /// </summary>
     [JsonPropertyName("faction")]
-    public EnumTypeWithoutName Faction { get; init; }
+    public EnumTypeWithoutName? Faction { get; init; }
 
     /// <summary>
     /// Gets the timestamp.
@@ -27,7 +27,7 @@ public record MythicRaidLeaderboardEntry
     /// Gets the region.
     /// </summary>
     [JsonPropertyName("region")]
-    public string Region { get; init; }
+    public string? Region { get; init; }
 
     /// <summary>
     /// Gets the rank.

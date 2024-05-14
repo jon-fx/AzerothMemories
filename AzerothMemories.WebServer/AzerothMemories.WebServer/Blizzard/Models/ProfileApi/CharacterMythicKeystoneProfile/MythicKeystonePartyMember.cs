@@ -11,19 +11,19 @@ public record MythicKeystonePartyMember
     /// Gets details about the character.
     /// </summary>
     [JsonPropertyName("character")]
-    public MemberCharacter Character { get; init; }
+    public MemberCharacter? Character { get; init; }
 
     /// <summary>
     /// Gets a reference to the specialization of the character.
     /// </summary>
     [JsonPropertyName("specialization")]
-    public PlayableSpecializationReference Specialization { get; init; }
+    public PlayableSpecializationReference? Specialization { get; init; }
 
     /// <summary>
     /// Gets a reference to the race of the character.
     /// </summary>
     [JsonPropertyName("race")]
-    public PlayableRaceReference Race { get; init; }
+    public PlayableRaceReference? Race { get; init; }
 
     /// <summary>
     /// Gets the equipped item level of the character.

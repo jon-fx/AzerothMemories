@@ -33,11 +33,11 @@ public record LeadingGroup
     /// Gets the members of the group.
     /// </summary>
     [JsonPropertyName("members")]
-    public Member[] Members { get; init; }
+    public Member[]? Members { get; init; }
 
     /// <summary>
     /// Gets the rating of the run.
     /// </summary>
     [JsonPropertyName("mythic_rating")]
-    public MythicRating MythicRating { get; init; }
+    public MythicRating? MythicRating { get; init; }
 }

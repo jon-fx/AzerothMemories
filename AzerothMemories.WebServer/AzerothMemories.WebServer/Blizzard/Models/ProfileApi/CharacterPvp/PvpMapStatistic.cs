@@ -11,11 +11,11 @@ public record PvpMapStatistic
     /// Gets the world map.
     /// </summary>
     [JsonPropertyName("world_map")]
-    public Map WorldMap { get; init; }
+    public Map? WorldMap { get; init; }
 
     /// <summary>
     /// Gets the character's PvP match statistics for the map.
     /// </summary>
     [JsonPropertyName("match_statistics")]
-    public PvpMatchStatistics MatchStatistics { get; init; }
+    public PvpMatchStatistics? MatchStatistics { get; init; }
 }

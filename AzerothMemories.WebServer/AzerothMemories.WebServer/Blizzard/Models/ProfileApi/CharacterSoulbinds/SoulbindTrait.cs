@@ -11,7 +11,7 @@ public record SoulbindTrait
     /// Gets a reference to a tech talent selected as a trait for this character.
     /// </summary>
     [JsonPropertyName("trait")]
-    public TechTalentReference Trait { get; init; }
+    public TechTalentReference? Trait { get; init; }
 
     /// <summary>
     /// Gets the tier for this trait.
@@ -29,5 +29,5 @@ public record SoulbindTrait
     /// Gets a conduit socket for this character.
     /// </summary>
     [JsonPropertyName("conduit_socket")]
-    public ConduitSocketTrait ConduitSocket { get; init; }
+    public ConduitSocketTrait? ConduitSocket { get; init; }
 }

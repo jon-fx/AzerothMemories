@@ -11,23 +11,23 @@ public record CharacterSpecializationsSummary
     /// Gets links for the summary of the character's specializations.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the character's specializations.
     /// </summary>
     [JsonPropertyName("specializations")]
-    public CharacterSpecialization[] Specializations { get; init; }
+    public CharacterSpecialization[]? Specializations { get; init; }
 
     /// <summary>
     /// Gets the character's active specialization.
     /// </summary>
     [JsonPropertyName("active_specialization")]
-    public PlayableSpecializationReference ActiveSpecialization { get; init; }
+    public PlayableSpecializationReference? ActiveSpecialization { get; init; }
 
     /// <summary>
     /// Gets a reference to the character.
     /// </summary>
     [JsonPropertyName("character")]
-    public CharacterReference Character { get; init; }
+    public CharacterReference? Character { get; init; }
 }

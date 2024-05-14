@@ -15,7 +15,7 @@ public record EquippedItemAppearance
     /// Gets the slot in which the item is equipped.
     /// </summary>
     [JsonPropertyName("slot")]
-    public EnumType Slot { get; init; }
+    public EnumType? Slot { get; init; }
 
     /// <summary>
     /// Gets the ID of the enchantment that has been applied to the item or zero if it is not enchanted.

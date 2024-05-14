@@ -9,13 +9,13 @@ public record MythicKeystoneLeaderboard
     /// Gets links for the Mythic Keystone Leaderboard.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the map of the instance.
     /// </summary>
     [JsonPropertyName("map")]
-    public Map Map { get; init; }
+    public Map? Map { get; init; }
 
     /// <summary>
     /// Gets the unique identifier for the leaderboard period.
@@ -39,19 +39,19 @@ public record MythicKeystoneLeaderboard
     /// Gets a reference to the connected realm.
     /// </summary>
     [JsonPropertyName("connected_realm")]
-    public Self ConnectedRealm { get; init; }
+    public Self? ConnectedRealm { get; init; }
 
     /// <summary>
     /// Gets the leading troups in this connected realm for this instance and time period.
     /// </summary>
     [JsonPropertyName("leading_groups")]
-    public LeadingGroup[] LeadingGroups { get; init; }
+    public LeadingGroup[]? LeadingGroups { get; init; }
 
     /// <summary>
     /// Gets the mythic keystone affixes and starting levels.
     /// </summary>
     [JsonPropertyName("keystone_affixes")]
-    public LeaderboardKeystoneAffix[] KeystoneAffixes { get; init; }
+    public LeaderboardKeystoneAffix[]? KeystoneAffixes { get; init; }
 
     /// <summary>
     /// Gets the map challenge mode ID.
@@ -63,5 +63,5 @@ public record MythicKeystoneLeaderboard
     /// Gets the name of the instance.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 }

@@ -39,5 +39,5 @@ public record Appearance
     /// Gets custom display options for the appearance.
     /// </summary>
     [JsonPropertyName("custom_display_options")]
-    public int[] CustomDisplayOptions { get; init; }
+    public int[]? CustomDisplayOptions { get; init; }
 }

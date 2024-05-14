@@ -9,7 +9,7 @@ public record Recipe
     /// Gets links for the recipe.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the recipe.
@@ -21,53 +21,53 @@ public record Recipe
     /// Gets the name of the recipe.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the description of the recipe.
     /// </summary>
     [JsonPropertyName("description")]
-    public Name Description { get; init; }
+    public Name? Description { get; init; }
 
     /// <summary>
     /// Gets the media associated with the recipe.
     /// </summary>
     [JsonPropertyName("media")]
-    public Media Media { get; init; }
+    public Media? Media { get; init; }
 
     /// <summary>
     /// Gets a reference to the item crafted by this recipe.
     /// </summary>
     [JsonPropertyName("crafted_item")]
-    public ItemReference CraftedItem { get; init; }
+    public ItemReference? CraftedItem { get; init; }
 
     /// <summary>
     /// Gets a reference to the Alliance version of the item crafted by this recipe.
     /// </summary>
     [JsonPropertyName("alliance_crafted_item")]
-    public ItemReference AllianceCraftedItem { get; init; }
+    public ItemReference? AllianceCraftedItem { get; init; }
 
     /// <summary>
     /// Gets a reference to the Horde version of the item crafted by this recipe.
     /// </summary>
     [JsonPropertyName("horde_crafted_item")]
-    public ItemReference HordeCraftedItem { get; init; }
+    public ItemReference? HordeCraftedItem { get; init; }
 
     /// <summary>
     /// Gets the reagents required for the recipe.
     /// </summary>
     [JsonPropertyName("reagents")]
-    public RecipeReagent[] Reagents { get; init; }
+    public RecipeReagent[]? Reagents { get; init; }
 
     /// <summary>
     /// Gets the range of item quantities produced by this recipe.
     /// </summary>
     [JsonPropertyName("crafted_quantity")]
-    public CraftedQuantity CraftedQuantity { get; init; }
+    public CraftedQuantity? CraftedQuantity { get; init; }
 
     /// <summary>
     /// Gets the modified crafting slots for this recipe.
     /// </summary>
     [JsonPropertyName("modified_crafting_slots")]
-    public ModifiedCraftingSlot[] ModifiedCraftingSlots { get; init; }
+    public ModifiedCraftingSlot[]? ModifiedCraftingSlots { get; init; }
 }

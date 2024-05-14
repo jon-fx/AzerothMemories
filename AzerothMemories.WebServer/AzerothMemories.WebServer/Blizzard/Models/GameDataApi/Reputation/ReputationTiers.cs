@@ -9,7 +9,7 @@ public record ReputationTiers
     /// Gets links for the set of reputation tiers.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the set of reputation tiers.
@@ -21,11 +21,11 @@ public record ReputationTiers
     /// Gets the reputation tiers.
     /// </summary>
     [JsonPropertyName("tiers")]
-    public ReputationTier[] Tiers { get; init; }
+    public ReputationTier[]? Tiers { get; init; }
 
     /// <summary>
     /// Gets a reference to the reputation faction.
     /// </summary>
     [JsonPropertyName("faction")]
-    public ReputationFactionReference Faction { get; init; }
+    public ReputationFactionReference? Faction { get; init; }
 }

@@ -15,5 +15,5 @@ public record SellPrice
     /// Gets the currency display information for the sell price.
     /// </summary>
     [JsonPropertyName("display_strings")]
-    public CurrencyDisplay DisplayStrings { get; init; }
+    public CurrencyDisplay? DisplayStrings { get; init; }
 }

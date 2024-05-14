@@ -11,7 +11,7 @@ public record CharacterStatisticsSummary
     /// Gets links for the statistics summary for the character.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the character's health.
@@ -29,55 +29,55 @@ public record CharacterStatisticsSummary
     /// Gets a reference to the character's power type.
     /// </summary>
     [JsonPropertyName("power_type")]
-    public PowerTypeReference PowerType { get; init; }
+    public PowerTypeReference? PowerType { get; init; }
 
     /// <summary>
     /// Gets the character's speed.
     /// </summary>
     [JsonPropertyName("speed")]
-    public RatingStatisticWithoutValue Speed { get; init; }
+    public RatingStatisticWithoutValue? Speed { get; init; }
 
     /// <summary>
     /// Gets the character's strength.
     /// </summary>
     [JsonPropertyName("strength")]
-    public PrimaryStatistic Strength { get; init; }
+    public PrimaryStatistic? Strength { get; init; }
 
     /// <summary>
     /// Gets the character's agility.
     /// </summary>
     [JsonPropertyName("agility")]
-    public PrimaryStatistic Agility { get; init; }
+    public PrimaryStatistic? Agility { get; init; }
 
     /// <summary>
     /// Gets the character's intellect.
     /// </summary>
     [JsonPropertyName("intellect")]
-    public PrimaryStatistic Intellect { get; init; }
+    public PrimaryStatistic? Intellect { get; init; }
 
     /// <summary>
     /// Gets the character's stamina.
     /// </summary>
     [JsonPropertyName("stamina")]
-    public PrimaryStatistic Stamina { get; init; }
+    public PrimaryStatistic? Stamina { get; init; }
 
     /// <summary>
     /// Gets the character's melee crit.
     /// </summary>
     [JsonPropertyName("melee_crit")]
-    public RatingStatistic MeleeCrit { get; init; }
+    public RatingStatistic? MeleeCrit { get; init; }
 
     /// <summary>
     /// Gets the character's melee haste.
     /// </summary>
     [JsonPropertyName("melee_haste")]
-    public RatingStatistic MeleeHaste { get; init; }
+    public RatingStatistic? MeleeHaste { get; init; }
 
     /// <summary>
     /// Gets the character's mastery.
     /// </summary>
     [JsonPropertyName("mastery")]
-    public RatingStatistic Mastery { get; init; }
+    public RatingStatistic? Mastery { get; init; }
 
     /// <summary>
     /// Gets the character's bonus armor.
@@ -89,7 +89,7 @@ public record CharacterStatisticsSummary
     /// Gets the character's lifesteal.
     /// </summary>
     [JsonPropertyName("lifesteal")]
-    public RatingStatistic Lifesteal { get; init; }
+    public RatingStatistic? Lifesteal { get; init; }
 
     /// <summary>
     /// Gets the character's versatility.
@@ -119,7 +119,7 @@ public record CharacterStatisticsSummary
     /// Gets the character's avoidance.
     /// </summary>
     [JsonPropertyName("avoidance")]
-    public RatingStatisticWithoutValue Avoidance { get; init; }
+    public RatingStatisticWithoutValue? Avoidance { get; init; }
 
     /// <summary>
     /// Gets the character's attack power.
@@ -191,7 +191,7 @@ public record CharacterStatisticsSummary
     /// Gets the character's spell crit.
     /// </summary>
     [JsonPropertyName("spell_crit")]
-    public RatingStatistic SpellCrit { get; init; }
+    public RatingStatistic? SpellCrit { get; init; }
 
     /// <summary>
     /// Gets the character's mana regeneration.
@@ -209,53 +209,53 @@ public record CharacterStatisticsSummary
     /// Gets the character's armor.
     /// </summary>
     [JsonPropertyName("armor")]
-    public PrimaryStatistic Armor { get; init; }
+    public PrimaryStatistic? Armor { get; init; }
 
     /// <summary>
     /// Gets the character's dodge.
     /// </summary>
     [JsonPropertyName("dodge")]
-    public RatingStatistic Dodge { get; init; }
+    public RatingStatistic? Dodge { get; init; }
 
     /// <summary>
     /// Gets the character's parry.
     /// </summary>
     [JsonPropertyName("parry")]
-    public RatingStatistic Parry { get; init; }
+    public RatingStatistic? Parry { get; init; }
 
     /// <summary>
     /// Gets the character's block.
     /// </summary>
     [JsonPropertyName("block")]
-    public RatingStatistic Block { get; init; }
+    public RatingStatistic? Block { get; init; }
 
     /// <summary>
     /// Gets the character's ranged crit.
     /// </summary>
     [JsonPropertyName("ranged_crit")]
-    public RatingStatistic RangedCrit { get; init; }
+    public RatingStatistic? RangedCrit { get; init; }
 
     /// <summary>
     /// Gets the character's ranged haste.
     /// </summary>
     [JsonPropertyName("ranged_haste")]
-    public RatingStatistic RangedHaste { get; init; }
+    public RatingStatistic? RangedHaste { get; init; }
 
     /// <summary>
     /// Gets the character's spell haste.
     /// </summary>
     [JsonPropertyName("spell_haste")]
-    public RatingStatistic SpellHaste { get; init; }
+    public RatingStatistic? SpellHaste { get; init; }
 
     /// <summary>
     /// Gets a reference to the character.
     /// </summary>
     [JsonPropertyName("character")]
-    public CharacterReference Character { get; init; }
+    public CharacterReference? Character { get; init; }
 
     /// <summary>
     /// Gets the character's corruption.
     /// </summary>
     [JsonPropertyName("corruption")]
-    public CorruptionStatistics Corruption { get; init; }
+    public CorruptionStatistics? Corruption { get; init; }
 }

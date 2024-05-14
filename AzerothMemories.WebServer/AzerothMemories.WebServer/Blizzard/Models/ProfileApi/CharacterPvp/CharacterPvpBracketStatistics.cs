@@ -11,25 +11,25 @@ public record CharacterPvpBracketStatistics
     /// Gets links for the PvP bracket statistics for the character.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets a reference to the character.
     /// </summary>
     [JsonPropertyName("character")]
-    public CharacterReference Character { get; init; }
+    public CharacterReference? Character { get; init; }
 
     /// <summary>
     /// Gets the faction.
     /// </summary>
     [JsonPropertyName("faction")]
-    public EnumType Faction { get; init; }
+    public EnumType? Faction { get; init; }
 
     /// <summary>
     /// Gets the PvP bracket.
     /// </summary>
     [JsonPropertyName("bracket")]
-    public Bracket Bracket { get; init; }
+    public Bracket? Bracket { get; init; }
 
     /// <summary>
     /// Gets the character's rating in this PvP bracket.
@@ -41,23 +41,23 @@ public record CharacterPvpBracketStatistics
     /// Gets a reference to the PvP season.
     /// </summary>
     [JsonPropertyName("season")]
-    public PvpSeasonReference Season { get; init; }
+    public PvpSeasonReference? Season { get; init; }
 
     /// <summary>
     /// Gets a reference to the PvP tier.
     /// </summary>
     [JsonPropertyName("tier")]
-    public PvpTierReferenceWithoutName Tier { get; init; }
+    public PvpTierReferenceWithoutName? Tier { get; init; }
 
     /// <summary>
     /// Gets the PvP match statistics for the season.
     /// </summary>
     [JsonPropertyName("season_match_statistics")]
-    public PvpMatchStatistics SeasonMatchStatistics { get; init; }
+    public PvpMatchStatistics? SeasonMatchStatistics { get; init; }
 
     /// <summary>
     /// Gets the PvP match statistics for the week.
     /// </summary>
     [JsonPropertyName("weekly_match_statistics")]
-    public PvpMatchStatistics WeeklyMatchStatistics { get; init; }
+    public PvpMatchStatistics? WeeklyMatchStatistics { get; init; }
 }

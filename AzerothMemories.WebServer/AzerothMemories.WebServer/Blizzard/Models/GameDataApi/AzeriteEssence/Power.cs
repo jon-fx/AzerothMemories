@@ -21,11 +21,11 @@ public record Power
     /// Gets a reference to the spell that is the main power for this azerite essence.
     /// </summary>
     [JsonPropertyName("main_power_spell")]
-    public SpellReference MainPowerSpell { get; init; }
+    public SpellReference? MainPowerSpell { get; init; }
 
     /// <summary>
     /// Gets a reference to the spell that is the passive power for this azerite essence.
     /// </summary>
     [JsonPropertyName("passive_power_spell")]
-    public SpellReference PassivePowerSpell { get; init; }
+    public SpellReference? PassivePowerSpell { get; init; }
 }

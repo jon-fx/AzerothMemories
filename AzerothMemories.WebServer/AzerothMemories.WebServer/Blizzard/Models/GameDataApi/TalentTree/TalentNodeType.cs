@@ -15,5 +15,5 @@ public record TalentNodeType
     /// Gets the type of the talent node.
     /// </summary>
     [JsonPropertyName("type")]
-    public string Type { get; init; }
+    public string? Type { get; init; }
 }

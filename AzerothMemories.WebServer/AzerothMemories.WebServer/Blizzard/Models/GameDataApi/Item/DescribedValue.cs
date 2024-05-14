@@ -15,5 +15,5 @@ public record DescribedValue
     /// Gets a display string for the value.
     /// </summary>
     [JsonPropertyName("display_string")]
-    public Name DisplayString { get; init; }
+    public Name? DisplayString { get; init; }
 }

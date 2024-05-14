@@ -9,13 +9,13 @@ public record CovenantRewardReference
     /// Gets the key for the covenant reward.
     /// </summary>
     [JsonPropertyName("key")]
-    public Self Key { get; init; }
+    public Self? Key { get; init; }
 
     /// <summary>
     /// Gets the name for the covenant reward.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the Id for the covenant reward.

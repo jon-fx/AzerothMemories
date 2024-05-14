@@ -9,7 +9,7 @@ public record TalentTreeNodes
     /// Gets the links related to the talent tree.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; set; }
+    public Links? Links { get; set; }
 
     /// <summary>
     /// Gets the ID of the talent tree.
@@ -21,11 +21,11 @@ public record TalentTreeNodes
     /// Gets a reference to associated playable specializations given a talent tree.
     /// </summary>
     [JsonPropertyName("spec_talent_trees")]
-    public TalentTreeReference[] SpecTalentTrees { get; set; }
+    public TalentTreeReference[]? SpecTalentTrees { get; set; }
 
     /// <summary>
     /// Gets the all talent nodes in the talent tree.
     /// </summary>
     [JsonPropertyName("talent_nodes")]
-    public TalentNode[] TalentNodes { get; set; }
+    public TalentNode[]? TalentNodes { get; set; }
 }

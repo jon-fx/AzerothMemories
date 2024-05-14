@@ -9,5 +9,5 @@ public record Self
     /// Gets a URI for retrieving the data for this object.
     /// </summary>
     [JsonPropertyName("href")]
-    public Uri Href { get; init; }
+    public Uri? Href { get; init; }
 }

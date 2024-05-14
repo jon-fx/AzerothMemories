@@ -9,7 +9,7 @@ public record ModifiedCraftingReagentSlotType
     /// Gets links for the Modified Crafting reagent slot type.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the Modified Crafting reagent slot type.
@@ -21,11 +21,11 @@ public record ModifiedCraftingReagentSlotType
     /// Gets a description of the Modified Crafting reagent slot type.
     /// </summary>
     [JsonPropertyName("description")]
-    public Name Description { get; init; }
+    public Name? Description { get; init; }
 
     /// <summary>
     /// Gets references to the Modified Crafting categories that are compatible with this reagent slot type.
     /// </summary>
     [JsonPropertyName("compatible_categories")]
-    public ModifiedCraftingCategoryReference[] CompatibleCategories { get; init; }
+    public ModifiedCraftingCategoryReference[]? CompatibleCategories { get; init; }
 }

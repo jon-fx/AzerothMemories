@@ -9,7 +9,7 @@ public record PowerType
     /// Gets links for the power type.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the power type.
@@ -21,5 +21,5 @@ public record PowerType
     /// Gets the name of the power type.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 }

@@ -9,7 +9,7 @@ public record PetAbility
     /// Gets links for the pet ability.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets the ID of the pet ability.
@@ -21,13 +21,13 @@ public record PetAbility
     /// Gets the name of the pet ability.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 
     /// <summary>
     /// Gets the battle pet type for this pet ability.
     /// </summary>
     [JsonPropertyName("battle_pet_type")]
-    public BattlePetType BattlePetType { get; init; }
+    public BattlePetType? BattlePetType { get; init; }
 
     /// <summary>
     /// Gets the number of rounds for the pet ability cooldown.
@@ -39,5 +39,5 @@ public record PetAbility
     /// Gets the media associated with this pet ability.
     /// </summary>
     [JsonPropertyName("media")]
-    public Media Media { get; init; }
+    public Media? Media { get; init; }
 }

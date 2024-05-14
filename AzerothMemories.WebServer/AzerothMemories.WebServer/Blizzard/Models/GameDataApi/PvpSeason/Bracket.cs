@@ -15,5 +15,5 @@ public record Bracket
     /// Gets the type of the PvP bracket.
     /// </summary>
     [JsonPropertyName("type")]
-    public string Type { get; init; }
+    public string? Type { get; init; }
 }

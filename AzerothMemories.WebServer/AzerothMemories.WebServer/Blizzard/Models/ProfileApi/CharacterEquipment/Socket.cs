@@ -11,13 +11,13 @@ public record Socket
     /// Gets the socket type.
     /// </summary>
     [JsonPropertyName("socket_type")]
-    public EnumType SocketType { get; init; }
+    public EnumType? SocketType { get; init; }
 
     /// <summary>
     /// Gets a reference to the item.
     /// </summary>
     [JsonPropertyName("item")]
-    public ItemReference Item { get; init; }
+    public ItemReference? Item { get; init; }
 
     /// <summary>
     /// Gets the context.
@@ -29,17 +29,17 @@ public record Socket
     /// Gets the display string for the socket.
     /// </summary>
     [JsonPropertyName("display_string")]
-    public string DisplayString { get; init; }
+    public string? DisplayString { get; init; }
 
     /// <summary>
     /// Gets a reference to the media for the item.
     /// </summary>
     [JsonPropertyName("media")]
-    public ItemMediaReference Media { get; init; }
+    public ItemMediaReference? Media { get; init; }
 
     /// <summary>
     /// Gets a list of bonus IDs for the socket.
     /// </summary>
     [JsonPropertyName("bonus_list")]
-    public int[] BonusList { get; init; }
+    public int[]? BonusList { get; init; }
 }

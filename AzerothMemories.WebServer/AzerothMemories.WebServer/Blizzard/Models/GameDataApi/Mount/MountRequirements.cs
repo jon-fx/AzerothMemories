@@ -9,5 +9,5 @@ public record MountRequirements
     /// Gets the required faction for the mount.
     /// </summary>
     [JsonPropertyName("faction")]
-    public EnumType Faction { get; init; }
+    public EnumType? Faction { get; init; }
 }

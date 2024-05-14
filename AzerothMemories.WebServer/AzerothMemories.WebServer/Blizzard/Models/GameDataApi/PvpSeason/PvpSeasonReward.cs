@@ -9,13 +9,13 @@ public record PvpSeasonReward
     /// Gets the PvP bracket for the reward.
     /// </summary>
     [JsonPropertyName("bracket")]
-    public Bracket Bracket { get; init; }
+    public Bracket? Bracket { get; init; }
 
     /// <summary>
     /// Gets a reference to the achievement associated with this reward.
     /// </summary>
     [JsonPropertyName("achievement")]
-    public AchievementReference Achievement { get; init; }
+    public AchievementReference? Achievement { get; init; }
 
     /// <summary>
     /// Gets the PvP rating cutoff for this reward.
@@ -27,5 +27,5 @@ public record PvpSeasonReward
     /// Gets the faction (Alliance or Horde) for this reward.
     /// </summary>
     [JsonPropertyName("faction")]
-    public EnumType Faction { get; init; }
+    public EnumType? Faction { get; init; }
 }

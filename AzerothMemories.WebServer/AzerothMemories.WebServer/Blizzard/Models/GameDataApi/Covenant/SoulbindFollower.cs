@@ -15,5 +15,5 @@ public record SoulbindFollower
     /// Gets the name of the follower.
     /// </summary>
     [JsonPropertyName("name")]
-    public Name Name { get; init; }
+    public Name? Name { get; init; }
 }

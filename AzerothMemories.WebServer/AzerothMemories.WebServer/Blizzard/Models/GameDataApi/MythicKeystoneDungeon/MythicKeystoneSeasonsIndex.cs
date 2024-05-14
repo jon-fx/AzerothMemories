@@ -9,17 +9,17 @@ public record MythicKeystoneSeasonsIndex
     /// Gets links for the index of mythic keystone seasons.
     /// </summary>
     [JsonPropertyName("_links")]
-    public Links Links { get; init; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Gets references to the mythic keystone seasons.
     /// </summary>
     [JsonPropertyName("seasons")]
-    public MythicKeystoneSeasonReference[] Seasons { get; init; }
+    public MythicKeystoneSeasonReference[]? Seasons { get; init; }
 
     /// <summary>
     /// Gets a reference to the current mythic keystone season.
     /// </summary>
     [JsonPropertyName("current_season")]
-    public MythicKeystoneSeasonReference CurrentSeason { get; init; }
+    public MythicKeystoneSeasonReference? CurrentSeason { get; init; }
 }

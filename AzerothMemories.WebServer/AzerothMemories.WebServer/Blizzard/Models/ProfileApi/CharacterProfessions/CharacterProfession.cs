@@ -11,13 +11,13 @@ public record CharacterProfession
     /// Gets a reference to the profession.
     /// </summary>
     [JsonPropertyName("profession")]
-    public ProfessionReference Profession { get; init; }
+    public ProfessionReference? Profession { get; init; }
 
     /// <summary>
     /// Gets the skill tiers for t
     /// </summary>
     [JsonPropertyName("tiers")]
-    public CharacterSkillTier[] Tiers { get; init; }
+    public CharacterSkillTier[]? Tiers { get; init; }
 
     /// <summary>
     /// Gets the character's skill points in this profession.
