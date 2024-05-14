@@ -54,6 +54,7 @@ public class BaseTestHelper : IAsyncLifetime
         await CommonServices.Commander.Call(new AuthBackend_SignIn(session, user));
 
         var account = await CommonServices.AccountServices.TryGetActiveAccount(session);
+        account = account.ThrowIfNull();
         account.Should().NotBeNull();
         account.Id.Should().Be(_userId);
 

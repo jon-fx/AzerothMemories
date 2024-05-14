@@ -93,12 +93,12 @@ public sealed class PostCreateTests : BaseTestHelper
             Session = session,
             TimeStamp = (ZExtensions.MinPostTime + Duration.FromMilliseconds(1)).ToUnixTimeMilliseconds(),
 
-            SystemTags = new HashSet<string>
-            {
+            SystemTags =
+            [
                 PostTagInfo.GetTagString(PostTagType.Region, BlizzardRegion.None.ToValue()),
                 PostTagInfo.GetTagString(PostTagType.Type, 1),
                 PostTagInfo.GetTagString(PostTagType.Main, 1)
-            }
+            ]
         });
 
         result.Should().NotBeNull();
@@ -116,12 +116,12 @@ public sealed class PostCreateTests : BaseTestHelper
             Session = session,
             TimeStamp = (ZExtensions.MinPostTime + Duration.FromMilliseconds(1)).ToUnixTimeMilliseconds(),
 
-            SystemTags = new HashSet<string>
-            {
+            SystemTags =
+            [
                 PostTagInfo.GetTagString(PostTagType.Account, account.Id),
                 PostTagInfo.GetTagString(PostTagType.Type, 1),
                 PostTagInfo.GetTagString(PostTagType.Main, 1)
-            }
+            ]
         });
 
         result.Should().NotBeNull();
@@ -139,12 +139,12 @@ public sealed class PostCreateTests : BaseTestHelper
             Session = session,
             TimeStamp = (ZExtensions.MinPostTime + Duration.FromMilliseconds(1)).ToUnixTimeMilliseconds(),
 
-            SystemTags = new HashSet<string>
-            {
+            SystemTags =
+            [
                 PostTagInfo.GetTagString(PostTagType.Account, account.Id),
                 PostTagInfo.GetTagString(PostTagType.Region, BlizzardRegion.None.ToValue()),
                 PostTagInfo.GetTagString(PostTagType.Main, 1)
-            }
+            ]
         });
 
         result.Should().NotBeNull();
@@ -162,18 +162,18 @@ public sealed class PostCreateTests : BaseTestHelper
             Session = session,
             TimeStamp = (ZExtensions.MinPostTime + Duration.FromMilliseconds(1)).ToUnixTimeMilliseconds(),
 
-            SystemTags = new HashSet<string>
-            {
+            SystemTags =
+            [
                 PostTagInfo.GetTagString(PostTagType.Account, account.Id),
                 PostTagInfo.GetTagString(PostTagType.Region, BlizzardRegion.None.ToValue()),
                 PostTagInfo.GetTagString(PostTagType.Type, 1)
-            },
+            ],
 
-            ImageData = new List<byte[]>
-            {
+            ImageData =
+            [
                 GetImageData(128, 128),
                 GetImageData(128, 128)
-            }
+            ]
         });
 
         result.Should().NotBeNull();
@@ -191,15 +191,15 @@ public sealed class PostCreateTests : BaseTestHelper
             Session = session,
             TimeStamp = (ZExtensions.MinPostTime + Duration.FromMilliseconds(1)).ToUnixTimeMilliseconds(),
 
-            SystemTags = new HashSet<string>
-            {
+            SystemTags =
+            [
                 PostTagInfo.GetTagString(PostTagType.Account, account.Id),
                 PostTagInfo.GetTagString(PostTagType.Region, BlizzardRegion.None.ToValue()),
                 PostTagInfo.GetTagString(PostTagType.Type, 1),
                 PostTagInfo.GetTagString(PostTagType.Main, 1)
-            },
+            ],
 
-            ImageData = new List<byte[]>()
+            ImageData = []
         });
 
         result.Should().NotBeNull();
@@ -217,19 +217,19 @@ public sealed class PostCreateTests : BaseTestHelper
             Session = session,
             TimeStamp = (ZExtensions.MinPostTime + Duration.FromMilliseconds(1)).ToUnixTimeMilliseconds(),
 
-            SystemTags = new HashSet<string>
-            {
+            SystemTags =
+            [
                 PostTagInfo.GetTagString(PostTagType.Account, account.Id),
                 PostTagInfo.GetTagString(PostTagType.Region, BlizzardRegion.None.ToValue()),
                 PostTagInfo.GetTagString(PostTagType.Type, 1),
                 PostTagInfo.GetTagString(PostTagType.Main, 1)
-            },
+            ],
 
-            ImageData = new List<byte[]>
-            {
+            ImageData =
+            [
                 GetImageData(128, 128),
                 GetImageData(128, 128)
-            }
+            ]
         });
 
         result.Should().NotBeNull();
@@ -247,19 +247,19 @@ public sealed class PostCreateTests : BaseTestHelper
             Session = session,
             TimeStamp = (ZExtensions.MinPostTime + Duration.FromMilliseconds(1)).ToUnixTimeMilliseconds(),
 
-            SystemTags = new HashSet<string>
-            {
+            SystemTags =
+            [
                 PostTagInfo.GetTagString(PostTagType.Account, account.Id),
                 PostTagInfo.GetTagString(PostTagType.Region, BlizzardRegion.None.ToValue()),
                 PostTagInfo.GetTagString(PostTagType.Type, 1),
                 PostTagInfo.GetTagString(PostTagType.Main, 1)
-            },
+            ],
 
-            ImageData = new List<byte[]>
-            {
+            ImageData =
+            [
                 null,
                 null
-            }
+            ]
         });
 
         result.Should().NotBeNull();
@@ -277,23 +277,23 @@ public sealed class PostCreateTests : BaseTestHelper
             Session = session,
             TimeStamp = (ZExtensions.MinPostTime + Duration.FromMilliseconds(1)).ToUnixTimeMilliseconds(),
 
-            SystemTags = new HashSet<string>
-            {
+            SystemTags =
+            [
                 PostTagInfo.GetTagString(PostTagType.Account, account.Id),
                 PostTagInfo.GetTagString(PostTagType.Region, BlizzardRegion.None.ToValue()),
                 PostTagInfo.GetTagString(PostTagType.Type, 1),
                 PostTagInfo.GetTagString(PostTagType.Main, 1)
-            },
+            ],
 
-            ImageData = new List<byte[]>
-            {
+            ImageData =
+            [
                 GetImageData(128, 128),
                 GetImageData(128, 128),
                 GetImageData(128, 128),
                 GetImageData(128, 128),
                 GetImageData(128, 128),
                 GetImageData(128, 128)
-            }
+            ]
         });
 
         result.Should().NotBeNull();
@@ -311,19 +311,19 @@ public sealed class PostCreateTests : BaseTestHelper
             Session = session,
             TimeStamp = (ZExtensions.MinPostTime + Duration.FromMilliseconds(1)).ToUnixTimeMilliseconds(),
 
-            SystemTags = new HashSet<string>
-            {
+            SystemTags =
+            [
                 PostTagInfo.GetTagString(PostTagType.Account, account.Id),
                 PostTagInfo.GetTagString(PostTagType.Region, BlizzardRegion.None.ToValue()),
                 PostTagInfo.GetTagString(PostTagType.Type, 1),
                 PostTagInfo.GetTagString(PostTagType.Main, 1)
-            },
+            ],
 
-            ImageData = new List<byte[]>
-            {
+            ImageData =
+            [
                 new byte[128],
                 new byte[128]
-            }
+            ]
         });
 
         result.Should().NotBeNull();
@@ -337,18 +337,15 @@ public sealed class PostCreateTests : BaseTestHelper
             Session = session,
             TimeStamp = (ZExtensions.MinPostTime + Duration.FromMilliseconds(1)).ToUnixTimeMilliseconds(),
 
-            SystemTags = new HashSet<string>
-            {
+            SystemTags =
+            [
                 PostTagInfo.GetTagString(PostTagType.Account, account.Id),
                 PostTagInfo.GetTagString(PostTagType.Region, BlizzardRegion.None.ToValue()),
                 PostTagInfo.GetTagString(PostTagType.Type, 1),
                 PostTagInfo.GetTagString(PostTagType.Main, 1)
-            },
+            ],
 
-            ImageData = new List<byte[]>
-            {
-                GetImageData(128, 128)
-            }
+            ImageData = [GetImageData(128, 128)]
         });
 
         result.Should().NotBeNull();

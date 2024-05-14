@@ -32,6 +32,9 @@ public class AccountUsernameTests : BaseTestHelper
         result.Should().BeTrue();
 
         var accountRecord = await CommonServices.AccountServices.TryGetActiveAccount(session1);
+
+        accountRecord = accountRecord.ThrowIfNull();
+
         accountRecord.Id.Should().Be(account1.Id);
         accountRecord.Username.Should().Be(username);
     }
@@ -57,6 +60,7 @@ public class AccountUsernameTests : BaseTestHelper
         result.Should().BeFalse();
 
         var accountRecord = await CommonServices.AccountServices.TryGetActiveAccount(session1);
+        accountRecord = accountRecord.ThrowIfNull();
         accountRecord.Id.Should().Be(account1.Id);
         accountRecord.Username.Should().Be(account1.Username);
     }

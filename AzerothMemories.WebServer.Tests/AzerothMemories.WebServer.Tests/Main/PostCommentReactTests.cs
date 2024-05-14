@@ -143,6 +143,8 @@ public sealed class PostCommentReactTests : BaseTestHelper
 
         await using var database = CreateDbContext();
         var commentViewModel = await database.PostComments.FirstOrDefaultAsync(x => x.Id == reactionId);
+        commentViewModel = commentViewModel.ThrowIfNull();
+
         commentViewModel.Should().NotBeNull();
 
         var reactionCounters = new[]

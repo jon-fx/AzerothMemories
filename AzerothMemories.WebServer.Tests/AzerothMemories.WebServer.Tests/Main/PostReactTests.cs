@@ -117,6 +117,8 @@ public sealed class PostReactTests : BaseTestHelper
         reactionViewModel?.Reaction.Should().Be(reaction);
 
         var postViewModel = await CommonServices.PostServices.TryGetPostViewModel(account.Id, validPost.PostId, ServerSideLocale.En_Gb);
+        postViewModel = postViewModel.ThrowIfNull();
+
         postViewModel.Should().NotBeNull();
         postViewModel.Id.Should().Be(validPost.PostId);
         postViewModel.AccountId.Should().Be(validPost.AccountId);

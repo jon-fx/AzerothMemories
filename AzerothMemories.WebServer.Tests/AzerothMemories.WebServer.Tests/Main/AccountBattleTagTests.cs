@@ -18,6 +18,8 @@ public sealed class AccountBattleTagTests : BaseTestHelper
         account1.BattleTagIsPublic.Should().BeFalse();
 
         var account = await CommonServices.AccountServices.TryGetAccountById(Session.Default, account1.Id);
+
+        account = account.ThrowIfNull();
         account.BattleTag.Should().BeNull();
     }
 }
