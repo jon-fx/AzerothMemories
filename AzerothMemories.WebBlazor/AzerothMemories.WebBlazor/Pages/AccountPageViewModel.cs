@@ -21,7 +21,7 @@ public sealed class AccountPageViewModel : PersistentStateViewModel, IViewModel<
 
     public PostSearchHelper PostSearchHelper { get; }
 
-    public bool IsLoading => AccountViewModel == null || PostSearchHelper == null;
+    public bool IsLoading => AccountViewModel == null;
 
     public void OnParametersChanged(string? accountIdString, string? sortModeString, string? currentPageString)
     {

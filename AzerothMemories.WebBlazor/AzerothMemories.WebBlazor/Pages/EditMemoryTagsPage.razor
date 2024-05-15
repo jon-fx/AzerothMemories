@@ -6,11 +6,7 @@
     <HeadContentTest ClientServices="@ClientServices" PageInfo="@pageHeaderInfo" />
 }
 
-@if (ViewModel.Helper == null)
-{
-    <CardLoadingComponent />
-}
-else if (!string.IsNullOrWhiteSpace(ViewModel.Helper.ErrorMessage))
+@if (!string.IsNullOrWhiteSpace(ViewModel.Helper.ErrorMessage))
 {
     <CardErrorComponent ErrorMessage="@ViewModel.Helper.ErrorMessage" />
 }

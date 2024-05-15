@@ -24,7 +24,7 @@ public sealed class GuildPageViewModel : PersistentStateViewModel, IViewModel<Gu
 
     public PostSearchHelper PostSearchHelper { get; }
 
-    public bool IsLoading => GuildViewModel == null || PostSearchHelper == null;
+    public bool IsLoading => GuildViewModel == null;
 
     public void OnParametersChanged(string? idString, string? region, string? realm, string? name, string? sortModeString, string? currentPageString)
     {

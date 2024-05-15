@@ -1,10 +1,6 @@
 ﻿@implements IActiveCommentContext
 
-@if (Helper == null)
-{
-    <CardLoadingComponent />
-}
-else if (Helper.PostViewModel == null)
+@if (Helper.PostViewModel == null)
 {
     <CardLoadingComponent />
 }

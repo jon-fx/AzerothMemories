@@ -28,7 +28,7 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IView
 
     public PostSearchHelper PostSearchHelper { get; }
 
-    public bool IsLoading => CharacterViewModel == null || PostSearchHelper == null;
+    public bool IsLoading => CharacterViewModel == null;
 
     public void OnParametersChanged(string? idString, string? region, string? realm, string? name, string? sortModeString, string? currentPageString)
     {

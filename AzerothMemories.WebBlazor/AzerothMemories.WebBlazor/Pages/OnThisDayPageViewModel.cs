@@ -5,7 +5,7 @@ public sealed class OnThisDayPageViewModel : PersistentStateViewModel, IViewMode
     private string? _currentDay;
     private string? _currentMonth;
 
-    public DailyActivityResults[]? DailyActivityResults { get; private set; } = [];
+    public DailyActivityResults[]? DailyActivityResults { get; private set; }
 
     public OnThisDayPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {

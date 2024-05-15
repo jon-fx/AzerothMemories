@@ -2,11 +2,7 @@
     var reactionData = ReactionData;
 }
 
-@if (reactionData == null)
-{
-    <CardInfoComponent Message="Failed" />
-}
-else if (reactionData.Length == 0)
+@if (reactionData.Length == 0)
 {
     <CardInfoComponent Message="None" />
 }

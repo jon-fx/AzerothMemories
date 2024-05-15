@@ -1,11 +1,6 @@
 ﻿@implements IDisposable
 
-@if (UploadedImage == null)
-{
-
-}
-else
-{
+@{
     var timeStr = "Unknown";
     if (UploadedImage.FileTimeStamp > 0)
     {

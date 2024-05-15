@@ -8,10 +8,7 @@
 
 <AuthorizeView>
     <Authorized>
-        @if (ViewModel == null)
-        {
-        }
-        else if (ViewModel.UploadedImages.Count > 0 || _skipAddImage)
+        @if (ViewModel.UploadedImages.Count > 0 || _skipAddImage)
         {
             <AddMemoryComponent Services="@(this)" ViewModel="@ViewModel" OnPostMemoryResult="@OnPostMemoryCallback" />
         }

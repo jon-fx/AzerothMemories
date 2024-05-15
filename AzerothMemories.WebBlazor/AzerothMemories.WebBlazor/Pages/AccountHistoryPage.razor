@@ -4,14 +4,7 @@
 @{
     var pageHeaderInfo = new DefaultPageHeaderInfo("Account History");
     <HeadContentTest ClientServices="@ClientServices" PageInfo="@pageHeaderInfo" />
-}
 
-@if (ViewModel == null)
-{
-
-}
-else
-{
     var viewModels = ViewModel.HistoryViewModels;
     @if (viewModels == null || viewModels.Length == 0)
     {

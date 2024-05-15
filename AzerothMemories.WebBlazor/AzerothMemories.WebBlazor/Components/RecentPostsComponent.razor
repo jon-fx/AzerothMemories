@@ -1,5 +1,5 @@
 ﻿<div id="moa-top-header">
-    @if (AccountViewModel == null || RecentPostsHelper == null)
+    @if (AccountViewModel == null)
     {
     }
     else
@@ -17,11 +17,11 @@
     }
 </div>
 
-@if (RecentPostsHelper == null || RecentPostsHelper.IsLoading)
+@if (RecentPostsHelper.IsLoading)
 {
     <CardLoadingComponent />
 }
-else if (RecentPostsHelper.SearchResults == null || RecentPostsHelper.SearchResults.PostViewModels == null || RecentPostsHelper.SearchResults.PostViewModels.Length == 0)
+else if (RecentPostsHelper.SearchResults.PostViewModels == null || RecentPostsHelper.SearchResults.PostViewModels.Length == 0)
 {
     <CardInfoComponent Message="None" />
 }
@@ -51,7 +51,7 @@ else
 {
     [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
-    [Parameter, EditorRequired] public required AccountViewModel AccountViewModel { get; init; }
+    [Parameter, EditorRequired] public required AccountViewModel? AccountViewModel { get; init; }
 
     [Parameter, EditorRequired] public required RecentPostsHelper RecentPostsHelper { get; init; }
 }
