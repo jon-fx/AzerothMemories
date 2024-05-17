@@ -31,9 +31,9 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="SixLabors.ImageSharp" Version="3.1.4" />
-        <PackageReference Include="ActualLab.Fusion.EntityFramework.Npgsql" Version="7.9.13" />
-        <PackageReference Include="ActualLab.Fusion.Server" Version="7.9.13" />
-        <PackageReference Include="ActualLab.Generators" Version="7.9.13" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
+        <PackageReference Include="ActualLab.Fusion.EntityFramework.Npgsql" Version="8.0.3" />
+        <PackageReference Include="ActualLab.Fusion.Server" Version="8.0.3" />
+        <PackageReference Include="ActualLab.Generators" Version="8.0.3" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

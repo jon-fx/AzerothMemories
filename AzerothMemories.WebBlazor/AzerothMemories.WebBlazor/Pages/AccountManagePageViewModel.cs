@@ -224,12 +224,13 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(character.AvatarLink))
+        var avatarWithFallback = character.GetAvatarLinkWithFallBack();
+        if (string.IsNullOrWhiteSpace(avatarWithFallback))
         {
             return;
         }
 
-        await OnChangeAvatarButtonClicked(character.AvatarLink);
+        await OnChangeAvatarButtonClicked(avatarWithFallback);
     }
 
     public async Task OnChangeAvatarButtonClicked(string avatarLink)
