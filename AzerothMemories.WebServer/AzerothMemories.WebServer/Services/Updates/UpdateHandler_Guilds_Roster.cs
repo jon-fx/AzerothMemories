@@ -32,7 +32,7 @@ internal sealed class UpdateHandler_Guilds_Roster : UpdateHandlerBaseResult<Guil
             var characterName = guildMemberCharacter.Name;
             var characterRealm = guildMemberCharacter.Realm?.Slug;
             var characterRef = MoaRef.GetCharacterRef(record.BlizzardRegionId, characterRealm, characterName, characterId);
-            var characterRecord = await CommonServices.CharacterServices.GetOrCreateCharacterRecord(characterRef.Full, BlizzardUpdatePriority.CharacterLow).ConfigureAwait(false);
+            var characterRecord = await CommonServices.CharacterServices.GetOrCreateCharacterRecord(characterRef.Full, false).ConfigureAwait(false);
             if (characterRecord == null)
             {
                 continue;

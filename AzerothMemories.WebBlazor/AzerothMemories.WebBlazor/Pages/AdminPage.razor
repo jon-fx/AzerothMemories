@@ -34,9 +34,13 @@ else
     <MudStack Justify="Justify.Center" Row="true">
         <AdminInfoText Text="Updates - None" Value="@((ViewModel.Counters.UpdateCounters?.NoneCount ?? 0).ToString("N0"))" />
         <AdminInfoText Text="Updates - Queued" Value="@((ViewModel.Counters.UpdateCounters?.QueuedCount ?? 0).ToString("N0"))" />
+        <AdminInfoText Text="Updates - Done" Value="@((ViewModel.Counters.UpdateCounters?.DoneCount ?? 0).ToString("N0"))" />
+    </MudStack>
 
-        <AdminInfoText Text="Updates - Progress" Value="@((ViewModel.Counters.UpdateCounters?.ProgressCount ?? 0).ToString("N0"))" />
-        <AdminInfoText Text="Updates - Required" Value="@((ViewModel.Counters.UpdateCounters?.RequiredCount ?? 0).ToString("N0"))" />
+    <MudStack Justify="Justify.Center" Row="true">
+        <AdminInfoText Text="Events - New" Value="@((ViewModel.Counters.UpdateCounters?.NewEventCount ?? 0).ToString("N0"))" />
+        <AdminInfoText Text="Events - Processed" Value="@((ViewModel.Counters.UpdateCounters?.ProcessedEventCount ?? 0).ToString("N0"))" />
+        <AdminInfoText Text="Events - Discarded" Value="@((ViewModel.Counters.UpdateCounters?.DiscardedEventCount ?? 0).ToString("N0"))" />
     </MudStack>
 
     <MudDivider />

@@ -28,7 +28,7 @@ public sealed class BlizzardUpdateRecord : IDatabaseRecord
 
     [Column] public BlizzardUpdateStatus UpdateStatus { get; set; }
 
-    [Column] public BlizzardUpdatePriority UpdatePriority { get; set; }
+    [Column] public byte UpdatePriority { get; set; }
 
     public ICollection<BlizzardUpdateChildRecord>? Children { get; init; }
 

@@ -33,7 +33,32 @@ public class CharacterServices : ICharacterServices
             Exceptions.ThrowIf(!moaRef.IsValidCharacter);
             Exceptions.ThrowIf(moaRef.Id != record.BlizzardId);
 
-            await _commonServices.BlizzardUpdateHandler.TryUpdate(record, BlizzardUpdatePriority.CharacterMed).ConfigureAwait(false);
+            await _commonServices.BlizzardUpdateHandler.TryUpdate(record).ConfigureAwait(false);
+        }
+
+        return record;
+    }
+
+    [ComputeMethod]
+    public virtual async Task<CharacterRecord?> TryGetCharacterRecord(int id, bool enqueueUpdate)
+    {
+        using var _ = new MethodTimeLogger(_logger);
+        await DependsOnCharacterRecord(id).ConfigureAwait(false);
+
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
+        var record = await database.Characters.FirstOrDefaultAsync(a => a.Id == id).ConfigureAwait(false);
+
+        if (record != null)
+        {
+            var moaRef = new MoaRef(record.MoaRef);
+
+            Exceptions.ThrowIf(!moaRef.IsValidCharacter);
+            Exceptions.ThrowIf(moaRef.Id != record.BlizzardId);
+
+            if (enqueueUpdate)
+            {
+                await _commonServices.BlizzardUpdateHandler.TryUpdate(record).ConfigureAwait(false);
+            }
         }
 
         return record;
@@ -76,19 +101,15 @@ public class CharacterServices : ICharacterServices
     }
 
     [ComputeMethod]
-    public virtual async Task<CharacterRecord> GetOrCreateCharacterRecord(string refFull, BlizzardUpdatePriority priority)
+    public virtual async Task<CharacterRecord> GetOrCreateCharacterRecord(string refFull, bool enqueueUpdate)
     {
         using var _ = new MethodTimeLogger(_logger);
-        Exceptions.ThrowIf(priority != BlizzardUpdatePriority.CharacterLow && priority != BlizzardUpdatePriority.CharacterMed && priority != BlizzardUpdatePriority.CharacterHigh);
 
         var characterRecord = await GetOrCreateCharacterRecord(refFull).ConfigureAwait(false);
 
-        if (_commonServices.Config.UpdateSkipCharactersOnLowPriority && priority == BlizzardUpdatePriority.CharacterLow)
+        if (enqueueUpdate)
         {
-        }
-        else
-        {
-            await _commonServices.BlizzardUpdateHandler.TryUpdate(characterRecord, priority).ConfigureAwait(false);
+            await _commonServices.BlizzardUpdateHandler.TryUpdate(characterRecord).ConfigureAwait(false);
         }
 
         return characterRecord;
@@ -107,7 +128,7 @@ public class CharacterServices : ICharacterServices
         foreach (var characterRecord in allCharacters)
         {
             await DependsOnCharacterRecord(characterRecord.Id).ConfigureAwait(false);
-            await _commonServices.BlizzardUpdateHandler.TryUpdate(characterRecord, BlizzardUpdatePriority.CharacterHigh).ConfigureAwait(false);
+            await _commonServices.BlizzardUpdateHandler.TryUpdate(characterRecord).ConfigureAwait(false);
 
             results.Add(characterRecord.Id, characterRecord.CreateViewModel());
         }
@@ -127,7 +148,12 @@ public class CharacterServices : ICharacterServices
     {
         using var _ = new MethodTimeLogger(_logger);
         var results = new CharacterAccountViewModel();
-        var characterRecord = await TryGetCharacterRecord(characterId).ConfigureAwait(false);
+
+        //TODO: FIX THIS SHIT
+        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
+        var enqueueUpdate = activeAccount != null;
+
+        var characterRecord = await TryGetCharacterRecord(characterId, enqueueUpdate).ConfigureAwait(false);
         if (characterRecord == null)
         {
         }
@@ -171,14 +197,10 @@ public class CharacterServices : ICharacterServices
         }
 
         //TODO: FIX THIS SHIT
-        var updatePriority = BlizzardUpdatePriority.CharacterMed;
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
-        if (activeAccount == null)
-        {
-            updatePriority = BlizzardUpdatePriority.CharacterLow;
-        }
+        var enqueueUpdate = activeAccount != null;
 
-        var characterRecord = await GetOrCreateCharacterRecord(characterRef.Full, updatePriority).ConfigureAwait(false);
+        var characterRecord = await GetOrCreateCharacterRecord(characterRef.Full, enqueueUpdate).ConfigureAwait(false);
         if (characterRecord == null)
         {
             return null;

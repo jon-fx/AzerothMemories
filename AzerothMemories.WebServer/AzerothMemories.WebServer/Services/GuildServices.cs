@@ -32,7 +32,7 @@ public class GuildServices : IGuildServices
             Exceptions.ThrowIf(moaRef.Id != 0);
 
             await DependsOnGuildRecord(record.Id).ConfigureAwait(false);
-            await _commonServices.BlizzardUpdateHandler.TryUpdate(record, BlizzardUpdatePriority.Guild).ConfigureAwait(false);
+            await _commonServices.BlizzardUpdateHandler.TryUpdate(record).ConfigureAwait(false);
         }
 
         return record;
@@ -78,7 +78,7 @@ public class GuildServices : IGuildServices
         Exceptions.ThrowIf(guildRecord.Id == 0);
 
         await DependsOnGuildRecord(guildRecord.Id).ConfigureAwait(false);
-        await _commonServices.BlizzardUpdateHandler.TryUpdate(guildRecord, BlizzardUpdatePriority.Guild).ConfigureAwait(false);
+        await _commonServices.BlizzardUpdateHandler.TryUpdate(guildRecord).ConfigureAwait(false);
 
         return guildRecord;
     }

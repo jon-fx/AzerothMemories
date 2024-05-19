@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Services;
+﻿using ActualLab.Fusion.EntityFramework.LogProcessing;
+
+namespace AzerothMemories.WebServer.Services;
 
 public class AdminServices : IAdminServices
 {
@@ -38,20 +40,30 @@ public class AdminServices : IAdminServices
             .Where(x => x.UpdateStatus == BlizzardUpdateStatus.Queued)
             .CountAsync().ConfigureAwait(false);
 
-        var progressCount = await database.BlizzardUpdates
-            .Where(x => x.UpdateStatus == BlizzardUpdateStatus.Progress)
+        var doneCount = await database.BlizzardUpdates
+            .Where(x => x.UpdateStatus == BlizzardUpdateStatus.Done)
             .CountAsync().ConfigureAwait(false);
 
-        var requiredCount = await database.BlizzardUpdates
-            .Where(x => x.UpdateStatus == BlizzardUpdateStatus.Required)
+        var newEventCount = await database.Events
+            .Where(x => x.State == LogEntryState.New)
+            .CountAsync().ConfigureAwait(false);
+
+        var processedEventCount = await database.Events
+            .Where(x => x.State == LogEntryState.Processed)
+            .CountAsync().ConfigureAwait(false);
+
+        var discardedEventCount = await database.Events
+            .Where(x => x.State == LogEntryState.Discarded)
             .CountAsync().ConfigureAwait(false);
 
         return new AdminUpdateCountersViewModel
         {
             NoneCount = noneCount,
             QueuedCount = queuedCount,
-            ProgressCount = progressCount,
-            RequiredCount = requiredCount
+            DoneCount = doneCount,
+            NewEventCount = newEventCount,
+            ProcessedEventCount = processedEventCount,
+            DiscardedEventCount = discardedEventCount
         };
     }
 

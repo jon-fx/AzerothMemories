@@ -9,13 +9,11 @@ public sealed class CommonConfig
         BlobStorageConnectionString = CommonConfigDoNotCommit.BlobStorageConnectionString;
 
         UploadToBlobStorage = false;
-        UpdateSkipCharactersOnLowPriority = true;
 #else
         DatabaseConnectionString = Environment.GetEnvironmentVariable("AZURE_POSTGRESQL_CONNECTIONSTRING").ThrowIfNull();
         BlobStorageConnectionString = Environment.GetEnvironmentVariable("AZURE_BLOB_CONNECTIONSTRING").ThrowIfNull();
 
         UploadToBlobStorage = true;
-        UpdateSkipCharactersOnLowPriority = true;
 #endif
     }
 
@@ -25,19 +23,9 @@ public sealed class CommonConfig
 
     public Duration UpdateAccountDelay { get; } = Duration.FromHours(1);
 
-    public Duration UpdateCharacterHighDelay { get; } = Duration.FromHours(12);
-
-    public Duration UpdateCharacterMedDelay { get; } = Duration.FromHours(24);
-
-    public Duration UpdateCharacterLowDelay { get; } = Duration.FromHours(72);
-
-    public Duration UpdateGuildDelay { get; } = Duration.FromHours(24);
-
     public Duration UsernameChangeDelay { get; set; } = Duration.FromDays(7);
 
     public bool UploadToBlobStorage { get; set; }
-
-    public bool UpdateSkipCharactersOnLowPriority { get; set; }
 
     public int UploadsInTheLastXCount { get; set; } = 30;
 

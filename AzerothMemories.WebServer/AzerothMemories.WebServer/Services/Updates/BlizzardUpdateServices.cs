@@ -8,6 +8,7 @@ public class BlizzardUpdateServices : IComputeService
     private readonly UpdateHandlerBase<AccountRecord>[] _accountHandlers;
     private readonly UpdateHandlerBase<CharacterRecord>[] _characterHandlers;
     private readonly UpdateHandlerBase<GuildRecord>[] _guildHandlers;
+    private readonly Duration _defaultDuration = Duration.FromSeconds(2.5);
 
     public BlizzardUpdateServices(CommonServices commonServices, ILogger<BlizzardUpdateServices> logger)
     {
@@ -60,6 +61,140 @@ public class BlizzardUpdateServices : IComputeService
                 await handler.OnFirstLogin(context, database, accountRecord, characterRecord).ConfigureAwait(false);
             }
         }
+    }
+
+    [CommandHandler]
+    public virtual async Task<HttpStatusCode> UpdateCommandHandler(Updates_UpdateRecordCommand command, CancellationToken cancellationToken = default)
+    {
+        var context = CommandContext.GetCurrent();
+        if (Invalidation.IsActive)
+        {
+            var invRecord = context.Operation.Items.Get<Updates_UpdateInvalidateMany>();
+            invRecord?.Invalidate(_commonServices);
+
+            return HttpStatusCode.NoContent;
+        }
+
+        var temp = new List<int?> { command.AccountId, command.CharacterId, command.GuildId };
+        Exceptions.ThrowIf(temp.All(x => x == null));
+        Exceptions.ThrowIf(temp.FirstOrDefault(x => x != null) == null);
+
+        using var _ = new MethodTimeLogger(_logger);
+        await using var database = await _commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+
+        IBlizzardUpdateRecord? mainRecord = null;
+        if (command.AccountId.HasValue)
+        {
+            mainRecord = await database.Accounts.FirstOrDefaultAsync(x => x.Id == command.AccountId.Value, cancellationToken: cancellationToken).ConfigureAwait(false);
+        }
+        else if (command.CharacterId.HasValue)
+        {
+            mainRecord = await database.Characters.FirstOrDefaultAsync(x => x.Id == command.CharacterId.Value, cancellationToken: cancellationToken).ConfigureAwait(false);
+        }
+        else if (command.GuildId.HasValue)
+        {
+            mainRecord = await database.Guilds.FirstOrDefaultAsync(x => x.Id == command.GuildId.Value, cancellationToken: cancellationToken).ConfigureAwait(false);
+        }
+
+        if (mainRecord == null)
+        {
+            return HttpStatusCode.NoContent;
+        }
+
+        var updateTime = _defaultDuration;
+        if (mainRecord.UpdateRecord == null || mainRecord.UpdateRecord.Children == null || mainRecord.UpdateRecord.Children.Count < command.RequiredChildRecordCount)
+        {
+        }
+        else if (RecordRequiresUpdate(mainRecord.UpdateRecord, command.ForcedUpdate))
+        {
+        }
+        else
+        {
+            return HttpStatusCode.NotModified;
+        }
+
+        mainRecord.UpdateRecord ??= new BlizzardUpdateRecord();
+        mainRecord.UpdateRecord.UpdateStatus = BlizzardUpdateStatus.Queued;
+        mainRecord.UpdateRecord.UpdateLastModified = SystemClock.Instance.GetCurrentInstant();
+
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+        _logger.LogInformation("TryUpdate: Update Required Id: {RecordId} UpdateRecordId: {UpdateRecordId}", mainRecord.Id, mainRecord.UpdateRecord.Id);
+
+        context.Operation.Items.Set(new Updates_UpdateInvalidateMany(command.AccountId, command.CharacterId, command.GuildId));
+        context.Operation.AddEvent(mainRecord.UpdateRecord.GetUpdateCommand(), updateTime.ToTimeSpan());
+
+        return HttpStatusCode.OK;
+    }
+
+    private bool RecordRequiresUpdate(BlizzardUpdateRecord? updateRecord, bool forcedUpdate)
+    {
+        if (updateRecord == null)
+        {
+            return true;
+        }
+
+        if (forcedUpdate)
+        {
+            return true;
+        }
+
+        return updateRecord.UpdateStatus == BlizzardUpdateStatus.None;
+    }
+
+    [CommandHandler]
+    public virtual async Task<HttpStatusCode> ResetUpdateStatusCommand(Updates_UpdateRecordResetStatusCommand command, CancellationToken cancellationToken = default)
+    {
+        var context = CommandContext.GetCurrent();
+        if (Invalidation.IsActive)
+        {
+            var invRecord = context.Operation.Items.Get<Updates_UpdateInvalidateMany>();
+            invRecord?.Invalidate(_commonServices);
+
+            return HttpStatusCode.NoContent;
+        }
+
+        var temp = new List<int?> { command.AccountId, command.CharacterId, command.GuildId };
+        Exceptions.ThrowIf(temp.All(x => x == null));
+        Exceptions.ThrowIf(temp.FirstOrDefault(x => x != null) == null);
+
+        using var _ = new MethodTimeLogger(_logger);
+        await using var database = await _commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+
+        IBlizzardUpdateRecord? mainRecord = null;
+        if (command.AccountId.HasValue)
+        {
+            mainRecord = await database.Accounts.FirstOrDefaultAsync(x => x.Id == command.AccountId.Value, cancellationToken: cancellationToken).ConfigureAwait(false);
+        }
+        else if (command.CharacterId.HasValue)
+        {
+            mainRecord = await database.Characters.FirstOrDefaultAsync(x => x.Id == command.CharacterId.Value, cancellationToken: cancellationToken).ConfigureAwait(false);
+        }
+        else if (command.GuildId.HasValue)
+        {
+            mainRecord = await database.Guilds.FirstOrDefaultAsync(x => x.Id == command.GuildId.Value, cancellationToken: cancellationToken).ConfigureAwait(false);
+        }
+
+        if (mainRecord == null || mainRecord.UpdateRecord == null)
+        {
+            return HttpStatusCode.NoContent;
+        }
+
+        if (mainRecord.UpdateRecord.UpdateStatus != BlizzardUpdateStatus.Done)
+        {
+            return HttpStatusCode.NoContent;
+        }
+
+        mainRecord.UpdateRecord.UpdateStatus = BlizzardUpdateStatus.None;
+        mainRecord.UpdateRecord.UpdateLastModified = SystemClock.Instance.GetCurrentInstant();
+
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+        _logger.LogInformation("ResetUpdateStatusCommand: Id: {RecordId} UpdateRecordId: {UpdateRecordId}", mainRecord.Id, mainRecord.UpdateRecord.Id);
+
+        context.Operation.Items.Set(new Updates_UpdateInvalidateMany(command.AccountId, command.CharacterId, command.GuildId));
+
+        return HttpStatusCode.OK;
     }
 
     [CommandHandler]
@@ -201,9 +336,9 @@ public class BlizzardUpdateServices : IComputeService
             return HttpStatusCode.FailedDependency;
         }
 
-        if (!_commonServices.BlizzardUpdateHandler.RecordRequiresUpdate(record.UpdateRecord, record.UpdateRecord.UpdatePriority, true))
+        if (record.UpdateRecord.UpdateStatus != BlizzardUpdateStatus.Queued)
         {
-            return HttpStatusCode.LoopDetected;
+            _logger.LogInformation("RunUpdateHandlers: Run Update Handlers Required Id: {RecordId} UpdateRecordId: {UpdateRecordId} has a status of {UpdateStatus}", record.Id, record.UpdateRecord.Id, record.UpdateRecord.UpdateStatus);
         }
 
         var requiredChildrenCount = allHandlers.Length;
@@ -242,11 +377,35 @@ public class BlizzardUpdateServices : IComputeService
 
         record.UpdateRecord.UpdateLastModified = SystemClock.Instance.GetCurrentInstant();
         record.UpdateRecord.UpdateJobLastEndTime = record.UpdateRecord.UpdateLastModified;
-        record.UpdateRecord.UpdateStatus = BlizzardUpdateStatus.None;
-        record.UpdateRecord.UpdatePriority = BlizzardUpdatePriority.None;
+        record.UpdateRecord.UpdateStatus = BlizzardUpdateStatus.Done;
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
+        context.Operation.AddEvent(new Updates_UpdateRecordResetStatusCommand(record.UpdateRecord.AccountId, record.UpdateRecord.CharacterId, record.UpdateRecord.GuildId), GetResetTime(record.UpdateRecord));
+
         return updateStatusCode;
+    }
+
+    private static TimeSpan GetResetTime(BlizzardUpdateRecord updateRecord)
+    {
+        var durationBetweenUpdates = TimeSpan.FromHours(2);
+        if (updateRecord.AccountId.HasValue)
+        {
+        }
+        else if (updateRecord.CharacterId.HasValue)
+        {
+            durationBetweenUpdates = TimeSpan.FromHours(12);
+        }
+        else if (updateRecord.GuildId.HasValue)
+        {
+            durationBetweenUpdates = TimeSpan.FromHours(12);
+        }
+
+        if (updateRecord.Children != null && updateRecord.Children.Count > 0 && updateRecord.Children.Any(x => !x.UpdateJobLastResult.IsSuccess()))
+        {
+            durationBetweenUpdates /= 2;
+        }
+
+        return durationBetweenUpdates;
     }
 }
