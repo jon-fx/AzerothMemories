@@ -69,6 +69,7 @@ public sealed class BlizzardUpdateRecord : IDatabaseRecord
 
         return new BlizzardUpdateViewModel
         {
+            Id = Id,
             Children = children.OrderBy(x => x.UpdateType).ToArray(),
             UpdateLastModified = UpdateLastModified.ToUnixTimeMilliseconds(),
             UpdateJobLastEndTime = UpdateJobLastEndTime.ToUnixTimeMilliseconds()

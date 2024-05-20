@@ -25,10 +25,10 @@ else
             </CardHeaderAvatar>
             <CardHeaderContent>
                 <CharacterNameLinkComponent Typo="Typo.h6"
-                                        CharacterName="@CharacterViewModel.Name"
-                                        CharacterClass="@CharacterViewModel.Class"
-                                        CharacterRealmId="@CharacterViewModel.RealmId"
-                                        CharacterRegionInfo="@CharacterViewModel.RegionId.ToInfo()" />
+                                            CharacterName="@CharacterViewModel.Name"
+                                            CharacterClass="@CharacterViewModel.Class"
+                                            CharacterRealmId="@CharacterViewModel.RealmId"
+                                            CharacterRegionInfo="@CharacterViewModel.RegionId.ToInfo()" />
                 <div>
                     <MudText Inline="true" Typo="Typo.body2">@CharacterViewModel.Level</MudText>
                     <CharacterRaceComponent Typo="Typo.body2" Inline="true" CharacterRace="@CharacterViewModel.Race" />
@@ -40,16 +40,19 @@ else
                     var moaRef = new MoaRef(CharacterViewModel.GuildRef);
                     <div>
                         <GuildNameLinkComponent Typo="Typo.body2"
-                                        GuildName="@CharacterViewModel.GuildName"
-                                        GuildRealmId="0"
-                                        GuildRealmSlug="@moaRef.Realm"
-                                        GuildRegionInfo="@CharacterViewModel.RegionId.ToInfo()" />
+                                                GuildName="@CharacterViewModel.GuildName"
+                                                GuildRealmId="0"
+                                                GuildRealmSlug="@moaRef.Realm"
+                                                GuildRegionInfo="@CharacterViewModel.RegionId.ToInfo()" />
                     </div>
                 }
                 <div>
                     <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@CharacterViewModel.RealmId" />
                 </div>
             </CardHeaderContent>
+            <CardHeaderActions>
+                <LastUpdateInfoComponent TimeProvider="@Services.ClientServices.TimeProvider" UpdateViewModel="@CharacterViewModel.UpdateJobLastResults" />
+            </CardHeaderActions>
         </MudCardHeader>
     </MudCard>
 }

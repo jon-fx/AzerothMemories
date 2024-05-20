@@ -89,6 +89,12 @@ else
                             </MudAvatar>
                         </a>
                     }
+
+                    @if (Services.ClientServices.ActiveAccountServices.AccountViewModel.IsAdmin())
+                    {
+                        <LastUpdateInfoComponent TimeProvider="@Services.ClientServices.TimeProvider" UpdateViewModel="@AccountViewModel.UpdateJobLastResults" />
+                    }
+
                     <MudMenu Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Dense="true">
                         <MudMenuItem Href="@($"/account/{AccountViewModel.Id}")">
                             <MudTooltip Text="Link" Arrow="true" Placement="Placement.Left" Color="Color.Dark">

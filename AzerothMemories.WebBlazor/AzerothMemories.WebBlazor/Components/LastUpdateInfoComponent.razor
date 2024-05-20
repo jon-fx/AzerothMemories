@@ -7,24 +7,26 @@ else
     var main = GetIconAndColor(UpdateViewModel.Children.All(x => x.UpdateJobLastResult.IsSuccess2()));
     var endTimeAsString = TimeProvider.GetTimeAsLocalStringAgo(UpdateViewModel.UpdateJobLastEndTime, true);
 
-    <MudTooltip Color="Color.Dark">
-        <ChildContent>
-            <MudIconButton Icon="@main.Icon" Color="@main.IconColor" />
-        </ChildContent>
-        <TooltipContent>
-            @endTimeAsString
+    <MudMenu Icon="@main.Icon" Color="@main.IconColor" Size="Size.Small" Dense="true" ActivationEvent="MouseEvent.MouseOver">
+        <MudText Typo="Typo.subtitle1">
+            <MudMenuItem Disabled="true">
+                <MudText Typo="Typo.body1" Style="@($"color:{MainTheme.Theme.Palette.TextPrimary};")">
+                    @endTimeAsString
+                </MudText>
+            </MudMenuItem>
+        </MudText>
 
-            @foreach (var child in UpdateViewModel.Children)
-            {
-                var row = GetIconAndColor(child.UpdateJobLastResult.IsSuccess2());
+        @foreach (var child in UpdateViewModel.Children)
+        {
+            var row = GetIconAndColor(child.UpdateJobLastResult.IsSuccess2());
 
-                <div class="d-flex align-center">
-                    <MudIconButton Icon="@row.Icon" Color="@row.IconColor" Size="Size.Small" />
+            <MudMenuItem IconSize="Size.Small" IconColor="@row.IconColor" Icon="@row.Icon" Disabled="true">
+                <MudText Typo="Typo.body2" Style="@($"color:{MainTheme.Theme.Palette.TextPrimary};")">
                     @child.Id: @child.UpdateTypeString - @child.UpdateJobLastResult (@((int)child.UpdateJobLastResult))
-                </div>
-            }
-        </TooltipContent>
-    </MudTooltip>
+                </MudText>
+            </MudMenuItem>
+        }
+    </MudMenu>
 }
 
 @code {

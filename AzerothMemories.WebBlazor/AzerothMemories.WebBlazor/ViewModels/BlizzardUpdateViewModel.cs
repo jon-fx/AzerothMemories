@@ -3,6 +3,8 @@
 [DataContract, MemoryPackable]
 public sealed partial class BlizzardUpdateViewModel
 {
+    [JsonInclude, DataMember, MemoryPackInclude] public int Id { get; init; }
+
     [JsonInclude, DataMember, MemoryPackInclude] public long UpdateLastModified { get; init; }
 
     [JsonInclude, DataMember, MemoryPackInclude] public long UpdateJobLastEndTime { get; init; }
