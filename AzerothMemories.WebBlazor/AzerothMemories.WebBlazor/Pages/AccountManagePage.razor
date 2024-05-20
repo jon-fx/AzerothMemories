@@ -365,7 +365,7 @@
                                         </MudTd>
 
                                         <MudTd DataLabel="Result">
-                                            <LastUpdateInfoComponent TimeProvider="@ClientServices.TimeProvider" UpdateViewModel="@row.UpdateJobLastResults" />
+                                            <LastUpdateInfoComponent Services="@this" UpdateViewModel="@row.UpdateJobLastResults" />
                                         </MudTd>
                                     </tr>
                                 }

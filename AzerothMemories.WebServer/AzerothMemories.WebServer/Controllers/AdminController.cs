@@ -59,4 +59,10 @@ public sealed class AdminController : ControllerBase, IAdminServices
     {
         return _commonServices.Commander.Call(command, cancellationToken);
     }
+
+    [HttpPost]
+    public Task<bool> TryResetUpdateStatus([FromBody] Updates_TryResetUpdateStatus command, CancellationToken cancellationToken = default)
+    {
+        return _commonServices.Commander.Call(command, cancellationToken);
+    }
 }

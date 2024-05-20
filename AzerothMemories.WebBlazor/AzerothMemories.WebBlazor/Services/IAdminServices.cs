@@ -25,4 +25,7 @@ public interface IAdminServices : IComputeService
 
     [CommandHandler]
     Task<bool> TryBanUser(Admin_TryBanUser command, CancellationToken cancellationToken = default);
+
+    [CommandHandler]
+    Task<bool> TryResetUpdateStatus(Updates_TryResetUpdateStatus command, CancellationToken cancellationToken = default);
 }

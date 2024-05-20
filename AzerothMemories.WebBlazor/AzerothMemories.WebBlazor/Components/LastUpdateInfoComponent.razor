@@ -5,7 +5,7 @@
 else
 {
     var main = GetIconAndColor(UpdateViewModel.Children.All(x => x.UpdateJobLastResult.IsSuccess2()));
-    var endTimeAsString = TimeProvider.GetTimeAsLocalStringAgo(UpdateViewModel.UpdateJobLastEndTime, true);
+    var endTimeAsString = Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(UpdateViewModel.UpdateJobLastEndTime, true);
 
     <MudMenu Icon="@main.Icon" Color="@main.IconColor" Size="Size.Small" Dense="true" ActivationEvent="MouseEvent.MouseOver">
         <MudText Typo="Typo.subtitle1">
@@ -26,11 +26,21 @@ else
                 </MudText>
             </MudMenuItem>
         }
+
+        @if (Services.ClientServices.ActiveAccountServices.AccountViewModel.IsAdmin())
+        {
+            <MudMenuItem IconSize="Size.Small" IconColor="@Color.Warning" Icon="@Icons.Material.Filled.AddToQueue" OnClick="ResetUpdateStatus">
+                <MudText Typo="Typo.body2" Color="Color.Warning">
+                    Reset Update Status
+                </MudText>
+            </MudMenuItem>
+        }
     </MudMenu>
 }
 
-@code {
-    [Parameter, EditorRequired] public required TimeProviderEx TimeProvider { get; init; }
+@code 
+{
+    [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired] public required BlizzardUpdateViewModel? UpdateViewModel { get; init; }
 
@@ -42,5 +52,15 @@ else
         }
 
         return (Icons.Material.Filled.Warning, Color.Warning);
+    }
+
+    private async Task ResetUpdateStatus(MouseEventArgs arg)
+    {
+        if (UpdateViewModel == null)
+        {
+            return;
+        }
+
+        await Services.ClientServices.CommandRunner.Run(new Updates_TryResetUpdateStatus(Session.Default, UpdateViewModel.Id));
     }
 }

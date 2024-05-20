@@ -51,7 +51,7 @@ else
                 </div>
             </CardHeaderContent>
             <CardHeaderActions>
-                <LastUpdateInfoComponent TimeProvider="@Services.ClientServices.TimeProvider" UpdateViewModel="@CharacterViewModel.UpdateJobLastResults" />
+                <LastUpdateInfoComponent Services="@Services" UpdateViewModel="@CharacterViewModel.UpdateJobLastResults" />
             </CardHeaderActions>
         </MudCardHeader>
     </MudCard>

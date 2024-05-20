@@ -405,4 +405,10 @@ public class AdminServices : IAdminServices
     {
         return await AdminServices_TryBanUser.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
     }
+
+    [CommandHandler]
+    public virtual async Task<bool> TryResetUpdateStatus(Updates_TryResetUpdateStatus command, CancellationToken cancellationToken = default)
+    {
+        return await AdminServices_TryResetUpdateStatus.TryHandle(_logger, _commonServices, command, cancellationToken).ConfigureAwait(false);
+    }
 }

@@ -35,7 +35,7 @@ else
                 </div>
             </CardHeaderContent>
             <CardHeaderActions>
-                <LastUpdateInfoComponent TimeProvider="@Services.ClientServices.TimeProvider" UpdateViewModel="@GuildViewModel.UpdateJobLastResults" />
+                <LastUpdateInfoComponent Services="@Services" UpdateViewModel="@GuildViewModel.UpdateJobLastResults" />
                 <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
             </CardHeaderActions>
         </MudCardHeader>

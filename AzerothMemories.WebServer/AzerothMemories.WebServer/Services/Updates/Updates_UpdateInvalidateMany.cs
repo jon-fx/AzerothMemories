@@ -15,12 +15,12 @@ public record Updates_UpdateInvalidateMany(int? AccountId, int? CharacterId, int
 
         if (CharacterId.HasValue)
         {
-            _ = commonServices.AccountServices.DependsOnAccountRecord(CharacterId.Value);
+            _ = commonServices.CharacterServices.DependsOnCharacterRecord(CharacterId.Value);
         }
 
         if (GuildId.HasValue)
         {
-            _ = commonServices.AccountServices.DependsOnAccountRecord(GuildId.Value);
+            _ = commonServices.GuildServices.DependsOnGuildRecord(GuildId.Value);
         }
     }
 }
