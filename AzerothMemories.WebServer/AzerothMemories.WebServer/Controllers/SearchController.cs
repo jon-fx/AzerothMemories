@@ -1,3 +1,5 @@
+#if DEBUG
+
 namespace AzerothMemories.WebServer.Controllers;
 
 [ApiController]
@@ -42,3 +44,5 @@ public sealed class SearchController : ControllerBase, ISearchServices
         return _commonServices.SearchServices.TrySearchPosts(session, tagStrings, sortMode, currentPage, postMinTime, postMaxTime, locale);
     }
 }
+
+#endif

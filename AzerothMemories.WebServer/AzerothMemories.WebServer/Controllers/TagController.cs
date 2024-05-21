@@ -1,3 +1,5 @@
+#if DEBUG
+
 namespace AzerothMemories.WebServer.Controllers;
 
 [ApiController]
@@ -18,3 +20,5 @@ public sealed class TagController : ControllerBase, ITagServices
         return _commonServices.TagServices.Search(session, searchString, locale);
     }
 }
+
+#endif

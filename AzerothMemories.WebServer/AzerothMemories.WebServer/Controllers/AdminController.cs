@@ -1,3 +1,5 @@
+#if DEBUG
+
 namespace AzerothMemories.WebServer.Controllers;
 
 [ApiController]
@@ -66,3 +68,5 @@ public sealed class AdminController : ControllerBase, IAdminServices
         return _commonServices.Commander.Call(command, cancellationToken);
     }
 }
+
+#endif

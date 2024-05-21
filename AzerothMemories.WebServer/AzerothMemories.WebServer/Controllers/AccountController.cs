@@ -1,3 +1,5 @@
+#if DEBUG
+
 namespace AzerothMemories.WebServer.Controllers;
 
 [ApiController]
@@ -29,12 +31,6 @@ public sealed class AccountController : ControllerBase, IAccountServices
     {
         return _commonServices.AccountServices.TryGetAccountByUsername(session, username);
     }
-
-    //[HttpPost]
-    //public Task<bool> TryEnqueueUpdate(Session session)
-    //{
-    //    return _commonServices.AccountServices.TryEnqueueUpdate(session);
-    //}
 
     [HttpGet("{username}")]
     public Task<bool> CheckIsValidUsername(Session session, [FromRoute] string username)
@@ -102,3 +98,5 @@ public sealed class AccountController : ControllerBase, IAccountServices
         return _commonServices.AccountServices.TryGetAccountHistory(session, currentPage);
     }
 }
+
+#endif

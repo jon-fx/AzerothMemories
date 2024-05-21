@@ -31,13 +31,13 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="SixLabors.ImageSharp" Version="3.1.4" />
-        <PackageReference Include="ActualLab.Fusion.EntityFramework.Npgsql" Version="8.0.3" />
-        <PackageReference Include="ActualLab.Fusion.Server" Version="8.0.3" />
-        <PackageReference Include="ActualLab.Generators" Version="8.0.3" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
+        <PackageReference Include="ActualLab.Fusion.EntityFramework.Npgsql" Version="8.0.8" />
+        <PackageReference Include="ActualLab.Fusion.Server" Version="8.0.8" />
+        <PackageReference Include="ActualLab.Generators" Version="8.0.8" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
         <PackageReference Include="AspNet.Security.OAuth.BattleNet" Version="8.0.0" />
         <PackageReference Include="AspNet.Security.OAuth.Patreon" Version="8.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.5" />

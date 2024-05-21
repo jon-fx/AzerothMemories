@@ -1,3 +1,5 @@
+#if DEBUG
+
 namespace AzerothMemories.WebServer.Controllers;
 
 [ApiController]
@@ -114,3 +116,5 @@ public sealed class PostController : ControllerBase, IPostServices
         return _commonServices.Commander.Call(command, cancellationToken);
     }
 }
+
+#endif

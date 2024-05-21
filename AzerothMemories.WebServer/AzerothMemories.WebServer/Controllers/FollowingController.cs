@@ -1,3 +1,5 @@
+#if DEBUG
+
 namespace AzerothMemories.WebServer.Controllers;
 
 [ApiController]
@@ -36,3 +38,5 @@ public sealed class FollowingController : ControllerBase, IFollowingServices
         return _commonServices.Commander.Call(command, cancellationToken);
     }
 }
+
+#endif
