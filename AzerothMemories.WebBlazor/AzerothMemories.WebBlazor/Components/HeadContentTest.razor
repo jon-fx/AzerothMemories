@@ -1,5 +1,10 @@
 ﻿@{
     var title = PageInfo.GetPageTitle();
+
+#if DEBUG
+    title = $"DEBUG - {title}";
+#endif
+
     var description = PageInfo.GetPageDescription();
     var altImage = PageInfo.GetPageImageAlt();
     var imagePath = GetImagePath();

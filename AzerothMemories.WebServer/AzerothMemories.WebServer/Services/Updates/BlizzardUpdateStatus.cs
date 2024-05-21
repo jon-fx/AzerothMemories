@@ -4,5 +4,5 @@ public enum BlizzardUpdateStatus
 {
     None,
     Queued,
-    Done,
+    Done
 }

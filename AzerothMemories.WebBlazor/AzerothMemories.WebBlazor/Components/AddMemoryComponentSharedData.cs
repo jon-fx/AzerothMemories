@@ -254,7 +254,7 @@ public sealed class AddMemoryComponentSharedData
             TimeStamp = timeStamp.ToUnixTimeMilliseconds(),
             AvatarTag = avatarTag ?? string.Empty,
             IsPrivate = PrivatePost,
-            Comment = finalText ?? string.Empty,
+            Comment = finalText,
             SystemTags = [.. systemTags],
             ImageData = imageData
         });

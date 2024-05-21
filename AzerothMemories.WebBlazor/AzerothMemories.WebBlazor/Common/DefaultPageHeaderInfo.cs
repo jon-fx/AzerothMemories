@@ -21,10 +21,6 @@ public sealed class DefaultPageHeaderInfo : IPageHeaderInfoProvider
             return "Memories of Azeroth";
         }
 
-#if DEBUG
-        return $"DEBUG - {_pageTitle} - Memories of Azeroth";
-#endif
-
         return $"{_pageTitle} - Memories of Azeroth";
     }
 
