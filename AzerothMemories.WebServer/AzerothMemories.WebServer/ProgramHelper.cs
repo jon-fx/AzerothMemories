@@ -39,12 +39,7 @@ public abstract class ProgramHelper
         _services.AddDbContextFactory<AppDbContextBase>(ConfigureDbContextFactory);
 #endif
 
-        _services.AddDbContextFactory<AppDbContext>(ConfigureDbContextFactory);
-
-        _services.AddTransient(_ => new DbOperationScope<AppDbContext>.Options
-        {
-            //DefaultIsolationLevel =  System.Data.IsolationLevel.Serializable,
-        });
+        _services.AddTransientDbContextFactory<AppDbContext>(ConfigureDbContextFactory);
 
         _services.AddDbContextServices<AppDbContext>(dbContext =>
         {
