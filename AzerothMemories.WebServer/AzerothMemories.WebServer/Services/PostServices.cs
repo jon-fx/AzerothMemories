@@ -190,7 +190,7 @@ public class PostServices : IPostServices
                         LastUpdateTime = r.LastUpdateTime.ToUnixTimeMilliseconds()
                     };
 
-        return await query.ToDictionaryAsync(x => x.AccountId, x => x).ConfigureAwait(false);
+        return await query.IgnoreAutoIncludes().AsNoTracking().ToDictionaryAsync(x => x.AccountId, x => x).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -212,7 +212,7 @@ public class PostServices : IPostServices
                         LastUpdateTime = r.LastUpdateTime.ToUnixTimeMilliseconds()
                     };
 
-        return await query.ToDictionaryAsync(x => x.AccountId, x => x).ConfigureAwait(false);
+        return await query.IgnoreAutoIncludes().AsNoTracking().ToDictionaryAsync(x => x.AccountId, x => x).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -325,7 +325,7 @@ public class PostServices : IPostServices
                     select c.CreateCommentViewModel(a.GetUsernameSafe(), a.Avatar);
 
         var rootCommentNodes = new List<PostCommentViewModel>();
-        var allCommentNodes = await query.ToDictionaryAsync(x => x.Id, x => x).ConfigureAwait(false);
+        var allCommentNodes = await query.IgnoreAutoIncludes().AsNoTracking().ToDictionaryAsync(x => x.Id, x => x).ConfigureAwait(false);
 
         var allPages = new PostCommentPageViewModel[1];
         allPages[0] = new PostCommentPageViewModel();

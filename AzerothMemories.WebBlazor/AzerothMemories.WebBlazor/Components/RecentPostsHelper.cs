@@ -31,7 +31,7 @@ public sealed class RecentPostsHelper
             return _searchResults;
         }
 
-        currentPage = Math.Clamp(currentPage, 0, _searchResults.TotalPages);
+        currentPage = Math.Clamp(currentPage, 0, int.MaxValue);
 
         IsLoading = true;
 

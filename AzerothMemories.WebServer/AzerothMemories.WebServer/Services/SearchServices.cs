@@ -669,7 +669,7 @@ public class SearchServices : ISearchServices
                     orderby r.UsernameSearchable!.Length
                     select MainSearchResult.CreateAccount(r.Id, r.GetUsernameSafe(), r.Avatar);
 
-        var results = await query.Take(50).AsNoTracking().ToArrayAsync().ConfigureAwait(false);
+        var results = await query.IgnoreAutoIncludes().AsNoTracking().Take(50).ToArrayAsync().ConfigureAwait(false);
         return results;
     }
 
@@ -683,7 +683,7 @@ public class SearchServices : ISearchServices
                     orderby r.NameSearchable.Length
                     select MainSearchResult.CreateCharacter(r.Id, r.MoaRef, r.Name, r.AvatarLink, r.RealmId, r.Class);
 
-        var results = await query.Take(50).AsNoTracking().ToArrayAsync().ConfigureAwait(false);
+        var results = await query.IgnoreAutoIncludes().AsNoTracking().Take(50).ToArrayAsync().ConfigureAwait(false);
         return results;
     }
 
@@ -697,7 +697,7 @@ public class SearchServices : ISearchServices
                     orderby r.NameSearchable.Length
                     select MainSearchResult.CreateGuild(r.Id, r.MoaRef, r.Name, null, r.RealmId);
 
-        var results = await query.Take(50).AsNoTracking().ToArrayAsync().ConfigureAwait(false);
+        var results = await query.IgnoreAutoIncludes().AsNoTracking().Take(50).ToArrayAsync().ConfigureAwait(false);
         return results;
     }
 
@@ -753,7 +753,7 @@ public class SearchServices : ISearchServices
                     orderby p.PostCreatedTime descending
                     select new PostInfo(p.Id, p.AccountId, p.PostVisibility);
 
-        var results = await query.TagWith("TryGetRecentPosts").AsNoTracking().ToArrayAsync().ConfigureAwait(false);
+        var results = await query.TagWith("TryGetRecentPosts").IgnoreAutoIncludes().AsNoTracking().ToArrayAsync().ConfigureAwait(false);
 
         taskList.AddRange(results.Select(x => _commonServices.PostServices.DependsOnPost(x.PostId)));
 

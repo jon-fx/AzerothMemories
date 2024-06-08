@@ -247,7 +247,7 @@ public class CharacterServices : ICharacterServices
                     where r.MoaRef.StartsWith(moaRef.GetLikeQuery())
                     select new { r.Id, r.AccountId, r.MoaRef, r.CharacterStatus };
 
-        var allResults = await query.AsNoTracking().ToArrayAsync().ConfigureAwait(false);
+        var allResults = await query.IgnoreAutoIncludes().AsNoTracking().ToArrayAsync().ConfigureAwait(false);
         if (allResults.Length == 0)
         {
         }

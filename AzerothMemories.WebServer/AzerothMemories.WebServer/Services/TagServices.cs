@@ -82,7 +82,7 @@ public class TagServices : ITagServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<BlizzardDataRecord?> GetBlizzardDataRecord(string tagString)
+    public virtual async Task<BlizzardDataRecord?> GetBlizzardDataRecord(string tagString)
     {
         using var _ = new MethodTimeLogger(_logger);
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
@@ -108,7 +108,7 @@ public class TagServices : ITagServices
         {
             var data = await (from r in database.Accounts
                               where r.Id == tagId
-                              select new { r.Username, r.Avatar }).AsNoTracking().FirstOrDefaultAsync().ConfigureAwait(false);
+                              select new { r.Username, r.Avatar }).IgnoreAutoIncludes().AsNoTracking().FirstOrDefaultAsync().ConfigureAwait(false);
 
             if (data != null)
             {
@@ -122,7 +122,7 @@ public class TagServices : ITagServices
         {
             var data = await (from r in database.Characters
                               where r.Id == tagId
-                              select new { r.Name, r.AvatarLink, r.Gender, r.Race }).AsNoTracking().FirstOrDefaultAsync().ConfigureAwait(false);
+                              select new { r.Name, r.AvatarLink, r.Gender, r.Race }).IgnoreAutoIncludes().AsNoTracking().FirstOrDefaultAsync().ConfigureAwait(false);
 
             if (data != null)
             {
@@ -136,7 +136,7 @@ public class TagServices : ITagServices
         {
             var data = await (from r in database.Guilds
                               where r.Id == tagId
-                              select new { r.Name }).AsNoTracking().FirstOrDefaultAsync().ConfigureAwait(false);
+                              select new { r.Name }).IgnoreAutoIncludes().AsNoTracking().FirstOrDefaultAsync().ConfigureAwait(false);
 
             if (data != null)
             {

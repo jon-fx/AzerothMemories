@@ -23,9 +23,8 @@ public sealed class IndexPageViewModel : PersistentStateViewModel, IViewModel<In
 
     public void OnParametersChanged(string? currentPageString, string? sortModeString, string? postTypeString)
     {
-        if (int.TryParse(currentPageString, out _currentPage) && _currentPage != 0)
+        if (int.TryParse(currentPageString, out _currentPage) && _currentPage > 0)
         {
-            _currentPage = Math.Clamp(_currentPage, 1, RecentPostsHelper.SearchResults.TotalPages);
         }
         else
         {

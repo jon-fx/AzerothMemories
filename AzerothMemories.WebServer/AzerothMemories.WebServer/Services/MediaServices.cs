@@ -307,7 +307,7 @@ public class MediaServices : IComputeService
         var pages = new List<(string Url, DateTime LastModified)>();
         if (nameType == SiteMapType.Accounts)
         {
-            var query = from r in database.Accounts.AsNoTracking()
+            var query = from r in database.Accounts.IgnoreAutoIncludes().AsNoTracking()
                         orderby r.Id
                         select new { r.Id, r.Username };
 
@@ -321,7 +321,7 @@ public class MediaServices : IComputeService
         }
         else if (nameType == SiteMapType.Characters)
         {
-            var query = from r in database.Characters.AsNoTracking()
+            var query = from r in database.Characters.IgnoreAutoIncludes().AsNoTracking()
                         where r.CharacterStatus == CharacterStatus2.None && r.UpdateRecord != null
                         orderby r.Id
                         select new { r.Id, r.MoaRef };
@@ -338,7 +338,7 @@ public class MediaServices : IComputeService
         }
         else if (nameType == SiteMapType.Guilds)
         {
-            var query = from r in database.Guilds.AsNoTracking()
+            var query = from r in database.Guilds.IgnoreAutoIncludes().AsNoTracking()
                         orderby r.Id
                         select new { r.Id, r.MoaRef };
 
@@ -354,7 +354,7 @@ public class MediaServices : IComputeService
         }
         else if (nameType == SiteMapType.Posts)
         {
-            var query = from r in database.Posts.AsNoTracking()
+            var query = from r in database.Posts.IgnoreAutoIncludes().AsNoTracking()
                         where r.PostVisibility == 0 && r.DeletedTimeStamp == 0
                         orderby r.Id
                         select new { r.Id, r.AccountId };
