@@ -23,7 +23,7 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.6" />
         <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.6" />
         <PackageReference Include="MudBlazor" Version="6.20.0" />
-        <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.21.0" />
+        <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.22.0" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="8.0.4" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.6">
@@ -38,8 +38,8 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
-        <PackageReference Include="AspNet.Security.OAuth.BattleNet" Version="8.0.0" />
-        <PackageReference Include="AspNet.Security.OAuth.Patreon" Version="8.0.0" />
+        <PackageReference Include="AspNet.Security.OAuth.BattleNet" Version="8.1.0" />
+        <PackageReference Include="AspNet.Security.OAuth.Patreon" Version="8.1.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.6" />
     </ItemGroup>
 
