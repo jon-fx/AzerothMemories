@@ -29,11 +29,11 @@ public sealed class MediaController : ControllerBase
         container = container.ToLowerInvariant();
         if (container == ZExtensions.BlobStaticMedia)
         {
-            results = await _commonServices.MediaServices.TryGetStaticMedia(session, fileName).ConfigureAwait(false);
+            results = await _commonServices.MediaServices.TryGetStaticMedia(fileName).ConfigureAwait(false);
         }
         else if (container == ZExtensions.BlobUserAvatars)
         {
-            results = await _commonServices.MediaServices.TryGetUserAvatar(session, fileName).ConfigureAwait(false);
+            results = await _commonServices.MediaServices.TryGetUserAvatar(fileName).ConfigureAwait(false);
         }
         else if (container == ZExtensions.BlobUserUploads)
         {

@@ -28,13 +28,6 @@ public class MediaServices : IComputeService
     }
 
     [ComputeMethod]
-    public virtual Task<MediaResult> TryGetStaticMedia(Session session, string fileName)
-    {
-        using var _ = new MethodTimeLogger(_logger);
-        return TryGetStaticMedia(fileName);
-    }
-
-    [ComputeMethod]
     public virtual async Task<MediaResult> TryGetStaticMedia(string fileName)
     {
         using var _ = new MethodTimeLogger(_logger);
@@ -56,16 +49,9 @@ public class MediaServices : IComputeService
     }
 
     [ComputeMethod]
-    public virtual Task<MediaResult> TryGetUserAvatar(Session session, string fileName)
-    {
-        using var _ = new MethodTimeLogger(_logger);
-        return TryGetUserAvatar(fileName);
-    }
-
-    [ComputeMethod]
     public virtual async Task<MediaResult> TryGetUserAvatar(string fileName)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, $"TryGetUserAvatar - fileName:{fileName}");
         var result = await TryGetBlobData(ZExtensions.BlobUserAvatars, fileName).ConfigureAwait(false);
         if (result != null)
         {
@@ -86,7 +72,7 @@ public class MediaServices : IComputeService
     [ComputeMethod]
     public virtual async Task<MediaResult> TryGetUserUpload(Session session, string fileName, MediaSize size)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, $"TryGetUserUpload - session:{session} - fileName:{fileName} - size:{size}");
         var accountId = 0;
         var account = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         if (account != null)
@@ -118,7 +104,7 @@ public class MediaServices : IComputeService
     [ComputeMethod]
     public virtual async Task<MediaResult> TryGetUserUpload(int accountId, string fileName, MediaSize size)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, $"TryGetUserUpload - accountId:{accountId} - fileName:{fileName} - size:{size}");
         var blobData = await TryGetUserUpload(fileName, size).ConfigureAwait(false);
         if (blobData.IsDefault)
         {
@@ -146,7 +132,7 @@ public class MediaServices : IComputeService
     [ComputeMethod]
     protected virtual async Task<MediaUserResult> TryGetUserUpload(string fileName, MediaSize size)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, $"TryGetUserUpload - fileName:{fileName} - size:{size}");
         var blobData = await TryGetUserUploadBlobData(fileName).ConfigureAwait(false);
         if (blobData.IsDefault)
         {
@@ -174,7 +160,7 @@ public class MediaServices : IComputeService
     [ComputeMethod]
     protected virtual async Task<MediaUserResult> TryGetUserUploadBlobData(string fileName)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, $"TryGetUserUploadBlobData - fileName:{fileName}");
         var blobData = await TryGetBlobData(ZExtensions.BlobUserUploads, fileName).ConfigureAwait(false);
         if (blobData == null)
         {
@@ -183,7 +169,7 @@ public class MediaServices : IComputeService
 
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
-        var postRecord = await database.UploadLogs.Where(x => x.BlobName == fileName).FirstOrDefaultAsync().ConfigureAwait(false);
+        var postRecord = await database.UploadLogs.Where(x => x.BlobName == fileName).IgnoreAutoIncludes().AsNoTracking().FirstOrDefaultAsync().ConfigureAwait(false);
         if (postRecord == null)
         {
             return await TryGetUserUpload_Default().ConfigureAwait(false);
@@ -200,7 +186,7 @@ public class MediaServices : IComputeService
     [ComputeMethod]
     public virtual async Task<MediaResult?> TryGetBlobData(string container, string fileName)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, $"TryGetBlobData - container:{container} - fileName:{fileName}");
         var blobClient = new BlobClient(_commonServices.Config.BlobStorageConnectionString, container, fileName);
         var blobExists = await blobClient.ExistsAsync().ConfigureAwait(false);
         if (!blobExists.Value)
@@ -295,7 +281,7 @@ public class MediaServices : IComputeService
     [ComputeMethod]
     public virtual async Task<MediaResult?> TryGetSiteMapNamed(SiteMapType nameType, int fileIndex)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, $"TryGetSiteMapNamed - nameType:{nameType} - fileIndex:{fileIndex}");
         var counters = await _commonServices.MediaServices.GetSiteMapCounters().ConfigureAwait(false);
         if (fileIndex >= counters[(int)nameType])
         {
