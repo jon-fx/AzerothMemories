@@ -1,13 +1,45 @@
-﻿<MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
-    @for (var i = 0; i < SharedData.PostAvatarImages.Count; i++)
-    {
-        var index = i;
-        var avatar = SharedData.PostAvatarImages[index];
-
-        if (avatar.Tag == null || avatar.Tag.WowHeadLink == null)
+﻿@if (SharedData == null)
+{
+    <CardLoadingComponent />
+}
+else
+{
+    <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+        @for (var i = 0; i < SharedData.PostAvatarImages.Count; i++)
         {
-            <MudTooltip Placement="Placement.Bottom" Color="Color.Dark">
-                <ChildContent>
+            var index = i;
+            var avatar = SharedData.PostAvatarImages[index];
+
+            if (avatar.Tag == null || avatar.Tag.WowHeadLink == null)
+            {
+                <MudTooltip Placement="Placement.Bottom" Color="Color.Dark">
+                    <ChildContent>
+                        <MudButton Id="@index" Variant="Variant.Filled" Disabled="SharedData.SelectedPostAvatarImage == index" OnClick="@(_ => SharedData.SelectedPostAvatarImage = index)">
+                            <MudAvatar Size="Size.Medium">
+                                @{
+                                    var avatarSource = avatar.ImageLink;
+                                    var avatarAlt = avatar.ImageText;
+
+                                    if (string.IsNullOrWhiteSpace(avatarSource))
+                                    {
+                                        @avatarAlt
+                                    }
+                                    else
+                                    {
+                                        <MudImage Src="@avatarSource" loading="lazy" />
+                                    }
+                                }
+                            </MudAvatar>
+                        </MudButton>
+                    </ChildContent>
+                    <TooltipContent>
+                        <MudText>@avatar.ToolTipText</MudText>
+                    </TooltipContent>
+                </MudTooltip>
+            }
+            else
+            {
+                <a class="cardlink2" data-wowhead="@avatar.Tag.WowHeadLink" href="" onclick="return false;">
                     <MudButton Id="@index" Variant="Variant.Filled" Disabled="SharedData.SelectedPostAvatarImage == index" OnClick="@(_ => SharedData.SelectedPostAvatarImage = index)">
                         <MudAvatar Size="Size.Medium">
                             @{
@@ -25,44 +57,19 @@
                             }
                         </MudAvatar>
                     </MudButton>
-                </ChildContent>
-                <TooltipContent>
-                    <MudText>@avatar.ToolTipText</MudText>
-                </TooltipContent>
-            </MudTooltip>
+                </a>
+            }
         }
-        else
-        {
-            <a class="cardlink2" data-wowhead="@avatar.Tag.WowHeadLink" href="" onclick="return false;">
-                <MudButton Id="@index" Variant="Variant.Filled" Disabled="SharedData.SelectedPostAvatarImage == index" OnClick="@(_ => SharedData.SelectedPostAvatarImage = index)">
-                    <MudAvatar Size="Size.Medium">
-                        @{
-                            var avatarSource = avatar.ImageLink;
-                            var avatarAlt = avatar.ImageText;
-
-                            if (string.IsNullOrWhiteSpace(avatarSource))
-                            {
-                                @avatarAlt
-                            }
-                            else
-                            {
-                                <MudImage Src="@avatarSource" loading="lazy" />
-                            }
-                        }
-                    </MudAvatar>
-                </MudButton>
-            </a>
-        }
-    }
-</MudPaper>
+    </MudPaper>
+}
 
 @code {
     private readonly AddMemoryComponentSharedData? _sharedData;
 
     [Parameter, EditorRequired]
-    public required AddMemoryComponentSharedData SharedData
+    public required AddMemoryComponentSharedData? SharedData
     {
-        get => _sharedData.ThrowIfNull();
+        get => _sharedData;
         init
         {
             if (_sharedData == value)

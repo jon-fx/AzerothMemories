@@ -13,7 +13,7 @@ else if (reactionData.Length > 0)
             @foreach (var reaction in reactionData)
             {
                 var text = $"{reaction.Reaction.Humanize()} {reaction.AccountUsername}";
-                <MudChip @key="reaction.Id" OnClick="() => OnReactionChipClickedCallback(reaction)">
+                <MudChip T="PostReactionViewModel" @key="reaction.Id" OnClick="() => OnReactionChipClickedCallback(reaction)">
                     @if (reaction.AccountAvatar != null)
                     {
                         <MudAvatar Class="mr-2" Size="Size.Small">

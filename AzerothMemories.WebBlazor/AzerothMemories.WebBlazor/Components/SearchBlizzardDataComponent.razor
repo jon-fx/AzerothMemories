@@ -5,7 +5,7 @@
                        TextChanged="OnTextChanged"
                        Placeholder="Search tags..."
                        T="PostTagInfo"
-                       SearchFuncWithCancel="SearchMemoryItems"
+                       SearchFunc="SearchMemoryItems"
                        ToStringFunc="ToStringFunc">
 
     <ItemTemplate Context="e">
@@ -32,12 +32,12 @@
 
         await OnSelectedItemChanged.InvokeAsync(_autoCompleteValue);
 
-        await _autoComplete.Clear();
+        await _autoComplete.ClearAsync();
 
-        Services.ClientServices.JsRuntime.InvokeVoidAsync("HideWowheadToolTips").AndForget();
+        Services.ClientServices.JsRuntime.InvokeVoidAsync("HideWowheadToolTips").CatchAndLog();
     }
 
-    private void OnTextChanged(string? text)
+    private void OnTextChanged(string text)
     {
         if (text != null)
         {

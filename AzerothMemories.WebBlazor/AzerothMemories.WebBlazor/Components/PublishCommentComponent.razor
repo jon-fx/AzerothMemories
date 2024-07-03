@@ -9,7 +9,7 @@
               Lines="@(IsMainPost ? 10 : 5)"
               FullWidth="true"
               Margin="Margin.Dense"
-              DisableUnderLine="true"
+              Underline="false"
               Disabled="@Disabled"
               AutoFocus="@AutoFocus"
               MaxLength="@MaxLength"
@@ -192,6 +192,6 @@
             _parserResult = MarkdownServices.GetCommentText(_currentTextFieldText, FullTagsList, IsMainPost);
         }
 
-        InvokeAsync(StateHasChanged).AndForget();
+        InvokeAsync(StateHasChanged).CatchAndLog();
     }
 }

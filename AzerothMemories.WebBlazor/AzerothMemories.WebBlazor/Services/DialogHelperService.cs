@@ -25,7 +25,7 @@ public sealed class DialogHelperService
         {
             MaxWidth = MaxWidth.Medium,
             CloseButton = false,
-            DisableBackdropClick = true,
+            BackdropClick = false,
             NoHeader = true
         };
 

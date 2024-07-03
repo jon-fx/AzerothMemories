@@ -6,10 +6,10 @@ public sealed class AddMemoryComponentSharedData
     private readonly ViewModelBase _viewModel;
 
     private PostTagInfo[] _achievementTags;
-    private HashSet<object> _selectedTypeTags;
-    private HashSet<object> _selectedRegionTags;
-    private HashSet<object> _selectedCommonTags;
-    private HashSet<object> _selectedAchievementTags;
+    private PostTagInfo? _selectedTypeTag;
+    private PostTagInfo? _selectedRegionTag;
+    private HashSet<PostTagInfo> _selectedCommonTags;
+    private HashSet<PostTagInfo> _selectedAchievementTags;
     private HashSet<PostTagInfo> _selectedExtraTags;
 
     private CharacterViewModel? _selectedCharacter;
@@ -29,11 +29,12 @@ public sealed class AddMemoryComponentSharedData
         PostAvatarImages = [];
 
         _achievementTags = [];
-        _selectedTypeTags = new HashSet<object>(PostTagInfo.EqualityComparer2) { TypeTags[0] };
-        _selectedRegionTags = new HashSet<object>(PostTagInfo.EqualityComparer2) { RegionTags[0] };
-        _selectedCommonTags = new HashSet<object>(PostTagInfo.EqualityComparer2);
-        _selectedAchievementTags = new HashSet<object>(PostTagInfo.EqualityComparer2);
-        _selectedExtraTags = new HashSet<PostTagInfo>(PostTagInfo.EqualityComparer2);
+        _selectedTypeTag = TypeTags[0];
+        _selectedRegionTag = RegionTags[0];
+
+        _selectedCommonTags = new HashSet<PostTagInfo>(PostTagInfo.EqualityComparer1);
+        _selectedAchievementTags = new HashSet<PostTagInfo>(PostTagInfo.EqualityComparer1);
+        _selectedExtraTags = new HashSet<PostTagInfo>(PostTagInfo.EqualityComparer1);
     }
 
     public bool PrivatePost { get; set; }
@@ -48,13 +49,13 @@ public sealed class AddMemoryComponentSharedData
 
     public PostTagInfo[] AchievementTags => _achievementTags;
 
-    public ICollection<object> SelectedTypeTags => _selectedTypeTags;
+    public PostTagInfo? SelectedTypeTag => _selectedTypeTag;
 
-    public ICollection<object> SelectedRegionTags => _selectedRegionTags;
+    public PostTagInfo? SelectedRegionTag => _selectedRegionTag;
 
-    public ICollection<object> SelectedCommonTags => _selectedCommonTags;
+    public IReadOnlyCollection<PostTagInfo> SelectedCommonTags => _selectedCommonTags;
 
-    public ICollection<object> SelectedAchievementTags => _selectedAchievementTags;
+    public IReadOnlyCollection<PostTagInfo> SelectedAchievementTags => _selectedAchievementTags;
 
     public HashSet<PostTagInfo> SelectedExtraTags => _selectedExtraTags;
 
@@ -77,7 +78,7 @@ public sealed class AddMemoryComponentSharedData
         var accountViewModel = _accountViewModelProvider();
         if (accountViewModel != null)
         {
-            _selectedExtraTags = new HashSet<PostTagInfo>(PostTagInfo.EqualityComparer2);
+            _selectedExtraTags = new HashSet<PostTagInfo>(PostTagInfo.EqualityComparer1);
 
             if (!string.IsNullOrWhiteSpace(accountViewModel.Avatar))
             {
@@ -101,7 +102,7 @@ public sealed class AddMemoryComponentSharedData
 
             if (_selectedAchievementTags.Count > 0)
             {
-                SelectedAchievementTagsChanged(new List<object>());
+                SelectedAchievementTagsChanged(new List<PostTagInfo>());
             }
 
             _achievementTags = achievements;
@@ -135,31 +136,21 @@ public sealed class AddMemoryComponentSharedData
         }
     }
 
-    public async Task OnEditingPost(PostViewModel currentPost)
+    public void OnEditingPost(PostViewModel currentPost)
     {
         foreach (var tagInfo in currentPost.SystemTags.SafeEnumerable())
         {
             var mainTag = TypeTags.FirstOrDefault(x => PostTagInfo.EqualityComparer1.Equals(x, tagInfo));
             if (mainTag != null)
             {
-                if (_selectedTypeTags.Count > 0)
-                {
-                    _selectedTypeTags.Clear();
-                }
-
-                _selectedTypeTags.Add(mainTag);
+                _selectedTypeTag = mainTag;
                 continue;
             }
 
             var regionTag = RegionTags.FirstOrDefault(x => PostTagInfo.EqualityComparer1.Equals(x, tagInfo));
             if (regionTag != null)
             {
-                if (_selectedRegionTags.Count > 0)
-                {
-                    _selectedRegionTags.Clear();
-                }
-
-                _selectedRegionTags.Add(regionTag);
+                _selectedRegionTag = regionTag;
                 continue;
             }
 
@@ -193,7 +184,7 @@ public sealed class AddMemoryComponentSharedData
                 var character = accountViewModel.GetCharactersSafe().FirstOrDefault(x => x.Id == tagInfo.Id);
                 if (character != null)
                 {
-                    await ChangeSelectedCharacter(character.Id);
+                    ChangeSelectedCharacter(character.Id);
                 }
             }
 
@@ -278,34 +269,30 @@ public sealed class AddMemoryComponentSharedData
 
     private HashSet<string> GetSystemHashTags()
     {
-        var isRetailSelected = _selectedTypeTags.FirstOrDefault() == TypeTags[0];
+        var isRetailSelected = _selectedTypeTag == TypeTags[0];
         if (!isRetailSelected)
         {
             _selectedExtraTags.RemoveWhere(x => x.Type.IsRetailOnlyTag());
         }
 
         var allTags = new List<PostTagInfo>();
-        foreach (var tagObj in _selectedTypeTags)
+        if (_selectedTypeTag != null)
         {
-            var tagInfo = (PostTagInfo)tagObj;
+            allTags.Add(_selectedTypeTag);
+        }
+
+        if (_selectedRegionTag != null)
+        {
+            allTags.Add(_selectedRegionTag);
+        }
+
+        foreach (var tagInfo in _selectedCommonTags)
+        {
             allTags.Add(tagInfo);
         }
 
-        foreach (var tagObj in _selectedRegionTags)
+        foreach (var tagInfo in _selectedAchievementTags)
         {
-            var tagInfo = (PostTagInfo)tagObj;
-            allTags.Add(tagInfo);
-        }
-
-        foreach (var tagObj in _selectedCommonTags)
-        {
-            var tagInfo = (PostTagInfo)tagObj;
-            allTags.Add(tagInfo);
-        }
-
-        foreach (var tagObj in _selectedAchievementTags)
-        {
-            var tagInfo = (PostTagInfo)tagObj;
             allTags.Add(tagInfo);
         }
 
@@ -323,11 +310,11 @@ public sealed class AddMemoryComponentSharedData
         return tagsAsTags;
     }
 
-    public void SelectedMainTagsChanged(ICollection<object> collection)
+    public void SelectedMainTagsChanged(PostTagInfo postTagInfo)
     {
-        _selectedTypeTags = collection.ToHashSet();
+        _selectedTypeTag = postTagInfo;
 
-        var isRetailSelected = _selectedTypeTags.FirstOrDefault() == TypeTags[0];
+        var isRetailSelected = _selectedTypeTag == TypeTags[0];
         if (!isRetailSelected)
         {
             TryRemoveSelectedCharacterInfo();
@@ -338,48 +325,48 @@ public sealed class AddMemoryComponentSharedData
         OnTagsChanged?.Invoke();
     }
 
-    public void SelectedRegionTagsChanged(ICollection<object> collection)
+    public void SelectedRegionTagsChanged(PostTagInfo postTagInfo)
     {
-        _selectedRegionTags = collection.ToHashSet();
+        _selectedRegionTag = postTagInfo;
 
         OnTagsChanged?.Invoke();
     }
 
-    public void SelectedCommonTagsChanged(ICollection<object> collection)
+    public void SelectedCommonTagsChanged(IReadOnlyCollection<PostTagInfo> collection)
     {
-        _selectedCommonTags = collection.ToHashSet();
+        _selectedCommonTags = collection.ToHashSet(PostTagInfo.EqualityComparer1);
 
         OnTagsChanged?.Invoke();
     }
 
-    public void SelectedAchievementTagsChanged(ICollection<object> collection)
+    public void SelectedAchievementTagsChanged(IReadOnlyCollection<PostTagInfo> collection)
     {
-        var addedSet = new HashSet<object>(collection);
+        var addedSet = new HashSet<PostTagInfo>(collection);
         addedSet.ExceptWith(_selectedAchievementTags);
 
-        var removedSet = new HashSet<object>(_selectedAchievementTags);
+        var removedSet = new HashSet<PostTagInfo>(_selectedAchievementTags);
         removedSet.ExceptWith(collection);
 
-        foreach (var obj in addedSet)
+        foreach (var tagInfo in addedSet)
         {
-            AddImageToSelection((PostTagInfo)obj);
+            AddImageToSelection(tagInfo);
         }
 
-        foreach (var obj in removedSet)
+        foreach (var tagInfo in removedSet)
         {
-            RemoveImageFromSelection((PostTagInfo)obj);
+            RemoveImageFromSelection(tagInfo);
         }
 
-        _selectedAchievementTags = collection.ToHashSet();
+        _selectedAchievementTags = collection.ToHashSet(PostTagInfo.EqualityComparer1);
 
         OnTagsChanged?.Invoke();
     }
 
-    public Task ChangeSelectedCharacter(int newSelectedCharacter)
+    public void ChangeSelectedCharacter(int newSelectedCharacter)
     {
         if (SelectedCharacterId == newSelectedCharacter)
         {
-            return Task.CompletedTask;
+            return;
         }
 
         TryRemoveSelectedCharacterInfo();
@@ -389,20 +376,22 @@ public sealed class AddMemoryComponentSharedData
         _selectedCharacter = accountViewModel.GetCharactersSafe().FirstOrDefault(x => x.Id == newSelectedCharacter);
         if (_selectedCharacter != null)
         {
+            _selectedTypeTag = TypeTags[0];
+
             var stringLocalizer = _viewModel.Services.ClientServices.BlizzardStringLocalizer;
             var characterName = $"{_selectedCharacter.Name} ({stringLocalizer[$"Realm-{_selectedCharacter.RealmId}"]})";
             var characterNameTag = new PostTagInfo(PostTagType.Character, _selectedCharacter.Id, characterName, _selectedCharacter.GetAvatarLinkWithFallBack());
             var characterRealmTag = new PostTagInfo(PostTagType.Realm, _selectedCharacter.RealmId, stringLocalizer[$"Realm-{_selectedCharacter.RealmId}"], null);
 
-            var selectedRegionTags = (PostTagInfo)_selectedRegionTags.First();
-            if (selectedRegionTags.Id == 0)
+            var characterRegionId = _selectedCharacter.RegionId.ToValue();
+            var characterRegionTag = RegionTags.FirstOrDefault(x => x.Id == characterRegionId);
+            if (characterRegionTag != null)
             {
-                var characterRegionId = _selectedCharacter.RegionId.ToValue();
-                var characterRegionTag = RegionTags.FirstOrDefault(x => x.Id == characterRegionId);
-                if (characterRegionTag != null)
-                {
-                    _selectedRegionTags = [characterRegionTag];
-                }
+                _selectedRegionTag = characterRegionTag;
+            }
+            else
+            {
+                _selectedRegionTag = RegionTags[0];
             }
 
             _selectedExtraTags.Add(characterNameTag);
@@ -413,8 +402,6 @@ public sealed class AddMemoryComponentSharedData
         }
 
         OnTagsChanged?.Invoke();
-
-        return Task.CompletedTask;
     }
 
     private void TryRemoveSelectedCharacterInfo()
@@ -523,19 +510,29 @@ public sealed class AddMemoryComponentSharedData
         AddSearchDataToTags(searchResult.ToTagInfo());
     }
 
-    public void OnSelectedMainTagChipClose(MudChip mudChip)
+    public void OnSelectedMainTagChipClose(MudChip<PostTagInfo> mudChip)
     {
-        var postTagInfo = (PostTagInfo)mudChip.Value;
-        _selectedTypeTags.Remove(postTagInfo);
+        var postTagInfo = mudChip.Value;
+        if (postTagInfo == null)
+        {
+            return;
+        }
+
+        _selectedTypeTag = postTagInfo;
 
         RemoveImageFromSelection(postTagInfo);
 
         OnTagsChanged?.Invoke();
     }
 
-    public void OnSelectedCommonTagChipClose(MudChip mudChip)
+    public void OnSelectedCommonTagChipClose(MudChip<PostTagInfo> mudChip)
     {
-        var postTagInfo = (PostTagInfo)mudChip.Value;
+        var postTagInfo = mudChip.Value;
+        if (postTagInfo == null)
+        {
+            return;
+        }
+
         _selectedCommonTags.Remove(postTagInfo);
 
         RemoveImageFromSelection(postTagInfo);
@@ -543,9 +540,14 @@ public sealed class AddMemoryComponentSharedData
         OnTagsChanged?.Invoke();
     }
 
-    public void OnSelectedExtraTagChipClose(MudChip mudChip)
+    public void OnSelectedExtraTagChipClose(MudChip<PostTagInfo> mudChip)
     {
-        var postTagInfo = (PostTagInfo)mudChip.Value;
+        var postTagInfo = mudChip.Value;
+        if (postTagInfo == null)
+        {
+            return;
+        }
+
         _selectedExtraTags.Remove(postTagInfo);
 
         RemoveImageFromSelection(postTagInfo);
@@ -565,9 +567,14 @@ public sealed class AddMemoryComponentSharedData
         OnTagsChanged?.Invoke();
     }
 
-    public void OnSelectedAchievementTagChipClose(MudChip mudChip)
+    public void OnSelectedAchievementTagChipClose(MudChip<PostTagInfo> mudChip)
     {
-        var postTagInfo = (PostTagInfo)mudChip.Value;
+        var postTagInfo = mudChip.Value;
+        if (postTagInfo == null)
+        {
+            return;
+        }
+
         _selectedAchievementTags.Remove(postTagInfo);
 
         RemoveImageFromSelection(postTagInfo);
@@ -589,8 +596,8 @@ public sealed class AddMemoryComponentSharedData
             errorStrings.Add($"Time must be between {minTime} and {maxTime}.");
         }
 
-        var selectedRegionObj = SelectedRegionTags.FirstOrDefault();
-        if (selectedRegionObj is PostTagInfo selectedRegionTag && selectedRegionTag.Id > 0)
+        var selectedRegionTag = SelectedRegionTag;
+        if (selectedRegionTag != null && selectedRegionTag.Id > 0)
         {
         }
         else
@@ -599,23 +606,22 @@ public sealed class AddMemoryComponentSharedData
         }
 
         var allTags = new List<PostTagInfo>();
-        foreach (var tag in SelectedTypeTags)
+        if (_selectedTypeTag != null)
         {
-            var tagInfo = (PostTagInfo)tag;
+            var tagInfo = _selectedTypeTag;
             allTagCounters[(int)tagInfo.Type]++;
             allTags.Add(tagInfo);
         }
 
-        foreach (var tag in SelectedRegionTags)
+        if (_selectedRegionTag != null)
         {
-            var tagInfo = (PostTagInfo)tag;
+            var tagInfo = _selectedRegionTag;
             allTagCounters[(int)tagInfo.Type]++;
             allTags.Add(tagInfo);
         }
 
-        foreach (var tag in SelectedCommonTags)
+        foreach (var tagInfo in SelectedCommonTags)
         {
-            var tagInfo = (PostTagInfo)tag;
             allTagCounters[(int)tagInfo.Type]++;
             allTags.Add(tagInfo);
         }
@@ -626,13 +632,10 @@ public sealed class AddMemoryComponentSharedData
             allTags.Add(tagInfo);
         }
 
-        foreach (var tag in SelectedAchievementTags)
+        foreach (var tagInfo in SelectedAchievementTags)
         {
-            if (tag is PostTagInfo tagInfo)
-            {
-                allTagCounters[(int)tagInfo.Type]++;
-                allTags.Add(tagInfo);
-            }
+            allTagCounters[(int)tagInfo.Type]++;
+            allTags.Add(tagInfo);
         }
 
         for (var i = 0; i < allTagCounters.Length; i++)

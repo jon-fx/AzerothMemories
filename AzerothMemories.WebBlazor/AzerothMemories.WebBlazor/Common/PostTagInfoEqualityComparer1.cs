@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebBlazor.Common;
 
-internal sealed class PostTagInfoEqualityComparer1 : IEqualityComparer<PostTagInfo>
+internal sealed class PostTagInfoEqualityComparer1 : IEqualityComparer<PostTagInfo?>
 {
     public bool Equals(PostTagInfo? x, PostTagInfo? y)
     {

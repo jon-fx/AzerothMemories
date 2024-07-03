@@ -130,7 +130,7 @@ public sealed class PostPageViewModelHelper
     {
         PostCommentPageViewModel = postCommentPageViewModel;
 
-        UpdatePostCommentPageViewModel(pageString, focusedCommentIdString).AndForget();
+        UpdatePostCommentPageViewModel(pageString, focusedCommentIdString).CatchAndLog();
     }
 
     private async Task UpdatePostCommentPageViewModel(string? pageString, string? focusedCommentIdString)
@@ -238,7 +238,7 @@ public sealed class PostPageViewModelHelper
         {
             _scrollToFocus = false;
 
-            await _services.ClientServices.ScrollManager.ScrollToFragmentAsync($"moa-top-comment-{_focusedNode.Id}", ScrollBehavior.Smooth);
+            await _services.ClientServices.ScrollManager.ScrollIntoViewAsync($"#moa-top-comment-{_focusedNode.Id}", ScrollBehavior.Smooth);
         }
     }
 }

@@ -30,7 +30,7 @@
         var viewModel = ClientServices.ActiveAccountServices.AccountViewModel;
         if (viewModel.IsBanned())
         {
-            _helper ??= new TimeAsLocalStringAgoHelper(() => InvokeAsync(StateHasChanged).AndForget());
+            _helper ??= new TimeAsLocalStringAgoHelper(() => InvokeAsync(StateHasChanged).CatchAndLog());
             _helper.TrySetTimer(viewModel.BanExpireTime);
         }
         else

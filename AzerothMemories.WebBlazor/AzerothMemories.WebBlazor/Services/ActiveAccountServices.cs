@@ -79,7 +79,7 @@ public sealed class ActiveAccountServices
                     {
                         var displayText = newItem.GetDisplayText(AccountViewModel, _stringLocalizer);
 
-                        _snackbarService.Add($"{_timeProvider.GetTimeAsLocalStringAgo(newItem.CreatedTime, true)}<br>{displayText}", Severity.Normal, config =>
+                        _snackbarService.Add((MarkupString)$"{_timeProvider.GetTimeAsLocalStringAgo(newItem.CreatedTime, true)}<br>{displayText}", Severity.Normal, config =>
                         {
                             config.HideIcon = true;
                             config.VisibleStateDuration = 5000;

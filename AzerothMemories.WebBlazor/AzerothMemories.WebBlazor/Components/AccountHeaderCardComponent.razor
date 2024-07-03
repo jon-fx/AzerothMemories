@@ -110,7 +110,7 @@ else
                                 </MudTooltip>
                             </MudMenuItem>
 
-                            <MudMenuItem OnClick="@OnShowAdminDialog" OnTouch="@OnShowAdminDialog">
+                            <MudMenuItem OnClick="@OnShowAdminDialog">
                                 <MudTooltip Text="User Admin" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
                                     <MudIcon Icon="@Icons.Material.Filled.ChangeCircle" Size="Size.Small" />
                                 </MudTooltip>
@@ -171,7 +171,7 @@ else
                     }
 
                     <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="@boolean">
-                        <MudButtonGroup OverrideStyles="true" Class="@buttonGroupClass" Variant="Variant.Filled" VerticalAlign="!boolean">
+                        <MudButtonGroup OverrideStyles="true" Class="@buttonGroupClass" Variant="Variant.Filled" Vertical="!boolean">
                             <a href="@($"/follow/{AccountViewModel.Id}")">
                                 <MudButton FullWidth="!boolean">
                                     <MudText Inline="true"><b>@_followingCount.ToString("N0")</b> Following</MudText>

@@ -3,8 +3,8 @@
 [DataContract, MemoryPackable]
 public sealed partial class PostTagInfo
 {
-    public static readonly IEqualityComparer<PostTagInfo> EqualityComparer1 = new PostTagInfoEqualityComparer1();
-    public static readonly IEqualityComparer<object> EqualityComparer2 = new PostTagInfoEqualityComparer2();
+    public static readonly IEqualityComparer<PostTagInfo?> EqualityComparer1 = new PostTagInfoEqualityComparer1();
+    //public static readonly IEqualityComparer<object> EqualityComparer2 = new PostTagInfoEqualityComparer2();
 
     [JsonInclude, DataMember, MemoryPackInclude] public readonly int Id;
     [JsonInclude, DataMember, MemoryPackInclude] public readonly string Name;

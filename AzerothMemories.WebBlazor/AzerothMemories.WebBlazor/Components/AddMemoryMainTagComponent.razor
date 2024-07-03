@@ -1,7 +1,12 @@
-﻿@{
-    var isRetailSelected = SharedData.SelectedTypeTags.FirstOrDefault() == SharedData.TypeTags[0];
+﻿@if (SharedData == null)
+{
+    <CardLoadingComponent />
+}
+else
+{
+    var isRetailSelected = SharedData.SelectedTypeTag == SharedData.TypeTags[0];
     <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
-        <MudChipSet SelectedValues="@SharedData.SelectedTypeTags" SelectedValuesChanged="@SharedData.SelectedMainTagsChanged" Comparer="PostTagInfo.EqualityComparer2" Mandatory="true" Filter="true">
+        <MudChipSet T="PostTagInfo" SelectedValue="@SharedData.SelectedTypeTag" SelectedValueChanged="@SharedData.SelectedMainTagsChanged" Comparer="PostTagInfo.EqualityComparer1" SelectionMode="SelectionMode.SingleSelection">
             @for (var i = 0; i < SharedData.TypeTags.Length; i++)
             {
                 var index = i;
@@ -12,7 +17,7 @@
     </MudPaper>
 
     <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
-        <MudChipSet SelectedValues="@SharedData.SelectedRegionTags" SelectedValuesChanged="@SharedData.SelectedRegionTagsChanged" Comparer="PostTagInfo.EqualityComparer2" Mandatory="true" Filter="true">
+        <MudChipSet T="PostTagInfo" SelectedValue="@SharedData.SelectedRegionTag" SelectedValueChanged="@SharedData.SelectedRegionTagsChanged" Comparer="PostTagInfo.EqualityComparer1" SelectionMode="SelectionMode.SingleSelection">
             @for (var i = 0; i < SharedData.RegionTags.Length; i++)
             {
                 var index = i;
@@ -23,12 +28,12 @@
     </MudPaper>
 
     <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
-        <MudChipSet SelectedValues="@SharedData.SelectedCommonTags" SelectedValuesChanged="@SharedData.SelectedCommonTagsChanged" Comparer="PostTagInfo.EqualityComparer2" Mandatory="true" MultiSelection="true" Filter="true">
+        <MudChipSet T="PostTagInfo" SelectedValues="@SharedData.SelectedCommonTags" SelectedValuesChanged="@SharedData.SelectedCommonTagsChanged" Comparer="PostTagInfo.EqualityComparer1" SelectionMode="SelectionMode.MultiSelection" CheckMark="true">
             @for (var i = 1; i < SharedData.CommonTags.Length; i++)
             {
                 var index = i;
                 var tagInfo = SharedData.CommonTags[index];
-                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" Variant="Variant.Text" />
+                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" Variant="Variant.Text" IsSelected="SharedData.SelectedCommonTags.Contains(tagInfo)"/>
             }
         </MudChipSet>
     </MudPaper>
@@ -43,13 +48,13 @@
 
             @if (SharedData.AchievementTags.Length > 0)
             {
-                <MudChipSet SelectedValues="@SharedData.SelectedAchievementTags" SelectedValuesChanged="@SharedData.SelectedAchievementTagsChanged" Comparer="PostTagInfo.EqualityComparer2" MultiSelection="true" Filter="true">
+                <MudChipSet T="PostTagInfo" SelectedValues="@SharedData.SelectedAchievementTags" SelectedValuesChanged="@SharedData.SelectedAchievementTagsChanged" Comparer="PostTagInfo.EqualityComparer1" SelectionMode="SelectionMode.MultiSelection">
                     @for (var i = 0; i < SharedData.AchievementTags.Length; i++)
                     {
                         var index = i;
                         var tagInfo = SharedData.AchievementTags[index];
 
-                        <PostTagChipComponent @key="@tagInfo" Variant="Variant.Text" TagInfo="tagInfo" />
+                        <PostTagChipComponent @key="@tagInfo" Variant="Variant.Text" TagInfo="tagInfo" IsSelected="SharedData.SelectedAchievementTags.Contains(tagInfo)"/>
                     }
                 </MudChipSet>
             }
@@ -123,9 +128,9 @@
     [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired]
-    public required AddMemoryComponentSharedData SharedData
+    public required AddMemoryComponentSharedData? SharedData
     {
-        get => _sharedData.ThrowIfNull();
+        get => _sharedData;
         init
         {
             if (_sharedData == value)

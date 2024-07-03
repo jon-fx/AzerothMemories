@@ -11,13 +11,11 @@ public sealed class EditMemoryTagsPageViewModel : ViewModelBase, IViewModel<Edit
     private EditMemoryTagsPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
         _postPageHelper = new PostPageViewModelHelper(Services);
-
-        SharedData = new AddMemoryComponentSharedData(this, false);
     }
 
     public PostPageViewModelHelper Helper => _postPageHelper;
 
-    public AddMemoryComponentSharedData SharedData { get; }
+    public AddMemoryComponentSharedData? SharedData { get; private set; }
 
     public void OnParametersChanged(string? idString, string? postIdString, string? currentPageString, string? focusedCommentId)
     {
@@ -53,15 +51,18 @@ public sealed class EditMemoryTagsPageViewModel : ViewModelBase, IViewModel<Edit
             return;
         }
 
+        SharedData ??= new AddMemoryComponentSharedData(this, false);
+
         await SharedData.InitializeAccount(() => _postPageHelper.AccountViewModel);
         await SharedData.SetPostTimeStamp(Instant.FromUnixTimeMilliseconds(postViewModel.PostTime));
         await SharedData.InitializeAchievements();
-        await SharedData.OnEditingPost(postViewModel);
+
+        SharedData.OnEditingPost(postViewModel);
     }
 
     public async Task Submit()
     {
-        if (!Services.ClientServices.ActiveAccountServices.AccountViewModel.CanUpdateSystemTags())
+        if (SharedData == null || !Services.ClientServices.ActiveAccountServices.AccountViewModel.CanUpdateSystemTags())
         {
             return;
         }

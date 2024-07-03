@@ -2,16 +2,16 @@
 
 <MudDatePicker @ref="_datePicker" @bind-Date="@_postDate" OpenTo="OpenTo.Year" Label="Date" MinDate="@_minDateTime" MaxDate="System.DateTime.Now" AutoClose="true" PickerOpened="@OnPickerOpened" PickerClosed="@OnPickerClosed">
     <PickerActions>
-        <MudButton Class="mr-auto align-self-start" OnClick="@(() => _datePicker?.Clear())">Clear</MudButton>
-        <MudButton OnClick="@(() => _datePicker?.Close(false))">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="@(() => _datePicker?.Close())">Ok</MudButton>
+        <MudButton Class="mr-auto align-self-start" OnClick="@(() => DatePickerClearAsync(true))">Clear</MudButton>
+        <MudButton OnClick="@(() => DatePickerCloseAsync(false))">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="@(() => DatePickerCloseAsync(true))">Ok</MudButton>
     </PickerActions>
 </MudDatePicker>
 <MudTimePicker @ref="_timePicker" @bind-Time="@_postTime" Label="Time" AutoClose="true" PickerOpened="@OnPickerOpened" PickerClosed="@OnPickerClosed">
     <PickerActions>
-        <MudButton Class="mr-auto align-self-start" OnClick="@(() => _timePicker?.Clear())">Clear</MudButton>
-        <MudButton OnClick="@(() => _timePicker?.Close(false))">Cancel</MudButton>
-        <MudButton OnClick="@(() => _timePicker?.Close())">Ok</MudButton>
+        <MudButton Class="mr-auto align-self-start" OnClick="@(() => TimePickerClearAsync(true))">Clear</MudButton>
+        <MudButton OnClick="@(() => TimePickerCloseAsync(false))">Cancel</MudButton>
+        <MudButton OnClick="@(() => TimePickerCloseAsync(true))">Ok</MudButton>
     </PickerActions>
 </MudTimePicker>
 
@@ -111,5 +111,45 @@
         {
             await OnInstantEventCallback.InvokeAsync(null);
         }
+    }
+
+    private async Task DatePickerClearAsync(bool close)
+    {
+        if (_datePicker == null)
+        {
+            return;
+        }
+
+        await _datePicker.ClearAsync(close);
+    }
+
+    private async Task DatePickerCloseAsync(bool submit)
+    {
+        if (_datePicker == null)
+        {
+            return;
+        }
+
+        await _datePicker.CloseAsync(submit);
+    }
+
+    private async Task TimePickerClearAsync(bool close)
+    {
+        if (_timePicker == null)
+        {
+            return;
+        }
+
+        await _timePicker.ClearAsync(close);
+    }
+
+    private async Task TimePickerCloseAsync(bool submit)
+    {
+        if (_timePicker == null)
+        {
+            return;
+        }
+
+        await _timePicker.CloseAsync(submit);
     }
 }

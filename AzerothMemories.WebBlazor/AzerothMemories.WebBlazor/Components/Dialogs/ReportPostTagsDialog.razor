@@ -4,7 +4,7 @@
             var systemTags = Post?.SystemTags;
             if (systemTags != null)
             {
-                <MudChipSet @bind-SelectedValues="@_selectedChips" MultiSelection="true" Filter="true">
+                <MudChipSet T="PostTagInfo" @bind-SelectedValues="@_selectedChips" SelectionMode="SelectionMode.MultiSelection">
                     @foreach (var tagInfo in systemTags)
                     {
                         if (!tagInfo.Type.CanBeReported())
@@ -12,7 +12,7 @@
                             continue;
                         }
 
-                        <PostTagChipComponent @key="@tagInfo" Variant="Variant.Text" TagInfo="tagInfo " />
+                        <PostTagChipComponent @key="@tagInfo" Variant="Variant.Text" TagInfo="tagInfo" />
                     }
                 </MudChipSet>
             }
@@ -26,7 +26,7 @@
 
 @code
 {
-    private ICollection<object>? _selectedChips;
+    private IReadOnlyCollection<PostTagInfo>? _selectedChips;
 
     [Parameter] public PostViewModel? Post { get; init; }
 
@@ -40,7 +40,7 @@
 
         if (Post != null && _selectedChips != null && _selectedChips.Count > 0)
         {
-            var tagStrings = _selectedChips.Select(x => ((PostTagInfo)x).TagString).ToHashSet();
+            var tagStrings = _selectedChips.Select(x => x.TagString).ToHashSet();
             var result = await ClientServices.CommandRunner.Run(new Post_TryReportPostTags(Session.Default, Post.Id, tagStrings));
             await ClientServices.DialogService.ShowNotificationDialog(result.Value, "Tags reported.");
         }

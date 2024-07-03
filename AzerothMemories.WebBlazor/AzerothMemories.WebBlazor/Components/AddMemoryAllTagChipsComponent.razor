@@ -2,21 +2,11 @@
     @{
         if (SharedData != null)
         {
-            foreach (var tagObj in SharedData.SelectedTypeTags)
-            {
-                var tagInfo = (PostTagInfo)tagObj;
-                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClose="SharedData.OnSelectedMainTagChipClose" />
-            }
+            <PostTagChipComponent @key="@SharedData.SelectedTypeTag" TagInfo="SharedData.SelectedTypeTag "/>
+            <PostTagChipComponent @key="@SharedData.SelectedRegionTag" TagInfo="SharedData.SelectedRegionTag" />
 
-            foreach (var tagObj in SharedData.SelectedRegionTags)
+            foreach (var tagInfo in SharedData.SelectedCommonTags)
             {
-                var tagInfo = (PostTagInfo)tagObj;
-                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClose="SharedData.OnSelectedMainTagChipClose" />
-            }
-
-            foreach (var tagObj in SharedData.SelectedCommonTags)
-            {
-                var tagInfo = (PostTagInfo)tagObj;
                 <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClose="SharedData.OnSelectedCommonTagChipClose" />
             }
 
@@ -25,12 +15,9 @@
                 <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClose="SharedData.OnSelectedExtraTagChipClose" />
             }
 
-            foreach (var tagObj in SharedData.SelectedAchievementTags)
+            foreach (var tagInfo in SharedData.SelectedAchievementTags)
             {
-                if (tagObj is PostTagInfo tagInfo)
-                {
-                    <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClose="SharedData.OnSelectedAchievementTagChipClose" />
-                }
+                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClose="SharedData.OnSelectedAchievementTagChipClose" />
             }
         }
     }

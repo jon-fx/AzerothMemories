@@ -5,7 +5,7 @@
                        TextChanged="OnTextChanged"
                        Placeholder="@Placeholder"
                        T="MainSearchResult"
-                       SearchFuncWithCancel="SearchFunc"
+                       SearchFunc="SearchFunc"
                        ToStringFunc="ToStringFunc"
                        Class="@ExtraClasses">
     <ItemTemplate Context="e">
@@ -58,10 +58,10 @@
             NavigationManager.NavigateTo(_autoCompleteValue.GetLink());
         }
 
-        await _autoComplete.Clear();
+        await _autoComplete.ClearAsync();
     }
 
-    private void OnTextChanged(string? text)
+    private void OnTextChanged(string text)
     {
         if (text != null)
         {

@@ -10,7 +10,7 @@
 {
     <CardErrorComponent ErrorMessage="@ViewModel.Helper.ErrorMessage" />
 }
-else if (ViewModel.Helper.AccountViewModel == null || ViewModel.Helper.PostViewModel == null)
+else if (ViewModel.Helper.AccountViewModel == null || ViewModel.Helper.PostViewModel == null || ViewModel.SharedData == null)
 {
     <CardLoadingComponent />
 }

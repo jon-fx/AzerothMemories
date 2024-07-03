@@ -2,8 +2,11 @@
 
 internal sealed class UpdateHandler_Characters_Achievements : UpdateHandlerBaseResult<CharacterRecord, CharacterAchievementsSummary>, IRequiresExecuteOnFirstLogin
 {
-    public UpdateHandler_Characters_Achievements(CommonServices commonServices) : base(BlizzardUpdateType.Character_Achievements, commonServices)
+    private readonly ILogger<BlizzardUpdateServices> _logger;
+
+    public UpdateHandler_Characters_Achievements(CommonServices commonServices, ILogger<BlizzardUpdateServices> logger) : base(BlizzardUpdateType.Character_Achievements, commonServices)
     {
+        _logger = logger;
     }
 
     public async Task OnFirstLogin(CommandContext context, AppDbContext database, AccountRecord accountRecord, CharacterRecord characterRecord)
@@ -58,7 +61,15 @@ internal sealed class UpdateHandler_Characters_Achievements : UpdateHandlerBaseR
             {
                 if (firstEverAchievementRecord.AchievementTimeStamp > achievementRecord.AchievementTimeStamp)
                 {
-                    firstEverAchievementRecord.AchievementTimeStamp = achievementRecord.AchievementTimeStamp;
+                    var updateCounter = await database.CharacterFirstAchievements
+                        .Where(r => r.AchievementId == achievementRecord.AchievementId && r.AchievementTimeStamp > achievementRecord.AchievementTimeStamp)
+                        .ExecuteUpdateAsync(setters => setters.SetProperty(r => r.AchievementTimeStamp, r => achievementRecord.AchievementTimeStamp))
+                        .ConfigureAwait(false);
+
+                    if (updateCounter != 1)
+                    {
+                        _logger.LogInformation($"UpdateHandler_Characters_Achievements - Update FirstEverAchievementRecord AchievementId:{achievementRecord.AchievementId} Returned:{updateCounter} instead of 1");
+                    }
                 }
             }
             else

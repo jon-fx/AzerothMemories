@@ -33,7 +33,7 @@
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs args)
     {
-        OnLocationChanged(args.Location).AndForget();
+        OnLocationChanged(args.Location).CatchAndLog();
     }
 
     private async Task OnLocationChanged(string location)

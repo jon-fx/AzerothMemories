@@ -4,7 +4,8 @@ internal static class MainTheme
 {
     public static MudTheme Theme { get; } = new()
     {
-        Palette = new PaletteDark(),
+        PaletteDark = new PaletteDark(),
+        PaletteLight = new PaletteLight(),
         LayoutProperties = new LayoutProperties
         {
             AppbarHeight = "70px"

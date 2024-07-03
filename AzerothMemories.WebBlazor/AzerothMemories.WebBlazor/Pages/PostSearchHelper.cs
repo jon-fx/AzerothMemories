@@ -136,9 +136,10 @@ public sealed class PostSearchHelper
         Add(tagInfo);
     }
 
-    public void OnSelectedChipClose(MudChip mudChip)
+    public void OnSelectedChipClose(MudChip<PostTagInfo> mudChip)
     {
-        if (mudChip.Value is not PostTagInfo tagInfo)
+        var tagInfo = mudChip.Value;
+        if (tagInfo == null)
         {
             return;
         }

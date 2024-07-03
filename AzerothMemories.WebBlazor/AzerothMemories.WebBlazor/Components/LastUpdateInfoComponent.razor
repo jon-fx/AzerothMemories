@@ -10,7 +10,7 @@ else
     <MudMenu Icon="@main.Icon" Color="@main.IconColor" Size="Size.Small" Dense="true" ActivationEvent="MouseEvent.MouseOver">
         <MudText Typo="Typo.subtitle1">
             <MudMenuItem Disabled="true">
-                <MudText Typo="Typo.body1" Style="@($"color:{MainTheme.Theme.Palette.TextPrimary};")">
+                <MudText Typo="Typo.body1" Style="@($"color:{MainTheme.Theme.PaletteDark.TextPrimary};")">
                     @endTimeAsString
                 </MudText>
             </MudMenuItem>
@@ -21,7 +21,7 @@ else
             var row = GetIconAndColor(child.UpdateJobLastResult.IsSuccess2());
 
             <MudMenuItem IconSize="Size.Small" IconColor="@row.IconColor" Icon="@row.Icon" Disabled="true">
-                <MudText Typo="Typo.body2" Style="@($"color:{MainTheme.Theme.Palette.TextPrimary};")">
+                <MudText Typo="Typo.body2" Style="@($"color:{MainTheme.Theme.PaletteDark.TextPrimary};")">
                     @child.Id: @child.UpdateTypeString - @child.UpdateJobLastResult (@((int)child.UpdateJobLastResult))
                 </MudText>
             </MudMenuItem>

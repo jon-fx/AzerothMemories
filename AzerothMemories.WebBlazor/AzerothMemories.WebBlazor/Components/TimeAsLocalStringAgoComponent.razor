@@ -24,7 +24,7 @@
     {
         base.OnParametersSet();
 
-        _helper ??= new TimeAsLocalStringAgoHelper(() => InvokeAsync(StateHasChanged).AndForget());
+        _helper ??= new TimeAsLocalStringAgoHelper(() => InvokeAsync(StateHasChanged).CatchAndLog());
         _helper.TrySetTimer(Time);
     }
 

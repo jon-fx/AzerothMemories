@@ -85,7 +85,7 @@ else
                                 var showMore = items.Count > count;
                                 @if (showMore)
                                 {
-                                    <MudChip Variant="@Variant.Filled" Color="Color.Default" OnClick="() => _otherTuplesShowCount[index] += 100">
+                                    <MudChip T="string" Variant="@Variant.Filled" Color="Color.Default" OnClick="() => _otherTuplesShowCount[index] += 100">
                                         Show More...
                                     </MudChip>
                                 }
