@@ -2,7 +2,7 @@
 
 internal sealed class UpdateHandler_Characters : UpdateHandlerBaseResult<CharacterRecord, CharacterProfileSummary>
 {
-    public UpdateHandler_Characters(CommonServices commonServices) : base(BlizzardUpdateType.Character, commonServices)
+    public UpdateHandler_Characters(CommonServices commonServices, ILogger<BlizzardUpdateServices> logger) : base(BlizzardUpdateType.Character, commonServices, logger)
     {
     }
 

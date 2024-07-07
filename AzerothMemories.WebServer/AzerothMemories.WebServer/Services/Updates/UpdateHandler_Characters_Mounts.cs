@@ -2,7 +2,7 @@
 
 internal sealed class UpdateHandler_Characters_Mounts : UpdateHandlerBaseResult<CharacterRecord, CharacterMountsCollectionSummary>, IRequiresExecuteOnFirstLogin
 {
-    public UpdateHandler_Characters_Mounts(CommonServices commonServices) : base(BlizzardUpdateType.Character_Mounts, commonServices)
+    public UpdateHandler_Characters_Mounts(CommonServices commonServices, ILogger<BlizzardUpdateServices> logger) : base(BlizzardUpdateType.Character_Mounts, commonServices, logger)
     {
     }
 

@@ -8,7 +8,7 @@ internal sealed class UpdateHandler_Accounts_Blizzard : UpdateHandlerBaseResult<
     private readonly BlizzardRegion _blizzardRegion;
     private readonly BlizzardUpdateServices _blizzardUpdateServices;
 
-    public UpdateHandler_Accounts_Blizzard(BlizzardUpdateType updateType, CommonServices commonServices, BlizzardUpdateServices blizzardUpdateServices, [CallerArgumentExpression("updateType")] string? updateTypeString = null) : base(updateType, commonServices, updateTypeString)
+    public UpdateHandler_Accounts_Blizzard(BlizzardUpdateType updateType, CommonServices commonServices, BlizzardUpdateServices blizzardUpdateServices, ILogger<BlizzardUpdateServices> logger, [CallerArgumentExpression("updateType")] string? updateTypeString = null) : base(updateType, commonServices, logger, updateTypeString)
     {
         _blizzardRegion = (BlizzardRegion)updateType;
         _blizzardUpdateServices = blizzardUpdateServices;

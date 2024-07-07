@@ -2,7 +2,7 @@
 
 internal sealed class UpdateHandler_Guilds : UpdateHandlerBaseResult<GuildRecord, Guild>
 {
-    public UpdateHandler_Guilds(CommonServices commonServices) : base(BlizzardUpdateType.Guild, commonServices)
+    public UpdateHandler_Guilds(CommonServices commonServices, ILogger<BlizzardUpdateServices> logger) : base(BlizzardUpdateType.Guild, commonServices, logger)
     {
     }
 

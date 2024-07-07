@@ -2,11 +2,8 @@
 
 internal sealed class UpdateHandler_Characters_Achievements : UpdateHandlerBaseResult<CharacterRecord, CharacterAchievementsSummary>, IRequiresExecuteOnFirstLogin
 {
-    private readonly ILogger<BlizzardUpdateServices> _logger;
-
-    public UpdateHandler_Characters_Achievements(CommonServices commonServices, ILogger<BlizzardUpdateServices> logger) : base(BlizzardUpdateType.Character_Achievements, commonServices)
+    public UpdateHandler_Characters_Achievements(CommonServices commonServices, ILogger<BlizzardUpdateServices> logger) : base(BlizzardUpdateType.Character_Achievements, commonServices, logger)
     {
-        _logger = logger;
     }
 
     public async Task OnFirstLogin(CommandContext context, AppDbContext database, AccountRecord accountRecord, CharacterRecord characterRecord)
@@ -68,7 +65,7 @@ internal sealed class UpdateHandler_Characters_Achievements : UpdateHandlerBaseR
 
                     if (updateCounter != 1)
                     {
-                        _logger.LogInformation($"UpdateHandler_Characters_Achievements - Update FirstEverAchievementRecord AchievementId:{achievementRecord.AchievementId} Returned:{updateCounter} instead of 1");
+                        Logger.LogInformation($"UpdateHandler_Characters_Achievements - Update FirstEverAchievementRecord AchievementId:{achievementRecord.AchievementId} Returned:{updateCounter} instead of 1");
                     }
                 }
             }

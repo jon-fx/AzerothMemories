@@ -2,7 +2,7 @@
 
 internal sealed class UpdateHandler_Guilds_Achievements : UpdateHandlerBaseResult<GuildRecord, GuildAchievements>
 {
-    public UpdateHandler_Guilds_Achievements(CommonServices commonServices) : base(BlizzardUpdateType.Guild_Achievements, commonServices)
+    public UpdateHandler_Guilds_Achievements(CommonServices commonServices, ILogger<BlizzardUpdateServices> logger) : base(BlizzardUpdateType.Guild_Achievements, commonServices, logger)
     {
     }
 

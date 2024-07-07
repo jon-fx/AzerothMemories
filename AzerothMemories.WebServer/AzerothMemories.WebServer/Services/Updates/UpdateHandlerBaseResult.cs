@@ -4,7 +4,7 @@ namespace AzerothMemories.WebServer.Services.Updates;
 
 internal abstract class UpdateHandlerBaseResult<TRecord, TRequestResult> : UpdateHandlerBase<TRecord> where TRecord : IBlizzardUpdateRecord where TRequestResult : class
 {
-    protected UpdateHandlerBaseResult(BlizzardUpdateType updateType, CommonServices commonServices, [CallerArgumentExpression("updateType")] string? updateTypeString = null) : base(updateType, commonServices, updateTypeString)
+    protected UpdateHandlerBaseResult(BlizzardUpdateType updateType, CommonServices commonServices, ILogger<BlizzardUpdateServices> logger, [CallerArgumentExpression("updateType")] string? updateTypeString = null) : base(updateType, commonServices, logger, updateTypeString)
     {
     }
 

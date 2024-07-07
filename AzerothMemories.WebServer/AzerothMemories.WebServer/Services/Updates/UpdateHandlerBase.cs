@@ -6,12 +6,14 @@ public class UpdateHandlerBase<TRecord> where TRecord : IBlizzardUpdateRecord
 {
     private readonly BlizzardUpdateType _updateType;
     private readonly CommonServices _commonServices;
+    private readonly ILogger<BlizzardUpdateServices> _logger;
     private readonly string _updateTypeString;
 
-    public UpdateHandlerBase(BlizzardUpdateType updateType, CommonServices commonServices, [CallerArgumentExpression("updateType")] string? updateTypeString = null)
+    public UpdateHandlerBase(BlizzardUpdateType updateType, CommonServices commonServices, ILogger<BlizzardUpdateServices> logger, [CallerArgumentExpression("updateType")] string? updateTypeString = null)
     {
         _updateType = updateType;
         _commonServices = commonServices;
+        _logger = logger;
 
         Exceptions.ThrowIf(string.IsNullOrWhiteSpace(updateTypeString));
         Exceptions.ThrowIf(!updateTypeString.StartsWith("BlizzardUpdateType."));
@@ -27,6 +29,8 @@ public class UpdateHandlerBase<TRecord> where TRecord : IBlizzardUpdateRecord
     public string UpdateTypeString => _updateTypeString;
 
     public CommonServices CommonServices => _commonServices;
+
+    protected ILogger<BlizzardUpdateServices> Logger => _logger;
 
     protected virtual bool ShouldExecuteOn(CommandContext context, AppDbContext database, TRecord record, out AuthTokenRecord? authTokenRecord)
     {

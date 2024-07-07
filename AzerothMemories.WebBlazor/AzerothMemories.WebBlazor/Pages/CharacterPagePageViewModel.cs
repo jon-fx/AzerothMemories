@@ -58,8 +58,7 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IView
 
         if (id > 0)
         {
-            //TODO: FIX THIS SHIT
-            //viewModel = await Services.ComputeServices.CharacterServices.TryGetCharacter(Session.Default, id);
+            viewModel = await Services.ComputeServices.CharacterServices.TryGetCharacter(Session.Default, id);
         }
         else
         {

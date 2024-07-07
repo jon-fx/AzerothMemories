@@ -16,24 +16,24 @@ public class BlizzardUpdateServices : IComputeService
         _commonServices = commonServices;
 
         _accountHandlers = new UpdateHandlerBase<AccountRecord>[(int)BlizzardUpdateType.Account_Count];
-        AddUpdateHandler(ref _accountHandlers, new UpdateHandlerBase<AccountRecord>(BlizzardUpdateType.Account, _commonServices));
-        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Blizzard(BlizzardUpdateType.Account_China, _commonServices, this));
-        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Blizzard(BlizzardUpdateType.Account_Europe, _commonServices, this));
-        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Blizzard(BlizzardUpdateType.Account_Korea, _commonServices, this));
-        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Blizzard(BlizzardUpdateType.Account_Taiwan, _commonServices, this));
-        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Blizzard(BlizzardUpdateType.Account_UnitedStates, _commonServices, this));
-        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Patreon(_commonServices));
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandlerBase<AccountRecord>(BlizzardUpdateType.Account, _commonServices, _logger));
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Blizzard(BlizzardUpdateType.Account_China, _commonServices, this, _logger));
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Blizzard(BlizzardUpdateType.Account_Europe, _commonServices, this, _logger));
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Blizzard(BlizzardUpdateType.Account_Korea, _commonServices, this, _logger));
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Blizzard(BlizzardUpdateType.Account_Taiwan, _commonServices, this, _logger));
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Blizzard(BlizzardUpdateType.Account_UnitedStates, _commonServices, this, _logger));
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Patreon(_commonServices, _logger));
 
         _characterHandlers = new UpdateHandlerBase<CharacterRecord>[(int)BlizzardUpdateType.Character_Count];
-        AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters(_commonServices));
-        AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters_Renders(_commonServices));
+        AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters(_commonServices, _logger));
+        AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters_Renders(_commonServices, _logger));
         AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters_Achievements(_commonServices, _logger));
-        AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters_Mounts(_commonServices));
+        AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters_Mounts(_commonServices, _logger));
 
         _guildHandlers = new UpdateHandlerBase<GuildRecord>[(int)BlizzardUpdateType.Guild_Count];
-        AddUpdateHandler(ref _guildHandlers, new UpdateHandler_Guilds(_commonServices));
-        AddUpdateHandler(ref _guildHandlers, new UpdateHandler_Guilds_Roster(_commonServices));
-        AddUpdateHandler(ref _guildHandlers, new UpdateHandler_Guilds_Achievements(_commonServices));
+        AddUpdateHandler(ref _guildHandlers, new UpdateHandler_Guilds(_commonServices, _logger));
+        AddUpdateHandler(ref _guildHandlers, new UpdateHandler_Guilds_Roster(_commonServices, _logger));
+        AddUpdateHandler(ref _guildHandlers, new UpdateHandler_Guilds_Achievements(_commonServices, _logger));
 
         void AddUpdateHandler<TRecord>(ref UpdateHandlerBase<TRecord>[] array, UpdateHandlerBase<TRecord> updateHandler) where TRecord : IBlizzardUpdateRecord
         {
