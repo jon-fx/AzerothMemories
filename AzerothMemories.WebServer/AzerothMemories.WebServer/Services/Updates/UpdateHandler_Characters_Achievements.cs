@@ -58,15 +58,7 @@ internal sealed class UpdateHandler_Characters_Achievements : UpdateHandlerBaseR
             {
                 if (firstEverAchievementRecord.AchievementTimeStamp > achievementRecord.AchievementTimeStamp)
                 {
-                    var updateCounter = await database.CharacterFirstAchievements
-                        .Where(r => r.AchievementId == achievementRecord.AchievementId && r.AchievementTimeStamp > achievementRecord.AchievementTimeStamp)
-                        .ExecuteUpdateAsync(setters => setters.SetProperty(r => r.AchievementTimeStamp, r => achievementRecord.AchievementTimeStamp))
-                        .ConfigureAwait(false);
-
-                    if (updateCounter != 1)
-                    {
-                        Logger.LogInformation($"UpdateHandler_Characters_Achievements - Update FirstEverAchievementRecord AchievementId:{achievementRecord.AchievementId} Returned:{updateCounter} instead of 1");
-                    }
+                    firstEverAchievementRecord.AchievementTimeStamp = achievementRecord.AchievementTimeStamp;
                 }
             }
             else

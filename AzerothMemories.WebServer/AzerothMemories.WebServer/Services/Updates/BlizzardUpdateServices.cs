@@ -379,7 +379,46 @@ public class BlizzardUpdateServices : IComputeService
         record.UpdateRecord.UpdateJobLastEndTime = record.UpdateRecord.UpdateLastModified;
         record.UpdateRecord.UpdateStatus = BlizzardUpdateStatus.Done;
 
-        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        bool saveFailed;
+        do
+        {
+            saveFailed = false;
+
+            try
+            {
+                await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            }
+            catch (DbUpdateConcurrencyException dbUpdateException)
+            {
+                saveFailed = true;
+
+                foreach (var entry in dbUpdateException.Entries)
+                {
+                    if (entry.Entity is CharacterFirstAchievementRecord clientEntity)
+                    {
+                        var databaseValues = await entry.GetDatabaseValuesAsync().ConfigureAwait(false);
+                        if (databaseValues?.ToObject() is CharacterFirstAchievementRecord databaseEntity && databaseValues.ToObject() is CharacterFirstAchievementRecord resolvedEntity)
+                        {
+                            if (databaseEntity.AchievementTimeStamp > clientEntity.AchievementTimeStamp)
+                            {
+                                resolvedEntity.AchievementTimeStamp = clientEntity.AchievementTimeStamp;
+                            }
+
+                            entry.OriginalValues.SetValues(databaseValues);
+                            entry.CurrentValues.SetValues(resolvedEntity);
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+        } while (saveFailed);
 
         context.Operation.AddEvent(new Updates_UpdateRecordResetStatusCommand(record.UpdateRecord.AccountId, record.UpdateRecord.CharacterId, record.UpdateRecord.GuildId), GetResetTime(record.UpdateRecord));
 
