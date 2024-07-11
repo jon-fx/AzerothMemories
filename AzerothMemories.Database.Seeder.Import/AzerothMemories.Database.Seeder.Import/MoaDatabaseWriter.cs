@@ -48,10 +48,14 @@ internal sealed class MoaDatabaseWriter
             clientSideDataDict[i] = new Dictionary<string, string>();
         }
 
-        clientSideDataDict[0].AddRange(groupedByTagType[PostTagType.Type].Select(x => new KeyValuePair<string, string>(x.Key, x.Key)));
-        clientSideDataDict[0].AddRange(groupedByTagType[PostTagType.Region].Select(x => new KeyValuePair<string, string>(x.Key, x.Key)));
-        clientSideDataDict[0].AddRange(groupedByTagType[PostTagType.Main].Select(x => new KeyValuePair<string, string>(x.Key, x.Key)));
+        clientSideDataDict[0].AddRange(groupedByTagType[PostTagType.Type].Select(x => new KeyValuePair<string, string>(x.Key, x.GetNameOrDefault(ServerSideLocale.En_Us))));
+        clientSideDataDict[0].AddRange(groupedByTagType[PostTagType.Region].Select(x => new KeyValuePair<string, string>(x.Key, x.GetNameOrDefault(ServerSideLocale.En_Us))));
+        clientSideDataDict[0].AddRange(groupedByTagType[PostTagType.Main].Select(x => new KeyValuePair<string, string>(x.Key, x.GetNameOrDefault(ServerSideLocale.En_Us))));
+        clientSideDataDict[0].AddRange(groupedByTagType[PostTagType.Realm].Select(x => new KeyValuePair<string, string>(x.Key, x.GetNameOrDefault(ServerSideLocale.En_Us))));
         clientSideDataDict[0].AddRange(groupedByTagType[PostTagType.Realm].Select(x => new KeyValuePair<string, string>($"RealmSlug-{x.TagId}", x.Media!)).Where(x => !string.IsNullOrEmpty(x.Value)));
+        clientSideDataDict[0].AddRange(groupedByTagType[PostTagType.CharacterRace].Select(x => new KeyValuePair<string, string>(x.Key, x.GetNameOrDefault(ServerSideLocale.En_Us))));
+        clientSideDataDict[0].AddRange(groupedByTagType[PostTagType.CharacterClass].Select(x => new KeyValuePair<string, string>(x.Key, x.GetNameOrDefault(ServerSideLocale.En_Us))));
+        clientSideDataDict[0].AddRange(groupedByTagType[PostTagType.CharacterClassSpecialization].Select(x => new KeyValuePair<string, string>(x.Key, x.GetNameOrDefault(ServerSideLocale.En_Us))));
 
         AddResourcesToClientDictionaries(groupedByTagType[PostTagType.Realm], clientSideDataDict);
         AddResourcesToClientDictionaries(groupedByTagType[PostTagType.Region], clientSideDataDict);

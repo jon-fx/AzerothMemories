@@ -27,6 +27,37 @@ public static class XExtensions
         return accountViewModel.Username;
     }
 
+    public static string GetDescription(this AccountViewModel? accountViewModel, IStringLocalizer<BlizzardResources> stringLocalizer)
+    {
+        var name = accountViewModel.GetDisplayName();
+        var totalPostCount = accountViewModel?.TotalPostCount ?? 0;
+        var totalMemoriesCount = totalPostCount + accountViewModel?.TotalMemoriesCount ?? 0;
+        var characterDesc = string.Empty;
+        var characters = accountViewModel.GetCharactersSafe();
+
+        if (characters.Length > 0)
+        {
+            var allCharacterDesc = new List<string>();
+            foreach (var character in characters)
+            {
+                allCharacterDesc.Add(GetDescription(character, stringLocalizer));
+            }
+
+            characterDesc = $" Their characters include {string.Join(", ", allCharacterDesc)}";
+        }
+
+        return $"{name} has {totalPostCount.ToMetric()} posts and {totalMemoriesCount.ToMetric()} memories.{characterDesc}";
+    }
+
+    public static string GetDescription(this CharacterViewModel? characterViewModel, IStringLocalizer<BlizzardResources> stringLocalizer)
+    {
+        var characterRace = stringLocalizer.GetString($"CharacterRace-{characterViewModel?.Race ?? 0}");
+        var characterClass = stringLocalizer.GetString($"CharacterClass-{characterViewModel?.Class ?? 0}");
+        var characterRealm = stringLocalizer.GetString($"Realm-{characterViewModel?.RealmId ?? 0}");
+
+        return $"{characterViewModel.GetDisplayName()} on {characterRealm} a level {characterViewModel?.Level ?? 0} {characterRace} {characterClass}";
+    }
+
     public static string GetAvatarText(this AccountViewModel? accountViewModel)
     {
         if (accountViewModel == null || string.IsNullOrWhiteSpace(accountViewModel.Username))

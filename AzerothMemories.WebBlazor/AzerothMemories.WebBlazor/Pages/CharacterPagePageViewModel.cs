@@ -135,7 +135,14 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IView
 
     public string GetPageDescription()
     {
-        return $"A collection of Memories of Azeroth from the character {CharacterViewModel.GetDisplayName()}";
+        var characterDesc = CharacterViewModel.GetDescription(Services.ClientServices.BlizzardStringLocalizer);
+        var accountDesc = string.Empty;
+        if (AccountViewModel != null)
+        {
+            accountDesc = $" Their linked account is {AccountViewModel.GetDisplayName()}. {AccountViewModel.GetDescription(Services.ClientServices.BlizzardStringLocalizer)}";
+        }
+
+        return $"A collection of Memories of Azeroth from the character {characterDesc}.{accountDesc}";
     }
 
     public string? GetPageImage()

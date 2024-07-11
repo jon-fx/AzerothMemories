@@ -84,10 +84,7 @@ public sealed class AccountPageViewModel : PersistentStateViewModel, IViewModel<
     public string GetPageDescription()
     {
         var name = AccountViewModel.GetDisplayName();
-        var totalPostCount = AccountViewModel?.TotalPostCount ?? 0;
-        var totalMemoriesCount = totalPostCount + AccountViewModel?.TotalMemoriesCount ?? 0;
-
-        return $"A collection of Memories of Azeroth from the account {name}. {name} has {totalPostCount.ToMetric()} posts and {totalMemoriesCount.ToMetric()} memories.";
+        return $"A collection of Memories of Azeroth from the account {name}. {AccountViewModel.GetDescription(Services.ClientServices.BlizzardStringLocalizer)}";
     }
 
     public string? GetPageImage()
