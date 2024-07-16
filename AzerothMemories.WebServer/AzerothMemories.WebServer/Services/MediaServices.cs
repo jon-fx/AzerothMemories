@@ -209,17 +209,48 @@ public class MediaServices : IComputeService
         using var _ = new MethodTimeLogger(_logger);
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
-        var accountMax = await database.Accounts.MaxAsync(x => (int?)x.Id).ConfigureAwait(false);
-        var charactersMax = await database.Characters.MaxAsync(x => (int?)x.Id).ConfigureAwait(false);
-        var guildsMax = await database.Guilds.MaxAsync(x => (int?)x.Id).ConfigureAwait(false);
-        var postsMax = await database.Posts.MaxAsync(x => (int?)x.Id).ConfigureAwait(false);
+        int accountMax;
+        int charactersMax;
+        int guildsMax;
+        int postsMax;
+
+        {
+            var query = from r in database.Accounts.IgnoreAutoIncludes().AsNoTracking()
+                        orderby r.Id
+                        select new { r.Id, r.Username };
+
+            accountMax = await query.CountAsync().ConfigureAwait(false);
+        }
+        {
+            var query = from r in database.Characters.IgnoreAutoIncludes().AsNoTracking()
+                        where r.CharacterStatus == CharacterStatus2.None && r.UpdateRecord != null
+                        orderby r.Id
+                        select new { r.Id, r.MoaRef };
+
+            charactersMax = await query.CountAsync().ConfigureAwait(false);
+        }
+        {
+            var query = from r in database.Guilds.IgnoreAutoIncludes().AsNoTracking()
+                        orderby r.Id
+                        select new { r.Id, r.MoaRef };
+
+            guildsMax = await query.CountAsync().ConfigureAwait(false);
+        }
+        {
+            var query = from r in database.Posts.IgnoreAutoIncludes().AsNoTracking()
+                        where r.PostVisibility == 0 && r.DeletedTimeStamp == 0
+                        orderby r.Id
+                        select new { r.Id, r.AccountId };
+
+            postsMax = await query.CountAsync().ConfigureAwait(false);
+        }
 
         var results = new int[(int)SiteMapType.Count];
 
-        results[(int)SiteMapType.Accounts] = accountMax == null ? 0 : accountMax.Value / SiteMapItemsPerFile + 1;
-        results[(int)SiteMapType.Characters] = charactersMax == null ? 0 : charactersMax.Value / SiteMapItemsPerFile + 1;
-        results[(int)SiteMapType.Guilds] = guildsMax == null ? 0 : guildsMax.Value / SiteMapItemsPerFile + 1;
-        results[(int)SiteMapType.Posts] = postsMax == null ? 0 : postsMax.Value / SiteMapItemsPerFile + 1;
+        results[(int)SiteMapType.Accounts] = accountMax / SiteMapItemsPerFile + 1;
+        results[(int)SiteMapType.Characters] = charactersMax / SiteMapItemsPerFile + 1;
+        results[(int)SiteMapType.Guilds] = guildsMax / SiteMapItemsPerFile + 1;
+        results[(int)SiteMapType.Posts] = postsMax / SiteMapItemsPerFile + 1;
 
         return results;
     }
@@ -235,10 +266,10 @@ public class MediaServices : IComputeService
             new() { Url = "/sitemaps/sitemap-main.xml", LastModified = DateTime.UtcNow }
         };
 
+        Add(SiteMapType.Posts);
         Add(SiteMapType.Accounts);
         Add(SiteMapType.Characters);
         Add(SiteMapType.Guilds);
-        Add(SiteMapType.Posts);
 
         return await SiteMapHelper.BuildSiteMap(BaseUrl, "sitemapindex", "sitemap", maps).ConfigureAwait(false);
 
@@ -282,7 +313,7 @@ public class MediaServices : IComputeService
     public virtual async Task<MediaResult?> TryGetSiteMapNamed(SiteMapType nameType, int fileIndex)
     {
         using var _ = new MethodTimeLogger(_logger, $"TryGetSiteMapNamed - nameType:{nameType} - fileIndex:{fileIndex}");
-        var counters = await _commonServices.MediaServices.GetSiteMapCounters().ConfigureAwait(false);
+        var counters = await GetSiteMapCounters().ConfigureAwait(false);
         if (fileIndex >= counters[(int)nameType])
         {
             return null;

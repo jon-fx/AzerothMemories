@@ -117,23 +117,35 @@ public class PostServices : IPostServices
             return null;
         }
 
-        //if (canSeePost && activeAccountId > 0)
-        //{
-        //    var timeStampNow = SystemClock.Instance.GetCurrentInstant();
-        //    var timeStampNowMs = timeStampNow.ToUnixTimeMilliseconds();
-        //    var sessionStamp = await GetSessionPostViewTimeStamp(activeAccountId, postId).ConfigureAwait(false);
-        //    if (sessionStamp >= timeStampNowMs)
-        //    {
-        //        postRecord = await TryUpdatePostViewCount(new Post_UpdateViewCount(activeAccountId, postId)).ConfigureAwait(false);
-        //    }
-        //}
-
         var postTagInfos = await GetAllPostTagRecord(postId, locale).ConfigureAwait(false);
         var reactionRecords = await TryGetPostReactions(postId).ConfigureAwait(false);
 
+        var accountViewModels = new List<AccountViewModel>();
+        var characterViewModels = new List<CharacterViewModel>();
+
+        foreach (var accountTagInfo in postTagInfos.Where(x => x.Type == PostTagType.Account))
+        {
+            var accountRecord = await _commonServices.AccountServices.TryGetAccountRecord(accountTagInfo.Id).ConfigureAwait(false);
+            if (accountRecord != null)
+            {
+                var accountViewModel = await _commonServices.AccountServices.CreateAccountViewModel(accountRecord, false).ConfigureAwait(false);
+                accountViewModels.Add(accountViewModel);
+            }
+        }
+
+        foreach (var characterTagInfo in postTagInfos.Where(x => x.Type == PostTagType.Character))
+        {
+            var characterRecord = await _commonServices.CharacterServices.TryGetCharacterRecord(characterTagInfo.Id, false).ConfigureAwait(false);
+            if (characterRecord != null)
+            {
+                var characterViewModel = characterRecord.CreateViewModel();
+                characterViewModels.Add(characterViewModel);
+            }
+        }
+
         reactionRecords.TryGetValue(activeAccountId, out var reactionViewModel);
 
-        return postRecord.CreatePostViewModel(posterAccount, canSeePost, reactionViewModel, postTagInfos);
+        return postRecord.CreatePostViewModel(posterAccount, canSeePost, reactionViewModel, postTagInfos, accountViewModels.ToArray(), characterViewModels.ToArray());
     }
 
     [CommandHandler]

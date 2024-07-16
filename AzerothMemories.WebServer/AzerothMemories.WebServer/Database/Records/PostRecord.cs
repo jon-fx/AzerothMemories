@@ -66,7 +66,7 @@ public sealed class PostRecord : IDatabaseRecordWithVersion
 
     public ICollection<AccountUploadLog>? Uploads { get; set; }
 
-    public PostViewModel CreatePostViewModel(AccountRecord accountRecord, bool canSeePost, PostReactionViewModel? reactionRecord, PostTagInfo[] postTagRecords)
+    public PostViewModel CreatePostViewModel(AccountRecord accountRecord, bool canSeePost, PostReactionViewModel? reactionRecord, PostTagInfo[] postTagRecords, AccountViewModel[] accountViewModels, CharacterViewModel[] characterViewModels)
     {
         var viewModel = new PostViewModel
         {
@@ -97,7 +97,9 @@ public sealed class PostRecord : IDatabaseRecordWithVersion
             TotalReactionCount = TotalReactionCount,
             TotalCommentCount = TotalCommentCount,
             DeletedTimeStamp = DeletedTimeStamp,
-            SystemTags = postTagRecords
+            SystemTags = postTagRecords,
+            AccountViewModels = accountViewModels,
+            CharacterViewModels = characterViewModels
         };
 
         if (PostAvatar != null)

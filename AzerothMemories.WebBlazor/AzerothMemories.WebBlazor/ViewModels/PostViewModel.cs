@@ -41,6 +41,10 @@ public sealed partial class PostViewModel
 
     [JsonInclude, DataMember, MemoryPackInclude] public long DeletedTimeStamp { get; set; }
 
+    [JsonInclude, DataMember, MemoryPackInclude] public AccountViewModel[] AccountViewModels { get; init; } = [];
+
+    [JsonInclude, DataMember, MemoryPackInclude] public CharacterViewModel[] CharacterViewModels { get; init; } = [];
+
     public PostViewModelBlobInfo[] GetImageBlobInfo()
     {
         var postComment = PostComment ?? string.Empty;
