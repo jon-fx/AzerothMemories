@@ -6,9 +6,9 @@ namespace AzerothMemories.WebBlazor.Common;
 public static class ZExtensions
 {
     public static readonly string DefaultSocialImage = "header-banner.png";
-    public static readonly string BlobStaticMediaStoragePath = $"media/{BlobStaticMedia}/";
-    public static readonly string BlobUserUploadsStoragePath = $"media/{BlobUserUploads}/";
-    public static readonly string BlobUserAvatarsStoragePath = $"media/{BlobUserAvatars}/";
+    public static readonly string BlobStaticMediaStoragePath = $"https://moastorage.blob.core.windows.net/{BlobStaticMedia}/";
+    public static readonly string BlobUserUploadsStoragePath = $"https://moastorage.blob.core.windows.net/{BlobUserUploads}/";
+    public static readonly string BlobUserAvatarsStoragePath = $"https://moastorage.blob.core.windows.net/{BlobUserAvatars}/";
 
     public static readonly List<string> ValidUploadExtensions = [".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".bmp"];
     public static readonly string UploadAcceptExtensions = "image/*";
@@ -27,6 +27,10 @@ public static class ZExtensions
 
     public const string AvatarBlobFilePrefix = "UserAvatar-";
     public static readonly string CustomUserAvatarPathPrefix = $"{BlobUserAvatarsStoragePath}{AvatarBlobFilePrefix}";
+
+    public const int PostsPerPage = 10;
+    public const int CommentsPerPage = 20;
+    public const int HistoryItemsPerPage = 50;
 
     public static readonly (int Min, int Max)[] TagCountsPerPost;
     public static readonly Instant MinPostTime = Instant.FromUnixTimeMilliseconds(946684800000);//Sat Jan 01 2000 00:00:00 GMT+0000

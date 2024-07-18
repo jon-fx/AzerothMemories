@@ -470,7 +470,7 @@ public class AccountServices : IAccountServices
 
         var totalHistoryItemsCounts = await historyQuery.CountAsync().ConfigureAwait(false);
 
-        var totalPages = (int)Math.Ceiling(totalHistoryItemsCounts / (float)CommonConfig.HistoryItemsPerPage);
+        var totalPages = (int)Math.Ceiling(totalHistoryItemsCounts / (float)ZExtensions.HistoryItemsPerPage);
         AccountHistoryViewModel[] recentHistoryViewModels;
         if (totalPages == 0)
         {
@@ -479,7 +479,7 @@ public class AccountServices : IAccountServices
         else
         {
             currentPage = Math.Clamp(currentPage, 1, totalPages);
-            recentHistoryViewModels = await historyQuery.Skip((currentPage - 1) * CommonConfig.HistoryItemsPerPage).Take(CommonConfig.HistoryItemsPerPage).ToArrayAsync().ConfigureAwait(false);
+            recentHistoryViewModels = await historyQuery.Skip((currentPage - 1) * ZExtensions.HistoryItemsPerPage).Take(ZExtensions.HistoryItemsPerPage).ToArrayAsync().ConfigureAwait(false);
         }
 
         return new AccountHistoryPageResult

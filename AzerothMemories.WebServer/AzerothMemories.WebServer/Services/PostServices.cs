@@ -349,7 +349,7 @@ public class PostServices : IPostServices
 
             if (kvp.Value.ParentId == 0)
             {
-                kvp.Value.CommentPage = rootCommentNodes.Count / CommonConfig.CommentsPerPage + 1;
+                kvp.Value.CommentPage = rootCommentNodes.Count / ZExtensions.CommentsPerPage + 1;
 
                 rootCommentNodes.Add(kvp.Value);
 

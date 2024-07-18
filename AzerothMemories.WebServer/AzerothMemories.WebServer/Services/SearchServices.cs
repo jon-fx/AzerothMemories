@@ -720,11 +720,11 @@ public class SearchServices : ISearchServices
         }
 
         var allPostViewModels = Array.Empty<PostViewModel>();
-        var totalPages = (int)Math.Ceiling(allSearchResult.Length / (float)CommonConfig.PostsPerPage);
+        var totalPages = (int)Math.Ceiling(allSearchResult.Length / (float)ZExtensions.PostsPerPage);
         if (allSearchResult.Length > 0)
         {
             currentPage = Math.Clamp(currentPage, 1, totalPages);
-            allPostViewModels = await GetPostViewModelsForPage(activeAccountId, allSearchResult, currentPage, CommonConfig.PostsPerPage, locale).ConfigureAwait(false);
+            allPostViewModels = await GetPostViewModelsForPage(activeAccountId, allSearchResult, currentPage, ZExtensions.PostsPerPage, locale).ConfigureAwait(false);
         }
 
         return new RecentPostsResults
@@ -816,14 +816,14 @@ public class SearchServices : ISearchServices
 
         var allSearchResult = await TrySearchPosts(serverSideTagStrings, sortMode, postMinTime, postMaxTime).ConfigureAwait(false);
         var allPostViewModels = Array.Empty<PostViewModel>();
-        var totalPages = (int)Math.Ceiling(allSearchResult.Length / (float)CommonConfig.PostsPerPage);
+        var totalPages = (int)Math.Ceiling(allSearchResult.Length / (float)ZExtensions.PostsPerPage);
         if (allSearchResult.Length > 0)
         {
             var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
             var activeAccountId = activeAccount?.Id ?? 0;
 
             currentPage = Math.Clamp(currentPage, 1, totalPages);
-            allPostViewModels = await GetPostViewModelsForPage(activeAccountId, allSearchResult, currentPage, CommonConfig.PostsPerPage, locale).ConfigureAwait(false);
+            allPostViewModels = await GetPostViewModelsForPage(activeAccountId, allSearchResult, currentPage, ZExtensions.PostsPerPage, locale).ConfigureAwait(false);
         }
 
         return new SearchPostsResults

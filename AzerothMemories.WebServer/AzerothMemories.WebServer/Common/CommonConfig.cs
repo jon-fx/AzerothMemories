@@ -40,8 +40,4 @@ public sealed class CommonConfig
     public string? PatreonClientSecret { get; set; } = CommonConfigDoNotCommit.PatreonClientSecret;
 
     public string? PatreonCreatorsAccessToken { get; set; } = CommonConfigDoNotCommit.PatreonCreatorsAccessToken;
-
-    public const int PostsPerPage = 10;
-    public const int CommentsPerPage = 20;
-    public const int HistoryItemsPerPage = 50;
 }
