@@ -44,10 +44,31 @@ public sealed class PostPageViewModel : PersistentStateViewModel, IPageHeaderInf
     public string GetPageDescription()
     {
         var title = GetPageTitle();
-        var systemTags = Helper.PostViewModel?.SystemTags.SafeEnumerable().Select(x => x.Name) ?? [];
-        var systemTagStr = string.Join(", ", systemTags);
 
-        return $"{title} that is tagged with: {systemTagStr}";
+        var accountDesc = Helper.AccountViewModel.GetDescription(Services.ClientServices.BlizzardStringLocalizer);
+        if (string.IsNullOrWhiteSpace(accountDesc))
+        {
+            accountDesc = string.Empty;
+        }
+        else
+        {
+            accountDesc += ". ";
+        }
+
+        var systemTagStr = "unknown";
+        var fromTimeStr = "unknown";
+        var createdTimeStr = "unknown";
+
+        if (Helper.PostViewModel != null)
+        {
+            var systemTags = Helper.PostViewModel.SystemTags.SafeEnumerable().Select(x => x.Name) ?? [];
+            systemTagStr = string.Join(", ", systemTags);
+
+            fromTimeStr = Services.ClientServices.TimeProvider.GetTimeAsLocalString(Helper.PostViewModel.PostTime);
+            createdTimeStr = Services.ClientServices.TimeProvider.GetTimeAsLocalString(Helper.PostViewModel.PostCreatedTime);
+        }
+
+        return $"{title}. {accountDesc}This memory was from {fromTimeStr} and created on {createdTimeStr} it is tagged with: {systemTagStr}.";
     }
 
     public string? GetPageImage()

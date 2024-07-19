@@ -34,6 +34,11 @@ public sealed class TimeProviderEx
         return instant.InZone(timeZone);
     }
 
+    public string GetTimeAsLocalString(long unixTimeStamp)
+    {
+        return GetTimeAsLocalString(Instant.FromUnixTimeMilliseconds(unixTimeStamp));
+    }
+
     public string GetTimeAsLocalString(Instant instant)
     {
         var culture = CultureInfo.CurrentCulture;
