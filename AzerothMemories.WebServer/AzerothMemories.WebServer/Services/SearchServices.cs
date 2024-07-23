@@ -708,7 +708,7 @@ public class SearchServices : ISearchServices
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         var activeAccountId = activeAccount?.Id ?? 0;
 
-        var allSearchResult = Array.Empty<PostInfo>();
+        var allSearchResult = Array.Empty<PostInfoEx>();
         if (activeAccountId > 0 && postType == RecentPostType.Default)
         {
             allSearchResult = await TryGetRecentPosts(activeAccountId).ConfigureAwait(false);
@@ -734,7 +734,7 @@ public class SearchServices : ISearchServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<PostInfo[]> TryGetRecentPosts()
+    protected virtual async Task<PostInfoEx[]> TryGetRecentPosts()
     {
         using var _ = new MethodTimeLogger(_logger);
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
@@ -747,7 +747,7 @@ public class SearchServices : ISearchServices
         var query = from p in database.Posts
                     where p.DeletedTimeStamp == 0 && p.PostVisibility == 0
                     orderby p.PostCreatedTime descending
-                    select new PostInfo(p.Id, p.AccountId, p.PostVisibility);
+                    select new PostInfoEx(p.Id, p.AccountId, p.PostVisibility);
 
         var results = await query.TagWith("TryGetRecentPosts").IgnoreAutoIncludes().AsNoTracking().ToArrayAsync().ConfigureAwait(false);
 
@@ -759,7 +759,7 @@ public class SearchServices : ISearchServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<PostInfo[]> TryGetRecentPosts(int accountId)
+    protected virtual async Task<PostInfoEx[]> TryGetRecentPosts(int accountId)
     {
         using var _ = new MethodTimeLogger(_logger);
         var following = await _commonServices.FollowingServices.TryGetAccountFollowing(accountId).ConfigureAwait(false);
@@ -781,7 +781,7 @@ public class SearchServices : ISearchServices
         var query = from p in database.Posts
                     where p.DeletedTimeStamp == 0 && allFollowingIds.Contains(p.AccountId)
                     orderby p.PostCreatedTime descending
-                    select new PostInfo(p.Id, p.AccountId, p.PostVisibility);
+                    select new PostInfoEx(p.Id, p.AccountId, p.PostVisibility);
 
         var results = await query.TagWith("TryGetRecentPostsAccount").AsNoTracking().ToArrayAsync().ConfigureAwait(false);
 
@@ -834,11 +834,11 @@ public class SearchServices : ISearchServices
         };
     }
 
-    private async Task<PostInfo[]> GetPostThatAreVisible(int activeAccountId, PostInfo[] allSearchResult)
+    private async Task<PostInfo[]> GetPostThatAreVisible(int activeAccountId, PostInfoEx[] allSearchResult)
     {
         using var _ = new MethodTimeLogger(_logger, $"GetPostThatAreVisible - activeAccountId:{activeAccountId}");
 
-        var visiblePosts = new List<PostInfo>();
+        var visiblePosts = new List<PostInfoEx>();
         for (var i = 0; i < allSearchResult.Length; i++)
         {
             var postInfo = allSearchResult[i];
@@ -849,10 +849,10 @@ public class SearchServices : ISearchServices
             }
         }
 
-        return visiblePosts.ToArray();
+        return visiblePosts.ToArray<PostInfo>();
     }
 
-    private async Task<PostViewModel[]> GetPostViewModelsForPage(int activeAccountId, PostInfo[] allSearchResult, int currentPage, int postsPerPage, ServerSideLocale locale)
+    private async Task<PostViewModel[]> GetPostViewModelsForPage(int activeAccountId, PostInfoEx[] allSearchResult, int currentPage, int postsPerPage, ServerSideLocale locale)
     {
         using var _ = new MethodTimeLogger(_logger, $"GetPostViewModelsForPage - activeAccountId:{activeAccountId} - currentPage:{currentPage} - postsPerPage:{postsPerPage} - locale: {locale}");
 
@@ -905,7 +905,7 @@ public class SearchServices : ISearchServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<PostInfo[]> TrySearchPosts(HashSet<string> tagStrings, PostSortMode sortMode, long minTime, long maxTime)
+    protected virtual async Task<PostInfoEx[]> TrySearchPosts(HashSet<string> tagStrings, PostSortMode sortMode, long minTime, long maxTime)
     {
         using var _ = new MethodTimeLogger(_logger);
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
@@ -919,7 +919,7 @@ public class SearchServices : ISearchServices
         }
 
         var query = from p in GetPostSearchQuery(database, tagStrings, sortMode, minTime, maxTime)
-                    select new PostInfo(p.Id, p.AccountId, p.PostVisibility);
+                    select new PostInfoEx(p.Id, p.AccountId, p.PostVisibility);
 
         var results = await query.TagWith("TrySearchPosts").AsNoTracking().ToArrayAsync().ConfigureAwait(false);
 

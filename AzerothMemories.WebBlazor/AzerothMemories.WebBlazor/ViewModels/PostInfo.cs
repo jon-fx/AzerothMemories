@@ -1,17 +1,15 @@
 ﻿namespace AzerothMemories.WebBlazor.ViewModels;
 
 [DataContract, MemoryPackable]
-public sealed partial class PostInfo
+public partial class PostInfo
 {
     [MemoryPackConstructor]
-    public PostInfo(int postId, int accountId, byte postVisibility)
+    public PostInfo(int postId, int accountId)
     {
         PostId = postId;
         AccountId = accountId;
-        PostVisibility = postVisibility;
     }
 
     [JsonInclude, DataMember, MemoryPackInclude] public int PostId { get; init; }
     [JsonInclude, DataMember, MemoryPackInclude] public int AccountId { get; init; }
-    [JsonInclude, DataMember, MemoryPackInclude] public byte PostVisibility { get; init; }
 }

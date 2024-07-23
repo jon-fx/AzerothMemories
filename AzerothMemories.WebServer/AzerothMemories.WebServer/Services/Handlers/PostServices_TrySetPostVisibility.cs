@@ -13,6 +13,12 @@ internal static class PostServices_TrySetPostVisibility
                 _ = commonServices.PostServices.DependsOnPost(invPost.PostId);
             }
 
+            var invAccount = context.Operation.Items.Get<Post_InvalidateAccount>();
+            if (invAccount != null && invAccount.AccountId > 0)
+            {
+                _ = commonServices.PostServices.DependsOnPostsBy(invAccount.AccountId);
+            }
+
             var invRecentPosts = context.Operation.Items.Get<Post_InvalidateRecentPost>();
             if (invRecentPosts != null)
             {
@@ -55,6 +61,7 @@ internal static class PostServices_TrySetPostVisibility
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         context.Operation.Items.Set(new Post_InvalidatePost(postId));
+        context.Operation.Items.Set(new Post_InvalidateAccount(postRecord.AccountId));
         context.Operation.Items.Set(new Post_InvalidateRecentPost(true));
 
         return newVisibility;
