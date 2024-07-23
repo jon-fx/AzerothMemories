@@ -7,7 +7,7 @@
         <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
             <MudCardContent Class="@ClassPresets.PaddingNone">
                 <MudSwitch T="bool"
-                           Value="@(RecentPostsHelper.SearchResults.PostsType != RecentPostsType.Default)"
+                           Value="@(RecentPostsHelper.SearchResults.PostType != RecentPostType.Default)"
                            Color="Color.Primary" 
                            Class="d-flex justify-end" Label="" 
                            Disabled="AccountViewModel == null"
@@ -21,30 +21,30 @@
 {
     <CardLoadingComponent />
 }
-else if (RecentPostsHelper.SearchResults.PostViewModels == null || RecentPostsHelper.SearchResults.PostViewModels.Length == 0)
+else if (RecentPostsHelper.SearchResults.PostInfos.Length == 0 || RecentPostsHelper.SearchResults.PostViewModels.Length == 0)
 {
     <CardInfoComponent Message="None" />
 }
 else
 {
-    foreach (var post in RecentPostsHelper.SearchResults.PostViewModels)
+    for (var i = RecentPostsHelper.StartIndex; i < RecentPostsHelper.EndIndex; i++)
     {
-        var postId = $"moa-post-{post.Id}";
-
-        <div id="@postId">
-            <PostComponent @key="@postId" Services="@Services" Post="@post" />
-        </div>
+        var postIndex = i;
+        <PostComponentEx Services="@Services" PostIndex="postIndex" PostInfos="@RecentPostsHelper.SearchResults.PostInfos" PostViewModels="@RecentPostsHelper.SearchResults.PostViewModels" />
     }
 
-    <div class="d-flex justify-center @ClassPresets.DefaultPadding">
-        <div class="d-block d-sm-none">
-            <MudPagination Selected="@RecentPostsHelper.SearchResults.CurrentPage" SelectedChanged="@RecentPostsHelper.OnTryChangePage" BoundaryCount="1" MiddleCount="1" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="false" ShowLastButton="false" Count="@RecentPostsHelper.SearchResults.TotalPages" Size="Size.Small" />
-        </div>
+    if (RecentPostsHelper.TotalPages > 0)
+    {
+        <div class="d-flex justify-center @ClassPresets.DefaultPadding">
+            <div class="d-block d-sm-none">
+                <MudPagination Selected="@RecentPostsHelper.CurrentPage" SelectedChanged="@RecentPostsHelper.OnTryChangePage" BoundaryCount="1" MiddleCount="1" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="false" ShowLastButton="false" Count="@RecentPostsHelper.TotalPages" Size="Size.Small" />
+            </div>
 
-        <div class="d-none d-sm-flex">
-            <MudPagination Selected="@RecentPostsHelper.SearchResults.CurrentPage" SelectedChanged="@RecentPostsHelper.OnTryChangePage" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@RecentPostsHelper.SearchResults.TotalPages" />
+            <div class="d-none d-sm-flex">
+                <MudPagination Selected="@RecentPostsHelper.CurrentPage" SelectedChanged="@RecentPostsHelper.OnTryChangePage" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@RecentPostsHelper.TotalPages" />
+            </div>
         </div>
-    </div>
+    }
 }
 
 @code

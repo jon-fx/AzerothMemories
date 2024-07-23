@@ -17,6 +17,25 @@ public sealed class RecentPostsHelper
 
     public bool IsLoading { get; private set; }
 
+    public int CurrentPage => _searchResults.CurrentPage;
+
+    public int TotalPages
+    {
+        get
+        {
+            if (_searchResults.PostInfos.Length > 0)
+            {
+                return (int)Math.Ceiling(_searchResults.PostInfos.Length / (float)ZExtensions.PostsPerPage);
+            }
+
+            return 1;
+        }
+    }
+
+    public int StartIndex => Math.Clamp((CurrentPage - 1) * ZExtensions.PostsPerPage, 0, _searchResults.PostInfos.Length);
+
+    public int EndIndex => Math.Clamp(StartIndex + ZExtensions.PostsPerPage, 0, _searchResults.PostInfos.Length);
+
     public void SetSearchResults(RecentPostsResults? recentPostsResults)
     {
         _searchResults = recentPostsResults ?? new RecentPostsResults();
@@ -24,18 +43,24 @@ public sealed class RecentPostsHelper
         IsLoading = false;
     }
 
-    public async Task<RecentPostsResults> ComputeState(int currentPage, PostSortMode sortMode, RecentPostsType recentPostType)
+    public async Task<RecentPostsResults> ComputeState(int currentPage, PostSortMode sortMode, RecentPostType recentPostType)
     {
-        if (currentPage == _searchResults.CurrentPage && sortMode == _searchResults.SortMode && recentPostType == _searchResults.PostsType && _searchResults.TotalPages > 0)
+        currentPage = Math.Clamp(currentPage, 1, Math.Max(TotalPages, 1));
+
+        if (currentPage == CurrentPage && sortMode == _searchResults.SortMode && recentPostType == _searchResults.PostType && _searchResults.PostInfos.Length > 0 && _searchResults.PostInfos.Length == _searchResults.PostViewModels.Length)
         {
             return _searchResults;
         }
 
-        currentPage = Math.Clamp(currentPage, 0, int.MaxValue);
-
         IsLoading = true;
 
-        _searchResults = await _services.ComputeServices.SearchServices.TryGetRecentPosts(Session.Default, recentPostType, sortMode, currentPage, ServerSideLocaleExt.GetServerSideLocale());
+        _searchResults = await _services.ComputeServices.SearchServices.TryGetRecentPosts(Session.Default, recentPostType, sortMode);
+
+        var temp = _searchResults.PostViewModels;
+        Array.Resize(ref temp, _searchResults.PostInfos.Length);
+
+        _searchResults.PostViewModels = temp;
+        _searchResults.CurrentPage = Math.Clamp(currentPage, 1, Math.Max(TotalPages, 1));
 
         IsLoading = false;
 
@@ -44,17 +69,17 @@ public sealed class RecentPostsHelper
 
     public async Task OnTryChangeShowAll(bool showAll)
     {
-        var newValue = showAll ? RecentPostsType.Two : RecentPostsType.Default;
+        var newValue = showAll ? RecentPostType.Two : RecentPostType.Default;
 
-        await NavigateToNewQuery(newValue, _searchResults.SortMode, _searchResults.CurrentPage, false);
+        await NavigateToNewQuery(newValue, _searchResults.SortMode, CurrentPage, false);
     }
 
     public async Task OnTryChangePage(int currentPage)
     {
-        await NavigateToNewQuery(_searchResults.PostsType, _searchResults.SortMode, currentPage, false);
+        await NavigateToNewQuery(_searchResults.PostType, _searchResults.SortMode, currentPage, false);
     }
 
-    private async Task NavigateToNewQuery(RecentPostsType recentPostType, PostSortMode sortMode, int currentPage, bool resetPage)
+    private async Task NavigateToNewQuery(RecentPostType recentPostType, PostSortMode sortMode, int currentPage, bool resetPage)
     {
         var dictionary = new Dictionary<string, object?>();
 

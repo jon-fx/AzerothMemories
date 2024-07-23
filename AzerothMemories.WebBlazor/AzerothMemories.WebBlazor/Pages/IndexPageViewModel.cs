@@ -4,7 +4,7 @@ public sealed class IndexPageViewModel : PersistentStateViewModel, IViewModel<In
 {
     private int _currentPage;
     private PostSortMode _sortMode;
-    private RecentPostsType _postType;
+    private RecentPostType _postType;
 
     public IndexPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
@@ -31,13 +31,13 @@ public sealed class IndexPageViewModel : PersistentStateViewModel, IViewModel<In
             _currentPage = 0;
         }
 
-        if (int.TryParse(postTypeString, out var typeInt) && Enum.IsDefined(typeof(RecentPostsType), typeInt))
+        if (int.TryParse(postTypeString, out var typeInt) && Enum.IsDefined(typeof(RecentPostType), typeInt))
         {
-            _postType = (RecentPostsType)typeInt;
+            _postType = (RecentPostType)typeInt;
         }
         else
         {
-            _postType = RecentPostsType.Default;
+            _postType = RecentPostType.Default;
         }
 
         if (int.TryParse(sortModeString, out var sortModeInt) && Enum.IsDefined(typeof(PostSortMode), sortModeInt))

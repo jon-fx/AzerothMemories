@@ -33,9 +33,9 @@ public sealed class SearchController : ControllerBase, ISearchServices
     }
 
     [HttpGet]
-    public Task<RecentPostsResults> TryGetRecentPosts(Session session, [FromQuery] RecentPostsType postsType, [FromQuery] PostSortMode sortMode, [FromQuery] int currentPage, [FromQuery] ServerSideLocale locale)
+    public Task<RecentPostsResults> TryGetRecentPosts(Session session, [FromQuery] RecentPostType postType, [FromQuery] PostSortMode sortMode)
     {
-        return _commonServices.SearchServices.TryGetRecentPosts(session, postsType, sortMode, currentPage, locale);
+        return _commonServices.SearchServices.TryGetRecentPosts(session, postType, sortMode);
     }
 
     [HttpGet]

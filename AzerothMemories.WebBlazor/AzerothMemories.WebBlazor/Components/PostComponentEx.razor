@@ -1,0 +1,41 @@
+﻿@inherits ComputedStateComponent<PostViewModel?>
+
+@{
+    var postViewModel = State.Value;
+    if (postViewModel == null)
+    {
+        <CardLoadingComponent/>
+    }
+    else
+    {
+        var postId = $"moa-post-{postViewModel.Id}";
+
+        <div id="@postId">
+            <PostComponent @key="@postId" Services="@Services" Post="@postViewModel" />
+        </div>
+    }
+}
+
+@code
+{
+    [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
+
+    [Parameter, EditorRequired] public required int PostIndex { get; init; }
+
+    [Parameter, EditorRequired] public required PostInfo[] PostInfos { get; init; }
+
+    [Parameter, EditorRequired] public required PostViewModel?[] PostViewModels { get; init; }
+
+    protected override async Task<PostViewModel?> ComputeState(CancellationToken cancellationToken)
+    {
+        if (PostViewModels[PostIndex] == null)
+        {
+            var postInfo = PostInfos[PostIndex];
+            var locale = ServerSideLocaleExt.GetServerSideLocale();
+
+            PostViewModels[PostIndex] = await Services.ComputeServices.PostServices.TryGetPostViewModel(Session.Default, postInfo.AccountId, postInfo.PostId, locale);
+        }
+
+        return PostViewModels[PostIndex];
+    }
+}

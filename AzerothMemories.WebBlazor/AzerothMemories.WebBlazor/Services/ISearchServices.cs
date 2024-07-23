@@ -12,7 +12,7 @@ public interface ISearchServices : IComputeService
     Task<MainSearchResult[]> TrySearch(Session session, MainSearchType searchType, string searchString);
 
     [ComputeMethod]
-    Task<RecentPostsResults> TryGetRecentPosts(Session session, RecentPostsType postsType, PostSortMode sortMode, int currentPage, ServerSideLocale locale);
+    Task<RecentPostsResults> TryGetRecentPosts(Session session, RecentPostType postType, PostSortMode sortMode);
 
     [ComputeMethod]
     Task<SearchPostsResults> TrySearchPosts(Session session, string[] tagStrings, PostSortMode sortMode, int currentPage, long postMinTime, long postMaxTime, ServerSideLocale locale);

@@ -702,14 +702,14 @@ public class SearchServices : ISearchServices
     }
 
     [ComputeMethod]
-    public virtual async Task<RecentPostsResults> TryGetRecentPosts(Session session, RecentPostsType postsType, PostSortMode sortMode, int currentPage, ServerSideLocale locale)
+    public virtual async Task<RecentPostsResults> TryGetRecentPosts(Session session, RecentPostType postType, PostSortMode sortMode)
     {
-        using var _ = new MethodTimeLogger(_logger, $"TryGetRecentPosts - postsType:{postsType} - sortMode:{sortMode} - currentPage:{currentPage} - locale:{locale}");
+        using var _ = new MethodTimeLogger(_logger, $"TryGetRecentPosts - postType:{postType} - sortMode:{sortMode}");
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         var activeAccountId = activeAccount?.Id ?? 0;
 
         var allSearchResult = Array.Empty<PostInfo>();
-        if (activeAccountId > 0 && postsType == RecentPostsType.Default)
+        if (activeAccountId > 0 && postType == RecentPostType.Default)
         {
             allSearchResult = await TryGetRecentPosts(activeAccountId).ConfigureAwait(false);
         }
@@ -719,21 +719,17 @@ public class SearchServices : ISearchServices
             allSearchResult = await TryGetRecentPosts().ConfigureAwait(false);
         }
 
-        var allPostViewModels = Array.Empty<PostViewModel>();
-        var totalPages = (int)Math.Ceiling(allSearchResult.Length / (float)ZExtensions.PostsPerPage);
+        var allPostInfos = Array.Empty<PostInfo>();
         if (allSearchResult.Length > 0)
         {
-            currentPage = Math.Clamp(currentPage, 1, totalPages);
-            allPostViewModels = await GetPostViewModelsForPage(activeAccountId, allSearchResult, currentPage, ZExtensions.PostsPerPage, locale).ConfigureAwait(false);
+            allPostInfos = await GetPostThatAreVisible(activeAccountId, allSearchResult).ConfigureAwait(false);
         }
 
         return new RecentPostsResults
         {
-            CurrentPage = currentPage,
-            TotalPages = totalPages,
             SortMode = sortMode,
-            PostsType = postsType,
-            PostViewModels = allPostViewModels
+            PostType = postType,
+            PostInfos = allPostInfos
         };
     }
 
@@ -838,13 +834,11 @@ public class SearchServices : ISearchServices
         };
     }
 
-    private async Task<PostViewModel[]> GetPostViewModelsForPage(int activeAccountId, PostInfo[] allSearchResult, int currentPage, int postsPerPage, ServerSideLocale locale)
+    private async Task<PostInfo[]> GetPostThatAreVisible(int activeAccountId, PostInfo[] allSearchResult)
     {
-        using var _ = new MethodTimeLogger(_logger, $"GetPostViewModelsForPage - activeAccountId:{activeAccountId} - currentPage:{currentPage} - postsPerPage:{postsPerPage} - locale: {locale}");
+        using var _ = new MethodTimeLogger(_logger, $"GetPostThatAreVisible - activeAccountId:{activeAccountId}");
 
-        var viewModels = new List<PostViewModel>();
         var visiblePosts = new List<PostInfo>();
-
         for (var i = 0; i < allSearchResult.Length; i++)
         {
             var postInfo = allSearchResult[i];
@@ -855,7 +849,17 @@ public class SearchServices : ISearchServices
             }
         }
 
-        for (var i = (currentPage - 1) * postsPerPage; i < visiblePosts.Count; i++)
+        return visiblePosts.ToArray();
+    }
+
+    private async Task<PostViewModel[]> GetPostViewModelsForPage(int activeAccountId, PostInfo[] allSearchResult, int currentPage, int postsPerPage, ServerSideLocale locale)
+    {
+        using var _ = new MethodTimeLogger(_logger, $"GetPostViewModelsForPage - activeAccountId:{activeAccountId} - currentPage:{currentPage} - postsPerPage:{postsPerPage} - locale: {locale}");
+
+        var viewModels = new List<PostViewModel>();
+        var visiblePosts = await GetPostThatAreVisible(activeAccountId, allSearchResult).ConfigureAwait(false);
+
+        for (var i = (currentPage - 1) * postsPerPage; i < visiblePosts.Length; i++)
         {
             var postInfo = visiblePosts[i];
             var postViewModel = await _commonServices.PostServices.TryGetPostViewModel(activeAccountId, postInfo.PostId, locale).ConfigureAwait(false);

@@ -1,6 +1,6 @@
 ﻿namespace AzerothMemories.WebBlazor.Common;
 
-public enum RecentPostsType
+public enum RecentPostType
 {
     Default,
     Two

@@ -13,7 +13,7 @@ public static class ProgramEx
     public static void Initialize(IServiceCollection services)
     {
 #if !DEBUG
-        ActualLab.Interception.Interceptors.InterceptorBase.Options.Defaults.IsValidationEnabled = false;
+        ActualLab.Interception.Interceptor.Options.Defaults.IsValidationEnabled = false;
 #endif
 
         services.AddMudServices(config =>
@@ -56,7 +56,7 @@ public static class ProgramEx
             {
                 SleepPeriod = isWasm ? TimeSpan.Zero : TimeSpan.FromMinutes(1).ToRandom(0.25),
                 CollectPeriod = TimeSpan.FromSeconds(isWasm ? 3 : 60),
-                AccessFilter = isWasm ? static computed => computed.Input.Function is IClientComputeMethodFunction : static computed => true,
+                AccessFilter = isWasm ? static computed => computed.Input.Function is IRemoteComputeMethodFunction : static _ => true,
                 AccessStatisticsPreprocessor = StatisticsPreprocessor,
                 RegistrationStatisticsPreprocessor = StatisticsPreprocessor
             };

@@ -19,10 +19,13 @@
     <ItemGroup>
         <PackageReference Include="Azure.Storage.Blobs" Version="12.21.0" />
         <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="8.1.5" />
-        <PackageReference Include="MemoryPack.Generator" Version="1.10.0" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <PackageReference Include="MemoryPack.Generator" Version="1.10.0" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.7" />
         <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.7" />
-        <PackageReference Include="MudBlazor" Version="7.3.0" />
+        <PackageReference Include="MudBlazor" Version="7.4.0" />
         <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.22.0" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="8.0.4" />
@@ -30,10 +33,10 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.4" />
-        <PackageReference Include="ActualLab.Fusion.EntityFramework.Npgsql" Version="8.0.8" />
-        <PackageReference Include="ActualLab.Fusion.Server" Version="8.0.8" />
-        <PackageReference Include="ActualLab.Generators" Version="8.0.8" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
+        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
+        <PackageReference Include="ActualLab.Fusion.EntityFramework.Npgsql" Version="9.0.18" />
+        <PackageReference Include="ActualLab.Fusion.Server" Version="9.0.18" />
+        <PackageReference Include="ActualLab.Generators" Version="9.0.18" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
