@@ -1,7 +1,7 @@
 ﻿@inherits ComputedStateComponent<PostViewModel?>
 
 @{
-    var postViewModel = State.Value;
+    var postViewModel = PostViewModel;
     if (postViewModel == null)
     {
         <CardLoadingComponent/>
@@ -26,15 +26,14 @@
 
     [Parameter, EditorRequired] public required PostViewModel?[] PostViewModels { get; init; }
 
+    private PostViewModel? PostViewModel => PostViewModels[PostIndex];
+
     protected override async Task<PostViewModel?> ComputeState(CancellationToken cancellationToken)
     {
-        if (PostViewModels[PostIndex] == null)
-        {
-            var postInfo = PostInfos[PostIndex];
-            var locale = ServerSideLocaleExt.GetServerSideLocale();
+        var postInfo = PostInfos[PostIndex];
+        var locale = ServerSideLocaleExt.GetServerSideLocale();
+        PostViewModels[PostIndex] = await Services.ComputeServices.PostServices.TryGetPostViewModel(Session.Default, postInfo.AccountId, postInfo.PostId, locale);
 
-            PostViewModels[PostIndex] = await Services.ComputeServices.PostServices.TryGetPostViewModel(Session.Default, postInfo.AccountId, postInfo.PostId, locale);
-        }
 
         return PostViewModels[PostIndex];
     }

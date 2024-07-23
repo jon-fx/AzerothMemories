@@ -47,12 +47,15 @@ public sealed class RecentPostsHelper
     {
         currentPage = Math.Clamp(currentPage, 1, Math.Max(TotalPages, 1));
 
-        if (currentPage == CurrentPage && sortMode == _searchResults.SortMode && recentPostType == _searchResults.PostType && _searchResults.PostInfos.Length > 0 && _searchResults.PostInfos.Length == _searchResults.PostViewModels.Length)
-        {
-            return _searchResults;
-        }
+        //if (currentPage == CurrentPage && sortMode == _searchResults.SortMode && recentPostType == _searchResults.PostType && _searchResults.PostInfos.Length > 0 && _searchResults.PostInfos.Length == _searchResults.PostViewModels.Length)
+        //{
+        //    return _searchResults;
+        //}
 
         IsLoading = true;
+
+        var oldSearchResults = _searchResults;
+        var oldViewModels = oldSearchResults.PostViewModels.SafeEnumerable().ToDictionary(x => x.Id, x => x);
 
         _searchResults = await _services.ComputeServices.SearchServices.TryGetRecentPosts(Session.Default, recentPostType, sortMode);
 
@@ -61,6 +64,15 @@ public sealed class RecentPostsHelper
 
         _searchResults.PostViewModels = temp;
         _searchResults.CurrentPage = Math.Clamp(currentPage, 1, Math.Max(TotalPages, 1));
+
+        for (var i = 0; i < _searchResults.PostInfos.Length; i++)
+        {
+            var postId = _searchResults.PostInfos[i].PostId;
+
+            oldViewModels.TryGetValue(postId, out var postViewModel);
+
+            _searchResults.PostViewModels[i] = postViewModel;
+        }
 
         IsLoading = false;
 
