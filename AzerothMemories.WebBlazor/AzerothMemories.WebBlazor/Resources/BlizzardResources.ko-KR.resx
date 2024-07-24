@@ -1954,6 +1954,18 @@
   <data name="CharacterRace-83">
     <value>만개하는 변덕비룡</value>
   </data>
+  <data name="CharacterRace-84">
+    <value>토석인</value>
+  </data>
+  <data name="CharacterRace-85">
+    <value>토석인</value>
+  </data>
+  <data name="CharacterRace-86">
+    <value>하라니르</value>
+  </data>
+  <data name="CharacterRace-87">
+    <value>비행선</value>
+  </data>
   <data name="CharacterClass-0">
     <value>Unknown Class</value>
   </data>

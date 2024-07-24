@@ -1954,6 +1954,18 @@
   <data name="CharacterRace-83">
     <value>Цветущий чудозмейчик</value>
   </data>
+  <data name="CharacterRace-84">
+    <value>Земельник</value>
+  </data>
+  <data name="CharacterRace-85">
+    <value>Земельник</value>
+  </data>
+  <data name="CharacterRace-86">
+    <value>Харанир</value>
+  </data>
+  <data name="CharacterRace-87">
+    <value>Воздушное судно</value>
+  </data>
   <data name="CharacterClass-0">
     <value>Unknown Class</value>
   </data>

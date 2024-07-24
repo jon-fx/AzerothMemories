@@ -3634,6 +3634,18 @@
   <data name="CharacterRace-83">
     <value>Flourishing Whimsydrake</value>
   </data>
+  <data name="CharacterRace-84">
+    <value>Earthen</value>
+  </data>
+  <data name="CharacterRace-85">
+    <value>Earthen</value>
+  </data>
+  <data name="CharacterRace-86">
+    <value>Haranir</value>
+  </data>
+  <data name="CharacterRace-87">
+    <value>Airship</value>
+  </data>
   <data name="CharacterClass-0">
     <value>Unknown Class</value>
   </data>

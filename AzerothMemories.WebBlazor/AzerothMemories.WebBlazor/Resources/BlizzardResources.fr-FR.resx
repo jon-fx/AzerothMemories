@@ -1954,6 +1954,18 @@
   <data name="CharacterRace-83">
     <value>Drake fantasque épanoui</value>
   </data>
+  <data name="CharacterRace-84">
+    <value>Terrestre</value>
+  </data>
+  <data name="CharacterRace-85">
+    <value>Terrestre</value>
+  </data>
+  <data name="CharacterRace-86">
+    <value>Haranir</value>
+  </data>
+  <data name="CharacterRace-87">
+    <value>Aéronef</value>
+  </data>
   <data name="CharacterClass-0">
     <value>Unknown Class</value>
   </data>

@@ -1954,6 +1954,18 @@
   <data name="CharacterRace-83">
     <value>繁茂奇行飛龍</value>
   </data>
+  <data name="CharacterRace-84">
+    <value>土靈</value>
+  </data>
+  <data name="CharacterRace-85">
+    <value>土靈</value>
+  </data>
+  <data name="CharacterRace-86">
+    <value>哈拉尼爾</value>
+  </data>
+  <data name="CharacterRace-87">
+    <value>飛船</value>
+  </data>
   <data name="CharacterClass-0">
     <value>Unknown Class</value>
   </data>

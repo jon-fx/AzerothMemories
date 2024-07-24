@@ -1954,6 +1954,18 @@
   <data name="CharacterRace-83">
     <value>繁盛奇想幼龙</value>
   </data>
+  <data name="CharacterRace-84">
+    <value>土灵</value>
+  </data>
+  <data name="CharacterRace-85">
+    <value>土灵</value>
+  </data>
+  <data name="CharacterRace-86">
+    <value>哈籁尼尔</value>
+  </data>
+  <data name="CharacterRace-87">
+    <value>飞艇</value>
+  </data>
   <data name="CharacterClass-0">
     <value>Unknown Class</value>
   </data>
