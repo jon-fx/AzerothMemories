@@ -79,6 +79,7 @@ public abstract class ProgramHelper
 
         _fusion.AddService<MediaServices>(RpcServiceMode.Local);
         _fusion.AddService<BlizzardUpdateServices>(RpcServiceMode.Local);
+        _fusion.AddService<AccountServicesLocal>(RpcServiceMode.Local);
 
         _services.AddHttpClient("Blizzard", x =>
         {

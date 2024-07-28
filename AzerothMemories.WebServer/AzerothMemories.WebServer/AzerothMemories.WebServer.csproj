@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Azure.Storage.Blobs" Version="12.21.0" />
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.21.1" />
         <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="8.1.5" />
         <PackageReference Include="MemoryPack.Generator" Version="1.10.0" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
           <PrivateAssets>all</PrivateAssets>
@@ -34,9 +34,9 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
-        <PackageReference Include="ActualLab.Fusion.EntityFramework.Npgsql" Version="9.0.18" />
-        <PackageReference Include="ActualLab.Fusion.Server" Version="9.0.18" />
-        <PackageReference Include="ActualLab.Generators" Version="9.0.18" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
+        <PackageReference Include="ActualLab.Fusion.EntityFramework.Npgsql" Version="9.0.33" />
+        <PackageReference Include="ActualLab.Fusion.Server" Version="9.0.33" />
+        <PackageReference Include="ActualLab.Generators" Version="9.0.33" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

@@ -103,7 +103,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<PostViewModel?> TryGetPostViewModel(int activeAccountId, int postId, ServerSideLocale locale)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, $"activeAccountId: {activeAccountId} - postId: {postId} - locale: {locale}");
         var postRecord = await TryGetPostRecord(postId).ConfigureAwait(false);
         if (postRecord == null)
         {

@@ -20,6 +20,7 @@ public sealed class CommonServices
 
         AdminServices = _serviceProvider.GetRequiredService<AdminServices>();
         AccountServices = _serviceProvider.GetRequiredService<AccountServices>();
+        AccountServicesLocal = _serviceProvider.GetRequiredService<AccountServicesLocal>();
         FollowingServices = _serviceProvider.GetRequiredService<FollowingServices>();
         CharacterServices = _serviceProvider.GetRequiredService<CharacterServices>();
         GuildServices = _serviceProvider.GetRequiredService<GuildServices>();
@@ -43,6 +44,8 @@ public sealed class CommonServices
     internal AdminServices AdminServices { get; private set; } = null!;
 
     internal AccountServices AccountServices { get; private set; } = null!;
+
+    internal AccountServicesLocal AccountServicesLocal { get; private set; } = null!;
 
     internal FollowingServices FollowingServices { get; private set; } = null!;
 
