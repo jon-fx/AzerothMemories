@@ -47,15 +47,9 @@ public sealed class RecentPostsHelper
     {
         currentPage = Math.Clamp(currentPage, 1, Math.Max(TotalPages, 1));
 
-        //if (currentPage == CurrentPage && sortMode == _searchResults.SortMode && recentPostType == _searchResults.PostType && _searchResults.PostInfos.Length > 0 && _searchResults.PostInfos.Length == _searchResults.PostViewModels.Length)
-        //{
-        //    return _searchResults;
-        //}
-
         IsLoading = true;
 
-        var oldSearchResults = _searchResults;
-        var oldViewModels = oldSearchResults.PostViewModels.SafeEnumerable().ToDictionary(x => x.Id, x => x);
+        var oldViewModels = _searchResults.PostViewModels.SafeEnumerable().ToDictionary(x => x.Id, x => x);
 
         _searchResults = await _services.ComputeServices.SearchServices.TryGetRecentPosts(Session.Default, recentPostType, sortMode);
 
@@ -71,7 +65,10 @@ public sealed class RecentPostsHelper
 
             oldViewModels.TryGetValue(postId, out var postViewModel);
 
-            _searchResults.PostViewModels[i] = postViewModel;
+            if (_searchResults.PostViewModels[i] == null && postViewModel != null)
+            {
+                _searchResults.PostViewModels[i] = postViewModel;
+            }
         }
 
         IsLoading = false;

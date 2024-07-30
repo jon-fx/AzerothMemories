@@ -18,7 +18,7 @@
 
 @code
 {
-    [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
+    [Parameter, EditorRequired] public new required IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired] public required int PostIndex { get; init; }
 
@@ -33,7 +33,6 @@
         var postInfo = PostInfos[PostIndex];
         var locale = ServerSideLocaleExt.GetServerSideLocale();
         PostViewModels[PostIndex] = await Services.ComputeServices.PostServices.TryGetPostViewModel(Session.Default, postInfo.AccountId, postInfo.PostId, locale);
-
 
         return PostViewModels[PostIndex];
     }
