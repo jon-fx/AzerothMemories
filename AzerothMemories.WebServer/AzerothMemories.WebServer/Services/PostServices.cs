@@ -123,25 +123,25 @@ public class PostServices : IPostServices
         var accountViewModels = new List<AccountViewModel>();
         var characterViewModels = new List<CharacterViewModel>();
 
-        foreach (var accountTagInfo in postTagInfos.Where(x => x.Type == PostTagType.Account))
-        {
-            var accountRecord = await _commonServices.AccountServices.TryGetAccountRecord(accountTagInfo.Id).ConfigureAwait(false);
-            if (accountRecord != null)
-            {
-                var accountViewModel = await _commonServices.AccountServices.CreateAccountViewModel(accountRecord, false).ConfigureAwait(false);
-                accountViewModels.Add(accountViewModel);
-            }
-        }
+        //foreach (var accountTagInfo in postTagInfos.Where(x => x.Type == PostTagType.Account))
+        //{
+        //    var accountRecord = await _commonServices.AccountServices.TryGetAccountRecord(accountTagInfo.Id).ConfigureAwait(false);
+        //    if (accountRecord != null)
+        //    {
+        //        var accountViewModel = await _commonServices.AccountServices.CreateAccountViewModel(accountRecord, false).ConfigureAwait(false);
+        //        accountViewModels.Add(accountViewModel);
+        //    }
+        //}
 
-        foreach (var characterTagInfo in postTagInfos.Where(x => x.Type == PostTagType.Character))
-        {
-            var characterRecord = await _commonServices.CharacterServices.TryGetCharacterRecord(characterTagInfo.Id, false).ConfigureAwait(false);
-            if (characterRecord != null)
-            {
-                var characterViewModel = characterRecord.CreateViewModel();
-                characterViewModels.Add(characterViewModel);
-            }
-        }
+        //foreach (var characterTagInfo in postTagInfos.Where(x => x.Type == PostTagType.Character))
+        //{
+        //    var characterRecord = await _commonServices.CharacterServices.TryGetCharacterRecord(characterTagInfo.Id, false).ConfigureAwait(false);
+        //    if (characterRecord != null)
+        //    {
+        //        var characterViewModel = characterRecord.CreateViewModel();
+        //        characterViewModels.Add(characterViewModel);
+        //    }
+        //}
 
         reactionRecords.TryGetValue(activeAccountId, out var reactionViewModel);
 

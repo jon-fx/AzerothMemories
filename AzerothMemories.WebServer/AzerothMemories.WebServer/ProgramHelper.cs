@@ -51,7 +51,7 @@ public abstract class ProgramHelper
         });
 
         _fusion = _services.AddFusion(RpcServiceMode.Server, true);
-        _fusionServer = _fusion.AddWebServer();
+        _fusionServer = _fusion.AddWebServer(true);
 
         _fusion.AddDbAuthService<AppDbContext, string>();
 
@@ -77,9 +77,9 @@ public abstract class ProgramHelper
         _services.AddSingleton<BlizzardUpdateHandler>();
         _services.AddSingleton<HttpClientProvider>();
 
-        _fusion.AddService<MediaServices>(RpcServiceMode.Local);
-        _fusion.AddService<BlizzardUpdateServices>(RpcServiceMode.Local);
-        _fusion.AddService<AccountServicesLocal>(RpcServiceMode.Local);
+        _fusion.AddComputeService<MediaServices>();
+        _fusion.AddComputeService<BlizzardUpdateServices>();
+        _fusion.AddComputeService<AccountServicesLocal>();
 
         _services.AddHttpClient("Blizzard", x =>
         {
@@ -89,7 +89,7 @@ public abstract class ProgramHelper
 
         void AddServiceWithSingleton<TService, TImplementation>() where TService : class where TImplementation : class, TService, IComputeService
         {
-            _fusion.AddService<TService, TImplementation>();
+            _fusion.AddServer<TService, TImplementation>();
             _services.AddSingleton(c => (TImplementation)c.GetRequiredService<TService>());
         }
 
