@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Azure.Storage.Blobs" Version="12.21.1" />
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.21.2" />
         <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="8.1.5" />
         <PackageReference Include="MemoryPack.Generator" Version="1.10.0" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
           <PrivateAssets>all</PrivateAssets>
@@ -25,7 +25,7 @@
         </PackageReference>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.7" />
         <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.7" />
-        <PackageReference Include="MudBlazor" Version="7.5.0" />
+        <PackageReference Include="MudBlazor" Version="7.6.0" />
         <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.22.0" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="8.0.4" />
@@ -34,9 +34,9 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
-        <PackageReference Include="ActualLab.Fusion.EntityFramework.Npgsql" Version="9.0.57" />
-        <PackageReference Include="ActualLab.Fusion.Server" Version="9.0.57" />
-        <PackageReference Include="ActualLab.Generators" Version="9.0.57" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
+        <PackageReference Include="ActualLab.Fusion.EntityFramework.Npgsql" Version="9.0.81" />
+        <PackageReference Include="ActualLab.Fusion.Server" Version="9.0.81" />
+        <PackageReference Include="ActualLab.Generators" Version="9.0.81" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
