@@ -29,6 +29,7 @@ public class BlizzardUpdateServices : IComputeService
         AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters_Renders(_commonServices, _logger));
         AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters_Achievements(_commonServices, _logger));
         AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters_Mounts(_commonServices, _logger));
+        AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters_AchievementStatistics(_commonServices, _logger));
 
         _guildHandlers = new UpdateHandlerBase<GuildRecord>[(int)BlizzardUpdateType.Guild_Count];
         AddUpdateHandler(ref _guildHandlers, new UpdateHandler_Guilds(_commonServices, _logger));

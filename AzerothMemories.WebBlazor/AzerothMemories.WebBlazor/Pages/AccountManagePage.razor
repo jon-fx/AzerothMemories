@@ -155,7 +155,7 @@
                             var character = characters[index];
                             var avatarWithFallback = character.GetAvatarLinkWithFallBack();
 
-                            if (string.IsNullOrWhiteSpace(character.AvatarLink))
+                            if (string.IsNullOrWhiteSpace(character.AvatarLink) || character.CharacterStatus != CharacterStatus2.None)
                             {
                                 continue;
                             }

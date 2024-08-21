@@ -1,4 +1,5 @@
 ﻿using AzerothMemories.WebServer.Database.Records;
+using FluentMigrator.Builders.Alter.Table;
 using FluentMigrator.Builders.Create.Table;
 
 namespace AzerothMemories.Database.Migrations;
@@ -6,6 +7,11 @@ namespace AzerothMemories.Database.Migrations;
 public static class MigrationExt
 {
     public static ICreateTableColumnOptionOrWithColumnSyntax AsText(this ICreateTableColumnAsTypeSyntax createTableColumnAsTypeSyntax)
+    {
+        return createTableColumnAsTypeSyntax.AsCustom("Text");
+    }
+
+    public static IAlterTableColumnOptionOrAddColumnOrAlterColumnSyntax AsText(this IAlterTableColumnAsTypeSyntax createTableColumnAsTypeSyntax)
     {
         return createTableColumnAsTypeSyntax.AsCustom("Text");
     }

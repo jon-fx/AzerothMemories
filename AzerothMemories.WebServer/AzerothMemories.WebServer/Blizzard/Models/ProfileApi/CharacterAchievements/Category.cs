@@ -28,4 +28,20 @@ public record Category
     /// </summary>
     [JsonPropertyName("statistics")]
     public Statistic[]? Statistics { get; init; }
+
+    public IEnumerable<Statistic> EnumerateStatistics()
+    {
+        foreach (var subCategories in SubCategories.SafeEnumerable())
+        {
+            foreach (var statistic in subCategories.EnumerateStatistics())
+            {
+                yield return statistic;
+            }
+        }
+
+        foreach (var statistic in Statistics.SafeEnumerable())
+        {
+            yield return statistic;
+        }
+    }
 }

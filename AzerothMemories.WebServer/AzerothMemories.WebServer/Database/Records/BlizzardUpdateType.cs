@@ -18,6 +18,7 @@ public enum BlizzardUpdateType
     Character_Renders,
     Character_Achievements,
     Character_Mounts,
+    Character_AchievementStatistics,
     Character_Count,
 
     Guild = 0,
