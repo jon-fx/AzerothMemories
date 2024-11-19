@@ -59,7 +59,7 @@ internal static class AccountServices_TryChangeSocialLink
             return previous;
         }
 
-        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(accountRecord);
 
         ServerSocialHelpers.SetterFunc[helper.LinkId](accountRecord, newValue);

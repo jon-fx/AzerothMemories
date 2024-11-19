@@ -16,8 +16,6 @@ internal static class AccountServices_TryChangeAvatarUpload
             {
                 _ = commonServices.AccountServices.DependsOnAccountRecord(invRecord.Id);
                 _ = commonServices.AccountServices.DependsOnAccountAvatar(invRecord.Id);
-                _ = commonServices.MediaServices.TryGetBlobData(ZExtensions.BlobUserAvatars, $"{ZExtensions.AvatarBlobFilePrefix}{invRecord.Id}-0.jpg");
-                _ = commonServices.MediaServices.TryGetBlobData(ZExtensions.BlobUserAvatars, $"{ZExtensions.AvatarBlobFilePrefix}{invRecord.Id}-1.jpg");
             }
 
             return default;
@@ -103,7 +101,7 @@ internal static class AccountServices_TryChangeAvatarUpload
             return null;
         }
 
-        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(accountRecord);
         accountRecord.Avatar = newAvatar;
         accountRecord.AccountFlags = avatarIndex == 0 ? accountRecord.AccountFlags | AccountFlags.SecondAvatarIndex : accountRecord.AccountFlags & ~AccountFlags.SecondAvatarIndex;

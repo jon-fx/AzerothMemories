@@ -56,7 +56,7 @@ internal static class PostServices_TryDeleteComment
             return 0;
         }
 
-        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
         var commentRecord = await database.PostComments.FirstAsync(x => x.Id == commentId, cancellationToken).ConfigureAwait(false);
         commentRecord.DeletedTimeStamp = now;
 

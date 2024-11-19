@@ -54,7 +54,7 @@ internal static class PostServices_TrySetPostVisibility
 
         var newVisibility = Math.Clamp(command.NewVisibility, (byte)0, (byte)1);
 
-        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(postRecord);
         postRecord.PostVisibility = newVisibility;
 

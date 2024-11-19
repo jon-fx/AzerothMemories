@@ -31,7 +31,7 @@ internal static class FollowingServices_TryStartFollowing
         }
 
         var followingViewModels = await commonServices.FollowingServices.TryGetAccountFollowing(activeAccount.Id).ConfigureAwait(false);
-        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
 
         var otherAccountViewModel = await commonServices.AccountServices.TryGetAccountRecord(otherAccountId).ConfigureAwait(false);
         if (otherAccountViewModel == null)

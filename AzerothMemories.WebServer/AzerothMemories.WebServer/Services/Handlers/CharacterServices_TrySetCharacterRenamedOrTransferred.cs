@@ -56,7 +56,7 @@ internal static class CharacterServices_TrySetCharacterRenamedOrTransferred
             return false;
         }
 
-        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(oldCharacterRecord);
         oldCharacterRecord.CharacterStatus = CharacterStatus2.RenamedOrTransferred;
         oldCharacterRecord.NameSearchable = $"Ð-{oldCharacterRecord.NameSearchable}";

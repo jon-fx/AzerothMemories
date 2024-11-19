@@ -38,7 +38,7 @@ internal static class CharacterServices_TrySetCharacterDeleted
             return false;
         }
 
-        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(characterRecord);
         characterRecord.CharacterStatus = CharacterStatus2.DeletePending;
         characterRecord.NameSearchable = $"Ð-{characterRecord.NameSearchable}";

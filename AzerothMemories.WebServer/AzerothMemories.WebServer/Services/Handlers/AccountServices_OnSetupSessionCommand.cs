@@ -31,7 +31,7 @@ internal static class AccountServices_OnSetupSessionCommand
 
         if (accountRecord.ShouldUpdateLoginConsecutiveDays())
         {
-            await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+            await using var database = await commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
             database.Attach(accountRecord);
 
             accountRecord.TryUpdateLoginConsecutiveDaysCount();

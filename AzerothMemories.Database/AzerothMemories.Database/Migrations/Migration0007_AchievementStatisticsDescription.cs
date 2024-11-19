@@ -4,7 +4,7 @@ using FluentMigrator;
 namespace AzerothMemories.Database.Migrations;
 
 [Migration(MigrationId)]
-public sealed class Migration007_AchievementStatisticsDescription : Migration
+public sealed class Migration0007_AchievementStatisticsDescription : Migration
 {
     public const int MigrationId = 7;
 

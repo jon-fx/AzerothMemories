@@ -68,7 +68,7 @@ internal static class PostServices_TryUpdateSystemTags
             return AddMemoryResultCode.SessionNotFound;
         }
 
-        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
 
         var postRecord = await database.Posts.Include(x => x.PostTags).FirstOrDefaultAsync(p => p.DeletedTimeStamp == 0 && p.Id == postId, cancellationToken).ConfigureAwait(false);
         if (postRecord == null || postRecord.PostTags == null)

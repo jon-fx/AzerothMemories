@@ -540,10 +540,12 @@ public class SearchServices : ISearchServices
         foreach (var dailyAchievement in dailyAchievementsId)
         {
             var itemZonedDateTime = dailyAchievement.AchievementTimeStamp.InZone(timeZone);
-            var activitySet = results[itemZonedDateTime.Year];
 
-            activitySet.Achievements.Add(dailyAchievement.AchievementId);
-            totals.Achievements.Add(dailyAchievement.AchievementId);
+            if (results.TryGetValue(itemZonedDateTime.Year, out var activitySet))
+            {
+                activitySet.Achievements.Add(dailyAchievement.AchievementId);
+                totals.Achievements.Add(dailyAchievement.AchievementId);
+            }
         }
 
         var firstAchievementsQuery = from achievement in database.CharacterAchievements
@@ -559,9 +561,8 @@ public class SearchServices : ISearchServices
         foreach (var firstAchievement in firstAchievements)
         {
             var itemZonedDateTime = firstAchievement.AchievementTimeStamp.InZone(timeZone);
-            if (itemZonedDateTime.Day == inZoneDay && itemZonedDateTime.Month == inZoneMonth)
+            if (itemZonedDateTime.Day == inZoneDay && itemZonedDateTime.Month == inZoneMonth && results.TryGetValue(itemZonedDateTime.Year, out var activitySet))
             {
-                var activitySet = results[itemZonedDateTime.Year];
                 activitySet.FirstAchievements.Add(firstAchievement.AchievementId);
                 totals.FirstAchievements.Add(firstAchievement.AchievementId);
             }

@@ -49,7 +49,7 @@ internal static class PostServices_TryReportPost
             reasonText = reasonText[..ZExtensions.ReportPostCommentMaxLength];
         }
 
-        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(postRecord);
 
         var reportQueryResult = await database.PostReports.FirstOrDefaultAsync(r => r.PostId == postRecord.Id && r.AccountId == activeAccount.Id, cancellationToken).ConfigureAwait(false);

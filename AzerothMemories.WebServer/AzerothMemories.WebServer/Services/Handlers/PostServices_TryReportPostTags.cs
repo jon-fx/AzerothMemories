@@ -54,7 +54,7 @@ internal static class PostServices_TryReportPostTags
             return false;
         }
 
-        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
 
         var reportQuery = from r in database.PostTagReports
                           where r.PostId == postRecord.Id && r.AccountId == activeAccount.Id

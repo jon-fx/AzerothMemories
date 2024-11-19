@@ -52,7 +52,7 @@ internal static class PostServices_TryReactToPost
             return 0;
         }
 
-        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(postRecord);
 
         var newReaction = command.NewReaction;

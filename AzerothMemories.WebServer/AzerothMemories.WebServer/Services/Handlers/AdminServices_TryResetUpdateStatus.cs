@@ -16,7 +16,7 @@ internal static class AdminServices_TryResetUpdateStatus
         }
 
         using var __ = new MethodTimeLogger(logger);
-        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
         var record = await database.BlizzardUpdates.FirstOrDefaultAsync(x => x.Id == command.UpdateRecordId, cancellationToken).ConfigureAwait(false);
         if (record == null)
         {

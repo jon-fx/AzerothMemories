@@ -22,7 +22,7 @@ internal static class AccountServices_TryChangeIsPrivate
             return false;
         }
 
-        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
         database.Attach(accountRecord);
         accountRecord.IsPrivate = command.NewValue;
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

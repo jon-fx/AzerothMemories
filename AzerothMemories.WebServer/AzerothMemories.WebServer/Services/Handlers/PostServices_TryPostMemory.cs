@@ -116,7 +116,7 @@ internal static class PostServices_TryPostMemory
             return new AddMemoryResult(AddMemoryResultCode.InvalidTags);
         }
 
-        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
 
         var uploadAndSortResult = await UploadAndSortImages(logger, commonServices, database, activeAccount, postRecord, command.ImageData ?? [], cancellationToken).ConfigureAwait(false);
         if (uploadAndSortResult != AddMemoryResultCode.Success)

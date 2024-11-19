@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -17,33 +17,33 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Azure.Storage.Blobs" Version="12.21.2" />
-        <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="8.1.5" />
-        <PackageReference Include="MemoryPack.Generator" Version="1.10.0" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.23.0" />
+        <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="9.0.7" />
+        <PackageReference Include="MemoryPack.Generator" Version="1.21.3" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.8" />
-        <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.8" />
-        <PackageReference Include="MudBlazor" Version="7.6.0" />
-        <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.23.0" />
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="8.0.4" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="9.0.0" />
+        <PackageReference Include="MudBlazor" Version="7.15.0" />
+        <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.24.0" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.1" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="9.0.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
-        <PackageReference Include="ActualLab.Fusion.EntityFramework.Npgsql" Version="9.1.38" />
-        <PackageReference Include="ActualLab.Fusion.Server" Version="9.1.38" />
-        <PackageReference Include="ActualLab.Generators" Version="9.1.38" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
+        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.6" />
+        <PackageReference Include="ActualLab.Fusion.EntityFramework.Npgsql" Version="9.5.64" />
+        <PackageReference Include="ActualLab.Fusion.Server" Version="9.5.64" />
+        <PackageReference Include="ActualLab.Generators" Version="9.5.64" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
-        <PackageReference Include="AspNet.Security.OAuth.BattleNet" Version="8.1.0" />
-        <PackageReference Include="AspNet.Security.OAuth.Patreon" Version="8.1.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.8" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="7.0.0" />
+        <PackageReference Include="AspNet.Security.OAuth.BattleNet" Version="9.0.0" />
+        <PackageReference Include="AspNet.Security.OAuth.Patreon" Version="9.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.0" />
     </ItemGroup>
 
     <ItemGroup>

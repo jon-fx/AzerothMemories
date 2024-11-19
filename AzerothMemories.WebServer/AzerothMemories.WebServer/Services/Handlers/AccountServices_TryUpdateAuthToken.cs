@@ -17,7 +17,7 @@ internal static class AccountServices_TryUpdateAuthToken
         }
 
         var key = $"{command.Type}/{command.Id}";
-        var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        var database = await commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
         var record = await database.AuthTokens.FirstOrDefaultAsync(x => x.Key == key, cancellationToken).ConfigureAwait(false);
         if (record == null)
         {

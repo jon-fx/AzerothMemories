@@ -21,7 +21,7 @@ internal static class AccountServices_AddNewHistoryItem
             throw new NotImplementedException();
         }
 
-        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
         var query = from r in database.AccountHistory
                     where r.AccountId == command.AccountId &&
                           r.OtherAccountId == command.OtherAccountId &&

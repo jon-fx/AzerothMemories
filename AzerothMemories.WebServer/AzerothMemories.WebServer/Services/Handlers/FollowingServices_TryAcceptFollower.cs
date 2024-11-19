@@ -36,7 +36,7 @@ internal static class FollowingServices_TryAcceptFollower
             return null;
         }
 
-        await using var database = await commonServices.DatabaseHub.CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+        await using var database = await commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
 
         var currentRecord = await database.AccountFollowing.FirstAsync(x => x.Id == viewModel.Id, cancellationToken).ConfigureAwait(false);
         currentRecord.Status = viewModel.Status = AccountFollowingStatus.Active;
