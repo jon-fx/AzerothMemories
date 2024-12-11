@@ -18,7 +18,7 @@ internal sealed class UpdateHandler_Guilds_Roster : UpdateHandlerBaseResult<Guil
         return await client.GetGuildRosterAsync(guildRef.Realm, guildRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
 
-    protected override async Task InternalExecuteWithResult(CommandContext context, AppDbContext database, GuildRecord record, GuildRoster requestResult)
+    protected override async Task InternalExecuteWithResult(AppDbContext database, GuildRecord record, GuildRoster requestResult)
     {
         foreach (var guildMember in requestResult.Members.SafeEnumerable())
         {

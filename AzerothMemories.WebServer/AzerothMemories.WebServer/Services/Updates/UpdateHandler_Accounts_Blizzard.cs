@@ -14,7 +14,7 @@ internal sealed class UpdateHandler_Accounts_Blizzard : UpdateHandlerBaseResult<
         _blizzardUpdateServices = blizzardUpdateServices;
     }
 
-    protected override bool ShouldExecuteOn(CommandContext context, AppDbContext database, AccountRecord record, [NotNullWhen(true)] out AuthTokenRecord? authTokenRecord)
+    protected override bool ShouldExecuteOn(AppDbContext database, AccountRecord record, [NotNullWhen(true)] out AuthTokenRecord? authTokenRecord)
     {
         authTokenRecord = record.AuthTokens.FirstOrDefault(x => x.IsBlizzardAuthToken);
         return authTokenRecord != null;
@@ -31,7 +31,7 @@ internal sealed class UpdateHandler_Accounts_Blizzard : UpdateHandlerBaseResult<
         return await client.GetAccountProfile(authTokenRecord.Token, blizzardLastModified).ConfigureAwait(false);
     }
 
-    protected override async Task InternalExecuteWithResult(CommandContext context, AppDbContext database, AccountRecord record, AccountProfileSummary requestResult)
+    protected override async Task InternalExecuteWithResult(AppDbContext database, AccountRecord record, AccountProfileSummary requestResult)
     {
         var characters = await database.Characters.Where(x => x.AccountId == record.Id).ToDictionaryAsync(x => x.MoaRef, x => x).ConfigureAwait(false);
         var deletedCharactersSets = new Dictionary<string, CharacterRecord>(characters);
@@ -52,7 +52,7 @@ internal sealed class UpdateHandler_Accounts_Blizzard : UpdateHandlerBaseResult<
                 }
                 else
                 {
-                    await _blizzardUpdateServices.ExecuteHandlersOnFirstLogin(context, database, record, characterRecord).ConfigureAwait(false);
+                    await _blizzardUpdateServices.ExecuteHandlersOnFirstLogin(database, record, characterRecord).ConfigureAwait(false);
                 }
 
                 characterRecord.AccountId = record.Id;
@@ -81,7 +81,5 @@ internal sealed class UpdateHandler_Accounts_Blizzard : UpdateHandlerBaseResult<
                 character.CharacterStatus = CharacterStatus2.MaybeDeleted;
             }
         }
-
-        context.Operation.Items.Set(new Updates_UpdateAccountInvalidate(record.Id, record.FusionId, record.Username, characters.Values.Select(x => x.Id).ToHashSet()));
     }
 }

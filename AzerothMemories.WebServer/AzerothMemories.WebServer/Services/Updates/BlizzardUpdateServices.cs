@@ -53,13 +53,13 @@ public class BlizzardUpdateServices : IComputeService
 
     public int GuildHandlerCount => _guildHandlers.Length;
 
-    public async Task ExecuteHandlersOnFirstLogin(CommandContext context, AppDbContext database, AccountRecord accountRecord, CharacterRecord characterRecord)
+    public async Task ExecuteHandlersOnFirstLogin(AppDbContext database, AccountRecord accountRecord, CharacterRecord characterRecord)
     {
         foreach (var characterHandler in _characterHandlers)
         {
             if (characterHandler is IRequiresExecuteOnFirstLogin handler)
             {
-                await handler.OnFirstLogin(context, database, accountRecord, characterRecord).ConfigureAwait(false);
+                await handler.OnFirstLogin(database, accountRecord, characterRecord).ConfigureAwait(false);
             }
         }
     }
@@ -231,6 +231,10 @@ public class BlizzardUpdateServices : IComputeService
         }
 
         var resultStatusCode = await RunUpdateHandlers(_accountHandlers, context, database, record, cancellationToken).ConfigureAwait(false);
+
+        var characters = await database.Characters.Where(x => x.AccountId == record.Id).ToDictionaryAsync(x => x.MoaRef, x => x, cancellationToken: cancellationToken).ConfigureAwait(false);
+        context.Operation.Items.Set(new Updates_UpdateAccountInvalidate(record.Id, record.FusionId, record.Username, characters.Values.Select(x => x.Id).ToHashSet()));
+
         return resultStatusCode;
     }
 
@@ -358,7 +362,6 @@ public class BlizzardUpdateServices : IComputeService
             }
         }
 
-        var updateStatusCode = HttpStatusCode.OK;
         for (var i = 0; i < allHandlers.Length; i++)
         {
             var updateHandler = allHandlers[i];
@@ -366,8 +369,7 @@ public class BlizzardUpdateServices : IComputeService
 
             Exceptions.ThrowIf(updateChildRecord.UpdateType != updateHandler.UpdateType);
 
-            updateStatusCode = await updateHandler.TryExecuteOn(context, database, record, updateChildRecord).ConfigureAwait(false);
-
+            var updateStatusCode = await updateHandler.TryExecuteOn(database, record, updateChildRecord).ConfigureAwait(false);
             if (updateStatusCode.IsSuccess())
             {
             }
@@ -380,50 +382,11 @@ public class BlizzardUpdateServices : IComputeService
         record.UpdateRecord.UpdateJobLastEndTime = record.UpdateRecord.UpdateLastModified;
         record.UpdateRecord.UpdateStatus = BlizzardUpdateStatus.Done;
 
-        bool saveFailed;
-        do
-        {
-            saveFailed = false;
-
-            try
-            {
-                await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-            }
-            catch (DbUpdateConcurrencyException dbUpdateException)
-            {
-                saveFailed = true;
-
-                foreach (var entry in dbUpdateException.Entries)
-                {
-                    if (entry.Entity is CharacterFirstAchievementRecord clientEntity)
-                    {
-                        var databaseValues = await entry.GetDatabaseValuesAsync().ConfigureAwait(false);
-                        if (databaseValues?.ToObject() is CharacterFirstAchievementRecord databaseEntity && databaseValues.ToObject() is CharacterFirstAchievementRecord resolvedEntity)
-                        {
-                            if (databaseEntity.AchievementTimeStamp > clientEntity.AchievementTimeStamp)
-                            {
-                                resolvedEntity.AchievementTimeStamp = clientEntity.AchievementTimeStamp;
-                            }
-
-                            entry.OriginalValues.SetValues(databaseValues);
-                            entry.CurrentValues.SetValues(resolvedEntity);
-                        }
-                        else
-                        {
-                            throw;
-                        }
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-            }
-        } while (saveFailed);
+        await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         context.Operation.AddEvent(new Updates_UpdateRecordResetStatusCommand(record.UpdateRecord.AccountId, record.UpdateRecord.CharacterId, record.UpdateRecord.GuildId), GetResetTime(record.UpdateRecord));
 
-        return updateStatusCode;
+        return HttpStatusCode.OK;
     }
 
     private static TimeSpan GetResetTime(BlizzardUpdateRecord updateRecord)

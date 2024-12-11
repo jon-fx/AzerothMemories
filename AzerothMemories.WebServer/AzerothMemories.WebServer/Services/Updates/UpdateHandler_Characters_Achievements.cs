@@ -6,7 +6,7 @@ internal sealed class UpdateHandler_Characters_Achievements : UpdateHandlerBaseR
     {
     }
 
-    public async Task OnFirstLogin(CommandContext context, AppDbContext database, AccountRecord accountRecord, CharacterRecord characterRecord)
+    public async Task OnFirstLogin(AppDbContext database, AccountRecord accountRecord, CharacterRecord characterRecord)
     {
         var records = await database.CharacterAchievements.Where(x => x.CharacterId == characterRecord.Id && x.AccountId == null).ToArrayAsync().ConfigureAwait(false);
         foreach (var record in records)
@@ -27,7 +27,7 @@ internal sealed class UpdateHandler_Characters_Achievements : UpdateHandlerBaseR
         return await client.GetCharacterAchievementsSummaryAsync(characterRef.Realm, characterRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
 
-    protected override async Task InternalExecuteWithResult(CommandContext context, AppDbContext database, CharacterRecord record, CharacterAchievementsSummary requestResult)
+    protected override async Task InternalExecuteWithResult(AppDbContext database, CharacterRecord record, CharacterAchievementsSummary requestResult)
     {
         var currentAchievements = await database.CharacterAchievements.Where(x => x.CharacterId == record.Id).ToDictionaryAsync(x => x.AchievementId, x => x).ConfigureAwait(false);
         var firstEverAchievements = await database.CharacterFirstAchievements.ToDictionaryAsync(x => x.AchievementId, x => x).ConfigureAwait(false);

@@ -18,7 +18,7 @@ internal sealed class UpdateHandler_Guilds_Achievements : UpdateHandlerBaseResul
         return await client.GetGuildAchievementsAsync(guildRef.Realm, guildRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
 
-    protected override async Task InternalExecuteWithResult(CommandContext context, AppDbContext database, GuildRecord record, GuildAchievements requestResult)
+    protected override async Task InternalExecuteWithResult(AppDbContext database, GuildRecord record, GuildAchievements requestResult)
     {
         if (requestResult.Achievements == null)
         {

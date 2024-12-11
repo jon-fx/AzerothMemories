@@ -18,7 +18,7 @@ internal sealed class UpdateHandler_Guilds : UpdateHandlerBaseResult<GuildRecord
         return await client.GetGuildProfileSummaryAsync(guildRef.Realm, guildRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
 
-    protected override Task InternalExecuteWithResult(CommandContext context, AppDbContext database, GuildRecord record, Guild requestResult)
+    protected override Task InternalExecuteWithResult(AppDbContext database, GuildRecord record, Guild requestResult)
     {
         record.BlizzardId = requestResult.Id;
         record.Name = requestResult.Name ?? $"GuildRecord-{record.Id}";

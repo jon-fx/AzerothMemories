@@ -2,5 +2,5 @@
 
 internal interface IRequiresExecuteOnFirstLogin
 {
-    Task OnFirstLogin(CommandContext context, AppDbContext database, AccountRecord accountRecord, CharacterRecord characterRecord);
+    Task OnFirstLogin(AppDbContext database, AccountRecord accountRecord, CharacterRecord characterRecord);
 }

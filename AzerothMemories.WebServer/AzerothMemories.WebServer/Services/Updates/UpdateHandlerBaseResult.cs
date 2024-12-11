@@ -10,14 +10,14 @@ internal abstract class UpdateHandlerBaseResult<TRecord, TRequestResult> : Updat
 
     protected abstract Task<RequestResult<TRequestResult>> TryExecuteRequest(TRecord record, AuthTokenRecord? authTokenRecord, Instant blizzardLastModified);
 
-    protected override async Task<HttpStatusCode> InternalExecuteOn(CommandContext context, AppDbContext database, TRecord record, AuthTokenRecord? authTokenRecord, BlizzardUpdateChildRecord childRecord)
+    protected override async Task<HttpStatusCode> InternalExecuteOn(AppDbContext database, TRecord record, AuthTokenRecord? authTokenRecord, BlizzardUpdateChildRecord childRecord)
     {
         var requestResult = await TryExecuteRequest(record, authTokenRecord, childRecord.BlizzardLastModified).ConfigureAwait(false);
         if (requestResult.IsSuccess && requestResult.ResultData != null)
         {
             childRecord.UpdateFailCounter = 0;
 
-            await InternalExecuteWithResult(context, database, record, requestResult.ResultData).ConfigureAwait(false);
+            await InternalExecuteWithResult(database, record, requestResult.ResultData).ConfigureAwait(false);
         }
         else if (childRecord.UpdateFailCounter < byte.MaxValue)
         {
@@ -30,5 +30,5 @@ internal abstract class UpdateHandlerBaseResult<TRecord, TRequestResult> : Updat
         return requestResult.ResultCode;
     }
 
-    protected abstract Task InternalExecuteWithResult(CommandContext context, AppDbContext database, TRecord record, TRequestResult requestResult);
+    protected abstract Task InternalExecuteWithResult(AppDbContext database, TRecord record, TRequestResult requestResult);
 }

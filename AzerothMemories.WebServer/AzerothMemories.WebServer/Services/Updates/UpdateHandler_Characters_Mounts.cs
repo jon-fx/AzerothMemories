@@ -6,7 +6,7 @@ internal sealed class UpdateHandler_Characters_Mounts : UpdateHandlerBaseResult<
     {
     }
 
-    public async Task OnFirstLogin(CommandContext context, AppDbContext database, AccountRecord accountRecord, CharacterRecord characterRecord)
+    public async Task OnFirstLogin(AppDbContext database, AccountRecord accountRecord, CharacterRecord characterRecord)
     {
         var records = await database.CharacterMounts.Where(x => x.CharacterId == characterRecord.Id && x.AccountId == null).ToArrayAsync().ConfigureAwait(false);
         foreach (var record in records)
@@ -27,7 +27,7 @@ internal sealed class UpdateHandler_Characters_Mounts : UpdateHandlerBaseResult<
         return await client.GetCharacterMountsSummaryAsync(characterRef.Realm, characterRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
 
-    protected override async Task InternalExecuteWithResult(CommandContext context, AppDbContext database, CharacterRecord record, CharacterMountsCollectionSummary requestResult)
+    protected override async Task InternalExecuteWithResult(AppDbContext database, CharacterRecord record, CharacterMountsCollectionSummary requestResult)
     {
         var currentMounts = await database.CharacterMounts.Where(x => x.CharacterId == record.Id).ToArrayAsync().ConfigureAwait(false);
         var currentMountsDict = new Dictionary<int, CharacterMountRecord>();

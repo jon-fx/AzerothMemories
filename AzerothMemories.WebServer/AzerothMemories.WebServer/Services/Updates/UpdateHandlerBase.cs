@@ -32,23 +32,23 @@ public class UpdateHandlerBase<TRecord> where TRecord : IBlizzardUpdateRecord
 
     protected ILogger<BlizzardUpdateServices> Logger => _logger;
 
-    protected virtual bool ShouldExecuteOn(CommandContext context, AppDbContext database, TRecord record, out AuthTokenRecord? authTokenRecord)
+    protected virtual bool ShouldExecuteOn(AppDbContext database, TRecord record, out AuthTokenRecord? authTokenRecord)
     {
         authTokenRecord = null;
         return true;
     }
 
-    public async Task<HttpStatusCode> TryExecuteOn(CommandContext context, AppDbContext database, TRecord record, BlizzardUpdateChildRecord childRecord)
+    public async Task<HttpStatusCode> TryExecuteOn(AppDbContext database, TRecord record, BlizzardUpdateChildRecord childRecord)
     {
-        if (ShouldExecuteOn(context, database, record, out var authTokenRecord))
+        if (ShouldExecuteOn(database, record, out var authTokenRecord))
         {
-            return await InternalExecuteOn(context, database, record, authTokenRecord, childRecord).ConfigureAwait(false);
+            return await InternalExecuteOn(database, record, authTokenRecord, childRecord).ConfigureAwait(false);
         }
 
         return HttpStatusCode.OK;
     }
 
-    protected virtual Task<HttpStatusCode> InternalExecuteOn(CommandContext context, AppDbContext database, TRecord record, AuthTokenRecord? authTokenRecord, BlizzardUpdateChildRecord childRecord)
+    protected virtual Task<HttpStatusCode> InternalExecuteOn(AppDbContext database, TRecord record, AuthTokenRecord? authTokenRecord, BlizzardUpdateChildRecord childRecord)
     {
         return Task.FromResult(HttpStatusCode.OK);
     }

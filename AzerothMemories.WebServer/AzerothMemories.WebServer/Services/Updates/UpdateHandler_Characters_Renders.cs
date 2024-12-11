@@ -18,7 +18,7 @@ internal sealed class UpdateHandler_Characters_Renders : UpdateHandlerBaseResult
         return await client.GetCharacterRendersAsync(characterRef.Realm, characterRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
 
-    protected override Task InternalExecuteWithResult(CommandContext context, AppDbContext database, CharacterRecord record, CharacterMediaSummary requestResult)
+    protected override Task InternalExecuteWithResult(AppDbContext database, CharacterRecord record, CharacterMediaSummary requestResult)
     {
         var assets = requestResult.Assets;
         var characterAvatarRender = record.AvatarLink;

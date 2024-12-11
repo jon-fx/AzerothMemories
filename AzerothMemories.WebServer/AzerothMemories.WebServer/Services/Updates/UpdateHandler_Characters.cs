@@ -18,7 +18,7 @@ internal sealed class UpdateHandler_Characters : UpdateHandlerBaseResult<Charact
         return await client.GetCharacterProfileSummaryAsync(characterRef.Realm, characterRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
 
-    protected override async Task InternalExecuteWithResult(CommandContext context, AppDbContext database, CharacterRecord record, CharacterProfileSummary requestResult)
+    protected override async Task InternalExecuteWithResult(AppDbContext database, CharacterRecord record, CharacterProfileSummary requestResult)
     {
         record.RealmId = requestResult.Realm?.Id ?? 0;
         record.Name = requestResult.Name ?? $"Character-{record.Id}";

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AzerothMemories.WebServer.Database.Records;
 
 [Table(TableName)]
-public sealed class CharacterFirstAchievementRecord : IDatabaseRecordWithVersion
+public sealed class CharacterFirstAchievementRecord : IDatabaseRecord
 {
     public const string TableName = "Characters_Achievements_First";
 
@@ -13,6 +13,4 @@ public sealed class CharacterFirstAchievementRecord : IDatabaseRecordWithVersion
     [Column] public int AchievementId { get; init; }
 
     [Column] public Instant AchievementTimeStamp { get; set; }
-
-    public uint RowVersion { get; set; }
 }

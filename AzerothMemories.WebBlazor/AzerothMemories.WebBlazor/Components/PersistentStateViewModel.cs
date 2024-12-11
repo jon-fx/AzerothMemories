@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace AzerothMemories.WebBlazor.Components;
 
@@ -16,7 +17,7 @@ public abstract class PersistentStateViewModel : ViewModelBase
     {
         await base.OnInitialized();
 
-        _componentStateSubscription = Services.ClientServices.PersistentComponentState.RegisterOnPersisting(PersistComponentState);
+        _componentStateSubscription = Services.ClientServices.PersistentComponentState.RegisterOnPersisting(PersistComponentState, RenderMode.InteractiveWebAssembly);
 
         await TryLoadPersistentState();
     }

@@ -1,3 +1,6 @@
+using AzerothMemories.WebBlazor;
+using AzerothMemories.WebServer.Pages;
+
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("AzerothMemories.WebServer.Tests")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("AzerothMemories.WebServer.TestsFake")]
 var config = new CommonConfig();
@@ -11,6 +14,7 @@ builder.Services.AddLogging(logging =>
     logging.ClearProviders();
     logging.AddConsole();
     logging.AddAzureWebAppDiagnostics();
+    logging.SetMinimumLevel(LogLevel.Debug);
     //logging.SetMinimumLevel(LogLevel.Information);
     //if (Env.IsDevelopment()) {
     //logging.AddFilter("Microsoft", LogLevel.Warning);
@@ -21,7 +25,9 @@ builder.Services.AddLogging(logging =>
 
 helper.Initialize();
 
-builder.Services.AddRazorPages();
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents()
+    .AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -43,12 +49,12 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseStatusCodePages();
+    app.UseExceptionHandler("/Error", createScopeForErrors: true);
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
 var webSocketOptions = new WebSocketOptions
@@ -63,15 +69,18 @@ webSocketOptions.AllowedOrigins.Add("https://moa-app.azurewebsites.net");
 
 app.UseWebSockets(webSocketOptions);
 app.UseFusionSession();
-
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseAntiforgery();
 
-app.MapBlazorHub();
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode()
+    .AddInteractiveWebAssemblyRenderMode()
+    .AddAdditionalAssemblies(typeof(Routes).Assembly);
+
 app.MapRpcWebSocketServerEx();
-//app.MapFusionAuth();
-app.MapControllers();
-app.MapFallbackToPage("/_Host");
+app.MapFusionAuth();
+app.MapFusionBlazorMode();
 
 app.Run();

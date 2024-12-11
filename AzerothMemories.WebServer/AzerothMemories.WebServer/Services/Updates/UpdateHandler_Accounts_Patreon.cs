@@ -8,7 +8,7 @@ internal sealed class UpdateHandler_Accounts_Patreon : UpdateHandlerBase<Account
     {
     }
 
-    protected override bool ShouldExecuteOn(CommandContext context, AppDbContext database, AccountRecord record, [NotNullWhen(true)] out AuthTokenRecord? authTokenRecord)
+    protected override bool ShouldExecuteOn(AppDbContext database, AccountRecord record, [NotNullWhen(true)] out AuthTokenRecord? authTokenRecord)
     {
         authTokenRecord = record.AuthTokens.FirstOrDefault(x => x.IsPatreon);
         return authTokenRecord != null;
