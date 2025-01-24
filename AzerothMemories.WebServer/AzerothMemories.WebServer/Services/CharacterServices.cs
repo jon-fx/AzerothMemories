@@ -33,7 +33,7 @@ public class CharacterServices : ICharacterServices
             Exceptions.ThrowIf(!moaRef.IsValidCharacter);
             Exceptions.ThrowIf(moaRef.Id != record.BlizzardId);
 
-            await _commonServices.BlizzardUpdateHandler.TryUpdate(record).ConfigureAwait(false);
+            //await _commonServices.BlizzardUpdateHandler.TryUpdate(record).ConfigureAwait(false);
         }
 
         return record;
@@ -43,11 +43,8 @@ public class CharacterServices : ICharacterServices
     public virtual async Task<CharacterRecord?> TryGetCharacterRecord(int id, bool enqueueUpdate)
     {
         using var _ = new MethodTimeLogger(_logger);
-        await DependsOnCharacterRecord(id).ConfigureAwait(false);
 
-        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
-        var record = await database.Characters.FirstOrDefaultAsync(a => a.Id == id).ConfigureAwait(false);
-
+        var record = await TryGetCharacterRecord(id).ConfigureAwait(false);
         if (record != null)
         {
             var moaRef = new MoaRef(record.MoaRef);
@@ -144,14 +141,10 @@ public class CharacterServices : ICharacterServices
     }
 
     [ComputeMethod]
-    public virtual async Task<CharacterAccountViewModel> TryGetCharacter(Session session, int characterId)
+    public virtual async Task<CharacterAccountViewModel> TryGetCharacter(Session session, int characterId, bool enqueueUpdate)
     {
         using var _ = new MethodTimeLogger(_logger);
         var results = new CharacterAccountViewModel();
-
-        //TODO: FIX THIS SHIT
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
-        var enqueueUpdate = activeAccount != null;
 
         var characterRecord = await TryGetCharacterRecord(characterId, enqueueUpdate).ConfigureAwait(false);
         if (characterRecord == null)
@@ -171,7 +164,7 @@ public class CharacterServices : ICharacterServices
     }
 
     [ComputeMethod]
-    public virtual async Task<CharacterAccountViewModel?> TryGetCharacter(Session session, BlizzardRegion region, string realmSlug, string characterName)
+    public virtual async Task<CharacterAccountViewModel?> TryGetCharacter(Session session, BlizzardRegion region, string realmSlug, string characterName, bool enqueueUpdate)
     {
         using var _ = new MethodTimeLogger(_logger);
         if (region is <= 0 or >= BlizzardRegion.Count || string.IsNullOrWhiteSpace(realmSlug) || string.IsNullOrWhiteSpace(characterName))
@@ -196,17 +189,13 @@ public class CharacterServices : ICharacterServices
             return null;
         }
 
-        //TODO: FIX THIS SHIT
-        var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
-        var enqueueUpdate = activeAccount != null;
-
         var characterRecord = await GetOrCreateCharacterRecord(characterRef.Full, enqueueUpdate).ConfigureAwait(false);
         if (characterRecord == null)
         {
             return null;
         }
 
-        return await TryGetCharacter(session, characterRecord.Id).ConfigureAwait(false);
+        return await TryGetCharacter(session, characterRecord.Id, enqueueUpdate).ConfigureAwait(false);
     }
 
     //public async Task<bool> TryEnqueueUpdate(Session session, BlizzardRegion region, string realmSlug, string characterName)

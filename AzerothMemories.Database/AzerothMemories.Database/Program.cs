@@ -40,10 +40,11 @@ var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
 //{
 //    runner.MigrateDown(Migration0002_BlizzardData.MigrationId - 1);
 //}
-//else if (ConfigHelpers.SafetyCheck("DELETE ACCOUNT DATA?!"))
-//{
-//    runner.MigrateDown(Migration0003_AccountData.MigrationId - 1);
-//}
+//else
+if (ConfigHelpers.SafetyCheck("DELETE ACCOUNT DATA?!"))
+{
+    runner.MigrateDown(Migration0003_AccountData.MigrationId - 1);
+}
 
 if (ConfigHelpers.SafetyCheck("MIGRATE UP?!"))
 {

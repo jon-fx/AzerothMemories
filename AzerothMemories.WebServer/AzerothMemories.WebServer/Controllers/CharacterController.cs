@@ -21,15 +21,15 @@ public sealed class CharacterController : ControllerBase, ICharacterServices
     }
 
     [HttpGet("{characterId:int}")]
-    public Task<CharacterAccountViewModel> TryGetCharacter(Session session, [FromRoute] int characterId)
+    public Task<CharacterAccountViewModel> TryGetCharacter(Session session, [FromRoute] int characterId, [FromQuery] bool enqueueUpdate)
     {
-        return _commonServices.CharacterServices.TryGetCharacter(session, characterId);
+        return _commonServices.CharacterServices.TryGetCharacter(session, characterId, enqueueUpdate);
     }
 
     [HttpGet("{region}/{realmSlug}/{characterName}")]
-    public Task<CharacterAccountViewModel?> TryGetCharacter(Session session, [FromRoute] BlizzardRegion region, [FromRoute] string realmSlug, [FromRoute] string characterName)
+    public Task<CharacterAccountViewModel?> TryGetCharacter(Session session, [FromRoute] BlizzardRegion region, [FromRoute] string realmSlug, [FromRoute] string characterName, [FromQuery] bool enqueueUpdate)
     {
-        return _commonServices.CharacterServices.TryGetCharacter(session, region, realmSlug, characterName);
+        return _commonServices.CharacterServices.TryGetCharacter(session, region, realmSlug, characterName, enqueueUpdate);
     }
 
     [HttpPost]

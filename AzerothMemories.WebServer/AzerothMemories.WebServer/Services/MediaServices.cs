@@ -1,9 +1,4 @@
-﻿using AzerothMemories.WebBlazor;
-using Azure.Storage.Blobs;
-using NodaTime.Extensions;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace AzerothMemories.WebServer.Services;
 
@@ -11,7 +6,6 @@ public class MediaServices : IComputeService
 {
     private readonly ILogger<MediaServices> _logger;
     private readonly CommonServices _commonServices;
-    private readonly int[] _imageSizes;
 
     private const int SiteMapItemsPerFile = 20_000;
 #if DEBUG
@@ -24,183 +18,6 @@ public class MediaServices : IComputeService
     {
         _logger = logger;
         _commonServices = commonServices;
-        _imageSizes = [600, 960, 1280, 1920, 2560, 0];
-    }
-
-    [ComputeMethod]
-    public virtual async Task<MediaResult> TryGetStaticMedia(string fileName)
-    {
-        using var _ = new MethodTimeLogger(_logger);
-        var result = await TryGetBlobData(ZExtensions.BlobStaticMedia, fileName).ConfigureAwait(false);
-        if (result != null)
-        {
-            return result;
-        }
-
-        return await TryGetMedia_Default().ConfigureAwait(false);
-    }
-
-    [ComputeMethod]
-    protected virtual async Task<MediaResult> TryGetMedia_Default()
-    {
-        using var _ = new MethodTimeLogger(_logger);
-        var result = await TryGetBlobData(ZExtensions.BlobStaticMedia, "inv_misc_questionmark.jpg").ConfigureAwait(false);
-        return result.ThrowIfNull() with { IsDefault = true };
-    }
-
-    [ComputeMethod]
-    public virtual async Task<MediaResult> TryGetUserAvatar(string fileName)
-    {
-        using var _ = new MethodTimeLogger(_logger, $"TryGetUserAvatar - fileName:{fileName}");
-        var result = await TryGetBlobData(ZExtensions.BlobUserAvatars, fileName).ConfigureAwait(false);
-        if (result != null)
-        {
-            return result;
-        }
-
-        return await TryGetAvatar_Default().ConfigureAwait(false);
-    }
-
-    [ComputeMethod]
-    protected virtual async Task<MediaResult> TryGetAvatar_Default()
-    {
-        using var _ = new MethodTimeLogger(_logger);
-        var result = await TryGetBlobData(ZExtensions.BlobStaticMedia, "inv_misc_questionmark.jpg").ConfigureAwait(false);
-        return result.ThrowIfNull() with { IsDefault = true };
-    }
-
-    [ComputeMethod]
-    public virtual async Task<MediaResult> TryGetUserUpload(Session session, string fileName, MediaSize size)
-    {
-        using var _ = new MethodTimeLogger(_logger, $"TryGetUserUpload - session:{session} - fileName:{fileName} - size:{size}");
-        var accountId = 0;
-        var account = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
-        if (account != null)
-        {
-            accountId = account.Id;
-        }
-
-        var result = await TryGetUserUpload(accountId, fileName, size).ConfigureAwait(false);
-        if (result.IsDefault)
-        {
-            return result;
-        }
-
-        //TODO:
-
-        return result;
-    }
-
-    [ComputeMethod]
-    protected virtual async Task<MediaUserResult> TryGetUserUpload_Default()
-    {
-        using var _ = new MethodTimeLogger(_logger);
-        var blobData = await TryGetBlobData(ZExtensions.BlobStaticMedia, "inv_misc_questionmark.jpg").ConfigureAwait(false);
-        blobData = blobData.ThrowIfNull();
-
-        return new MediaUserResult(blobData.LastModified, blobData.ETag, blobData.MediaType, blobData.MediaBytes, 0, 0) { IsDefault = true };
-    }
-
-    [ComputeMethod]
-    public virtual async Task<MediaResult> TryGetUserUpload(int accountId, string fileName, MediaSize size)
-    {
-        using var _ = new MethodTimeLogger(_logger, $"TryGetUserUpload - accountId:{accountId} - fileName:{fileName} - size:{size}");
-        var blobData = await TryGetUserUpload(fileName, size).ConfigureAwait(false);
-        if (blobData.IsDefault)
-        {
-            return blobData;
-        }
-
-        var postRecord = await _commonServices.PostServices.TryGetPostRecord(blobData.PostId).ConfigureAwait(false);
-        if (postRecord != null && postRecord.PostVisibility > 0)
-        {
-            if (accountId == 0)
-            {
-                return await TryGetUserUpload_Default().ConfigureAwait(false);
-            }
-
-            var canSeePost = await _commonServices.PostServices.CanAccountSeePost(accountId, postRecord.AccountId, postRecord.PostVisibility).ConfigureAwait(false);
-            if (!canSeePost)
-            {
-                return await TryGetUserUpload_Default().ConfigureAwait(false);
-            }
-        }
-
-        return blobData;
-    }
-
-    [ComputeMethod]
-    protected virtual async Task<MediaUserResult> TryGetUserUpload(string fileName, MediaSize size)
-    {
-        using var _ = new MethodTimeLogger(_logger, $"TryGetUserUpload - fileName:{fileName} - size:{size}");
-        var blobData = await TryGetUserUploadBlobData(fileName).ConfigureAwait(false);
-        if (blobData.IsDefault)
-        {
-            return blobData;
-        }
-
-        var width = _imageSizes[(int)size];
-        if (width > 0 && fileName.EndsWith(".jpg"))
-        {
-            using var image = Image.Load(blobData.MediaBytes);
-            if (image.Width > width)
-            {
-                image.Mutate(x => x.Resize(width, 0));
-
-                await using var memoryStream = new MemoryStream();
-                await image.SaveAsJpegAsync(memoryStream).ConfigureAwait(false);
-
-                return new MediaUserResult(blobData.LastModified, blobData.ETag, blobData.MediaType, memoryStream.ToArray(), blobData.PostId, blobData.PostAccountId);
-            }
-        }
-
-        return blobData;
-    }
-
-    [ComputeMethod]
-    protected virtual async Task<MediaUserResult> TryGetUserUploadBlobData(string fileName)
-    {
-        using var _ = new MethodTimeLogger(_logger, $"TryGetUserUploadBlobData - fileName:{fileName}");
-        var blobData = await TryGetBlobData(ZExtensions.BlobUserUploads, fileName).ConfigureAwait(false);
-        if (blobData == null)
-        {
-            return await TryGetUserUpload_Default().ConfigureAwait(false);
-        }
-
-        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
-
-        var postRecord = await database.UploadLogs.Where(x => x.BlobName == fileName).IgnoreAutoIncludes().AsNoTracking().FirstOrDefaultAsync().ConfigureAwait(false);
-        if (postRecord == null)
-        {
-            return await TryGetUserUpload_Default().ConfigureAwait(false);
-        }
-
-        if (postRecord.UploadStatus == AccountUploadLogStatus.Deleted || postRecord.UploadStatus == AccountUploadLogStatus.DeletePending)
-        {
-            return await TryGetUserUpload_Default().ConfigureAwait(false);
-        }
-
-        return new MediaUserResult(blobData.LastModified, blobData.ETag, blobData.MediaType, blobData.MediaBytes, postRecord.PostId.GetValueOrDefault(), postRecord.AccountId);
-    }
-
-    [ComputeMethod]
-    public virtual async Task<MediaResult?> TryGetBlobData(string container, string fileName)
-    {
-        using var _ = new MethodTimeLogger(_logger, $"TryGetBlobData - container:{container} - fileName:{fileName}");
-        var blobClient = new BlobClient(_commonServices.Config.BlobStorageConnectionString, container, fileName);
-        var blobExists = await blobClient.ExistsAsync().ConfigureAwait(false);
-        if (!blobExists.Value)
-        {
-            return null;
-        }
-
-        var memoryStream = new MemoryStream();
-        await blobClient.DownloadToAsync(memoryStream).ConfigureAwait(false);
-        var binaryData = memoryStream.ToArray();
-
-        var properties = await blobClient.GetPropertiesAsync().ConfigureAwait(false);
-
-        return new MediaResult(properties.Value.LastModified.ToInstant(), properties.Value.ETag, "image/*", binaryData);
     }
 
     [ComputeMethod(AutoInvalidationDelay = 60 * 10)]
@@ -292,7 +109,7 @@ public class MediaServices : IComputeService
             new() { Url = "/", LastModified = DateTime.Now }
         };
 
-        var allComponents = typeof(App).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(Microsoft.AspNetCore.Components.ComponentBase)));
+        var allComponents = typeof(Program).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(Microsoft.AspNetCore.Components.ComponentBase)));
         var allRoutedComponent = allComponents.Select(x => new { Type = x, Route = x.GetCustomAttributes<Microsoft.AspNetCore.Components.RouteAttribute>().FirstOrDefault() }).Where(x => x.Route != null).ToList();
         var toAddToSiteNap = allRoutedComponent.Where(x => x.Route != null && x.Route.Template != "/" && x.Route.Template != "/admin" && !x.Route.Template.Contains('{') && !x.Route.Template.Contains('}')).ToList();
 
