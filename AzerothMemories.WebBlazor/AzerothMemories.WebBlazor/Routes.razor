@@ -27,19 +27,23 @@
     [Parameter] public string RenderModeKey { get; set; } = "";
 
     protected override void OnInitialized()
-    {        
-	    SessionResolver.Session = OSInfo.IsWebAssembly ? Session.Default : new Session(SessionId);
+    {
+        if (OSInfo.IsWebAssembly)
+        {
+            SessionResolver.Session = Session.Default;
 
-	    if (!BlazorCircuitContext.IsPrerendering)
-	    {
-		    BlazorCircuitContext.Initialize(this, RenderModeDef.GetOrDefault(RenderModeKey));
-	    }
+            var rootServices = Services.Commander().Services;
+            _ = rootServices.HostedServices().Start();
+        }
+        else
+        {
+            SessionResolver.Session = new Session(SessionId);
+        }
 
-	    if (OSInfo.IsWebAssembly) 
-	    {
-		    var rootServices = Services.Commander().Services;
-		    _ = rootServices.HostedServices().Start();
-	    }
+        if (BlazorCircuitContext.IsInteractive)
+        {
+            BlazorCircuitContext.Initialize(this.GetDispatcher(), RenderModeDef.GetOrDefault(RenderModeKey));
+        }
     }
 
     public void Dispose()

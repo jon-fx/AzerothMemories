@@ -57,7 +57,7 @@
 {
     [Parameter] public int AccountId { get; init; }
 
-    [CascadingParameter] public MudDialogInstance MudDialog { get; init; } = null!;
+    [CascadingParameter] public IMudDialogInstance MudDialog { get; init; } = null!;
 
     protected override void OnParametersChanged()
     {

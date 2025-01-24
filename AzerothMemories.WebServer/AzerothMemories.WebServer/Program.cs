@@ -80,7 +80,21 @@ app.MapRazorComponents<App>()
     .AddAdditionalAssemblies(typeof(Routes).Assembly);
 
 app.MapRpcWebSocketServerEx();
-app.MapFusionAuth();
-app.MapFusionBlazorMode();
+//app.MapFusionAuth();
+//app.MapFusionBlazorMode();
+app.MapControllers();
+
+#if DEBUG
+app.MapGet("/routes", () =>
+{
+    var endpointDataSource = app.Services.GetRequiredService<EndpointDataSource>();
+    var routes = endpointDataSource.Endpoints
+        .OfType<RouteEndpoint>()
+        .Select(e => e.RoutePattern.RawText)
+        .ToList();
+
+    return routes;
+});
+#endif
 
 app.Run();

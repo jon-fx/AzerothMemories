@@ -27,7 +27,7 @@
 
     [Parameter] public int CommentId { get; init; }
 
-    [CascadingParameter] public MudDialogInstance MudDialog { get; init; } = null!;
+    [CascadingParameter] public IMudDialogInstance MudDialog { get; init; } = null!;
 
     [Inject] public ClientServices ClientServices { get; init; } = null!;
 

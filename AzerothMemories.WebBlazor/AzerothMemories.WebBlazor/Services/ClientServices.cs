@@ -16,6 +16,7 @@ public sealed class ClientServices
         TimeProvider = serviceProvider.GetRequiredService<TimeProviderEx>();
         BlizzardStringLocalizer = serviceProvider.GetRequiredService<IStringLocalizer<BlizzardResources>>();
         PersistentComponentState = serviceProvider.GetRequiredService<PersistentComponentState>();
+        BlazorCircuitContext = serviceProvider.GetRequiredService<BlazorCircuitContext>();
     }
 
     public ActiveAccountServices ActiveAccountServices { get; }
@@ -37,4 +38,6 @@ public sealed class ClientServices
     public IStringLocalizer<BlizzardResources> BlizzardStringLocalizer { get; }
 
     public PersistentComponentState PersistentComponentState { get; }
+
+    public BlazorCircuitContext BlazorCircuitContext { get; }
 }

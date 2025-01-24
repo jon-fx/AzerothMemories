@@ -12,7 +12,7 @@
     [Parameter] public bool Success { get; init; }
     [Parameter] public string? Message { get; init; }
 
-    [CascadingParameter] public MudDialogInstance MudDialog { get; init; } = null!;
+    [CascadingParameter] public IMudDialogInstance MudDialog { get; init; } = null!;
 
     private void Submit()
     {

@@ -252,7 +252,6 @@ public class BlizzardUpdateServices : IComputeService
                 if (invRecord.CharacterId > 0)
                 {
                     _ = _commonServices.CharacterServices.DependsOnCharacterRecord(invRecord.CharacterId);
-                    _ = _commonServices.CharacterServices.TryGetCharacterRecord(invRecord.CharacterId);
                 }
 
                 if (invRecord.AccountId > 0)

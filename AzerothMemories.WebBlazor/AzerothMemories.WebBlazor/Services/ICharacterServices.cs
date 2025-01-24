@@ -6,10 +6,10 @@ public interface ICharacterServices : IComputeService
     Task<bool> TryChangeCharacterAccountSync(Character_TryChangeCharacterAccountSync command, CancellationToken cancellationToken = default);
 
     [ComputeMethod]
-    Task<CharacterAccountViewModel> TryGetCharacter(Session session, int characterId);
+    Task<CharacterAccountViewModel> TryGetCharacter(Session session, int characterId, bool enqueueUpdate);
 
     [ComputeMethod]
-    Task<CharacterAccountViewModel?> TryGetCharacter(Session session, BlizzardRegion region, string realmSlug, string characterName);
+    Task<CharacterAccountViewModel?> TryGetCharacter(Session session, BlizzardRegion region, string realmSlug, string characterName, bool enqueueUpdate);
 
     //Task<bool> TryEnqueueUpdate(Session session, BlizzardRegion region, string realmSlug, string characterName);
 

@@ -84,7 +84,7 @@ public sealed class ActiveAccountServices
                             config.HideIcon = true;
                             config.VisibleStateDuration = 5000;
                             config.ShowCloseIcon = true;
-                            config.Onclick = _ => Task.CompletedTask;
+                            config.OnClick = _ => Task.CompletedTask;
                         });
                     }
                 }
