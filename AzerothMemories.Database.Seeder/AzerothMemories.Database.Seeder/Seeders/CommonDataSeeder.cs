@@ -20,6 +20,8 @@ internal sealed class CommonDataSeeder : GenericBase<CommonDataSeeder>
         ResourceWriter.AddServerSideLocalizationName(PostTagType.Type, 2, GetFilledLocal("Season of Mastery"));
         ResourceWriter.AddServerSideLocalizationName(PostTagType.Type, 3, GetFilledLocal("Hardcore"));
         ResourceWriter.AddServerSideLocalizationName(PostTagType.Type, 4, GetFilledLocal("Season of Discovery"));
+        ResourceWriter.AddServerSideLocalizationName(PostTagType.Type, 5, GetFilledLocal("Anniversary"));
+        ResourceWriter.AddServerSideLocalizationName(PostTagType.Type, 6, GetFilledLocal("Anniversary Hardcore"));
 
         ResourceWriter.AddServerSideLocalizationName(PostTagType.Main, 0, GetFilledLocal("None"));
         ResourceWriter.AddServerSideLocalizationName(PostTagType.Main, 1, GetFilledLocal("Dungeons"));

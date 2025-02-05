@@ -1774,6 +1774,12 @@
   <data name="Type-4">
     <value>Season of Discovery</value>
   </data>
+  <data name="Type-5">
+    <value>Anniversary</value>
+  </data>
+  <data name="Type-6">
+    <value>Anniversary Hardcore</value>
+  </data>
   <data name="Main-0">
     <value>None</value>
   </data>
