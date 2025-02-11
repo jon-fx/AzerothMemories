@@ -5,21 +5,20 @@ public sealed class CommonConfig
     public CommonConfig()
     {
 #if DEBUG
-        DatabaseConnectionString = CommonConfigDoNotCommit.DatabaseConnectionString;
-        BlobStorageConnectionString = CommonConfigDoNotCommit.BlobStorageConnectionString;
-
         UploadToBlobStorage = false;
 #else
         DatabaseConnectionString = Environment.GetEnvironmentVariable("AZURE_POSTGRESQL_CONNECTIONSTRING").ThrowIfNull();
         BlobStorageConnectionString = Environment.GetEnvironmentVariable("AZURE_BLOB_CONNECTIONSTRING").ThrowIfNull();
+        BlobStorageAccount = Environment.GetEnvironmentVariable("AZURE_BLOB_ACCOUNT").ThrowIfNull();
+        BlobStorageAccountKey = Environment.GetEnvironmentVariable("AZURE_BLOB_ACCOUNT_KEY").ThrowIfNull();
 
         UploadToBlobStorage = true;
 #endif
     }
 
-    public string? DatabaseConnectionString { get; init; }
+    public string DatabaseConnectionString { get; init; } = CommonConfigDoNotCommit.DatabaseConnectionString;
 
-    public string BlobStorageConnectionString { get; init; }
+    public string BlobStorageConnectionString { get; init; } = CommonConfigDoNotCommit.BlobStorageConnectionString;
 
     public Duration UpdateAccountDelay { get; } = Duration.FromHours(1);
 
@@ -40,4 +39,8 @@ public sealed class CommonConfig
     public string? PatreonClientSecret { get; set; } = CommonConfigDoNotCommit.PatreonClientSecret;
 
     public string? PatreonCreatorsAccessToken { get; set; } = CommonConfigDoNotCommit.PatreonCreatorsAccessToken;
+
+    public string? BlobStorageAccount { get; init; } = CommonConfigDoNotCommit.BlobStorageAccount;
+
+    public string? BlobStorageAccountKey { get; init; } = CommonConfigDoNotCommit.BlobStorageAccountKey;
 }

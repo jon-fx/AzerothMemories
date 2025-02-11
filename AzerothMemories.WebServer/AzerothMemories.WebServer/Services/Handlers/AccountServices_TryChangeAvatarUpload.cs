@@ -16,6 +16,17 @@ internal static class AccountServices_TryChangeAvatarUpload
             {
                 _ = commonServices.AccountServices.DependsOnAccountRecord(invRecord.Id);
                 _ = commonServices.AccountServices.DependsOnAccountAvatar(invRecord.Id);
+
+                var blobNames = new[]
+                {
+                    $"{ZExtensions.CustomUserAvatarPathPrefix}{invRecord.Id}-0.jpg",
+                    $"{ZExtensions.CustomUserAvatarPathPrefix}{invRecord.Id}-1.jpg"
+                };
+
+                foreach (var blobName in blobNames)
+                {
+                    _ = commonServices.MediaServices.TryGetBlobWithToken(blobName);
+                }
             }
 
             return default;
@@ -109,6 +120,11 @@ internal static class AccountServices_TryChangeAvatarUpload
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         context.Operation.Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+
+        if (newAvatar.StartsWith(ZExtensions.CustomUserAvatarPathPrefix))
+        {
+            newAvatar = await commonServices.MediaServices.TryGetBlobWithToken(newAvatar).ConfigureAwait(false);
+        }
 
         return newAvatar;
     }

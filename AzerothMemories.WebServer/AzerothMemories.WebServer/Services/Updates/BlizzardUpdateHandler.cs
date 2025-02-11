@@ -31,6 +31,11 @@ internal sealed class BlizzardUpdateHandler
 
     public async Task TryUpdate(CharacterRecord characterRecord)
     {
+        if (characterRecord.CharacterStatus == CharacterStatus2.Deleted || characterRecord.CharacterStatus == CharacterStatus2.DeletePending)
+        {
+            return;
+        }
+
         await TryUpdate(characterRecord, new Updates_UpdateRecordCommand(null, characterRecord.Id, null, false, _blizzardUpdateServices.CharacterHandlerCount)).ConfigureAwait(false);
     }
 

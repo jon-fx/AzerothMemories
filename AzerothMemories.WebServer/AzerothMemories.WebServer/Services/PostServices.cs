@@ -117,6 +117,17 @@ public class PostServices : IPostServices
             return null;
         }
 
+        var blobsWithTokens = new List<string>();
+        if (canSeePost)
+        {
+            var blobNames = postRecord.BlobNames?.Split('|') ?? [];
+            foreach (var blobName in blobNames)
+            {
+                var blobWithToken = await _commonServices.MediaServices.TryGetBlobWithToken(blobName).ConfigureAwait(false);
+                blobsWithTokens.Add(blobWithToken);
+            }
+        }
+
         var postTagInfos = await GetAllPostTagRecord(postId, locale).ConfigureAwait(false);
         var reactionRecords = await TryGetPostReactions(postId).ConfigureAwait(false);
 
@@ -145,7 +156,7 @@ public class PostServices : IPostServices
 
         reactionRecords.TryGetValue(activeAccountId, out var reactionViewModel);
 
-        return postRecord.CreatePostViewModel(posterAccount, canSeePost, reactionViewModel, postTagInfos, accountViewModels.ToArray(), characterViewModels.ToArray());
+        return postRecord.CreatePostViewModel(posterAccount, canSeePost, blobsWithTokens.ToArray(), reactionViewModel, postTagInfos, accountViewModels.ToArray(), characterViewModels.ToArray());
     }
 
     [CommandHandler]

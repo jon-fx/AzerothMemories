@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using Azure.Storage;
+using Azure.Storage.Sas;
+using System.Reflection;
 
 namespace AzerothMemories.WebServer.Services;
 
@@ -205,5 +207,37 @@ public class MediaServices : IComputeService
         }
 
         return await SiteMapHelper.BuildSiteMap(BaseUrl, "urlset", "url", pages).ConfigureAwait(false);
+    }
+
+    [ComputeMethod(AutoInvalidationDelay = 60 * 60 * 20)]
+    public virtual Task<string> TryGetBlobWithToken(string blobName)
+    {
+        var containerName = "images";
+        var isAvatar = blobName.StartsWith(ZExtensions.CustomUserAvatarPathPrefix);
+        if (isAvatar)
+        {
+            containerName = "avatars";
+            blobName = blobName.Replace(ZExtensions.BlobUserAvatarsStoragePath, "");
+        }
+
+        var blobSasBuilder = new BlobSasBuilder
+        {
+            BlobName = blobName,
+            BlobContainerName = containerName,
+            Resource = "b",
+            ExpiresOn = DateTimeOffset.UtcNow.AddHours(24)
+        };
+
+        blobSasBuilder.SetPermissions(BlobContainerSasPermissions.Read);
+
+        var storageSharedKeyCredential = new StorageSharedKeyCredential(_commonServices.Config.BlobStorageAccount, _commonServices.Config.BlobStorageAccountKey);
+        var sasQueryParameters = blobSasBuilder.ToSasQueryParameters(storageSharedKeyCredential);
+
+        if (isAvatar)
+        {
+            blobName = $"{ZExtensions.BlobUserAvatarsStoragePath}{blobName}";
+        }
+
+        return Task.FromResult($"{blobName}?{sasQueryParameters}");
     }
 }

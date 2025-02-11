@@ -1,12 +1,6 @@
-﻿<picture class="pa-1 ma-1 d-flex justify-center">
-    <source srcset="@($"{Source}?size=4")" media="(min-width: 2560px)">
-    <source srcset="@($"{Source}?size=3")" media="(min-width: 1920px)">
-    <source srcset="@($"{Source}?size=2")" media="(min-width: 1280px)">
-    <source srcset="@($"{Source}?size=1")" media="(min-width: 600px)">
-    <source srcset="@($"{Source}?size=0")">
-
-    <MudImage ObjectFit="ObjectFit.Cover" Fluid="true" Src="@($"{Source}?size=0")" @onclick="OnClick" loading="lazy" />
-</picture>
+﻿<div class="pa-1 ma-1 d-flex justify-center">
+    <MudImage ObjectFit="ObjectFit.Cover" Fluid="true" Src="@Source" @onclick="OnClick" loading="lazy" />
+</div>
 
 @code
 {

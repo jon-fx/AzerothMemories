@@ -66,7 +66,7 @@ public sealed class PostRecord : IDatabaseRecordWithVersion
 
     public ICollection<AccountUploadLog>? Uploads { get; set; }
 
-    public PostViewModel CreatePostViewModel(AccountRecord accountRecord, bool canSeePost, PostReactionViewModel? reactionRecord, PostTagInfo[] postTagRecords, AccountViewModel[] accountViewModels, CharacterViewModel[] characterViewModels)
+    public PostViewModel CreatePostViewModel(AccountRecord accountRecord, bool canSeePost, string[] blobsWithTokens, PostReactionViewModel? reactionRecord, PostTagInfo[] postTagRecords, AccountViewModel[] accountViewModels, CharacterViewModel[] characterViewModels)
     {
         var viewModel = new PostViewModel
         {
@@ -79,7 +79,7 @@ public sealed class PostRecord : IDatabaseRecordWithVersion
             PostTime = PostTime.ToUnixTimeMilliseconds(),
             PostCreatedTime = PostCreatedTime.ToUnixTimeMilliseconds(),
             PostEditedTime = PostEditedTime.ToUnixTimeMilliseconds(),
-            ImageBlobNames = BlobNames?.Split('|'),
+            ImageBlobNames = blobsWithTokens,
             ReactionId = reactionRecord?.Id ?? 0,
             Reaction = reactionRecord?.Reaction ?? 0,
             ReactionCounters =

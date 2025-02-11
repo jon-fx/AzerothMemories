@@ -90,7 +90,15 @@ public class BlizzardUpdateServices : IComputeService
         }
         else if (command.CharacterId.HasValue)
         {
-            mainRecord = await database.Characters.FirstOrDefaultAsync(x => x.Id == command.CharacterId.Value, cancellationToken: cancellationToken).ConfigureAwait(false);
+            var characterRecord = await database.Characters.FirstOrDefaultAsync(x => x.Id == command.CharacterId.Value, cancellationToken: cancellationToken).ConfigureAwait(false);
+            if (characterRecord != null && (characterRecord.CharacterStatus == CharacterStatus2.Deleted || characterRecord.CharacterStatus == CharacterStatus2.DeletePending))
+            {
+                _logger.LogInformation("TryUpdate: Update Failed Id: {RecordId} UpdateRecordId: {UpdateRecordId} Character has status {CharacterStatus}", characterRecord.Id, characterRecord.UpdateRecord?.Id ?? -1, characterRecord.CharacterStatus);
+            }
+            else
+            {
+                mainRecord = characterRecord;
+            }
         }
         else if (command.GuildId.HasValue)
         {

@@ -40,6 +40,18 @@ internal static class AccountServices_TryChangeAvatar
         }
 
         var newAvatar = command.NewAvatar;
+        if (string.IsNullOrWhiteSpace(newAvatar))
+        {
+        }
+        else
+        {
+            var index = newAvatar.IndexOf('?');
+            if (index >= 0)
+            {
+                newAvatar = newAvatar[..index];
+            }
+        }
+
         if (accountViewModel.Avatar == newAvatar)
         {
             return accountViewModel.Avatar;
@@ -78,6 +90,14 @@ internal static class AccountServices_TryChangeAvatar
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         context.Operation.Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+
+        if (string.IsNullOrWhiteSpace(newAvatar))
+        {
+        }
+        else if (newAvatar.StartsWith(ZExtensions.CustomUserAvatarPathPrefix))
+        {
+            newAvatar = await commonServices.MediaServices.TryGetBlobWithToken(newAvatar).ConfigureAwait(false);
+        }
 
         return newAvatar;
     }

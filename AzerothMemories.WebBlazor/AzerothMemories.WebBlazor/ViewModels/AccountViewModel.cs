@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebBlazor.ViewModels;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace AzerothMemories.WebBlazor.ViewModels;
 
 [DataContract, MemoryPackable]
 public sealed partial class AccountViewModel
@@ -87,6 +89,7 @@ public sealed partial class AccountViewModel
         return result;
     }
 
+    [MemberNotNullWhen(true, nameof(Avatar))]
     public bool IsCustomAvatar()
     {
         if (string.IsNullOrWhiteSpace(Avatar))

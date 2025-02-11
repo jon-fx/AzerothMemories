@@ -192,6 +192,11 @@ public class AccountServices : IAccountServices
 
         viewModel.CharactersArray = activeOrAdmin ? characters.Values.ToArray() : characters.Values.Where(x => x.AccountSync && x.CharacterStatus == CharacterStatus2.None).ToArray();
 
+        if (viewModel.IsCustomAvatar())
+        {
+            viewModel.Avatar = await _commonServices.MediaServices.TryGetBlobWithToken(viewModel.Avatar).ConfigureAwait(false);
+        }
+
         return viewModel;
     }
 
