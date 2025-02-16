@@ -68,6 +68,7 @@ public class GuildServices : IGuildServices
                 NameSearchable = DatabaseHelpers.GetSearchableName(moaRef.Name),
                 BlizzardId = moaRef.Id,
                 BlizzardRegionId = moaRef.Region,
+                BlizzardRealmVersionId = moaRef.RealmVersion,
                 CreatedDateTime = SystemClock.Instance.GetCurrentInstant()
             };
 
@@ -141,7 +142,7 @@ public class GuildServices : IGuildServices
     }
 
     [ComputeMethod]
-    public virtual async Task<GuildViewModel?> TryGetGuild(Session session, BlizzardRegion region, string? realmSlug, string? guildName)
+    public virtual async Task<GuildViewModel?> TryGetGuild(Session session, BlizzardRegion region, BlizzardRealmVersion realmVersion, string? realmSlug, string? guildName)
     {
         using var _ = new MethodTimeLogger(_logger);
         if (region is <= 0 or >= BlizzardRegion.Count || string.IsNullOrWhiteSpace(realmSlug) || string.IsNullOrWhiteSpace(guildName))
@@ -149,8 +150,8 @@ public class GuildServices : IGuildServices
             return null;
         }
 
-        var validRealmSlug = await _commonServices.TagServices.IsValidRealmSlug(realmSlug).ConfigureAwait(false);
-        if (!validRealmSlug)
+        var validRealm = await _commonServices.TagServices.IsValidRealmInfo(region, realmVersion, realmSlug).ConfigureAwait(false);
+        if (!validRealm)
         {
             return null;
         }
@@ -160,17 +161,9 @@ public class GuildServices : IGuildServices
             return null;
         }
 
-        var guildRef = MoaRef.GetGuildRef(region, realmSlug, guildName);
+        var guildRef = MoaRef.GetGuildRef(region, realmVersion, realmSlug, guildName);
         var guildRecord = await GetOrCreate(guildRef.Full).ConfigureAwait(false);
 
         return await TryGetGuild(session, guildRecord.Id).ConfigureAwait(false);
     }
-
-    //public async Task<bool> TryEnqueueUpdate(Session session, BlizzardRegion region, string realmSlug, string guildName)
-    //{
-    //    var guildRef = MoaRef.GetGuildRef(region, realmSlug, guildName);
-    //    var guildRecord = await GetOrCreate(guildRef.Full).ConfigureAwait(false);
-
-    //    return true;
-    //}
 }

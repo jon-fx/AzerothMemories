@@ -18,6 +18,8 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord, IDatabaseRecordWith
 
     [Column] public BlizzardRegion BlizzardRegionId { get; set; }
 
+    [Column] public BlizzardRealmVersion BlizzardRealmVersionId { get; set; }
+
     [Column] public string Name { get; set; } = null!;
 
     [Column] public string NameSearchable { get; set; } = null!;
@@ -79,6 +81,7 @@ public sealed class CharacterRecord : IBlizzardUpdateRecord, IDatabaseRecordWith
             RegionId = BlizzardRegionId,
             GuildRef = GuildRef,
             GuildName = BlizzardGuildName,
+            RealmVersion = BlizzardRealmVersionId,
             //GuildRank = BlizzardGuildRank,
             //AchievementTotalPoints = AchievementTotalPoints,
             //AchievementTotalQuantity = AchievementTotalQuantity,

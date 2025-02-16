@@ -2,7 +2,7 @@
 
 internal sealed class UpdateHandler_Characters_Renders : UpdateHandlerBaseResult<CharacterRecord, CharacterMediaSummary>
 {
-    public UpdateHandler_Characters_Renders(CommonServices commonServices, ILogger<BlizzardUpdateServices> logger) : base(BlizzardUpdateType.Character_Renders, commonServices, logger)
+    public UpdateHandler_Characters_Renders(UpdateHandlerInfo handlerInfo) : base(handlerInfo)
     {
     }
 
@@ -15,7 +15,7 @@ internal sealed class UpdateHandler_Characters_Renders : UpdateHandlerBaseResult
         }
 
         using var client = CommonServices.HttpClientProvider.GetWarcraftClient(record.BlizzardRegionId);
-        return await client.GetCharacterRendersAsync(characterRef.Realm, characterRef.Name, blizzardLastModified).ConfigureAwait(false);
+        return await client.GetCharacterRendersAsync(characterRef.RealmVersion, characterRef.Realm, characterRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
 
     protected override Task InternalExecuteWithResult(AppDbContext database, CharacterRecord record, CharacterMediaSummary requestResult)

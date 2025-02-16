@@ -2,7 +2,7 @@
 
 internal sealed class UpdateHandler_Characters_Mounts : UpdateHandlerBaseResult<CharacterRecord, CharacterMountsCollectionSummary>, IRequiresExecuteOnFirstLogin
 {
-    public UpdateHandler_Characters_Mounts(CommonServices commonServices, ILogger<BlizzardUpdateServices> logger) : base(BlizzardUpdateType.Character_Mounts, commonServices, logger)
+    public UpdateHandler_Characters_Mounts(UpdateHandlerInfo handlerInfo) : base(handlerInfo)
     {
     }
 
@@ -24,7 +24,7 @@ internal sealed class UpdateHandler_Characters_Mounts : UpdateHandlerBaseResult<
         }
 
         using var client = CommonServices.HttpClientProvider.GetWarcraftClient(record.BlizzardRegionId);
-        return await client.GetCharacterMountsSummaryAsync(characterRef.Realm, characterRef.Name, blizzardLastModified).ConfigureAwait(false);
+        return await client.GetCharacterMountsSummaryAsync(characterRef.RealmVersion, characterRef.Realm, characterRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
 
     protected override async Task InternalExecuteWithResult(AppDbContext database, CharacterRecord record, CharacterMountsCollectionSummary requestResult)

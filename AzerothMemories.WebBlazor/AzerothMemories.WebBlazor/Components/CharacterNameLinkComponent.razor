@@ -7,13 +7,13 @@
     }
     else if (CharacterRealmId > 0)
     {
-        <a href="character\@CharacterRegionInfo.TwoLettersLower\@_stringLocalizer[$"RealmSlug-{CharacterRealmId}"]\@CharacterName">
+        <a href="character\@CharacterRegionInfo.TwoLettersLower\@CharacterRealmVersion.ToValue()\@_stringLocalizer[$"RealmSlug-{CharacterRealmId}"]\@CharacterName">
             <CharacterNameComponent Inline="true" Typo="@Typo" CharacterName="@CharacterName" CharacterClass="@CharacterClass" />
         </a>
     }
     else if (!string.IsNullOrWhiteSpace(CharacterRealmSlug))
     {
-        <a href="character\@CharacterRegionInfo.TwoLettersLower\@CharacterRealmSlug\@CharacterName">
+        <a href="character\@CharacterRegionInfo.TwoLettersLower\@CharacterRealmVersion.ToValue()\@CharacterRealmSlug\@CharacterName">
             <CharacterNameComponent Inline="true" Typo="@Typo" CharacterName="@CharacterName" CharacterClass="@CharacterClass" />
         </a>
     }
@@ -27,4 +27,5 @@
     [Parameter, EditorRequired] public required string CharacterName { get; set; }
     [Parameter, EditorRequired] public required byte CharacterClass { get; set; }
     [Parameter, EditorRequired] public required BlizzardRegionInfo CharacterRegionInfo { get; set; }
+    [Parameter, EditorRequired] public required BlizzardRealmVersion CharacterRealmVersion { get; set; }
 }

@@ -57,13 +57,19 @@ internal static class PostServices_TryRestoreMemory
             newTagKind = PostTagKind.Post;
         }
 
-        var accountCharacters = activeAccount.GetAllCharactersSafe();
-        if (characterTagToAdd != null && accountCharacters.FirstOrDefault(x => x.Id == characterTagToAdd.Value) == null)
+        await using var database = await commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
+
+        var wowType = await database.PostTags.FirstOrDefaultAsync(x => x.PostId == postId && x.TagType == PostTagType.Type, cancellationToken).ConfigureAwait(false);
+        if (wowType == null)
         {
             return false;
         }
 
-        await using var database = await commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
+        var accountCharacters = activeAccount.GetCharactersForTagSafe(wowType.TagId);
+        if (characterTagToAdd != null && accountCharacters.FirstOrDefault(x => x.Id == characterTagToAdd.Value) == null)
+        {
+            return false;
+        }
 
         if (accountTagToRemove != null)
         {

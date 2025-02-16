@@ -29,8 +29,9 @@ public sealed partial record MainSearchResult
             var moaRef = new MoaRef(RefStr);
             var region = moaRef.Region.ToInfo();
             var realmSlug = moaRef.Realm;
+            var realmVersion = moaRef.RealmVersion.ToValue();
 
-            return $@"character\{region.TwoLettersLower}\{realmSlug}\{moaRef.Name}";
+            return $@"character\{region.TwoLettersLower}\{realmVersion}\{realmSlug}\{moaRef.Name}";
         }
 
         if (Type == MainSearchType.Guild)
@@ -38,8 +39,9 @@ public sealed partial record MainSearchResult
             var moaRef = new MoaRef(RefStr);
             var region = moaRef.Region.ToInfo();
             var realmSlug = moaRef.Realm;
+            var realmVersion = moaRef.RealmVersion.ToValue();
 
-            return $@"guild\{region.TwoLettersLower}\{realmSlug}\{moaRef.Name}";
+            return $@"guild\{region.TwoLettersLower}\{realmVersion}\{realmSlug}\{moaRef.Name}";
         }
 
         throw new NotImplementedException();

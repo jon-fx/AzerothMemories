@@ -181,7 +181,7 @@ public sealed class AddMemoryComponentSharedData
             if (tagInfo.Type == PostTagType.Character)
             {
                 var accountViewModel = _accountViewModelProvider?.Invoke();
-                var character = accountViewModel.GetCharactersSafe().FirstOrDefault(x => x.Id == tagInfo.Id);
+                var character = accountViewModel.GetCharactersForTagSafe(_selectedTypeTag).FirstOrDefault(x => x.Id == tagInfo.Id);
                 if (character != null)
                 {
                     ChangeSelectedCharacter(character.Id);
@@ -373,10 +373,10 @@ public sealed class AddMemoryComponentSharedData
 
         var accountViewModel = _accountViewModelProvider?.Invoke();
 
-        _selectedCharacter = accountViewModel.GetCharactersSafe().FirstOrDefault(x => x.Id == newSelectedCharacter);
+        _selectedCharacter = accountViewModel.GetCharactersForTagSafe(_selectedTypeTag).FirstOrDefault(x => x.Id == newSelectedCharacter);
         if (_selectedCharacter != null)
         {
-            _selectedTypeTag = TypeTags[0];
+            //_selectedTypeTag = TypeTags[0];
 
             var stringLocalizer = _viewModel.Services.ClientServices.BlizzardStringLocalizer;
             var characterName = $"{_selectedCharacter.Name} ({stringLocalizer[$"Realm-{_selectedCharacter.RealmId}"]})";

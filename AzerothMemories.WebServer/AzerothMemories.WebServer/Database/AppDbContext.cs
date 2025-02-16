@@ -57,6 +57,8 @@ public class AppDbContext : AppDbContextBase
 
     public DbSet<BlizzardUpdateChildRecord> BlizzardUpdateChildren { get; protected init; } = null!;
 
+    public DbSet<BlizzardRealmRecord> BlizzardRealms { get; protected init; } = null!;
+
     public AppDbContext(DbContextOptions options) : base(options)
     {
     }

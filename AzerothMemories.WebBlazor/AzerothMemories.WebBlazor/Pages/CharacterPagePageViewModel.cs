@@ -4,6 +4,7 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IView
 {
     private string? _idString;
     private string? _region;
+    private string? _realmVersion;
     private string? _realm;
     private string? _name;
     private string? _sortModeString;
@@ -30,10 +31,11 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IView
 
     public bool IsLoading => CharacterViewModel == null;
 
-    public void OnParametersChanged(string? idString, string? region, string? realm, string? name, string? sortModeString, string? currentPageString)
+    public void OnParametersChanged(string? idString, string? region, string? realmVersion, string? realm, string? name, string? sortModeString, string? currentPageString)
     {
         _idString = idString;
         _region = region;
+        _realmVersion = realmVersion;
         _realm = realm;
         _name = name;
         _sortModeString = sortModeString;
@@ -54,7 +56,7 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IView
         int.TryParse(_idString, out var id);
 
         ErrorMessage = null;
-        CharacterAccountViewModel? viewModel = null;
+        CharacterAccountViewModel? viewModel;
 
         if (id > 0)
         {
@@ -65,6 +67,18 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IView
             if (string.IsNullOrWhiteSpace(_region))
             {
                 ErrorMessage = "Invalid Region";
+                return null;
+            }
+
+            if (!Enum.TryParse(_realmVersion, out BlizzardRealmVersion realmVersion))
+            {
+                ErrorMessage = "Invalid Realm Version";
+                return null;
+            }
+
+            if (!Enum.IsDefined(realmVersion))
+            {
+                ErrorMessage = "Invalid Realm Version";
                 return null;
             }
 
@@ -92,7 +106,7 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IView
                 return null;
             }
 
-            viewModel = await Services.ComputeServices.CharacterServices.TryGetCharacter(Session.Default, regionInfo.Region, _realm, _name, Services.ClientServices.BlazorCircuitContext.IsInteractive);
+            viewModel = await Services.ComputeServices.CharacterServices.TryGetCharacter(Session.Default, regionInfo.Region, realmVersion, _realm, _name, Services.ClientServices.BlazorCircuitContext.IsInteractive);
         }
 
         if (viewModel == null || viewModel.CharacterViewModel == null)

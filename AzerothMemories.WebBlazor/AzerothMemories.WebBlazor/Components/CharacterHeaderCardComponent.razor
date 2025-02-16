@@ -28,7 +28,8 @@ else
                                             CharacterName="@CharacterViewModel.Name"
                                             CharacterClass="@CharacterViewModel.Class"
                                             CharacterRealmId="@CharacterViewModel.RealmId"
-                                            CharacterRegionInfo="@CharacterViewModel.RegionId.ToInfo()" />
+                                            CharacterRegionInfo="@CharacterViewModel.RegionId.ToInfo()" 
+                                            CharacterRealmVersion="@CharacterViewModel.RealmVersion" />
                 <div>
                     <MudText Inline="true" Typo="Typo.body2">@CharacterViewModel.Level</MudText>
                     <CharacterRaceComponent Typo="Typo.body2" Inline="true" CharacterRace="@CharacterViewModel.Race" />
@@ -43,7 +44,8 @@ else
                                                 GuildName="@CharacterViewModel.GuildName"
                                                 GuildRealmId="0"
                                                 GuildRealmSlug="@moaRef.Realm"
-                                                GuildRegionInfo="@CharacterViewModel.RegionId.ToInfo()" />
+                                                GuildRegionInfo="@CharacterViewModel.RegionId.ToInfo()"
+                                                GuildRealmVersion="@CharacterViewModel.RealmVersion" />
                     </div>
                 }
                 <div>

@@ -43,6 +43,10 @@ public sealed partial class AccountViewModel
 
     [JsonInclude, DataMember, MemoryPackInclude] public CharacterViewModel[]? CharactersArray { get; set; } = [];
 
+    [JsonInclude, DataMember, MemoryPackInclude] public CharacterViewModel[]? CharactersArrayClassicEra { get; set; } = [];
+
+    [JsonInclude, DataMember, MemoryPackInclude] public CharacterViewModel[]? CharactersArrayClassicProgression { get; set; } = [];
+
     [JsonInclude, DataMember, MemoryPackInclude] public Dictionary<int, AccountFollowingViewModel> FollowingViewModels { get; init; } = new();
 
     [JsonInclude, DataMember, MemoryPackInclude] public Dictionary<int, AccountFollowingViewModel> FollowersViewModels { get; init; } = new();

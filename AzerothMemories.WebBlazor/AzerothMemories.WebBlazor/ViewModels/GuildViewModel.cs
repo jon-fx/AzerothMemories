@@ -9,6 +9,8 @@ public sealed partial class GuildViewModel
 
     [JsonInclude, DataMember, MemoryPackInclude] public BlizzardRegion RegionId { get; init; }
 
+    [JsonInclude, DataMember, MemoryPackInclude] public BlizzardRealmVersion RealmVersion { get; init; }
+
     [JsonInclude, DataMember, MemoryPackInclude] public int RealmId { get; init; }
 
     [JsonInclude, DataMember, MemoryPackInclude] public string Name { get; init; } = null!;

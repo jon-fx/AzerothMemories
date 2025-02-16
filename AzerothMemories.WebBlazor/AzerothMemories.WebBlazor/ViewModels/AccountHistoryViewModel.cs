@@ -65,7 +65,7 @@ public sealed partial class AccountHistoryViewModel
                 Exceptions.ThrowIf(TargetCommentId != 0);
 
                 var name = $"<a href='character/{TargetId}'>Unknown</a>";
-                var character = activeAccountViewModel.GetCharactersSafe().FirstOrDefault(x => x.Id == TargetId);
+                var character = activeAccountViewModel.GetCharactersSafeAllVersions().FirstOrDefault(x => x.Id == TargetId);
                 if (character != null && character.Ref != null)
                 {
                     var moaRef = new MoaRef(character.Ref);

@@ -4,6 +4,7 @@ public sealed class GuildPageViewModel : PersistentStateViewModel, IViewModel<Gu
 {
     private string? _idString;
     private string? _region;
+    private string? _realmVersion;
     private string? _realm;
     private string? _name;
     private string? _sortModeString;
@@ -26,10 +27,11 @@ public sealed class GuildPageViewModel : PersistentStateViewModel, IViewModel<Gu
 
     public bool IsLoading => GuildViewModel == null;
 
-    public void OnParametersChanged(string? idString, string? region, string? realm, string? name, string? sortModeString, string? currentPageString)
+    public void OnParametersChanged(string? idString, string? region, string? realmVersion, string? realm, string? name, string? sortModeString, string? currentPageString)
     {
         _idString = idString;
         _region = region;
+        _realmVersion = realmVersion;
         _realm = realm;
         _name = name;
         _sortModeString = sortModeString;
@@ -64,6 +66,18 @@ public sealed class GuildPageViewModel : PersistentStateViewModel, IViewModel<Gu
                 return null;
             }
 
+            if (!Enum.TryParse(_realmVersion, out BlizzardRealmVersion realmVersion))
+            {
+                ErrorMessage = "Invalid Realm Version";
+                return null;
+            }
+
+            if (!Enum.IsDefined(realmVersion))
+            {
+                ErrorMessage = "Invalid Realm Version";
+                return null;
+            }
+
             if (string.IsNullOrWhiteSpace(_realm))
             {
                 ErrorMessage = "Invalid Realm";
@@ -88,7 +102,7 @@ public sealed class GuildPageViewModel : PersistentStateViewModel, IViewModel<Gu
                 return null;
             }
 
-            guildViewModel = await Services.ComputeServices.GuildServices.TryGetGuild(Session.Default, regionInfo.Region, _realm, _name);
+            guildViewModel = await Services.ComputeServices.GuildServices.TryGetGuild(Session.Default, regionInfo.Region, realmVersion, _realm, _name);
         }
 
         if (guildViewModel == null)

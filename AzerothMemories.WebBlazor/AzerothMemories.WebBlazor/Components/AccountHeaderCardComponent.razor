@@ -200,7 +200,7 @@ else
         </MudCardActions>
     </MudCard>
 
-    var characters = AccountViewModel.GetCharactersSafe();
+    var characters = AccountViewModel.GetCharactersSafeAllVersions();
     if (characters.Length > 0)
     {
         <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">

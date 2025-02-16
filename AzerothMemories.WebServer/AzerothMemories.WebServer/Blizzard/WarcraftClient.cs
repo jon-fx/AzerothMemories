@@ -15,54 +15,54 @@ public sealed class WarcraftClient : IDisposable
         _regionInfo = regionInfo;
     }
 
-    public Task<RequestResult<AccountProfileSummary>> GetAccountProfile(string accessToken, Instant lastModified)
+    public Task<RequestResult<AccountProfileSummary>> GetAccountProfile(BlizzardRealmVersion realmVersion, string accessToken, Instant lastModified)
     {
-        return Get<AccountProfileSummary>(BlizzardNamespace.Profile, "/profile/user/wow", null, accessToken, false, lastModified);
+        return Get<AccountProfileSummary>(realmVersion.GetProfileNamespace(), "/profile/user/wow", null, accessToken, false, lastModified);
     }
 
-    public Task<RequestResult<CharacterStatus>> GetCharacterStatusAsync(string realmName, string characterName)
+    public Task<RequestResult<CharacterStatus>> GetCharacterStatusAsync(BlizzardRealmVersion realmVersion, string realmName, string characterName)
     {
-        return Get<CharacterStatus>(BlizzardNamespace.Profile, $"/profile/wow/character/{realmName}/{characterName}/status", null, null, false, null);
+        return Get<CharacterStatus>(realmVersion.GetProfileNamespace(), $"/profile/wow/character/{realmName}/{characterName}/status", null, null, false, null);
     }
 
-    public Task<RequestResult<CharacterProfileSummary>> GetCharacterProfileSummaryAsync(string realmName, string characterName, Instant lastModified)
+    public Task<RequestResult<CharacterProfileSummary>> GetCharacterProfileSummaryAsync(BlizzardRealmVersion realmVersion, string realmName, string characterName, Instant lastModified)
     {
-        return Get<CharacterProfileSummary>(BlizzardNamespace.Profile, $"/profile/wow/character/{realmName}/{characterName}", null, null, false, lastModified);
+        return Get<CharacterProfileSummary>(realmVersion.GetProfileNamespace(), $"/profile/wow/character/{realmName}/{characterName}", null, null, false, lastModified);
     }
 
-    public Task<RequestResult<CharacterAchievementsSummary>> GetCharacterAchievementsSummaryAsync(string realmName, string characterName, Instant lastModified)
+    public Task<RequestResult<CharacterAchievementsSummary>> GetCharacterAchievementsSummaryAsync(BlizzardRealmVersion realmVersion, string realmName, string characterName, Instant lastModified)
     {
-        return Get<CharacterAchievementsSummary>(BlizzardNamespace.Profile, $"/profile/wow/character/{realmName}/{characterName}/achievements", null, null, false, lastModified);
+        return Get<CharacterAchievementsSummary>(realmVersion.GetProfileNamespace(), $"/profile/wow/character/{realmName}/{characterName}/achievements", null, null, false, lastModified);
     }
 
-    public Task<RequestResult<CharacterMediaSummary>> GetCharacterRendersAsync(string realmName, string characterName, Instant lastModified)
+    public Task<RequestResult<CharacterMediaSummary>> GetCharacterRendersAsync(BlizzardRealmVersion realmVersion, string realmName, string characterName, Instant lastModified)
     {
-        return Get<CharacterMediaSummary>(BlizzardNamespace.Profile, $"/profile/wow/character/{realmName}/{characterName}/character-media", null, null, false, lastModified);
+        return Get<CharacterMediaSummary>(realmVersion.GetProfileNamespace(), $"/profile/wow/character/{realmName}/{characterName}/character-media", null, null, false, lastModified);
     }
 
-    public Task<RequestResult<CharacterMountsCollectionSummary>> GetCharacterMountsSummaryAsync(string realmName, string characterName, Instant lastModified)
+    public Task<RequestResult<CharacterMountsCollectionSummary>> GetCharacterMountsSummaryAsync(BlizzardRealmVersion realmVersion, string realmName, string characterName, Instant lastModified)
     {
-        return Get<CharacterMountsCollectionSummary>(BlizzardNamespace.Profile, $"/profile/wow/character/{realmName}/{characterName}/collections/mounts", null, null, false, lastModified);
+        return Get<CharacterMountsCollectionSummary>(realmVersion.GetProfileNamespace(), $"/profile/wow/character/{realmName}/{characterName}/collections/mounts", null, null, false, lastModified);
     }
 
-    public Task<RequestResult<CharacterAchievementStatistics>> GetCharacterStatisticsSummaryAsync(string realmName, string characterName, Instant lastModified)
+    public Task<RequestResult<CharacterAchievementStatistics>> GetCharacterStatisticsSummaryAsync(BlizzardRealmVersion realmVersion, string realmName, string characterName, Instant lastModified)
     {
-        return Get<CharacterAchievementStatistics>(BlizzardNamespace.Profile, $"/profile/wow/character/{realmName}/{characterName}/achievements/statistics", null, null, false, lastModified);
+        return Get<CharacterAchievementStatistics>(realmVersion.GetProfileNamespace(), $"/profile/wow/character/{realmName}/{characterName}/achievements/statistics", null, null, false, lastModified);
     }
 
-    public Task<RequestResult<Guild>> GetGuildProfileSummaryAsync(string realmName, string guildName, Instant lastModified)
+    public Task<RequestResult<Guild>> GetGuildProfileSummaryAsync(BlizzardRealmVersion realmVersion, string realmName, string guildName, Instant lastModified)
     {
-        return Get<Guild>(BlizzardNamespace.Profile, $"/data/wow/guild/{realmName}/{guildName}", null, null, false, lastModified);
+        return Get<Guild>(realmVersion.GetProfileNamespace(), $"/data/wow/guild/{realmName}/{guildName}", null, null, false, lastModified);
     }
 
-    public Task<RequestResult<GuildAchievements>> GetGuildAchievementsAsync(string realmName, string guildName, Instant lastModified)
+    public Task<RequestResult<GuildAchievements>> GetGuildAchievementsAsync(BlizzardRealmVersion realmVersion, string realmName, string guildName, Instant lastModified)
     {
-        return Get<GuildAchievements>(BlizzardNamespace.Profile, $"/data/wow/guild/{realmName}/{guildName}/achievements", null, null, false, lastModified);
+        return Get<GuildAchievements>(realmVersion.GetProfileNamespace(), $"/data/wow/guild/{realmName}/{guildName}/achievements", null, null, false, lastModified);
     }
 
-    public Task<RequestResult<GuildRoster>> GetGuildRosterAsync(string realmName, string guildName, Instant lastModified)
+    public Task<RequestResult<GuildRoster>> GetGuildRosterAsync(BlizzardRealmVersion realmVersion, string realmName, string guildName, Instant lastModified)
     {
-        return Get<GuildRoster>(BlizzardNamespace.Profile, $"/data/wow/guild/{realmName}/{guildName}/roster", null, null, false, lastModified);
+        return Get<GuildRoster>(realmVersion.GetProfileNamespace(), $"/data/wow/guild/{realmName}/{guildName}/roster", null, null, false, lastModified);
     }
 
     public void Dispose()
@@ -70,7 +70,7 @@ public sealed class WarcraftClient : IDisposable
         _clientProvider.ReturnClient(this);
     }
 
-    public async Task<RequestResult<T>> Get<T>(BlizzardNamespace blizzardNamespace, string requestUri, string? extra, string? accessToken, bool readAsString, Instant? lastModified) where T : class
+    public async Task<RequestResult<T>> Get<T>(string blizzardNamespace, string requestUri, string? extra, string? accessToken, bool readAsString, Instant? lastModified) where T : class
     {
         using var client = _clientProvider.CreateClient();
 

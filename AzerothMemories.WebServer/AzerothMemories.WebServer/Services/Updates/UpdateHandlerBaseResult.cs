@@ -1,10 +1,8 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace AzerothMemories.WebServer.Services.Updates;
+﻿namespace AzerothMemories.WebServer.Services.Updates;
 
 internal abstract class UpdateHandlerBaseResult<TRecord, TRequestResult> : UpdateHandlerBase<TRecord> where TRecord : IBlizzardUpdateRecord where TRequestResult : class
 {
-    protected UpdateHandlerBaseResult(BlizzardUpdateType updateType, CommonServices commonServices, ILogger<BlizzardUpdateServices> logger, [CallerArgumentExpression("updateType")] string? updateTypeString = null) : base(updateType, commonServices, logger, updateTypeString)
+    protected UpdateHandlerBaseResult(UpdateHandlerInfo handlerInfo) : base(handlerInfo)
     {
     }
 

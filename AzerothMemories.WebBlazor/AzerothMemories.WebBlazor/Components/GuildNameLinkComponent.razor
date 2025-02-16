@@ -2,13 +2,13 @@
 
 @if (GuildRealmId > 0)
 {
-    <a href="guild\@GuildRegionInfo.TwoLettersLower\@_stringLocalizer[$"RealmSlug-{GuildRealmId}"]\@GuildName">
+    <a href="guild\@GuildRegionInfo.TwoLettersLower\@GuildRealmVersion.ToValue()\@_stringLocalizer[$"RealmSlug-{GuildRealmId}"]\@GuildName">
         <MudText Typo="@Typo" Inline="true">@GuildName</MudText>
     </a>
 }
 else if (!string.IsNullOrWhiteSpace(GuildRealmSlug))
 {
-    <a href="guild\@GuildRegionInfo.TwoLettersLower\@GuildRealmSlug\@GuildName">
+    <a href="guild\@GuildRegionInfo.TwoLettersLower\@GuildRealmVersion.ToValue()\@GuildRealmSlug\@GuildName">
         <MudText Typo="@Typo" Inline="true">@GuildName</MudText>
     </a>
 }
@@ -19,4 +19,5 @@ else if (!string.IsNullOrWhiteSpace(GuildRealmSlug))
     [Parameter] public string? GuildRealmSlug { get; set; }
     [Parameter, EditorRequired] public required string GuildName { get; set; }
     [Parameter, EditorRequired] public required BlizzardRegionInfo GuildRegionInfo { get; set; }
+    [Parameter, EditorRequired] public required BlizzardRealmVersion GuildRealmVersion { get; set; }
 }

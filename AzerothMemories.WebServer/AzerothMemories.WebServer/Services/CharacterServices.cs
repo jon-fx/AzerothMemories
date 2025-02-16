@@ -84,6 +84,7 @@ public class CharacterServices : ICharacterServices
                 NameSearchable = DatabaseHelpers.GetSearchableName(moaRef.Name),
                 BlizzardId = moaRef.Id,
                 BlizzardRegionId = moaRef.Region,
+                BlizzardRealmVersionId = moaRef.RealmVersion,
                 CreatedDateTime = SystemClock.Instance.GetCurrentInstant()
             };
 
@@ -153,7 +154,7 @@ public class CharacterServices : ICharacterServices
         else if (characterRecord.AccountSync && characterRecord.AccountId is > 0)
         {
             results.AccountViewModel = await _commonServices.AccountServices.TryGetAccountById(session, characterRecord.AccountId.Value).ConfigureAwait(false);
-            results.CharacterViewModel = results.AccountViewModel.GetCharactersSafe().FirstOrDefault(x => x.Id == characterRecord.Id);
+            results.CharacterViewModel = results.AccountViewModel.GetCharactersSafeAllVersions().FirstOrDefault(x => x.Id == characterRecord.Id);
         }
         else
         {
@@ -164,7 +165,7 @@ public class CharacterServices : ICharacterServices
     }
 
     [ComputeMethod]
-    public virtual async Task<CharacterAccountViewModel?> TryGetCharacter(Session session, BlizzardRegion region, string realmSlug, string characterName, bool enqueueUpdate)
+    public virtual async Task<CharacterAccountViewModel?> TryGetCharacter(Session session, BlizzardRegion region, BlizzardRealmVersion realmVersion, string realmSlug, string characterName, bool enqueueUpdate)
     {
         using var _ = new MethodTimeLogger(_logger);
         if (region is <= 0 or >= BlizzardRegion.Count || string.IsNullOrWhiteSpace(realmSlug) || string.IsNullOrWhiteSpace(characterName))
@@ -172,8 +173,8 @@ public class CharacterServices : ICharacterServices
             return null;
         }
 
-        var validRealmSlug = await _commonServices.TagServices.IsValidRealmSlug(realmSlug).ConfigureAwait(false);
-        if (!validRealmSlug)
+        var validRealm = await _commonServices.TagServices.IsValidRealmInfo(region, realmVersion, realmSlug).ConfigureAwait(false);
+        if (!validRealm)
         {
             return null;
         }
@@ -183,7 +184,7 @@ public class CharacterServices : ICharacterServices
             return null;
         }
 
-        var characterRef = await GetFullCharacterRef(region, realmSlug, characterName).ConfigureAwait(false);
+        var characterRef = await GetFullCharacterRef(region, realmVersion, realmSlug, characterName).ConfigureAwait(false);
         if (characterRef == null)
         {
             return null;
@@ -197,19 +198,6 @@ public class CharacterServices : ICharacterServices
 
         return await TryGetCharacter(session, characterRecord.Id, enqueueUpdate).ConfigureAwait(false);
     }
-
-    //public async Task<bool> TryEnqueueUpdate(Session session, BlizzardRegion region, string realmSlug, string characterName)
-    //{
-    //    var characterRef = await GetFullCharacterRef(region, realmSlug, characterName).ConfigureAwait(false);
-    //    if (characterRef == null)
-    //    {
-    //        return false;
-    //    }
-
-    //    await GetOrCreateCharacterRecord(characterRef.Full, BlizzardUpdatePriority.CharacterMed).ConfigureAwait(false);
-
-    //    return true;
-    //}
 
     [CommandHandler]
     public virtual async Task<bool> TrySetCharacterDeleted(Character_TrySetCharacterDeleted command, CancellationToken cancellationToken = default)
@@ -226,15 +214,21 @@ public class CharacterServices : ICharacterServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<MoaRef?> GetFullCharacterRef(BlizzardRegion region, string realmSlug, string characterName)
+    protected virtual async Task<MoaRef?> GetFullCharacterRef(BlizzardRegion region, BlizzardRealmVersion realmVersion, string realmSlug, string characterName)
     {
         using var _ = new MethodTimeLogger(_logger);
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
-        var moaRef = MoaRef.GetCharacterRef(region, realmSlug, characterName, -1);
+        var validRealm = await _commonServices.TagServices.IsValidRealmInfo(region, realmVersion, realmSlug).ConfigureAwait(false);
+        if (!validRealm)
+        {
+            return null;
+        }
+
+        var moaRef = MoaRef.GetCharacterRef(region, realmVersion, realmSlug, characterName, -1);
         var query = from r in database.Characters
                     where r.MoaRef.StartsWith(moaRef.GetLikeQuery())
-                    select new { r.Id, r.AccountId, r.MoaRef, r.CharacterStatus };
+                    select new { r.Id, r.AccountId, r.MoaRef, r.CharacterStatus, r.BlizzardRealmVersionId };
 
         var allResults = await query.IgnoreAutoIncludes().AsNoTracking().ToArrayAsync().ConfigureAwait(false);
         if (allResults.Length == 0)
@@ -242,7 +236,7 @@ public class CharacterServices : ICharacterServices
         }
         else
         {
-            var firstOrDefault = allResults.FirstOrDefault(x => x.CharacterStatus == CharacterStatus2.None);
+            var firstOrDefault = allResults.FirstOrDefault(x => x.CharacterStatus == CharacterStatus2.None && x.BlizzardRealmVersionId == realmVersion);
             if (firstOrDefault != null)
             {
                 return new MoaRef(firstOrDefault.MoaRef);
@@ -250,16 +244,15 @@ public class CharacterServices : ICharacterServices
         }
 
         using var client = _commonServices.HttpClientProvider.GetWarcraftClient(region);
-        var statusResult = await client.GetCharacterStatusAsync(realmSlug, characterName).ConfigureAwait(false);
+        var statusResult = await client.GetCharacterStatusAsync(realmVersion, realmSlug, characterName).ConfigureAwait(false);
         if (statusResult.IsSuccess && statusResult.ResultData != null && statusResult.ResultData.IsValid && statusResult.ResultData.Id > 0)
         {
-            return MoaRef.GetCharacterRef(region, realmSlug, characterName, statusResult.ResultData.Id);
+            return MoaRef.GetCharacterRef(region, realmVersion, realmSlug, characterName, statusResult.ResultData.Id);
         }
 
-        if (allResults.Length > 0)
+        var sortedResults = allResults.Where(x => x.BlizzardRealmVersionId == realmVersion).OrderByDescending(x => x.Id).ToArray();
+        if (sortedResults.Length > 0)
         {
-            var sortedResults = allResults.OrderByDescending(x => x.Id).ToArray();
-
             return new MoaRef(sortedResults[0].MoaRef);
         }
 

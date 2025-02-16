@@ -33,7 +33,7 @@ public static class XExtensions
         var totalPostCount = accountViewModel?.TotalPostCount ?? 0;
         var totalMemoriesCount = totalPostCount + accountViewModel?.TotalMemoriesCount ?? 0;
         var characterDesc = string.Empty;
-        var characters = accountViewModel.GetCharactersSafe();
+        var characters = accountViewModel.GetCharactersSafeAllVersions();
 
         if (characters.Length > 0)
         {
@@ -68,24 +68,117 @@ public static class XExtensions
         return accountViewModel.Username[0].ToString();
     }
 
-    public static CharacterViewModel[] GetCharactersSafe(this AccountViewModel? accountViewModel)
+    public static CharacterViewModel[] GetCharactersSafeAllVersions(this AccountViewModel? accountViewModel)
     {
-        if (accountViewModel == null || accountViewModel.CharactersArray == null || accountViewModel.CharactersArray.Length == 0)
+        if (accountViewModel == null)
         {
             return [];
         }
 
-        return accountViewModel.CharactersArray.Where(x => x.CharacterStatus == CharacterStatus2.None).OrderByDescending(x => x.Level).ThenBy(x => x.Name).ToArray();
+        var results = new List<CharacterViewModel>();
+
+        if (accountViewModel.CharactersArray != null)
+        {
+            results.AddRange(accountViewModel.CharactersArray);
+        }
+
+        if (accountViewModel.CharactersArrayClassicEra != null)
+        {
+            results.AddRange(accountViewModel.CharactersArrayClassicEra);
+        }
+
+        if (accountViewModel.CharactersArrayClassicProgression != null)
+        {
+            results.AddRange(accountViewModel.CharactersArrayClassicProgression);
+        }
+
+        return results.Where(x => x.CharacterStatus == CharacterStatus2.None).OrderBy(x => x.RealmVersion).ThenByDescending(x => x.Level).ThenBy(x => x.Name).ToArray();
     }
 
-    public static CharacterViewModel[] GetAllCharactersSafe(this AccountViewModel? accountViewModel)
+    public static CharacterViewModel[] GetAllCharactersSafeAllVersions(this AccountViewModel? accountViewModel)
     {
-        if (accountViewModel == null || accountViewModel.CharactersArray == null || accountViewModel.CharactersArray.Length == 0)
+        if (accountViewModel == null)
         {
             return [];
         }
 
-        return accountViewModel.CharactersArray.OrderByDescending(x => x.Level).ThenBy(x => x.Name).ToArray();
+        var results = new List<CharacterViewModel>();
+
+        if (accountViewModel.CharactersArray != null)
+        {
+            results.AddRange(accountViewModel.CharactersArray);
+        }
+
+        if (accountViewModel.CharactersArrayClassicEra != null)
+        {
+            results.AddRange(accountViewModel.CharactersArrayClassicEra);
+        }
+
+        if (accountViewModel.CharactersArrayClassicProgression != null)
+        {
+            results.AddRange(accountViewModel.CharactersArrayClassicProgression);
+        }
+
+        return results.OrderBy(x => x.RealmVersion).ThenByDescending(x => x.Level).ThenBy(x => x.Name).ToArray();
+    }
+
+    public static CharacterViewModel[] GetCharactersForTagSafe(this AccountViewModel? accountViewModel, PostTagInfo? postTagInfo)
+    {
+        if (accountViewModel == null || postTagInfo == null || postTagInfo.Type != PostTagType.Type)
+        {
+            return [];
+        }
+
+        return accountViewModel.GetCharactersForTagSafe(postTagInfo.Id);
+    }
+
+    public static CharacterViewModel[] GetCharactersForTagSafe(this AccountViewModel? accountViewModel, int tagId)
+    {
+        if (accountViewModel == null)
+        {
+            return [];
+        }
+
+        CharacterViewModel[]? results;
+        if (tagId == 0)        //Retail
+        {
+            results = accountViewModel.CharactersArray;
+        }
+        else if (tagId == 1)   //Classic
+        {
+            results = accountViewModel.CharactersArrayClassicProgression;
+        }
+        else if (tagId == 2)   //Season of Mastery
+        {
+            results = accountViewModel.CharactersArrayClassicEra;
+        }
+        else if (tagId == 3)   //Hardcore
+        {
+            results = accountViewModel.CharactersArrayClassicEra;
+        }
+        else if (tagId == 4)   //Season of Discovery
+        {
+            results = accountViewModel.CharactersArrayClassicEra;
+        }
+        else if (tagId == 5)   //Anniversary
+        {
+            results = accountViewModel.CharactersArrayClassicEra;
+        }
+        else if (tagId == 6)   //Anniversary Hardcore
+        {
+            results = accountViewModel.CharactersArrayClassicEra;
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+
+        if (results == null)
+        {
+            return [];
+        }
+
+        return results.OrderByDescending(x => x.Level).ThenBy(x => x.Name).ToArray();
     }
 
     public static string GetDisplayName(this CharacterViewModel? characterViewModel)

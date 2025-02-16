@@ -113,7 +113,7 @@ public class BaseTestHelper : IAsyncLifetime
             var id = _characterId++;
             var name = $"Character:{id}";
 
-            var moaRef = MoaRef.GetCharacterRef(BlizzardRegion.Europe, "none", name, id);
+            var moaRef = MoaRef.GetCharacterRef(BlizzardRegion.Europe, BlizzardRealmVersion.Main, "none", name, id);
             var characterRecord = await CommonServices.CharacterServices.GetOrCreateCharacterRecord(moaRef.Full);
 
             database.Attach(characterRecord);

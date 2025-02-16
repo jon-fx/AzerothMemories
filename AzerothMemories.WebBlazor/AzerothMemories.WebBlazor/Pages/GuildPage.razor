@@ -1,5 +1,5 @@
 ﻿@page "/guild/{Id}"
-@page "/guild/{Region}/{Realm}/{Name}"
+@page "/guild/{Region}/{RealmVersion}/{Realm}/{Name}"
 @inherits MoaComponentBase<GuildPageViewModel>
 
 @{
@@ -13,7 +13,7 @@
     }
     else
     {
-        <HeadContentTest ClientServices="@ClientServices" PageInfo="@ViewModel"/>
+        <HeadContentTest ClientServices="@ClientServices" PageInfo="@ViewModel" />
 
         <GuildHeaderCardComponent Services="@(this)" GuildViewModel="@ViewModel.GuildViewModel" />
         <SearchPostViewComponent PostSearchHelper="@ViewModel.PostSearchHelper" />
@@ -27,6 +27,8 @@
 
     [Parameter, EditorRequired] public required string? Realm { get; set; }
 
+    [Parameter, EditorRequired] public required string? RealmVersion { get; set; }
+
     [Parameter, EditorRequired] public required string? Name { get; set; }
 
     [Parameter, SupplyParameterFromQuery(Name = "sort")] public string? SortMode { get; init; }
@@ -37,6 +39,6 @@
     {
         base.OnParametersChanged();
 
-        ViewModel.OnParametersChanged(Id, Region, Realm, Name, SortMode, CurrentPage);
+        ViewModel.OnParametersChanged(Id, Region, RealmVersion, Realm, Name, SortMode, CurrentPage);
     }
 }

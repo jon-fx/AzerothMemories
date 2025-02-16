@@ -169,7 +169,7 @@ public class MediaServices : IComputeService
                 var moaRef = new MoaRef(item.MoaRef);
 
                 pages.Add(($"/character/{item.Id}", DateTime.Now));
-                pages.Add(($"/character/{moaRef.Region.ToInfo().TwoLettersLower}/{moaRef.Realm}/{moaRef.Name}", DateTime.Now));
+                pages.Add(($"/character/{moaRef.Region.ToInfo().TwoLettersLower}/{moaRef.RealmVersion.ToValue()}/{moaRef.Realm}/{moaRef.Name}", DateTime.Now));
             }
         }
         else if (nameType == SiteMapType.Guilds)
@@ -185,7 +185,7 @@ public class MediaServices : IComputeService
                 var moaRef = new MoaRef(item.MoaRef);
 
                 pages.Add(($"/guild/{item.Id}", DateTime.Now));
-                pages.Add(($"/guild/{moaRef.Region.ToInfo().TwoLettersLower}/{moaRef.Realm}/{moaRef.Name}", DateTime.Now));
+                pages.Add(($"/guild/{moaRef.Region.ToInfo().TwoLettersLower}/{moaRef.RealmVersion.ToValue()}/{moaRef.Realm}/{moaRef.Name}", DateTime.Now));
             }
         }
         else if (nameType == SiteMapType.Posts)

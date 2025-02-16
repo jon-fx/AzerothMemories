@@ -4,7 +4,7 @@ namespace AzerothMemories.WebServer.Services.Updates;
 
 internal sealed class UpdateHandler_Accounts_Patreon : UpdateHandlerBase<AccountRecord>
 {
-    public UpdateHandler_Accounts_Patreon(CommonServices commonServices, ILogger<BlizzardUpdateServices> logger) : base(BlizzardUpdateType.Account_Patreon, commonServices, logger)
+    public UpdateHandler_Accounts_Patreon(UpdateHandlerInfo handlerInfo) : base(handlerInfo)
     {
     }
 

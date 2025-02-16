@@ -1,5 +1,5 @@
 ﻿@page "/character/{Id}"
-@page "/character/{Region}/{Realm}/{Name}"
+@page "/character/{Region}/{RealmVersion}/{Realm}/{Name}"
 @inherits MoaComponentBase<CharacterPagePageViewModel>
 
 @{
@@ -27,6 +27,8 @@
 
     [Parameter, EditorRequired] public required string? Region { get; set; }
 
+    [Parameter, EditorRequired] public required string? RealmVersion { get; set; }
+
     [Parameter, EditorRequired] public required string? Realm { get; set; }
 
     [Parameter, EditorRequired] public required string? Name { get; set; }
@@ -39,6 +41,6 @@
     {
         base.OnParametersChanged();
 
-        ViewModel.OnParametersChanged(Id, Region, Realm, Name, SortMode, CurrentPage);
+        ViewModel.OnParametersChanged(Id, Region, RealmVersion, Realm, Name, SortMode, CurrentPage);
     }
 }

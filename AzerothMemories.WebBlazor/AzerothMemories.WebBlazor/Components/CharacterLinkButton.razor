@@ -1,4 +1,4 @@
-﻿<a href="character\@CharacterViewModel.RegionId.ToInfo().TwoLettersLower\@BlizzardStringLocalizer[$"RealmSlug-{CharacterViewModel.RealmId}"]\@CharacterViewModel.Name">
+﻿<a href="character\@CharacterViewModel.RegionId.ToInfo().TwoLettersLower\@CharacterViewModel.RealmVersion.ToValue()\@BlizzardStringLocalizer[$"RealmSlug-{CharacterViewModel.RealmId}"]\@CharacterViewModel.Name">
     <MudTooltip Placement="Placement.Bottom" Color="Color.Dark">
         <ChildContent>
             <MudButton Variant="Variant.Filled">
@@ -11,7 +11,8 @@
             <CharacterNameLinkComponent CharacterName="@CharacterViewModel.Name"
                                         CharacterClass="@CharacterViewModel.Class"
                                         CharacterRealmId="@CharacterViewModel.RealmId"
-                                        CharacterRegionInfo="@CharacterViewModel.RegionId.ToInfo()" />
+                                        CharacterRegionInfo="@CharacterViewModel.RegionId.ToInfo()"
+                                        CharacterRealmVersion="@CharacterViewModel.RealmVersion" />
 
             <div>
                 <MudText Typo="Typo.body2" Inline="true">@CharacterViewModel.Level @BlizzardStringLocalizer[$"CharacterRace-{CharacterViewModel.Race}"]</MudText>

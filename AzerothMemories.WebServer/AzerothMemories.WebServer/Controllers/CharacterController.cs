@@ -26,10 +26,10 @@ public sealed class CharacterController : ControllerBase, ICharacterServices
         return _commonServices.CharacterServices.TryGetCharacter(session, characterId, enqueueUpdate);
     }
 
-    [HttpGet("{region}/{realmSlug}/{characterName}")]
-    public Task<CharacterAccountViewModel?> TryGetCharacter(Session session, [FromRoute] BlizzardRegion region, [FromRoute] string realmSlug, [FromRoute] string characterName, [FromQuery] bool enqueueUpdate)
+    [HttpGet("{region}/{realmVersion}/{realmSlug}/{characterName}")]
+    public Task<CharacterAccountViewModel?> TryGetCharacter(Session session, [FromRoute] BlizzardRegion region, [FromRoute] BlizzardRealmVersion realmVersion, [FromRoute] string realmSlug, [FromRoute] string characterName, [FromQuery] bool enqueueUpdate)
     {
-        return _commonServices.CharacterServices.TryGetCharacter(session, region, realmSlug, characterName, enqueueUpdate);
+        return _commonServices.CharacterServices.TryGetCharacter(session, region, realmVersion, realmSlug, characterName, enqueueUpdate);
     }
 
     [HttpPost]

@@ -1,5 +1,6 @@
 ﻿using ActualLab.Collections;
 using AzerothMemories.Database.Seeder.Base;
+using AzerothMemories.WebBlazor.Blizzard;
 using AzerothMemories.WebBlazor.Common;
 using AzerothMemories.WebServer.Database;
 using AzerothMemories.WebServer.Database.Records;
@@ -80,10 +81,10 @@ internal sealed class MoaDatabaseWriter
 
         await using var database = await _databaseProvider.CreateDbContextAsync();
 
-        var results = await database.BlizzardData.ToDictionaryAsync(x => x.Key, x => x);
+        var blizzardDataRecords = await database.BlizzardData.ToDictionaryAsync(x => x.Key, x => x);
         foreach (var serverSideResource in _serverSideResources.Values)
         {
-            if (!results.TryGetValue(serverSideResource.Key, out var currentData))
+            if (!blizzardDataRecords.TryGetValue(serverSideResource.Key, out var currentData))
             {
                 currentData = new BlizzardDataRecord(serverSideResource.TagType, serverSideResource.TagId);
 
@@ -111,6 +112,26 @@ internal sealed class MoaDatabaseWriter
             currentData.Name.ZhCn = serverSideResource.GetNameOrDefault(ServerSideLocale.Zh_Cn);
         }
 
+        var blizzardRealmRecords = await database.BlizzardRealms.ToDictionaryAsync(x => x.RealmId, x => x);
+        foreach (var realmData in groupedByTagType[PostTagType.Realm])
+        {
+            if (!blizzardRealmRecords.TryGetValue(realmData.TagId, out var currentData))
+            {
+                currentData = new BlizzardRealmRecord
+                {
+                    RealmId = realmData.TagId
+                };
+
+                database.Attach(currentData);
+            }
+
+            currentData.RealmSlug = realmData.Media ?? string.Empty;
+            currentData.RealmNameEnGb = realmData.GetNameOrDefault(ServerSideLocale.En_Gb);
+            currentData.RealmNameEnUs = realmData.GetNameOrDefault(ServerSideLocale.En_Us);
+            currentData.RealmRegion = GetRealmRegionFromName(currentData.RealmNameEnGb);
+            currentData.RealmVersion = GetRealmVersionFromName(currentData.RealmNameEnGb);
+        }
+
         await database.SaveChangesAsync();
 
         var databaseItemCount = await database.BlizzardData.CountAsync();
@@ -120,6 +141,38 @@ internal sealed class MoaDatabaseWriter
         }
 
         _logger.LogInformation("End Save");
+    }
+
+    private static BlizzardRegion GetRealmRegionFromName(string realmName)
+    {
+        foreach (var regionInfo in BlizzardRegionInfo.AllByTwoLetters)
+        {
+            var temp = regionInfo.Key;
+            if (realmName.StartsWith(temp, StringComparison.OrdinalIgnoreCase))
+            {
+                return regionInfo.Value.Region;
+            }
+        }
+
+        return BlizzardRegion.None;
+    }
+
+    private static BlizzardRealmVersion GetRealmVersionFromName(string realmName)
+    {
+        foreach (var realmVersion in BlizzardRealmVersionExt.AllRealmVersions)
+        {
+            var temp = realmVersion.GetRealmTagSuffix();
+            if (string.IsNullOrWhiteSpace(temp))
+            {
+                continue;
+            }
+            if (realmName.EndsWith(temp))
+            {
+                return realmVersion;
+            }
+        }
+
+        return BlizzardRealmVersion.Main;
     }
 
     private void AddResourcesToClientDictionaries(BlizzardData[] allBlizzardData, Dictionary<string, string>[] clientSideDataDict)

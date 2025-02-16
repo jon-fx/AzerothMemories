@@ -51,6 +51,11 @@ internal static class CharacterServices_TrySetCharacterRenamedOrTransferred
             return false;
         }
 
+        if (oldCharacterRecord.BlizzardRealmVersionId != newCharacterRecord.BlizzardRealmVersionId)
+        {
+            return false;
+        }
+
         if (oldCharacterRecord.Class != newCharacterRecord.Class)
         {
             return false;

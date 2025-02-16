@@ -1729,17 +1729,701 @@
   <data name="Realm-3738">
     <value>US-Saurfang</value>
   </data>
+  <data name="Realm-4372">
+    <value>US-Atiesh (Classic)</value>
+  </data>
+  <data name="Realm-4373">
+    <value>US-Myzrael (Classic)</value>
+  </data>
+  <data name="Realm-4374">
+    <value>US-Old Blanchy (Classic)</value>
+  </data>
+  <data name="Realm-4376">
+    <value>US-Azuresong (Classic)</value>
+  </data>
+  <data name="Realm-4384">
+    <value>US-Mankrik (Classic)</value>
+  </data>
+  <data name="Realm-4385">
+    <value>US-Pagle (Classic)</value>
+  </data>
+  <data name="Realm-4387">
+    <value>US-Ashkandi (Classic)</value>
+  </data>
+  <data name="Realm-4388">
+    <value>US-Westfall (Classic)</value>
+  </data>
+  <data name="Realm-4395">
+    <value>US-Whitemane (Classic)</value>
+  </data>
+  <data name="Realm-4408">
+    <value>US-Faerlina (Classic)</value>
+  </data>
+  <data name="Realm-4417">
+    <value>KR-Shimmering Flats (Classic)</value>
+  </data>
+  <data name="Realm-4419">
+    <value>KR-Lokholar (Classic)</value>
+  </data>
+  <data name="Realm-4420">
+    <value>KR-Iceblood (Classic)</value>
+  </data>
+  <data name="Realm-4421">
+    <value>KR-Ragnaros (Classic)</value>
+  </data>
+  <data name="Realm-4440">
+    <value>EU-Everlook (Classic)</value>
+  </data>
+  <data name="Realm-4441">
+    <value>EU-Auberdine (Classic)</value>
+  </data>
+  <data name="Realm-4442">
+    <value>EU-Lakeshire (Classic)</value>
+  </data>
+  <data name="Realm-4452">
+    <value>EU-Chromie (Classic)</value>
+  </data>
+  <data name="Realm-4453">
+    <value>EU-Pyrewood Village (Classic)</value>
+  </data>
+  <data name="Realm-4454">
+    <value>EU-Mirage Raceway (Classic)</value>
+  </data>
+  <data name="Realm-4455">
+    <value>EU-Razorfen (Classic)</value>
+  </data>
+  <data name="Realm-4456">
+    <value>EU-Nethergarde Keep (Classic)</value>
+  </data>
+  <data name="Realm-4464">
+    <value>EU-Sulfuron (Classic)</value>
+  </data>
+  <data name="Realm-4465">
+    <value>EU-Golemagg (Classic)</value>
+  </data>
+  <data name="Realm-4466">
+    <value>EU-Patchwerk (Classic)</value>
+  </data>
+  <data name="Realm-4467">
+    <value>EU-Firemaw (Classic)</value>
+  </data>
+  <data name="Realm-4474">
+    <value>EU-Flamegor (Classic)</value>
+  </data>
+  <data name="Realm-4476">
+    <value>EU-Gehennas (Classic)</value>
+  </data>
+  <data name="Realm-4477">
+    <value>EU-Venoxis (Classic)</value>
+  </data>
+  <data name="Realm-4485">
+    <value>TW-Maraudon (Classic)</value>
+  </data>
+  <data name="Realm-4487">
+    <value>TW-Ivus (Classic)</value>
+  </data>
+  <data name="Realm-4488">
+    <value>TW-Wushoolay (Classic)</value>
+  </data>
+  <data name="Realm-4489">
+    <value>TW-Zeliek (Classic)</value>
+  </data>
+  <data name="Realm-4647">
+    <value>US-Grobbulus (Classic)</value>
+  </data>
+  <data name="Realm-4648">
+    <value>US-Bloodsail Buccaneers (Classic)</value>
+  </data>
+  <data name="Realm-4649">
+    <value>US-US1 CWOW Web (Classic)</value>
+  </data>
+  <data name="Realm-4651">
+    <value>US-US2 CWOW Web (Classic)</value>
+  </data>
+  <data name="Realm-4653">
+    <value>US-US1 CWOW GMSS 1 (Classic)</value>
+  </data>
+  <data name="Realm-4654">
+    <value>US-US1 CWOW GMSS 2 (Classic)</value>
+  </data>
+  <data name="Realm-4667">
+    <value>US-Remulos (Classic)</value>
+  </data>
+  <data name="Realm-4669">
+    <value>US-Arugal (Classic)</value>
+  </data>
+  <data name="Realm-4670">
+    <value>US-Yojamba (Classic)</value>
+  </data>
+  <data name="Realm-4678">
+    <value>EU-Hydraxian Waterlords (Classic)</value>
+  </data>
+  <data name="Realm-4681">
+    <value>KR-KR1 CWOW GMSS 2 (Classic)</value>
+  </data>
+  <data name="Realm-4682">
+    <value>EU-EU4 CWOW Web (Classic)</value>
+  </data>
+  <data name="Realm-4683">
+    <value>EU-EU5 CWOW Web (Classic)</value>
+  </data>
+  <data name="Realm-4687">
+    <value>EU-EU4 CWOW GMSS 1 (Classic)</value>
+  </data>
+  <data name="Realm-4688">
+    <value>EU-EU4 CWOW GMSS 2 (Classic)</value>
+  </data>
+  <data name="Realm-4689">
+    <value>TW-TW4 CWOW GMSS 1 (Classic)</value>
+  </data>
+  <data name="Realm-4690">
+    <value>TW-TW4 CWOW GMSS 2 (Classic)</value>
+  </data>
+  <data name="Realm-4693">
+    <value>KR-KR1 CWOW GMSS 1 (Classic)</value>
+  </data>
+  <data name="Realm-4701">
+    <value>EU-Mograine (Classic)</value>
+  </data>
+  <data name="Realm-4703">
+    <value>EU-Amnennar (Classic)</value>
+  </data>
+  <data name="Realm-4725">
+    <value>US-Skyfury (Classic)</value>
+  </data>
+  <data name="Realm-4726">
+    <value>US-Sulfuras (Classic)</value>
+  </data>
+  <data name="Realm-4727">
+    <value>US-Windseeker (Classic)</value>
+  </data>
+  <data name="Realm-4728">
+    <value>US-Benediction (Classic)</value>
+  </data>
+  <data name="Realm-4731">
+    <value>US-Earthfury (Classic)</value>
+  </data>
+  <data name="Realm-4738">
+    <value>US-Maladath (Classic)</value>
+  </data>
+  <data name="Realm-4742">
+    <value>EU-Ashbringer (Classic)</value>
+  </data>
+  <data name="Realm-4745">
+    <value>EU-Transcendence (Classic)</value>
+  </data>
+  <data name="Realm-4749">
+    <value>EU-Earthshaker (Classic)</value>
+  </data>
+  <data name="Realm-4795">
+    <value>US-Angerforge (Classic)</value>
+  </data>
+  <data name="Realm-4800">
+    <value>US-Eranikus (Classic)</value>
+  </data>
+  <data name="Realm-4811">
+    <value>EU-Giantstalker (Classic)</value>
+  </data>
+  <data name="Realm-4813">
+    <value>EU-Mandokir (Classic)</value>
+  </data>
+  <data name="Realm-4815">
+    <value>EU-Thekal (Classic)</value>
+  </data>
+  <data name="Realm-4816">
+    <value>EU-Jin'do (Classic)</value>
+  </data>
+  <data name="Realm-4840">
+    <value>KR-Agonía de Escarcha (Classic)</value>
+  </data>
+  <data name="Realm-5065">
+    <value>US-Herod (ClassicEra)</value>
+  </data>
+  <data name="Realm-5066">
+    <value>US-Whitemane (ClassicEra)</value>
+  </data>
+  <data name="Realm-5067">
+    <value>US-Felstriker (ClassicEra)</value>
+  </data>
+  <data name="Realm-5068">
+    <value>US-Westfall (ClassicEra)</value>
+  </data>
+  <data name="Realm-5069">
+    <value>US-Azuresong (ClassicEra)</value>
+  </data>
+  <data name="Realm-5070">
+    <value>US-Yojamba (ClassicEra)</value>
+  </data>
+  <data name="Realm-5071">
+    <value>US-Ashkandi (ClassicEra)</value>
+  </data>
+  <data name="Realm-5073">
+    <value>US-Arugal (ClassicEra)</value>
+  </data>
+  <data name="Realm-5085">
+    <value>US-Remulos (ClassicEra)</value>
+  </data>
+  <data name="Realm-5098">
+    <value>US-Vagash (ClassicEra)</value>
+  </data>
+  <data name="Realm-5099">
+    <value>US-Skull Rock (ClassicEra)</value>
+  </data>
+  <data name="Realm-5100">
+    <value>US-Arcanite Reaper (ClassicEra)</value>
+  </data>
+  <data name="Realm-5101">
+    <value>US-Anathema (ClassicEra)</value>
+  </data>
+  <data name="Realm-5102">
+    <value>US-Thunderfury (ClassicEra)</value>
+  </data>
+  <data name="Realm-5105">
+    <value>US-Smolderweb (ClassicEra)</value>
+  </data>
+  <data name="Realm-5106">
+    <value>US-Rattlegore (ClassicEra)</value>
+  </data>
+  <data name="Realm-5107">
+    <value>US-Grobbulus (ClassicEra)</value>
+  </data>
+  <data name="Realm-5108">
+    <value>US-Kurinnaxx (ClassicEra)</value>
+  </data>
+  <data name="Realm-5109">
+    <value>US-Bigglesworth (ClassicEra)</value>
+  </data>
+  <data name="Realm-5110">
+    <value>US-Blaumeux (ClassicEra)</value>
+  </data>
+  <data name="Realm-5111">
+    <value>US-Fairbanks (ClassicEra)</value>
+  </data>
+  <data name="Realm-5115">
+    <value>US-Old Blanchy (ClassicEra)</value>
+  </data>
+  <data name="Realm-5116">
+    <value>US-Myzrael (ClassicEra)</value>
+  </data>
+  <data name="Realm-5117">
+    <value>US-Atiesh (ClassicEra)</value>
+  </data>
+  <data name="Realm-5121">
+    <value>US-Loatheb (ClassicEra)</value>
+  </data>
+  <data name="Realm-5124">
+    <value>US-Sul'thraze (ClassicEra)</value>
+  </data>
+  <data name="Realm-5126">
+    <value>US-Defias Pillager (ClassicEra)</value>
+  </data>
+  <data name="Realm-5129">
+    <value>US-Heartseeker (ClassicEra)</value>
+  </data>
+  <data name="Realm-5130">
+    <value>US-Earthfury (ClassicEra)</value>
+  </data>
+  <data name="Realm-5132">
+    <value>US-Netherwind (ClassicEra)</value>
+  </data>
+  <data name="Realm-5133">
+    <value>US-Benediction (ClassicEra)</value>
+  </data>
+  <data name="Realm-5134">
+    <value>US-Windseeker (ClassicEra)</value>
+  </data>
+  <data name="Realm-5135">
+    <value>US-Sulfuras (ClassicEra)</value>
+  </data>
+  <data name="Realm-5136">
+    <value>US-Kirtonos (ClassicEra)</value>
+  </data>
+  <data name="Realm-5137">
+    <value>US-Kromcrush (ClassicEra)</value>
+  </data>
+  <data name="Realm-5138">
+    <value>US-Incendius (ClassicEra)</value>
+  </data>
+  <data name="Realm-5139">
+    <value>US-Bloodsail Buccaneers (ClassicEra)</value>
+  </data>
+  <data name="Realm-5140">
+    <value>US-Skeram (ClassicEra)</value>
+  </data>
+  <data name="Realm-5141">
+    <value>US-Stalagg (ClassicEra)</value>
+  </data>
+  <data name="Realm-5142">
+    <value>US-Faerlina (ClassicEra)</value>
+  </data>
+  <data name="Realm-5143">
+    <value>US-Thalnos (ClassicEra)</value>
+  </data>
+  <data name="Realm-5147">
+    <value>US-Deviate Delight (ClassicEra)</value>
+  </data>
+  <data name="Realm-5148">
+    <value>US-Pagle (ClassicEra)</value>
+  </data>
+  <data name="Realm-5149">
+    <value>US-Mankrik (ClassicEra)</value>
+  </data>
+  <data name="Realm-5156">
+    <value>US-US2 VANWOW Web (ClassicEra)</value>
+  </data>
+  <data name="Realm-5166">
+    <value>US-US1 VANWOW GMSS 1 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5168">
+    <value>US-US1 VANWOW Web (ClassicEra)</value>
+  </data>
+  <data name="Realm-5180">
+    <value>US-US1 VANWOW GMSS 2 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5181">
+    <value>KR-KR1 CWOW GMSS 2 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5182">
+    <value>KR-KR1 CWOW GMSS 1 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5192">
+    <value>KR-Hillsbrad (ClassicEra)</value>
+  </data>
+  <data name="Realm-5194">
+    <value>KR-Iceblood (ClassicEra)</value>
+  </data>
+  <data name="Realm-5195">
+    <value>KR-Lokholar (ClassicEra)</value>
+  </data>
+  <data name="Realm-5196">
+    <value>KR-Ragnaros (ClassicEra)</value>
+  </data>
+  <data name="Realm-5197">
+    <value>KR-Shimmering Flats (ClassicEra)</value>
+  </data>
+  <data name="Realm-5198">
+    <value>EU-EU4 CWOW GMSS 2 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5199">
+    <value>EU-EU4 CWOW GMSS 1 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5201">
+    <value>EU-EU4 CWOW Web (ClassicEra)</value>
+  </data>
+  <data name="Realm-5214">
+    <value>EU-Noxxion (ClassicEra)</value>
+  </data>
+  <data name="Realm-5219">
+    <value>EU-Dragonfang (ClassicEra)</value>
+  </data>
+  <data name="Realm-5220">
+    <value>EU-Stitches (ClassicEra)</value>
+  </data>
+  <data name="Realm-5221">
+    <value>EU-Earthshaker (ClassicEra)</value>
+  </data>
+  <data name="Realm-5224">
+    <value>EU-Bloodfang (ClassicEra)</value>
+  </data>
+  <data name="Realm-5225">
+    <value>EU-Tranzendenz (ClassicEra)</value>
+  </data>
+  <data name="Realm-5226">
+    <value>EU-Finkle (ClassicEra)</value>
+  </data>
+  <data name="Realm-5227">
+    <value>EU-Skullflame (ClassicEra)</value>
+  </data>
+  <data name="Realm-5228">
+    <value>EU-Ashbringer (ClassicEra)</value>
+  </data>
+  <data name="Realm-5229">
+    <value>EU-Noggenfogger (ClassicEra)</value>
+  </data>
+  <data name="Realm-5230">
+    <value>EU-Gandling (ClassicEra)</value>
+  </data>
+  <data name="Realm-5231">
+    <value>EU-Mograine (ClassicEra)</value>
+  </data>
+  <data name="Realm-5232">
+    <value>EU-Zandalar Tribe (ClassicEra)</value>
+  </data>
+  <data name="Realm-5233">
+    <value>EU-Firemaw (ClassicEra)</value>
+  </data>
+  <data name="Realm-5234">
+    <value>EU-Flickwerk (ClassicEra)</value>
+  </data>
+  <data name="Realm-5235">
+    <value>EU-Golemagg (ClassicEra)</value>
+  </data>
+  <data name="Realm-5236">
+    <value>EU-Sulfuron (ClassicEra)</value>
+  </data>
+  <data name="Realm-5237">
+    <value>EU-Lucifron (ClassicEra)</value>
+  </data>
+  <data name="Realm-5240">
+    <value>EU-Seenhain (ClassicEra)</value>
+  </data>
+  <data name="Realm-5241">
+    <value>EU-Auberdine (ClassicEra)</value>
+  </data>
+  <data name="Realm-5242">
+    <value>EU-Ewige Warte (ClassicEra)</value>
+  </data>
+  <data name="Realm-5244">
+    <value>EU-EU5 CWOW Web (ClassicEra)</value>
+  </data>
+  <data name="Realm-5258">
+    <value>EU-Mandokir (ClassicEra)</value>
+  </data>
+  <data name="Realm-5259">
+    <value>EU-Harbinger of Doom (RU) (ClassicEra)</value>
+  </data>
+  <data name="Realm-5261">
+    <value>EU-Nek'Rosh (ClassicEra)</value>
+  </data>
+  <data name="Realm-5262">
+    <value>EU-Herzensbrecher (ClassicEra)</value>
+  </data>
+  <data name="Realm-5266">
+    <value>EU-Celebras (ClassicEra)</value>
+  </data>
+  <data name="Realm-5267">
+    <value>EU-Judgement (ClassicEra)</value>
+  </data>
+  <data name="Realm-5268">
+    <value>EU-Ten Storms (ClassicEra)</value>
+  </data>
+  <data name="Realm-5269">
+    <value>EU-Großdrachenruf (ClassicEra)</value>
+  </data>
+  <data name="Realm-5270">
+    <value>EU-Dreadmist (ClassicEra)</value>
+  </data>
+  <data name="Realm-5271">
+    <value>EU-Rhok'delar (RU) (ClassicEra)</value>
+  </data>
+  <data name="Realm-5272">
+    <value>EU-Flamelash (ClassicEra)</value>
+  </data>
+  <data name="Realm-5273">
+    <value>EU-Stonespine (ClassicEra)</value>
+  </data>
+  <data name="Realm-5274">
+    <value>EU-Wyrmthalak (RU) (ClassicEra)</value>
+  </data>
+  <data name="Realm-5275">
+    <value>EU-Hydraxian Waterlords (ClassicEra)</value>
+  </data>
+  <data name="Realm-5276">
+    <value>EU-Razorgore (ClassicEra)</value>
+  </data>
+  <data name="Realm-5277">
+    <value>EU-Venoxis (ClassicEra)</value>
+  </data>
+  <data name="Realm-5278">
+    <value>EU-Gehennas (ClassicEra)</value>
+  </data>
+  <data name="Realm-5279">
+    <value>EU-Shazzrah (ClassicEra)</value>
+  </data>
+  <data name="Realm-5280">
+    <value>EU-Flamegor (RU) (ClassicEra)</value>
+  </data>
+  <data name="Realm-5281">
+    <value>EU-Nethergarde Keep (ClassicEra)</value>
+  </data>
+  <data name="Realm-5282">
+    <value>EU-Klingenhauer (ClassicEra)</value>
+  </data>
+  <data name="Realm-5283">
+    <value>EU-Mirage Raceway (ClassicEra)</value>
+  </data>
+  <data name="Realm-5284">
+    <value>EU-Pyrewood Village (ClassicEra)</value>
+  </data>
+  <data name="Realm-5285">
+    <value>EU-Chromie (RU) (ClassicEra)</value>
+  </data>
+  <data name="Realm-5286">
+    <value>TW-TW4 CWOW GMSS 1 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5288">
+    <value>TW-TW4 CWOW GMSS 2 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5296">
+    <value>TW-Hogger (ClassicEra)</value>
+  </data>
+  <data name="Realm-5297">
+    <value>TW-Voidwalker (ClassicEra)</value>
+  </data>
+  <data name="Realm-5298">
+    <value>TW-Teremus (ClassicEra)</value>
+  </data>
+  <data name="Realm-5300">
+    <value>TW-Ivus (ClassicEra)</value>
+  </data>
+  <data name="Realm-5302">
+    <value>TW-Maraudon (ClassicEra)</value>
+  </data>
+  <data name="Realm-5501">
+    <value>EU-Amnennar (ClassicEra)</value>
+  </data>
   <data name="Realm-5735">
     <value>TW-Krol Blade</value>
   </data>
   <data name="Realm-5736">
     <value>TW-Old Blanchy</value>
   </data>
+  <data name="Realm-5740">
+    <value>TW-Arathi Basin (Classic)</value>
+  </data>
+  <data name="Realm-5741">
+    <value>TW-Murloc (Classic)</value>
+  </data>
+  <data name="Realm-5742">
+    <value>TW-Golemagg (Classic)</value>
+  </data>
+  <data name="Realm-5743">
+    <value>TW-Windseeker (Classic)</value>
+  </data>
+  <data name="Realm-5790">
+    <value>KR-Mak’gora (ClassicEra)</value>
+  </data>
+  <data name="Realm-5813">
+    <value>US-Wild Growth (ClassicEra)</value>
+  </data>
+  <data name="Realm-5814">
+    <value>US-Lone Wolf (ClassicEra)</value>
+  </data>
+  <data name="Realm-5815">
+    <value>US-Living Flame (ClassicEra)</value>
+  </data>
+  <data name="Realm-5816">
+    <value>US-Crusader Strike (ClassicEra)</value>
+  </data>
+  <data name="Realm-5817">
+    <value>US-Penance (AU) (ClassicEra)</value>
+  </data>
+  <data name="Realm-5818">
+    <value>US-Shadowstrike (AU) (ClassicEra)</value>
+  </data>
+  <data name="Realm-5819">
+    <value>US-Lava Lash (ClassicEra)</value>
+  </data>
+  <data name="Realm-5820">
+    <value>US-Chaos Bolt (ClassicEra)</value>
+  </data>
+  <data name="Realm-5821">
+    <value>US-Devastate (ClassicEra)</value>
+  </data>
+  <data name="Realm-5823">
+    <value>KR-Wild Growth (ClassicEra)</value>
+  </data>
+  <data name="Realm-5824">
+    <value>KR-Lone Wolf (ClassicEra)</value>
+  </data>
+  <data name="Realm-5825">
+    <value>EU-Wild Growth (ClassicEra)</value>
+  </data>
+  <data name="Realm-5826">
+    <value>EU-Lone Wolf (ClassicEra)</value>
+  </data>
+  <data name="Realm-5827">
+    <value>EU-Living Flame (ClassicEra)</value>
+  </data>
+  <data name="Realm-5828">
+    <value>EU-Crusader Strike (ClassicEra)</value>
+  </data>
+  <data name="Realm-5829">
+    <value>EU-Penance (temporada) (ClassicEra)</value>
+  </data>
+  <data name="Realm-5830">
+    <value>EU-Shadowstrike (temporada) (ClassicEra)</value>
+  </data>
+  <data name="Realm-5831">
+    <value>EU-Lava Lash (ClassicEra)</value>
+  </data>
+  <data name="Realm-5832">
+    <value>EU-Chaos Bolt (ClassicEra)</value>
+  </data>
+  <data name="Realm-5833">
+    <value>EU-Devastate (ClassicEra)</value>
+  </data>
+  <data name="Realm-5842">
+    <value>TW-Wild Growth (ClassicEra)</value>
+  </data>
+  <data name="Realm-5843">
+    <value>TW-Lone Wolf (ClassicEra)</value>
+  </data>
+  <data name="Realm-5844">
+    <value>TW-Living Flame (ClassicEra)</value>
+  </data>
+  <data name="Realm-5845">
+    <value>TW-Crusader Strike (ClassicEra)</value>
+  </data>
+  <data name="Realm-5846">
+    <value>TW-Penance (ClassicEra)</value>
+  </data>
+  <data name="Realm-5847">
+    <value>TW-Shadowstrike (ClassicEra)</value>
+  </data>
+  <data name="Realm-5848">
+    <value>TW-Lava Lash (ClassicEra)</value>
+  </data>
+  <data name="Realm-5849">
+    <value>TW-Chaos Bolt (ClassicEra)</value>
+  </data>
   <data name="Realm-5909">
     <value>US-US PS Realm 222</value>
   </data>
   <data name="Realm-5911">
     <value>EU-EU PS Realm 222</value>
+  </data>
+  <data name="Realm-6103">
+    <value>US-Dreamscythe (ClassicEra)</value>
+  </data>
+  <data name="Realm-6104">
+    <value>US-Nightslayer (ClassicEra)</value>
+  </data>
+  <data name="Realm-6105">
+    <value>US-Doomhowl (ClassicEra)</value>
+  </data>
+  <data name="Realm-6107">
+    <value>KR-Mol'dar's Moxie (ClassicEra)</value>
+  </data>
+  <data name="Realm-6108">
+    <value>KR-Fengus' Ferocity (ClassicEra)</value>
+  </data>
+  <data name="Realm-6110">
+    <value>KR-Slip'kik's Savvy (ClassicEra)</value>
+  </data>
+  <data name="Realm-6111">
+    <value>EU-Thunderstrike (ClassicEra)</value>
+  </data>
+  <data name="Realm-6112">
+    <value>EU-Spineshatter (ClassicEra)</value>
+  </data>
+  <data name="Realm-6113">
+    <value>EU-Soulseeker (ClassicEra)</value>
+  </data>
+  <data name="Realm-6115">
+    <value>TW-Mol'dar's Moxie (ClassicEra)</value>
+  </data>
+  <data name="Realm-6116">
+    <value>TW-Fengus' Ferocity (ClassicEra)</value>
+  </data>
+  <data name="Realm-6117">
+    <value>TW-Slip'kik's Savvy (ClassicEra)</value>
+  </data>
+  <data name="Realm-6122">
+    <value>EU-Anniversary (ClassicEra)</value>
+  </data>
+  <data name="Realm-6131">
+    <value>US-Maladath (AU) (ClassicEra)</value>
   </data>
   <data name="Region-0">
     <value>None</value>

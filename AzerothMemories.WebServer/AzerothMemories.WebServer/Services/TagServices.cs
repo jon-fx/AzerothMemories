@@ -12,31 +12,20 @@ public class TagServices : ITagServices
     }
 
     [ComputeMethod]
-    public virtual async Task<bool> IsValidRealmSlug(string realmSlug)
+    public virtual async Task<bool> IsValidRealmInfo(BlizzardRegion realmRegion, BlizzardRealmVersion realmVersion, string realmSlug)
     {
-        using var _ = new MethodTimeLogger(_logger);
-        var allRealmSlugs = await GetAllRealmSlugs().ConfigureAwait(false);
-        return allRealmSlugs.Contains(realmSlug);
+        var records = await GetAllRealmRecords().ConfigureAwait(false);
+
+        return records.Values.Any(x => x.RealmRegion == realmRegion && x.RealmVersion == realmVersion && x.RealmSlug == realmSlug);
     }
 
     [ComputeMethod]
-    protected virtual async Task<HashSet<string>> GetAllRealmSlugs()
+    protected virtual async Task<Dictionary<int, BlizzardRealmRecord>> GetAllRealmRecords()
     {
         using var _ = new MethodTimeLogger(_logger);
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
-        var query = from r in database.BlizzardData
-                    where r.TagType == PostTagType.Realm
-                    select r.Media;
-
-        var resultsSet = new HashSet<string>();
-        var queryResults = await query.ToArrayAsync().ConfigureAwait(false);
-        foreach (var queryResult in queryResults)
-        {
-            resultsSet.Add(queryResult);
-        }
-
-        return resultsSet;
+        return await database.BlizzardRealms.Where(x => x.RealmId > 0).ToDictionaryAsync(x => x.RealmId, x => x).ConfigureAwait(false);
     }
 
     [ComputeMethod]

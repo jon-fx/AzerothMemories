@@ -2,7 +2,7 @@
 
 internal sealed class UpdateHandler_Characters_AchievementStatistics : UpdateHandlerBaseResult<CharacterRecord, CharacterAchievementStatistics>, IRequiresExecuteOnFirstLogin
 {
-    public UpdateHandler_Characters_AchievementStatistics(CommonServices commonServices, ILogger<BlizzardUpdateServices> logger) : base(BlizzardUpdateType.Character_AchievementStatistics, commonServices, logger)
+    public UpdateHandler_Characters_AchievementStatistics(UpdateHandlerInfo handlerInfo) : base(handlerInfo)
     {
     }
 
@@ -24,7 +24,7 @@ internal sealed class UpdateHandler_Characters_AchievementStatistics : UpdateHan
         }
 
         using var client = CommonServices.HttpClientProvider.GetWarcraftClient(record.BlizzardRegionId);
-        return await client.GetCharacterStatisticsSummaryAsync(characterRef.Realm, characterRef.Name, blizzardLastModified).ConfigureAwait(false);
+        return await client.GetCharacterStatisticsSummaryAsync(characterRef.RealmVersion, characterRef.Realm, characterRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
 
     protected override async Task InternalExecuteWithResult(AppDbContext database, CharacterRecord record, CharacterAchievementStatistics requestResult)

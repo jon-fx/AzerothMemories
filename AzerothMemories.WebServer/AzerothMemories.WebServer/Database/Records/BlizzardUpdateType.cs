@@ -5,12 +5,25 @@ public enum BlizzardUpdateType
     Default = 0,
 
     Account = 0,
-    Account_China = BlizzardRegion.China,
-    Account_Europe = BlizzardRegion.Europe,
-    Account_Korea = BlizzardRegion.Korea,
-    Account_Taiwan = BlizzardRegion.Taiwan,
-    Account_UnitedStates = BlizzardRegion.UnitedStates,
+    Account_China,
+    Account_Europe,
+    Account_Korea,
+    Account_Taiwan,
+    Account_UnitedStates,
+
     Account_Patreon,
+
+    Account_China_ClassicEra,
+    Account_Europe_ClassicEra,
+    Account_Korea_ClassicEra,
+    Account_Taiwan_ClassicEra,
+    Account_UnitedStates_ClassicEra,
+
+    Account_China_ClassicProgression,
+    Account_Europe_ClassicProgression,
+    Account_Korea_ClassicProgression,
+    Account_Taiwan_ClassicProgression,
+    Account_UnitedStates_ClassicProgression,
 
     Account_Count,
 

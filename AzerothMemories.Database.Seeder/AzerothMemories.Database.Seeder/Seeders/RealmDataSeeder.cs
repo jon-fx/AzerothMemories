@@ -15,24 +15,27 @@ internal sealed class RealmDataSeeder : GenericBase<RealmDataSeeder>
             using var client = HttpClientProvider.GetWarcraftClient(region);
             var twoLetters = region.ToInfo().TwoLettersUpper;
 
-            var allRealmSearchResults = await ResourceCache.GetOrRequestData($"RealmData-{region.ToInfo().TwoLettersUpper}", async k => await client.GetRealmData());
-            if (allRealmSearchResults != null)
+            foreach (var realmVersion in BlizzardRealmVersionExt.AllRealmVersions)
             {
-                foreach (var realmData in allRealmSearchResults.Realms.SafeEnumerable())
+                var allRealmSearchResults = await ResourceCache.GetOrRequestData($"RealmData-{region.ToInfo().TwoLettersUpper}-{realmVersion}", async k => await client.GetRealmData(realmVersion));
+                if (allRealmSearchResults != null)
                 {
-                    var realmRecord = realmData.Name.ToArray();
-                    SetExtensions.Update(realmRecord, (l, x) => $"{twoLetters}-{x}");
+                    foreach (var realmData in allRealmSearchResults.Realms.SafeEnumerable())
+                    {
+                        var realmRecord = realmData.Name.ToArray();
+                        SetExtensions.Update(realmRecord, (l, x) => $"{twoLetters}-{x}{realmVersion.GetRealmTagSuffix()}");
 
-                    ResourceWriter.AddServerSideLocalizationName(PostTagType.Realm, realmData.Id, realmRecord);
-                    ResourceWriter.TryAddServerSideLocalizationMedia(PostTagType.Realm, realmData.Id, realmData.Slug);
+                        ResourceWriter.AddServerSideLocalizationName(PostTagType.Realm, realmData.Id, realmRecord);
+                        ResourceWriter.TryAddServerSideLocalizationMedia(PostTagType.Realm, realmData.Id, realmData.Slug);
 
-                    //ResourceWriter.AddClientSideCommonLocalizationData($"RealmSlug-{realmData.Id}", realmData.Slug);
+                        //ResourceWriter.AddClientSideCommonLocalizationData($"RealmSlug-{realmData.Id}", realmData.Slug);
+                    }
                 }
-            }
 
-            var connectedRealmData = await ResourceCache.GetOrRequestData($"RealmConnectedData-{region.ToInfo().TwoLettersUpper}", async k => await client.GetConnectedRealmData());
-            if (connectedRealmData != null)
-            {
+                var connectedRealmData = await ResourceCache.GetOrRequestData($"RealmConnectedData-{region.ToInfo().TwoLettersUpper}-{realmVersion}", async k => await client.GetConnectedRealmData(realmVersion));
+                if (connectedRealmData != null)
+                {
+                }
             }
         }
     }

@@ -4,15 +4,16 @@ namespace AzerothMemories.WebBlazor.Common;
 
 public sealed class MoaRef
 {
-    private MoaRef(char type, BlizzardRegion region, string? realm, string? name, long id)
+    private MoaRef(char type, BlizzardRegion region, BlizzardRealmVersion realmVersion, string? realm, string? name, long id)
     {
         Id = id;
         Type = type;
         Name = name?.Replace(' ', '-');
         Realm = realm;
         Region = region;
+        RealmVersion = realmVersion;
 
-        Full = $"{Type}|{Region.ToValue()}|{Realm}|{Name}|{Id}".ToLower();
+        Full = $"{Type}|{Region.ToValue()}|{Realm}|{Name}|{Id}|{RealmVersion.ToValue()}".ToLower();
     }
 
     public MoaRef(string full)
@@ -30,11 +31,16 @@ public sealed class MoaRef
             throw new NotImplementedException();
         }
 
+        if (!byte.TryParse(split[5], out var realmVersion))
+        {
+        }
+
         Id = id;
         Type = split[0][0];
         Name = split[3];
         Realm = split[2];
         Region = (BlizzardRegion)regionId;
+        RealmVersion = (BlizzardRealmVersion)realmVersion;
 
         Exceptions.ThrowIf(Type == 'a');
         Exceptions.ThrowIf(Type == 'c' && Id == 0);
@@ -52,6 +58,8 @@ public sealed class MoaRef
     public BlizzardRegion Region { get; }
 
     public string Full { get; }
+
+    public BlizzardRealmVersion RealmVersion { get; }
 
     [MemberNotNullWhen(true, nameof(Name), nameof(Realm))]
     public bool IsValidCharacter
@@ -85,14 +93,14 @@ public sealed class MoaRef
 
     public bool IsWildCard => Id < 0;
 
-    public static MoaRef GetCharacterRef(BlizzardRegion region, string? realm, string? name, long id)
+    public static MoaRef GetCharacterRef(BlizzardRegion region, BlizzardRealmVersion realmVersion, string? realm, string? name, long id)
     {
-        return new MoaRef('c', region, realm, name, id);
+        return new MoaRef('c', region, realmVersion, realm, name, id);
     }
 
-    public static MoaRef GetGuildRef(BlizzardRegion region, string? realm, string? name)
+    public static MoaRef GetGuildRef(BlizzardRegion region, BlizzardRealmVersion realmVersion, string? realm, string? name)
     {
-        return new MoaRef('g', region, realm, name, 0);
+        return new MoaRef('g', region, realmVersion, realm, name, 0);
     }
 
     public string GetLikeQuery()

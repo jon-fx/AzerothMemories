@@ -225,99 +225,107 @@ else
                 var systemTags = Post.SystemTags;
                 if (systemTags != null)
                 {
-                    var characters = Services.ClientServices.ActiveAccountServices.AccountViewModel.GetCharactersSafe();
-                    var accountIsTagged = systemTags.FirstOrDefault(x => x.Type == PostTagType.Account && x.Id == Services.ClientServices.ActiveAccountServices.AccountViewModel.GetIdSafe()) != null;
-
-                    if (accountIsTagged || characters.Length > 0)
+                    var typeTag = systemTags.FirstOrDefault(x => x.Type == PostTagType.Type);
+                    if (typeTag == null)
                     {
-                        CharacterViewModel? taggedCharacter = null;
-                        foreach (var moaCharacterViewModel in characters)
+                        <CardInfoComponent Message="No tag" />
+                    }
+                    else
+                    {
+                        var characters = Services.ClientServices.ActiveAccountServices.AccountViewModel.GetCharactersForTagSafe(typeTag);
+                        var accountIsTagged = systemTags.FirstOrDefault(x => x.Type == PostTagType.Account && x.Id == Services.ClientServices.ActiveAccountServices.AccountViewModel.GetIdSafe()) != null;
+
+                        if (accountIsTagged || characters.Length > 0)
                         {
-                            var tagInfo = systemTags.FirstOrDefault(x => x.Type == PostTagType.Character && x.Id == moaCharacterViewModel.Id);
-                            if (tagInfo == null)
+                            CharacterViewModel? taggedCharacter = null;
+                            foreach (var moaCharacterViewModel in characters)
                             {
-                                continue;
-                            }
-
-                            taggedCharacter = moaCharacterViewModel;
-                        }
-
-                        <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
-                            <MudCardContent Class="@ClassPresets.CardContent">
-                                
-                                @{
-                                    var activeAccountId = Services.ClientServices.ActiveAccountServices.AccountViewModel.GetIdSafe();
-                                    if (activeAccountId > 0 && activeAccountId != Post.AccountId)
-                                    {
-                                        <MudTooltip Placement="Placement.End" Color="Color.Dark">
-                                            <ChildContent>
-                                                <MudButton Variant="Variant.Filled" Disabled="!accountIsTagged && taggedCharacter == null" OnClick="() => OnRestoreButtonClicked(-1)">
-                                                    <MudAvatar Size="Size.Medium">?</MudAvatar>
-                                                </MudButton>
-                                            </ChildContent>
-                                            <TooltipContent>
-                                                <MudText>None</MudText>
-                                            </TooltipContent>
-                                        </MudTooltip>
-                                    }
+                                var tagInfo = systemTags.FirstOrDefault(x => x.Type == PostTagType.Character && x.Id == moaCharacterViewModel.Id);
+                                if (tagInfo == null)
+                                {
+                                    continue;
                                 }
 
-                                <MudTooltip Placement="Placement.End" Color="Color.Dark">
-                                    <ChildContent>
-                                        <MudButton Variant="Variant.Filled" Disabled="accountIsTagged && taggedCharacter == null" OnClick="() => OnRestoreButtonClicked(0)">
-                                            <MudAvatar Size="Size.Medium">
-                                                @{
-                                                    var avatarSource = Services.ClientServices.ActiveAccountServices.AccountViewModel?.Avatar;
-                                                    var avatarAlt = Services.ClientServices.ActiveAccountServices.AccountViewModel.GetAvatarText();
+                                taggedCharacter = moaCharacterViewModel;
+                            }
 
-                                                    if (string.IsNullOrWhiteSpace(avatarSource))
-                                                    {
-                                                        @avatarAlt
-                                                    }
-                                                    else
-                                                    {
-                                                        <MudImage Src="@avatarSource" loading="lazy" />
-                                                    }
-                                                }
-                                            </MudAvatar>
-                                        </MudButton>
-                                    </ChildContent>
-                                    <TooltipContent>
-                                        <MudText>Account</MudText>
-                                    </TooltipContent>
-                                </MudTooltip>
+                            <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+                                <MudCardContent Class="@ClassPresets.CardContent">
 
-                                @for (var i = 0; i < characters.Length; i++)
-                                {
-                                    var index = i;
-                                    var character = characters[index];
+                                    @{
+                                        var activeAccountId = Services.ClientServices.ActiveAccountServices.AccountViewModel.GetIdSafe();
+                                        if (activeAccountId > 0 && activeAccountId != Post.AccountId)
+                                        {
+                                            <MudTooltip Placement="Placement.End" Color="Color.Dark">
+                                                <ChildContent>
+                                                    <MudButton Variant="Variant.Filled" Disabled="!accountIsTagged && taggedCharacter == null" OnClick="() => OnRestoreButtonClicked(-1)">
+                                                        <MudAvatar Size="Size.Medium">?</MudAvatar>
+                                                    </MudButton>
+                                                </ChildContent>
+                                                <TooltipContent>
+                                                    <MudText>None</MudText>
+                                                </TooltipContent>
+                                            </MudTooltip>
+                                        }
+                                    }
 
-                                    <MudTooltip @key="@character.Id" Placement="Placement.Bottom" Color="Color.Dark">
+                                    <MudTooltip Placement="Placement.End" Color="Color.Dark">
                                         <ChildContent>
-                                            <MudButton Id="@index" Variant="Variant.Filled" Disabled="taggedCharacter != null && taggedCharacter.Id == character.Id" OnClick="() => OnRestoreButtonClicked(character.Id)">
+                                            <MudButton Variant="Variant.Filled" Disabled="accountIsTagged && taggedCharacter == null" OnClick="() => OnRestoreButtonClicked(0)">
                                                 <MudAvatar Size="Size.Medium">
-                                                    <MudImage Src="@character.GetAvatarLinkWithFallBack()" loading="lazy" />
+                                                    @{
+                                                        var avatarSource = Services.ClientServices.ActiveAccountServices.AccountViewModel?.Avatar;
+                                                        var avatarAlt = Services.ClientServices.ActiveAccountServices.AccountViewModel.GetAvatarText();
+
+                                                        if (string.IsNullOrWhiteSpace(avatarSource))
+                                                        {
+                                                            @avatarAlt
+                                                        }
+                                                        else
+                                                        {
+                                                            <MudImage Src="@avatarSource" loading="lazy" />
+                                                        }
+                                                    }
                                                 </MudAvatar>
                                             </MudButton>
                                         </ChildContent>
                                         <TooltipContent>
-                                            <CharacterNameLinkComponent CharacterName="@character.Name" CharacterClass="@character.Class" CharacterRealmId="@character.RealmId" CharacterRegionInfo="@character.RegionId.ToInfo()" />
-
-                                            <div>
-                                                <MudText Inline="true" Typo="Typo.body2">@character.Level @Services.ClientServices.BlizzardStringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
-                                                <MudText Inline="true" Typo="Typo.body2" Class=@($"wowclass-{character.Class}")>@Services.ClientServices.BlizzardStringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
-                                            </div>
-
-                                            <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@character.RealmId" />
+                                            <MudText>Account</MudText>
                                         </TooltipContent>
                                     </MudTooltip>
-                                }
-                            </MudCardContent>
-                        </MudCard>
-                    }
-                    else
-                    {
-                        <CardInfoComponent Message="No Characters" />
+
+                                    @for (var i = 0; i < characters.Length; i++)
+                                    {
+                                        var index = i;
+                                        var character = characters[index];
+
+                                        <MudTooltip @key="@character.Id" Placement="Placement.Bottom" Color="Color.Dark">
+                                            <ChildContent>
+                                                <MudButton Id="@index" Variant="Variant.Filled" Disabled="taggedCharacter != null && taggedCharacter.Id == character.Id" OnClick="() => OnRestoreButtonClicked(character.Id)">
+                                                    <MudAvatar Size="Size.Medium">
+                                                        <MudImage Src="@character.GetAvatarLinkWithFallBack()" loading="lazy" />
+                                                    </MudAvatar>
+                                                </MudButton>
+                                            </ChildContent>
+                                            <TooltipContent>
+                                                <CharacterNameLinkComponent CharacterName="@character.Name" CharacterClass="@character.Class" CharacterRealmVersion="@character.RealmVersion" CharacterRealmId="@character.RealmId" CharacterRegionInfo="@character.RegionId.ToInfo()" />
+
+                                                <div>
+                                                    <MudText Inline="true" Typo="Typo.body2">@character.Level @Services.ClientServices.BlizzardStringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
+                                                    <MudText Inline="true" Typo="Typo.body2" Class=@($"wowclass-{character.Class}")>@Services.ClientServices.BlizzardStringLocalizer[$"CharacterClass-{character.Class}"]</MudText>
+                                                </div>
+
+                                                <RealmLinkComponent Typo="Typo.caption" BlizzardRealmId="@character.RealmId" />
+                                            </TooltipContent>
+                                        </MudTooltip>
+                                    }
+                                </MudCardContent>
+                            </MudCard>
+                        }
+                        else
+                        {
+                            <CardInfoComponent Message="No Characters" />
+                        }
                     }
                 }
             }

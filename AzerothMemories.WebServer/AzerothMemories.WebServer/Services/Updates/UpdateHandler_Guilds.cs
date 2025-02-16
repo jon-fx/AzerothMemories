@@ -2,7 +2,7 @@
 
 internal sealed class UpdateHandler_Guilds : UpdateHandlerBaseResult<GuildRecord, Guild>
 {
-    public UpdateHandler_Guilds(CommonServices commonServices, ILogger<BlizzardUpdateServices> logger) : base(BlizzardUpdateType.Guild, commonServices, logger)
+    public UpdateHandler_Guilds(UpdateHandlerInfo handlerInfo) : base(handlerInfo)
     {
     }
 
@@ -15,7 +15,7 @@ internal sealed class UpdateHandler_Guilds : UpdateHandlerBaseResult<GuildRecord
         }
 
         using var client = CommonServices.HttpClientProvider.GetWarcraftClient(guildRef.Region);
-        return await client.GetGuildProfileSummaryAsync(guildRef.Realm, guildRef.Name, blizzardLastModified).ConfigureAwait(false);
+        return await client.GetGuildProfileSummaryAsync(guildRef.RealmVersion, guildRef.Realm, guildRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
 
     protected override Task InternalExecuteWithResult(AppDbContext database, GuildRecord record, Guild requestResult)

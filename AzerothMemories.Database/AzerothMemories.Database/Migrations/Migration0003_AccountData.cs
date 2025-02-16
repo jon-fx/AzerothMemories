@@ -262,5 +262,14 @@ public sealed class Migration0003_AccountData : Migration
 
         Delete.Table(AccountFollowingRecord.TableName);
         Delete.Table(AccountRecord.TableName);
+
+        Execute.Sql($"DELETE FROM \"UserIdentities\"");
+        Execute.Sql($"DELETE FROM \"Users\"");
+
+        Execute.Sql($"DELETE FROM \"_Sessions\"");
+
+        Execute.Sql($"DELETE FROM \"_KeyValues\"");
+        Execute.Sql($"DELETE FROM \"_Operations\"");
+        Execute.Sql($"DELETE FROM \"_Events\"");
     }
 }

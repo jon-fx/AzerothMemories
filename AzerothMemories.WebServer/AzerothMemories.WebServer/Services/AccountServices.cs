@@ -154,19 +154,6 @@ public class AccountServices : IAccountServices
         return await CreateAccountViewModel(accountRecord, isActive || isAdmin).ConfigureAwait(false);
     }
 
-    //public async Task<bool> TryEnqueueUpdate(Session session)
-    //{
-    //    var accountRecord = await TryGetActiveAccountRecord(session).ConfigureAwait(false);
-    //    if (accountRecord == null)
-    //    {
-    //        return false;
-    //    }
-
-    //    await _commonServices.BlizzardUpdateHandler.TryUpdate(accountRecord).ConfigureAwait(false);
-
-    //    return true;
-    //}
-
     [ComputeMethod]
     public virtual async Task<AccountViewModel> CreateAccountViewModel(AccountRecord accountRecord, bool activeOrAdmin)
     {
@@ -190,7 +177,11 @@ public class AccountServices : IAccountServices
         viewModel.TotalMemoriesCount = await memoryCount;
         viewModel.TotalReactionsCount = await reactionCount;
 
-        viewModel.CharactersArray = activeOrAdmin ? characters.Values.ToArray() : characters.Values.Where(x => x.AccountSync && x.CharacterStatus == CharacterStatus2.None).ToArray();
+        var allCharacters = activeOrAdmin ? characters.Values.ToArray() : characters.Values.Where(x => x.AccountSync && x.CharacterStatus == CharacterStatus2.None).ToArray();
+
+        viewModel.CharactersArray = allCharacters.Where(x => x.RealmVersion == BlizzardRealmVersion.Main).ToArray();
+        viewModel.CharactersArrayClassicEra = allCharacters.Where(x => x.RealmVersion == BlizzardRealmVersion.Classic).ToArray();
+        viewModel.CharactersArrayClassicProgression = allCharacters.Where(x => x.RealmVersion == BlizzardRealmVersion.ClassicProgression).ToArray();
 
         if (viewModel.IsCustomAvatar())
         {

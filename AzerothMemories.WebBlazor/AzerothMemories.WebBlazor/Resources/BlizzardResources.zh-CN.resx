@@ -1729,17 +1729,701 @@
   <data name="Realm-3738">
     <value>US-萨鲁法尔</value>
   </data>
+  <data name="Realm-4372">
+    <value>US-埃提耶什 (Classic)</value>
+  </data>
+  <data name="Realm-4373">
+    <value>US-密斯莱尔 (Classic)</value>
+  </data>
+  <data name="Realm-4374">
+    <value>US-老马布兰契 (Classic)</value>
+  </data>
+  <data name="Realm-4376">
+    <value>US-碧空之歌 (Classic)</value>
+  </data>
+  <data name="Realm-4384">
+    <value>US-曼科里克 (Classic)</value>
+  </data>
+  <data name="Realm-4385">
+    <value>US-帕格 (Classic)</value>
+  </data>
+  <data name="Realm-4387">
+    <value>US-阿什坎迪 (Classic)</value>
+  </data>
+  <data name="Realm-4388">
+    <value>US-西部荒野 (Classic)</value>
+  </data>
+  <data name="Realm-4395">
+    <value>US-怀特迈恩 (Classic)</value>
+  </data>
+  <data name="Realm-4408">
+    <value>US-法琳娜 (Classic)</value>
+  </data>
+  <data name="Realm-4417">
+    <value>KR-闪光平原 (Classic)</value>
+  </data>
+  <data name="Realm-4419">
+    <value>KR-洛克霍拉 (Classic)</value>
+  </data>
+  <data name="Realm-4420">
+    <value>KR-冰血 (Classic)</value>
+  </data>
+  <data name="Realm-4421">
+    <value>KR-拉格纳罗斯 (Classic)</value>
+  </data>
+  <data name="Realm-4440">
+    <value>EU-永望镇 (Classic)</value>
+  </data>
+  <data name="Realm-4441">
+    <value>EU-奥伯丁 (Classic)</value>
+  </data>
+  <data name="Realm-4442">
+    <value>EU-湖畔镇 (Classic)</value>
+  </data>
+  <data name="Realm-4452">
+    <value>EU-克罗米 (Classic)</value>
+  </data>
+  <data name="Realm-4453">
+    <value>EU-焚木村 (Classic)</value>
+  </data>
+  <data name="Realm-4454">
+    <value>EU-沙漠赛道 (Classic)</value>
+  </data>
+  <data name="Realm-4455">
+    <value>EU-剃刀 (Classic)</value>
+  </data>
+  <data name="Realm-4456">
+    <value>EU-守望堡 (Classic)</value>
+  </data>
+  <data name="Realm-4464">
+    <value>EU-萨弗隆 (Classic)</value>
+  </data>
+  <data name="Realm-4465">
+    <value>EU-古雷曼格 (Classic)</value>
+  </data>
+  <data name="Realm-4466">
+    <value>EU-帕奇维克 (Classic)</value>
+  </data>
+  <data name="Realm-4467">
+    <value>EU-费尔默 (Classic)</value>
+  </data>
+  <data name="Realm-4474">
+    <value>EU-弗莱格尔 (Classic)</value>
+  </data>
+  <data name="Realm-4476">
+    <value>EU-基赫纳斯 (Classic)</value>
+  </data>
+  <data name="Realm-4477">
+    <value>EU-温诺希斯 (Classic)</value>
+  </data>
+  <data name="Realm-4485">
+    <value>TW-玛拉顿 (Classic)</value>
+  </data>
+  <data name="Realm-4487">
+    <value>TW-伊弗斯 (Classic)</value>
+  </data>
+  <data name="Realm-4488">
+    <value>TW-乌苏雷 (Classic)</value>
+  </data>
+  <data name="Realm-4489">
+    <value>TW-瑟里耶克 (Classic)</value>
+  </data>
+  <data name="Realm-4647">
+    <value>US-格罗布鲁斯 (Classic)</value>
+  </data>
+  <data name="Realm-4648">
+    <value>US-血帆海盗 (Classic)</value>
+  </data>
+  <data name="Realm-4649">
+    <value>US-US1 CWOW Web (Classic)</value>
+  </data>
+  <data name="Realm-4651">
+    <value>US-US2 CWOW Web (Classic)</value>
+  </data>
+  <data name="Realm-4653">
+    <value>US-US1 CWOW GMSS 1 (Classic)</value>
+  </data>
+  <data name="Realm-4654">
+    <value>US-US1 CWOW GMSS 2 (Classic)</value>
+  </data>
+  <data name="Realm-4667">
+    <value>US-雷姆洛斯 (Classic)</value>
+  </data>
+  <data name="Realm-4669">
+    <value>US-阿鲁高 (Classic)</value>
+  </data>
+  <data name="Realm-4670">
+    <value>US-尤亚姆巴 (Classic)</value>
+  </data>
+  <data name="Realm-4678">
+    <value>EU-海达希亚水元素 (Classic)</value>
+  </data>
+  <data name="Realm-4681">
+    <value>KR-KR1 CWOW GMSS 2 (Classic)</value>
+  </data>
+  <data name="Realm-4682">
+    <value>EU-EU4 CWOW Web (Classic)</value>
+  </data>
+  <data name="Realm-4683">
+    <value>EU-EU5 CWOW Web (Classic)</value>
+  </data>
+  <data name="Realm-4687">
+    <value>EU-EU4 CWOW GMSS 1 (Classic)</value>
+  </data>
+  <data name="Realm-4688">
+    <value>EU-EU4 CWOW GMSS 2 (Classic)</value>
+  </data>
+  <data name="Realm-4689">
+    <value>TW-TW4 CWOW GMSS 1 (Classic)</value>
+  </data>
+  <data name="Realm-4690">
+    <value>TW-TW4 CWOW GMSS 2 (Classic)</value>
+  </data>
+  <data name="Realm-4693">
+    <value>KR-KR1 CWOW GMSS 1 (Classic)</value>
+  </data>
+  <data name="Realm-4701">
+    <value>EU-莫格莱尼 (Classic)</value>
+  </data>
+  <data name="Realm-4703">
+    <value>EU-亚门纳尔 (Classic)</value>
+  </data>
+  <data name="Realm-4725">
+    <value>US-天怒 (Classic)</value>
+  </data>
+  <data name="Realm-4726">
+    <value>US-萨弗拉斯 (Classic)</value>
+  </data>
+  <data name="Realm-4727">
+    <value>US-逐风者 (Classic)</value>
+  </data>
+  <data name="Realm-4728">
+    <value>US-祈福 (Classic)</value>
+  </data>
+  <data name="Realm-4731">
+    <value>US-大地之怒 (Classic)</value>
+  </data>
+  <data name="Realm-4738">
+    <value>US-玛拉达斯 (Classic)</value>
+  </data>
+  <data name="Realm-4742">
+    <value>EU-灰烬使者 (Classic)</value>
+  </data>
+  <data name="Realm-4745">
+    <value>EU-卓越 (Classic)</value>
+  </data>
+  <data name="Realm-4749">
+    <value>EU-震地者 (Classic)</value>
+  </data>
+  <data name="Realm-4795">
+    <value>US-怒炉 (Classic)</value>
+  </data>
+  <data name="Realm-4800">
+    <value>US-伊兰尼库斯 (Classic)</value>
+  </data>
+  <data name="Realm-4811">
+    <value>EU-巨人追猎者 (Classic)</value>
+  </data>
+  <data name="Realm-4813">
+    <value>EU-曼多基尔 (Classic)</value>
+  </data>
+  <data name="Realm-4815">
+    <value>EU-塞卡尔 (Classic)</value>
+  </data>
+  <data name="Realm-4816">
+    <value>EU-金度 (Classic)</value>
+  </data>
+  <data name="Realm-4840">
+    <value>KR-霜之哀伤 (Classic)</value>
+  </data>
+  <data name="Realm-5065">
+    <value>US-赫洛德 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5066">
+    <value>US-怀特迈恩 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5067">
+    <value>US-恶魔之击 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5068">
+    <value>US-西部荒野 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5069">
+    <value>US-碧空之歌 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5070">
+    <value>US-尤亚姆巴 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5071">
+    <value>US-阿什坎迪 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5073">
+    <value>US-阿鲁高 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5085">
+    <value>US-雷姆洛斯 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5098">
+    <value>US-瓦加什 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5099">
+    <value>US-骷髅石 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5100">
+    <value>US-奥金斧 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5101">
+    <value>US-咒逐 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5102">
+    <value>US-雷霆之怒 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5105">
+    <value>US-烟网 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5106">
+    <value>US-血骨傀儡 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5107">
+    <value>US-格罗布鲁斯 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5108">
+    <value>US-库林纳克斯 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5109">
+    <value>US-比格沃斯 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5110">
+    <value>US-布劳缪克丝 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5111">
+    <value>US-法尔班克斯 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5115">
+    <value>US-老马布兰契 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5116">
+    <value>US-密斯莱尔 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5117">
+    <value>US-埃提耶什 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5121">
+    <value>US-洛欧塞布 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5124">
+    <value>US-苏萨斯 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5126">
+    <value>US-迪菲亚抢劫者 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5129">
+    <value>US-觅心者 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5130">
+    <value>US-大地之怒 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5132">
+    <value>US-灵风 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5133">
+    <value>US-祈福 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5134">
+    <value>US-逐风者 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5135">
+    <value>US-萨弗拉斯 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5136">
+    <value>US-基尔图诺斯 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5137">
+    <value>US-克罗卡斯 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5138">
+    <value>US-伊森迪奥斯 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5139">
+    <value>US-血帆海盗 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5140">
+    <value>US-斯克拉姆 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5141">
+    <value>US-斯塔拉格 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5142">
+    <value>US-法琳娜 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5143">
+    <value>US-萨尔诺斯 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5147">
+    <value>US-美味风蛇 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5148">
+    <value>US-帕格 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5149">
+    <value>US-曼科里克 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5156">
+    <value>US-US2 VANWOW Web (ClassicEra)</value>
+  </data>
+  <data name="Realm-5166">
+    <value>US-US1 VANWOW GMSS 1 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5168">
+    <value>US-US1 VANWOW Web (ClassicEra)</value>
+  </data>
+  <data name="Realm-5180">
+    <value>US-US1 VANWOW GMSS 2 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5181">
+    <value>KR-KR1 CWOW GMSS 2 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5182">
+    <value>KR-KR1 CWOW GMSS 1 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5192">
+    <value>KR-希尔斯布莱德 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5194">
+    <value>KR-冰血 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5195">
+    <value>KR-洛克霍拉 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5196">
+    <value>KR-拉格纳罗斯 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5197">
+    <value>KR-闪光平原 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5198">
+    <value>EU-EU4 CWOW GMSS 2 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5199">
+    <value>EU-EU4 CWOW GMSS 1 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5201">
+    <value>EU-EU4 CWOW Web (ClassicEra)</value>
+  </data>
+  <data name="Realm-5214">
+    <value>EU-诺克赛恩 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5219">
+    <value>EU-龙牙 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5220">
+    <value>EU-缝合怪 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5221">
+    <value>EU-震地者 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5224">
+    <value>EU-血牙 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5225">
+    <value>EU-卓越 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5226">
+    <value>EU-芬克 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5227">
+    <value>EU-骨火 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5228">
+    <value>EU-灰烬使者 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5229">
+    <value>EU-诺格弗格 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5230">
+    <value>EU-加丁 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5231">
+    <value>EU-莫格莱尼 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5232">
+    <value>EU-赞达拉部族 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5233">
+    <value>EU-费尔默 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5234">
+    <value>EU-帕奇维克 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5235">
+    <value>EU-古雷曼格 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5236">
+    <value>EU-萨弗隆 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5237">
+    <value>EU-鲁西弗隆 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5240">
+    <value>EU-湖畔镇 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5241">
+    <value>EU-奥伯丁 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5242">
+    <value>EU-永望镇 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5244">
+    <value>EU-EU5 CWOW Web (ClassicEra)</value>
+  </data>
+  <data name="Realm-5258">
+    <value>EU-曼多基尔 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5259">
+    <value>EU-末日先驱(RU) (ClassicEra)</value>
+  </data>
+  <data name="Realm-5261">
+    <value>EU-纳克罗什 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5262">
+    <value>EU-击心者 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5266">
+    <value>EU-塞雷布拉斯 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5267">
+    <value>EU-审判 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5268">
+    <value>EU-无尽风暴 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5269">
+    <value>EU-龙之召唤 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5270">
+    <value>EU-鬼雾 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5271">
+    <value>EU-伦鲁迪洛尔(RU) (ClassicEra)</value>
+  </data>
+  <data name="Realm-5272">
+    <value>EU-弗莱拉斯 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5273">
+    <value>EU-石脊 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5274">
+    <value>EU-维姆萨拉克(RU) (ClassicEra)</value>
+  </data>
+  <data name="Realm-5275">
+    <value>EU-海达希亚水元素 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5276">
+    <value>EU-拉佐格尔 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5277">
+    <value>EU-温诺希斯 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5278">
+    <value>EU-基赫纳斯 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5279">
+    <value>EU-沙斯拉尔 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5280">
+    <value>EU-弗莱格尔(RU) (ClassicEra)</value>
+  </data>
+  <data name="Realm-5281">
+    <value>EU-守望堡 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5282">
+    <value>EU-剃刀 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5283">
+    <value>EU-沙漠赛道 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5284">
+    <value>EU-焚木村 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5285">
+    <value>EU-克罗米(RU) (ClassicEra)</value>
+  </data>
+  <data name="Realm-5286">
+    <value>TW-TW4 CWOW GMSS 1 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5288">
+    <value>TW-TW4 CWOW GMSS 2 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5296">
+    <value>TW-霍格 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5297">
+    <value>TW-虚空行者 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5298">
+    <value>TW-特雷姆斯 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5300">
+    <value>TW-伊弗斯 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5302">
+    <value>TW-玛拉顿 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5501">
+    <value>EU-亚门纳尔 (ClassicEra)</value>
+  </data>
   <data name="Realm-5735">
     <value>TW-科罗尔之刃</value>
   </data>
   <data name="Realm-5736">
     <value>TW-老马布兰契</value>
   </data>
+  <data name="Realm-5740">
+    <value>TW-阿拉希盆地 (Classic)</value>
+  </data>
+  <data name="Realm-5741">
+    <value>TW-鱼人 (Classic)</value>
+  </data>
+  <data name="Realm-5742">
+    <value>TW-古雷曼格 (Classic)</value>
+  </data>
+  <data name="Realm-5743">
+    <value>TW-逐风者 (Classic)</value>
+  </data>
+  <data name="Realm-5790">
+    <value>KR-荣耀决斗 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5813">
+    <value>US-野性成长 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5814">
+    <value>US-独来独往 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5815">
+    <value>US-活化烈焰 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5816">
+    <value>US-十字军打击 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5817">
+    <value>US-苦修（澳洲） (ClassicEra)</value>
+  </data>
+  <data name="Realm-5818">
+    <value>US-暗影打击（澳洲） (ClassicEra)</value>
+  </data>
+  <data name="Realm-5819">
+    <value>US-熔岩猛击 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5820">
+    <value>US-混乱之箭 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5821">
+    <value>US-毁灭打击 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5823">
+    <value>KR-野性成长 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5824">
+    <value>KR-独来独往 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5825">
+    <value>EU-野性成长 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5826">
+    <value>EU-独来独往 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5827">
+    <value>EU-活化烈焰 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5828">
+    <value>EU-十字军打击 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5829">
+    <value>EU-苦修（赛季） (ClassicEra)</value>
+  </data>
+  <data name="Realm-5830">
+    <value>EU-暗影打击（赛季） (ClassicEra)</value>
+  </data>
+  <data name="Realm-5831">
+    <value>EU-熔岩猛击 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5832">
+    <value>EU-混乱之箭 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5833">
+    <value>EU-毁灭打击 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5842">
+    <value>TW-野性成长 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5843">
+    <value>TW-独来独往 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5844">
+    <value>TW-活化烈焰 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5845">
+    <value>TW-十字军打击 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5846">
+    <value>TW-苦修 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5847">
+    <value>TW-暗影打击 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5848">
+    <value>TW-熔岩猛击 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5849">
+    <value>TW-混乱之箭 (ClassicEra)</value>
+  </data>
   <data name="Realm-5909">
     <value>US-US PS Realm 222</value>
   </data>
   <data name="Realm-5911">
     <value>EU-EU PS Realm 222</value>
+  </data>
+  <data name="Realm-6103">
+    <value>US-德姆塞卡尔 (ClassicEra)</value>
+  </data>
+  <data name="Realm-6104">
+    <value>US-夜幕杀手 (ClassicEra)</value>
+  </data>
+  <data name="Realm-6105">
+    <value>US-末日之吼 (ClassicEra)</value>
+  </data>
+  <data name="Realm-6107">
+    <value>KR-摩尔达的勇气 (ClassicEra)</value>
+  </data>
+  <data name="Realm-6108">
+    <value>KR-芬古斯的狂暴 (ClassicEra)</value>
+  </data>
+  <data name="Realm-6110">
+    <value>KR-斯里基克的机智 (ClassicEra)</value>
+  </data>
+  <data name="Realm-6111">
+    <value>EU-雷霆打击 (ClassicEra)</value>
+  </data>
+  <data name="Realm-6112">
+    <value>EU-碎脊者 (ClassicEra)</value>
+  </data>
+  <data name="Realm-6113">
+    <value>EU-搜魂者 (ClassicEra)</value>
+  </data>
+  <data name="Realm-6115">
+    <value>TW-摩尔达的勇气 (ClassicEra)</value>
+  </data>
+  <data name="Realm-6116">
+    <value>TW-芬古斯的狂暴 (ClassicEra)</value>
+  </data>
+  <data name="Realm-6117">
+    <value>TW-斯里基克的机智 (ClassicEra)</value>
+  </data>
+  <data name="Realm-6122">
+    <value>EU-周年纪念版 (ClassicEra)</value>
+  </data>
+  <data name="Realm-6131">
+    <value>US-玛拉达斯（AU） (ClassicEra)</value>
   </data>
   <data name="Region-0">
     <value>None</value>

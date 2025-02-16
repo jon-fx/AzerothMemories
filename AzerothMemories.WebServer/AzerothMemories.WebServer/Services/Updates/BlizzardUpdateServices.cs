@@ -16,25 +16,31 @@ public class BlizzardUpdateServices : IComputeService
         _commonServices = commonServices;
 
         _accountHandlers = new UpdateHandlerBase<AccountRecord>[(int)BlizzardUpdateType.Account_Count];
-        AddUpdateHandler(ref _accountHandlers, new UpdateHandlerBase<AccountRecord>(BlizzardUpdateType.Account, _commonServices, _logger));
-        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Blizzard(BlizzardUpdateType.Account_China, _commonServices, this, _logger));
-        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Blizzard(BlizzardUpdateType.Account_Europe, _commonServices, this, _logger));
-        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Blizzard(BlizzardUpdateType.Account_Korea, _commonServices, this, _logger));
-        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Blizzard(BlizzardUpdateType.Account_Taiwan, _commonServices, this, _logger));
-        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Blizzard(BlizzardUpdateType.Account_UnitedStates, _commonServices, this, _logger));
-        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Patreon(_commonServices, _logger));
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandlerBase<AccountRecord>(GetBlizzardUpdateHandlerInfo("Account", null)));
+
+        foreach (var blizzardRegion in new[] { BlizzardRegion.China, BlizzardRegion.Europe, BlizzardRegion.Korea, BlizzardRegion.Taiwan, BlizzardRegion.UnitedStates })
+        {
+            foreach (var realmVersion in BlizzardRealmVersionExt.AllRealmVersions)
+            {
+                AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Blizzard(GetBlizzardUpdateHandlerInfo($"Account_{blizzardRegion.ToString()}", realmVersion), blizzardRegion, realmVersion, this));
+            }
+        }
+
+        AddUpdateHandler(ref _accountHandlers, new UpdateHandler_Accounts_Patreon(GetBlizzardUpdateHandlerInfo("Account_Patreon", null)));
 
         _characterHandlers = new UpdateHandlerBase<CharacterRecord>[(int)BlizzardUpdateType.Character_Count];
-        AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters(_commonServices, _logger));
-        AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters_Renders(_commonServices, _logger));
-        AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters_Achievements(_commonServices, _logger));
-        AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters_Mounts(_commonServices, _logger));
-        AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters_AchievementStatistics(_commonServices, _logger));
+
+        AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters(GetBlizzardUpdateHandlerInfo("Character", null)));
+        AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters_Renders(GetBlizzardUpdateHandlerInfo("Character_Renders", null)));
+        AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters_Achievements(GetBlizzardUpdateHandlerInfo("Character_Achievements", null)));
+        AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters_Mounts(GetBlizzardUpdateHandlerInfo("Character_Mounts", null)));
+        AddUpdateHandler(ref _characterHandlers, new UpdateHandler_Characters_AchievementStatistics(GetBlizzardUpdateHandlerInfo("Character_AchievementStatistics", null)));
 
         _guildHandlers = new UpdateHandlerBase<GuildRecord>[(int)BlizzardUpdateType.Guild_Count];
-        AddUpdateHandler(ref _guildHandlers, new UpdateHandler_Guilds(_commonServices, _logger));
-        AddUpdateHandler(ref _guildHandlers, new UpdateHandler_Guilds_Roster(_commonServices, _logger));
-        AddUpdateHandler(ref _guildHandlers, new UpdateHandler_Guilds_Achievements(_commonServices, _logger));
+
+        AddUpdateHandler(ref _guildHandlers, new UpdateHandler_Guilds(GetBlizzardUpdateHandlerInfo("Guild", null)));
+        AddUpdateHandler(ref _guildHandlers, new UpdateHandler_Guilds_Roster(GetBlizzardUpdateHandlerInfo("Guild_Roster", null)));
+        AddUpdateHandler(ref _guildHandlers, new UpdateHandler_Guilds_Achievements(GetBlizzardUpdateHandlerInfo("Guild_Achievements", null)));
 
         void AddUpdateHandler<TRecord>(ref UpdateHandlerBase<TRecord>[] array, UpdateHandlerBase<TRecord> updateHandler) where TRecord : IBlizzardUpdateRecord
         {
@@ -45,6 +51,25 @@ public class BlizzardUpdateServices : IComputeService
         Exceptions.ThrowIf(_accountHandlers.Any(x => x == null!));
         Exceptions.ThrowIf(_characterHandlers.Any(x => x == null!));
         Exceptions.ThrowIf(_guildHandlers.Any(x => x == null!));
+    }
+
+    private UpdateHandlerInfo GetBlizzardUpdateHandlerInfo(string prefix, BlizzardRealmVersion? realmVersion)
+    {
+        var blizzardNamespaceString = string.Empty;
+        if (realmVersion != null)
+        {
+            blizzardNamespaceString = realmVersion.Value.ToUpdateTypePart();
+        }
+
+        var enumString = $"{prefix}{blizzardNamespaceString}";
+        if (!Enum.TryParse(enumString, out BlizzardUpdateType updateType))
+        {
+            throw new NotImplementedException();
+        }
+
+        var updateTypeString = $"BlizzardUpdateType.{enumString}";
+
+        return new UpdateHandlerInfo(updateType, updateTypeString, _commonServices, _logger);
     }
 
     public int AccountHandlerCount => _accountHandlers.Length;

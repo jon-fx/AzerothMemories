@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace AzerothMemories.WebServer.Services.Updates;
+﻿namespace AzerothMemories.WebServer.Services.Updates;
 
 public class UpdateHandlerBase<TRecord> where TRecord : IBlizzardUpdateRecord
 {
@@ -9,23 +7,22 @@ public class UpdateHandlerBase<TRecord> where TRecord : IBlizzardUpdateRecord
     private readonly ILogger<BlizzardUpdateServices> _logger;
     private readonly string _updateTypeString;
 
-    public UpdateHandlerBase(BlizzardUpdateType updateType, CommonServices commonServices, ILogger<BlizzardUpdateServices> logger, [CallerArgumentExpression("updateType")] string? updateTypeString = null)
+    public UpdateHandlerBase(UpdateHandlerInfo handlerInfo)
     {
-        _updateType = updateType;
-        _commonServices = commonServices;
-        _logger = logger;
+        _updateType = handlerInfo.UpdateType;
+        _commonServices = handlerInfo.CommonServices;
+        _logger = handlerInfo.Logger;
 
-        Exceptions.ThrowIf(string.IsNullOrWhiteSpace(updateTypeString));
-        Exceptions.ThrowIf(!updateTypeString.StartsWith("BlizzardUpdateType."));
+        Exceptions.ThrowIf(string.IsNullOrWhiteSpace(handlerInfo.UpdateTypeString));
+        Exceptions.ThrowIf(!handlerInfo.UpdateTypeString.StartsWith("BlizzardUpdateType."));
 
-        _updateTypeString = updateTypeString.Replace("BlizzardUpdateType.", "");
+        _updateTypeString = handlerInfo.UpdateTypeString.Replace("BlizzardUpdateType.", "");
 
         Exceptions.ThrowIf(!Enum.TryParse<BlizzardUpdateType>(_updateTypeString, out var updateEnum));
-        Exceptions.ThrowIf(updateEnum != updateType);
+        Exceptions.ThrowIf(updateEnum != handlerInfo.UpdateType);
     }
 
     public BlizzardUpdateType UpdateType => _updateType;
-
     public string UpdateTypeString => _updateTypeString;
 
     public CommonServices CommonServices => _commonServices;

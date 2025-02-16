@@ -2,7 +2,7 @@
 
 internal sealed class UpdateHandler_Characters : UpdateHandlerBaseResult<CharacterRecord, CharacterProfileSummary>
 {
-    public UpdateHandler_Characters(CommonServices commonServices, ILogger<BlizzardUpdateServices> logger) : base(BlizzardUpdateType.Character, commonServices, logger)
+    public UpdateHandler_Characters(UpdateHandlerInfo info) : base(info)
     {
     }
 
@@ -15,7 +15,7 @@ internal sealed class UpdateHandler_Characters : UpdateHandlerBaseResult<Charact
         }
 
         using var client = CommonServices.HttpClientProvider.GetWarcraftClient(record.BlizzardRegionId);
-        return await client.GetCharacterProfileSummaryAsync(characterRef.Realm, characterRef.Name, blizzardLastModified).ConfigureAwait(false);
+        return await client.GetCharacterProfileSummaryAsync(characterRef.RealmVersion, characterRef.Realm, characterRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
 
     protected override async Task InternalExecuteWithResult(AppDbContext database, CharacterRecord record, CharacterProfileSummary requestResult)
@@ -37,7 +37,7 @@ internal sealed class UpdateHandler_Characters : UpdateHandlerBaseResult<Charact
         if (guildData != null)
         {
             newGuildName = guildData.Name;
-            var newGuildRef = MoaRef.GetGuildRef(record.BlizzardRegionId, guildData.Realm?.Slug, newGuildName).Full;
+            var newGuildRef = MoaRef.GetGuildRef(record.BlizzardRegionId, record.BlizzardRealmVersionId, guildData.Realm?.Slug, newGuildName).Full;
             guildRecord = await CommonServices.GuildServices.GetOrCreate(newGuildRef).ConfigureAwait(false);
         }
 

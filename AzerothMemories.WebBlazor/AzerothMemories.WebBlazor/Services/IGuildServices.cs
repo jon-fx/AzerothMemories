@@ -6,10 +6,8 @@ public interface IGuildServices : IComputeService
     Task<GuildViewModel?> TryGetGuild(Session session, int guildId);
 
     [ComputeMethod]
-    Task<GuildMembersViewModel> TryGetGuildMembers(Session o, int guildId, int pageIndex);
+    Task<GuildMembersViewModel> TryGetGuildMembers(Session session, int guildId, int pageIndex);
 
     [ComputeMethod]
-    Task<GuildViewModel?> TryGetGuild(Session session, BlizzardRegion region, string? realmSlug, string? guildName);
-
-    //Task<bool> TryEnqueueUpdate(Session session, BlizzardRegion region, string realmSlug, string guildName);
+    Task<GuildViewModel?> TryGetGuild(Session session, BlizzardRegion region, BlizzardRealmVersion realmVersion, string? realmSlug, string? guildName);
 }

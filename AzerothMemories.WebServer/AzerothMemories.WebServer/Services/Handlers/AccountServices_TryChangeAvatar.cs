@@ -66,7 +66,7 @@ internal static class AccountServices_TryChangeAvatar
         }
         else if (newAvatar.StartsWith("https://render") && newAvatar.Contains(".worldofwarcraft.com"))
         {
-            var character = accountViewModel.GetAllCharactersSafe().FirstOrDefault(x => x.AvatarLink == newAvatar || x.GetAvatarLinkWithFallBack() == newAvatar);
+            var character = accountViewModel.GetAllCharactersSafeAllVersions().FirstOrDefault(x => x.AvatarLink == newAvatar || x.GetAvatarLinkWithFallBack() == newAvatar);
             if (character == null)
             {
                 return null;

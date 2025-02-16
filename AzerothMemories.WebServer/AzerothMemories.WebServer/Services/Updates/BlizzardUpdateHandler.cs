@@ -16,7 +16,7 @@ internal sealed class BlizzardUpdateHandler
     public async Task TryUpdate(AccountRecord accountRecord)
     {
         var forcedUpdate = false;
-        if (accountRecord.UpdateRecord != null && accountRecord.UpdateRecord.UpdateStatus == BlizzardUpdateStatus.None && accountRecord.AuthTokens != null && accountRecord.AuthTokens.Count > 0)
+        if (accountRecord.UpdateRecord != null && accountRecord.UpdateRecord.UpdateStatus != BlizzardUpdateStatus.Queued && accountRecord.AuthTokens.Count > 0)
         {
             var mostRecentlyChanged = accountRecord.AuthTokens.Max(x => x.LastUpdateTime);
             var authTokensChanged = mostRecentlyChanged > accountRecord.UpdateRecord.UpdateJobLastEndTime;
@@ -51,7 +51,7 @@ internal sealed class BlizzardUpdateHandler
             return;
         }
 
-        if (record.UpdateRecord == null || record.UpdateRecord.UpdateStatus == BlizzardUpdateStatus.None)
+        if (record.UpdateRecord == null || record.UpdateRecord.UpdateStatus == BlizzardUpdateStatus.None || record.UpdateRecord.UpdateStatus == BlizzardUpdateStatus.Done)
         {
             await _commonServices.Commander.Call(updateCommand).ConfigureAwait(false);
         }

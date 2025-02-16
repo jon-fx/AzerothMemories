@@ -52,10 +52,14 @@ public sealed class Migration0002_BlizzardData : Migration
         {
             Execute.Sql($"CREATE INDEX IX_Blizzard_Data_{indexName} ON \"{BlizzardDataRecord.TableName}\" (LOWER(\"{indexName}\") varchar_pattern_ops)");
         }
+
+        Migration0008_AddBlizzardRealmVersionId.CreateBlizzardRealmRecordTable(this);
     }
 
     public override void Down()
     {
         Delete.Table(BlizzardDataRecord.TableName);
+
+        Migration0008_AddBlizzardRealmVersionId.DeleteBlizzardRealmRecordTable(this);
     }
 }

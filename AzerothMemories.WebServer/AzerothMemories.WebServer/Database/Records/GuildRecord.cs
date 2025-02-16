@@ -16,6 +16,8 @@ public sealed class GuildRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVers
 
     [Column] public BlizzardRegion BlizzardRegionId { get; init; }
 
+    [Column] public BlizzardRealmVersion BlizzardRealmVersionId { get; set; }
+
     [Column] public string Name { get; set; } = null!;
 
     [Column] public string NameSearchable { get; set; } = null!;
@@ -53,6 +55,7 @@ public sealed class GuildRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVers
             AchievementPoints = AchievementPoints,
             CreatedDateTime = CreatedDateTime.ToUnixTimeMilliseconds(),
             BlizzardCreatedTimestamp = BlizzardCreatedTimestamp.ToUnixTimeMilliseconds(),
+            RealmVersion = BlizzardRealmVersionId,
 
             UpdateJobLastResults = UpdateRecord?.GetUpdateJobResults(),
 

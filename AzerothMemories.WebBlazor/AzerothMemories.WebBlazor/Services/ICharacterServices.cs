@@ -9,9 +9,7 @@ public interface ICharacterServices : IComputeService
     Task<CharacterAccountViewModel> TryGetCharacter(Session session, int characterId, bool enqueueUpdate);
 
     [ComputeMethod]
-    Task<CharacterAccountViewModel?> TryGetCharacter(Session session, BlizzardRegion region, string realmSlug, string characterName, bool enqueueUpdate);
-
-    //Task<bool> TryEnqueueUpdate(Session session, BlizzardRegion region, string realmSlug, string characterName);
+    Task<CharacterAccountViewModel?> TryGetCharacter(Session session, BlizzardRegion region, BlizzardRealmVersion realmVersion, string realmSlug, string characterName, bool enqueueUpdate);
 
     [CommandHandler]
     Task<bool> TrySetCharacterDeleted(Character_TrySetCharacterDeleted command, CancellationToken cancellationToken = default);

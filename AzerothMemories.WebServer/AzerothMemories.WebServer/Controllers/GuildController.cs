@@ -26,10 +26,10 @@ public sealed class GuildController : ControllerBase, IGuildServices
         return _commonServices.GuildServices.TryGetGuildMembers(session, guildId, pageIndex);
     }
 
-    [HttpGet("{region}/{realmSlug}/{guildName}")]
-    public Task<GuildViewModel?> TryGetGuild(Session session, [FromRoute] BlizzardRegion region, [FromRoute] string? realmSlug, [FromRoute] string? guildName)
+    [HttpGet("{region}/{realmVersion}/{realmSlug}/{guildName}")]
+    public Task<GuildViewModel?> TryGetGuild(Session session, [FromRoute] BlizzardRegion region, [FromRoute] BlizzardRealmVersion realmVersion, [FromRoute] string? realmSlug, [FromRoute] string? guildName)
     {
-        return _commonServices.GuildServices.TryGetGuild(session, region, realmSlug, guildName);
+        return _commonServices.GuildServices.TryGetGuild(session, region, realmVersion, realmSlug, guildName);
     }
 }
 

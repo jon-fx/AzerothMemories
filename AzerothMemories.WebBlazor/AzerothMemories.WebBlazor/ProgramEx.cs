@@ -1,7 +1,6 @@
 ﻿using ActualLab.Fusion.Client.Interception;
 using ActualLab.Fusion.Diagnostics;
 using ActualLab.Fusion.Extensions;
-using ActualLab.Fusion.Internal;
 using ActualLab.OS;
 using ActualLab.Rpc;
 using ActualLab.Time;

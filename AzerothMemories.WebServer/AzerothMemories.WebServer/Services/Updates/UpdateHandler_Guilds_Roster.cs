@@ -2,7 +2,7 @@
 
 internal sealed class UpdateHandler_Guilds_Roster : UpdateHandlerBaseResult<GuildRecord, GuildRoster>
 {
-    public UpdateHandler_Guilds_Roster(CommonServices commonServices, ILogger<BlizzardUpdateServices> logger) : base(BlizzardUpdateType.Guild_Roster, commonServices, logger)
+    public UpdateHandler_Guilds_Roster(UpdateHandlerInfo handlerInfo) : base(handlerInfo)
     {
     }
 
@@ -15,7 +15,7 @@ internal sealed class UpdateHandler_Guilds_Roster : UpdateHandlerBaseResult<Guil
         }
 
         using var client = CommonServices.HttpClientProvider.GetWarcraftClient(guildRef.Region);
-        return await client.GetGuildRosterAsync(guildRef.Realm, guildRef.Name, blizzardLastModified).ConfigureAwait(false);
+        return await client.GetGuildRosterAsync(guildRef.RealmVersion, guildRef.Realm, guildRef.Name, blizzardLastModified).ConfigureAwait(false);
     }
 
     protected override async Task InternalExecuteWithResult(AppDbContext database, GuildRecord record, GuildRoster requestResult)
@@ -31,7 +31,7 @@ internal sealed class UpdateHandler_Guilds_Roster : UpdateHandlerBaseResult<Guil
             var characterId = guildMemberCharacter.Id;
             var characterName = guildMemberCharacter.Name;
             var characterRealm = guildMemberCharacter.Realm?.Slug;
-            var characterRef = MoaRef.GetCharacterRef(record.BlizzardRegionId, characterRealm, characterName, characterId);
+            var characterRef = MoaRef.GetCharacterRef(record.BlizzardRegionId, record.BlizzardRealmVersionId, characterRealm, characterName, characterId);
             var characterRecord = await CommonServices.CharacterServices.GetOrCreateCharacterRecord(characterRef.Full, false).ConfigureAwait(false);
             if (characterRecord == null)
             {
@@ -54,6 +54,7 @@ internal sealed class UpdateHandler_Guilds_Roster : UpdateHandlerBaseResult<Guil
             characterRecord.Race = (byte)(guildMemberCharacter.PlayableRace?.Id ?? 0);
             characterRecord.BlizzardGuildRank = (byte)guildMember.Rank;
             characterRecord.Level = (byte)guildMemberCharacter.Level;
+            characterRecord.BlizzardRealmVersionId = record.BlizzardRealmVersionId;
         }
     }
 }

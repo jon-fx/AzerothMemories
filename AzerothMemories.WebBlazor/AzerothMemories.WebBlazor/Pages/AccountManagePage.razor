@@ -124,7 +124,7 @@
                 </MudCardContent>
             </MudCard>
 
-            var characters = ViewModel.AccountViewModel.GetAllCharactersSafe();
+            var characters = ViewModel.AccountViewModel.GetAllCharactersSafeAllVersions();
             if (characters.Length > 0)
             {
                 <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
@@ -172,7 +172,8 @@
                                     <CharacterNameLinkComponent CharacterName="@character.Name"
                                                                 CharacterClass="@character.Class"
                                                                 CharacterRealmId="@character.RealmId"
-                                                                CharacterRegionInfo="@character.RegionId.ToInfo()" />
+                                                                CharacterRegionInfo="@character.RegionId.ToInfo()" 
+                                                                CharacterRealmVersion="@character.RealmVersion" />
 
                                     <div>
                                         <MudText Inline="true" Typo="Typo.body2">@character.Level @ClientServices.BlizzardStringLocalizer[$"CharacterRace-{character.Race}"]</MudText>
@@ -203,7 +204,7 @@
                 }
                 else if (character.CharacterStatus == CharacterStatus2.MaybeDeleted)
                 {
-                    var possibleCharacters = characters.Where(x => x.Class == character.Class && x.Level >= character.Level).ToArray();
+                    var possibleCharacters = characters.Where(x => x.RealmVersion == character.RealmVersion && x.Class == character.Class && x.Level >= character.Level).ToArray();
 
                     <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
                         <MudCardHeader Class="@ClassPresets.CardHeader">
@@ -229,7 +230,8 @@
                                                             CharacterName="@character.Name"
                                                             CharacterClass="@character.Class"
                                                             CharacterRealmId="@character.RealmId"
-                                                            CharacterRegionInfo="@character.RegionId.ToInfo()" />
+                                                            CharacterRegionInfo="@character.RegionId.ToInfo()"
+                                                            CharacterRealmVersion="@character.RealmVersion" />
                                 <div>
                                     <MudText Inline="true" Typo="Typo.body2">@character.Level</MudText>
                                     <CharacterRaceComponent Typo="Typo.body2" Inline="true" CharacterRace="@character.Race" />
@@ -260,6 +262,7 @@
                                                                         CharacterClass="@otherCharacter.Class"
                                                                         CharacterRealmId="@otherCharacter.RealmId"
                                                                         CharacterRegionInfo="@otherCharacter.RegionId.ToInfo()"
+                                                                        CharacterRealmVersion="@character.RealmVersion" 
                                                                         LinkDisabled="true " />
                                             <div>
                                                 <MudText Inline="true" Typo="Typo.body2">@otherCharacter.Level</MudText>
@@ -278,38 +281,40 @@
                     </MudCard>
                 }
             }
+            
+            @foreach (var group in otherCharacters.GroupBy(x => x.RealmVersion))
+            {
+                <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+                    <MudCardHeader Class="@ClassPresets.CardHeader">
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">Manage Characters @group.Key.GetRealmTagSuffix()</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent Class="@ClassPresets.CardContent">
 
-            <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
-                <MudCardHeader Class="@ClassPresets.CardHeader">
-                    <CardHeaderContent>
-                        <MudText Typo="Typo.h6">Manage Characters</MudText>
-                    </CardHeaderContent>
-                </MudCardHeader>
-                <MudCardContent Class="@ClassPresets.CardContent">
-                    <MudSimpleTable Hover="true" Dense="true">
-                        <thead>
-                            <tr>
-                                <MudTh></MudTh>
+                        <MudSimpleTable Hover="true" Dense="true">
+                            <thead>
+                                <tr>
+                                    <MudTh></MudTh>
 
-                                <MudHidden Breakpoint="Breakpoint.SmAndDown">
-                                    <MudTh>Name</MudTh>
-                                    <MudTh>Realm</MudTh>
-                                    <MudTh>Race</MudTh>
-                                    <MudTh>Class</MudTh>
-                                    <MudTh>Level</MudTh>
-                                </MudHidden>
+                                    <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                                        <MudTh>Name</MudTh>
+                                        <MudTh>Realm</MudTh>
+                                        <MudTh>Race</MudTh>
+                                        <MudTh>Class</MudTh>
+                                        <MudTh>Level</MudTh>
+                                    </MudHidden>
 
-                                <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
-                                    <MudTh>Name</MudTh>
-                                </MudHidden>
+                                    <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
+                                        <MudTh>Name</MudTh>
+                                    </MudHidden>
 
-                                <MudTh>Sync</MudTh>
-                                <MudTh>Result</MudTh>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @{
-                                foreach (var row in otherCharacters)
+                                    <MudTh>Sync</MudTh>
+                                    <MudTh>Result</MudTh>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var row in group)
                                 {
                                     <tr @key="row.Id">
                                         <MudTd>
@@ -322,7 +327,8 @@
                                                 <CharacterNameLinkComponent CharacterName="@row.Name"
                                                                             CharacterClass="@row.Class"
                                                                             CharacterRealmId="@row.RealmId"
-                                                                            CharacterRegionInfo="@row.RegionId.ToInfo()" />
+                                                                            CharacterRegionInfo="@row.RegionId.ToInfo()" 
+                                                                            CharacterRealmVersion="@row.RealmVersion" />
                                             </MudTd>
                                             <MudTd DataLabel="Realm">
                                                 <RealmLinkComponent BlizzardRealmId="@row.RealmId" />
@@ -345,7 +351,8 @@
                                                 <CharacterNameLinkComponent CharacterName="@row.Name"
                                                                             CharacterClass="@row.Class"
                                                                             CharacterRealmId="@row.RealmId"
-                                                                            CharacterRegionInfo="@row.RegionId.ToInfo()" />
+                                                                            CharacterRegionInfo="@row.RegionId.ToInfo()" 
+                                                                            CharacterRealmVersion="@row.RealmVersion" />
 
                                                 <div>
                                                     <MudText Inline="true">@row.Level</MudText>
@@ -361,7 +368,7 @@
                                             <MudToggleIconButton Toggled="@row.AccountSync"
                                                                  Icon="@Icons.Material.Filled.HourglassDisabled" Color="@Color.Error"
                                                                  ToggledIcon="@Icons.Material.Filled.HourglassBottom" ToggledColor="@Color.Success"
-                                                                 ToggledChanged=@(x => ViewModel.OnAccountSyncToggleChanged(row, x) ) />
+                                                                 ToggledChanged=@(x => ViewModel.OnAccountSyncToggleChanged(row, x)) />
                                         </MudTd>
 
                                         <MudTd DataLabel="Result">
@@ -369,11 +376,11 @@
                                         </MudTd>
                                     </tr>
                                 }
-                            }
-                        </tbody>
-                    </MudSimpleTable>
-                </MudCardContent>
-            </MudCard>
+                            </tbody>
+                        </MudSimpleTable>
+                    </MudCardContent>
+                </MudCard>
+            }
         }
     </Authorized>
     <NotAuthorized>
