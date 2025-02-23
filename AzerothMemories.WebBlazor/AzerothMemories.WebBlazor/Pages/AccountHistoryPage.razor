@@ -5,38 +5,47 @@
     var pageHeaderInfo = new DefaultPageHeaderInfo("Account History");
     <HeadContentTest ClientServices="@ClientServices" PageInfo="@pageHeaderInfo" />
 
-    var viewModels = ViewModel.HistoryViewModels;
-    @if (viewModels == null || viewModels.Length == 0)
-    {
-        <CardInfoComponent Message="None" />
-    }
-    else
-    {
-        <MudTimeline TimelinePosition="TimelinePosition.Start">
-            @foreach (var viewModel in viewModels)
-            {
-                var str = (MarkupString)viewModel.GetDisplayText(ClientServices.ActiveAccountServices.AccountViewModel, ClientServices.BlizzardStringLocalizer);
+    <AuthorizeView>
+        <Authorized>
+            @{
+                var viewModels = ViewModel.HistoryViewModels;
+                if (viewModels == null || viewModels.Length == 0)
+                {
+                    <CardInfoComponent Message="None" />
+                }
+                else
+                {
+                    <MudTimeline TimelinePosition="TimelinePosition.Start">
+                        @foreach (var viewModel in viewModels)
+                        {
+                            var str = (MarkupString)viewModel.GetDisplayText(ClientServices.ActiveAccountServices.AccountViewModel, ClientServices.BlizzardStringLocalizer);
 
-                <MudTimelineItem Color="Color.Info">
-                    <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="25">
-                        <MudCardContent Class="@ClassPresets.CardContent">
-                            <MudText Typo="Typo.button">@str</MudText>
-                            <TimeAsLocalStringAgoComponent Typo="Typo.body2" Class="mud-text-secondary" Time="viewModel.CreatedTime" TimeProvider="@ClientServices.TimeProvider" />
-                        </MudCardContent>
-                    </MudCard>
-                </MudTimelineItem>
+                            <MudTimelineItem Color="Color.Info">
+                                <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="25">
+                                    <MudCardContent Class="@ClassPresets.CardContent">
+                                        <MudText Typo="Typo.button">@str</MudText>
+                                        <TimeAsLocalStringAgoComponent Typo="Typo.body2" Class="mud-text-secondary" Time="viewModel.CreatedTime" TimeProvider="@ClientServices.TimeProvider" />
+                                    </MudCardContent>
+                                </MudCard>
+                            </MudTimelineItem>
+                        }
+                    </MudTimeline>
+                    <div class="d-flex justify-center @ClassPresets.DefaultPadding">
+                        <div class="d-block d-sm-none">
+                            <MudPagination Selected="@ViewModel.CurrentPage" SelectedChanged="@ViewModel.TryChangePage" BoundaryCount="1" MiddleCount="1" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="false" ShowLastButton="false" Count="@ViewModel.TotalPages" Size="Size.Small" />
+                        </div>
+
+                        <div class="d-none d-sm-flex">
+                            <MudPagination Selected="@ViewModel.CurrentPage" SelectedChanged="@ViewModel.TryChangePage" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@ViewModel.TotalPages" />
+                        </div>
+                    </div>
+                }
             }
-        </MudTimeline>
-        <div class="d-flex justify-center @ClassPresets.DefaultPadding">
-            <div class="d-block d-sm-none">
-                <MudPagination Selected="@ViewModel.CurrentPage" SelectedChanged="@ViewModel.TryChangePage" BoundaryCount="1" MiddleCount="1" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="false" ShowLastButton="false" Count="@ViewModel.TotalPages" Size="Size.Small" />
-            </div>
-
-            <div class="d-none d-sm-flex">
-                <MudPagination Selected="@ViewModel.CurrentPage" SelectedChanged="@ViewModel.TryChangePage" BoundaryCount="2" MiddleCount="5" Rectangular="true" Variant="Variant.Filled" ShowFirstButton="true" ShowLastButton="true" Count="@ViewModel.TotalPages" />
-            </div>
-        </div>
-    }
+        </Authorized>
+        <NotAuthorized>
+            <CardInfoComponent Message="Insufficient permissions." />
+        </NotAuthorized>
+    </AuthorizeView>
 }
 
 @code {

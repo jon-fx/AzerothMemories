@@ -73,13 +73,13 @@
     {
         if (string.IsNullOrWhiteSpace(searchString) || searchString.Length < 3)
         {
-            return Enumerable.Empty<MainSearchResult>();
+            return [];
         }
 
-        var results = await SearchServices.TrySearch(Session.Default, SearchType, searchString);
+        var results = await SearchServices.TrySearch(SearchType, searchString);
         if (cancellationToken.IsCancellationRequested)
         {
-            return Enumerable.Empty<MainSearchResult>();
+            return [];
         }
 
         return results;

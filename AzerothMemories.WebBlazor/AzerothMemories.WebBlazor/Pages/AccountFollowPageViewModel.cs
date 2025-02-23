@@ -26,7 +26,7 @@ public sealed class AccountFollowPageViewModel : ViewModelBase, IViewModel<Accou
         var accountViewModel = AccountViewModel;
         if (_accountId > 0)
         {
-            accountViewModel = await Services.ComputeServices.AccountServices.TryGetAccountById(Session.Default, _accountId);
+            accountViewModel = await Services.ComputeServices.AccountServices.TryGetAccountById(Services.ClientServices.Session,  _accountId);
         }
 
         if (accountViewModel == null)

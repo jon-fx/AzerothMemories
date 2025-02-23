@@ -61,6 +61,6 @@ else
             return;
         }
 
-        await Services.ClientServices.CommandRunner.Run(new Updates_TryResetUpdateStatus(Session.Default, UpdateViewModel.Id));
+        await Services.ClientServices.CommandRunner.Run(new Updates_TryResetUpdateStatus(Services.ClientServices.Session,  UpdateViewModel.Id));
     }
 }

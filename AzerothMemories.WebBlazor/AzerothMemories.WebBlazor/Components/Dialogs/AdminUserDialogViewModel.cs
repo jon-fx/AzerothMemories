@@ -38,7 +38,7 @@ public sealed class AdminUserDialogViewModel : ViewModelBase, IViewModel<AdminUs
         var accountViewModel = AccountViewModel;
         if (_accountId > 0)
         {
-            accountViewModel = await Services.ComputeServices.AccountServices.TryGetAccountById(Session.Default, _accountId);
+            accountViewModel = await Services.ComputeServices.AccountServices.TryGetAccountById(Services.ClientServices.Session,  _accountId);
         }
 
         if (accountViewModel == null)
@@ -60,7 +60,7 @@ public sealed class AdminUserDialogViewModel : ViewModelBase, IViewModel<AdminUs
             return;
         }
 
-        await Services.ClientServices.CommandRunner.Run(new Account_TryChangeUsername(Session.Default, AccountViewModel.Id, null));
+        await Services.ClientServices.CommandRunner.Run(new Account_TryChangeUsername(Services.ClientServices.Session,  AccountViewModel.Id, null));
     }
 
     public async Task ResetAvatar()
@@ -70,7 +70,7 @@ public sealed class AdminUserDialogViewModel : ViewModelBase, IViewModel<AdminUs
             return;
         }
 
-        await Services.ClientServices.CommandRunner.Run(new Account_TryChangeAvatar(Session.Default, AccountViewModel.Id, null));
+        await Services.ClientServices.CommandRunner.Run(new Account_TryChangeAvatar(Services.ClientServices.Session,  AccountViewModel.Id, null));
     }
 
     public async Task ResetSocialLink(int linkId)
@@ -80,7 +80,7 @@ public sealed class AdminUserDialogViewModel : ViewModelBase, IViewModel<AdminUs
             return;
         }
 
-        await Services.ClientServices.CommandRunner.Run(new Account_TryChangeSocialLink(Session.Default, AccountViewModel.Id, linkId, null));
+        await Services.ClientServices.CommandRunner.Run(new Account_TryChangeSocialLink(Services.ClientServices.Session,  AccountViewModel.Id, linkId, null));
     }
 
     public async Task BanUser(Duration duration)
@@ -90,7 +90,7 @@ public sealed class AdminUserDialogViewModel : ViewModelBase, IViewModel<AdminUs
             return;
         }
 
-        await Services.ClientServices.CommandRunner.Run(new Admin_TryBanUser(Session.Default, AccountViewModel.Id, (long)duration.TotalMilliseconds, BanReasonText));
+        await Services.ClientServices.CommandRunner.Run(new Admin_TryBanUser(Services.ClientServices.Session,  AccountViewModel.Id, (long)duration.TotalMilliseconds, BanReasonText));
     }
 
     public static AdminUserDialogViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)

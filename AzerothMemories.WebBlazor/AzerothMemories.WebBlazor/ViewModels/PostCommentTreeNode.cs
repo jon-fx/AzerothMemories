@@ -26,7 +26,7 @@ public sealed class PostCommentTreeNode
         PostersAccountId = postersAccountId;
     }
 
-    public required PostCommentViewModel Comment { get; set; }
+    public PostCommentViewModel Comment { get; set; }
 
     public int ParentId => Comment.ParentId;
 
@@ -46,7 +46,7 @@ public sealed class PostCommentTreeNode
 
         ShowReactionIsLoading = true;
 
-        var reactionData = await services.ComputeServices.PostServices.TryGetCommentReactionData(Session.Default, PostId, Id);
+        var reactionData = await services.ComputeServices.PostServices.TryGetCommentReactionData(services.ClientServices.Session, PostId, Id);
         if (reactionData == null)
         {
             ReactionData = null;

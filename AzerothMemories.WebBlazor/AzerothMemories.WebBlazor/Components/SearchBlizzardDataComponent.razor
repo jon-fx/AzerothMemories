@@ -52,7 +52,7 @@
             return Enumerable.Empty<PostTagInfo>();
         }
 
-        var results = await Services.ComputeServices.TagServices.Search(Session.Default, searchString, ServerSideLocaleExt.GetServerSideLocale());
+        var results = await Services.ComputeServices.TagServices.Search(Services.ClientServices.Session,  searchString, ServerSideLocaleExt.GetServerSideLocale());
         if (cancellationToken.IsCancellationRequested)
         {
             return Enumerable.Empty<PostTagInfo>();

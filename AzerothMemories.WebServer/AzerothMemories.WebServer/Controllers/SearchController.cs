@@ -27,9 +27,9 @@ public sealed class SearchController : ControllerBase, ISearchServices
     }
 
     [HttpGet]
-    public Task<MainSearchResult[]> TrySearch(Session session, [FromQuery] MainSearchType searchType, [FromQuery] string searchString)
+    public Task<MainSearchResult[]> TrySearch([FromQuery] MainSearchType searchType, [FromQuery] string searchString)
     {
-        return _commonServices.SearchServices.TrySearch(session, searchType, searchString);
+        return _commonServices.SearchServices.TrySearch(searchType, searchString);
     }
 
     [HttpGet]

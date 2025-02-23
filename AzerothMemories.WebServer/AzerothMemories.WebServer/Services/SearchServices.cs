@@ -617,14 +617,7 @@ public class SearchServices : ISearchServices
     }
 
     [ComputeMethod]
-    public virtual async Task<MainSearchResult[]> TrySearch(Session session, MainSearchType searchType, string searchString)
-    {
-        using var _ = new MethodTimeLogger(_logger);
-        return await TrySearch(searchType, searchString).ConfigureAwait(false);
-    }
-
-    [ComputeMethod]
-    protected virtual async Task<MainSearchResult[]> TrySearch(MainSearchType searchType, string? searchString)
+    public virtual async Task<MainSearchResult[]> TrySearch(MainSearchType searchType, string? searchString)
     {
         using var _ = new MethodTimeLogger(_logger);
         if (string.IsNullOrWhiteSpace(searchString) || searchString.Length < 1)

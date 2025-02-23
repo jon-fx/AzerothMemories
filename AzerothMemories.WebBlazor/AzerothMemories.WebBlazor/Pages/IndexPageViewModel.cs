@@ -10,7 +10,7 @@ public sealed class IndexPageViewModel : PersistentStateViewModel, IViewModel<In
     {
         RecentPostsHelper = new RecentPostsHelper(Services);
 
-        AddPersistentState(() => AccountViewModel, x => AccountViewModel = x, () => Services.ComputeServices.AccountServices.TryGetActiveAccount(Session.Default));
+        AddPersistentState(() => AccountViewModel, x => AccountViewModel = x, () => Services.ComputeServices.AccountServices.TryGetActiveAccount(Services.ClientServices.Session));
         AddPersistentState(() => OnThisDay, x => OnThisDay = x, TryUpdateOnThisDay!);
         AddPersistentState(() => RecentPostsHelper.SearchResults, x => RecentPostsHelper.SetSearchResults(x), () => RecentPostsHelper.ComputeState(_currentPage, _sortMode, _postType)!);
     }
@@ -55,7 +55,7 @@ public sealed class IndexPageViewModel : PersistentStateViewModel, IViewModel<In
         await base.ComputeState(cancellationToken);
 
         OnThisDay = await TryUpdateOnThisDay();
-        AccountViewModel = await Services.ComputeServices.AccountServices.TryGetActiveAccount(Session.Default);
+        AccountViewModel = await Services.ComputeServices.AccountServices.TryGetActiveAccount(Services.ClientServices.Session);
 
         await RecentPostsHelper.ComputeState(_currentPage, _sortMode, _postType);
     }
@@ -65,7 +65,7 @@ public sealed class IndexPageViewModel : PersistentStateViewModel, IViewModel<In
         var timeZone = Services.ClientServices.TimeProvider.GetCurrentTimeZone();
         var inZone = SystemClock.Instance.GetCurrentInstant().InZone(timeZone).Date;
 
-        return Services.ComputeServices.SearchServices.TryGetDailyActivity(Session.Default, timeZone.Id, (byte)inZone.Day, (byte)inZone.Month, ServerSideLocaleExt.GetServerSideLocale());
+        return Services.ComputeServices.SearchServices.TryGetDailyActivity(Services.ClientServices.Session, timeZone.Id, (byte)inZone.Day, (byte)inZone.Month, ServerSideLocaleExt.GetServerSideLocale());
     }
 
     public static IndexPageViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)

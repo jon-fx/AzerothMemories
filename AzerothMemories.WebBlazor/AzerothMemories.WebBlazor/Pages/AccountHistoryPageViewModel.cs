@@ -38,7 +38,7 @@ public sealed class AccountHistoryPageViewModel : ViewModelBase, IViewModel<Acco
             }
         }
 
-        _searchResults = await Services.ComputeServices.AccountServices.TryGetAccountHistory(Session.Default, currentPage);
+        _searchResults = await Services.ComputeServices.AccountServices.TryGetAccountHistory(Services.ClientServices.Session,  currentPage);
     }
 
     public void TryChangePage(int currentPage)

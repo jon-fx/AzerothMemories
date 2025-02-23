@@ -98,7 +98,7 @@ public sealed class AddMemoryComponentSharedData
         var timeStamp = PostTimeStamp.ToUnixTimeMilliseconds();
         if (timeStamp > 0 && PostTimeStamp < SystemClock.Instance.GetCurrentInstant())
         {
-            var achievements = await _viewModel.Services.ComputeServices.AccountServices.TryGetAchievementsByTime(Session.Default, timeStamp, 120, ServerSideLocaleExt.GetServerSideLocale());
+            var achievements = await _viewModel.Services.ComputeServices.AccountServices.TryGetAchievementsByTime(_viewModel.Services.ClientServices.Session, timeStamp, 120, ServerSideLocaleExt.GetServerSideLocale());
 
             if (_selectedAchievementTags.Count > 0)
             {
@@ -124,7 +124,7 @@ public sealed class AddMemoryComponentSharedData
         if (_isAddMemoryPage)
         {
             var timeStamp = PostTimeStamp.ToUnixTimeMilliseconds();
-            var myPostsAroundPostTimeStamp = await _viewModel.Services.ComputeServices.AccountServices.TrySearchPostsByTime(Session.Default, timeStamp, 120, ServerSideLocaleExt.GetServerSideLocale());
+            var myPostsAroundPostTimeStamp = await _viewModel.Services.ComputeServices.AccountServices.TrySearchPostsByTime(_viewModel.Services.ClientServices.Session, timeStamp, 120, ServerSideLocaleExt.GetServerSideLocale());
             if (myPostsAroundPostTimeStamp.SequenceEqual(_myPostsAroundPostTimeStamp))
             {
             }
@@ -239,9 +239,9 @@ public sealed class AddMemoryComponentSharedData
             }
         }
 
-        var serverUploadResult = await _viewModel.Services.ComputeServices.PostServices.TryPostMemory(new Post_TryPostMemory
+        var serverUploadResult = await _viewModel.Services.ClientServices.CommandRunner.Run(new Post_TryPostMemory
         {
-            Session = Session.Default,
+            Session = _viewModel.Services.ClientServices.Session,
             TimeStamp = timeStamp.ToUnixTimeMilliseconds(),
             AvatarTag = avatarTag ?? string.Empty,
             IsPrivate = PrivatePost,
@@ -263,7 +263,7 @@ public sealed class AddMemoryComponentSharedData
             avatarTag = PostAvatarImages[SelectedPostAvatarImage].Tag?.TagString;
         }
 
-        var result = await _viewModel.Services.ClientServices.CommandRunner.Run(new Post_TryUpdateSystemTags(Session.Default, currentPost.Id, avatarTag, newTags));
+        var result = await _viewModel.Services.ClientServices.CommandRunner.Run(new Post_TryUpdateSystemTags(_viewModel.Services.ClientServices.Session, currentPost.Id, avatarTag, newTags));
         return result.Value;
     }
 

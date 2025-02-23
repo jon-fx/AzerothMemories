@@ -403,7 +403,7 @@ else
 
         var postId = Post.Id;
 
-        var result = await Services.ClientServices.CommandRunner.Run(new Post_TryReactToPost(Session.Default, postId, newReaction));
+        var result = await Services.ClientServices.CommandRunner.Run(new Post_TryReactToPost(Services.ClientServices.Session,  postId, newReaction));
         if (result.Value > 0)
         {
             Post.ReactionId = result.Value;
@@ -445,7 +445,7 @@ else
         _reactionAreLoading = true;
 
         var postId = Post.Id;
-        var reactionData = await Services.ComputeServices.PostServices.TryGetReactions(Session.Default, postId);
+        var reactionData = await Services.ComputeServices.PostServices.TryGetReactions(Services.ClientServices.Session,  postId);
         if (reactionData == null)
         {
             _postReactions = null;
@@ -487,7 +487,7 @@ else
         _isChangingTags = true;
 
         var postId = Post.Id;
-        var result = await Services.ClientServices.CommandRunner.Run(new Post_TryRestoreMemory(Session.Default, postId, characterId));
+        var result = await Services.ClientServices.CommandRunner.Run(new Post_TryRestoreMemory(Services.ClientServices.Session,  postId, characterId));
         if (result.Value)
         {
             _showTagMenu = false;
@@ -512,7 +512,7 @@ else
         if (confirmationResult.HasValue && confirmationResult.Value)
         {
             var postId = Post.Id;
-            var result = await Services.ClientServices.CommandRunner.Run(new Post_TryDeletePost(Session.Default, postId));
+            var result = await Services.ClientServices.CommandRunner.Run(new Post_TryDeletePost(Services.ClientServices.Session,  postId));
             Post.DeletedTimeStamp = result.Value;
 
             var message = Post.DeletedTimeStamp == 0 ? "Post delete failed." : "Post deleted.";
@@ -539,7 +539,7 @@ else
 
         var postId = Post.Id;
         var newVisibility = Post.PostVisibility == 1 ? (byte)0 : (byte)1;
-        var result = await Services.ClientServices.CommandRunner.Run(new Post_TrySetPostVisibility(Session.Default, postId, newVisibility));
+        var result = await Services.ClientServices.CommandRunner.Run(new Post_TrySetPostVisibility(Services.ClientServices.Session,  postId, newVisibility));
         if (result.Value == null)
         {
             await Services.ClientServices.DialogService.ShowNotificationDialog(false, "Post visibility change failed.");

@@ -99,7 +99,7 @@ else
             return;
         }
 
-        var currentSet = await Services.ComputeServices.GuildServices.TryGetGuildMembers(Session.Default, GuildViewModel.Id, _guildMemberPageIndex++);
+        var currentSet = await Services.ComputeServices.GuildServices.TryGetGuildMembers(Services.ClientServices.Session,  GuildViewModel.Id, _guildMemberPageIndex++);
         foreach (var characterViewModel in currentSet.CharactersArray)
         {
             _guildMembers.Add(characterViewModel);

@@ -18,26 +18,26 @@ public sealed class AdminPageViewModel : ViewModelBase, IViewModel<AdminPageView
     {
         await base.ComputeState(cancellationToken);
 
-        Counters = await Services.ComputeServices.AdminServices.TryGetUserCounts(Session.Default);
+        Counters = await Services.ComputeServices.AdminServices.TryGetUserCounts(Services.ClientServices.Session);
 
-        ReportedPosts = await Services.ComputeServices.AdminServices.TryGetReportedPosts(Session.Default);
-        ReportedComments = await Services.ComputeServices.AdminServices.TryGetReportedComments(Session.Default);
-        ReportedTags = await Services.ComputeServices.AdminServices.TryGetReportedTags(Session.Default);
+        ReportedPosts = await Services.ComputeServices.AdminServices.TryGetReportedPosts(Services.ClientServices.Session);
+        ReportedComments = await Services.ComputeServices.AdminServices.TryGetReportedComments(Services.ClientServices.Session);
+        ReportedTags = await Services.ComputeServices.AdminServices.TryGetReportedTags(Services.ClientServices.Session);
     }
 
     public async Task ResolveReportedPost(bool delete, ReportedPostViewModel viewModel)
     {
-        await Services.ClientServices.CommandRunner.Run(new Admin_SetPostReportResolved(Session.Default, delete, viewModel.PostViewModel.Id));
+        await Services.ClientServices.CommandRunner.Run(new Admin_SetPostReportResolved(Services.ClientServices.Session, delete, viewModel.PostViewModel.Id));
     }
 
     public async Task ResolveReportedComment(bool delete, ReportedPostCommentsViewModel viewModel)
     {
-        await Services.ClientServices.CommandRunner.Run(new Admin_SetPostCommentReportResolved(Session.Default, delete, viewModel.CommentViewModel.PostId, viewModel.CommentViewModel.Id));
+        await Services.ClientServices.CommandRunner.Run(new Admin_SetPostCommentReportResolved(Services.ClientServices.Session, delete, viewModel.CommentViewModel.PostId, viewModel.CommentViewModel.Id));
     }
 
     public async Task ResolveReportedTag(bool delete, ReportedPostTagsViewModel viewModel, ReportedChildViewModel row)
     {
-        await Services.ClientServices.CommandRunner.Run(new Admin_SetPostTagReportResolved(Session.Default, delete, viewModel.PostViewModel.Id, row.ReportedTag?.TagString, row.ReportedTagId));
+        await Services.ClientServices.CommandRunner.Run(new Admin_SetPostTagReportResolved(Services.ClientServices.Session, delete, viewModel.PostViewModel.Id, row.ReportedTag?.TagString, row.ReportedTagId));
     }
 
     public static AdminPageViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)

@@ -1,10 +1,10 @@
-﻿using System.Net.Http.Headers;
-using System.Text;
-using ActualLab.Fusion.Blazor.Authentication;
+﻿using ActualLab.Fusion.Blazor.Authentication;
 using ActualLab.Fusion.EntityFramework.Npgsql;
 using ActualLab.Fusion.Server.Authentication;
 using ActualLab.Fusion.Server.Endpoints;
 using AzerothMemories.WebBlazor;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace AzerothMemories.WebServer;
 
@@ -50,7 +50,7 @@ public abstract class ProgramHelper
         });
 
         _fusion = _services.AddFusion(RpcServiceMode.Server, true);
-        _fusionServer = _fusion.AddWebServer(true);
+        _fusionServer = _fusion.AddWebServer(false);
 
         _fusion.AddDbAuthService<AppDbContext, string>();
 

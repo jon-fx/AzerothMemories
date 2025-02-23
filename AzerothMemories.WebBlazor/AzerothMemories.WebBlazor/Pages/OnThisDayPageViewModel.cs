@@ -39,7 +39,7 @@ public sealed class OnThisDayPageViewModel : PersistentStateViewModel, IViewMode
             month = (byte)inZone.Month;
         }
 
-        return Services.ComputeServices.SearchServices.TryGetDailyActivityFull(Session.Default, timeZone.Id, day, month, ServerSideLocaleExt.GetServerSideLocale());
+        return Services.ComputeServices.SearchServices.TryGetDailyActivityFull(Services.ClientServices.Session,  timeZone.Id, day, month, ServerSideLocaleExt.GetServerSideLocale());
     }
 
     public static OnThisDayPageViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)

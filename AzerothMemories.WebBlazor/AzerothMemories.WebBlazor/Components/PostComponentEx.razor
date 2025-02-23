@@ -32,7 +32,7 @@
     {
         var postInfo = PostInfos[PostIndex];
         var locale = ServerSideLocaleExt.GetServerSideLocale();
-        PostViewModels[PostIndex] = await Services.ComputeServices.PostServices.TryGetPostViewModel(Session.Default, postInfo.AccountId, postInfo.PostId, locale);
+        PostViewModels[PostIndex] = await Services.ComputeServices.PostServices.TryGetPostViewModel(Services.ClientServices.Session,  postInfo.AccountId, postInfo.PostId, locale);
 
         return PostViewModels[PostIndex];
     }

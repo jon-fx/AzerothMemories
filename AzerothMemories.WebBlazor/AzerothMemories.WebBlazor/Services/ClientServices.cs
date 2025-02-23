@@ -19,6 +19,8 @@ public sealed class ClientServices
         BlazorCircuitContext = serviceProvider.GetRequiredService<BlazorCircuitContext>();
     }
 
+    public Session Session => ActiveAccountServices.Session;
+
     public ActiveAccountServices ActiveAccountServices { get; }
 
     public DialogHelperService DialogService { get; }

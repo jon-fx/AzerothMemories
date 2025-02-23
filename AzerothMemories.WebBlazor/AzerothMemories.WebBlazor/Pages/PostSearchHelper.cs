@@ -70,7 +70,7 @@ public sealed class PostSearchHelper
 
         IsLoading = true;
 
-        var searchResults = await _services.ComputeServices.SearchServices.TrySearchPosts(Session.Default, tagStrings, sortMode, currentPage, minTime, maxTime, ServerSideLocaleExt.GetServerSideLocale());
+        var searchResults = await _services.ComputeServices.SearchServices.TrySearchPosts(Services.ClientServices.Session,  tagStrings, sortMode, currentPage, minTime, maxTime, ServerSideLocaleExt.GetServerSideLocale());
 
         _searchResults = searchResults;
 

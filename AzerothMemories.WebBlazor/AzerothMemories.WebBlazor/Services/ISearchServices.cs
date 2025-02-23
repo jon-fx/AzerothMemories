@@ -9,7 +9,7 @@ public interface ISearchServices : IComputeService
     Task<DailyActivityResults[]> TryGetDailyActivityFull(Session session, string timeZoneId, byte inZoneDay, byte inZoneMonth, ServerSideLocale locale);
 
     [ComputeMethod]
-    Task<MainSearchResult[]> TrySearch(Session session, MainSearchType searchType, string searchString);
+    Task<MainSearchResult[]> TrySearch(MainSearchType searchType, string searchString);
 
     [ComputeMethod]
     Task<RecentPostsResults> TryGetRecentPosts(Session session, RecentPostType postType, PostSortMode sortMode);

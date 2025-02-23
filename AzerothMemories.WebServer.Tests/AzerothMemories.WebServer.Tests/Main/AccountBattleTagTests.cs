@@ -17,7 +17,7 @@ public sealed class AccountBattleTagTests : BaseTestHelper
         account1.Username.Should().Be($"User-{account1.Id}");
         account1.BattleTagIsPublic.Should().BeFalse();
 
-        var account = await CommonServices.AccountServices.TryGetAccountById(Session.Default, account1.Id);
+        var account = await CommonServices.AccountServices.TryGetAccountById(session1,  account1.Id);
 
         account = account.ThrowIfNull();
         account.BattleTag.Should().BeNull();

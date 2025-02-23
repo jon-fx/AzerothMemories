@@ -51,7 +51,7 @@ public sealed class RecentPostsHelper
 
         var oldViewModels = _searchResults.PostViewModels.SafeEnumerable().ToDictionary(x => x.Id, x => x);
 
-        _searchResults = await _services.ComputeServices.SearchServices.TryGetRecentPosts(Session.Default, recentPostType, sortMode);
+        _searchResults = await _services.ComputeServices.SearchServices.TryGetRecentPosts(_services.ClientServices.Session, recentPostType, sortMode);
 
         var temp = _searchResults.PostViewModels;
         Array.Resize(ref temp, _searchResults.PostInfos.Length);

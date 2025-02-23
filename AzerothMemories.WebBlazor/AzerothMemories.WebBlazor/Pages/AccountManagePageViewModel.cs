@@ -37,7 +37,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
     {
         await base.ComputeState(cancellationToken);
 
-        AccountViewModel = await Services.ComputeServices.AccountServices.TryGetActiveAccount(Session.Default);
+        AccountViewModel = await Services.ComputeServices.AccountServices.TryGetActiveAccount(Services.ClientServices.Session);
 
         if (AccountViewModel == null)
         {
@@ -95,7 +95,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
         }
         else if (DatabaseHelpers.IsValidAccountName(username))
         {
-            isValid = await Services.ComputeServices.AccountServices.CheckIsValidUsername(Session.Default, username);
+            isValid = await Services.ComputeServices.AccountServices.CheckIsValidUsername(Services.ClientServices.Session, username);
             isVisible = true;
         }
 
@@ -152,7 +152,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
             return;
         }
 
-        var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeUsername(Session.Default, 0, NewUsername));
+        var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeUsername(Services.ClientServices.Session, 0, NewUsername));
         if (result.Value)
         {
             AccountViewModel.Username = NewUsername;
@@ -178,7 +178,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
             return;
         }
 
-        var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeIsPrivate(Session.Default, newValue));
+        var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeIsPrivate(Services.ClientServices.Session, newValue));
         if (AccountViewModel.IsPrivate == result.Value)
         {
             return;
@@ -196,7 +196,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
             return;
         }
 
-        var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeBattleTagVisibility(Session.Default, newValue));
+        var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeBattleTagVisibility(Services.ClientServices.Session, newValue));
         if (AccountViewModel.BattleTagIsPublic == result.Value)
         {
             return;
@@ -240,7 +240,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
             return;
         }
 
-        var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeAvatar(Session.Default, 0, avatarLink));
+        var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeAvatar(Services.ClientServices.Session, 0, avatarLink));
         if (result.Value != AccountViewModel.Avatar)
         {
             AvatarLink = result.Value;
@@ -278,7 +278,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
             return;
         }
 
-        var result = await Services.ComputeServices.AccountServices.TryChangeAvatarUpload(new Account_TryChangeAvatarUpload(Session.Default, buffer));
+        var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeAvatarUpload(Services.ClientServices.Session, buffer));
         if (result != null && !string.IsNullOrWhiteSpace(result) && result != AccountViewModel.Avatar)
         {
             AvatarLink = result;
@@ -336,7 +336,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
 
         if (shouldChange)
         {
-            var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeSocialLink(Session.Default, 0, link.LinkId, newValue));
+            var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeSocialLink(Services.ClientServices.Session, 0, link.LinkId, newValue));
             AccountViewModel.SocialLinks[link.LinkId] = result.Value;
             SocialLinksAdornmentIcons[link.LinkId] = string.Empty;
         }
@@ -353,7 +353,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
 
         if (character.AccountSync != newValue)
         {
-            var result = await Services.ClientServices.CommandRunner.Run(new Character_TryChangeCharacterAccountSync(Session.Default, character.Id, newValue));
+            var result = await Services.ClientServices.CommandRunner.Run(new Character_TryChangeCharacterAccountSync(Services.ClientServices.Session, character.Id, newValue));
             if (character.AccountSync == result.Value)
             {
                 return;
@@ -372,7 +372,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
             return;
         }
 
-        var result = await Services.ClientServices.CommandRunner.Run(new Character_TrySetCharacterDeleted(Session.Default, character.Id));
+        var result = await Services.ClientServices.CommandRunner.Run(new Character_TrySetCharacterDeleted(Services.ClientServices.Session, character.Id));
     }
 
     public async Task OnCharacterRenamedOrTransferred(CharacterViewModel oldCharacter, CharacterViewModel newCharacter)
@@ -382,7 +382,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
             return;
         }
 
-        var result = await Services.ClientServices.CommandRunner.Run(new Character_TrySetCharacterRenamedOrTransferred(Session.Default, oldCharacter.Id, newCharacter.Id));
+        var result = await Services.ClientServices.CommandRunner.Run(new Character_TrySetCharacterRenamedOrTransferred(Services.ClientServices.Session, oldCharacter.Id, newCharacter.Id));
     }
 
     public async Task OnConnect(ClientAuthHelper clientAuthHelper, string schema)
@@ -392,7 +392,7 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
 
     public async Task OnDisconnect(ClientAuthHelper clientAuthHelper, string schema, string key)
     {
-        await Services.ClientServices.CommandRunner.Run(new Account_TryDisconnectAccount(Session.Default, schema, key));
+        await Services.ClientServices.CommandRunner.Run(new Account_TryDisconnectAccount(Services.ClientServices.Session, schema, key));
     }
 
     public static AccountManagePageViewModel CreateViewModel(IMoaServices services, Action onViewModelChanged)
