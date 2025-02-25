@@ -1,5 +1,6 @@
 ﻿@page "/addmemory/"
 @inherits MoaComponentBase<AddMemoryPageViewModel>
+@inject RenderModeHelper RenderModeHelper
 
 @{
     var pageHeaderInfo = new DefaultPageHeaderInfo("Add Memory");
@@ -8,15 +9,23 @@
 
 <AuthorizeView>
     <Authorized>
-        @if (ViewModel.UploadedImages.Count > 0 || _skipAddImage)
+        @if (RenderModeHelper.CurrentMode != RenderModeDef.GetOrDefault("w"))
         {
-            <AddMemoryComponent Services="@(this)" ViewModel="@ViewModel" OnPostMemoryResult="@OnPostMemoryCallback" />
+            <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+                <MudCardContent Class="@ClassPresets.CardContent">
+                    <MudButton Class="@ClassPresets.DefaultPadding" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Material.Filled.Wysiwyg" OnClick="OnStartClicked">Start</MudButton>
+                </MudCardContent>
+            </MudCard>
+        }
+        else if (ViewModel.UploadedImages.Count > 0 || _skipAddImage)
+        {
+            <AddMemoryComponent Services="@(this)" ViewModel="@ViewModel" OnPostMemoryResult="@OnPostMemoryCallback"/>
         }
         else
         {
             <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
                 <MudCardContent Class="@ClassPresets.CardContent">
-                    <InputFile id="fileInput" OnChange="ViewModel.Initialize" hidden multiple accept="@ZExtensions.UploadAcceptExtensions" />
+                    <InputFile id="fileInput" OnChange="ViewModel.Initialize" hidden multiple accept="@ZExtensions.UploadAcceptExtensions"/>
                     <MudButton Class="@ClassPresets.DefaultPadding" HtmlTag="label" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Material.Filled.CloudUpload" for="fileInput">Upload Image</MudButton>
                     <MudButton Class="@ClassPresets.DefaultPadding" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Material.Filled.ImageNotSupported" OnClick="OnSkipClicked">Continue</MudButton>
                 </MudCardContent>
@@ -28,6 +37,11 @@
 @code
 {
     private bool _skipAddImage;
+
+    private void OnStartClicked(MouseEventArgs obj)
+    {
+        RenderModeHelper.ChangeMode(RenderModeDef.GetOrDefault("w"));
+    }
 
     private async Task OnSkipClicked()
     {

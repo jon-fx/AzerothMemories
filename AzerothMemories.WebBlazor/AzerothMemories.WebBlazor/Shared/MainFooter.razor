@@ -1,4 +1,7 @@
-﻿<MudDivider Class="my-2" />
+﻿@inject RenderModeHelper RenderModeHelper;
+@inject BlazorCircuitContext BlazorCircuitContext
+
+<MudDivider Class="my-2" />
 
 <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
     <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
@@ -18,11 +21,43 @@
                 <MudItem xs="6" md="4">
                 </MudItem>
                 <MudItem xs="12" md="4">
-                    <MudLink Href="/terms-of-use" Color="Color.Default">Terms of Use</MudLink>
+                    <MudStack AlignItems="AlignItems.Center" Row="true" Spacing="1">
+                        <MudLink Href="/terms-of-use" Color="Color.Default">Terms of Use</MudLink>
+                        <MudText>|</MudText>
+                        <MudLink Href="/privacy-policy" Color="Color.Default">Privacy Policy</MudLink>
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="12" md="12">
+                    <MudStack AlignItems="AlignItems.Center" Row="true" Spacing="1">
+                        @{
+                            var mode1 = RenderModeDef.GetOrDefault("a");
+                            var displayText = mode1.Title;
+                            if (mode1 == RenderModeHelper.CurrentMode)
+                            {
+                                displayText = RenderModeHelper.GetCurrentModeTitle();
+                            }
 
-                    |
-
-                    <MudLink Href="/privacy-policy" Color="Color.Default">Privacy Policy</MudLink>
+                            <MudLink OnClick="@(() => RenderModeHelper.ChangeMode(mode1))" Color="Color.Default" Disabled="mode1 == RenderModeHelper.CurrentMode">@displayText</MudLink>
+                        }
+                        <MudText>|</MudText>
+                        @{
+                            var mode2 = RenderModeDef.GetOrDefault("s");
+                            <MudLink OnClick="@(() => RenderModeHelper.ChangeMode(mode2))" Color="Color.Default" Disabled="mode2 == RenderModeHelper.CurrentMode">@mode2.Title</MudLink>
+                        }
+                        <MudText>|</MudText>
+                        @{
+                            var mode3 = RenderModeDef.GetOrDefault("w");
+                            <MudLink OnClick="@(() => RenderModeHelper.ChangeMode(mode3))" Color="Color.Default" Disabled="mode3 == RenderModeHelper.CurrentMode">@mode3.Title</MudLink>
+                        }
+                        <MudText>|</MudText>
+                        @{
+                            <MudText Color="@(BlazorCircuitContext.IsPrerendering ? Color.Success : Color.Error)">P</MudText>
+                        }
+                        <MudText>|</MudText>
+                        @{
+                            <MudText Color="@(BlazorCircuitContext.IsInteractive ? Color.Success : Color.Error)">I</MudText>
+                        }
+                    </MudStack>
                 </MudItem>
             </MudGrid>
         </MudCardContent>
