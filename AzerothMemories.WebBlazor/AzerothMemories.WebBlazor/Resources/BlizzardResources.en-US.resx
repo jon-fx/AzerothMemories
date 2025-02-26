@@ -2656,6 +2656,9 @@
   <data name="CharacterRace-87">
     <value>Delver's Dirigible</value>
   </data>
+  <data name="CharacterRace-90">
+    <value>Delver's Gob-Trotter</value>
+  </data>
   <data name="CharacterClass-0">
     <value>Unknown Class</value>
   </data>

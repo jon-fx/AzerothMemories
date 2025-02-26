@@ -2656,6 +2656,9 @@
   <data name="CharacterRace-87">
     <value>地下堡行者的飞船</value>
   </data>
+  <data name="CharacterRace-90">
+    <value>地下堡行者的地精疾行器</value>
+  </data>
   <data name="CharacterClass-0">
     <value>Unknown Class</value>
   </data>

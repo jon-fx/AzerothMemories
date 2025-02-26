@@ -2656,6 +2656,9 @@
   <data name="CharacterRace-87">
     <value>Dirigível do Imersor</value>
   </data>
+  <data name="CharacterRace-90">
+    <value>Aerogoblin do Imersor</value>
+  </data>
   <data name="CharacterClass-0">
     <value>Unknown Class</value>
   </data>
