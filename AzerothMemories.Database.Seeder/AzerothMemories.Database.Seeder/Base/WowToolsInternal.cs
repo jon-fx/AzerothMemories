@@ -124,7 +124,7 @@ internal sealed class WowToolsInternal
 
     public void LoadDataFromWowTools(string fileName, string primaryKeyName, ref Dictionary<int, WowToolsData> dictionary, string locale, string[]? fieldsToLoad = null)
     {
-        var fileInfo = DownloadIfNotExists($"{fileName}-{locale}.csv", CommonConfigDoNotCommit.GetLocalWowToolsUrl(fileName, _buildString, locale));
+        var fileInfo = DownloadIfNotExists($"{fileName}-{locale}.csv", CommonConfig.GetLocalWowToolsUrl(fileName, _buildString, locale));
         if (fileInfo == null)
         {
             return;

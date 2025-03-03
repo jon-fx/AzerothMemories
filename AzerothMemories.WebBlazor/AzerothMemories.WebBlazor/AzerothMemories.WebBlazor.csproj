@@ -39,13 +39,13 @@
         <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.2" />
         <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.2" />
         <PackageReference Include="Markdig" Version="0.40.0" />
-        <PackageReference Include="MudBlazor" Version="8.2.0" />
+        <PackageReference Include="MudBlazor" Version="8.3.0" />
         <PackageReference Include="NodaTime" Version="3.2.1" />
-        <PackageReference Include="ActualLab.Fusion" Version="9.8.45" />
-        <PackageReference Include="ActualLab.CommandR" Version="9.8.45" />
-        <PackageReference Include="ActualLab.Fusion.Blazor" Version="9.8.45" />
-        <PackageReference Include="ActualLab.Fusion.Blazor.Authentication" Version="9.8.45" />
-        <PackageReference Include="ActualLab.Generators" Version="9.8.45" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
+        <PackageReference Include="ActualLab.Fusion" Version="9.8.46" />
+        <PackageReference Include="ActualLab.CommandR" Version="9.8.46" />
+        <PackageReference Include="ActualLab.Fusion.Blazor" Version="9.8.46" />
+        <PackageReference Include="ActualLab.Fusion.Blazor.Authentication" Version="9.8.46" />
+        <PackageReference Include="ActualLab.Generators" Version="9.8.46" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
