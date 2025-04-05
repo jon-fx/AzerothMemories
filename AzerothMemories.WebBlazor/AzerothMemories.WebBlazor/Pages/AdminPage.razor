@@ -132,10 +132,7 @@ else
         @foreach (var viewModel in ViewModel.ReportedComments)
         {
             var headerText = $"Reported Comment: {viewModel.CommentViewModel.Id}";
-            var commentTreeNode = new PostCommentTreeNode(0, viewModel.CommentViewModel.PostId, viewModel.CommentViewModel.Id) 
-            { 
-                Comment = viewModel.CommentViewModel
-            };
+            var commentTreeNode = new PostCommentTreeNode(0, viewModel.CommentViewModel.PostId, viewModel.CommentViewModel.Id, viewModel.CommentViewModel);
 
             <MudExpansionPanel Text="@headerText">
                 <PostCommentComponent Services="@(this)" Comment="@commentTreeNode" Indent="false" />

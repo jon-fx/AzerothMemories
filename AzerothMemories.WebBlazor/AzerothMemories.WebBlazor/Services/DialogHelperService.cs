@@ -1,4 +1,5 @@
 ﻿using AzerothMemories.WebBlazor.Components.Dialogs;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AzerothMemories.WebBlazor.Services;
 
@@ -14,7 +15,7 @@ public sealed class DialogHelperService
         _activeDialogs = [];
     }
 
-    public void ShowLoadingDialog()
+    public async Task ShowLoadingDialog()
     {
         if (_loadingDialog != null)
         {
@@ -29,7 +30,7 @@ public sealed class DialogHelperService
             NoHeader = true
         };
 
-        _loadingDialog = _dialogService.Show<LoadingDialog>("Loading...", options);
+        _loadingDialog = await _dialogService.ShowAsync<LoadingDialog>("Loading...", options);
     }
 
     public void HideLoadingDialog()
@@ -61,7 +62,7 @@ public sealed class DialogHelperService
         await ShowDialog<NotificationDialog>("Notification", parameters, options);
     }
 
-    public async Task<DialogResult> ShowReportPostDialog(string message, int postId, int commentId)
+    public async Task ShowReportPostDialog(string message, int postId, int commentId)
     {
         var options = new DialogOptions
         {
@@ -76,11 +77,10 @@ public sealed class DialogHelperService
             ["commentid"] = commentId
         };
 
-        var result = await ShowDialog<ReportPostDialog>(message, parameters, options);
-        return result;
+        await ShowDialog<ReportPostDialog>(message, parameters, options);
     }
 
-    public async Task<DialogResult> ShowReportPostTagsDialog(string title, PostViewModel viewModel)
+    public async Task ShowReportPostTagsDialog(string title, PostViewModel viewModel)
     {
         var options = new DialogOptions
         {
@@ -94,11 +94,10 @@ public sealed class DialogHelperService
             ["post"] = viewModel
         };
 
-        var result = await ShowDialog<ReportPostTagsDialog>(title, parameters, options);
-        return result;
+        await ShowDialog<ReportPostTagsDialog>(title, parameters, options);
     }
 
-    public async Task<DialogResult> ShowAdminUserDialog(string title, int accountId)
+    public async Task ShowAdminUserDialog(string title, int accountId)
     {
         var options = new DialogOptions
         {
@@ -112,27 +111,25 @@ public sealed class DialogHelperService
             ["accountId"] = accountId
         };
 
-        var result = await ShowDialog<AdminUserDialog>(title, parameters, options);
+        await ShowDialog<AdminUserDialog>(title, parameters, options);
+    }
+
+    public async Task<bool?> ShowMessageBox(string title, string message, string? yesText = null, string? noText = null, string? cancelText = null, DialogOptions? options = null)
+    {
+        var result = await _dialogService.ShowMessageBox(title, message, yesText ?? "OK", noText, cancelText, options);
+
         return result;
     }
 
-    public async Task<bool?> ShowMessageBox(string title, string? message = null, string? yesText = null, string? noText = null, string? cancelText = null, DialogOptions? options = null)
+    private async Task ShowDialog<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TDialog>(
+        string title, DialogParameters dialogParameters, DialogOptions options) where TDialog : ComponentBase
     {
-        var result = await _dialogService.ShowMessageBox(title, message, yesText, noText, cancelText, options);
-
-        return result;
-    }
-
-    private async Task<DialogResult> ShowDialog<TDialog>(string title, DialogParameters dialogParameters, DialogOptions options) where TDialog : ComponentBase
-    {
-        var currentDialog = _dialogService.Show<TDialog>(title, dialogParameters, options);
+        var currentDialog = await _dialogService.ShowAsync<TDialog>(title, dialogParameters, options);
 
         _activeDialogs.Add(currentDialog);
 
-        var result = await currentDialog.Result;
+        await currentDialog.Result;
 
         _activeDialogs.Remove(currentDialog);
-
-        return result;
     }
 }

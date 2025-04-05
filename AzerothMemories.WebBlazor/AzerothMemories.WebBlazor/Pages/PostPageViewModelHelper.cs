@@ -155,10 +155,7 @@ public sealed class PostPageViewModelHelper
         {
             if (!_allCommentTreeNodes.TryGetValue(comment.Key, out var treeNode))
             {
-                _allCommentTreeNodes.Add(comment.Key, treeNode = new PostCommentTreeNode(PostViewModel.AccountId, PostViewModel.Id, comment.Key)
-                {
-                    Comment = comment.Value
-                });
+                _allCommentTreeNodes.Add(comment.Key, treeNode = new PostCommentTreeNode(PostViewModel.AccountId, PostViewModel.Id, comment.Key, comment.Value));
             }
 
             if (comment.Value.ParentId == 0)

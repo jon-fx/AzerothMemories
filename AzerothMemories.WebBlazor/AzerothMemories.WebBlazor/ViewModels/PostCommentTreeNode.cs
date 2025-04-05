@@ -5,6 +5,7 @@ public sealed class PostCommentTreeNode
     public readonly int Id;
     public readonly int PostId;
     public readonly int PostersAccountId;
+    public readonly PostCommentViewModel Comment;
 
     public int ReactionId;
     public PostReaction Reaction;
@@ -19,16 +20,15 @@ public sealed class PostCommentTreeNode
     public PostCommentTreeNode? Parent;
     public readonly List<PostCommentTreeNode> Children = [];
 
-    public PostCommentTreeNode(int postersAccountId, int postId, int commentId)
+    public PostCommentTreeNode(int postersAccountId, int postId, int commentId, PostCommentViewModel comment)
     {
         Id = commentId;
         PostId = postId;
         PostersAccountId = postersAccountId;
+        Comment = comment;
     }
 
-    public PostCommentViewModel Comment { get; set; }
-
-    public int ParentId => Comment.ParentId;
+    //public int ParentId => Comment.ParentId;
 
     public bool HasChild => Children.Count > 0;
 

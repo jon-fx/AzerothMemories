@@ -57,7 +57,7 @@
 
     private async Task Submit()
     {
-        Services.ClientServices.DialogService.ShowLoadingDialog();
+        await Services.ClientServices.DialogService.ShowLoadingDialog();
 
         await Task.Delay(1);
 

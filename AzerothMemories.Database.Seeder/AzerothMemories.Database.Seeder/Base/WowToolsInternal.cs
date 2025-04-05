@@ -152,10 +152,12 @@ internal sealed class WowToolsInternal
 
             if (fieldsToLoad == null)
             {
+                Exceptions.ThrowIf(csvReader.HeaderRecord == null);
+
                 foreach (var headerStr in csvReader.HeaderRecord)
                 {
                     var header = headerStr;
-                    if (!csvReader.TryGetField<string>(header, out var fieldValue))
+                    if (!csvReader.TryGetField<string>(header, out var fieldValue) || string.IsNullOrWhiteSpace(fieldValue))
                     {
                         throw new NotImplementedException();
                     }
@@ -168,7 +170,7 @@ internal sealed class WowToolsInternal
                 foreach (var headerStr in fieldsToLoad)
                 {
                     var header = headerStr;
-                    if (!csvReader.TryGetField<string>(header, out var fieldValue))
+                    if (!csvReader.TryGetField<string>(header, out var fieldValue) || string.IsNullOrWhiteSpace(fieldValue))
                     {
                         throw new NotImplementedException();
                     }

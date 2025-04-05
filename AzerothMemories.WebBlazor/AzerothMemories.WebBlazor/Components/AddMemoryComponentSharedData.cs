@@ -250,7 +250,7 @@ public sealed class AddMemoryComponentSharedData
             ImageData = imageData
         });
 
-        return serverUploadResult;
+        return serverUploadResult.Value;
     }
 
     public async Task<AddMemoryResultCode> SubmitOnEditingPost(PostViewModel currentPost)

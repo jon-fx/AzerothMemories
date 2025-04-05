@@ -58,7 +58,7 @@ public sealed class AddMemoryPageViewModel : ViewModelBase, IViewModel<AddMemory
             return;
         }
 
-        Services.ClientServices.DialogService.ShowLoadingDialog();
+        await Services.ClientServices.DialogService.ShowLoadingDialog();
 
         foreach (var file in arg.GetMultipleFiles())
         {

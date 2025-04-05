@@ -27,7 +27,7 @@ internal static class AccountServices_OnSignInCommand
         await using var database = await commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
         var accountRecord = await GetCurrentAccount(database, command.Session, sessionRepo, commonServices.AccountServices, cancellationToken).ConfigureAwait(false);
 
-        var authKey = command.AuthenticatedIdentity.Id.Value;
+        var authKey = command.AuthenticatedIdentity.Id;
         var authRecord = await database.AuthTokens.FirstOrDefaultAsync(x => x.Key == authKey, cancellationToken).ConfigureAwait(false);
 
         bool canSignInResult;

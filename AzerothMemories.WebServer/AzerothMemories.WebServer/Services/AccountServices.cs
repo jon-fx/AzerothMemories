@@ -469,7 +469,7 @@ public class AccountServices : IAccountServices
             return null;
         }
 
-        var accountRecord = await TryGetAccountRecordFusionId(user.Id.Value).ConfigureAwait(false);
+        var accountRecord = await TryGetAccountRecordFusionId(user.Id).ConfigureAwait(false);
         if (accountRecord == null)
         {
             return null;

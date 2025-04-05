@@ -278,7 +278,8 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
             return;
         }
 
-        var result = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeAvatarUpload(Services.ClientServices.Session, buffer));
+        var commandResult = await Services.ClientServices.CommandRunner.Run(new Account_TryChangeAvatarUpload(Services.ClientServices.Session, buffer));
+        var result = commandResult.ValueOrDefault;
         if (result != null && !string.IsNullOrWhiteSpace(result) && result != AccountViewModel.Avatar)
         {
             AvatarLink = result;

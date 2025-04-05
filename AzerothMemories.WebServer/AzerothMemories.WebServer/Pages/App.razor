@@ -92,7 +92,7 @@
 			await ServerAuthHelper.UpdateAuthState(HttpContext);
 
 			_authSchemas = await ServerAuthHelper.GetSchemas(HttpContext);
-			_sessionId = ServerAuthHelper.Session.Id.Value;
+			_sessionId = ServerAuthHelper.Session.Id;
 		}
 
 		await base.SetParametersAsync(parameters);

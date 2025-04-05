@@ -9,8 +9,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentMigrator" Version="6.2.0" />
-        <PackageReference Include="FluentMigrator.Runner" Version="6.2.0" />
+        <PackageReference Include="FluentMigrator" Version="7.1.0" />
+        <PackageReference Include="FluentMigrator.Runner" Version="7.1.0" />
     </ItemGroup>
 
     <ItemGroup>
