@@ -1,4 +1,5 @@
-﻿using Azure.Storage.Blobs;
+﻿using ActualLab.Collections;
+using Azure.Storage.Blobs;
 using Humanizer;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Gif;
@@ -15,21 +16,18 @@ internal static class PostServices_TryPostMemory
         var context = CommandContext.GetCurrent();
         if (Invalidation.IsActive)
         {
-            var invPost = context.Operation.Items.Get<Post_InvalidatePost>();
-            if (invPost != null && invPost.PostId > 0)
+            if (context.Operation.Items.KeylessTryGet(out Post_InvalidatePost? invPost) && invPost != null && invPost.PostId > 0)
             {
                 _ = commonServices.PostServices.DependsOnPost(invPost.PostId);
             }
 
-            var invAccount = context.Operation.Items.Get<Post_InvalidateAccount>();
-            if (invAccount != null && invAccount.AccountId > 0)
+            if (context.Operation.Items.KeylessTryGet(out Post_InvalidateAccount? invAccount) && invAccount != null && invAccount.AccountId > 0)
             {
                 _ = commonServices.PostServices.DependsOnPostsBy(invAccount.AccountId);
                 _ = commonServices.AccountServices.GetPostCount(invAccount.AccountId);
             }
 
-            var invTags = context.Operation.Items.Get<Post_InvalidateTags>();
-            if (invTags != null && invTags.TagStrings != null)
+            if (context.Operation.Items.KeylessTryGet(out Post_InvalidateTags? invTags) && invTags != null && invTags.TagStrings != null)
             {
                 foreach (var tagString in invTags.TagStrings)
                 {
@@ -37,8 +35,7 @@ internal static class PostServices_TryPostMemory
                 }
             }
 
-            var invRecentPosts = context.Operation.Items.Get<Post_InvalidateRecentPost>();
-            if (invRecentPosts != null)
+            if (context.Operation.Items.KeylessTryGet(out Post_InvalidateRecentPost? invRecentPosts) && invRecentPosts != null)
             {
                 _ = commonServices.PostServices.DependsOnNewPosts();
             }
@@ -164,13 +161,13 @@ internal static class PostServices_TryPostMemory
             }, cancellationToken).ConfigureAwait(false);
         }
 
-        context.Operation.Items.Set(new Post_InvalidatePost(postRecord.Id));
-        context.Operation.Items.Set(new Post_InvalidateAccount(activeAccount.Id));
-        context.Operation.Items.Set(new Post_InvalidateTags(postRecord.PostTags.Select(x => x.TagString).ToHashSet()));
+        context.Operation.Items.KeylessSet(new Post_InvalidatePost(postRecord.Id));
+        context.Operation.Items.KeylessSet(new Post_InvalidateAccount(activeAccount.Id));
+        context.Operation.Items.KeylessSet(new Post_InvalidateTags(postRecord.PostTags.Select(x => x.TagString).ToHashSet()));
 
         if (postRecord.PostVisibility == 0)
         {
-            context.Operation.Items.Set(new Post_InvalidateRecentPost(true));
+            context.Operation.Items.KeylessSet(new Post_InvalidateRecentPost(true));
         }
 
         return new AddMemoryResult(AddMemoryResultCode.Success, postRecord.AccountId, postRecord.Id);

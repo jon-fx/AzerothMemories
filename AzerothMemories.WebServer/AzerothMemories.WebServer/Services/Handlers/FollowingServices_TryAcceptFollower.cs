@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Services.Handlers;
+﻿using ActualLab.Collections;
+
+namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class FollowingServices_TryAcceptFollower
 {
@@ -7,8 +9,10 @@ internal static class FollowingServices_TryAcceptFollower
         var context = CommandContext.GetCurrent();
         if (Invalidation.IsActive)
         {
-            var invRecord = context.Operation.Items.Get<Following_InvalidateRecord>();
-            commonServices.FollowingServices.InvalidateFollowing(invRecord);
+            if (context.Operation.Items.KeylessTryGet(out Following_InvalidateRecord? invRecord) && invRecord != null)
+            {
+                commonServices.FollowingServices.InvalidateFollowing(invRecord);
+            }
 
             return default;
         }
@@ -58,7 +62,7 @@ internal static class FollowingServices_TryAcceptFollower
             Type = AccountHistoryType.FollowingRequestAccepted2
         }, cancellationToken).ConfigureAwait(false);
 
-        context.Operation.Items.Set(new Following_InvalidateRecord(activeAccount.Id, otherAccountId));
+        context.Operation.Items.KeylessSet(new Following_InvalidateRecord(activeAccount.Id, otherAccountId));
 
         return viewModel.Status;
     }

@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Services.Handlers;
+﻿using ActualLab.Collections;
+
+namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class AdminServices_SetPostCommentReportResolved
 {
@@ -7,8 +9,7 @@ internal static class AdminServices_SetPostCommentReportResolved
         var context = CommandContext.GetCurrent();
         if (Invalidation.IsActive)
         {
-            var invalidateReports = context.Operation.Items.Get<Admin_InvalidateReports>();
-            if (invalidateReports != null)
+            if (context.Operation.Items.KeylessTryGet(out Admin_InvalidateReports? invalidateReports) && invalidateReports != null)
             {
                 _ = commonServices.PostServices.DependsOnPostCommentReports();
             }
@@ -43,7 +44,7 @@ internal static class AdminServices_SetPostCommentReportResolved
 
         //if (result)
         {
-            context.Operation.Items.Set(new Admin_InvalidateReports(true));
+            context.Operation.Items.KeylessSet(new Admin_InvalidateReports(true));
         }
 
         return result;

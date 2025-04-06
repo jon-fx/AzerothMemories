@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Services.Handlers;
+﻿using ActualLab.Collections;
+
+namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class PostServices_TryDeleteComment
 {
@@ -7,14 +9,12 @@ internal static class PostServices_TryDeleteComment
         var context = CommandContext.GetCurrent();
         if (Invalidation.IsActive)
         {
-            var invPost = context.Operation.Items.Get<Post_InvalidatePost>();
-            if (invPost != null && invPost.PostId > 0)
+            if (context.Operation.Items.KeylessTryGet(out Post_InvalidatePost? invPost) && invPost != null && invPost.PostId > 0)
             {
                 _ = commonServices.PostServices.TryGetAllPostComments(invPost.PostId);
             }
 
-            var invalidateReports = context.Operation.Items.Get<Admin_InvalidateReports>();
-            if (invalidateReports != null)
+            if (context.Operation.Items.KeylessTryGet(out Admin_InvalidateReports? invalidateReports) && invalidateReports != null)
             {
                 _ = commonServices.PostServices.DependsOnPostCommentReports();
             }
@@ -80,10 +80,10 @@ internal static class PostServices_TryDeleteComment
 
         if (reports.Length > 0)
         {
-            context.Operation.Items.Set(new Admin_InvalidateReports(true));
+            context.Operation.Items.KeylessSet(new Admin_InvalidateReports(true));
         }
 
-        context.Operation.Items.Set(new Post_InvalidatePost(postId));
+        context.Operation.Items.KeylessSet(new Post_InvalidatePost(postId));
 
         return now;
     }

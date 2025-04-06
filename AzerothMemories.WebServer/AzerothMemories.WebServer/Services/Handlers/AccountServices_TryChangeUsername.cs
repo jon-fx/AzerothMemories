@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Services.Handlers;
+﻿using ActualLab.Collections;
+
+namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class AccountServices_TryChangeUsername
 {
@@ -7,8 +9,7 @@ internal static class AccountServices_TryChangeUsername
         var context = CommandContext.GetCurrent();
         if (Invalidation.IsActive)
         {
-            var invRecord = context.Operation.Items.Get<Account_InvalidateAccountRecord>();
-            if (invRecord != null)
+            if (context.Operation.Items.KeylessTryGet(out Account_InvalidateAccountRecord? invRecord) && invRecord != null)
             {
                 _ = commonServices.AccountServices.DependsOnAccountRecord(invRecord.Id);
                 _ = commonServices.AccountServices.DependsOnAccountUsername(invRecord.Id);
@@ -20,8 +21,7 @@ internal static class AccountServices_TryChangeUsername
                 }
             }
 
-            var invPreviousUsername = context.Operation.Items.Get<string>();
-            if (!string.IsNullOrWhiteSpace(invPreviousUsername))
+            if (context.Operation.Items.KeylessTryGet(out string? invPreviousUsername) && !string.IsNullOrWhiteSpace(invPreviousUsername))
             {
                 _ = commonServices.AccountServices.CheckIsValidUsername(invPreviousUsername);
                 _ = commonServices.AccountServices.TryGetAccountRecordUsername(invPreviousUsername);
@@ -94,8 +94,8 @@ internal static class AccountServices_TryChangeUsername
             Type = AccountHistoryType.UsernameChanged
         }, cancellationToken).ConfigureAwait(false);
 
-        context.Operation.Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
-        context.Operation.Items.Set(previousUsername);
+        context.Operation.Items.KeylessSet(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+        context.Operation.Items.KeylessSet(previousUsername);
 
         return true;
     }

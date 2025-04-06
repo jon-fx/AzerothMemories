@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Services.Handlers;
+﻿using ActualLab.Collections;
+
+namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class PostServices_TryDeletePost
 {
@@ -7,27 +9,23 @@ internal static class PostServices_TryDeletePost
         var context = CommandContext.GetCurrent();
         if (Invalidation.IsActive)
         {
-            var invPost = context.Operation.Items.Get<Post_InvalidatePost>();
-            if (invPost != null && invPost.PostId > 0)
+            if (context.Operation.Items.KeylessTryGet(out Post_InvalidatePost? invPost) && invPost != null && invPost.PostId > 0)
             {
                 _ = commonServices.PostServices.DependsOnPost(invPost.PostId);
             }
 
-            var invAccount = context.Operation.Items.Get<Post_InvalidateAccount>();
-            if (invAccount != null && invAccount.AccountId > 0)
+            if (context.Operation.Items.KeylessTryGet(out Post_InvalidateAccount? invAccount) && invAccount != null && invAccount.AccountId > 0)
             {
                 _ = commonServices.PostServices.DependsOnPostsBy(invAccount.AccountId);
                 _ = commonServices.AccountServices.GetPostCount(invAccount.AccountId);
             }
 
-            var invRecentPosts = context.Operation.Items.Get<Post_InvalidateRecentPost>();
-            if (invRecentPosts != null)
+            if (context.Operation.Items.KeylessTryGet(out Post_InvalidateRecentPost? invRecentPosts) && invRecentPosts != null)
             {
                 _ = commonServices.PostServices.DependsOnNewPosts();
             }
 
-            var invalidateReports = context.Operation.Items.Get<Admin_InvalidateReports>();
-            if (invalidateReports != null)
+            if (context.Operation.Items.KeylessTryGet(out Admin_InvalidateReports? invalidateReports) && invalidateReports != null)
             {
                 _ = commonServices.PostServices.DependsOnPostReports();
             }
@@ -92,17 +90,17 @@ internal static class PostServices_TryDeletePost
             OtherAccountId = activeAccount.Id
         }, cancellationToken).ConfigureAwait(false);
 
-        context.Operation.Items.Set(new Post_InvalidatePost(postId));
-        context.Operation.Items.Set(new Post_InvalidateAccount(postRecord.AccountId));
+        context.Operation.Items.KeylessSet(new Post_InvalidatePost(postId));
+        context.Operation.Items.KeylessSet(new Post_InvalidateAccount(postRecord.AccountId));
 
         if (reports.Length > 0)
         {
-            context.Operation.Items.Set(new Admin_InvalidateReports(true));
+            context.Operation.Items.KeylessSet(new Admin_InvalidateReports(true));
         }
 
         if (postRecord.PostVisibility == 0)
         {
-            context.Operation.Items.Set(new Post_InvalidateRecentPost(true));
+            context.Operation.Items.KeylessSet(new Post_InvalidateRecentPost(true));
         }
 
         return now;

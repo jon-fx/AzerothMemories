@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Services.Handlers;
+﻿using ActualLab.Collections;
+
+namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class AccountServices_TryUpdateAuthToken
 {
@@ -7,8 +9,7 @@ internal static class AccountServices_TryUpdateAuthToken
         var context = CommandContext.GetCurrent();
         if (Invalidation.IsActive)
         {
-            var invRecord = context.Operation.Items.Get<Account_InvalidateAccountRecord>();
-            if (invRecord != null)
+            if (context.Operation.Items.KeylessTryGet(out Account_InvalidateAccountRecord? invRecord) && invRecord != null)
             {
                 _ = commonServices.AccountServices.DependsOnAccountRecord(invRecord.Id);
             }
@@ -40,7 +41,7 @@ internal static class AccountServices_TryUpdateAuthToken
 
         if (record.AccountId.HasValue)
         {
-            context.Operation.Items.Set(new Account_InvalidateAccountRecord(record.AccountId.Value, null, null));
+            context.Operation.Items.KeylessSet(new Account_InvalidateAccountRecord(record.AccountId.Value, null, null));
         }
 
         var result = !command.AccountId.HasValue || command.AccountId == record.AccountId;

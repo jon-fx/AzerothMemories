@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Services.Handlers;
+﻿using ActualLab.Collections;
+
+namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class PostServices_TryUpdateSystemTags
 {
@@ -7,15 +9,13 @@ internal static class PostServices_TryUpdateSystemTags
         var context = CommandContext.GetCurrent();
         if (Invalidation.IsActive)
         {
-            var invPost = context.Operation.Items.Get<Post_InvalidatePost>();
-            if (invPost != null && invPost.PostId > 0)
+            if (context.Operation.Items.KeylessTryGet(out Post_InvalidatePost? invPost) && invPost != null && invPost.PostId > 0)
             {
                 _ = commonServices.PostServices.DependsOnPost(invPost.PostId);
                 _ = commonServices.PostServices.GetAllPostTags(invPost.PostId);
             }
 
-            var invTags = context.Operation.Items.Get<Post_InvalidateTags>();
-            if (invTags != null && invTags.TagStrings != null)
+            if (context.Operation.Items.KeylessTryGet(out Post_InvalidateTags? invTags) && invTags != null && invTags.TagStrings != null)
             {
                 foreach (var tagString in invTags.TagStrings)
                 {
@@ -23,8 +23,7 @@ internal static class PostServices_TryUpdateSystemTags
                 }
             }
 
-            var invalidateReports = context.Operation.Items.Get<Admin_InvalidateReports>();
-            if (invalidateReports != null)
+            if (context.Operation.Items.KeylessTryGet(out Admin_InvalidateReports? invalidateReports) && invalidateReports != null)
             {
                 _ = commonServices.PostServices.DependsOnPostReports();
             }
@@ -183,11 +182,11 @@ internal static class PostServices_TryUpdateSystemTags
 
         if (shouldInvalidateReports)
         {
-            context.Operation.Items.Set(new Admin_InvalidateReports(true));
+            context.Operation.Items.KeylessSet(new Admin_InvalidateReports(true));
         }
 
-        context.Operation.Items.Set(new Post_InvalidatePost(postId));
-        context.Operation.Items.Set(new Post_InvalidateTags(postRecord.PostTags.Select(x => x.TagString).ToHashSet()));
+        context.Operation.Items.KeylessSet(new Post_InvalidatePost(postId));
+        context.Operation.Items.KeylessSet(new Post_InvalidateTags(postRecord.PostTags.Select(x => x.TagString).ToHashSet()));
 
         return AddMemoryResultCode.Success;
     }

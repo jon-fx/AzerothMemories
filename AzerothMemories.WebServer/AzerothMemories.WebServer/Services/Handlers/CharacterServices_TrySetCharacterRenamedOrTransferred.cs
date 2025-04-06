@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Services.Handlers;
+﻿using ActualLab.Collections;
+
+namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class CharacterServices_TrySetCharacterRenamedOrTransferred
 {
@@ -7,8 +9,7 @@ internal static class CharacterServices_TrySetCharacterRenamedOrTransferred
         var context = CommandContext.GetCurrent();
         if (Invalidation.IsActive)
         {
-            var invRecord = context.Operation.Items.Get<Character_TrySetCharacterRenamedOrTransferredInvalidate>();
-            if (invRecord != null)
+            if (context.Operation.Items.KeylessTryGet(out Character_TrySetCharacterRenamedOrTransferredInvalidate? invRecord) && invRecord != null)
             {
                 _ = commonServices.CharacterServices.DependsOnCharacterRecord(invRecord.OldCharacterId);
                 _ = commonServices.CharacterServices.DependsOnCharacterRecord(invRecord.NewCharacterId);
@@ -88,7 +89,7 @@ internal static class CharacterServices_TrySetCharacterRenamedOrTransferred
         hashSet.UnionWith(allPostTags.Select(x => x.PostId));
 
         var item = new Character_TrySetCharacterRenamedOrTransferredInvalidate(oldCharacterRecord.AccountId.GetValueOrDefault(), oldCharacterRecord.Id, newCharacterRecord.AccountId.GetValueOrDefault(), newCharacterRecord.Id, hashSet);
-        context.Operation.Items.Set(item);
+        context.Operation.Items.KeylessSet(item);
 
         return true;
     }

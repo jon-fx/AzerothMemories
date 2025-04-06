@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Services.Handlers;
+﻿using ActualLab.Collections;
+
+namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class AccountServices_AddNewHistoryItem
 {
@@ -7,8 +9,7 @@ internal static class AccountServices_AddNewHistoryItem
         var context = CommandContext.GetCurrent();
         if (Invalidation.IsActive)
         {
-            var invRecord = context.Operation.Items.Get<Account_InvalidateFollowing>();
-            if (invRecord != null)
+            if (context.Operation.Items.KeylessTryGet(out Account_InvalidateFollowing? invRecord) && invRecord != null)
             {
                 _ = commonServices.AccountServices.TryGetAccountHistory(invRecord.AccountId, invRecord.Page);
             }
@@ -49,7 +50,7 @@ internal static class AccountServices_AddNewHistoryItem
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        context.Operation.Items.Set(new Account_InvalidateFollowing(record.AccountId, 1));
+        context.Operation.Items.KeylessSet(new Account_InvalidateFollowing(record.AccountId, 1));
 
         return true;
     }

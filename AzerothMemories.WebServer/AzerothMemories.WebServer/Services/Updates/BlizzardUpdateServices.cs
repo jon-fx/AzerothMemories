@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Services.Updates;
+﻿using ActualLab.Collections;
+
+namespace AzerothMemories.WebServer.Services.Updates;
 
 public class BlizzardUpdateServices : IComputeService
 {
@@ -95,8 +97,10 @@ public class BlizzardUpdateServices : IComputeService
         var context = CommandContext.GetCurrent();
         if (Invalidation.IsActive)
         {
-            var invRecord = context.Operation.Items.Get<Updates_UpdateInvalidateMany>();
-            invRecord?.Invalidate(_commonServices);
+            if (context.Operation.Items.KeylessTryGet(out Updates_UpdateInvalidateMany? invRecord) && invRecord != null)
+            {
+                invRecord.Invalidate(_commonServices);
+            }
 
             return HttpStatusCode.NoContent;
         }
@@ -155,7 +159,7 @@ public class BlizzardUpdateServices : IComputeService
 
         _logger.LogInformation("TryUpdate: Update Required Id: {RecordId} UpdateRecordId: {UpdateRecordId}", mainRecord.Id, mainRecord.UpdateRecord.Id);
 
-        context.Operation.Items.Set(new Updates_UpdateInvalidateMany(command.AccountId, command.CharacterId, command.GuildId));
+        context.Operation.Items.KeylessSet(new Updates_UpdateInvalidateMany(command.AccountId, command.CharacterId, command.GuildId));
         context.Operation.AddEvent(mainRecord.UpdateRecord.GetUpdateCommand(), updateTime.ToTimeSpan());
 
         return HttpStatusCode.OK;
@@ -182,8 +186,10 @@ public class BlizzardUpdateServices : IComputeService
         var context = CommandContext.GetCurrent();
         if (Invalidation.IsActive)
         {
-            var invRecord = context.Operation.Items.Get<Updates_UpdateInvalidateMany>();
-            invRecord?.Invalidate(_commonServices);
+            if (context.Operation.Items.KeylessTryGet(out Updates_UpdateInvalidateMany? invRecord) && invRecord != null)
+            {
+                invRecord.Invalidate(_commonServices);
+            }
 
             return HttpStatusCode.NoContent;
         }
@@ -226,7 +232,7 @@ public class BlizzardUpdateServices : IComputeService
 
         _logger.LogInformation("ResetUpdateStatusCommand: Id: {RecordId} UpdateRecordId: {UpdateRecordId}", mainRecord.Id, mainRecord.UpdateRecord.Id);
 
-        context.Operation.Items.Set(new Updates_UpdateInvalidateMany(command.AccountId, command.CharacterId, command.GuildId));
+        context.Operation.Items.KeylessSet(new Updates_UpdateInvalidateMany(command.AccountId, command.CharacterId, command.GuildId));
 
         return HttpStatusCode.OK;
     }
@@ -237,8 +243,7 @@ public class BlizzardUpdateServices : IComputeService
         var context = CommandContext.GetCurrent();
         if (Invalidation.IsActive)
         {
-            var invRecord = context.Operation.Items.Get<Updates_UpdateAccountInvalidate>();
-            if (invRecord != null)
+            if (context.Operation.Items.KeylessTryGet(out Updates_UpdateAccountInvalidate? invRecord) && invRecord != null)
             {
                 _ = _commonServices.AdminServices.GetAccountCount();
 
@@ -266,7 +271,7 @@ public class BlizzardUpdateServices : IComputeService
         var resultStatusCode = await RunUpdateHandlers(_accountHandlers, context, database, record, cancellationToken).ConfigureAwait(false);
 
         var characters = await database.Characters.Where(x => x.AccountId == record.Id).ToDictionaryAsync(x => x.MoaRef, x => x, cancellationToken: cancellationToken).ConfigureAwait(false);
-        context.Operation.Items.Set(new Updates_UpdateAccountInvalidate(record.Id, record.FusionId, record.Username, characters.Values.Select(x => x.Id).ToHashSet()));
+        context.Operation.Items.KeylessSet(new Updates_UpdateAccountInvalidate(record.Id, record.FusionId, record.Username, characters.Values.Select(x => x.Id).ToHashSet()));
 
         return resultStatusCode;
     }
@@ -277,8 +282,7 @@ public class BlizzardUpdateServices : IComputeService
         var context = CommandContext.GetCurrent();
         if (Invalidation.IsActive)
         {
-            var invRecord = context.Operation.Items.Get<Character_InvalidateCharacterRecord>();
-            if (invRecord != null)
+            if (context.Operation.Items.KeylessTryGet(out Character_InvalidateCharacterRecord? invRecord) && invRecord != null)
             {
                 _ = _commonServices.AdminServices.GetCharacterCount();
 
@@ -317,7 +321,7 @@ public class BlizzardUpdateServices : IComputeService
             }, cancellationToken).ConfigureAwait(false);
         }
 
-        context.Operation.Items.Set(new Character_InvalidateCharacterRecord(record.Id, record.AccountId.GetValueOrDefault()));
+        context.Operation.Items.KeylessSet(new Character_InvalidateCharacterRecord(record.Id, record.AccountId.GetValueOrDefault()));
 
         return resultStatusCode;
     }
@@ -328,8 +332,7 @@ public class BlizzardUpdateServices : IComputeService
         var context = CommandContext.GetCurrent();
         if (Invalidation.IsActive)
         {
-            var invRecord = context.Operation.Items.Get<Guild_InvalidateGuildRecord>();
-            if (invRecord != null)
+            if (context.Operation.Items.KeylessTryGet(out Guild_InvalidateGuildRecord? invRecord) && invRecord != null)
             {
                 _ = _commonServices.AdminServices.GetGuildCount();
                 _ = _commonServices.AdminServices.GetCharacterCount();
@@ -361,7 +364,7 @@ public class BlizzardUpdateServices : IComputeService
 
         var characterIds = await characterQuery.ToArrayAsync(cancellationToken).ConfigureAwait(false);
 
-        context.Operation.Items.Set(new Guild_InvalidateGuildRecord(record.Id, characterIds.ToHashSet()));
+        context.Operation.Items.KeylessSet(new Guild_InvalidateGuildRecord(record.Id, characterIds.ToHashSet()));
 
         return resultStatusCode;
     }

@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Services.Handlers;
+﻿using ActualLab.Collections;
+
+namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class PostServices_TryReactToPost
 {
@@ -7,15 +9,13 @@ internal static class PostServices_TryReactToPost
         var context = CommandContext.GetCurrent();
         if (Invalidation.IsActive)
         {
-            var invPost = context.Operation.Items.Get<Post_InvalidatePost>();
-            if (invPost != null && invPost.PostId > 0)
+            if (context.Operation.Items.KeylessTryGet(out Post_InvalidatePost? invPost) && invPost != null && invPost.PostId > 0)
             {
                 _ = commonServices.PostServices.DependsOnPost(invPost.PostId);
                 _ = commonServices.PostServices.TryGetPostReactions(invPost.PostId);
             }
 
-            var invAccount = context.Operation.Items.Get<Post_InvalidateAccount>();
-            if (invAccount != null && invAccount.AccountId > 0)
+            if (context.Operation.Items.KeylessTryGet(out Post_InvalidateAccount? invAccount) && invAccount != null && invAccount.AccountId > 0)
             {
                 _ = commonServices.AccountServices.GetReactionCount(invAccount.AccountId);
             }
@@ -125,8 +125,8 @@ internal static class PostServices_TryReactToPost
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        context.Operation.Items.Set(new Post_InvalidatePost(postId));
-        context.Operation.Items.Set(new Post_InvalidateAccount(activeAccount.Id));
+        context.Operation.Items.KeylessSet(new Post_InvalidatePost(postId));
+        context.Operation.Items.KeylessSet(new Post_InvalidateAccount(activeAccount.Id));
 
         return reactionRecord.Id;
     }

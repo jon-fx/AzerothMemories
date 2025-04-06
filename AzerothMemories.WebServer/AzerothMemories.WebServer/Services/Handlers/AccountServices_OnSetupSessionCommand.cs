@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Services.Handlers;
+﻿using ActualLab.Collections;
+
+namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class AccountServices_OnSetupSessionCommand
 {
@@ -9,8 +11,7 @@ internal static class AccountServices_OnSetupSessionCommand
 
         if (Invalidation.IsActive)
         {
-            var invRecord = context.Operation.Items.Get<Account_InvalidateAccountRecord>();
-            if (invRecord != null)
+            if (context.Operation.Items.KeylessTryGet(out Account_InvalidateAccountRecord? invRecord) && invRecord != null)
             {
                 _ = commonServices.AccountServices.DependsOnAccountRecord(invRecord.Id);
                 _ = commonServices.AccountServices.TryGetAccountRecordUsername(invRecord.Username);
@@ -39,6 +40,6 @@ internal static class AccountServices_OnSetupSessionCommand
             await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        context.Operation.Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+        context.Operation.Items.KeylessSet(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
     }
 }

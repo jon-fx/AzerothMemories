@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Services.Handlers;
+﻿using ActualLab.Collections;
+
+namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class AccountServices_TryChangeAvatar
 {
@@ -7,8 +9,7 @@ internal static class AccountServices_TryChangeAvatar
         var context = CommandContext.GetCurrent();
         if (Invalidation.IsActive)
         {
-            var invRecord = context.Operation.Items.Get<Account_InvalidateAccountRecord>();
-            if (invRecord != null)
+            if (context.Operation.Items.KeylessTryGet(out Account_InvalidateAccountRecord? invRecord) && invRecord != null)
             {
                 _ = commonServices.AccountServices.DependsOnAccountRecord(invRecord.Id);
                 _ = commonServices.AccountServices.DependsOnAccountAvatar(invRecord.Id);
@@ -89,7 +90,7 @@ internal static class AccountServices_TryChangeAvatar
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        context.Operation.Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+        context.Operation.Items.KeylessSet(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
 
         if (string.IsNullOrWhiteSpace(newAvatar))
         {

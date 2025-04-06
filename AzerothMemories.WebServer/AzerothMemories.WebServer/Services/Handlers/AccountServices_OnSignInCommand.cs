@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Services.Handlers;
+﻿using ActualLab.Collections;
+
+namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class AccountServices_OnSignInCommand
 {
@@ -10,8 +12,7 @@ internal static class AccountServices_OnSignInCommand
         {
             await context.InvokeRemainingHandlers(cancellationToken).ConfigureAwait(false);
 
-            var invRecord = context.Operation.Items.Get<Account_InvalidateAccountRecord>();
-            if (invRecord != null)
+            if (context.Operation.Items.KeylessTryGet(out Account_InvalidateAccountRecord? invRecord) && invRecord != null)
             {
                 _ = commonServices.AccountServices.DependsOnAccountRecord(invRecord.Id);
                 _ = commonServices.AccountServices.TryGetAccountRecordUsername(invRecord.Username);
@@ -54,7 +55,8 @@ internal static class AccountServices_OnSignInCommand
 
         if (accountRecord == null)
         {
-            var sessionInfo = context.Operation.Items.Get<SessionInfo>();
+            context.Operation.Items.KeylessTryGet(out SessionInfo? sessionInfo);
+
             if (sessionInfo == null)
             {
                 throw new NotImplementedException();
@@ -102,7 +104,7 @@ internal static class AccountServices_OnSignInCommand
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        context.Operation.Items.Set(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
+        context.Operation.Items.KeylessSet(new Account_InvalidateAccountRecord(accountRecord.Id, accountRecord.Username, accountRecord.FusionId));
     }
 
     private static async Task<AccountRecord> GetOrCreateAccount(ICommander commander, AppDbContext database, string userId)

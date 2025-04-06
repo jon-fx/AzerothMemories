@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Services.Handlers;
+﻿using ActualLab.Collections;
+
+namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class CharacterServices_TrySetCharacterDeleted
 {
@@ -7,8 +9,7 @@ internal static class CharacterServices_TrySetCharacterDeleted
         var context = CommandContext.GetCurrent();
         if (Invalidation.IsActive)
         {
-            var invRecord = context.Operation.Items.Get<Character_InvalidateCharacterRecord>();
-            if (invRecord != null)
+            if (context.Operation.Items.KeylessTryGet(out Character_InvalidateCharacterRecord? invRecord) && invRecord != null)
             {
                 _ = commonServices.CharacterServices.DependsOnCharacterRecord(invRecord.CharacterId);
             }
@@ -45,7 +46,7 @@ internal static class CharacterServices_TrySetCharacterDeleted
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        context.Operation.Items.Set(new Character_InvalidateCharacterRecord(command.CharacterId, characterRecord.AccountId.GetValueOrDefault()));
+        context.Operation.Items.KeylessSet(new Character_InvalidateCharacterRecord(command.CharacterId, characterRecord.AccountId.GetValueOrDefault()));
 
         return true;
     }
