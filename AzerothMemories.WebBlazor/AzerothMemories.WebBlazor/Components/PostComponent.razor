@@ -144,21 +144,15 @@ else
 
             <MudDivider Class="my-1" />
 
-            @{
-                var systemTags = Post.SystemTags;
-                if (systemTags != null)
+            @foreach (var tagInfo in Post.SystemTags.SafeEnumerable())
+            {
+                if (OnTagChipClickedCallback.HasDelegate)
                 {
-                    foreach (var tagInfo in systemTags)
-                    {
-                        if (OnTagChipClickedCallback.HasDelegate)
-                        {
-                            <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClick="@(() => OnTagChipClickedCallback.InvokeAsync(tagInfo))" />
-                        }
-                        else
-                        {
-                            <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClick="@(() => Services.ClientServices.NavigationManager.NavigateTo(tagInfo.GetTagQueryLink()))" />
-                        }
-                    }
+                    <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClick="@(() => OnTagChipClickedCallback.InvokeAsync(tagInfo))"/>
+                }
+                else
+                {
+                    <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo" OnClick="@(() => Services.ClientServices.NavigationManager.NavigateTo(tagInfo.GetTagQueryLink()))"/>
                 }
             }
         </MudCardContent>

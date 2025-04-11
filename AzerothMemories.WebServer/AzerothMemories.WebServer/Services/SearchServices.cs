@@ -591,13 +591,18 @@ public class SearchServices : ISearchServices
             }
 
             var userTagInfo = await _commonServices.TagServices.TryGetUserTagInfo(PostTagType.Account, memory.AccountId).ConfigureAwait(false);
-            var blobNames = Array.Empty<string>();
+            var blobsWithTokens = new List<string>();
             if (string.IsNullOrEmpty(memory.BlobNames))
             {
             }
             else
             {
-                blobNames = memory.BlobNames.Split('|');
+                var blobNames = memory.BlobNames?.Split('|') ?? [];
+                foreach (var blobName in blobNames)
+                {
+                    var blobWithToken = await _commonServices.MediaServices.TryGetBlobWithToken(blobName).ConfigureAwait(false);
+                    blobsWithTokens.Add(blobWithToken);
+                }
             }
 
             if (results.TryGetValue(itemZonedDateTime.Year, out var activitySet))
@@ -608,7 +613,7 @@ public class SearchServices : ISearchServices
                     AccountId = memory.AccountId,
                     PostTime = memory.PostTime.ToUnixTimeMilliseconds(),
                     PostCreatedTime = memory.PostCreatedTime.ToUnixTimeMilliseconds(),
-                    BlobInfo = PostViewModelBlobInfo.CreateBlobInfo(userTagInfo.Name, memory.PostCommentMark, blobNames)
+                    BlobInfo = PostViewModelBlobInfo.CreateBlobInfo(userTagInfo.Name, memory.PostCommentMark, blobsWithTokens.ToArray())
                 });
             }
         }

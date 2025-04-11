@@ -14,6 +14,8 @@ public static class ProgramEx
 #if !DEBUG
         ActualLab.Interception.Interceptor.Options.Defaults.IsValidationEnabled = false;
 #endif
+        MudGlobal.TooltipDefaults.Delay = TimeSpan.Zero;
+        MudGlobal.TooltipDefaults.Duration = TimeSpan.Zero;
 
         services.AddMudServices(config =>
         {
@@ -54,7 +56,7 @@ public static class ProgramEx
             {
                 SleepPeriod = isWasm ? TimeSpan.Zero : TimeSpan.FromMinutes(1).ToRandom(0.25),
                 CollectPeriod = TimeSpan.FromSeconds(isWasm ? 3 : 60),
-                AccessFilter = isWasm ? static computed => computed.Input.Function is IRemoteComputeMethodFunction : static _ => true,
+                AccessFilter = isWasm ? static computed => computed.Input.Function is RemoteComputeMethodFunction : static _ => true,
                 AccessStatisticsPreprocessor = StatisticsPreprocessor,
                 RegistrationStatisticsPreprocessor = StatisticsPreprocessor
             };

@@ -34,18 +34,18 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.3" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.3" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.3" />
-        <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.4" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.4" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.4" />
+        <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.4" />
         <PackageReference Include="Markdig" Version="0.40.0" />
         <PackageReference Include="MudBlazor" Version="8.5.1" />
         <PackageReference Include="NodaTime" Version="3.2.2" />
-        <PackageReference Include="ActualLab.Fusion" Version="10.0.53" />
-        <PackageReference Include="ActualLab.CommandR" Version="10.0.53" />
-        <PackageReference Include="ActualLab.Fusion.Blazor" Version="10.0.53" />
-        <PackageReference Include="ActualLab.Fusion.Blazor.Authentication" Version="10.0.53" />
-        <PackageReference Include="ActualLab.Generators" Version="10.0.53" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
+        <PackageReference Include="ActualLab.Fusion" Version="10.1.7" />
+        <PackageReference Include="ActualLab.CommandR" Version="10.1.7" />
+        <PackageReference Include="ActualLab.Fusion.Blazor" Version="10.1.7" />
+        <PackageReference Include="ActualLab.Fusion.Blazor.Authentication" Version="10.1.7" />
+        <PackageReference Include="ActualLab.Generators" Version="10.1.7" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
