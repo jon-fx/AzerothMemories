@@ -131,7 +131,7 @@ public class MediaServices : IComputeService
     [ComputeMethod]
     public virtual async Task<MediaResult?> TryGetSiteMapNamed(SiteMapType nameType, int fileIndex)
     {
-        using var _ = new MethodTimeLogger(_logger, $"TryGetSiteMapNamed - nameType:{nameType} - fileIndex:{fileIndex}");
+        using var _ = new MethodTimeLogger(_logger, new { nameType, fileIndex }.ToString());
         var counters = await GetSiteMapCounters().ConfigureAwait(false);
         if (fileIndex >= counters[(int)nameType])
         {

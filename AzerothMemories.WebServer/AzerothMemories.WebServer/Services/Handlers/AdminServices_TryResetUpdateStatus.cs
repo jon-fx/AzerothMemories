@@ -1,4 +1,6 @@
-﻿namespace AzerothMemories.WebServer.Services.Handlers;
+﻿using AzerothMemories.WebServer.Database.Records;
+
+namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class AdminServices_TryResetUpdateStatus
 {
@@ -15,7 +17,7 @@ internal static class AdminServices_TryResetUpdateStatus
             return false;
         }
 
-        using var __ = new MethodTimeLogger(logger);
+        using var __ = new MethodTimeLogger(logger, new { command.UpdateRecordId }.ToString());
         await using var database = await commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
         var record = await database.BlizzardUpdates.FirstOrDefaultAsync(x => x.Id == command.UpdateRecordId, cancellationToken).ConfigureAwait(false);
         if (record == null)

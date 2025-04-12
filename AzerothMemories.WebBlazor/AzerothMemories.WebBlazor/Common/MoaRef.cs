@@ -21,14 +21,19 @@ public sealed class MoaRef
         Full = full.ToLower();
 
         var split = Full.Split('|');
+        if (split.Length < 6)
+        {
+            throw new NotImplementedException($"MOA Ref {full} - Too short");
+        }
+
         if (!byte.TryParse(split[1], out var regionId))
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException($"MOA Ref {full} - Invalid region");
         }
 
         if (!long.TryParse(split[4], out var id))
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException($"MOA Ref {full} - Invalid id");
         }
 
         if (!byte.TryParse(split[5], out var realmVersion))

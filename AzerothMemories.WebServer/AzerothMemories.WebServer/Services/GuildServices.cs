@@ -20,7 +20,7 @@ public class GuildServices : IGuildServices
     [ComputeMethod]
     public virtual async Task<GuildRecord?> TryGetGuildRecord(int id)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { id }.ToString());
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         var record = await database.Guilds.FirstOrDefaultAsync(r => r.Id == id).ConfigureAwait(false);
 
@@ -41,14 +41,14 @@ public class GuildServices : IGuildServices
     [ComputeMethod]
     public virtual Task<GuildMembersViewModel> TryGetGuildMembers(Session session, int guildId, int pageIndex)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { session, guildId, pageIndex }.ToString());
         return TryGetGuildMembers(guildId, pageIndex);
     }
 
     [ComputeMethod]
     public virtual async Task<GuildRecord> GetOrCreate(string refFull)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { refFull }.ToString());
         var moaRef = new MoaRef(refFull);
         Exceptions.ThrowIf(moaRef.IsValidCharacter);
         Exceptions.ThrowIf(moaRef.IsWildCard);
@@ -87,7 +87,7 @@ public class GuildServices : IGuildServices
     [ComputeMethod]
     public virtual async Task<GuildViewModel?> TryGetGuild(Session session, int guildId)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { session, guildId }.ToString());
         var guildRecord = await TryGetGuildRecord(guildId).ConfigureAwait(false);
         if (guildRecord == null)
         {
@@ -101,7 +101,7 @@ public class GuildServices : IGuildServices
     [ComputeMethod]
     protected virtual async Task<GuildMembersViewModel> TryGetGuildMembers(int guildId, int pageIndex)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { guildId, pageIndex }.ToString());
         var membersPerPage = 50;
         var allCharacters = await TryGetAllMembers(guildId).ConfigureAwait(false);
         var currentSet = allCharacters.Skip(membersPerPage * pageIndex).Take(membersPerPage);
@@ -124,7 +124,7 @@ public class GuildServices : IGuildServices
     [ComputeMethod]
     protected virtual async Task<CharacterRecord[]> TryGetAllMembers(int guildId)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { guildId }.ToString());
         var guildRecord = await TryGetGuildRecord(guildId).ConfigureAwait(false);
         if (guildRecord == null)
         {
@@ -144,7 +144,7 @@ public class GuildServices : IGuildServices
     [ComputeMethod]
     public virtual async Task<GuildViewModel?> TryGetGuild(Session session, BlizzardRegion region, BlizzardRealmVersion realmVersion, string? realmSlug, string? guildName)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { session, region, realmVersion, realmSlug, guildName }.ToString());
         if (region is <= 0 or >= BlizzardRegion.Count || string.IsNullOrWhiteSpace(realmSlug) || string.IsNullOrWhiteSpace(guildName))
         {
             return null;

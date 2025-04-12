@@ -20,7 +20,7 @@ public class CharacterServices : ICharacterServices
     [ComputeMethod]
     public virtual async Task<CharacterRecord?> TryGetCharacterRecord(int id)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { id }.ToString());
         await DependsOnCharacterRecord(id).ConfigureAwait(false);
 
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
@@ -42,7 +42,7 @@ public class CharacterServices : ICharacterServices
     [ComputeMethod]
     public virtual async Task<CharacterRecord?> TryGetCharacterRecord(int id, bool enqueueUpdate)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { id, enqueueUpdate }.ToString());
 
         var record = await TryGetCharacterRecord(id).ConfigureAwait(false);
         if (record != null)
@@ -64,7 +64,7 @@ public class CharacterServices : ICharacterServices
     [ComputeMethod]
     public virtual async Task<CharacterRecord> GetOrCreateCharacterRecord(string refFull)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { refFull }.ToString());
         var moaRef = new MoaRef(refFull);
         Exceptions.ThrowIf(moaRef.IsValidGuild);
         Exceptions.ThrowIf(moaRef.IsWildCard);
@@ -101,7 +101,7 @@ public class CharacterServices : ICharacterServices
     [ComputeMethod]
     public virtual async Task<CharacterRecord> GetOrCreateCharacterRecord(string refFull, bool enqueueUpdate)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { refFull, enqueueUpdate }.ToString());
 
         var characterRecord = await GetOrCreateCharacterRecord(refFull).ConfigureAwait(false);
 
@@ -116,7 +116,7 @@ public class CharacterServices : ICharacterServices
     [ComputeMethod]
     public virtual async Task<Dictionary<int, CharacterViewModel>> TryGetAllAccountCharacters(int accountId)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { accountId }.ToString());
         //await _commonServices.AccountServices.DependsOnAccountRecord(accountId);
 
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
@@ -144,7 +144,7 @@ public class CharacterServices : ICharacterServices
     [ComputeMethod]
     public virtual async Task<CharacterAccountViewModel> TryGetCharacter(Session session, int characterId, bool enqueueUpdate)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { session, characterId, enqueueUpdate }.ToString());
         var results = new CharacterAccountViewModel();
 
         var characterRecord = await TryGetCharacterRecord(characterId, enqueueUpdate).ConfigureAwait(false);
@@ -167,7 +167,7 @@ public class CharacterServices : ICharacterServices
     [ComputeMethod]
     public virtual async Task<CharacterAccountViewModel?> TryGetCharacter(Session session, BlizzardRegion region, BlizzardRealmVersion realmVersion, string realmSlug, string characterName, bool enqueueUpdate)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { session, region, realmVersion, realmSlug, characterName, enqueueUpdate }.ToString());
         if (region is <= 0 or >= BlizzardRegion.Count || string.IsNullOrWhiteSpace(realmSlug) || string.IsNullOrWhiteSpace(characterName))
         {
             return null;
@@ -216,7 +216,7 @@ public class CharacterServices : ICharacterServices
     [ComputeMethod]
     protected virtual async Task<MoaRef?> GetFullCharacterRef(BlizzardRegion region, BlizzardRealmVersion realmVersion, string realmSlug, string characterName)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { region, realmVersion, realmSlug, characterName }.ToString());
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var validRealm = await _commonServices.TagServices.IsValidRealmInfo(region, realmVersion, realmSlug).ConfigureAwait(false);

@@ -62,7 +62,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<bool> CanAccountSeePost(int activeAccountId, int postAccountId, byte postVisibility)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { activeAccountId, postAccountId, postVisibility }.ToString());
         if (postVisibility == 0)
         {
             return true;
@@ -103,7 +103,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<PostViewModel?> TryGetPostViewModel(int activeAccountId, int postId, ServerSideLocale locale)
     {
-        using var _ = new MethodTimeLogger(_logger, $"activeAccountId: {activeAccountId} - postId: {postId} - locale: {locale}");
+        using var _ = new MethodTimeLogger(_logger, new { activeAccountId, postId, locale }.ToString());
         var postRecord = await TryGetPostRecord(postId).ConfigureAwait(false);
         if (postRecord == null)
         {
@@ -169,7 +169,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<PostViewModel?> TryGetPostViewModel(Session session, int postAccountId, int postId, ServerSideLocale locale)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { session, postAccountId, postId, locale }.ToString());
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         var activeAccountId = activeAccount?.Id ?? 0;
 
@@ -197,7 +197,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<Dictionary<int, PostReactionViewModel>> TryGetPostReactions(int postId)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { postId }.ToString());
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var query = from r in database.PostReactions
@@ -219,7 +219,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<Dictionary<int, PostReactionViewModel>> TryGetPostCommentReactions(int commentId)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { commentId }.ToString());
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var query = from r in database.PostCommentReactions
@@ -241,7 +241,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<PostReactionViewModel[]?> TryGetReactions(Session session, int postId)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { session, postId }.ToString());
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         var activeAccountId = activeAccount?.Id ?? 0;
         var postRecord = await TryGetPostRecord(postId).ConfigureAwait(false);
@@ -263,7 +263,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<PostCommentPageViewModel?> TryGetCommentsPage(Session session, int postId, int page, int focusedCommentId)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { session, postId, page, focusedCommentId }.ToString());
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         var activeAccountId = activeAccount?.Id ?? 0;
         var postRecord = await TryGetPostRecord(postId).ConfigureAwait(false);
@@ -284,7 +284,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<PostReactionViewModel[]?> TryGetCommentReactionData(Session session, int postId, int commentId)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { session, postId, commentId }.ToString());
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         var activeAccountId = activeAccount?.Id ?? 0;
         var postRecord = await TryGetPostRecord(postId).ConfigureAwait(false);
@@ -313,7 +313,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     protected virtual async Task<PostCommentPageViewModel> TryGetPostCommentsByPage(int postId, int page, int focusedCommentId)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { postId, page, focusedCommentId }.ToString());
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var allCommentPages = await TryGetAllPostComments(postId).ConfigureAwait(false);
@@ -338,7 +338,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<PostCommentPageViewModel[]> TryGetAllPostComments(int postId)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { postId }.ToString());
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var query = from c in database.PostComments
@@ -412,7 +412,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<Dictionary<int, PostCommentReactionViewModel>> TryGetMyCommentReactions(Session session, int postId)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { session, postId }.ToString());
         var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
         var activeAccountId = activeAccount?.Id ?? 0;
         var postRecord = await TryGetPostRecord(postId).ConfigureAwait(false);
@@ -503,7 +503,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<Dictionary<int, PostCommentReactionViewModel>> TryGetMyCommentReactions(int activeAccountId, int postId)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { activeAccountId, postId }.ToString());
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var query = from reaction in database.PostCommentReactions
@@ -517,7 +517,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<PostRecord?> TryGetPostRecord(int postId)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { postId }.ToString());
         await DependsOnPost(postId).ConfigureAwait(false);
 
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
@@ -528,7 +528,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     protected virtual async Task<PostTagInfo[]> GetAllPostTagRecord(int postId, ServerSideLocale locale)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { postId, locale }.ToString());
         var allTagRecords = await GetAllPostTags(postId).ConfigureAwait(false);
         var tasks = new List<Task<PostTagInfo>>();
 
@@ -550,7 +550,7 @@ public class PostServices : IPostServices
     [ComputeMethod]
     public virtual async Task<PostTagRecord[]> GetAllPostTags(int postId)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { postId }.ToString());
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var query = from tag in database.PostTags

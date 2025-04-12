@@ -14,7 +14,7 @@ public class FollowingServices : IFollowingServices
     [ComputeMethod]
     public virtual async Task<Dictionary<int, AccountFollowingViewModel>> TryGetAccountFollowing(int accountId)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { accountId }.ToString());
         if (accountId == 0)
         {
             return new Dictionary<int, AccountFollowingViewModel>();
@@ -41,7 +41,7 @@ public class FollowingServices : IFollowingServices
     [ComputeMethod]
     public virtual async Task<Dictionary<int, AccountFollowingViewModel>> TryGetAccountFollowers(int accountId)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { accountId }.ToString());
         if (accountId == 0)
         {
             return new Dictionary<int, AccountFollowingViewModel>();

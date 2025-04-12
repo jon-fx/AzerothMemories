@@ -70,7 +70,7 @@ public sealed partial class AccountHistoryViewModel
                 {
                     var moaRef = new MoaRef(character.Ref);
                     var region = moaRef.Region.ToInfo();
-                    var nameLink = $"<a class='wowclass-{character.Class}' href='character/{region.TwoLettersLower}/{moaRef.Realm}/{character.Name}'>{character.Name}</a>";
+                    var nameLink = $"<a class='wowclass-{character.Class}' href='character/{region.TwoLettersLower}/{moaRef.RealmVersion.ToValue()}/{moaRef.Realm}/{character.Name}'>{character.Name}</a>";
                     name = $"{nameLink} ({stringLocalizer[$"Realm-{character.RealmId}"]})";
                 }
 

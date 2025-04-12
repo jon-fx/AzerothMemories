@@ -38,7 +38,7 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<AccountRecord?> TryGetAccountRecord(int id)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { id }.ToString());
         await DependsOnAccountRecord(id).ConfigureAwait(false);
 
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
@@ -55,7 +55,7 @@ public class AccountServices : IAccountServices
             return null;
         }
 
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { fusionId }.ToString());
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         var accountRecord = await database.Accounts.FirstOrDefaultAsync(a => a.FusionId == fusionId).ConfigureAwait(false);
         if (accountRecord != null)
@@ -74,7 +74,7 @@ public class AccountServices : IAccountServices
             return null;
         }
 
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { username }.ToString());
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         var accountRecord = await database.Accounts.FirstOrDefaultAsync(a => a.Username == username).ConfigureAwait(false);
 
@@ -95,7 +95,7 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<AccountViewModel?> TryGetActiveAccount(Session session)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { session }.ToString());
         var accountRecord = await TryGetActiveAccountRecord(session).ConfigureAwait(false);
         if (accountRecord == null)
         {
@@ -109,7 +109,7 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<AccountViewModel?> TryGetAccountById(Session session, int accountId)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { session, accountId }.ToString());
         await DependsOnAccountRecord(accountId).ConfigureAwait(false);
 
         var sessionAccount = await TryGetActiveAccount(session).ConfigureAwait(false);
@@ -133,7 +133,7 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<AccountViewModel?> TryGetAccountByUsername(Session session, string username)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { session, username }.ToString());
         var sessionAccount = await TryGetActiveAccount(session).ConfigureAwait(false);
         if (sessionAccount != null && sessionAccount.Username == username)
         {
@@ -157,7 +157,7 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<AccountViewModel> CreateAccountViewModel(AccountRecord accountRecord, bool activeOrAdmin)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { accountRecord.Id, activeOrAdmin }.ToString());
         await DependsOnAccountRecord(accountRecord.Id).ConfigureAwait(false);
 
         await _commonServices.BlizzardUpdateHandler.TryUpdate(accountRecord).ConfigureAwait(false);
@@ -194,7 +194,7 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<int> GetPostCount(int accountId)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { accountId }.ToString());
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         return await database.Posts.Where(x => x.AccountId == accountId).CountAsync().ConfigureAwait(false);
     }
@@ -202,7 +202,7 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<int> GetMemoryCount(int accountId)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { accountId }.ToString());
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         return await database.PostTags.Where(x => x.TagType == PostTagType.Account && x.TagId == accountId && x.TagKind == PostTagKind.PostRestored).CountAsync().ConfigureAwait(false);
     }
@@ -210,7 +210,7 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<int> GetCommentCount(int accountId)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { accountId }.ToString());
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         return await database.PostComments.Where(x => x.AccountId == accountId).CountAsync().ConfigureAwait(false);
     }
@@ -218,7 +218,7 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<int> GetReactionCount(int accountId)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { accountId }.ToString());
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
         var postCount = await database.PostReactions.Where(x => x.AccountId == accountId && x.Reaction > PostReaction.None).CountAsync().ConfigureAwait(false);
         var commentCount = await database.PostCommentReactions.Where(x => x.AccountId == accountId && x.Reaction > PostReaction.None).CountAsync().ConfigureAwait(false);
@@ -235,7 +235,7 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<bool> CheckIsValidUsername(string username)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { username }.ToString());
         if (!DatabaseHelpers.IsValidAccountName(username))
         {
             return false;
@@ -303,7 +303,7 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<PostViewModel[]> TrySearchPostsByTime(Session session, long timeStamp, int diffInSeconds, ServerSideLocale locale)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { session, timeStamp, diffInSeconds }.ToString());
         var accountRecord = await TryGetActiveAccountRecord(session).ConfigureAwait(false);
         if (accountRecord == null)
         {
@@ -336,7 +336,7 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, long timeStamp, int diffInSeconds, ServerSideLocale locale)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { session, timeStamp, diffInSeconds, locale }.ToString());
         var accountRecord = await TryGetActiveAccountRecord(session).ConfigureAwait(false);
         if (accountRecord == null)
         {
@@ -385,7 +385,7 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<AccountHistoryPageResult?> TryGetAccountHistory(Session session, int currentPage)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { session, currentPage }.ToString());
         var activeAccount = await TryGetActiveAccount(session).ConfigureAwait(false);
         if (activeAccount == null)
         {
@@ -403,7 +403,7 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<AccountHistoryPageResult> TryGetAccountHistory(int activeAccountId, int currentPage)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { activeAccountId, currentPage }.ToString());
         Exceptions.ThrowIf(activeAccountId == 0);
         Exceptions.ThrowIf(currentPage == 0);
 
@@ -452,7 +452,7 @@ public class AccountServices : IAccountServices
     [ComputeMethod]
     public virtual async Task<AccountRecord?> TryGetActiveAccountRecord(Session? session)
     {
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { session }.ToString());
         if (session == null)
         {
             return null;
