@@ -1,6 +1,4 @@
-﻿using AzerothMemories.WebServer.Database.Records;
-
-namespace AzerothMemories.WebServer.Services.Handlers;
+﻿namespace AzerothMemories.WebServer.Services.Handlers;
 
 internal static class AdminServices_TryResetUpdateStatus
 {

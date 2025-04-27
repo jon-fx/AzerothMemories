@@ -3,7 +3,6 @@
 [DataContract, MemoryPackable]
 public sealed partial class SearchPostsResults
 {
-    [JsonInclude, DataMember, MemoryPackInclude] public int TotalPages { get; set; }
     [JsonInclude, DataMember, MemoryPackInclude] public int CurrentPage { get; set; }
 
     [JsonInclude, DataMember, MemoryPackInclude] public long MinTime { get; set; }
@@ -11,5 +10,6 @@ public sealed partial class SearchPostsResults
     [JsonInclude, DataMember, MemoryPackInclude] public PostSortMode SortMode { get; set; }
 
     [JsonInclude, DataMember, MemoryPackInclude] public PostTagInfo[] Tags { get; set; } = [];
-    [JsonInclude, DataMember, MemoryPackInclude] public PostViewModel[] PostViewModels { get; set; } = [];
+    [JsonInclude, DataMember, MemoryPackInclude] public PostInfo[] PostInfos { get; set; } = [];
+    [JsonInclude, DataMember, MemoryPackInclude] public PostViewModel?[] PostViewModels { get; set; } = [];
 }

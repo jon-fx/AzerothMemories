@@ -19,21 +19,36 @@ public sealed class PostSearchHelper
 
     public IMoaServices Services => _services;
 
-    public bool NoResults => _searchResults.PostViewModels.Length == 0;
+    public bool NoResults => _searchResults.PostInfos.Length == 0;
 
     public int CurrentPage => _searchResults.CurrentPage;
 
-    public int TotalPages => _searchResults.TotalPages;
+    public int TotalPages
+    {
+        get
+        {
+            if (_searchResults.PostInfos.Length > 0)
+            {
+                return (int)Math.Ceiling(_searchResults.PostInfos.Length / (float)ZExtensions.PostsPerPage);
+            }
+
+            return 1;
+        }
+    }
 
     public PostSortMode PostSortMode => _searchResults.SortMode;
 
     public PostTagInfo[] SelectedSearchTags => _searchResults.Tags;
 
-    public PostViewModel[] CurrentPosts => _searchResults.PostViewModels;
+    public PostViewModel?[] CurrentPosts => _searchResults.PostViewModels;
 
     public bool IsLoading { get; private set; }
 
     public SearchPostsResults SearchResults => _searchResults;
+
+    public int StartIndex => Math.Clamp((CurrentPage - 1) * ZExtensions.PostsPerPage, 0, _searchResults.PostInfos.Length);
+
+    public int EndIndex => Math.Clamp(StartIndex + ZExtensions.PostsPerPage, 0, _searchResults.PostInfos.Length);
 
     public async Task<SearchPostsResults> ComputeState(string[] tagStrings, string? sortModeString, string? currentPageString, string? postMinTimeString, string? postMaxTimeString)
     {
@@ -70,9 +85,28 @@ public sealed class PostSearchHelper
 
         IsLoading = true;
 
-        var searchResults = await _services.ComputeServices.SearchServices.TrySearchPosts(Services.ClientServices.Session,  tagStrings, sortMode, currentPage, minTime, maxTime, ServerSideLocaleExt.GetServerSideLocale());
+        var searchResults = await _services.ComputeServices.SearchServices.TrySearchPosts(Services.ClientServices.Session, tagStrings, sortMode, currentPage, minTime, maxTime, ServerSideLocaleExt.GetServerSideLocale());
+        var oldViewModels = _searchResults.PostViewModels.SafeEnumerable().ToDictionary(x => x.Id, x => x);
 
         _searchResults = searchResults;
+
+        var temp = _searchResults.PostViewModels;
+        Array.Resize(ref temp, _searchResults.PostInfos.Length);
+
+        _searchResults.PostViewModels = temp;
+        _searchResults.CurrentPage = Math.Clamp(currentPage, 1, Math.Max(TotalPages, 1));
+
+        for (var i = 0; i < _searchResults.PostInfos.Length; i++)
+        {
+            var postId = _searchResults.PostInfos[i].PostId;
+
+            oldViewModels.TryGetValue(postId, out var postViewModel);
+
+            if (_searchResults.PostViewModels[i] == null && postViewModel != null)
+            {
+                _searchResults.PostViewModels[i] = postViewModel;
+            }
+        }
 
         MinDateTime = _searchResults.MinTime > 0 ? Instant.FromUnixTimeMilliseconds(_searchResults.MinTime) : null;
         MaxDateTime = _searchResults.MaxTime > 0 ? Instant.FromUnixTimeMilliseconds(_searchResults.MaxTime) : null;

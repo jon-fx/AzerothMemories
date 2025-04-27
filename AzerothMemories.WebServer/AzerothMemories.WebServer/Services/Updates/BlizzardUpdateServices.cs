@@ -109,7 +109,7 @@ public class BlizzardUpdateServices : IComputeService
         Exceptions.ThrowIf(temp.All(x => x == null));
         Exceptions.ThrowIf(temp.FirstOrDefault(x => x != null) == null);
 
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { command.AccountId, command.CharacterId, command.GuildId, command.ForcedUpdate, command.RequiredChildRecordCount }.ToString());
         await using var database = await _commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
 
         IBlizzardUpdateRecord? mainRecord = null;
@@ -198,7 +198,7 @@ public class BlizzardUpdateServices : IComputeService
         Exceptions.ThrowIf(temp.All(x => x == null));
         Exceptions.ThrowIf(temp.FirstOrDefault(x => x != null) == null);
 
-        using var _ = new MethodTimeLogger(_logger);
+        using var _ = new MethodTimeLogger(_logger, new { command.AccountId, command.CharacterId, command.GuildId }.ToString());
         await using var database = await _commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
 
         IBlizzardUpdateRecord? mainRecord = null;
@@ -260,7 +260,7 @@ public class BlizzardUpdateServices : IComputeService
             return default;
         }
 
-        using var __ = new MethodTimeLogger(_logger);
+        using var __ = new MethodTimeLogger(_logger, new { command.AccountId }.ToString());
         await using var database = await _commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
         var record = await database.Accounts.FirstOrDefaultAsync(x => x.Id == command.AccountId, cancellationToken).ConfigureAwait(false);
         if (record == null)
@@ -301,7 +301,7 @@ public class BlizzardUpdateServices : IComputeService
             return default;
         }
 
-        using var __ = new MethodTimeLogger(_logger);
+        using var __ = new MethodTimeLogger(_logger, new { command.CharacterId }.ToString());
         await using var database = await _commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
         var record = await database.Characters.FirstOrDefaultAsync(x => x.Id == command.CharacterId, cancellationToken).ConfigureAwait(false);
         if (record == null)
@@ -348,7 +348,7 @@ public class BlizzardUpdateServices : IComputeService
             return default;
         }
 
-        using var __ = new MethodTimeLogger(_logger);
+        using var __ = new MethodTimeLogger(_logger, new { command.GuildId }.ToString());
         await using var database = await _commonServices.DatabaseHub.CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
         var record = await database.Guilds.FirstOrDefaultAsync(x => x.Id == command.GuildId, cancellationToken).ConfigureAwait(false);
         if (record == null)

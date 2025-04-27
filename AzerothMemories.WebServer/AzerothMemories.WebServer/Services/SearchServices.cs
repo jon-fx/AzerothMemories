@@ -810,15 +810,12 @@ public class SearchServices : ISearchServices
         }
 
         var allSearchResult = await TrySearchPosts(serverSideTagStrings, sortMode, postMinTime, postMaxTime).ConfigureAwait(false);
-        var allPostViewModels = Array.Empty<PostViewModel>();
-        var totalPages = (int)Math.Ceiling(allSearchResult.Length / (float)ZExtensions.PostsPerPage);
+        var allPostInfos = Array.Empty<PostInfo>();
         if (allSearchResult.Length > 0)
         {
             var activeAccount = await _commonServices.AccountServices.TryGetActiveAccount(session).ConfigureAwait(false);
             var activeAccountId = activeAccount?.Id ?? 0;
-
-            currentPage = Math.Clamp(currentPage, 1, totalPages);
-            allPostViewModels = await GetPostViewModelsForPage(activeAccountId, allSearchResult, currentPage, ZExtensions.PostsPerPage, locale).ConfigureAwait(false);
+            allPostInfos = await GetPostThatAreVisible(activeAccountId, allSearchResult).ConfigureAwait(false);
         }
 
         return new SearchPostsResults
@@ -827,9 +824,8 @@ public class SearchServices : ISearchServices
             MinTime = postMinTime,
             MaxTime = postMaxTime,
             Tags = searchPostTags,
-            TotalPages = totalPages,
             SortMode = sortMode,
-            PostViewModels = allPostViewModels
+            PostInfos = allPostInfos
         };
     }
 
@@ -849,34 +845,6 @@ public class SearchServices : ISearchServices
         }
 
         return visiblePosts.ToArray<PostInfo>();
-    }
-
-    private async Task<PostViewModel[]> GetPostViewModelsForPage(int activeAccountId, PostInfoEx[] allSearchResult, int currentPage, int postsPerPage, ServerSideLocale locale)
-    {
-        using var _ = new MethodTimeLogger(_logger, new { activeAccountId, currentPage, postsPerPage, locale }.ToString());
-
-        var viewModels = new List<PostViewModel>();
-        var visiblePosts = await GetPostThatAreVisible(activeAccountId, allSearchResult).ConfigureAwait(false);
-
-        for (var i = (currentPage - 1) * postsPerPage; i < visiblePosts.Length; i++)
-        {
-            var postInfo = visiblePosts[i];
-            var postViewModel = await _commonServices.PostServices.TryGetPostViewModel(activeAccountId, postInfo.PostId, locale).ConfigureAwait(false);
-            if (postViewModel == null)
-            {
-            }
-            else
-            {
-                viewModels.Add(postViewModel);
-
-                if (viewModels.Count >= postsPerPage)
-                {
-                    break;
-                }
-            }
-        }
-
-        return viewModels.ToArray();
     }
 
     [ComputeMethod]
@@ -904,9 +872,11 @@ public class SearchServices : ISearchServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<PostInfoEx[]> TrySearchPosts(HashSet<string> tagStrings, PostSortMode sortMode, long minTime, long maxTime)
+    protected virtual async Task<PostInfoEx[]> TrySearchPosts(HashSet<string>? tagStrings, PostSortMode sortMode, long minTime, long maxTime)
     {
-        using var _ = new MethodTimeLogger(_logger, new { tagStrings = string.Join(',', tagStrings ?? []), sortMode, minTime, maxTime }.ToString());
+        tagStrings ??= [];
+
+        using var _ = new MethodTimeLogger(_logger, new { tagStrings = string.Join(',', tagStrings), sortMode, minTime, maxTime }.ToString());
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
         var taskList = new List<Task>();

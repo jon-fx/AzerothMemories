@@ -11,7 +11,7 @@
         var postId = $"moa-post-{postViewModel.Id}";
 
         <div id="@postId">
-            <PostComponent @key="@postId" Services="@Services" Post="@postViewModel" />
+            <PostComponent @key="@postId" Services="@Services" Post="@postViewModel" OnTagChipClickedCallback="OnTagChipClickedCallback" />
         </div>
     }
 }
@@ -26,13 +26,15 @@
 
     [Parameter, EditorRequired] public required PostViewModel?[] PostViewModels { get; init; }
 
+    [Parameter] public EventCallback<PostTagInfo> OnTagChipClickedCallback { get; init; }
+
     private PostViewModel? PostViewModel => PostViewModels[PostIndex];
 
     protected override async Task<PostViewModel?> ComputeState(CancellationToken cancellationToken)
     {
         var postInfo = PostInfos[PostIndex];
         var locale = ServerSideLocaleExt.GetServerSideLocale();
-        PostViewModels[PostIndex] = await Services.ComputeServices.PostServices.TryGetPostViewModel(Services.ClientServices.Session,  postInfo.AccountId, postInfo.PostId, locale);
+        PostViewModels[PostIndex] = await Services.ComputeServices.PostServices.TryGetPostViewModel(Services.ClientServices.Session, postInfo.AccountId, postInfo.PostId, locale);
 
         return PostViewModels[PostIndex];
     }

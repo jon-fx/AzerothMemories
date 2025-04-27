@@ -16,18 +16,18 @@ else if (PostSearchHelper.CurrentPosts.Length > 0)
         </MudCardContent>
     </MudCard>
 
-    foreach (var post in PostSearchHelper.CurrentPosts)
+    for (var i = PostSearchHelper.StartIndex; i < PostSearchHelper.EndIndex; i++)
     {
-        var postId = $"moa-post-{post.Id}";
-
+        var postIndex = i;
+        var postId = $"moa-post-{PostSearchHelper.SearchResults.PostInfos[i].PostId}";
         <div id="@postId">
             @if (IsSearchPage)
             {
-                <PostComponent @key="@postId" Services="@PostSearchHelper.Services" Post="@post" OnTagChipClickedCallback="@PostSearchHelper.OnTagChipClickedCallback" />
+                <PostComponentEx Services="@PostSearchHelper.Services" PostIndex="postIndex" PostInfos="@PostSearchHelper.SearchResults.PostInfos" PostViewModels="@PostSearchHelper.SearchResults.PostViewModels" OnTagChipClickedCallback="@PostSearchHelper.OnTagChipClickedCallback" />
             }
             else
             {
-                <PostComponent @key="@postId" Services="@PostSearchHelper.Services" Post="@post" />
+                <PostComponentEx Services="@PostSearchHelper.Services" PostIndex="postIndex" PostInfos="@PostSearchHelper.SearchResults.PostInfos" PostViewModels="@PostSearchHelper.SearchResults.PostViewModels" />
             }
         </div>
     }
