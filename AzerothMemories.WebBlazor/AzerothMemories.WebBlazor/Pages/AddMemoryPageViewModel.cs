@@ -18,7 +18,7 @@ public sealed class AddMemoryPageViewModel : ViewModelBase, IViewModel<AddMemory
 
     public AddMemoryComponentSharedData? SharedData { get; private set; }
 
-    public async Task Initialize(InputFileChangeEventArgs? arg)
+    public async Task Initialize(IReadOnlyList<IBrowserFile>? arg)
     {
         await Reset();
 
@@ -29,12 +29,9 @@ public sealed class AddMemoryPageViewModel : ViewModelBase, IViewModel<AddMemory
 
         await SharedData.InitializeAccount(() => Services.ClientServices.ActiveAccountServices.AccountViewModel);
 
-        if (arg != null)
+        foreach (var file in arg.SafeEnumerable())
         {
-            foreach (var file in arg.GetMultipleFiles())
-            {
-                await TryAddFile(file);
-            }
+            await TryAddFile(file);
         }
 
         if (UploadedImages.Count == 0)
@@ -51,7 +48,7 @@ public sealed class AddMemoryPageViewModel : ViewModelBase, IViewModel<AddMemory
         OnViewModelChanged();
     }
 
-    public async Task UploadMoreImages(InputFileChangeEventArgs arg)
+    public async Task UploadMoreImages(IReadOnlyList<IBrowserFile>? arg)
     {
         if (MaxUploadReached)
         {
@@ -60,7 +57,7 @@ public sealed class AddMemoryPageViewModel : ViewModelBase, IViewModel<AddMemory
 
         await Services.ClientServices.DialogService.ShowLoadingDialog();
 
-        foreach (var file in arg.GetMultipleFiles())
+        foreach (var file in arg.SafeEnumerable())
         {
             await TryAddFile(file);
         }

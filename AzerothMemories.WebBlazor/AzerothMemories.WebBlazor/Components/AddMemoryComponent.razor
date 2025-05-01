@@ -31,8 +31,11 @@
     </MudPaper>
 
     <MudPaper Class="@ClassPresets.Card" Outlined="true" Elevation="10">
-        <InputFile id="fileInput2" OnChange="ViewModel.UploadMoreImages" hidden multiple accept="@ZExtensions.UploadAcceptExtensions" />
-        <MudButton HtmlTag="label" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Material.Filled.CloudUpload" Disabled="@ViewModel.MaxUploadReached" for="fileInput2">Upload Images</MudButton>
+        <MudFileUpload T="IReadOnlyList<IBrowserFile>" Accept="@ZExtensions.UploadAcceptExtensions" FilesChanged="ViewModel.UploadMoreImages" MaximumFileCount="100" Disabled="@ViewModel.MaxUploadReached">
+            <ActivatorContent>
+                <MudButton Class="@ClassPresets.DefaultPadding" HtmlTag="label" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Material.Filled.CloudUpload">Upload Image</MudButton>
+            </ActivatorContent>
+        </MudFileUpload>
     </MudPaper>
 
     <AddMemoryMainTagComponent Services="Services" SharedData="@ViewModel.SharedData" />
