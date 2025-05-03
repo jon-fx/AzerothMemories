@@ -4,15 +4,18 @@ namespace AzerothMemories.WebBlazor.Pages;
 
 public sealed class CheckMemoryPageViewModel : ViewModelBase, IViewModel<CheckMemoryPageViewModel>
 {
-    private CheckMemoryInput[] _checkMemoryInputs = [];
-    private CheckMemoryViewModel[] _checkMemoryResults = [];
+    private CheckMemoryInput[] _checkMemoryInfo = [];
+    private CheckMemoryViewModel?[] _checkMemoryViewModels = [];
+    private CheckMemoryResult? _checkMemoryResults;
 
     private CheckMemoryPageViewModel(IMoaServices services, Action onViewModelChanged) : base(services, onViewModelChanged)
     {
         AddMemoryPageViewModel = AddMemoryPageViewModel.CreateViewModel(services, onViewModelChanged);
     }
 
-    public CheckMemoryViewModel[] CheckMemoryResults => _checkMemoryResults.Where(x => x != null).ToArray();
+    public PostViewModel[] AllPostViewModels => _checkMemoryResults?.Posts ?? [];
+
+    public CheckMemoryViewModel[] CheckMemoryViewModels => _checkMemoryViewModels.Where(x => x != null).ToArray()!;
 
     public bool IsButtonDisabled { get; set; }
 
@@ -46,8 +49,8 @@ public sealed class CheckMemoryPageViewModel : ViewModelBase, IViewModel<CheckMe
             checkMemoryInputs.Add(new CheckMemoryInput { Flags = flags, ScreenShotUnixTime = screenShotUnixTime, BrowserFile = file });
         }
 
-        _checkMemoryInputs = checkMemoryInputs.OrderByDescending(x => x.ScreenShotUnixTime).ToArray();
-        _checkMemoryResults = new CheckMemoryViewModel[_checkMemoryInputs.Length];
+        _checkMemoryInfo = checkMemoryInputs.OrderByDescending(x => x.ScreenShotUnixTime).ToArray();
+        _checkMemoryViewModels = new CheckMemoryViewModel[_checkMemoryInfo.Length];
 
         OnViewModelChanged();
     }
@@ -56,21 +59,41 @@ public sealed class CheckMemoryPageViewModel : ViewModelBase, IViewModel<CheckMe
     {
         await base.ComputeState(cancellationToken);
 
-        for (var i = 0; i < _checkMemoryInputs.Length; i++)
+        var checkMemoryResult = await Services.ComputeServices.AccountServices.TryCheckMemory(Services.ClientServices.Session, ServerSideLocaleExt.GetServerSideLocale());
+        for (var i = 0; i < _checkMemoryViewModels.Length; i++)
         {
-            var checkMemoryInput = _checkMemoryInputs[i];
-            var result = await Services.ComputeServices.AccountServices.TryCheckMemory(Services.ClientServices.Session, checkMemoryInput.ScreenShotUnixTime, ServerSideLocaleExt.GetServerSideLocale());
-
-            _checkMemoryResults[i] = new CheckMemoryViewModel
+            var checkMemoryInput = _checkMemoryInfo[i];
+            if (checkMemoryInput.ScreenShotUnixTime > 0)
             {
-                Flags = checkMemoryInput.Flags,
-                ScreenShotUnixTime = checkMemoryInput.ScreenShotUnixTime,
-                BrowserFile = checkMemoryInput.BrowserFile.ThrowIfNull(),
-                CurrentPosts = result.CurrentPosts,
-                Achievements = result.Achievements,
-                MatchingAchievements = result.MatchingAchievements,
-            };
+                var (min, max) = ZExtensions.ClampTimeMinMaxAsLong(checkMemoryInput.ScreenShotUnixTime, 120);
+                var currentPosts = checkMemoryResult.Posts.Where(x => x.PostTime > min && x.PostTime < max).ToArray();
+                var currentAchievements = checkMemoryResult.Achievements.Where(x => x.TimeStamp > min && x.TimeStamp < max).Select(x => x.Achievement).ToHashSet(PostTagInfo.EqualityComparer1).ToArray();
+                var matchingAchievements = 0;
+
+                foreach (var achievement in currentAchievements)
+                {
+                    foreach (var postViewModel in currentPosts)
+                    {
+                        if (postViewModel.SystemTags.SafeEnumerable().ToHashSet(PostTagInfo.EqualityComparer1).Contains(achievement))
+                        {
+                            matchingAchievements++;
+                        }
+                    }
+                }
+
+                _checkMemoryViewModels[i] = new CheckMemoryViewModel
+                {
+                    Flags = checkMemoryInput.Flags,
+                    ScreenShotUnixTime = checkMemoryInput.ScreenShotUnixTime,
+                    BrowserFile = checkMemoryInput.BrowserFile.ThrowIfNull(),
+                    CurrentPosts = currentPosts,
+                    Achievements = currentAchievements,
+                    MatchingAchievements = matchingAchievements,
+                };
+            }
         }
+
+        _checkMemoryResults = checkMemoryResult;
 
         if (Services.ClientServices.DialogService.IsLoadingDialogVisible)
         {
@@ -112,8 +135,8 @@ public sealed class CheckMemoryPageViewModel : ViewModelBase, IViewModel<CheckMe
 
     private Task Reset()
     {
-        _checkMemoryInputs = [];
-        _checkMemoryResults = [];
+        _checkMemoryInfo = [];
+        _checkMemoryViewModels = [];
 
         return Task.CompletedTask;
     }

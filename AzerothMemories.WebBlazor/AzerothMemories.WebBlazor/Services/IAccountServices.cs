@@ -45,5 +45,5 @@ public interface IAccountServices : IComputeService
     Task<AccountHistoryPageResult?> TryGetAccountHistory(Session session, int currentPage = 0);
 
     [ComputeMethod]
-    Task<CheckMemoryResult> TryCheckMemory(Session session, long timeStamp, ServerSideLocale locale);
+    Task<CheckMemoryResult> TryCheckMemory(Session session, ServerSideLocale locale);
 }

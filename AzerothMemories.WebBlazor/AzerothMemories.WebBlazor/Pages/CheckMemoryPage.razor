@@ -39,7 +39,7 @@
                         {
                             if (addMemoryResult.Result == AddMemoryResultCode.Success)
                             {
-                                var postViewModel = ViewModel.CheckMemoryResults.SelectMany(x => x.CurrentPosts).FirstOrDefault(x => x.Id == addMemoryResult.PostId);
+                                var postViewModel = ViewModel.AllPostViewModels.FirstOrDefault(x => x.Id == addMemoryResult.PostId);
                                 if (postViewModel != null)
                                 {
                                     var link = $"post/{postViewModel.AccountId}/{postViewModel.Id}";
@@ -58,11 +58,11 @@
                 </MudCard>
             }
 
-            if (ViewModel.CheckMemoryResults.Length > 0)
+            if (ViewModel.CheckMemoryViewModels.Length > 0)
             {
                 <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
                     <MudCardContent Class="@ClassPresets.CardContent">
-                        <MudDataGrid id="grid-top" Items="@ViewModel.CheckMemoryResults" Filterable="true">
+                        <MudDataGrid id="grid-top" Items="@ViewModel.CheckMemoryViewModels" Filterable="true">
                             <Columns>
                                 <TemplateColumn Title="File Name">
                                     <CellTemplate Context="rowContext">

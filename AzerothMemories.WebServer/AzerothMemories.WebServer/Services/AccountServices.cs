@@ -310,7 +310,7 @@ public class AccountServices : IAccountServices
             return [];
         }
 
-        var (min, max) = ClampMinMax(timeStamp, diffInSeconds);
+        var (min, max) = ZExtensions.ClampTimeMinMaxAsInstant(timeStamp, diffInSeconds);
         var allPosts = await TrySearchGetAllPosts(accountRecord.Id, locale).ConfigureAwait(false);
 
         return allPosts.Where(x =>
@@ -359,7 +359,7 @@ public class AccountServices : IAccountServices
 
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
-        var (min, max) = ClampMinMax(timeStamp, diffInSeconds);
+        var (min, max) = ZExtensions.ClampTimeMinMaxAsInstant(timeStamp, diffInSeconds);
         var query = from a in database.CharacterAchievements
                     where a.AccountId == accountRecord.Id && a.AchievementTimeStamp > min && a.AchievementTimeStamp < max
                     select a.AchievementId;
@@ -370,7 +370,7 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<CharacterAchievementRecord[]> TrySearchGetAllAchievements(int accountId)
+    public virtual async Task<(int Id, long TimeStamp)[]> TrySearchGetAllAchievements(int accountId)
     {
         await DependsOnAccountAchievements(accountId).ConfigureAwait(false);
 
@@ -380,21 +380,15 @@ public class AccountServices : IAccountServices
                     where a.AccountId == accountId
                     select a;
 
-        return await query.ToArrayAsync().ConfigureAwait(false);
-    }
+        var allAchievements = await query.ToArrayAsync().ConfigureAwait(false);
+        var results = new HashSet<(int Id, long AchievementsTimeStamp)>();
 
-    private (Instant Min, Instant Max) ClampMinMax(long timeStamp, int diffInSeconds)
-    {
-        const int maxDiff = 300;
-        var maxDiffMs = (int)Duration.FromSeconds(maxDiff).TotalMilliseconds;
+        foreach (var achievement in allAchievements)
+        {
+            results.Add((achievement.AchievementId, achievement.AchievementTimeStamp.ToUnixTimeMilliseconds()));
+        }
 
-        diffInSeconds = Math.Clamp(diffInSeconds, 0, maxDiff);
-        timeStamp = Math.Clamp(timeStamp, maxDiffMs, SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
-
-        var min = Instant.FromUnixTimeMilliseconds(timeStamp).Minus(Duration.FromSeconds(diffInSeconds));
-        var max = Instant.FromUnixTimeMilliseconds(timeStamp).Plus(Duration.FromSeconds(diffInSeconds));
-
-        return (min, max);
+        return results.ToArray();
     }
 
     [ComputeMethod]
@@ -416,50 +410,37 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<CheckMemoryResult> TryCheckMemory(Session session, long timeStamp, ServerSideLocale locale)
+    public virtual async Task<CheckMemoryResult> TryCheckMemory(Session session, ServerSideLocale locale)
     {
-        using var _ = new MethodTimeLogger(_logger, new { session, timeStamp }.ToString());
+        using var _ = new MethodTimeLogger(_logger, new { session }.ToString());
 
         var accountRecord = await TryGetActiveAccountRecord(session).ConfigureAwait(false);
         var allPosts = Array.Empty<PostViewModel>();
-        var allAchievements = Array.Empty<CharacterAchievementRecord>();
+        var allAchievementRecords = Array.Empty<(int Id, long TimeStamp)>();
         if (accountRecord != null)
         {
             allPosts = await TrySearchGetAllPosts(accountRecord.Id, locale).ConfigureAwait(false);
-            allAchievements = await TrySearchGetAllAchievements(accountRecord.Id).ConfigureAwait(false);
+            allAchievementRecords = await TrySearchGetAllAchievements(accountRecord.Id).ConfigureAwait(false);
         }
 
-        var result = new CheckMemoryResult();
-
-        if (timeStamp > 0)
+        var allAchievementInfo = new CheckMemoryAchievementInfo[allAchievementRecords.Length];
+        for (var i = 0; i < allAchievementRecords.Length; i++)
         {
-            var (min, max) = ClampMinMax(timeStamp, 120);
-            var currentPosts = allPosts.Where(x =>
+            var achievementRecord = allAchievementRecords[i];
+            var postTag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, achievementRecord.Id, null, locale).ConfigureAwait(false);
+
+            allAchievementInfo[i] = new CheckMemoryAchievementInfo
             {
-                var postTime = Instant.FromUnixTimeMilliseconds(x.PostTime);
-                return postTime > min && postTime < max;
-            }).ToArray();
-
-            var achievementsQuery = from a in allAchievements
-                                    where a.AccountId == accountRecord.Id && a.AchievementTimeStamp > min && a.AchievementTimeStamp < max
-                                    select a.AchievementId;
-
-            var achievementsResults = achievementsQuery.ToArray();
-
-            result.CurrentPosts = currentPosts;
-            result.Achievements = await GetAchievementsTags(achievementsResults, locale).ConfigureAwait(false);
-
-            foreach (var achievement in result.Achievements)
-            {
-                foreach (var postViewModel in result.CurrentPosts)
-                {
-                    if (postViewModel.SystemTags.SafeEnumerable().ToHashSet(PostTagInfo.EqualityComparer1).Contains(achievement))
-                    {
-                        result.MatchingAchievements++;
-                    }
-                }
-            }
+                Achievement = postTag,
+                TimeStamp = achievementRecord.TimeStamp
+            };
         }
+
+        var result = new CheckMemoryResult
+        {
+            Posts = allPosts,
+            Achievements = allAchievementInfo
+        };
 
         return result;
     }

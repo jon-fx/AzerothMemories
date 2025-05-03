@@ -401,4 +401,24 @@ public static class ZExtensions
             dictionary.Add(key, value);
         }
     }
+
+    public static (Instant Min, Instant Max) ClampTimeMinMaxAsInstant(long timeStamp, int diffInSeconds)
+    {
+        const int maxDiff = 300;
+        var maxDiffMs = (int)Duration.FromSeconds(maxDiff).TotalMilliseconds;
+
+        diffInSeconds = Math.Clamp(diffInSeconds, 0, maxDiff);
+        timeStamp = Math.Clamp(timeStamp, maxDiffMs, SystemClock.Instance.GetCurrentInstant().ToUnixTimeMilliseconds());
+
+        var min = Instant.FromUnixTimeMilliseconds(timeStamp).Minus(Duration.FromSeconds(diffInSeconds));
+        var max = Instant.FromUnixTimeMilliseconds(timeStamp).Plus(Duration.FromSeconds(diffInSeconds));
+
+        return (min, max);
+    }
+
+    public static (long Min, long Max) ClampTimeMinMaxAsLong(long timeStamp, int diffInSeconds)
+    {
+        var (min, max) = ClampTimeMinMaxAsInstant(timeStamp, diffInSeconds);
+        return (min.ToUnixTimeMilliseconds(), max.ToUnixTimeMilliseconds());
+    }
 }

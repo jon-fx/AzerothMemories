@@ -99,9 +99,9 @@ public sealed class AccountController : ControllerBase, IAccountServices
     }
 
     [HttpGet("{timeStamp:long}")]
-    public Task<CheckMemoryResult> TryCheckMemory(Session session, long timeStamp, [FromQuery] ServerSideLocale locale)
+    public Task<CheckMemoryResult> TryCheckMemory(Session session, [FromQuery] ServerSideLocale locale)
     {
-        return _commonServices.AccountServices.TryCheckMemory(session, timeStamp, locale);
+        return _commonServices.AccountServices.TryCheckMemory(session, locale);
     }
 }
 
