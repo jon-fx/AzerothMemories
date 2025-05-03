@@ -15,6 +15,8 @@ public sealed class DialogHelperService
         _activeDialogs = [];
     }
 
+    public bool IsLoadingDialogVisible => _loadingDialog != null;
+
     public async Task ShowLoadingDialog()
     {
         if (_loadingDialog != null)

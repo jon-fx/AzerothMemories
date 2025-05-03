@@ -96,6 +96,7 @@ public sealed class AccountRecord : IBlizzardUpdateRecord, IDatabaseRecordWithVe
         if (activeOrAdmin)
         {
             viewModel.NextUsernameChangedTime = (UsernameChangedTime + commonServices.Config.UsernameChangeDelay).ToUnixTimeMilliseconds();
+            viewModel.BlizzardTokenExpiryTime = AuthTokens.FirstOrDefault(x => x.IsBlizzardAuthToken)?.TokenExpiresAt.ToUnixTimeMilliseconds() ?? 0;
         }
 
         return viewModel;

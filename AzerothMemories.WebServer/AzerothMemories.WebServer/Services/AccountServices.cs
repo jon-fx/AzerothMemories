@@ -310,20 +310,32 @@ public class AccountServices : IAccountServices
             return [];
         }
 
-        await _commonServices.PostServices.DependsOnPostsBy(accountRecord.Id).ConfigureAwait(false);
+        var (min, max) = ClampMinMax(timeStamp, diffInSeconds);
+        var allPosts = await TrySearchGetAllPosts(accountRecord.Id, locale).ConfigureAwait(false);
+
+        return allPosts.Where(x =>
+        {
+            var postTime = Instant.FromUnixTimeMilliseconds(x.PostTime);
+            return postTime > min && postTime < max;
+        }).ToArray();
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<PostViewModel[]> TrySearchGetAllPosts(int accountId, ServerSideLocale locale)
+    {
+        await _commonServices.PostServices.DependsOnPostsBy(accountId).ConfigureAwait(false);
 
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
-        var (min, max) = ClampMinMax(timeStamp, diffInSeconds);
         var query = from r in database.Posts
-                    where r.AccountId == accountRecord.Id && r.DeletedTimeStamp == 0 && r.PostTime > min && r.PostTime < max
+                    where r.AccountId == accountId && r.DeletedTimeStamp == 0
                     select r.Id;
 
-        var results = await query.Take(10).ToArrayAsync().ConfigureAwait(false);
+        var results = await query.ToArrayAsync().ConfigureAwait(false);
         var allPostViewModel = new List<PostViewModel>();
         foreach (var postId in results)
         {
-            var postViewModel = await _commonServices.PostServices.TryGetPostViewModel(accountRecord.Id, postId, locale).ConfigureAwait(false);
+            var postViewModel = await _commonServices.PostServices.TryGetPostViewModel(accountId, postId, locale).ConfigureAwait(false);
             if (postViewModel != null)
             {
                 allPostViewModel.Add(postViewModel);
@@ -353,19 +365,22 @@ public class AccountServices : IAccountServices
                     select a.AchievementId;
 
         var results = await query.ToArrayAsync().ConfigureAwait(false);
-        var hashSet = new HashSet<int>();
-        var postTagSet = new HashSet<PostTagInfo>();
 
-        foreach (var tagId in results)
-        {
-            if (hashSet.Add(tagId))
-            {
-                var postTag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, tagId, null, locale).ConfigureAwait(false);
-                postTagSet.Add(postTag);
-            }
-        }
+        return await GetAchievementsTags(results, locale).ConfigureAwait(false);
+    }
 
-        return postTagSet.ToArray();
+    [ComputeMethod]
+    public virtual async Task<CharacterAchievementRecord[]> TrySearchGetAllAchievements(int accountId)
+    {
+        await DependsOnAccountAchievements(accountId).ConfigureAwait(false);
+
+        await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
+
+        var query = from a in database.CharacterAchievements
+                    where a.AccountId == accountId
+                    select a;
+
+        return await query.ToArrayAsync().ConfigureAwait(false);
     }
 
     private (Instant Min, Instant Max) ClampMinMax(long timeStamp, int diffInSeconds)
@@ -398,6 +413,72 @@ public class AccountServices : IAccountServices
         }
 
         return await TryGetAccountHistory(activeAccount.Id, currentPage).ConfigureAwait(false);
+    }
+
+    [ComputeMethod]
+    public virtual async Task<CheckMemoryResult> TryCheckMemory(Session session, long timeStamp, ServerSideLocale locale)
+    {
+        using var _ = new MethodTimeLogger(_logger, new { session, timeStamp }.ToString());
+
+        var accountRecord = await TryGetActiveAccountRecord(session).ConfigureAwait(false);
+        var allPosts = Array.Empty<PostViewModel>();
+        var allAchievements = Array.Empty<CharacterAchievementRecord>();
+        if (accountRecord != null)
+        {
+            allPosts = await TrySearchGetAllPosts(accountRecord.Id, locale).ConfigureAwait(false);
+            allAchievements = await TrySearchGetAllAchievements(accountRecord.Id).ConfigureAwait(false);
+        }
+
+        var result = new CheckMemoryResult();
+
+        if (timeStamp > 0)
+        {
+            var (min, max) = ClampMinMax(timeStamp, 120);
+            var currentPosts = allPosts.Where(x =>
+            {
+                var postTime = Instant.FromUnixTimeMilliseconds(x.PostTime);
+                return postTime > min && postTime < max;
+            }).ToArray();
+
+            var achievementsQuery = from a in allAchievements
+                                    where a.AccountId == accountRecord.Id && a.AchievementTimeStamp > min && a.AchievementTimeStamp < max
+                                    select a.AchievementId;
+
+            var achievementsResults = achievementsQuery.ToArray();
+
+            result.CurrentPosts = currentPosts;
+            result.Achievements = await GetAchievementsTags(achievementsResults, locale).ConfigureAwait(false);
+
+            foreach (var achievement in result.Achievements)
+            {
+                foreach (var postViewModel in result.CurrentPosts)
+                {
+                    if (postViewModel.SystemTags.SafeEnumerable().ToHashSet(PostTagInfo.EqualityComparer1).Contains(achievement))
+                    {
+                        result.MatchingAchievements++;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private async Task<PostTagInfo[]> GetAchievementsTags(int[] achievementsResults, ServerSideLocale locale)
+    {
+        var hashSet = new HashSet<int>();
+        var postTagSet = new HashSet<PostTagInfo>();
+
+        foreach (var tagId in achievementsResults)
+        {
+            if (hashSet.Add(tagId))
+            {
+                var postTag = await _commonServices.TagServices.GetTagInfo(PostTagType.Achievement, tagId, null, locale).ConfigureAwait(false);
+                postTagSet.Add(postTag);
+            }
+        }
+
+        return postTagSet.ToArray();
     }
 
     [ComputeMethod]

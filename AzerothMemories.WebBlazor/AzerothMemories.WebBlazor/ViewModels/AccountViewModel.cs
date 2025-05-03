@@ -57,6 +57,8 @@ public sealed partial class AccountViewModel
 
     [JsonIgnore, IgnoreDataMember, MemoryPackIgnore] public bool CanChangeUsername => Username.Contains('-') || SystemClock.Instance.GetCurrentInstant() > Instant.FromUnixTimeMilliseconds(NextUsernameChangedTime);
 
+    [JsonInclude, DataMember, MemoryPackInclude] public long BlizzardTokenExpiryTime { get; set; }
+
     public Dictionary<int, string> GetUserTagList()
     {
         if (FollowersViewModels == null)

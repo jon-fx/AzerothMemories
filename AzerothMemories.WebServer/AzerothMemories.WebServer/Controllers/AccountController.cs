@@ -97,6 +97,12 @@ public sealed class AccountController : ControllerBase, IAccountServices
     {
         return _commonServices.AccountServices.TryGetAccountHistory(session, currentPage);
     }
+
+    [HttpGet("{timeStamp:long}")]
+    public Task<CheckMemoryResult> TryCheckMemory(Session session, long timeStamp, [FromQuery] ServerSideLocale locale)
+    {
+        return _commonServices.AccountServices.TryCheckMemory(session, timeStamp, locale);
+    }
 }
 
 #endif

@@ -1,0 +1,232 @@
+﻿@page "/checkmemory/"
+@inherits MoaComponentBase<CheckMemoryPageViewModel>
+@inject RenderModeHelper RenderModeHelper
+@{
+    var pageHeaderInfo = new DefaultPageHeaderInfo("Add Memory");
+    <HeadContentTest ClientServices="@ClientServices" PageInfo="@pageHeaderInfo"/>
+}
+
+<AuthorizeView>
+    <Authorized>
+        @if (RenderModeHelper.CurrentMode != RenderModeDef.GetOrDefault("w"))
+        {
+            <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+                <MudCardContent Class="@ClassPresets.CardContent">
+                    <MudButton Class="@ClassPresets.DefaultPadding" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Material.Filled.Wysiwyg" OnClick="OnStartClicked">Start</MudButton>
+                </MudCardContent>
+            </MudCard>
+        }
+        else
+        {
+            <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+                <MudCardContent Class="@ClassPresets.CardContent">
+                    <MudFileUpload T="IReadOnlyList<IBrowserFile>" Accept="@ZExtensions.UploadAcceptExtensions" FilesChanged="Initialize" MaximumFileCount="10000">
+                        <ActivatorContent>
+                            <MudButton Class="@ClassPresets.DefaultPadding" HtmlTag="label" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Material.Filled.CloudUpload" Disabled="ViewModel.IsButtonDisabled">Upload Image</MudButton>
+                        </ActivatorContent>
+                    </MudFileUpload>
+                </MudCardContent>
+            </MudCard>
+
+            <div id="moa-grid-top">
+            </div>
+
+            if (_addMemoryResults.Count > 0)
+            {
+                <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+                    <MudCardContent Class="@ClassPresets.CardContent">
+                        @foreach (var addMemoryResult in _addMemoryResults)
+                        {
+                            if (addMemoryResult.Result == AddMemoryResultCode.Success)
+                            {
+                                var postViewModel = ViewModel.CheckMemoryResults.SelectMany(x => x.CurrentPosts).FirstOrDefault(x => x.Id == addMemoryResult.PostId);
+                                if (postViewModel != null)
+                                {
+                                    var link = $"post/{postViewModel.AccountId}/{postViewModel.Id}";
+
+                                    <MudAlert Severity="Severity.Warning" ContentAlignment="HorizontalAlignment.Center">
+                                        The <a href="@link" target="_blank">post</a> was created with the tags:<br/>
+                                        @foreach (var tagInfo in postViewModel.SystemTags.SafeEnumerable())
+                                        {
+                                            <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo"/>
+                                        }
+                                    </MudAlert>
+                                }
+                            }
+                        }
+                    </MudCardContent>
+                </MudCard>
+            }
+
+            if (ViewModel.CheckMemoryResults.Length > 0)
+            {
+                <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
+                    <MudCardContent Class="@ClassPresets.CardContent">
+                        <MudDataGrid id="grid-top" Items="@ViewModel.CheckMemoryResults" Filterable="true">
+                            <Columns>
+                                <TemplateColumn Title="File Name">
+                                    <CellTemplate Context="rowContext">
+                                        <MudText >@rowContext.Item.BrowserFile.Name</MudText>
+                                    </CellTemplate>
+                                </TemplateColumn>
+
+                                <TemplateColumn Title="Time">
+                                    <CellTemplate Context="rowContext">
+                                        <MudText>@rowContext.Item.GetTimeString(ClientServices)</MudText>
+                                    </CellTemplate>
+                                </TemplateColumn>
+
+                                <TemplateColumn Title="Valid Name">
+                                    <CellTemplate Context="rowContext">
+                                        @if (rowContext.Item.Flags.HasFlag(CheckMemoryFlags.SupportedFileExtension))
+                                        {
+                                            <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success" Title="Supported Extension"/>
+                                        }
+                                        else
+                                        {
+                                            <MudIcon Icon="@Icons.Material.Filled.Close" Color="Color.Error" Title="Unsupported Extension"/>
+                                        }
+                                    </CellTemplate>
+                                </TemplateColumn>
+
+                                <TemplateColumn Title="Valid Time">
+                                    <CellTemplate Context="rowContext">
+                                        @if (rowContext.Item.Flags.HasFlag(CheckMemoryFlags.ValidTimeFromFileName))
+                                        {
+                                            <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success" Title="Valid Time"/>
+                                        }
+                                        else
+                                        {
+                                            <MudIcon Icon="@Icons.Material.Filled.Close" Color="Color.Error" Title="Invalid Time"/>
+                                        }
+                                    </CellTemplate>
+                                </TemplateColumn>
+
+                                <TemplateColumn Title="Achievements">
+                                    <CellTemplate Context="rowContext">
+                                        @if (rowContext.Item.Achievements.Length == 0)
+                                        {
+                                        }
+                                        else
+                                        {
+                                            foreach (var tagInfo in rowContext.Item.Achievements)
+                                            {
+                                                <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo"/>
+                                            }
+                                        }
+                                    </CellTemplate>
+                                </TemplateColumn>
+
+                                <TemplateColumn Title="Posts">
+                                    <CellTemplate Context="rowContext">
+                                        @if (rowContext.Item.CurrentPosts.Length == 0)
+                                        {
+                                        }
+                                        else
+                                        {
+                                            foreach (var postViewModel in rowContext.Item.CurrentPosts)
+                                            {
+                                                var link = $"post/{postViewModel.AccountId}/{postViewModel.Id}";
+                                                <MudAlert Severity="Severity.Warning" ContentAlignment="HorizontalAlignment.Center">
+                                                    There is a <a href="@link" target="_blank">post</a> around this time with the tags:<br/>
+                                                    @foreach (var tagInfo in postViewModel.SystemTags.SafeEnumerable())
+                                                    {
+                                                        <PostTagChipComponent @key="@tagInfo" TagInfo="tagInfo"/>
+                                                    }
+                                                </MudAlert>
+                                            }
+                                        }
+                                    </CellTemplate>
+                                </TemplateColumn>
+
+                                <TemplateColumn Title="Has post">
+                                    <CellTemplate Context="rowContext">
+                                        @{
+                                            @if (rowContext.Item.CurrentPosts.Length == 0)
+                                            {
+                                                <MudIcon Icon="@Icons.Material.Filled.Close" Color="Color.Error"/>
+                                            }
+                                            else if (rowContext.Item.MatchingAchievements >= @rowContext.Item.Achievements.Length)
+                                            {
+                                                <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success"/>
+                                            }
+                                            else
+                                            {
+                                                <MudIcon Icon="@Icons.Material.Filled.Close" Color="Color.Error"/>
+                                            }
+                                        }
+                                    </CellTemplate>
+                                </TemplateColumn>
+
+                                <TemplateColumn Title="Achievements">
+                                    <CellTemplate Context="rowContext">
+                                        @if (ViewModel.AddMemoryPageViewModel.UploadedImages.Count == 0)
+                                        {
+                                            <MudButton Variant="Variant.Outlined" Size="Size.Small" StartIcon="@Icons.Material.Filled.PostAdd" OnClick="() => ViewModel.AddBrowserFileToMemory(rowContext.Item)">Post</MudButton>
+                                        }
+                                        else if (ViewModel.AddMemoryPageViewModel.UploadedImages.Any(x => x.FileName == rowContext.Item.BrowserFile.Name))
+                                        {
+                                            <MudButton Variant="Variant.Outlined" Size="Size.Small" StartIcon="@Icons.Material.Filled.PostAdd" Disabled="true">Add</MudButton>
+                                        }
+                                        else if (ViewModel.AddMemoryTimeIsNear(rowContext.Item.ScreenShotUnixTime))
+                                        {
+                                            <MudButton Variant="Variant.Outlined" Size="Size.Small" StartIcon="@Icons.Material.Filled.AddPhotoAlternate" OnClick="() => ViewModel.AddBrowserFileToMemory(rowContext.Item)">Add</MudButton>
+                                        }
+                                    </CellTemplate>
+                                </TemplateColumn>
+                            </Columns>
+                            <PagerContent>
+                                <MudDataGridPager T="CheckMemoryViewModel"/>
+                            </PagerContent>
+                        </MudDataGrid>
+                    </MudCardContent>
+                </MudCard>
+
+                <div id="moa-add-post-top">
+                    @if (ViewModel.AddMemoryPageViewModel.UploadedImages.Count > 0)
+                    {
+                        <AddMemoryComponent Services="@(this)" ViewModel="@ViewModel.AddMemoryPageViewModel" OnPostMemoryResult="@OnPostMemoryCallback"/>
+                    }
+                </div>
+            }
+        }
+    </Authorized>
+</AuthorizeView>
+
+@code
+{
+    private readonly List<AddMemoryResult> _addMemoryResults = [];
+
+    private void OnStartClicked(MouseEventArgs obj)
+    {
+        RenderModeHelper.ChangeMode(RenderModeDef.GetOrDefault("w"));
+    }
+
+    private async Task OnPostMemoryCallback(AddMemoryResult result)
+    {
+        _addMemoryResults.Add(result);
+
+        if (result.Result == AddMemoryResultCode.Success)
+        {
+            await ViewModel.AddMemoryPageViewModel.Reset();
+            await ClientServices.ScrollManager.ScrollIntoViewAsync("#moa-grid-top", ScrollBehavior.Smooth);
+            await ClientServices.DialogService.ShowLoadingDialog();
+        }
+        else if (result.Result == AddMemoryResultCode.Canceled)
+        {
+            await ClientServices.ScrollManager.ScrollIntoViewAsync("#moa-grid-top", ScrollBehavior.Smooth);
+        }
+        else
+        {
+            await ClientServices.DialogService.ShowNotificationDialog(false, $"{result.Result}");
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task Initialize(IReadOnlyList<IBrowserFile>? arg)
+    {
+        await ViewModel.Initialize(arg);
+        await State.Recompute();
+    }
+}
