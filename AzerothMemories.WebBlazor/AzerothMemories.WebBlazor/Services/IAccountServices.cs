@@ -36,7 +36,7 @@ public interface IAccountServices : IComputeService
     Task<bool> TryDisconnectAccount(Account_TryDisconnectAccount command, CancellationToken cancellationToken = default);
 
     [ComputeMethod]
-    Task<PostViewModel[]> TrySearchPostsByTime(Session session, long timeStamp, int diffInSeconds, ServerSideLocale locale);
+    Task<CheckMemoryPostInfo[]> TrySearchPostsByTime(Session session, long timeStamp, int diffInSeconds, ServerSideLocale locale);
 
     [ComputeMethod]
     Task<PostTagInfo[]> TryGetAchievementsByTime(Session session, long timeStamp, int diffInSeconds, ServerSideLocale locale);

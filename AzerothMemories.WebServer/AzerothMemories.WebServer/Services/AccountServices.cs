@@ -301,7 +301,7 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    public virtual async Task<PostViewModel[]> TrySearchPostsByTime(Session session, long timeStamp, int diffInSeconds, ServerSideLocale locale)
+    public virtual async Task<CheckMemoryPostInfo[]> TrySearchPostsByTime(Session session, long timeStamp, int diffInSeconds, ServerSideLocale locale)
     {
         using var _ = new MethodTimeLogger(_logger, new { session, timeStamp, diffInSeconds }.ToString());
         var accountRecord = await TryGetActiveAccountRecord(session).ConfigureAwait(false);
@@ -321,7 +321,7 @@ public class AccountServices : IAccountServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<PostViewModel[]> TrySearchGetAllPosts(int accountId, ServerSideLocale locale)
+    protected virtual async Task<CheckMemoryPostInfo[]> TrySearchGetAllPosts(int accountId, ServerSideLocale locale)
     {
         await _commonServices.PostServices.DependsOnPostsBy(accountId).ConfigureAwait(false);
 
@@ -329,20 +329,22 @@ public class AccountServices : IAccountServices
 
         var query = from r in database.Posts
                     where r.AccountId == accountId && r.DeletedTimeStamp == 0
-                    select r.Id;
+                    select new { r.Id, r.PostTime };
 
-        var results = await query.ToArrayAsync().ConfigureAwait(false);
-        var allPostViewModel = new List<PostViewModel>();
-        foreach (var postId in results)
+        var postInfos = await query.ToArrayAsync().ConfigureAwait(false);
+        var results = new List<CheckMemoryPostInfo>();
+        foreach (var post in postInfos)
         {
-            var postViewModel = await _commonServices.PostServices.TryGetPostViewModel(accountId, postId, locale).ConfigureAwait(false);
-            if (postViewModel != null)
+            results.Add(new CheckMemoryPostInfo
             {
-                allPostViewModel.Add(postViewModel);
-            }
+                Id = post.Id,
+                AccountId = accountId,
+                PostTime = post.PostTime.ToUnixTimeMilliseconds(),
+                SystemTags = await _commonServices.PostServices.GetAllPostTagRecord(post.Id, locale).ConfigureAwait(false)
+            });
         }
 
-        return allPostViewModel.ToArray();
+        return results.ToArray();
     }
 
     [ComputeMethod]
@@ -415,12 +417,21 @@ public class AccountServices : IAccountServices
         using var _ = new MethodTimeLogger(_logger, new { session }.ToString());
 
         var accountRecord = await TryGetActiveAccountRecord(session).ConfigureAwait(false);
-        var allPosts = Array.Empty<PostViewModel>();
+
+        return await TryCheckMemory(accountRecord?.Id ?? 0, locale).ConfigureAwait(false);
+    }
+
+    [ComputeMethod]
+    protected virtual async Task<CheckMemoryResult> TryCheckMemory(int accountId, ServerSideLocale locale)
+    {
+        using var _ = new MethodTimeLogger(_logger, new { accountId }.ToString());
+
+        var allPosts = Array.Empty<CheckMemoryPostInfo>();
         var allAchievementRecords = Array.Empty<(int Id, long TimeStamp)>();
-        if (accountRecord != null)
+        if (accountId > 0)
         {
-            allPosts = await TrySearchGetAllPosts(accountRecord.Id, locale).ConfigureAwait(false);
-            allAchievementRecords = await TrySearchGetAllAchievements(accountRecord.Id).ConfigureAwait(false);
+            allPosts = await TrySearchGetAllPosts(accountId, locale).ConfigureAwait(false);
+            allAchievementRecords = await TrySearchGetAllAchievements(accountId).ConfigureAwait(false);
         }
 
         var allAchievementInfo = new CheckMemoryAchievementInfo[allAchievementRecords.Length];

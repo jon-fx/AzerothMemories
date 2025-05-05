@@ -526,7 +526,7 @@ public class PostServices : IPostServices
     }
 
     [ComputeMethod]
-    protected virtual async Task<PostTagInfo[]> GetAllPostTagRecord(int postId, ServerSideLocale locale)
+    public virtual async Task<PostTagInfo[]> GetAllPostTagRecord(int postId, ServerSideLocale locale)
     {
         using var _ = new MethodTimeLogger(_logger, new { postId, locale }.ToString());
         var allTagRecords = await GetAllPostTags(postId).ConfigureAwait(false);

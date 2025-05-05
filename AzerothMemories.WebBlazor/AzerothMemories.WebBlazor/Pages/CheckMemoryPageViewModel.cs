@@ -13,7 +13,7 @@ public sealed class CheckMemoryPageViewModel : ViewModelBase, IViewModel<CheckMe
         AddMemoryPageViewModel = AddMemoryPageViewModel.CreateViewModel(services, onViewModelChanged);
     }
 
-    public PostViewModel[] AllPostViewModels => _checkMemoryResults?.Posts ?? [];
+    public CheckMemoryPostInfo[] AllPostViewModels => _checkMemoryResults?.Posts ?? [];
 
     public CheckMemoryViewModel[] CheckMemoryViewModels => _checkMemoryViewModels.Where(x => x != null).ToArray()!;
 

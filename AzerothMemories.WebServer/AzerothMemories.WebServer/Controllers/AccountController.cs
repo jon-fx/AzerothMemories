@@ -81,7 +81,7 @@ public sealed class AccountController : ControllerBase, IAccountServices
     }
 
     [HttpGet("{timeStamp:long}/{diffInSeconds:int}")]
-    public Task<PostViewModel[]> TrySearchPostsByTime(Session session, [FromRoute] long timeStamp, [FromRoute] int diffInSeconds, [FromQuery] ServerSideLocale locale)
+    public Task<CheckMemoryPostInfo[]> TrySearchPostsByTime(Session session, [FromRoute] long timeStamp, [FromRoute] int diffInSeconds, [FromQuery] ServerSideLocale locale)
     {
         return _commonServices.AccountServices.TrySearchPostsByTime(session, timeStamp, diffInSeconds, locale);
     }
@@ -98,7 +98,7 @@ public sealed class AccountController : ControllerBase, IAccountServices
         return _commonServices.AccountServices.TryGetAccountHistory(session, currentPage);
     }
 
-    [HttpGet("{timeStamp:long}")]
+    [HttpGet]
     public Task<CheckMemoryResult> TryCheckMemory(Session session, [FromQuery] ServerSideLocale locale)
     {
         return _commonServices.AccountServices.TryCheckMemory(session, locale);

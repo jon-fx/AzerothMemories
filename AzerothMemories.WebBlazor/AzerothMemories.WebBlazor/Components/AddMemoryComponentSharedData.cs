@@ -14,7 +14,7 @@ public sealed class AddMemoryComponentSharedData
 
     private CharacterViewModel? _selectedCharacter;
     private Func<AccountViewModel?>? _accountViewModelProvider;
-    private PostViewModel[] _myPostsAroundPostTimeStamp = [];
+    private CheckMemoryPostInfo[] _myPostsAroundPostTimeStamp = [];
 
     public AddMemoryComponentSharedData(ViewModelBase viewModel, bool isAddMemoryPage)
     {
@@ -582,7 +582,7 @@ public sealed class AddMemoryComponentSharedData
         OnTagsChanged?.Invoke();
     }
 
-    public (string[] ErrorMessages, PostViewModel[] PostViewModels) GetErrorStrings()
+    public (string[] ErrorMessages, CheckMemoryPostInfo[] PostViewModels) GetErrorStrings()
     {
         var errorStrings = new List<string>();
         var allTagCounters = new int[ZExtensions.TagCountsPerPost.Length];

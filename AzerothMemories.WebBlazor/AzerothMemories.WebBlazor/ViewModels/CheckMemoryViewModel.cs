@@ -6,7 +6,7 @@ public sealed class CheckMemoryViewModel
 {
     public required CheckMemoryFlags Flags { get; set; }
     public required long ScreenShotUnixTime { get; set; }
-    public required PostViewModel[] CurrentPosts { get; set; }
+    public required CheckMemoryPostInfo[] CurrentPosts { get; set; }
     public required PostTagInfo[] Achievements { get; set; }
     public required int MatchingAchievements { get; set; }
     public required IBrowserFile BrowserFile { get; init; }
