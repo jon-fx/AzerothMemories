@@ -5,12 +5,7 @@
     <Authorized>
         <MudMenu EndIcon="@Icons.Material.Filled.KeyboardArrowDown" Label="Account" Color="Color.Inherit" Dense="true" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
             <MudMenuItem Href="AddMemory">Restore</MudMenuItem>
-            
-            @if (_activeAccountServices.AccountViewModel.IsAdmin())
-            {
-                <MudMenuItem Href="CheckMemory">Restore Many</MudMenuItem>
-            }
-            
+            <MudMenuItem Href="CheckMemory">Restore Many</MudMenuItem>
             <MudMenuItem Href="AccountHistory">History</MudMenuItem>
             <MudMenuItem Href="AccountManage">Manage</MudMenuItem>
             <MudMenuItem OnClick="TryLogout">Log out</MudMenuItem>
