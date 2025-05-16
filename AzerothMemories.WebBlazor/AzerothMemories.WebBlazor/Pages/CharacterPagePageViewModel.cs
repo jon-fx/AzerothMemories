@@ -60,7 +60,7 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IView
 
         if (id > 0)
         {
-            viewModel = await Services.ComputeServices.CharacterServices.TryGetCharacter(Services.ClientServices.Session,  id, Services.ClientServices.BlazorCircuitContext.IsInteractive);
+            viewModel = await Services.ComputeServices.CharacterServices.TryGetCharacter(Services.ClientServices.Session,  id, Services.ClientServices.CircuitHub.IsInteractive);
         }
         else
         {
@@ -106,7 +106,7 @@ public sealed class CharacterPagePageViewModel : PersistentStateViewModel, IView
                 return null;
             }
 
-            viewModel = await Services.ComputeServices.CharacterServices.TryGetCharacter(Services.ClientServices.Session,  regionInfo.Region, realmVersion, _realm, _name, Services.ClientServices.BlazorCircuitContext.IsInteractive);
+            viewModel = await Services.ComputeServices.CharacterServices.TryGetCharacter(Services.ClientServices.Session,  regionInfo.Region, realmVersion, _realm, _name, Services.ClientServices.CircuitHub.IsInteractive);
         }
 
         if (viewModel == null || viewModel.CharacterViewModel == null)

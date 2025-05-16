@@ -103,7 +103,7 @@ public class AccountServices : IAccountServices
         }
 
         await DependsOnAccountRecord(accountRecord.Id).ConfigureAwait(false);
-        return await CreateAccountViewModel(accountRecord, true).ConfigureAwait(false);
+        return await CreateAccountViewModel(accountRecord.Id, true).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -118,16 +118,10 @@ public class AccountServices : IAccountServices
             return sessionAccount;
         }
 
-        var accountRecord = await TryGetAccountRecord(accountId).ConfigureAwait(false);
-        if (accountRecord == null)
-        {
-            return null;
-        }
-
         var isAdmin = sessionAccount != null && sessionAccount.IsAdmin();
-        var isActive = sessionAccount != null && sessionAccount.Id == accountRecord.Id;
+        var isActive = sessionAccount != null && sessionAccount.Id == accountId;
 
-        return await CreateAccountViewModel(accountRecord, isActive || isAdmin).ConfigureAwait(false);
+        return await CreateAccountViewModel(accountId, isActive || isAdmin).ConfigureAwait(false);
     }
 
     [ComputeMethod]
@@ -151,14 +145,21 @@ public class AccountServices : IAccountServices
 
         await DependsOnAccountRecord(accountRecord.Id).ConfigureAwait(false);
 
-        return await CreateAccountViewModel(accountRecord, isActive || isAdmin).ConfigureAwait(false);
+        return await CreateAccountViewModel(accountRecord.Id, isActive || isAdmin).ConfigureAwait(false);
     }
 
     [ComputeMethod]
-    public virtual async Task<AccountViewModel> CreateAccountViewModel(AccountRecord accountRecord, bool activeOrAdmin)
+    protected virtual async Task<AccountViewModel?> CreateAccountViewModel(int accountId, bool activeOrAdmin)
     {
-        using var _ = new MethodTimeLogger(_logger, new { accountRecord.Id, activeOrAdmin }.ToString());
-        await DependsOnAccountRecord(accountRecord.Id).ConfigureAwait(false);
+        using var _ = new MethodTimeLogger(_logger, new { accountId, activeOrAdmin }.ToString());
+
+        await DependsOnAccountRecord(accountId).ConfigureAwait(false);
+
+        var accountRecord = await TryGetAccountRecord(accountId).ConfigureAwait(false);
+        if (accountRecord == null)
+        {
+            return null;
+        }
 
         await _commonServices.BlizzardUpdateHandler.TryUpdate(accountRecord).ConfigureAwait(false);
 

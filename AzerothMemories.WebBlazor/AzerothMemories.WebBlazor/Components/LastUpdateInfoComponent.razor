@@ -8,13 +8,27 @@ else
     var endTimeAsString = Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(UpdateViewModel.UpdateJobLastEndTime, true);
 
     <MudMenu Icon="@main.Icon" Color="@main.IconColor" Size="Size.Small" Dense="true" ActivationEvent="MouseEvent.MouseOver">
-        <MudText Typo="Typo.subtitle1">
-            <MudMenuItem Disabled="true">
-                <MudText Typo="Typo.body1" Style="@($"color:{MainTheme.Theme.PaletteDark.TextPrimary};")">
-                    @endTimeAsString
+        <MudMenuItem Disabled="true">
+            <MudText Typo="Typo.subtitle1" Style="@($"color:{MainTheme.Theme.PaletteDark.TextPrimary};")">
+                @endTimeAsString
+            </MudText>
+        </MudMenuItem>
+
+        @if (TokenExpiryTime > 0)
+        {
+            var tokenExpiryInstant = Instant.FromUnixTimeMilliseconds(TokenExpiryTime);
+            var currentInstant = SystemClock.Instance.GetCurrentInstant();
+            var tokenExpired = currentInstant > tokenExpiryInstant.Minus(Duration.FromHours(1));
+            var tokenExpiryTimeString = Services.ClientServices.TimeProvider.GetTimeAsLocalStringAgo(TokenExpiryTime, true);
+            var tokenExpiredRow = GetIconAndColor(!tokenExpired);
+            var textColor = tokenExpired ? MainTheme.Theme.PaletteDark.Error : MainTheme.Theme.PaletteDark.TextPrimary;
+
+            <MudMenuItem IconSize="Size.Small" IconColor="@tokenExpiredRow.IconColor" Icon="@tokenExpiredRow.Icon" Disabled="true">
+                <MudText Typo="Typo.subtitle2" Style="@($"color:{textColor};")">
+                    0: Token - @tokenExpiryTimeString
                 </MudText>
             </MudMenuItem>
-        </MudText>
+        }
 
         @foreach (var child in UpdateViewModel.Children)
         {
@@ -43,6 +57,8 @@ else
     [Parameter, EditorRequired] public required IMoaServices Services { get; init; }
 
     [Parameter, EditorRequired] public required BlizzardUpdateViewModel? UpdateViewModel { get; init; }
+
+    [Parameter, EditorRequired] public long TokenExpiryTime { get; init; }
 
     private (string Icon, Color IconColor) GetIconAndColor(bool isSuccess)
     {

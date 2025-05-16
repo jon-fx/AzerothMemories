@@ -58,29 +58,15 @@ internal static class AccountServices_TryChangeAvatarUpload
             using var image = Image.Load(buffer);
             image.Metadata.ExifProfile = null;
 
-            var defaultEncoder = new JpegEncoder();
+            var defaultEncoder = new JpegEncoder
+            {
+                Quality = accountViewModel.GetUploadQuality()
+            };
 
             await image.SaveAsJpegAsync(memoryStream, defaultEncoder, cancellationToken).ConfigureAwait(false);
             memoryStream.Position = 0;
 
-            BinaryData dataToUpload;
-            if (memoryStream.Length > 1.Megabytes().Bytes)
-            {
-                var secondEncoder = new JpegEncoder
-                {
-                    Quality = accountViewModel.GetUploadQuality()
-                };
-
-                await image.SaveAsJpegAsync(memoryStream, secondEncoder, cancellationToken).ConfigureAwait(false);
-                memoryStream.Position = 0;
-
-                dataToUpload = new BinaryData(memoryStream.ToArray());
-            }
-            else
-            {
-                dataToUpload = new BinaryData(memoryStream.ToArray());
-            }
-
+            var dataToUpload = new BinaryData(memoryStream.ToArray());
             var blobName = $"{ZExtensions.AvatarBlobFilePrefix}{accountViewModel.Id}-{avatarIndex}.jpg";
             if (commonServices.Config.UploadToBlobStorage)
             {

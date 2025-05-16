@@ -372,7 +372,7 @@
                                         </MudTd>
 
                                         <MudTd DataLabel="Result">
-                                            <LastUpdateInfoComponent Services="@this" UpdateViewModel="@row.UpdateJobLastResults" />
+                                            <LastUpdateInfoComponent Services="@this" UpdateViewModel="@row.UpdateJobLastResults" TokenExpiryTime="ViewModel.AccountViewModel.BlizzardTokenExpiryTime" />
                                         </MudTd>
                                     </tr>
                                 }

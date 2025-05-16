@@ -1,5 +1,5 @@
 ﻿@inject RenderModeHelper RenderModeHelper;
-@inject BlazorCircuitContext BlazorCircuitContext
+@inject CircuitHub CircuitHub
 
 <MudDivider Class="my-2" />
 
@@ -51,11 +51,11 @@
                         }
                         <MudText>|</MudText>
                         @{
-                            <MudText Color="@(BlazorCircuitContext.IsPrerendering ? Color.Success : Color.Error)">P</MudText>
+                            <MudText Color="@(CircuitHub.IsPrerendering ? Color.Success : Color.Error)">P</MudText>
                         }
                         <MudText>|</MudText>
                         @{
-                            <MudText Color="@(BlazorCircuitContext.IsInteractive ? Color.Success : Color.Error)">I</MudText>
+                            <MudText Color="@(CircuitHub.IsInteractive ? Color.Success : Color.Error)">I</MudText>
                         }
                     </MudStack>
                 </MudItem>

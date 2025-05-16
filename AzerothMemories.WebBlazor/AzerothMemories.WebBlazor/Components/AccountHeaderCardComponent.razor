@@ -92,7 +92,7 @@ else
 
                     @if (Services.ClientServices.ActiveAccountServices.AccountViewModel.IsAdmin())
                     {
-                        <LastUpdateInfoComponent Services="@Services" UpdateViewModel="@AccountViewModel.UpdateJobLastResults" />
+                        <LastUpdateInfoComponent Services="@Services" UpdateViewModel="@AccountViewModel.UpdateJobLastResults" TokenExpiryTime="@AccountViewModel.BlizzardTokenExpiryTime"/>
                     }
 
                     <MudMenu Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Dense="true">

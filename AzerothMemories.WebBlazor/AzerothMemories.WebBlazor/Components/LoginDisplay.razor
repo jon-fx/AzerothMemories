@@ -1,5 +1,4 @@
-﻿@inject ClientAuthHelper _clientAuthHelper
-@inject ActiveAccountServices _activeAccountServices;
+﻿@inject ClientAuthHelper ClientAuthHelper
 
 <AuthorizeView>
     <Authorized>
@@ -10,11 +9,6 @@
             <MudMenuItem Href="AccountManage">Manage</MudMenuItem>
             <MudMenuItem OnClick="TryLogout">Log out</MudMenuItem>
         </MudMenu>
-        
-        @if (_activeAccountServices.AccountViewModel.BlizzardTokenExpired())
-        {
-            <MudIcon Icon="@Icons.Material.Filled.WarningAmber" Color="Color.Error" Title="Blizzard Token Expired" />
-        }
     </Authorized>
     <NotAuthorized>
         <MudMenu EndIcon="@Icons.Material.Filled.KeyboardArrowDown" Label="Account" Color="Color.Inherit" Dense="true" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
@@ -30,11 +24,11 @@
 {
     private async Task TrySignIn(string schema)
     {
-        await _clientAuthHelper.SignIn(schema);
+        await ClientAuthHelper.SignIn(schema);
     }
 
     private async Task TryLogout()
     {
-        await _clientAuthHelper.SignOut();
+        await ClientAuthHelper.SignOut();
     }
 }

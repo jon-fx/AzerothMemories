@@ -191,21 +191,4 @@ public static class AccountPermissionExt
 
         return accountViewModel.CanInteract;
     }
-
-    public static bool BlizzardTokenExpired([NotNullWhen(true)] this AccountViewModel? accountViewModel)
-    {
-        if (accountViewModel == null)
-        {
-            return false;
-        }
-
-        if (accountViewModel.BlizzardTokenExpiryTime == 0)
-        {
-            return false;
-        }
-
-        var instant = Instant.FromUnixTimeMilliseconds(accountViewModel.BlizzardTokenExpiryTime);
-        var current = SystemClock.Instance.GetCurrentInstant();
-        return current > instant.Minus(Duration.FromHours(1));
-    }
 }

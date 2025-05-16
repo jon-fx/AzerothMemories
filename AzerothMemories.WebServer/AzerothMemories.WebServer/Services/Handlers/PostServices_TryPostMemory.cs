@@ -268,21 +268,13 @@ internal static class PostServices_TryPostMemory
                 }
                 else
                 {
-                    var defaultEncoder = new JpegEncoder();
+                    var defaultEncoder = new JpegEncoder
+                    {
+                        Quality = accountViewModel.GetUploadQuality()
+                    };
 
                     await image.SaveAsJpegAsync(memoryStream, defaultEncoder, cancellationToken).ConfigureAwait(false);
                     memoryStream.Position = 0;
-
-                    if (memoryStream.Length > 1.Megabytes().Bytes)
-                    {
-                        var secondEncoder = new JpegEncoder
-                        {
-                            Quality = accountViewModel.GetUploadQuality()
-                        };
-
-                        await image.SaveAsJpegAsync(memoryStream, secondEncoder, cancellationToken).ConfigureAwait(false);
-                        memoryStream.Position = 0;
-                    }
                 }
 
                 var blobData = memoryStream.ToArray();
