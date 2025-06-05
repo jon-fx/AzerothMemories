@@ -1,5 +1,5 @@
-﻿using AzerothMemories.WebServer.Tests.Common;
-using FluentAssertions;
+﻿using AwesomeAssertions;
+using AzerothMemories.WebServer.Tests.Common;
 using System.Text;
 using Xunit;
 
