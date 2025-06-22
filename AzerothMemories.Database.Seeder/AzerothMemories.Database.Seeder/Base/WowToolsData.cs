@@ -73,11 +73,14 @@ internal sealed class WowToolsData
                 continue;
             }
 
-            var index = header.IndexOf('_') + 1;
-            var fieldName = header[index..];
-            fieldName = fieldName.Insert(2, "_");
+            var index = header.LastIndexOf('_') + 1;
+            var localeString = header[index..];
+            Exceptions.ThrowIf(localeString.Length != 4);
 
-            if (Enum.TryParse<ServerSideLocale>(fieldName, true, out var key))
+            localeString = localeString.Insert(2, "_");
+            Exceptions.ThrowIf(localeString.Length != 5);
+
+            if (Enum.TryParse<ServerSideLocale>(localeString, true, out var key))
             {
                 result[(int)key] = value;
             }
