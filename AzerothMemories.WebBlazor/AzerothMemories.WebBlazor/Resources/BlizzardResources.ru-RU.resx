@@ -2659,6 +2659,9 @@
   <data name="CharacterRace-90">
     <value>Вездешлямзель для вылазок</value>
   </data>
+  <data name="CharacterRace-92">
+    <value>Воздушное судно эфириалов</value>
+  </data>
   <data name="CharacterClass-0">
     <value>Unknown Class</value>
   </data>

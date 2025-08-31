@@ -17,33 +17,33 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Azure.Storage.Blobs" Version="12.24.1" />
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.25.0" />
         <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="9.0.8" />
         <PackageReference Include="MemoryPack.Generator" Version="1.21.4" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.6" />
-        <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="9.0.6" />
-        <PackageReference Include="MudBlazor" Version="8.8.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.8" />
+        <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="9.0.8" />
+        <PackageReference Include="MudBlazor" Version="8.11.0" />
         <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="1.1.0" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="9.0.4" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.6">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.8">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.10" />
-        <PackageReference Include="ActualLab.Fusion.EntityFramework.Npgsql" Version="10.2.39" />
-        <PackageReference Include="ActualLab.Fusion.Server" Version="10.2.39" />
-        <PackageReference Include="ActualLab.Generators" Version="10.2.39" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
+        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
+        <PackageReference Include="ActualLab.Fusion.EntityFramework.Npgsql" Version="10.4.15" />
+        <PackageReference Include="ActualLab.Fusion.Server" Version="10.4.15" />
+        <PackageReference Include="ActualLab.Generators" Version="10.4.15" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.4" />
         <PackageReference Include="AspNet.Security.OAuth.BattleNet" Version="9.4.0" />
         <PackageReference Include="AspNet.Security.OAuth.Patreon" Version="9.4.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.6" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.8" />
     </ItemGroup>
 
     <ItemGroup>

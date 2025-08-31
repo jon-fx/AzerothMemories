@@ -13,31 +13,6 @@ internal sealed class StartUpHostedService : IHostedService
     {
         await using var database = await _commonServices.DatabaseHub.CreateDbContext(true, cancellationToken).ConfigureAwait(false);
 
-        var postTags = await database.PostTags.ToArrayAsync(cancellationToken).ConfigureAwait(false);
-
-        foreach (var postTag in postTags)
-        {
-            switch (postTag.TagType)
-            {
-                case PostTagType.None:
-                case PostTagType.HashTag:
-                case PostTagType.Account:
-                case PostTagType.Character:
-                case PostTagType.Guild:
-                {
-                    break;
-                }
-                default:
-                {
-                    var record = await _commonServices.TagServices.GetBlizzardDataRecord(postTag.TagString).ConfigureAwait(false);
-                    if (record == null)
-                    {
-                    }
-                    break;
-                }
-            }
-        }
-
         var maxAchievement = await database.BlizzardData.Where(x => x.TagType == PostTagType.Achievement).MaxAsync(x => x.TagId, cancellationToken: cancellationToken).ConfigureAwait(false);
         var firstEverAchievements = await database.CharacterFirstAchievements.ToDictionaryAsync(x => x.AchievementId, x => x, cancellationToken: cancellationToken).ConfigureAwait(false);
 

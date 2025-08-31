@@ -32,11 +32,11 @@ internal sealed class ProgramHeleprMain : ProgramHelper
             options.LoginPath = "/signIn";
             options.LogoutPath = "/signOut";
 
-            options.ExpireTimeSpan = TimeSpan.FromDays(1);
-            options.SlidingExpiration = true;
+            options.ExpireTimeSpan = TimeSpan.FromHours(12);
+            options.SlidingExpiration = false;
             options.Events.OnSigningIn = ctx =>
             {
-                ctx.CookieOptions.Expires = DateTimeOffset.UtcNow.AddDays(3);
+                ctx.CookieOptions.Expires = DateTimeOffset.UtcNow.AddDays(1);
 
                 return Task.CompletedTask;
             };

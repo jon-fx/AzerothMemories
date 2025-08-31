@@ -52,17 +52,9 @@ public class TagServices : ITagServices
             return new PostTagInfo(tagType, tagId, hashTagText, null);
         }
 
-        //await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
-
         var tagString = PostTagInfo.GetTagString(tagType, tagId);
-        //var allRecords = await GetAllBlizzardDataRecord().ConfigureAwait(false);
-        //if (!allRecords.TryGetValue(tagString, out var tagRecord))
-        //{
-        //    return new PostTagInfo(tagType, tagId, tagString, null);
-        //}
-
-        var tagRecord = await GetBlizzardDataRecord(tagString).ConfigureAwait(false);
-        if (tagRecord == null)
+        var allRecords = await GetAllBlizzardDataRecord().ConfigureAwait(false);
+        if (!allRecords.TryGetValue(tagString, out var tagRecord))
         {
             return new PostTagInfo(tagType, tagId, tagString, null);
         }
@@ -71,21 +63,12 @@ public class TagServices : ITagServices
     }
 
     [ComputeMethod]
-    public virtual async Task<BlizzardDataRecord?> GetBlizzardDataRecord(string tagString)
+    protected virtual async Task<Dictionary<string, BlizzardDataRecord>> GetAllBlizzardDataRecord()
     {
-        using var _ = new MethodTimeLogger(_logger, new { tagString }.ToString());
         await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
 
-        return await database.BlizzardData.AsNoTracking().FirstOrDefaultAsync(r => r.Key == tagString).ConfigureAwait(false);
+        return await database.BlizzardData.ToDictionaryAsync(r => r.Key, r => r).ConfigureAwait(false);
     }
-
-    //[ComputeMethod]
-    //protected virtual async Task<Dictionary<string, BlizzardDataRecord>> GetAllBlizzardDataRecord()
-    //{
-    //    await using var database = await _commonServices.DatabaseHub.CreateDbContext().ConfigureAwait(false);
-
-    //    return await database.BlizzardData.ToDictionaryAsync(r => r.Key, r => r).ConfigureAwait(false);
-    //}
 
     [ComputeMethod]
     public virtual async Task<PostTagInfo> TryGetUserTagInfo(PostTagType tagType, int tagId)

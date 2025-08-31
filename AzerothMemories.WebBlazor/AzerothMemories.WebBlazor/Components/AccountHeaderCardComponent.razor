@@ -215,7 +215,6 @@ else
 }
 
 @code {
-    private bool _accountChanged;
     private AccountViewModel? _account;
 
     private int _followerCount;
@@ -229,7 +228,6 @@ else
         get => _account;
         init
         {
-            _accountChanged = _account != value;
             _account = value;
 
             if (_account != null)

@@ -2659,6 +2659,9 @@
   <data name="CharacterRace-90">
     <value>探究者的哥布林奔走者</value>
   </data>
+  <data name="CharacterRace-92">
+    <value>以太飛船</value>
+  </data>
   <data name="CharacterClass-0">
     <value>Unknown Class</value>
   </data>

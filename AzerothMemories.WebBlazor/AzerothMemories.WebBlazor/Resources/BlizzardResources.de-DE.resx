@@ -2659,6 +2659,9 @@
   <data name="CharacterRace-90">
     <value>Gobtrotter des Tiefenforschers</value>
   </data>
+  <data name="CharacterRace-92">
+    <value>Astrales Luftschiff</value>
+  </data>
   <data name="CharacterClass-0">
     <value>Unknown Class</value>
   </data>

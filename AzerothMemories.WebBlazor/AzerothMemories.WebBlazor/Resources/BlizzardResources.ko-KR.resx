@@ -2659,6 +2659,9 @@
   <data name="CharacterRace-90">
     <value>구렁 탐험가의 고블린 쾌속정</value>
   </data>
+  <data name="CharacterRace-92">
+    <value>에테리얼 비행선</value>
+  </data>
   <data name="CharacterClass-0">
     <value>Unknown Class</value>
   </data>
