@@ -3,6 +3,7 @@ using System;
 using AzerothMemories.WebServer.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AzerothMemories.WebServer.Migrations
 {
     [DbContext(typeof(AppDbContextBase))]
-    partial class AppDbContextBaseModelSnapshot : ModelSnapshot
+    [Migration("20250913194617_CreateDatabase8")]
+    partial class CreateDatabase8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

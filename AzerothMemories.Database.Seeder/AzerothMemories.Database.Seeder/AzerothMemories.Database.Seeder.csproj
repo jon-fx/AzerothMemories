@@ -16,6 +16,6 @@
     <ItemGroup>
         <PackageReference Include="CsvHelper" Version="33.1.0" />
         <PackageReference Include="KGySoft.CoreLibraries" Version="10.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.8" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.9" />
     </ItemGroup>
 </Project>

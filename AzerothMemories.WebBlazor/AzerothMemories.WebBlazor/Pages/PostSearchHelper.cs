@@ -138,9 +138,7 @@ public sealed class PostSearchHelper
             return;
         }
 
-        _searchResults.SortMode = sortMode;
-
-        NavigateToNewQuery(_searchResults.CurrentPage, _searchResults.SortMode, _searchResults.Tags.Select(x => x.TagString).ToArray(), MinDateTime, MaxDateTime, false);
+        NavigateToNewQuery(_searchResults.CurrentPage, sortMode, _searchResults.Tags.Select(x => x.TagString).ToArray(), MinDateTime, MaxDateTime, false);
     }
 
     public void OnMinDateTimeChanged(Instant? instant)
