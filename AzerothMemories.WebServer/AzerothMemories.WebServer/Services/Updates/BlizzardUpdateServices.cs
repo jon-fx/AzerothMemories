@@ -160,7 +160,7 @@ public class BlizzardUpdateServices : IComputeService
         _logger.LogInformation("TryUpdate: Update Required Id: {RecordId} UpdateRecordId: {UpdateRecordId}", mainRecord.Id, mainRecord.UpdateRecord.Id);
 
         context.Operation.Items.KeylessSet(new Updates_UpdateInvalidateMany(command.AccountId, command.CharacterId, command.GuildId));
-        context.Operation.AddEvent(mainRecord.UpdateRecord.GetUpdateCommand(), updateTime.ToTimeSpan());
+        context.Operation.AddEvent(mainRecord.UpdateRecord.GetUpdateCommand()).SetDelayBy(updateTime.ToTimeSpan());
 
         return HttpStatusCode.OK;
     }
@@ -419,7 +419,7 @@ public class BlizzardUpdateServices : IComputeService
 
         await database.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        context.Operation.AddEvent(new Updates_UpdateRecordResetStatusCommand(record.UpdateRecord.AccountId, record.UpdateRecord.CharacterId, record.UpdateRecord.GuildId), GetResetTime(record.UpdateRecord));
+        context.Operation.AddEvent(new Updates_UpdateRecordResetStatusCommand(record.UpdateRecord.AccountId, record.UpdateRecord.CharacterId, record.UpdateRecord.GuildId)).SetDelayBy(GetResetTime(record.UpdateRecord));
 
         return HttpStatusCode.OK;
     }

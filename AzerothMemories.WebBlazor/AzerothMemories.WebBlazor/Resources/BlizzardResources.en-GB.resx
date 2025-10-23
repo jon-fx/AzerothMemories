@@ -1480,6 +1480,132 @@
   <data name="Realm-1428">
     <value>US-Quel'Thalas</value>
   </data>
+  <data name="Realm-1436">
+    <value>US-US1A Account Realm</value>
+  </data>
+  <data name="Realm-1437">
+    <value>US-US1B Account Realm</value>
+  </data>
+  <data name="Realm-1438">
+    <value>US-US2A Account Realm</value>
+  </data>
+  <data name="Realm-1439">
+    <value>US-US2B Account Realm</value>
+  </data>
+  <data name="Realm-1440">
+    <value>US-US3A Account Realm OLD AU</value>
+  </data>
+  <data name="Realm-1441">
+    <value>US-US3B Account Realm</value>
+  </data>
+  <data name="Realm-1442">
+    <value>US-US4A Account Realm</value>
+  </data>
+  <data name="Realm-1443">
+    <value>US-US4B Account Realm</value>
+  </data>
+  <data name="Realm-1444">
+    <value>US-US5A Account Realm</value>
+  </data>
+  <data name="Realm-1445">
+    <value>US-US5B Account Realm</value>
+  </data>
+  <data name="Realm-1446">
+    <value>US-US6A Account Realm</value>
+  </data>
+  <data name="Realm-1447">
+    <value>US-US6B Account Realm</value>
+  </data>
+  <data name="Realm-1448">
+    <value>EU-EU1A Account Realm</value>
+  </data>
+  <data name="Realm-1449">
+    <value>EU-EU1A1-INST</value>
+  </data>
+  <data name="Realm-1450">
+    <value>EU-EU1B Account Realm</value>
+  </data>
+  <data name="Realm-1451">
+    <value>EU-EU1B1-INST</value>
+  </data>
+  <data name="Realm-1452">
+    <value>EU-EU2A Account Realm</value>
+  </data>
+  <data name="Realm-1453">
+    <value>EU-EU2A1-INST</value>
+  </data>
+  <data name="Realm-1454">
+    <value>EU-EU2B Account Realm</value>
+  </data>
+  <data name="Realm-1455">
+    <value>EU-EU2B1-INST</value>
+  </data>
+  <data name="Realm-1456">
+    <value>EU-EU3A Account Realm</value>
+  </data>
+  <data name="Realm-1457">
+    <value>EU-EU3A1-INST</value>
+  </data>
+  <data name="Realm-1458">
+    <value>EU-EU3B Account Realm</value>
+  </data>
+  <data name="Realm-1459">
+    <value>EU-EU3B1-INST</value>
+  </data>
+  <data name="Realm-1460">
+    <value>EU-EU4A Account Realm</value>
+  </data>
+  <data name="Realm-1461">
+    <value>EU-EU4A1-INST</value>
+  </data>
+  <data name="Realm-1462">
+    <value>EU-EU4B Account Realm</value>
+  </data>
+  <data name="Realm-1463">
+    <value>EU-EU4B1-INST</value>
+  </data>
+  <data name="Realm-1464">
+    <value>EU-EU5A Account Realm</value>
+  </data>
+  <data name="Realm-1465">
+    <value>EU-EU5A1-INST</value>
+  </data>
+  <data name="Realm-1466">
+    <value>EU-EU5B Account Realm</value>
+  </data>
+  <data name="Realm-1467">
+    <value>EU-EU5B1-INST</value>
+  </data>
+  <data name="Realm-1468">
+    <value>EU-EU6A Account Realm</value>
+  </data>
+  <data name="Realm-1469">
+    <value>EU-EU6A1-INST</value>
+  </data>
+  <data name="Realm-1470">
+    <value>EU-EU6B Account Realm</value>
+  </data>
+  <data name="Realm-1471">
+    <value>EU-EU6B1-INST</value>
+  </data>
+  <data name="Realm-1472">
+    <value>KR-KR1A Account Realm</value>
+  </data>
+  <data name="Realm-1473">
+    <value>KR-KR1B Account Realm</value>
+  </data>
+  <data name="Realm-1474">
+    <value>KR-KR2A Account Realm</value>
+  </data>
+  <data name="Realm-1475">
+    <value>KR-KR2B Account Realm</value>
+  </data>
+  <data name="Realm-1478">
+    <value>TW-TW2A Account Realm</value>
+  </data>
+  <data name="Realm-1479">
+    <value>TW-TW2B Account Realm</value>
+  </data>
   <data name="Realm-1549">
     <value>US-Azuremyst</value>
   </data>
@@ -1533,6 +1659,12 @@
   </data>
   <data name="Realm-1582">
     <value>US-Dawnbringer</value>
+  </data>
+  <data name="Realm-1583">
+    <value>US-US7A Account Realm</value>
+  </data>
+  <data name="Realm-1584">
+    <value>US-US7B Account Realm</value>
   </data>
   <data name="Realm-1587">
     <value>EU-Hellfire</value>
@@ -1630,6 +1762,12 @@
   <data name="Realm-1626">
     <value>EU-Les Clairvoyants</value>
   </data>
+  <data name="Realm-1629">
+    <value>EU-EU7A-BG-RU</value>
+  </data>
+  <data name="Realm-1631">
+    <value>EU-EU7B1-INST</value>
+  </data>
   <data name="Realm-1922">
     <value>EU-Azuregos</value>
   </data>
@@ -1677,6 +1815,219 @@
   </data>
   <data name="Realm-2116">
     <value>KR-Zul'jin</value>
+  </data>
+  <data name="Realm-3017">
+    <value>US-US1A1-INST</value>
+  </data>
+  <data name="Realm-3018">
+    <value>US-US1B1-INST</value>
+  </data>
+  <data name="Realm-3019">
+    <value>US-US2A1-INST</value>
+  </data>
+  <data name="Realm-3020">
+    <value>US-US2B1-INST</value>
+  </data>
+  <data name="Realm-3021">
+    <value>US-US3A1-INST</value>
+  </data>
+  <data name="Realm-3022">
+    <value>US-US3B1-INST</value>
+  </data>
+  <data name="Realm-3023">
+    <value>US-US4A1-INST</value>
+  </data>
+  <data name="Realm-3024">
+    <value>US-US4B1-INST</value>
+  </data>
+  <data name="Realm-3025">
+    <value>US-US5A1-INST</value>
+  </data>
+  <data name="Realm-3026">
+    <value>US-US5B1-INST</value>
+  </data>
+  <data name="Realm-3027">
+    <value>US-US6A1-INST</value>
+  </data>
+  <data name="Realm-3028">
+    <value>US-US6B1-INST</value>
+  </data>
+  <data name="Realm-3030">
+    <value>US-US7B1-INST</value>
+  </data>
+  <data name="Realm-3031">
+    <value>US-US8A1-INST</value>
+  </data>
+  <data name="Realm-3032">
+    <value>US-US8B1-INST</value>
+  </data>
+  <data name="Realm-3057">
+    <value>KR-KR1A1-INST</value>
+  </data>
+  <data name="Realm-3058">
+    <value>KR-KR1B1-INST</value>
+  </data>
+  <data name="Realm-3059">
+    <value>KR-KR2A1-INST</value>
+  </data>
+  <data name="Realm-3060">
+    <value>KR-KR2B1-INST</value>
+  </data>
+  <data name="Realm-3061">
+    <value>EU-EU7A1-INST</value>
+  </data>
+  <data name="Realm-3062">
+    <value>TW-TW2A1-INST</value>
+  </data>
+  <data name="Realm-3063">
+    <value>TW-TW2B1-INST</value>
+  </data>
+  <data name="Realm-3069">
+    <value>US-RDB US</value>
+  </data>
+  <data name="Realm-3070">
+    <value>EU-zzz_RDB EU</value>
+  </data>
+  <data name="Realm-3071">
+    <value>KR-RDB KR</value>
+  </data>
+  <data name="Realm-3072">
+    <value>TW-RDB TW</value>
+  </data>
+  <data name="Realm-3090">
+    <value>EU-EU Arena Pass CSBG</value>
+  </data>
+  <data name="Realm-3092">
+    <value>EU-EU Arena Pass CSBG 2</value>
+  </data>
+  <data name="Realm-3102">
+    <value>EU-EU7B2-INST</value>
+  </data>
+  <data name="Realm-3103">
+    <value>EU-EU4B2-INST</value>
+  </data>
+  <data name="Realm-3104">
+    <value>EU-EU1A2-INST</value>
+  </data>
+  <data name="Realm-3105">
+    <value>EU-EU1B2-INST</value>
+  </data>
+  <data name="Realm-3106">
+    <value>EU-EU2A2-INST</value>
+  </data>
+  <data name="Realm-3107">
+    <value>EU-EU2B2-INST</value>
+  </data>
+  <data name="Realm-3108">
+    <value>EU-EU3A2-INST</value>
+  </data>
+  <data name="Realm-3109">
+    <value>EU-EU4A2-INST</value>
+  </data>
+  <data name="Realm-3110">
+    <value>EU-EU5A2-INST</value>
+  </data>
+  <data name="Realm-3111">
+    <value>EU-EU5B2-INST</value>
+  </data>
+  <data name="Realm-3112">
+    <value>EU-EU6A2-INST</value>
+  </data>
+  <data name="Realm-3113">
+    <value>EU-EU6B2-INST</value>
+  </data>
+  <data name="Realm-3114">
+    <value>EU-EU3B2-INST</value>
+  </data>
+  <data name="Realm-3131">
+    <value>US-US1A2-INST</value>
+  </data>
+  <data name="Realm-3132">
+    <value>US-US1B2-INST</value>
+  </data>
+  <data name="Realm-3133">
+    <value>US-US2A2-INST</value>
+  </data>
+  <data name="Realm-3134">
+    <value>US-US2B2-INST</value>
+  </data>
+  <data name="Realm-3135">
+    <value>US-US3A2-INST</value>
+  </data>
+  <data name="Realm-3136">
+    <value>US-US3B2-INST</value>
+  </data>
+  <data name="Realm-3137">
+    <value>US-US4A2-INST</value>
+  </data>
+  <data name="Realm-3138">
+    <value>US-US4B2-INST</value>
+  </data>
+  <data name="Realm-3139">
+    <value>US-US5A2-INST</value>
+  </data>
+  <data name="Realm-3140">
+    <value>US-US5B2-INST</value>
+  </data>
+  <data name="Realm-3141">
+    <value>US-US6A2-INST</value>
+  </data>
+  <data name="Realm-3142">
+    <value>US-US6B2-INST</value>
+  </data>
+  <data name="Realm-3144">
+    <value>US-US7B2-INST</value>
+  </data>
+  <data name="Realm-3145">
+    <value>US-US8A2-INST</value>
+  </data>
+  <data name="Realm-3146">
+    <value>US-US8B2-INST</value>
+  </data>
+  <data name="Realm-3151">
+    <value>EU-EU7A2-INST</value>
+  </data>
+  <data name="Realm-3152">
+    <value>KR-KR1A2-INST</value>
+  </data>
+  <data name="Realm-3153">
+    <value>KR-KR1B2-INST</value>
+  </data>
+  <data name="Realm-3154">
+    <value>KR-KR2A2-INST</value>
+  </data>
+  <data name="Realm-3155">
+    <value>KR-KR2B2-INST</value>
+  </data>
+  <data name="Realm-3156">
+    <value>TW-TW2A2-INST</value>
+  </data>
+  <data name="Realm-3157">
+    <value>TW-TW2B2-INST</value>
+  </data>
+  <data name="Realm-3177">
+    <value>TW-GMSupport TW2-01</value>
+  </data>
+  <data name="Realm-3178">
+    <value>TW-GMSupport TW2-02</value>
+  </data>
+  <data name="Realm-3179">
+    <value>TW-GMSupport TW2-03</value>
+  </data>
+  <data name="Realm-3180">
+    <value>TW-GMSupport TW2-04</value>
+  </data>
+  <data name="Realm-3189">
+    <value>TW-TW3A1-INST</value>
+  </data>
+  <data name="Realm-3190">
+    <value>TW-TW3A2-INST</value>
+  </data>
+  <data name="Realm-3191">
+    <value>TW-TW3A Account Realm</value>
+  </data>
+  <data name="Realm-3199">
+    <value>EU-RDB EU</value>
   </data>
   <data name="Realm-3207">
     <value>US-Goldrinn</value>
@@ -1728,6 +2079,294 @@
   </data>
   <data name="Realm-3738">
     <value>US-Saurfang</value>
+  </data>
+  <data name="Realm-3767">
+    <value>EU-EU4A3-INST</value>
+  </data>
+  <data name="Realm-3768">
+    <value>EU-EU4B3-INST</value>
+  </data>
+  <data name="Realm-3769">
+    <value>EU-EU5A3-INST</value>
+  </data>
+  <data name="Realm-3770">
+    <value>EU-EU5B3-INST</value>
+  </data>
+  <data name="Realm-3771">
+    <value>EU-EU6A3-INST</value>
+  </data>
+  <data name="Realm-3772">
+    <value>EU-EU6B3-INST</value>
+  </data>
+  <data name="Realm-3773">
+    <value>EU-EU7A3-INST</value>
+  </data>
+  <data name="Realm-3774">
+    <value>EU-EU7B3-INST</value>
+  </data>
+  <data name="Realm-3776">
+    <value>US-US1A3-INST</value>
+  </data>
+  <data name="Realm-3777">
+    <value>US-US1B3-INST</value>
+  </data>
+  <data name="Realm-3778">
+    <value>US-US2A3-INST</value>
+  </data>
+  <data name="Realm-3779">
+    <value>US-US2B3-INST</value>
+  </data>
+  <data name="Realm-3780">
+    <value>US-US3A3-INST</value>
+  </data>
+  <data name="Realm-3781">
+    <value>US-US3B3-INST</value>
+  </data>
+  <data name="Realm-3782">
+    <value>US-US4A3-INST</value>
+  </data>
+  <data name="Realm-3783">
+    <value>US-US4B3-INST</value>
+  </data>
+  <data name="Realm-3878">
+    <value>US-US1A4-INST</value>
+  </data>
+  <data name="Realm-3881">
+    <value>US-US1B4-INST</value>
+  </data>
+  <data name="Realm-3882">
+    <value>US-US2A4-INST</value>
+  </data>
+  <data name="Realm-3883">
+    <value>US-US2B4-INST</value>
+  </data>
+  <data name="Realm-3884">
+    <value>US-US3A4-INST</value>
+  </data>
+  <data name="Realm-3885">
+    <value>US-US3B4-INST</value>
+  </data>
+  <data name="Realm-3886">
+    <value>US-US4A4-INST</value>
+  </data>
+  <data name="Realm-3887">
+    <value>US-US4B4-INST</value>
+  </data>
+  <data name="Realm-3888">
+    <value>US-AU2A3-INST</value>
+  </data>
+  <data name="Realm-3889">
+    <value>EU-EU4A4-INST</value>
+  </data>
+  <data name="Realm-3890">
+    <value>EU-EU4B4-INST</value>
+  </data>
+  <data name="Realm-3891">
+    <value>EU-EU5A4-INST</value>
+  </data>
+  <data name="Realm-3892">
+    <value>EU-EU5B4-INST</value>
+  </data>
+  <data name="Realm-3893">
+    <value>EU-EU6A4-INST</value>
+  </data>
+  <data name="Realm-3894">
+    <value>EU-EU6B4-INST</value>
+  </data>
+  <data name="Realm-3895">
+    <value>EU-EU7A4-INST</value>
+  </data>
+  <data name="Realm-3896">
+    <value>EU-EU7B4-INST</value>
+  </data>
+  <data name="Realm-3897">
+    <value>KR-KR1A3-INST</value>
+  </data>
+  <data name="Realm-3898">
+    <value>KR-KR1A4-INST</value>
+  </data>
+  <data name="Realm-3899">
+    <value>KR-KR1B3-INST</value>
+  </data>
+  <data name="Realm-3900">
+    <value>KR-KR1B4-INST</value>
+  </data>
+  <data name="Realm-3901">
+    <value>TW-TW2A3-INST</value>
+  </data>
+  <data name="Realm-3902">
+    <value>TW-TW2A4-INST</value>
+  </data>
+  <data name="Realm-3933">
+    <value>US-AU2A4-INST</value>
+  </data>
+  <data name="Realm-4209">
+    <value>US-US1A1-INST-BFA</value>
+  </data>
+  <data name="Realm-4210">
+    <value>US-US1A2-INST-BFA</value>
+  </data>
+  <data name="Realm-4211">
+    <value>US-US1A3-INST-BFA</value>
+  </data>
+  <data name="Realm-4212">
+    <value>US-US1B1-INST-BFA</value>
+  </data>
+  <data name="Realm-4213">
+    <value>US-US1B2-INST-BFA</value>
+  </data>
+  <data name="Realm-4214">
+    <value>US-US1B3-INST-BFA</value>
+  </data>
+  <data name="Realm-4215">
+    <value>US-US2A1-INST-BFA</value>
+  </data>
+  <data name="Realm-4216">
+    <value>US-US2A2-INST-BFA</value>
+  </data>
+  <data name="Realm-4217">
+    <value>US-US2A3-INST-BFA</value>
+  </data>
+  <data name="Realm-4218">
+    <value>US-US2B1-INST-BFA</value>
+  </data>
+  <data name="Realm-4219">
+    <value>US-US2B2-INST-BFA</value>
+  </data>
+  <data name="Realm-4220">
+    <value>US-US2B3-INST-BFA</value>
+  </data>
+  <data name="Realm-4221">
+    <value>US-US3A1-INST-BFA</value>
+  </data>
+  <data name="Realm-4222">
+    <value>US-US3A2-INST-BFA</value>
+  </data>
+  <data name="Realm-4223">
+    <value>US-US3A3-INST-BFA</value>
+  </data>
+  <data name="Realm-4224">
+    <value>US-US3B1-INST-BFA</value>
+  </data>
+  <data name="Realm-4225">
+    <value>US-US3B2-INST-BFA</value>
+  </data>
+  <data name="Realm-4226">
+    <value>US-US3B3-INST-BFA</value>
+  </data>
+  <data name="Realm-4227">
+    <value>US-US4A1-INST-BFA</value>
+  </data>
+  <data name="Realm-4228">
+    <value>US-US4A2-INST-BFA</value>
+  </data>
+  <data name="Realm-4229">
+    <value>US-US4A3-INST-BFA</value>
+  </data>
+  <data name="Realm-4230">
+    <value>US-US4B1-INST-BFA</value>
+  </data>
+  <data name="Realm-4231">
+    <value>US-US4B2-INST-BFA</value>
+  </data>
+  <data name="Realm-4232">
+    <value>US-US4B3-INST-BFA</value>
+  </data>
+  <data name="Realm-4233">
+    <value>EU-EU4A1-INST-BFA</value>
+  </data>
+  <data name="Realm-4234">
+    <value>EU-EU4A2-INST-BFA</value>
+  </data>
+  <data name="Realm-4235">
+    <value>EU-EU4A3-INST-BFA</value>
+  </data>
+  <data name="Realm-4236">
+    <value>EU-EU4B1-INST-BFA</value>
+  </data>
+  <data name="Realm-4237">
+    <value>EU-EU4B2-INST-BFA</value>
+  </data>
+  <data name="Realm-4238">
+    <value>EU-EU4B3-INST-BFA</value>
+  </data>
+  <data name="Realm-4239">
+    <value>EU-EU5A1-INST-BFA</value>
+  </data>
+  <data name="Realm-4240">
+    <value>EU-EU5A2-INST-BFA</value>
+  </data>
+  <data name="Realm-4241">
+    <value>EU-EU5A3-INST-BFA</value>
+  </data>
+  <data name="Realm-4242">
+    <value>EU-EU5B1-INST-BFA</value>
+  </data>
+  <data name="Realm-4243">
+    <value>EU-EU5B2-INST-BFA</value>
+  </data>
+  <data name="Realm-4244">
+    <value>EU-EU5B3-INST-BFA</value>
+  </data>
+  <data name="Realm-4245">
+    <value>EU-EU6A1-INST-BFA</value>
+  </data>
+  <data name="Realm-4246">
+    <value>EU-EU6A2-INST-BFA</value>
+  </data>
+  <data name="Realm-4247">
+    <value>EU-EU6A3-INST-BFA</value>
+  </data>
+  <data name="Realm-4248">
+    <value>EU-EU6B1-INST-BFA</value>
+  </data>
+  <data name="Realm-4249">
+    <value>EU-EU6B2-INST-BFA</value>
+  </data>
+  <data name="Realm-4250">
+    <value>EU-EU6B3-INST-BFA</value>
+  </data>
+  <data name="Realm-4251">
+    <value>EU-EU7A1-INST-BFA</value>
+  </data>
+  <data name="Realm-4252">
+    <value>EU-EU7A2-INST-BFA</value>
+  </data>
+  <data name="Realm-4253">
+    <value>EU-EU7A3-INST-BFA</value>
+  </data>
+  <data name="Realm-4254">
+    <value>EU-EU7B1-INST-BFA</value>
+  </data>
+  <data name="Realm-4255">
+    <value>EU-EU7B2-INST-BFA</value>
+  </data>
+  <data name="Realm-4256">
+    <value>EU-EU7B3-INST-BFA</value>
+  </data>
+  <data name="Realm-4278">
+    <value>KR-KR1A1-INST-BFA</value>
+  </data>
+  <data name="Realm-4279">
+    <value>KR-KR1A2-INST-BFA</value>
+  </data>
+  <data name="Realm-4280">
+    <value>KR-KR1A3-INST-BFA</value>
+  </data>
+  <data name="Realm-4281">
+    <value>KR-KR1A4-INST-BFA</value>
+  </data>
+  <data name="Realm-4282">
+    <value>TW-TW2A1-INST-BFA</value>
+  </data>
+  <data name="Realm-4283">
+    <value>TW-TW2A2-INST-BFA</value>
+  </data>
+  <data name="Realm-4284">
+    <value>TW-TW2A3-INST-BFA</value>
+  </data>
+  <data name="Realm-4285">
+    <value>TW-TW2A4-INST-BFA</value>
   </data>
   <data name="Realm-4372">
     <value>US-Atiesh (Classic)</value>
@@ -1847,13 +2486,13 @@
     <value>US-US1 CWOW GMSS 2 (Classic)</value>
   </data>
   <data name="Realm-4667">
-    <value>US-Remulos (Classic)</value>
+    <value>US-Remulos (AU) (Classic)</value>
   </data>
   <data name="Realm-4669">
-    <value>US-Arugal (Classic)</value>
+    <value>US-Arugal (AU) (Classic)</value>
   </data>
   <data name="Realm-4670">
-    <value>US-Yojamba (Classic)</value>
+    <value>US-Yojamba (AU) (Classic)</value>
   </data>
   <data name="Realm-4678">
     <value>EU-Hydraxian Waterlords (Classic)</value>
@@ -1935,6 +2574,60 @@
   </data>
   <data name="Realm-4840">
     <value>KR-Frostmourne (Classic)</value>
+  </data>
+  <data name="Realm-5036">
+    <value>US-US1A4-INST-SL</value>
+  </data>
+  <data name="Realm-5039">
+    <value>US-US2A4-INST-SL</value>
+  </data>
+  <data name="Realm-5040">
+    <value>US-US3A4-INST-SL</value>
+  </data>
+  <data name="Realm-5041">
+    <value>US-US4A4-INST-SL</value>
+  </data>
+  <data name="Realm-5042">
+    <value>US-US1B4-INST-SL</value>
+  </data>
+  <data name="Realm-5044">
+    <value>US-US2B4-INST-SL</value>
+  </data>
+  <data name="Realm-5045">
+    <value>US-US3B4-INST-SL</value>
+  </data>
+  <data name="Realm-5046">
+    <value>US-US4B4-INST-SL</value>
+  </data>
+  <data name="Realm-5047">
+    <value>US-AU2A4-INST-SL</value>
+  </data>
+  <data name="Realm-5048">
+    <value>EU-EU4A4-INST-SL</value>
+  </data>
+  <data name="Realm-5049">
+    <value>EU-EU5A4-INST-SL</value>
+  </data>
+  <data name="Realm-5050">
+    <value>EU-EU6A4-INST-SL</value>
+  </data>
+  <data name="Realm-5051">
+    <value>EU-EU7A4-INST-SL</value>
+  </data>
+  <data name="Realm-5052">
+    <value>EU-EU4B4-INST-SL</value>
+  </data>
+  <data name="Realm-5053">
+    <value>EU-EU5B4-INST-SL</value>
+  </data>
+  <data name="Realm-5054">
+    <value>EU-EU6B4-INST-SL</value>
+  </data>
+  <data name="Realm-5055">
+    <value>EU-EU7B4-INST-SL</value>
+  </data>
+  <data name="Realm-5058">
+    <value>US-AU2A3-INST-SL</value>
   </data>
   <data name="Realm-5065">
     <value>US-Herod (ClassicEra)</value>
@@ -2377,6 +3070,18 @@
   <data name="Realm-5849">
     <value>TW-Chaos Bolt (ClassicEra)</value>
   </data>
+  <data name="Realm-5860">
+    <value>TW-TW2A1-INST-DFT</value>
+  </data>
+  <data name="Realm-5861">
+    <value>TW-TW2A2-INST-DFT</value>
+  </data>
+  <data name="Realm-5862">
+    <value>TW-TW2A3-INST-DFT</value>
+  </data>
+  <data name="Realm-5863">
+    <value>TW-TW2A4-INST-DFT</value>
+  </data>
   <data name="Realm-5909">
     <value>US-US PS Realm 222</value>
   </data>
@@ -2424,6 +3129,36 @@
   </data>
   <data name="Realm-6131">
     <value>US-Maladath (AU) (ClassicEra)</value>
+  </data>
+  <data name="Realm-6359">
+    <value>US-Nazgrim (Classic)</value>
+  </data>
+  <data name="Realm-6360">
+    <value>US-Galakras (Classic)</value>
+  </data>
+  <data name="Realm-6361">
+    <value>US-Ra-den (Classic)</value>
+  </data>
+  <data name="Realm-6362">
+    <value>US-Lei Shen (Classic)</value>
+  </data>
+  <data name="Realm-6363">
+    <value>US-Immerseus (Classic)</value>
+  </data>
+  <data name="Realm-6364">
+    <value>EU-Shek'zeer (Classic)</value>
+  </data>
+  <data name="Realm-6365">
+    <value>EU-Garalon (Classic)</value>
+  </data>
+  <data name="Realm-6366">
+    <value>EU-Norushen (Classic)</value>
+  </data>
+  <data name="Realm-6367">
+    <value>EU-Hoptallus (Classic)</value>
+  </data>
+  <data name="Realm-6368">
+    <value>EU-Ook Ook (Classic)</value>
   </data>
   <data name="Region-0">
     <value>None</value>
