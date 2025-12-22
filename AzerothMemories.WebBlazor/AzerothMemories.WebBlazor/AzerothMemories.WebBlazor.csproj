@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -29,23 +29,23 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Humanizer" Version="2.14.1" />
+        <PackageReference Include="Humanizer" Version="3.0.1" />
         <PackageReference Include="MemoryPack.Generator" Version="1.21.4">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.10" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.10" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.10" />
-        <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.10" />
-        <PackageReference Include="Markdig" Version="0.43.0" />
-        <PackageReference Include="MudBlazor" Version="8.13.0" />
-        <PackageReference Include="NodaTime" Version="3.2.2" />
-        <PackageReference Include="ActualLab.Fusion" Version="10.5.81" />
-        <PackageReference Include="ActualLab.CommandR" Version="10.5.81" />
-        <PackageReference Include="ActualLab.Fusion.Blazor" Version="10.5.81" />
-        <PackageReference Include="ActualLab.Fusion.Blazor.Authentication" Version="10.5.81" />
-        <PackageReference Include="ActualLab.Generators" Version="10.5.81" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.1" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Localization" Version="10.0.1" />
+        <PackageReference Include="Markdig" Version="0.44.0" />
+        <PackageReference Include="MudBlazor" Version="8.15.0" />
+        <PackageReference Include="NodaTime" Version="3.2.3" />
+        <PackageReference Include="ActualLab.Fusion" Version="11.3.84" />
+        <PackageReference Include="ActualLab.CommandR" Version="11.3.84" />
+        <PackageReference Include="ActualLab.Fusion.Blazor" Version="11.3.84" />
+        <PackageReference Include="ActualLab.Fusion.Blazor.Authentication" Version="11.3.84" />
+        <PackageReference Include="ActualLab.Generators" Version="11.3.84" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

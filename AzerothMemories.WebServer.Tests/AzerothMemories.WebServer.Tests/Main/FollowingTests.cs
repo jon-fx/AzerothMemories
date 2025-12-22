@@ -15,7 +15,7 @@ public sealed class FollowingTests : BaseTestHelper
         var session2 = Session.New();
         var account2 = await CreateUser(session2, "Bill");
 
-        var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account2.Id));
+        var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account2.Id), TestContext.Current.CancellationToken);
         startFollowing.Should().BeNull();
     }
 
@@ -25,7 +25,7 @@ public sealed class FollowingTests : BaseTestHelper
         var session1 = Session.New();
         var account1 = await CreateUser(session1, "Bob");
 
-        var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account1.Id));
+        var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account1.Id), TestContext.Current.CancellationToken);
         startFollowing.Should().BeNull();
     }
 
@@ -35,7 +35,7 @@ public sealed class FollowingTests : BaseTestHelper
         var session1 = Session.New();
         var account1 = await CreateUser(session1, "Bob");
 
-        var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, 99));
+        var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, 99), TestContext.Current.CancellationToken);
         startFollowing.Should().BeNull();
     }
 
@@ -48,7 +48,7 @@ public sealed class FollowingTests : BaseTestHelper
         var session2 = Session.New();
         var account2 = await CreateUser(session2, "Bill");
 
-        var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account2.Id));
+        var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account2.Id), TestContext.Current.CancellationToken);
         startFollowing.Should().Be(AccountFollowingStatus.Active);
     }
 
@@ -61,9 +61,9 @@ public sealed class FollowingTests : BaseTestHelper
         var session2 = Session.New();
         var account2 = await CreateUser(session2, "Bill");
 
-        await CommonServices.Commander.Call(new Account_TryChangeIsPrivate(session2, true));
+        await CommonServices.Commander.Call(new Account_TryChangeIsPrivate(session2, true), TestContext.Current.CancellationToken);
 
-        var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account2.Id));
+        var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account2.Id), TestContext.Current.CancellationToken);
         startFollowing.Should().Be(AccountFollowingStatus.Pending);
     }
 
@@ -76,7 +76,7 @@ public sealed class FollowingTests : BaseTestHelper
         var session2 = Session.New();
         var account2 = await CreateUser(session2, "Bill");
 
-        var startFollowing = await CommonServices.Commander.Call(new Following_TryAcceptFollower(session1, account2.Id));
+        var startFollowing = await CommonServices.Commander.Call(new Following_TryAcceptFollower(session1, account2.Id), TestContext.Current.CancellationToken);
         startFollowing.Should().BeNull();
     }
 
@@ -86,7 +86,7 @@ public sealed class FollowingTests : BaseTestHelper
         var session1 = Session.New();
         var account1 = await CreateUser(session1, "Bob");
 
-        var startFollowing = await CommonServices.Commander.Call(new Following_TryAcceptFollower(session1, account1.Id));
+        var startFollowing = await CommonServices.Commander.Call(new Following_TryAcceptFollower(session1, account1.Id), TestContext.Current.CancellationToken);
         startFollowing.Should().BeNull();
     }
 
@@ -99,7 +99,7 @@ public sealed class FollowingTests : BaseTestHelper
         var session2 = Session.New();
         var account2 = await CreateUser(session2, "Bill");
 
-        var acceptFollowing = await CommonServices.Commander.Call(new Following_TryAcceptFollower(session2, account1.Id));
+        var acceptFollowing = await CommonServices.Commander.Call(new Following_TryAcceptFollower(session2, account1.Id), TestContext.Current.CancellationToken);
         acceptFollowing.Should().Be(null);
     }
 
@@ -112,12 +112,12 @@ public sealed class FollowingTests : BaseTestHelper
         var session2 = Session.New();
         var account2 = await CreateUser(session2, "Bill");
 
-        await CommonServices.Commander.Call(new Account_TryChangeIsPrivate(session2, true));
+        await CommonServices.Commander.Call(new Account_TryChangeIsPrivate(session2, true), TestContext.Current.CancellationToken);
 
-        var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account2.Id));
+        var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account2.Id), TestContext.Current.CancellationToken);
         startFollowing.Should().Be(AccountFollowingStatus.Pending);
 
-        var acceptFollowing = await CommonServices.Commander.Call(new Following_TryAcceptFollower(session2, account1.Id));
+        var acceptFollowing = await CommonServices.Commander.Call(new Following_TryAcceptFollower(session2, account1.Id), TestContext.Current.CancellationToken);
         acceptFollowing.Should().Be(AccountFollowingStatus.Active);
     }
 
@@ -130,10 +130,10 @@ public sealed class FollowingTests : BaseTestHelper
         var session2 = Session.New();
         var account2 = await CreateUser(session2, "Bill");
 
-        var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account2.Id));
+        var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account2.Id), TestContext.Current.CancellationToken);
         startFollowing.Should().Be(AccountFollowingStatus.Active);
 
-        var stopFollowing = await CommonServices.Commander.Call(new Following_TryStopFollowing(session1, account2.Id));
+        var stopFollowing = await CommonServices.Commander.Call(new Following_TryStopFollowing(session1, account2.Id), TestContext.Current.CancellationToken);
         stopFollowing.Should().Be(AccountFollowingStatus.None);
     }
 
@@ -146,10 +146,10 @@ public sealed class FollowingTests : BaseTestHelper
         var session2 = Session.New();
         var account2 = await CreateUser(session2, "Bill");
 
-        var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account2.Id));
+        var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account2.Id), TestContext.Current.CancellationToken);
         startFollowing.Should().Be(AccountFollowingStatus.Active);
 
-        var stopFollowing = await CommonServices.Commander.Call(new Following_TryStopFollowing(session2, account1.Id));
+        var stopFollowing = await CommonServices.Commander.Call(new Following_TryStopFollowing(session2, account1.Id), TestContext.Current.CancellationToken);
         stopFollowing.Should().BeNull();
     }
 
@@ -162,10 +162,10 @@ public sealed class FollowingTests : BaseTestHelper
         var session2 = Session.New();
         var account2 = await CreateUser(session2, "Bill");
 
-        var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account2.Id));
+        var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account2.Id), TestContext.Current.CancellationToken);
         startFollowing.Should().Be(AccountFollowingStatus.Active);
 
-        var stopFollowing = await CommonServices.Commander.Call(new Following_TryRemoveFollower(session2, account1.Id));
+        var stopFollowing = await CommonServices.Commander.Call(new Following_TryRemoveFollower(session2, account1.Id), TestContext.Current.CancellationToken);
         stopFollowing.Should().Be(AccountFollowingStatus.None);
     }
 
@@ -178,10 +178,10 @@ public sealed class FollowingTests : BaseTestHelper
         var session2 = Session.New();
         var account2 = await CreateUser(session2, "Bill");
 
-        var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account2.Id));
+        var startFollowing = await CommonServices.Commander.Call(new Following_TryStartFollowing(session1, account2.Id), TestContext.Current.CancellationToken);
         startFollowing.Should().Be(AccountFollowingStatus.Active);
 
-        var stopFollowing = await CommonServices.Commander.Call(new Following_TryRemoveFollower(session1, account2.Id));
+        var stopFollowing = await CommonServices.Commander.Call(new Following_TryRemoveFollower(session1, account2.Id), TestContext.Current.CancellationToken);
         stopFollowing.Should().Be(null);
     }
 }

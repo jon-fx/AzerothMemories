@@ -28,7 +28,7 @@ public class AccountUsernameTests : BaseTestHelper
         account1.Should().NotBeNull();
         account1.Username.Should().Be($"User-{account1.Id}");
 
-        var result = await CommonServices.Commander.Call(new Account_TryChangeUsername(session1, 0, username));
+        var result = await CommonServices.Commander.Call(new Account_TryChangeUsername(session1, 0, username), TestContext.Current.CancellationToken);
         result.Should().BeTrue();
 
         var accountRecord = await CommonServices.AccountServices.TryGetActiveAccount(session1);
@@ -56,7 +56,7 @@ public class AccountUsernameTests : BaseTestHelper
         account1.Should().NotBeNull();
         account1.Username.Should().Be($"User-{account1.Id}");
 
-        var result = await CommonServices.Commander.Call(new Account_TryChangeUsername(session1, 0, username));
+        var result = await CommonServices.Commander.Call(new Account_TryChangeUsername(session1, 0, username), TestContext.Current.CancellationToken);
         result.Should().BeFalse();
 
         var accountRecord = await CommonServices.AccountServices.TryGetActiveAccount(session1);
@@ -70,12 +70,12 @@ public class AccountUsernameTests : BaseTestHelper
     {
         var session1 = Session.New();
         var account1 = await CreateUser(session1, "Bob");
-        var result1 = await CommonServices.Commander.Call(new Account_TryChangeUsername(session1, 0, "Bob"));
+        var result1 = await CommonServices.Commander.Call(new Account_TryChangeUsername(session1, 0, "Bob"), TestContext.Current.CancellationToken);
         result1.Should().BeTrue();
 
         var session2 = Session.New();
         var account2 = await CreateUser(session2, "Bob");
-        var result2 = await CommonServices.Commander.Call(new Account_TryChangeUsername(session2, 0, "Bob"));
+        var result2 = await CommonServices.Commander.Call(new Account_TryChangeUsername(session2, 0, "Bob"), TestContext.Current.CancellationToken);
         result2.Should().BeFalse();
     }
 }

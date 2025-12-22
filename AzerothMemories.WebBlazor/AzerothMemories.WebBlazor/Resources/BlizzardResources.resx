@@ -2830,8 +2830,38 @@
   <data name="Realm-5149">
     <value>US-Mankrik (ClassicEra)</value>
   </data>
+  <data name="Realm-5155">
+    <value>US-US2 VANWOW Log (ClassicEra)</value>
+  </data>
   <data name="Realm-5156">
     <value>US-US2 VANWOW Web (ClassicEra)</value>
+  </data>
+  <data name="Realm-5157">
+    <value>US-US2 VANWOW Account (ClassicEra)</value>
+  </data>
+  <data name="Realm-5158">
+    <value>US-US2 VANWOW CSI 87 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5159">
+    <value>US-US2 VANWOW CSI 86 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5160">
+    <value>US-US2 VANWOW CSI 85 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5161">
+    <value>US-US2 VANWOW CSI 84 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5162">
+    <value>US-US2 VANWOW CSI 83 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5163">
+    <value>US-US2 VANWOW CSI 82 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5164">
+    <value>US-US2 VANWOW CSI 81 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5165">
+    <value>US-US2 VANWOW CSI 80 (ClassicEra)</value>
   </data>
   <data name="Realm-5166">
     <value>US-US1 VANWOW GMSS 1 (ClassicEra)</value>
@@ -3228,6 +3258,12 @@
   </data>
   <data name="Realm-6368">
     <value>EU-Ook Ook (Classic)</value>
+  </data>
+  <data name="Realm-6508">
+    <value>US-US Auxiliary 70</value>
+  </data>
+  <data name="Realm-6510">
+    <value>EU-EU Auxiliary 70</value>
   </data>
   <data name="RealmSlug-1">
     <value>lightbringer</value>
@@ -5929,8 +5965,38 @@
   <data name="RealmSlug-5149">
     <value>mankrik</value>
   </data>
+  <data name="RealmSlug-5155">
+    <value>us2-vanwow-log</value>
+  </data>
   <data name="RealmSlug-5156">
     <value>us2-vanwow-web</value>
+  </data>
+  <data name="RealmSlug-5157">
+    <value>us2-vanwow-account</value>
+  </data>
+  <data name="RealmSlug-5158">
+    <value>us2-vanwow-csi-87</value>
+  </data>
+  <data name="RealmSlug-5159">
+    <value>us2-vanwow-csi-86</value>
+  </data>
+  <data name="RealmSlug-5160">
+    <value>us2-vanwow-csi-85</value>
+  </data>
+  <data name="RealmSlug-5161">
+    <value>us2-vanwow-csi-84</value>
+  </data>
+  <data name="RealmSlug-5162">
+    <value>us2-vanwow-csi-83</value>
+  </data>
+  <data name="RealmSlug-5163">
+    <value>us2-vanwow-csi-82</value>
+  </data>
+  <data name="RealmSlug-5164">
+    <value>us2-vanwow-csi-81</value>
+  </data>
+  <data name="RealmSlug-5165">
+    <value>us2-vanwow-csi-80</value>
   </data>
   <data name="RealmSlug-5166">
     <value>us1-vanwow-gmss-1</value>
@@ -6328,6 +6394,12 @@
   <data name="RealmSlug-6368">
     <value>ook-ook</value>
   </data>
+  <data name="RealmSlug-6508">
+    <value>us-auxiliary-70</value>
+  </data>
+  <data name="RealmSlug-6510">
+    <value>eu-auxiliary-70</value>
+  </data>
   <data name="CharacterRace-0">
     <value>Unknown Race</value>
   </data>
@@ -6540,6 +6612,9 @@
   </data>
   <data name="CharacterClass-14">
     <value>Adventurer</value>
+  </data>
+  <data name="CharacterClass-15">
+    <value>Traveler</value>
   </data>
   <data name="CharacterClassSpecialization-0">
     <value>Unknown Specialization</value>

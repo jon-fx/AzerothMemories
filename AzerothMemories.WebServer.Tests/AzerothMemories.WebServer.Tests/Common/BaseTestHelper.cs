@@ -24,7 +24,7 @@ public class BaseTestHelper : IAsyncLifetime
 
     protected CommonServices CommonServices => _commonServices;
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         await using var dbContext = CreateDbContext();
 
@@ -86,7 +86,7 @@ public class BaseTestHelper : IAsyncLifetime
         return app;
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         await _serviceProvider.DisposeAsync();
     }

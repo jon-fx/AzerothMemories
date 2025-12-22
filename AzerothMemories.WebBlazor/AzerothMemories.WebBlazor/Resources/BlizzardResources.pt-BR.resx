@@ -2761,8 +2761,38 @@
   <data name="Realm-5149">
     <value>US-Mankrik (ClassicEra)</value>
   </data>
+  <data name="Realm-5155">
+    <value>US-US2 VANWOW Log (ClassicEra)</value>
+  </data>
   <data name="Realm-5156">
     <value>US-US2 VANWOW Web (ClassicEra)</value>
+  </data>
+  <data name="Realm-5157">
+    <value>US-US2 VANWOW Account (ClassicEra)</value>
+  </data>
+  <data name="Realm-5158">
+    <value>US-US2 VANWOW CSI 87 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5159">
+    <value>US-US2 VANWOW CSI 86 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5160">
+    <value>US-US2 VANWOW CSI 85 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5161">
+    <value>US-US2 VANWOW CSI 84 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5162">
+    <value>US-US2 VANWOW CSI 83 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5163">
+    <value>US-US2 VANWOW CSI 82 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5164">
+    <value>US-US2 VANWOW CSI 81 (ClassicEra)</value>
+  </data>
+  <data name="Realm-5165">
+    <value>US-US2 VANWOW CSI 80 (ClassicEra)</value>
   </data>
   <data name="Realm-5166">
     <value>US-US1 VANWOW GMSS 1 (ClassicEra)</value>
@@ -3160,6 +3190,12 @@
   <data name="Realm-6368">
     <value>EU-Ook Ook (Classic)</value>
   </data>
+  <data name="Realm-6508">
+    <value>US-Auxiliar Estados Unidos 70</value>
+  </data>
+  <data name="Realm-6510">
+    <value>EU-EU Auxiliary 70</value>
+  </data>
   <data name="Region-0">
     <value>None</value>
   </data>
@@ -3441,6 +3477,9 @@
   </data>
   <data name="CharacterClass-14">
     <value>Aventureiro</value>
+  </data>
+  <data name="CharacterClass-15">
+    <value>Viajante</value>
   </data>
   <data name="CharacterClassSpecialization-0">
     <value>Unknown Specialization</value>

@@ -1,3 +1,4 @@
+using ActualLab.Rpc.Server;
 using AzerothMemories.WebBlazor;
 using AzerothMemories.WebServer.Pages;
 
@@ -82,7 +83,7 @@ app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(Routes).Assembly);
 
-app.MapRpcWebSocketServerEx();
+app.MapRpcWebSocketServer();
 //app.MapFusionAuth();
 //app.MapFusionBlazorMode();
 app.MapControllers();

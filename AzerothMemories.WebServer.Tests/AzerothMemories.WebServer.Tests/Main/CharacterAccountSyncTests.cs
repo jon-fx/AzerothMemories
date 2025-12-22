@@ -38,7 +38,7 @@ public class CharacterAccountSyncTests : BaseTestHelper
         var characters = await CommonServices.CharacterServices.TryGetAllAccountCharacters(account1.Id);
         foreach (var character in characters)
         {
-            var result = await CommonServices.Commander.Call(new Character_TryChangeCharacterAccountSync(session1, character.Key, true));
+            var result = await CommonServices.Commander.Call(new Character_TryChangeCharacterAccountSync(session1, character.Key, true), TestContext.Current.CancellationToken);
             result.Should().BeTrue();
         }
     }
@@ -55,7 +55,7 @@ public class CharacterAccountSyncTests : BaseTestHelper
         foreach (var character in characters)
         {
             var session2 = Session.New();
-            var result = await CommonServices.Commander.Call(new Character_TryChangeCharacterAccountSync(session2, character.Key, true));
+            var result = await CommonServices.Commander.Call(new Character_TryChangeCharacterAccountSync(session2, character.Key, true), TestContext.Current.CancellationToken);
             result.Should().BeFalse();
         }
     }
@@ -74,7 +74,7 @@ public class CharacterAccountSyncTests : BaseTestHelper
             var session2 = Session.New();
             var account2 = await CreateUser(session2, "Bob");
 
-            var result = await CommonServices.Commander.Call(new Character_TryChangeCharacterAccountSync(session2, character.Key, true));
+            var result = await CommonServices.Commander.Call(new Character_TryChangeCharacterAccountSync(session2, character.Key, true), TestContext.Current.CancellationToken);
             result.Should().BeFalse();
         }
     }

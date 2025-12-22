@@ -23,7 +23,7 @@ public sealed class PostReactTests : BaseTestHelper
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
 
-        var result = await CommonServices.Commander.Call(new Post_TryReactToPost(session, validPost.PostId, reaction));
+        var result = await CommonServices.Commander.Call(new Post_TryReactToPost(session, validPost.PostId, reaction), TestContext.Current.CancellationToken);
         result.Should().BeGreaterThan(0);
 
         await EnsureReactions(session, account, validPost, reaction, result);
@@ -37,7 +37,7 @@ public sealed class PostReactTests : BaseTestHelper
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
 
-        var result = await CommonServices.Commander.Call(new Post_TryReactToPost(Session.New(), validPost.PostId, PostReaction.Reaction1));
+        var result = await CommonServices.Commander.Call(new Post_TryReactToPost(Session.New(), validPost.PostId, PostReaction.Reaction1), TestContext.Current.CancellationToken);
         result.Should().Be(0);
     }
 
@@ -49,7 +49,7 @@ public sealed class PostReactTests : BaseTestHelper
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
 
-        var result = await CommonServices.Commander.Call(new Post_TryReactToPost(session, validPost.PostId, PostReaction.None));
+        var result = await CommonServices.Commander.Call(new Post_TryReactToPost(session, validPost.PostId, PostReaction.None), TestContext.Current.CancellationToken);
         result.Should().Be(0);
     }
 
@@ -61,7 +61,7 @@ public sealed class PostReactTests : BaseTestHelper
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
 
-        var result = await CommonServices.Commander.Call(new Post_TryReactToPost(session, validPost.PostId, (PostReaction)25));
+        var result = await CommonServices.Commander.Call(new Post_TryReactToPost(session, validPost.PostId, (PostReaction)25), TestContext.Current.CancellationToken);
         result.Should().Be(0);
     }
 
@@ -71,7 +71,7 @@ public sealed class PostReactTests : BaseTestHelper
         var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
-        var result = await CommonServices.Commander.Call(new Post_TryReactToPost(session, 99, PostReaction.Reaction1));
+        var result = await CommonServices.Commander.Call(new Post_TryReactToPost(session, 99, PostReaction.Reaction1), TestContext.Current.CancellationToken);
         result.Should().Be(0);
     }
 
@@ -94,12 +94,12 @@ public sealed class PostReactTests : BaseTestHelper
 
         for (var i = 1; i < (int)(PostReaction.Reaction9 + 1); i++)
         {
-            var result = await CommonServices.Commander.Call(new Post_TryReactToPost(session, validPost.PostId, reaction));
+            var result = await CommonServices.Commander.Call(new Post_TryReactToPost(session, validPost.PostId, reaction), TestContext.Current.CancellationToken);
             result.Should().BeGreaterThan(0);
 
             await EnsureReactions(session, account, validPost, reaction, result);
 
-            var result2 = await CommonServices.Commander.Call(new Post_TryReactToPost(session, validPost.PostId, (PostReaction)i));
+            var result2 = await CommonServices.Commander.Call(new Post_TryReactToPost(session, validPost.PostId, (PostReaction)i), TestContext.Current.CancellationToken);
             result2.Should().Be(result);
 
             await EnsureReactions(session, account, validPost, (PostReaction)i, result2);

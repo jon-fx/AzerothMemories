@@ -86,20 +86,14 @@ public abstract class ProgramHelper
             x.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         });
 
-        void AddServiceWithSingleton<TService, TImplementation>() where TService : class where TImplementation : class, TService, IComputeService
-        {
-            _fusion.AddServer<TService, TImplementation>();
-            _services.AddSingleton(c => (TImplementation)c.GetRequiredService<TService>());
-        }
-
-        AddServiceWithSingleton<IAdminServices, AdminServices>();
-        AddServiceWithSingleton<IAccountServices, AccountServices>();
-        AddServiceWithSingleton<IFollowingServices, FollowingServices>();
-        AddServiceWithSingleton<ICharacterServices, CharacterServices>();
-        AddServiceWithSingleton<IGuildServices, GuildServices>();
-        AddServiceWithSingleton<ITagServices, TagServices>();
-        AddServiceWithSingleton<IPostServices, PostServices>();
-        AddServiceWithSingleton<ISearchServices, SearchServices>();
+        _fusion.AddServer<IAdminServices, AdminServices>();
+        _fusion.AddServer<IAccountServices, AccountServices>();
+        _fusion.AddServer<IFollowingServices, FollowingServices>();
+        _fusion.AddServer<ICharacterServices, CharacterServices>();
+        _fusion.AddServer<IGuildServices, GuildServices>();
+        _fusion.AddServer<ITagServices, TagServices>();
+        _fusion.AddServer<IPostServices, PostServices>();
+        _fusion.AddServer<ISearchServices, SearchServices>();
 
         _fusion.AddBlazor().AddAuthentication().AddPresenceReporter();
     }

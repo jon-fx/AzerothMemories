@@ -14,7 +14,7 @@ public sealed class PostDeleteTests : BaseTestHelper
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
 
-        var result = await CommonServices.Commander.Call(new Post_TryDeletePost(session, validPost.PostId));
+        var result = await CommonServices.Commander.Call(new Post_TryDeletePost(session, validPost.PostId), TestContext.Current.CancellationToken);
         result.Should().BeGreaterThan(0);
     }
 
@@ -26,7 +26,7 @@ public sealed class PostDeleteTests : BaseTestHelper
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
 
-        var result = await CommonServices.Commander.Call(new Post_TryDeletePost(Session.New(), validPost.PostId));
+        var result = await CommonServices.Commander.Call(new Post_TryDeletePost(Session.New(), validPost.PostId), TestContext.Current.CancellationToken);
         result.Should().Be(0);
     }
 
@@ -36,7 +36,7 @@ public sealed class PostDeleteTests : BaseTestHelper
         var session = Session.New();
         var account = await CreateUser(session, "Bob");
 
-        var result = await CommonServices.Commander.Call(new Post_TryDeletePost(session, 99));
+        var result = await CommonServices.Commander.Call(new Post_TryDeletePost(session, 99), TestContext.Current.CancellationToken);
         result.Should().Be(0);
     }
 }

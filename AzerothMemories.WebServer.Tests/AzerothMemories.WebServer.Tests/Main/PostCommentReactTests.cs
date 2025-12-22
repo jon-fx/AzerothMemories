@@ -23,10 +23,10 @@ public sealed class PostCommentReactTests : BaseTestHelper
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
 
-        var validComment = await CommonServices.Commander.Call(new Post_TryPublishComment(session, validPost.PostId, 0, "Test Comment"));
+        var validComment = await CommonServices.Commander.Call(new Post_TryPublishComment(session, validPost.PostId, 0, "Test Comment"), TestContext.Current.CancellationToken);
         validComment.Should().BeGreaterThan(0);
 
-        var result = await CommonServices.Commander.Call(new Post_TryReactToPostComment(session, validPost.PostId, validComment, reaction));
+        var result = await CommonServices.Commander.Call(new Post_TryReactToPostComment(session, validPost.PostId, validComment, reaction), TestContext.Current.CancellationToken);
         result.Should().BeGreaterThan(0);
 
         await EnsureReactions(session, account, validPost, validComment, reaction, result);
@@ -39,10 +39,10 @@ public sealed class PostCommentReactTests : BaseTestHelper
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
-        var validComment = await CommonServices.Commander.Call(new Post_TryPublishComment(session, validPost.PostId, 0, "Test Comment"));
+        var validComment = await CommonServices.Commander.Call(new Post_TryPublishComment(session, validPost.PostId, 0, "Test Comment"), TestContext.Current.CancellationToken);
         validComment.Should().BeGreaterThan(0);
 
-        var result = await CommonServices.Commander.Call(new Post_TryReactToPostComment(Session.New(), validPost.PostId, validComment, PostReaction.Reaction1));
+        var result = await CommonServices.Commander.Call(new Post_TryReactToPostComment(Session.New(), validPost.PostId, validComment, PostReaction.Reaction1), TestContext.Current.CancellationToken);
         result.Should().Be(0);
     }
 
@@ -54,7 +54,7 @@ public sealed class PostCommentReactTests : BaseTestHelper
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
 
-        var result = await CommonServices.Commander.Call(new Post_TryReactToPostComment(session, 99, 99, PostReaction.Reaction1));
+        var result = await CommonServices.Commander.Call(new Post_TryReactToPostComment(session, 99, 99, PostReaction.Reaction1), TestContext.Current.CancellationToken);
         result.Should().Be(0);
     }
 
@@ -66,7 +66,7 @@ public sealed class PostCommentReactTests : BaseTestHelper
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
 
-        var result = await CommonServices.Commander.Call(new Post_TryReactToPostComment(session, validPost.PostId, 99, PostReaction.Reaction1));
+        var result = await CommonServices.Commander.Call(new Post_TryReactToPostComment(session, validPost.PostId, 99, PostReaction.Reaction1), TestContext.Current.CancellationToken);
         result.Should().Be(0);
     }
 
@@ -77,10 +77,10 @@ public sealed class PostCommentReactTests : BaseTestHelper
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
-        var validComment = await CommonServices.Commander.Call(new Post_TryPublishComment(session, validPost.PostId, 0, "Test Comment"));
+        var validComment = await CommonServices.Commander.Call(new Post_TryPublishComment(session, validPost.PostId, 0, "Test Comment"), TestContext.Current.CancellationToken);
         validComment.Should().BeGreaterThan(0);
 
-        var result = await CommonServices.Commander.Call(new Post_TryReactToPostComment(session, validPost.PostId, validComment, PostReaction.None));
+        var result = await CommonServices.Commander.Call(new Post_TryReactToPostComment(session, validPost.PostId, validComment, PostReaction.None), TestContext.Current.CancellationToken);
         result.Should().Be(0);
     }
 
@@ -91,10 +91,10 @@ public sealed class PostCommentReactTests : BaseTestHelper
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
-        var validComment = await CommonServices.Commander.Call(new Post_TryPublishComment(session, validPost.PostId, 0, "Test Comment"));
+        var validComment = await CommonServices.Commander.Call(new Post_TryPublishComment(session, validPost.PostId, 0, "Test Comment"), TestContext.Current.CancellationToken);
         validComment.Should().BeGreaterThan(0);
 
-        var result = await CommonServices.Commander.Call(new Post_TryReactToPostComment(session, validPost.PostId, validComment, (PostReaction)25));
+        var result = await CommonServices.Commander.Call(new Post_TryReactToPostComment(session, validPost.PostId, validComment, (PostReaction)25), TestContext.Current.CancellationToken);
         result.Should().Be(0);
     }
 
@@ -114,17 +114,17 @@ public sealed class PostCommentReactTests : BaseTestHelper
         var account = await CreateUser(session, "Bob");
 
         var validPost = await PostCreateTests.CreateValidPost(CommonServices, session, account);
-        var validComment = await CommonServices.Commander.Call(new Post_TryPublishComment(session, validPost.PostId, 0, "Test Comment"));
+        var validComment = await CommonServices.Commander.Call(new Post_TryPublishComment(session, validPost.PostId, 0, "Test Comment"), TestContext.Current.CancellationToken);
         validComment.Should().BeGreaterThan(0);
 
         for (var i = 1; i < (int)(PostReaction.Reaction9 + 1); i++)
         {
-            var result = await CommonServices.Commander.Call(new Post_TryReactToPostComment(session, validPost.PostId, validComment, reaction));
+            var result = await CommonServices.Commander.Call(new Post_TryReactToPostComment(session, validPost.PostId, validComment, reaction), TestContext.Current.CancellationToken);
             result.Should().BeGreaterThan(0);
 
             await EnsureReactions(session, account, validPost, validComment, reaction, result);
 
-            var result2 = await CommonServices.Commander.Call(new Post_TryReactToPostComment(session, validPost.PostId, validComment, (PostReaction)i));
+            var result2 = await CommonServices.Commander.Call(new Post_TryReactToPostComment(session, validPost.PostId, validComment, (PostReaction)i), TestContext.Current.CancellationToken);
             result2.Should().Be(result);
 
             await EnsureReactions(session, account, validPost, validComment, (PostReaction)i, result2);
