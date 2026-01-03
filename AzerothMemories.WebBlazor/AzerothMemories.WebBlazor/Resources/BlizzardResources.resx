@@ -2461,11 +2461,41 @@
   <data name="Realm-4388">
     <value>US-Westfall (Classic)</value>
   </data>
+  <data name="Realm-4389">
+    <value>US-US2 CWOW CSI 80 (Classic)</value>
+  </data>
+  <data name="Realm-4390">
+    <value>US-US2 CWOW CSI 81 (Classic)</value>
+  </data>
+  <data name="Realm-4391">
+    <value>US-US2 CWOW CSI 82 (Classic)</value>
+  </data>
+  <data name="Realm-4392">
+    <value>US-US2 CWOW CSI 83 (Classic)</value>
+  </data>
+  <data name="Realm-4393">
+    <value>US-US2 CWOW Account (Classic)</value>
+  </data>
+  <data name="Realm-4394">
+    <value>US-US2 CWOW Log (Classic)</value>
+  </data>
   <data name="Realm-4395">
     <value>US-Whitemane (Classic)</value>
   </data>
   <data name="Realm-4408">
     <value>US-Faerlina (Classic)</value>
+  </data>
+  <data name="Realm-4411">
+    <value>US-US2 CWOW CSI 84 (Classic)</value>
+  </data>
+  <data name="Realm-4412">
+    <value>US-US2 CWOW CSI 85 (Classic)</value>
+  </data>
+  <data name="Realm-4413">
+    <value>US-US2 CWOW CSI 86 (Classic)</value>
+  </data>
+  <data name="Realm-4414">
+    <value>US-US2 CWOW CSI 87 (Classic)</value>
   </data>
   <data name="Realm-4417">
     <value>KR-Shimmering Flats (Classic)</value>
@@ -3064,6 +3094,30 @@
   <data name="Realm-5501">
     <value>EU-Amnennar (ClassicEra)</value>
   </data>
+  <data name="Realm-5549">
+    <value>US-US2 CWOW CSI 180 (Classic)</value>
+  </data>
+  <data name="Realm-5550">
+    <value>US-US2 CWOW CSI 181 (Classic)</value>
+  </data>
+  <data name="Realm-5551">
+    <value>US-US2 CWOW CSI 182 (Classic)</value>
+  </data>
+  <data name="Realm-5552">
+    <value>US-US2 CWOW CSI 183 (Classic)</value>
+  </data>
+  <data name="Realm-5553">
+    <value>US-US2 CWOW CSI 184 (Classic)</value>
+  </data>
+  <data name="Realm-5554">
+    <value>US-US2 CWOW CSI 185 (Classic)</value>
+  </data>
+  <data name="Realm-5555">
+    <value>US-US2 CWOW CSI 186 (Classic)</value>
+  </data>
+  <data name="Realm-5556">
+    <value>US-US2 CWOW CSI 187 (Classic)</value>
+  </data>
   <data name="Realm-5735">
     <value>TW-Krol Blade</value>
   </data>
@@ -3262,8 +3316,14 @@
   <data name="Realm-6508">
     <value>US-US Auxiliary 70</value>
   </data>
+  <data name="Realm-6509">
+    <value>KR-KR Auxiliary 70</value>
+  </data>
   <data name="Realm-6510">
     <value>EU-EU Auxiliary 70</value>
+  </data>
+  <data name="Realm-6512">
+    <value>TW-TW Auxiliary 170</value>
   </data>
   <data name="RealmSlug-1">
     <value>lightbringer</value>
@@ -5596,11 +5656,41 @@
   <data name="RealmSlug-4388">
     <value>westfall</value>
   </data>
+  <data name="RealmSlug-4389">
+    <value>us2-cwow-csi-80</value>
+  </data>
+  <data name="RealmSlug-4390">
+    <value>us2-cwow-csi-81</value>
+  </data>
+  <data name="RealmSlug-4391">
+    <value>us2-cwow-csi-82</value>
+  </data>
+  <data name="RealmSlug-4392">
+    <value>us2-cwow-csi-83</value>
+  </data>
+  <data name="RealmSlug-4393">
+    <value>us2-cwow-account</value>
+  </data>
+  <data name="RealmSlug-4394">
+    <value>us2-cwow-log</value>
+  </data>
   <data name="RealmSlug-4395">
     <value>whitemane</value>
   </data>
   <data name="RealmSlug-4408">
     <value>faerlina</value>
+  </data>
+  <data name="RealmSlug-4411">
+    <value>us2-cwow-csi-84</value>
+  </data>
+  <data name="RealmSlug-4412">
+    <value>us2-cwow-csi-85</value>
+  </data>
+  <data name="RealmSlug-4413">
+    <value>us2-cwow-csi-86</value>
+  </data>
+  <data name="RealmSlug-4414">
+    <value>us2-cwow-csi-87</value>
   </data>
   <data name="RealmSlug-4417">
     <value>shimmering-flats</value>
@@ -6199,6 +6289,30 @@
   <data name="RealmSlug-5501">
     <value>amnennar</value>
   </data>
+  <data name="RealmSlug-5549">
+    <value>us2-cwow-csi-180</value>
+  </data>
+  <data name="RealmSlug-5550">
+    <value>us2-cwow-csi-181</value>
+  </data>
+  <data name="RealmSlug-5551">
+    <value>us2-cwow-csi-182</value>
+  </data>
+  <data name="RealmSlug-5552">
+    <value>us2-cwow-csi-183</value>
+  </data>
+  <data name="RealmSlug-5553">
+    <value>us2-cwow-csi-184</value>
+  </data>
+  <data name="RealmSlug-5554">
+    <value>us2-cwow-csi-185</value>
+  </data>
+  <data name="RealmSlug-5555">
+    <value>us2-cwow-csi-186</value>
+  </data>
+  <data name="RealmSlug-5556">
+    <value>us2-cwow-csi-187</value>
+  </data>
   <data name="RealmSlug-5735">
     <value>krol-blade</value>
   </data>
@@ -6397,8 +6511,14 @@
   <data name="RealmSlug-6508">
     <value>us-auxiliary-70</value>
   </data>
+  <data name="RealmSlug-6509">
+    <value>kr-auxiliary-70</value>
+  </data>
   <data name="RealmSlug-6510">
     <value>eu-auxiliary-70</value>
+  </data>
+  <data name="RealmSlug-6512">
+    <value>tw-auxiliary-170</value>
   </data>
   <data name="CharacterRace-0">
     <value>Unknown Race</value>

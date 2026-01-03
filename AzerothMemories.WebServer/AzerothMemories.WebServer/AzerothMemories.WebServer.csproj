@@ -18,25 +18,25 @@
 
     <ItemGroup>
         <PackageReference Include="Azure.Storage.Blobs" Version="12.26.0" />
-        <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="9.0.8" />
+        <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="10.0.9" />
         <PackageReference Include="MemoryPack.Generator" Version="1.21.4" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.10" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.1" />
         <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="10.0.1" />
         <PackageReference Include="MudBlazor" Version="8.15.0" />
         <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="1.3.1" />
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="9.0.4" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.10">
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="10.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
-        <PackageReference Include="ActualLab.Fusion.EntityFramework.Npgsql" Version="11.3.84" />
-        <PackageReference Include="ActualLab.Fusion.Server" Version="11.3.84" />
-        <PackageReference Include="ActualLab.Generators" Version="11.3.84" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
+        <PackageReference Include="ActualLab.Fusion.EntityFramework.Npgsql" Version="11.4.3" />
+        <PackageReference Include="ActualLab.Fusion.Server" Version="11.4.3" />
+        <PackageReference Include="ActualLab.Generators" Version="11.4.3" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

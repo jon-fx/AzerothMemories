@@ -2392,11 +2392,41 @@
   <data name="Realm-4388">
     <value>US-Westfall (Classic)</value>
   </data>
+  <data name="Realm-4389">
+    <value>US-US2 CWOW CSI 80 (Classic)</value>
+  </data>
+  <data name="Realm-4390">
+    <value>US-US2 CWOW CSI 81 (Classic)</value>
+  </data>
+  <data name="Realm-4391">
+    <value>US-US2 CWOW CSI 82 (Classic)</value>
+  </data>
+  <data name="Realm-4392">
+    <value>US-US2 CWOW CSI 83 (Classic)</value>
+  </data>
+  <data name="Realm-4393">
+    <value>US-US2 CWOW Account (Classic)</value>
+  </data>
+  <data name="Realm-4394">
+    <value>US-US2 CWOW Log (Classic)</value>
+  </data>
   <data name="Realm-4395">
     <value>US-Whitemane (Classic)</value>
   </data>
   <data name="Realm-4408">
     <value>US-Faerlina (Classic)</value>
+  </data>
+  <data name="Realm-4411">
+    <value>US-US2 CWOW CSI 84 (Classic)</value>
+  </data>
+  <data name="Realm-4412">
+    <value>US-US2 CWOW CSI 85 (Classic)</value>
+  </data>
+  <data name="Realm-4413">
+    <value>US-US2 CWOW CSI 86 (Classic)</value>
+  </data>
+  <data name="Realm-4414">
+    <value>US-US2 CWOW CSI 87 (Classic)</value>
   </data>
   <data name="Realm-4417">
     <value>KR-Shimmering Flats (Classic)</value>
@@ -2995,6 +3025,30 @@
   <data name="Realm-5501">
     <value>EU-Amnennar (ClassicEra)</value>
   </data>
+  <data name="Realm-5549">
+    <value>US-US2 CWOW CSI 180 (Classic)</value>
+  </data>
+  <data name="Realm-5550">
+    <value>US-US2 CWOW CSI 181 (Classic)</value>
+  </data>
+  <data name="Realm-5551">
+    <value>US-US2 CWOW CSI 182 (Classic)</value>
+  </data>
+  <data name="Realm-5552">
+    <value>US-US2 CWOW CSI 183 (Classic)</value>
+  </data>
+  <data name="Realm-5553">
+    <value>US-US2 CWOW CSI 184 (Classic)</value>
+  </data>
+  <data name="Realm-5554">
+    <value>US-US2 CWOW CSI 185 (Classic)</value>
+  </data>
+  <data name="Realm-5555">
+    <value>US-US2 CWOW CSI 186 (Classic)</value>
+  </data>
+  <data name="Realm-5556">
+    <value>US-US2 CWOW CSI 187 (Classic)</value>
+  </data>
   <data name="Realm-5735">
     <value>TW-Krol Blade</value>
   </data>
@@ -3185,7 +3239,7 @@
     <value>EU-Norushen (Classic)</value>
   </data>
   <data name="Realm-6367">
-    <value>EU-Hoptallus (Classic)</value>
+    <value>EU-Saltallus (Classic)</value>
   </data>
   <data name="Realm-6368">
     <value>EU-Ook Ook (Classic)</value>
@@ -3193,8 +3247,14 @@
   <data name="Realm-6508">
     <value>US-Auxiliar Estados Unidos 70</value>
   </data>
+  <data name="Realm-6509">
+    <value>KR-KR Auxiliary 70</value>
+  </data>
   <data name="Realm-6510">
     <value>EU-EU Auxiliary 70</value>
+  </data>
+  <data name="Realm-6512">
+    <value>TW-TW Auxiliary 170</value>
   </data>
   <data name="Region-0">
     <value>None</value>
