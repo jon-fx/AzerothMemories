@@ -2,7 +2,7 @@
 
 public static class BlizzardRealmVersionExt
 {
-    public static readonly BlizzardRealmVersion[] AllRealmVersions = [BlizzardRealmVersion.Main, BlizzardRealmVersion.Classic, BlizzardRealmVersion.ClassicProgression];
+    public static readonly BlizzardRealmVersion[] AllRealmVersions = [BlizzardRealmVersion.Main, BlizzardRealmVersion.Classic, BlizzardRealmVersion.ClassicProgression, BlizzardRealmVersion.ClassicAnniversary];
 
     public static byte ToValue(this BlizzardRealmVersion blizzardRealmVersion)
     {
@@ -24,6 +24,10 @@ public static class BlizzardRealmVersionExt
             case BlizzardRealmVersion.ClassicProgression:
             {
                 return "_ClassicProgression";
+            }
+            case BlizzardRealmVersion.ClassicAnniversary:
+            {
+                return "_ClassicAnniversary";
             }
             default:
             {
@@ -48,6 +52,10 @@ public static class BlizzardRealmVersionExt
             {
                 return "static-classic";
             }
+            case BlizzardRealmVersion.ClassicAnniversary:
+            {
+                return "static-classicann";
+            }
             default:
             {
                 throw new ArgumentOutOfRangeException(nameof(realmVersion), realmVersion, null);
@@ -70,6 +78,10 @@ public static class BlizzardRealmVersionExt
             case BlizzardRealmVersion.ClassicProgression:
             {
                 return "dynamic-classic";
+            }
+            case BlizzardRealmVersion.ClassicAnniversary:
+            {
+                return "dynamic-classicann";
             }
             default:
             {
@@ -94,6 +106,10 @@ public static class BlizzardRealmVersionExt
             {
                 return "profile-classic";
             }
+            case BlizzardRealmVersion.ClassicAnniversary:
+            {
+                return "profile-classicann";
+            }
             default:
             {
                 throw new ArgumentOutOfRangeException(nameof(realmVersion), realmVersion, null);
@@ -116,6 +132,10 @@ public static class BlizzardRealmVersionExt
             case BlizzardRealmVersion.ClassicProgression:
             {
                 return " (Classic)";
+            }
+            case BlizzardRealmVersion.ClassicAnniversary:
+            {
+                return " (Anniversary)";
             }
             default:
             {

@@ -3172,6 +3172,18 @@
   <data name="Realm-5911">
     <value>EU-EU PS Realm 222</value>
   </data>
+  <data name="Realm-6064">
+    <value>US-Dreamscythe (Anniversary)</value>
+  </data>
+  <data name="Realm-6065">
+    <value>US-Nightslayer (Anniversary)</value>
+  </data>
+  <data name="Realm-6069">
+    <value>US-PROGWOW US1 웹 (Anniversary)</value>
+  </data>
+  <data name="Realm-6071">
+    <value>US-PROGWOW US1 GMSS 1 (Anniversary)</value>
+  </data>
   <data name="Realm-6103">
     <value>US-드림사이드 (ClassicEra)</value>
   </data>
@@ -3214,6 +3226,18 @@
   <data name="Realm-6131">
     <value>US-말라다스 (AU) (ClassicEra)</value>
   </data>
+  <data name="Realm-6265">
+    <value>KR-몰다르의 투지 (Anniversary)</value>
+  </data>
+  <data name="Realm-6266">
+    <value>KR-펜구스의 흉포 (Anniversary)</value>
+  </data>
+  <data name="Realm-6272">
+    <value>KR-PROGWOW KR1 웹 (Anniversary)</value>
+  </data>
+  <data name="Realm-6274">
+    <value>KR-PROGWOW KR1 GMSS 1 (Anniversary)</value>
+  </data>
   <data name="Realm-6359">
     <value>US-나즈그림 (Classic)</value>
   </data>
@@ -3244,17 +3268,86 @@
   <data name="Realm-6368">
     <value>EU-Ook Ook (Classic)</value>
   </data>
+  <data name="Realm-6409">
+    <value>EU-Thunderstrike (Anniversary)</value>
+  </data>
+  <data name="Realm-6412">
+    <value>EU-Spineshatter (Anniversary)</value>
+  </data>
+  <data name="Realm-6418">
+    <value>EU-PROGWOW EU4 Web (Anniversary)</value>
+  </data>
+  <data name="Realm-6421">
+    <value>EU-PROGWOW EU4 GMSS 1 (Anniversary)</value>
+  </data>
+  <data name="Realm-6440">
+    <value>TW-몰다르의 투지 (Anniversary)</value>
+  </data>
+  <data name="Realm-6441">
+    <value>TW-펜구스의 흉포 (Anniversary)</value>
+  </data>
+  <data name="Realm-6442">
+    <value>TW-PROGWOW TW4 CSI 80 (Anniversary)</value>
+  </data>
+  <data name="Realm-6443">
+    <value>TW-PROGWOW TW4 Regional (Anniversary)</value>
+  </data>
+  <data name="Realm-6444">
+    <value>TW-PROGWOW TW4 Account (Anniversary)</value>
+  </data>
+  <data name="Realm-6445">
+    <value>TW-PROGWOW TW4 Web (Anniversary)</value>
+  </data>
+  <data name="Realm-6446">
+    <value>TW-PROGWOW TW4 Log (Anniversary)</value>
+  </data>
+  <data name="Realm-6447">
+    <value>TW-PROGWOW TW4 1 (Anniversary)</value>
+  </data>
+  <data name="Realm-6448">
+    <value>TW-PROGWOW TW4 CSI 81 (Anniversary)</value>
+  </data>
+  <data name="Realm-6449">
+    <value>TW-PROGWOW TW4 CSI 82 (Anniversary)</value>
+  </data>
+  <data name="Realm-6450">
+    <value>TW-PROGWOW TW4 CSI 83 (Anniversary)</value>
+  </data>
+  <data name="Realm-6451">
+    <value>TW-PROGWOW TW4 CSI 84 (Anniversary)</value>
+  </data>
+  <data name="Realm-6452">
+    <value>TW-PROGWOW TW4 CSI 85 (Anniversary)</value>
+  </data>
+  <data name="Realm-6453">
+    <value>TW-PROGWOW TW4 CSI 86 (Anniversary)</value>
+  </data>
+  <data name="Realm-6454">
+    <value>TW-PROGWOW TW4 CSI 87 (Anniversary)</value>
+  </data>
+  <data name="Realm-6455">
+    <value>TW-PROGWOW TW4 CSI 88 (Anniversary)</value>
+  </data>
   <data name="Realm-6508">
     <value>US-US 보조 70</value>
   </data>
   <data name="Realm-6509">
-    <value>KR-KR Auxiliary 70</value>
+    <value>KR-KR 보조 70</value>
   </data>
   <data name="Realm-6510">
-    <value>EU-EU Auxiliary 70</value>
+    <value>EU-EU 보조 70</value>
   </data>
   <data name="Realm-6512">
-    <value>TW-TW Auxiliary 170</value>
+    <value>TW-TW 보조 170</value>
+  </data>
+  <data name="Realm-6539">
+    <value>US-Maladath (Anniversary)</value>
+  </data>
+  <data name="Realm-6540">
+    <value>EU-기념일 (Anniversary)</value>
+  </data>
+  <data name="Realm-6551">
+    <value>TW-PROGWOW TW4 GMSS 1 (Anniversary)</value>
   </data>
   <data name="Region-0">
     <value>None</value>
@@ -3490,8 +3583,17 @@
   <data name="CharacterRace-90">
     <value>구렁 탐험가의 고블린 쾌속정</value>
   </data>
+  <data name="CharacterRace-91">
+    <value>하라니르</value>
+  </data>
   <data name="CharacterRace-92">
     <value>에테리얼 비행선</value>
+  </data>
+  <data name="CharacterRace-95">
+    <value>TBD NPC Race 1</value>
+  </data>
+  <data name="CharacterRace-96">
+    <value>TBD NPC Race 2</value>
   </data>
   <data name="CharacterClass-0">
     <value>Unknown Class</value>
@@ -3702,5 +3804,8 @@
   </data>
   <data name="CharacterClassSpecialization-1478">
     <value>모험가 (모험가)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1480">
+    <value>포식 (악마사냥꾼)</value>
   </data>
 </root>

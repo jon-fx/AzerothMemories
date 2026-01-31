@@ -92,6 +92,11 @@ public static class XExtensions
             results.AddRange(accountViewModel.CharactersArrayClassicProgression);
         }
 
+        if (accountViewModel.CharactersArrayClassicAnniversary != null)
+        {
+            results.AddRange(accountViewModel.CharactersArrayClassicAnniversary);
+        }
+
         return results.Where(x => x.CharacterStatus == CharacterStatus2.None).OrderBy(x => x.RealmVersion).ThenByDescending(x => x.Level).ThenBy(x => x.Name).ToArray();
     }
 
@@ -119,6 +124,11 @@ public static class XExtensions
             results.AddRange(accountViewModel.CharactersArrayClassicProgression);
         }
 
+        if (accountViewModel.CharactersArrayClassicAnniversary != null)
+        {
+            results.AddRange(accountViewModel.CharactersArrayClassicAnniversary);
+        }
+
         return results.OrderBy(x => x.RealmVersion).ThenByDescending(x => x.Level).ThenBy(x => x.Name).ToArray();
     }
 
@@ -139,34 +149,35 @@ public static class XExtensions
             return [];
         }
 
-        CharacterViewModel[]? results;
+        var results = new List<CharacterViewModel>();
         if (tagId == 0)        //Retail
         {
-            results = accountViewModel.CharactersArray;
+            results.AddRange(accountViewModel.CharactersArray ?? []);
         }
         else if (tagId == 1)   //Classic
         {
-            results = accountViewModel.CharactersArrayClassicProgression;
+            results.AddRange(accountViewModel.CharactersArrayClassicEra ?? []);
+            results.AddRange(accountViewModel.CharactersArrayClassicProgression ?? []);
         }
         else if (tagId == 2)   //Season of Mastery
         {
-            results = accountViewModel.CharactersArrayClassicEra;
+            results.AddRange(accountViewModel.CharactersArrayClassicEra ?? []);
         }
         else if (tagId == 3)   //Hardcore
         {
-            results = accountViewModel.CharactersArrayClassicEra;
+            results.AddRange(accountViewModel.CharactersArrayClassicEra ?? []);
         }
         else if (tagId == 4)   //Season of Discovery
         {
-            results = accountViewModel.CharactersArrayClassicEra;
+            results.AddRange(accountViewModel.CharactersArrayClassicEra ?? []);
         }
         else if (tagId == 5)   //Anniversary
         {
-            results = accountViewModel.CharactersArrayClassicEra;
+            results.AddRange(accountViewModel.CharactersArrayClassicAnniversary ?? []);
         }
         else if (tagId == 6)   //Anniversary Hardcore
         {
-            results = accountViewModel.CharactersArrayClassicEra;
+            results.AddRange(accountViewModel.CharactersArrayClassicAnniversary ?? []);
         }
         else
         {

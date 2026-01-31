@@ -25,6 +25,12 @@ public enum BlizzardUpdateType
     Account_Taiwan_ClassicProgression,
     Account_UnitedStates_ClassicProgression,
 
+    Account_China_ClassicAnniversary,
+    Account_Europe_ClassicAnniversary,
+    Account_Korea_ClassicAnniversary,
+    Account_Taiwan_ClassicAnniversary,
+    Account_UnitedStates_ClassicAnniversary,
+
     Account_Count,
 
     Character = 0,

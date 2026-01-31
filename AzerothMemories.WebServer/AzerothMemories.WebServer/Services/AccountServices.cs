@@ -183,6 +183,7 @@ public class AccountServices : IAccountServices
         viewModel.CharactersArray = allCharacters.Where(x => x.RealmVersion == BlizzardRealmVersion.Main).ToArray();
         viewModel.CharactersArrayClassicEra = allCharacters.Where(x => x.RealmVersion == BlizzardRealmVersion.Classic).ToArray();
         viewModel.CharactersArrayClassicProgression = allCharacters.Where(x => x.RealmVersion == BlizzardRealmVersion.ClassicProgression).ToArray();
+        viewModel.CharactersArrayClassicAnniversary = allCharacters.Where(x => x.RealmVersion == BlizzardRealmVersion.ClassicAnniversary).ToArray();
 
         if (viewModel.IsCustomAvatar())
         {

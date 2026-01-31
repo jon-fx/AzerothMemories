@@ -4,5 +4,6 @@ public enum BlizzardRealmVersion
 {
     Main,
     Classic,
-    ClassicProgression
+    ClassicProgression,
+    ClassicAnniversary
 }

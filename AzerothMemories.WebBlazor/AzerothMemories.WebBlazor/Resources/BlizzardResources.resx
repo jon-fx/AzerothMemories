@@ -3241,6 +3241,18 @@
   <data name="Realm-5911">
     <value>EU-EU PS Realm 222</value>
   </data>
+  <data name="Realm-6064">
+    <value>US-Dreamscythe (Anniversary)</value>
+  </data>
+  <data name="Realm-6065">
+    <value>US-Nightslayer (Anniversary)</value>
+  </data>
+  <data name="Realm-6069">
+    <value>US-PROGWOW US1 Web (Anniversary)</value>
+  </data>
+  <data name="Realm-6071">
+    <value>US-PROGWOW US1 GMSS 1 (Anniversary)</value>
+  </data>
   <data name="Realm-6103">
     <value>US-Dreamscythe (ClassicEra)</value>
   </data>
@@ -3283,6 +3295,18 @@
   <data name="Realm-6131">
     <value>US-Maladath (AU) (ClassicEra)</value>
   </data>
+  <data name="Realm-6265">
+    <value>KR-Mol'dar's Moxie (Anniversary)</value>
+  </data>
+  <data name="Realm-6266">
+    <value>KR-Fengus' Ferocity (Anniversary)</value>
+  </data>
+  <data name="Realm-6272">
+    <value>KR-PROGWOW KR1 Web (Anniversary)</value>
+  </data>
+  <data name="Realm-6274">
+    <value>KR-PROGWOW KR1 GMSS 1 (Anniversary)</value>
+  </data>
   <data name="Realm-6359">
     <value>US-Nazgrim (Classic)</value>
   </data>
@@ -3313,6 +3337,66 @@
   <data name="Realm-6368">
     <value>EU-Ook Ook (Classic)</value>
   </data>
+  <data name="Realm-6409">
+    <value>EU-Thunderstrike (Anniversary)</value>
+  </data>
+  <data name="Realm-6412">
+    <value>EU-Spineshatter (Anniversary)</value>
+  </data>
+  <data name="Realm-6418">
+    <value>EU-PROGWOW EU4 Web (Anniversary)</value>
+  </data>
+  <data name="Realm-6421">
+    <value>EU-PROGWOW EU4 GMSS 1 (Anniversary)</value>
+  </data>
+  <data name="Realm-6440">
+    <value>TW-Mol'dar's Moxie (Anniversary)</value>
+  </data>
+  <data name="Realm-6441">
+    <value>TW-Fengus' Ferocity (Anniversary)</value>
+  </data>
+  <data name="Realm-6442">
+    <value>TW-PROGWOW TW4 CSI 80 (Anniversary)</value>
+  </data>
+  <data name="Realm-6443">
+    <value>TW-PROGWOW TW4 Regional (Anniversary)</value>
+  </data>
+  <data name="Realm-6444">
+    <value>TW-PROGWOW TW4 Account (Anniversary)</value>
+  </data>
+  <data name="Realm-6445">
+    <value>TW-PROGWOW TW4 Web (Anniversary)</value>
+  </data>
+  <data name="Realm-6446">
+    <value>TW-PROGWOW TW4 Log (Anniversary)</value>
+  </data>
+  <data name="Realm-6447">
+    <value>TW-PROGWOW TW4 1 (Anniversary)</value>
+  </data>
+  <data name="Realm-6448">
+    <value>TW-PROGWOW TW4 CSI 81 (Anniversary)</value>
+  </data>
+  <data name="Realm-6449">
+    <value>TW-PROGWOW TW4 CSI 82 (Anniversary)</value>
+  </data>
+  <data name="Realm-6450">
+    <value>TW-PROGWOW TW4 CSI 83 (Anniversary)</value>
+  </data>
+  <data name="Realm-6451">
+    <value>TW-PROGWOW TW4 CSI 84 (Anniversary)</value>
+  </data>
+  <data name="Realm-6452">
+    <value>TW-PROGWOW TW4 CSI 85 (Anniversary)</value>
+  </data>
+  <data name="Realm-6453">
+    <value>TW-PROGWOW TW4 CSI 86 (Anniversary)</value>
+  </data>
+  <data name="Realm-6454">
+    <value>TW-PROGWOW TW4 CSI 87 (Anniversary)</value>
+  </data>
+  <data name="Realm-6455">
+    <value>TW-PROGWOW TW4 CSI 88 (Anniversary)</value>
+  </data>
   <data name="Realm-6508">
     <value>US-US Auxiliary 70</value>
   </data>
@@ -3324,6 +3408,15 @@
   </data>
   <data name="Realm-6512">
     <value>TW-TW Auxiliary 170</value>
+  </data>
+  <data name="Realm-6539">
+    <value>US-Maladath (Anniversary)</value>
+  </data>
+  <data name="Realm-6540">
+    <value>EU-Anniversary (Anniversary)</value>
+  </data>
+  <data name="Realm-6551">
+    <value>TW-PROGWOW TW4 GMSS 1 (Anniversary)</value>
   </data>
   <data name="RealmSlug-1">
     <value>lightbringer</value>
@@ -6436,6 +6529,18 @@
   <data name="RealmSlug-5911">
     <value>eu-ps-realm-222</value>
   </data>
+  <data name="RealmSlug-6064">
+    <value>dreamscythe</value>
+  </data>
+  <data name="RealmSlug-6065">
+    <value>nightslayer</value>
+  </data>
+  <data name="RealmSlug-6069">
+    <value>progwow-us1-web</value>
+  </data>
+  <data name="RealmSlug-6071">
+    <value>progwow-us1-gmss-1</value>
+  </data>
   <data name="RealmSlug-6103">
     <value>dreamscythe</value>
   </data>
@@ -6478,6 +6583,18 @@
   <data name="RealmSlug-6131">
     <value>maladath-au</value>
   </data>
+  <data name="RealmSlug-6265">
+    <value>moldars-moxie</value>
+  </data>
+  <data name="RealmSlug-6266">
+    <value>fengus-ferocity</value>
+  </data>
+  <data name="RealmSlug-6272">
+    <value>progwow-kr1-web</value>
+  </data>
+  <data name="RealmSlug-6274">
+    <value>progwow-kr1-gmss-1</value>
+  </data>
   <data name="RealmSlug-6359">
     <value>nazgrim</value>
   </data>
@@ -6508,6 +6625,66 @@
   <data name="RealmSlug-6368">
     <value>ook-ook</value>
   </data>
+  <data name="RealmSlug-6409">
+    <value>thunderstrike</value>
+  </data>
+  <data name="RealmSlug-6412">
+    <value>spineshatter</value>
+  </data>
+  <data name="RealmSlug-6418">
+    <value>progwow-eu4-web</value>
+  </data>
+  <data name="RealmSlug-6421">
+    <value>progwow-eu4-gmss-1</value>
+  </data>
+  <data name="RealmSlug-6440">
+    <value>moldars-moxie</value>
+  </data>
+  <data name="RealmSlug-6441">
+    <value>fengus-ferocity</value>
+  </data>
+  <data name="RealmSlug-6442">
+    <value>progwow-tw4-csi-80</value>
+  </data>
+  <data name="RealmSlug-6443">
+    <value>progwow-tw4-regional</value>
+  </data>
+  <data name="RealmSlug-6444">
+    <value>progwow-tw4-account</value>
+  </data>
+  <data name="RealmSlug-6445">
+    <value>progwow-tw4-web</value>
+  </data>
+  <data name="RealmSlug-6446">
+    <value>progwow-tw4-log</value>
+  </data>
+  <data name="RealmSlug-6447">
+    <value>progwow-tw4-1</value>
+  </data>
+  <data name="RealmSlug-6448">
+    <value>progwow-tw4-csi-81</value>
+  </data>
+  <data name="RealmSlug-6449">
+    <value>progwow-tw4-csi-82</value>
+  </data>
+  <data name="RealmSlug-6450">
+    <value>progwow-tw4-csi-83</value>
+  </data>
+  <data name="RealmSlug-6451">
+    <value>progwow-tw4-csi-84</value>
+  </data>
+  <data name="RealmSlug-6452">
+    <value>progwow-tw4-csi-85</value>
+  </data>
+  <data name="RealmSlug-6453">
+    <value>progwow-tw4-csi-86</value>
+  </data>
+  <data name="RealmSlug-6454">
+    <value>progwow-tw4-csi-87</value>
+  </data>
+  <data name="RealmSlug-6455">
+    <value>progwow-tw4-csi-88</value>
+  </data>
   <data name="RealmSlug-6508">
     <value>us-auxiliary-70</value>
   </data>
@@ -6519,6 +6696,15 @@
   </data>
   <data name="RealmSlug-6512">
     <value>tw-auxiliary-170</value>
+  </data>
+  <data name="RealmSlug-6539">
+    <value>maladath</value>
+  </data>
+  <data name="RealmSlug-6540">
+    <value>anniversary</value>
+  </data>
+  <data name="RealmSlug-6551">
+    <value>progwow-tw4-gmss-1</value>
   </data>
   <data name="CharacterRace-0">
     <value>Unknown Race</value>
@@ -6685,8 +6871,17 @@
   <data name="CharacterRace-90">
     <value>Delver's Gob-Trotter</value>
   </data>
+  <data name="CharacterRace-91">
+    <value>Haranir</value>
+  </data>
   <data name="CharacterRace-92">
     <value>Ethereal Airship</value>
+  </data>
+  <data name="CharacterRace-95">
+    <value>TBD NPC Race 1</value>
+  </data>
+  <data name="CharacterRace-96">
+    <value>TBD NPC Race 2</value>
   </data>
   <data name="CharacterClass-0">
     <value>Unknown Class</value>
@@ -6897,5 +7092,8 @@
   </data>
   <data name="CharacterClassSpecialization-1478">
     <value>Adventurer (Adventurer)</value>
+  </data>
+  <data name="CharacterClassSpecialization-1480">
+    <value>Devourer (Demon Hunter)</value>
   </data>
 </root>
