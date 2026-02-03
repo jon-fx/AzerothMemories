@@ -102,6 +102,12 @@
                                     </CellTemplate>
                                 </TemplateColumn>
 
+                                <TemplateColumn Title="Preview">
+                                    <CellTemplate Context="rowContext">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Preview" Color="rowContext.Item.BlobIconColor" OnClick="() => OpenImagePreviewAsync(rowContext.Item)" />
+                                    </CellTemplate>
+                                </TemplateColumn>
+
                                 <TemplateColumn Title="Achievements">
                                     <CellTemplate Context="rowContext">
                                         @if (rowContext.Item.Achievements.Length == 0)
@@ -228,5 +234,58 @@
     {
         await ViewModel.Initialize(arg);
         await State.Recompute();
+    }
+
+    private async Task OpenImagePreviewAsync(CheckMemoryViewModel checkMemoryViewModel)
+    {
+        var clientServices = ViewModel.Services.ClientServices;
+
+        if (checkMemoryViewModel.BlobInfo == null)
+        {
+            var file = checkMemoryViewModel.BrowserFile;
+            var fileName = checkMemoryViewModel.GetDisplayString(ClientServices);
+
+            try
+            {
+                await using var memoryStream = new MemoryStream();
+                var stream = file.OpenReadStream(ZExtensions.MaxAddMemoryFileSizeInBytes);
+                await stream.CopyToAsync(memoryStream);
+                var buffer = memoryStream.ToArray();
+                var base64 = Convert.ToBase64String(buffer);
+
+                checkMemoryViewModel.BlobInfo = new PostViewModelBlobInfo
+                {
+                    Title = fileName,
+                    Description = string.Empty,
+                    Source = $"data:image;base64,{base64}"
+                };
+            }
+            catch (Exception)
+            {
+                checkMemoryViewModel.BlobIconColor = Color.Error;
+
+                await clientServices.DialogService.ShowNotificationDialog(false, $"{fileName} read failed.");
+            }
+        }
+
+        foreach (var otherViewModel in ViewModel.CheckMemoryViewModels)
+        {
+            if (otherViewModel.BlobIconColor == Color.Primary)
+            {
+                otherViewModel.BlobIconColor = Color.Secondary;
+            }
+        }
+
+        if (checkMemoryViewModel.BlobIconColor != Color.Error)
+        {
+            checkMemoryViewModel.BlobIconColor = Color.Primary;
+        }
+
+        StateHasChanged();
+
+        if (checkMemoryViewModel.BlobInfo != null)
+        {
+            await clientServices.JsRuntime.InvokeVoidAsync("InitializeImageViewer", 0, new[] { checkMemoryViewModel.BlobInfo });
+        }
     }
 }

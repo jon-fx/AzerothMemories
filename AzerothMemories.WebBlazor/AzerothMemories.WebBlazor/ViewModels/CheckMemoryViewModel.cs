@@ -10,6 +10,8 @@ public sealed class CheckMemoryViewModel
     public required PostTagInfo[] Achievements { get; set; }
     public required int MatchingAchievements { get; set; }
     public required IBrowserFile BrowserFile { get; init; }
+    public PostViewModelBlobInfo? BlobInfo { get; set; }
+    public Color BlobIconColor { get; set; } = Color.Default;
 
     public string GetTimeString(ClientServices clientServices)
     {
@@ -19,5 +21,11 @@ public sealed class CheckMemoryViewModel
         }
 
         return "Unknown";
+    }
+
+    public string GetDisplayString(ClientServices clientServices)
+    {
+        var timeString = GetTimeString(clientServices);
+        return $"{BrowserFile.Name} - {timeString}";
     }
 }
