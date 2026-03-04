@@ -38,7 +38,7 @@
                 <TimeAsLocalStringAgoComponent Typo="Typo.body2" Inline="true" Time="comment.CreatedTime" TimeProvider="@Services.ClientServices.TimeProvider" />
             </CardHeaderContent>
             <CardHeaderActions>
-                <MudMenu Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Dense="true">
+                <MudMenu Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Dense="true" ListClass="removeMinWidth">
                     <MudMenuItem>
                         <MudTooltip Text="Link" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
                             <MudLink Href="@($"/post/{item.PostersAccountId}/{comment.PostId}?comment={comment.Id}")" Color="Color.Default">
@@ -81,7 +81,7 @@
             <MudCardActions Class="@ClassPresets.CardActions">
                 <MudButtonGroup OverrideStyles="true" Variant="Variant.Text" Size="Size.Small">
                     <MudButton StartIcon="@Icons.Material.Filled.Favorite" IconColor="@(item.Reaction == PostReaction.None ? Color.Default : Color.Secondary)" Disabled="@(reactIsDisabled || _userReacting)" OnClick="() => OnReactButtonClicked(item.Reaction)">@item.Reaction.Humanize()</MudButton>
-                    <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Disabled="@(reactIsDisabled || _userReacting)" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+                    <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Disabled="@(reactIsDisabled || _userReacting)" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter" ListClass="removeMinWidth">
                         <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction1)">@PostReaction.Reaction1.Humanize()</MudMenuItem>
                         <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction2)">@PostReaction.Reaction2.Humanize()</MudMenuItem>
                         <MudMenuItem OnClick="() => OnReactButtonClicked(PostReaction.Reaction3)">@PostReaction.Reaction3.Humanize()</MudMenuItem>

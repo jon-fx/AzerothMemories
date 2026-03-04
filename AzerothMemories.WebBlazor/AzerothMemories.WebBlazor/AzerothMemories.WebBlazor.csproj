@@ -34,18 +34,18 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.2" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.2" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.2" />
-        <PackageReference Include="Microsoft.Extensions.Localization" Version="10.0.2" />
-        <PackageReference Include="Markdig" Version="0.44.0" />
-        <PackageReference Include="MudBlazor" Version="8.15.0" />
-        <PackageReference Include="NodaTime" Version="3.3.0" />
-        <PackageReference Include="ActualLab.Fusion" Version="12.0.70" />
-        <PackageReference Include="ActualLab.CommandR" Version="12.0.70" />
-        <PackageReference Include="ActualLab.Fusion.Blazor" Version="12.0.70" />
-        <PackageReference Include="ActualLab.Fusion.Blazor.Authentication" Version="12.0.70" />
-        <PackageReference Include="ActualLab.Generators" Version="12.0.70" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.3" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.3" />
+        <PackageReference Include="Microsoft.Extensions.Localization" Version="10.0.3" />
+        <PackageReference Include="Markdig" Version="1.1.0" />
+        <PackageReference Include="MudBlazor" Version="9.1.0" />
+        <PackageReference Include="NodaTime" Version="3.3.1" />
+        <PackageReference Include="ActualLab.Fusion" Version="12.1.89" />
+        <PackageReference Include="ActualLab.CommandR" Version="12.1.89" />
+        <PackageReference Include="ActualLab.Fusion.Blazor" Version="12.1.89" />
+        <PackageReference Include="ActualLab.Fusion.Blazor.Authentication" Version="12.1.89" />
+        <PackageReference Include="ActualLab.Generators" Version="12.1.89" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

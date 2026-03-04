@@ -118,7 +118,7 @@ public sealed class DialogHelperService
 
     public async Task<bool?> ShowMessageBox(string title, string message, string? yesText = null, string? noText = null, string? cancelText = null, DialogOptions? options = null)
     {
-        var result = await _dialogService.ShowMessageBox(title, message, yesText ?? "OK", noText, cancelText, options);
+        var result = await _dialogService.ShowMessageBoxAsync(title, message, yesText ?? "OK", noText, cancelText, options);
 
         return result;
     }

@@ -95,7 +95,7 @@ else
                         <LastUpdateInfoComponent Services="@Services" UpdateViewModel="@AccountViewModel.UpdateJobLastResults" TokenExpiryTime="@AccountViewModel.BlizzardTokenExpiryTime"/>
                     }
 
-                    <MudMenu Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Dense="true">
+                    <MudMenu Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Dense="true" ListClass="removeMinWidth">
                         <MudMenuItem Href="@($"/account/{AccountViewModel.Id}")">
                             <MudTooltip Text="Link" Arrow="true" Placement="Placement.Left" Color="Color.Dark">
                                 <MudIcon Icon="@Icons.Material.Filled.AddLink" Size="Size.Small" />

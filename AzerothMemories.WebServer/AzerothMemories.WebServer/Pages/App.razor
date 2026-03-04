@@ -7,11 +7,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<title>Memories of Azeroth</title>
 	<base href="/" />
-	<link href="css/app.css" rel="stylesheet" />
+	<link href="@Assets["css/app.css"]" rel="stylesheet" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
-	<link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+	<link href="@Assets["_content/MudBlazor/MudBlazor.min.css"]" rel="stylesheet" />
 
-	<script src="_content/ActualLab.Fusion.Blazor.Authentication/scripts/fusionAuth.js"></script>
+	<script src="@Assets["_content/ActualLab.Fusion.Blazor.Authentication/scripts/fusionAuth.js"]"></script>
 	<script>
 		window.FusionAuth.schemas = "@_authSchemas";
 	</script>
@@ -26,17 +26,17 @@
 	<meta name="msapplication-config" content="/fav/browserconfig.xml">
 	<meta name="theme-color" content="#ff0000">
 
-	<link rel="stylesheet" href="tribute/tribute.css" />
-	<script src="tribute/tribute.js"></script>
+	<link rel="stylesheet" href="@Assets["tribute/tribute.css"]" />
+	<script src="@Assets["tribute/tribute.js"]"></script>
 
 	<script>const whTooltips = { colorLinks: false, iconizeLinks: false, renameLinks: false };</script>
 	<script src="https://wow.zamimg.com/widgets/power.js"></script>
-	<script src="common.js"></script>
+	<script src="@Assets["common.js"]"></script>
 
-	<script src="painterro/painterro.min.js"></script>
+	<script src="@Assets["painterro/painterro.min.js"]"></script>
 
-	<link href="spotlight/spotlight.min.css" rel="stylesheet">
-	<script src="spotlight/spotlight.min.js"></script>
+	<link href="@Assets["spotlight/spotlight.min.css"]" rel="stylesheet">
+	<script src="@Assets["spotlight/spotlight.min.js"]"></script>
 
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-G4QYXHL15Y"></script>
 	<script>
@@ -62,8 +62,8 @@
 		<span class="dismiss">🗙</span>
 	</div>
 
-	<script src="_framework/blazor.web.js"></script>
-	<script src="_content/MudBlazor/MudBlazor.min.js"></script>
+	<script src="@Assets["_framework/blazor.web.js"]"></script>
+	<script src="@Assets["_content/MudBlazor/MudBlazor.min.js"]"></script>
 </body>
 </html>
 @code {

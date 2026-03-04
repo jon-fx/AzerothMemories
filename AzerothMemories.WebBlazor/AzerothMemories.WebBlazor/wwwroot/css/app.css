@@ -216,3 +216,7 @@ a, .btn-link {
 .ptro-wrapper[class] {
     background-color: #34393d;
 }
+
+.removeMinWidth {
+    min-width: 1px !important;
+}

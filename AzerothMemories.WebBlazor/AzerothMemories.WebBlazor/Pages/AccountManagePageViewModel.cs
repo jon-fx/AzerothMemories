@@ -249,9 +249,14 @@ public sealed class AccountManagePageViewModel : ViewModelBase, IViewModel<Accou
         }
     }
 
-    public async Task UploadCustomAvatar(InputFileChangeEventArgs arg)
+    public async Task UploadCustomAvatar(IReadOnlyList<IBrowserFile>? arg)
     {
-        var file = arg.File;
+        var file = arg?.FirstOrDefault();
+        if (file == null)
+        {
+            return;
+        }
+
         var extension = Path.GetExtension(file.Name);
         if (!ZExtensions.ValidUploadExtensions.Contains(extension))
         {

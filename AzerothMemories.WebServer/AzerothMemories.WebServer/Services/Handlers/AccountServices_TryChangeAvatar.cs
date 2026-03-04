@@ -13,6 +13,8 @@ internal static class AccountServices_TryChangeAvatar
             {
                 _ = commonServices.AccountServices.DependsOnAccountRecord(invRecord.Id);
                 _ = commonServices.AccountServices.DependsOnAccountAvatar(invRecord.Id);
+                _ = commonServices.MediaServices.TryGetBlobWithToken($"{ZExtensions.CustomUserAvatarPathPrefix}{invRecord.Id}-0");
+                _ = commonServices.MediaServices.TryGetBlobWithToken($"{ZExtensions.CustomUserAvatarPathPrefix}{invRecord.Id}-1");
             }
 
             return default;

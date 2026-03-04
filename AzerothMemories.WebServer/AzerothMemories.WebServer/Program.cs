@@ -58,7 +58,7 @@ else
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+//app.UseStaticFiles();
 
 var webSocketOptions = new WebSocketOptions
 {

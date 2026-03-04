@@ -20,10 +20,8 @@
         {
             <MudCard Class="@ClassPresets.Card" Outlined="true" Elevation="10">
                 <MudCardContent Class="@ClassPresets.CardContent">
-                    <MudFileUpload T="IReadOnlyList<IBrowserFile>" Accept="@ZExtensions.UploadAcceptExtensions" FilesChanged="Initialize" MaximumFileCount="10000">
-                        <ActivatorContent>
-                            <MudButton Class="@ClassPresets.DefaultPadding" HtmlTag="label" Variant="Variant.Filled" FullWidth="true" Color="Color.Primary" IconColor="Color.Secondary" StartIcon="@Icons.Material.Filled.CloudUpload" Disabled="ViewModel.IsButtonDisabled">Upload Image</MudButton>
-                        </ActivatorContent>
+                    <MudFileUpload T="IReadOnlyList<IBrowserFile>" Accept="@ZExtensions.UploadAcceptExtensions" FilesChanged="Initialize" MaximumFileCount="10000" DragAndDrop="true">
+                        <SelectedTemplate Context="fileUpload" />
                     </MudFileUpload>
                 </MudCardContent>
             </MudCard>
