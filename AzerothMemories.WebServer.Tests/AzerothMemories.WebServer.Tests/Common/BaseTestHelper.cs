@@ -63,11 +63,11 @@ public class BaseTestHelper : IAsyncLifetime
         return account;
     }
 
-    private ServiceProvider GetServiceProvider()
+    private static ServiceProvider GetServiceProvider()
     {
         var config = new CommonConfig
         {
-            DatabaseConnectionString = null,
+            DatabaseConnectionString = null!,
             UploadToBlobStorage = false
         };
 
@@ -98,7 +98,7 @@ public class BaseTestHelper : IAsyncLifetime
 
     protected static byte[] GetImageData(int width, int height)
     {
-        using Image<Rgba32> image = new(100, 100);
+        using Image<Rgba32> image = new(width, height);
         using var memoryStream = new MemoryStream();
         image.SaveAsJpeg(memoryStream);
 

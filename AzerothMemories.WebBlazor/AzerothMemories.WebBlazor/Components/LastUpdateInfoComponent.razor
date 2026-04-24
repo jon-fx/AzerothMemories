@@ -23,7 +23,7 @@ else
             var tokenExpiredRow = GetIconAndColor(!tokenExpired);
             var textColor = tokenExpired ? MainTheme.Theme.PaletteDark.Error : MainTheme.Theme.PaletteDark.TextPrimary;
 
-            <MudMenuItem IconSize="Size.Small" IconColor="@tokenExpiredRow.IconColor" Icon="@tokenExpiredRow.Icon" Disabled="true">
+            <MudMenuItem IconColor="@tokenExpiredRow.IconColor" Icon="@tokenExpiredRow.Icon" Disabled="true">
                 <MudText Typo="Typo.subtitle2" Style="@($"color:{textColor};")">
                     0: Token - @tokenExpiryTimeString
                 </MudText>
@@ -34,7 +34,7 @@ else
         {
             var row = GetIconAndColor(child.UpdateJobLastResult.IsSuccess2());
 
-            <MudMenuItem IconSize="Size.Small" IconColor="@row.IconColor" Icon="@row.Icon" Disabled="true">
+            <MudMenuItem IconColor="@row.IconColor" Icon="@row.Icon" Disabled="true">
                 <MudText Typo="Typo.body2" Style="@($"color:{MainTheme.Theme.PaletteDark.TextPrimary};")">
                     @child.Id: @child.UpdateTypeString - @child.UpdateJobLastResult (@((int)child.UpdateJobLastResult))
                 </MudText>
@@ -43,7 +43,7 @@ else
 
         @if (Services.ClientServices.ActiveAccountServices.AccountViewModel.IsAdmin())
         {
-            <MudMenuItem IconSize="Size.Small" IconColor="@Color.Warning" Icon="@Icons.Material.Filled.AddToQueue" OnClick="ResetUpdateStatus">
+            <MudMenuItem IconColor="@Color.Warning" Icon="@Icons.Material.Filled.AddToQueue" OnClick="ResetUpdateStatus">
                 <MudText Typo="Typo.body2" Color="Color.Warning">
                     Reset Update Status
                 </MudText>

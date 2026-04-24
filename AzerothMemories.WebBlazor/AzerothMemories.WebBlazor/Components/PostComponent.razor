@@ -295,7 +295,7 @@ else
 
                                         <MudTooltip @key="@character.Id" Placement="Placement.Bottom" Color="Color.Dark">
                                             <ChildContent>
-                                                <MudButton Id="@index" Variant="Variant.Filled" Disabled="taggedCharacter != null && taggedCharacter.Id == character.Id" OnClick="() => OnRestoreButtonClicked(character.Id)">
+                                                <MudButton Variant="Variant.Filled" Disabled="taggedCharacter != null && taggedCharacter.Id == character.Id" OnClick="() => OnRestoreButtonClicked(character.Id)">
                                                     <MudAvatar Size="Size.Medium">
                                                         <MudImage Src="@character.GetAvatarLinkWithFallBack()" loading="lazy" />
                                                     </MudAvatar>

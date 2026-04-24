@@ -9,7 +9,16 @@ public static class XExtensions
             return [];
         }
 
-        return values.Where(x => x != null).Cast<TValue>().ToArray();
+        var results = new List<TValue>();
+        foreach (var value in values)
+        {
+            if (value != null)
+            {
+                results.Add(value);
+            }
+        }
+
+        return results.ToArray();
     }
 
     public static int GetIdSafe(this AccountViewModel? accountViewModel)

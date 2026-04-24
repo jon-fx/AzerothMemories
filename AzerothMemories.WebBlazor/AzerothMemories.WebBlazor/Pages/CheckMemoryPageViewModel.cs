@@ -67,7 +67,7 @@ public sealed class CheckMemoryPageViewModel : ViewModelBase, IViewModel<CheckMe
             {
                 var (min, max) = ZExtensions.ClampTimeMinMaxAsLong(checkMemoryInput.ScreenShotUnixTime, 120);
                 var currentPosts = checkMemoryResult.Posts.Where(x => x.PostTime > min && x.PostTime < max).ToArray();
-                var currentAchievements = checkMemoryResult.Achievements.Where(x => x.TimeStamp > min && x.TimeStamp < max).Select(x => x.Achievement).ToHashSet(PostTagInfo.EqualityComparer1).ToArray();
+                var currentAchievements = checkMemoryResult.Achievements.Where(x => x.TimeStamp > min && x.TimeStamp < max).Select(x => x.Achievement).SafeEnumerable().ToHashSet(PostTagInfo.EqualityComparer1).ToArray();
                 var matchingAchievements = 0;
 
                 foreach (var achievement in currentAchievements)

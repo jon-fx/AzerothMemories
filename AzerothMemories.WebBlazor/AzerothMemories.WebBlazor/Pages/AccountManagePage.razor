@@ -162,7 +162,7 @@
 
                             <MudTooltip @key="@character.Id" Placement="Placement.Bottom" Color="Color.Dark">
                                 <ChildContent>
-                                    <MudButton Id="@index" Variant="Variant.Filled" Disabled="ViewModel.AvatarLink == character.AvatarLink || ViewModel.AvatarLink == avatarWithFallback" OnClick="() => ViewModel.OnChangeAvatarButtonClicked(character)">
+                                    <MudButton Variant="Variant.Filled" Disabled="ViewModel.AvatarLink == character.AvatarLink || ViewModel.AvatarLink == avatarWithFallback" OnClick="() => ViewModel.OnChangeAvatarButtonClicked(character)">
                                         <MudAvatar Size="Size.Medium">
                                             <MudImage Src="@avatarWithFallback" loading="lazy" />
                                         </MudAvatar>
