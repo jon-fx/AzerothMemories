@@ -3173,10 +3173,10 @@
     <value>EU-EU PS Realm 222</value>
   </data>
   <data name="Realm-6064">
-    <value>US-Dreamscythe (Anniversary)</value>
+    <value>US-Darquimeros (Anniversary)</value>
   </data>
   <data name="Realm-6065">
-    <value>US-Nightslayer (Anniversary)</value>
+    <value>US-Matador Noturno (Anniversary)</value>
   </data>
   <data name="Realm-6069">
     <value>US-PROGWOW US1 Web (Anniversary)</value>
@@ -3269,10 +3269,10 @@
     <value>EU-Ook Ook (Classic)</value>
   </data>
   <data name="Realm-6409">
-    <value>EU-Thunderstrike (Anniversary)</value>
+    <value>EU-Golpeforte (Anniversary)</value>
   </data>
   <data name="Realm-6412">
-    <value>EU-Spineshatter (Anniversary)</value>
+    <value>EU-Quebra-espinha (Anniversary)</value>
   </data>
   <data name="Realm-6418">
     <value>EU-PROGWOW EU4 Web (Anniversary)</value>
@@ -3348,6 +3348,18 @@
   </data>
   <data name="Realm-6551">
     <value>TW-PROGWOW TW4 GMSS 1 (Anniversary)</value>
+  </data>
+  <data name="Realm-6718">
+    <value>US-US1 100 Partner</value>
+  </data>
+  <data name="Realm-6719">
+    <value>KR-KR1 100 Partner</value>
+  </data>
+  <data name="Realm-6720">
+    <value>EU-EU4 100 Partner</value>
+  </data>
+  <data name="Realm-6721">
+    <value>TW-TW2 100 Partner</value>
   </data>
   <data name="Region-0">
     <value>None</value>

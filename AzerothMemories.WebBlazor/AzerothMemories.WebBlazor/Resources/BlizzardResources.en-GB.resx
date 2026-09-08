@@ -3349,6 +3349,18 @@
   <data name="Realm-6551">
     <value>TW-PROGWOW TW4 GMSS 1 (Anniversary)</value>
   </data>
+  <data name="Realm-6718">
+    <value>US-US1 100 Partner</value>
+  </data>
+  <data name="Realm-6719">
+    <value>KR-KR1 100 Partner</value>
+  </data>
+  <data name="Realm-6720">
+    <value>EU-EU4 100 Partner</value>
+  </data>
+  <data name="Realm-6721">
+    <value>TW-TW2 100 Partner</value>
+  </data>
   <data name="Region-0">
     <value>None</value>
   </data>

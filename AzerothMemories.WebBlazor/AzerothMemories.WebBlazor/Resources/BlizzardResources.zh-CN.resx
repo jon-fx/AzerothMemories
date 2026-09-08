@@ -3173,10 +3173,10 @@
     <value>EU-EU PS Realm 222</value>
   </data>
   <data name="Realm-6064">
-    <value>US-Dreamscythe (Anniversary)</value>
+    <value>US-德姆塞卡尔 (Anniversary)</value>
   </data>
   <data name="Realm-6065">
-    <value>US-Nightslayer (Anniversary)</value>
+    <value>US-夜幕杀手 (Anniversary)</value>
   </data>
   <data name="Realm-6069">
     <value>US-PROGWOW US1 Web (Anniversary)</value>
@@ -3269,10 +3269,10 @@
     <value>EU-Ook Ook (Classic)</value>
   </data>
   <data name="Realm-6409">
-    <value>EU-Thunderstrike (Anniversary)</value>
+    <value>EU-雷霆打击 (Anniversary)</value>
   </data>
   <data name="Realm-6412">
-    <value>EU-Spineshatter (Anniversary)</value>
+    <value>EU-碎脊者 (Anniversary)</value>
   </data>
   <data name="Realm-6418">
     <value>EU-PROGWOW EU4 Web (Anniversary)</value>
@@ -3341,13 +3341,25 @@
     <value>TW-台服辅助 170</value>
   </data>
   <data name="Realm-6539">
-    <value>US-Maladath (Anniversary)</value>
+    <value>US-玛拉达斯 (Anniversary)</value>
   </data>
   <data name="Realm-6540">
     <value>EU-周年纪念版 (Anniversary)</value>
   </data>
   <data name="Realm-6551">
     <value>TW-PROGWOW TW4 GMSS 1 (Anniversary)</value>
+  </data>
+  <data name="Realm-6718">
+    <value>US-US1 100 Partner</value>
+  </data>
+  <data name="Realm-6719">
+    <value>KR-KR1 100 Partner</value>
+  </data>
+  <data name="Realm-6720">
+    <value>EU-EU4 100 Partner</value>
+  </data>
+  <data name="Realm-6721">
+    <value>TW-TW2 100 Partner</value>
   </data>
   <data name="Region-0">
     <value>None</value>

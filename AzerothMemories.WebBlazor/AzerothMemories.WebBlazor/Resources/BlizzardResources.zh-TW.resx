@@ -2933,7 +2933,7 @@
     <value>EU-曼多基爾 (ClassicEra)</value>
   </data>
   <data name="Realm-5259">
-    <value>EU-厄運預言者(RU) (ClassicEra)</value>
+    <value>EU-厄運預言者（RU） (ClassicEra)</value>
   </data>
   <data name="Realm-5261">
     <value>EU-奈克羅許 (ClassicEra)</value>
@@ -2957,7 +2957,7 @@
     <value>EU-鬼霧峰 (ClassicEra)</value>
   </data>
   <data name="Realm-5271">
-    <value>EU-洛克德拉爾(RU) (ClassicEra)</value>
+    <value>EU-洛克德拉爾（RU） (ClassicEra)</value>
   </data>
   <data name="Realm-5272">
     <value>EU-熾炎擊 (ClassicEra)</value>
@@ -2966,7 +2966,7 @@
     <value>EU-石脊 (ClassicEra)</value>
   </data>
   <data name="Realm-5274">
-    <value>EU-維姆薩拉克(RU) (ClassicEra)</value>
+    <value>EU-維姆薩拉克（RU） (ClassicEra)</value>
   </data>
   <data name="Realm-5275">
     <value>EU-海達希亞水元素 (ClassicEra)</value>
@@ -2984,7 +2984,7 @@
     <value>EU-沙斯拉爾 (ClassicEra)</value>
   </data>
   <data name="Realm-5280">
-    <value>EU-弗萊格爾(RU) (ClassicEra)</value>
+    <value>EU-弗萊格爾（RU） (ClassicEra)</value>
   </data>
   <data name="Realm-5281">
     <value>EU-守望堡 (ClassicEra)</value>
@@ -2999,7 +2999,7 @@
     <value>EU-焚木村 (ClassicEra)</value>
   </data>
   <data name="Realm-5285">
-    <value>EU-克羅米(RU) (ClassicEra)</value>
+    <value>EU-克羅米（RU） (ClassicEra)</value>
   </data>
   <data name="Realm-5286">
     <value>TW-TW4 CWOW GMSS 1 (ClassicEra)</value>
@@ -3083,10 +3083,10 @@
     <value>US-十字軍聖擊 (ClassicEra)</value>
   </data>
   <data name="Realm-5817">
-    <value>US-懺悟(AU) (ClassicEra)</value>
+    <value>US-懺悟（AU） (ClassicEra)</value>
   </data>
   <data name="Realm-5818">
-    <value>US-暗影打擊(AU) (ClassicEra)</value>
+    <value>US-暗影打擊（AU） (ClassicEra)</value>
   </data>
   <data name="Realm-5819">
     <value>US-熔岩暴擊 (ClassicEra)</value>
@@ -3116,10 +3116,10 @@
     <value>EU-十字軍聖擊 (ClassicEra)</value>
   </data>
   <data name="Realm-5829">
-    <value>EU-懺悟(賽季) (ClassicEra)</value>
+    <value>EU-懺悟（賽季） (ClassicEra)</value>
   </data>
   <data name="Realm-5830">
-    <value>EU-暗影打擊(賽季) (ClassicEra)</value>
+    <value>EU-暗影打擊（賽季） (ClassicEra)</value>
   </data>
   <data name="Realm-5831">
     <value>EU-熔岩暴擊 (ClassicEra)</value>
@@ -3173,10 +3173,10 @@
     <value>EU-EU PS Realm 222</value>
   </data>
   <data name="Realm-6064">
-    <value>US-Dreamscythe (Anniversary)</value>
+    <value>US-德姆塞卡爾 (Anniversary)</value>
   </data>
   <data name="Realm-6065">
-    <value>US-Nightslayer (Anniversary)</value>
+    <value>US-黑夜殺手 (Anniversary)</value>
   </data>
   <data name="Realm-6069">
     <value>US-PROGWOW US1網站 (Anniversary)</value>
@@ -3269,10 +3269,10 @@
     <value>EU-Ook Ook (Classic)</value>
   </data>
   <data name="Realm-6409">
-    <value>EU-Thunderstrike (Anniversary)</value>
+    <value>EU-雷霆之擊 (Anniversary)</value>
   </data>
   <data name="Realm-6412">
-    <value>EU-Spineshatter (Anniversary)</value>
+    <value>EU-碎脊者 (Anniversary)</value>
   </data>
   <data name="Realm-6418">
     <value>EU-PROGWOW EU4 Web (Anniversary)</value>
@@ -3341,13 +3341,25 @@
     <value>TW-TW Auxiliary 170</value>
   </data>
   <data name="Realm-6539">
-    <value>US-Maladath (Anniversary)</value>
+    <value>US-瑪拉達斯 (Anniversary)</value>
   </data>
   <data name="Realm-6540">
     <value>EU-週年慶 (Anniversary)</value>
   </data>
   <data name="Realm-6551">
     <value>TW-PROGWOW TW4 GMSS 1 (Anniversary)</value>
+  </data>
+  <data name="Realm-6718">
+    <value>US-US1 100 Partner</value>
+  </data>
+  <data name="Realm-6719">
+    <value>KR-KR1 100 Partner</value>
+  </data>
+  <data name="Realm-6720">
+    <value>EU-EU4 100 Partner</value>
+  </data>
+  <data name="Realm-6721">
+    <value>TW-TW2 100 Partner</value>
   </data>
   <data name="Region-0">
     <value>None</value>

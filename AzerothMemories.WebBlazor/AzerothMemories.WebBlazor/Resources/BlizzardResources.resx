@@ -3418,6 +3418,18 @@
   <data name="Realm-6551">
     <value>TW-PROGWOW TW4 GMSS 1 (Anniversary)</value>
   </data>
+  <data name="Realm-6718">
+    <value>US-US1 100 Partner</value>
+  </data>
+  <data name="Realm-6719">
+    <value>KR-KR1 100 Partner</value>
+  </data>
+  <data name="Realm-6720">
+    <value>EU-EU4 100 Partner</value>
+  </data>
+  <data name="Realm-6721">
+    <value>TW-TW2 100 Partner</value>
+  </data>
   <data name="RealmSlug-1">
     <value>lightbringer</value>
   </data>
@@ -6705,6 +6717,18 @@
   </data>
   <data name="RealmSlug-6551">
     <value>progwow-tw4-gmss-1</value>
+  </data>
+  <data name="RealmSlug-6718">
+    <value>us1-100-partner</value>
+  </data>
+  <data name="RealmSlug-6719">
+    <value>kr1-100-partner</value>
+  </data>
+  <data name="RealmSlug-6720">
+    <value>eu4-100-partner</value>
+  </data>
+  <data name="RealmSlug-6721">
+    <value>tw2-100-partner</value>
   </data>
   <data name="CharacterRace-0">
     <value>Unknown Race</value>

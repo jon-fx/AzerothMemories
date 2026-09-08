@@ -42,7 +42,7 @@ public static class ProgramEx
         services.AddScoped<ActiveAccountServices>();
         services.AddScoped<DialogHelperService>();
 
-        services.AddScoped(c => new RpcPeerStateMonitor(c, OSInfo.IsAnyClient ? RpcPeerRef.Default : null));
+        services.AddScoped(c => new RpcPeerStateMonitor(c.RpcHub(), OSInfo.IsAnyClient ? RpcRef.Default : null));
 
         var fusion = services.AddFusion();
         fusion.AddFusionTime();
